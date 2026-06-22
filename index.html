@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Study Notes — IGCSE Revision Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
 <style>
   :root {
     --bg:       #0a0d14;
@@ -358,6 +359,9 @@
   .done-toggle.is-done .box::after { content: '✓'; }
   .done-toggle.auto { cursor: default; border-style: dashed; }
   .done-toggle.auto:hover { border-color: var(--border); color: var(--muted); }
+  .done-toggle.status { cursor: default; }
+  .done-toggle.status:hover { border-color: var(--border); color: var(--muted); }
+  .done-toggle.status.is-done:hover { border-color: color-mix(in srgb, var(--power) 50%, transparent); color: var(--power); }
   .card.all-done { border-color: color-mix(in srgb, var(--power) 45%, var(--border)); }
   .card.all-done::before { background: var(--power); opacity: 1; }
 
@@ -522,8 +526,8 @@
         <div class="btns">
           <a class="btn notes" href="subjects/chemistry/notes/Chemistry%20Topic%203%20-%20Stoichiometry.html"><span class="ico">📘</span>Notes</a>
           <a class="btn paper" href="subjects/chemistry/practice-papers/Chemistry%20Topic%203%20Practice%20Paper%20-%20Stoichiometry.html"><span class="ico">📝</span>Practice Paper</a>
-          <a class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Exam%20Paper%201%20-%20Stoichiometry.html"><span class="ico">📑</span>Exam Paper 1</a>
-          <a class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Exam%20Paper%202%20-%20Stoichiometry.html"><span class="ico">📑</span>Exam Paper 2</a>
+          <a class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Graded%20Paper%201%20-%20Stoichiometry.html"><span class="ico">📑</span>Graded Paper 1</a>
+          <a class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Graded%20Paper%202%20-%20Stoichiometry.html"><span class="ico">📑</span>Graded Paper 2</a>
         </div>
       </div>
       <div class="card" data-num="4">
@@ -610,34 +614,31 @@
     function save(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){} }
     var prog = load();
 
-    // build a toggle row for every card, derived from the buttons it already has
+    // Build a READ-ONLY status row per card from the buttons it has.
+    // Marking now happens on each page itself (Notes & Practice papers carry a
+    // "Mark as complete" button; Graded papers auto-mark on submit). The hub only
+    // reflects localStorage — one status chip per item, and one per graded paper.
     document.querySelectorAll('.subject').forEach(function (sec) {
       var subj = sec.getAttribute('data-subj');
       sec.querySelectorAll('.card').forEach(function (card) {
         var num = card.getAttribute('data-num');
         var items = [];
-        if (card.querySelector('.btn.notes')) items.push({ type:'note', label:'Notes' });
-        // a card may carry a practice paper and/or graded exam paper(s); show a toggle for each kind
-        if (card.querySelector('.btn.paper:not(.graded)')) items.push({ type:'pp', label:'Paper', auto:false });
-        if (card.querySelector('.btn.paper.graded')) items.push({ type:'ex', label:'Exam', auto:true });
+        if (card.querySelector('.btn.notes')) items.push({ id:'note:'+subj+':'+num, label:'Notes' });
+        if (card.querySelector('.btn.paper:not(.graded)')) items.push({ id:'pp:'+subj+':'+num, label:'Paper' });
+        var gradedBtns = card.querySelectorAll('.btn.paper.graded');
+        gradedBtns.forEach(function (g, i) {
+          items.push({ id:'ex:'+subj+':'+num+':'+(i+1),
+                       label: gradedBtns.length > 1 ? ('Graded ' + (i+1)) : 'Graded' });
+        });
         if (!items.length) return;
         var track = document.createElement('div');
         track.className = 'track';
         items.forEach(function (it) {
-          var id = it.type + ':' + subj + ':' + num;
-          var b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'done-toggle' + (it.auto ? ' auto' : '');
-          b.setAttribute('data-id', id);
+          var b = document.createElement('span');               // read-only status, not clickable
+          b.className = 'done-toggle status';
+          b.setAttribute('data-id', it.id);
+          b.title = 'Marked complete from its own page';
           b.innerHTML = '<span class="box"></span><span class="lbl">' + it.label + '</span>';
-          if (it.auto) {
-            b.title = 'Marked done automatically when the exam is submitted';
-          } else {
-            b.addEventListener('click', function () {
-              if (prog[id]) { delete prog[id]; } else { prog[id] = true; }
-              save(prog); refresh();
-            });
-          }
           track.appendChild(b);
         });
         card.appendChild(track);
@@ -667,7 +668,7 @@
       var txt = document.getElementById('progText');
       if (txt) {
         txt.innerHTML = done === 0
-          ? 'Nothing done yet — tick “Notes” or “Paper” on a chapter as you finish it.'
+          ? 'Nothing done yet — open a chapter and use “Mark as complete” on the page (graded papers tick themselves when submitted).'
           : '<b>' + done + ' of ' + total + '</b> done · ' + pct + '% · <b>' + (total - done) + '</b> left';
       }
     }
