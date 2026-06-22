@@ -563,6 +563,13 @@ const PAPER = {
   ]
 };
 
+/* ---- where graded submissions are sent ----
+   Google Apps Script web-app /exec URL. Empty string = no endpoint configured, so a
+   graded paper falls back to the student downloading the answer packet. When set, a
+   graded paper auto-sends the student's answers to the teacher's Drive on submit and
+   hides the download button (revealing it only if the send fails, e.g. offline). */
+const SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec';
+
 /* ---- derive section labels & totals ---- */
 const TOTAL = PAPER.questions.reduce((s,q)=> s + (q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0)), 0);
 /* GRADED = teacher-marked exam: no answer key in this file, nothing revealed to the student.
@@ -797,6 +804,7 @@ function submit(auto){
     $('btnSubmit').textContent='✓ Submitted';
     $('btnSubmit').disabled=true;
     $('examBar').classList.remove('warn','danger');
+    sendSubmission();
     $('results').scrollIntoView({behavior:'smooth'});
     return;
   }
@@ -867,6 +875,19 @@ function buildMarkingExport(){
   }
   return out;
 }
+/* ---- auto-send a graded submission to the teacher's Drive endpoint ---- */
+function sendSubmission(){
+  if(!SUBMIT_ENDPOINT) return;                 // not configured → student uses the download button
+  var payload = JSON.stringify({ title:document.title, submittedAt:new Date().toISOString(), packet:buildMarkingExport() });
+  try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}   // local backup
+  var st=$('sendStatus');
+  fetch(SUBMIT_ENDPOINT, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload})
+    .then(function(){ if(st) st.textContent='✅ Your answers have been sent to your teacher.'; })
+    .catch(function(){
+      if(st) st.textContent='⚠ Could not send automatically (you may be offline). Use “⬇ Download your answers” below and send the file to your teacher.';
+      var d=$('downloadBtn'); if(d) d.style.display='';            // reveal the fallback download button
+    });
+}
 function downloadAnswers(){
   const blob=new Blob([buildMarkingExport()],{type:'text/plain;charset=utf-8'});
   const a=document.createElement('a');
@@ -891,9 +912,16 @@ if(GRADED){
   document.body.classList.add('graded');
   var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';        // hide score / breakdown
   var _rt=$('resultsTitle'); if(_rt) _rt.textContent='Paper submitted';
-  var _gd=$('downloadBtn'); if(_gd) _gd.textContent='⬇ Download your answers';
   var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';        // nothing to review
   var _dc2=document.querySelector('.disclaimer'); if(_dc2) _dc2.style.display='none';
+  var _gd=$('downloadBtn');
+  if(SUBMIT_ENDPOINT){
+    if(_gd) _gd.style.display='none';                              // auto-send mode → no manual download
+    var _sm=$('submittedMsg');
+    if(_sm) _sm.innerHTML='✅ <b>Paper submitted.</b> <span id="sendStatus">Sending your answers to your teacher…</span>';
+  } else {
+    if(_gd) _gd.textContent='⬇ Download your answers';            // fallback → manual download + send
+  }
 }
 $('metaTime').textContent = PAPER.duration+' minutes';
 $('metaMarks').textContent = TOTAL+' marks';
