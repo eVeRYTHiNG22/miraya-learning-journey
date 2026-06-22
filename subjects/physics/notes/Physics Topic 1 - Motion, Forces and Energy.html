@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Topic 1: Motion, Forces and Energy</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    --motion:   #46a8ff;   /* electric blue — kinematics (cool) */
+    --force:    #ff5263;   /* physics red — forces (warm) */
+    --energy:   #ffae3b;   /* radiant amber — energy (warm) */
+    --energy2:  #ffae3b;
+    --momentum: #8b7bff;   /* indigo — momentum, the cool→warm bridge */
+    --power:    #43d98c;   /* green — power & useful output */
+    --cyan:     #3ad9d4;   /* secondary cool — measurement */
+    --rose:     #f25cc1;   /* alert magenta — ≥30° hue gap from warm accents (CVD-safe) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient field — cool (kinematic) up top, warm (energetic) below:
+     the background literally renders the temperature axis the palette is built on */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 110px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 54px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--force); }
+  h1 .c { color: var(--energy2); }
+
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 600px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: rise 0.55s ease forwards;
+  }
+  @keyframes rise {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--bright);
+    margin-bottom: 14px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: var(--bright);
+    margin: 26px 0 10px;
+  }
+
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+
+  .eq-inline {
+    font-family: 'JetBrains Mono', monospace;
+    background: #0d1828;
+    border: 1px solid #22324a;
+    border-radius: 5px;
+    padding: 1px 7px;
+    font-size: 13px;
+    color: var(--motion);
+    white-space: nowrap;
+  }
+  body[data-theme="light"] .eq-inline {
+    background: #eef1f8;
+    border-color: #d4dcec;
+  }
+
+  /* ── BOXES ── */
+  .box {
+    border-radius: 11px;
+    padding: 17px 20px;
+    margin: 18px 0;
+    font-size: 14.2px;
+    border: 1px solid;
+  }
+  .box-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color: var(--motion); }
+
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define {
+    border-left: 3px solid var(--motion);
+    background: linear-gradient(90deg, #0c1c2880, transparent);
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .define .term {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--bright);
+    font-size: 1.02rem;
+  }
+  .define.force-c   { border-color: var(--force); background:linear-gradient(90deg,#23120b80,transparent); }
+  .define.energy-c  { border-color: var(--energy2); background:linear-gradient(90deg,#23180680,transparent); }
+  .define.mom-c     { border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 16px 18px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { transform: translateY(-3px); border-color:#3a557c; }
+  .card-title {
+    font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px;
+  }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th {
+    background: var(--surface2); color: var(--motion);
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase;
+    padding:10px 14px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+
+  mark {
+    background: linear-gradient(120deg,#15405a88,#1f5a7a88);
+    color: var(--bright); padding:1px 4px; border-radius:3px;
+  }
+
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY NOTE (read before cloning)
+     · BASE IS LOCKED ACROSS ALL SUBJECTS: --bg, --surface*, --text,
+       --muted, --border, the paper light theme, and the neutral ambient
+       glow NEVER change per subject. Only the accent block changes.
+     · SHARED components (reused by any topic — never delete):
+       .explorer .scn-tabs .scn-tab .scn-read .rk .replay svg.graph
+       .axis .axis-lbl .curve .tracer .chart-cap .tool .tool-grid
+       .slider-row .vec-out .eqbank .eqcell .box .define .card table
+     · PHYSICS-ONLY (safe to delete if your topic drops these widgets;
+       grep each class in your markup first): .track-wrap .track-line
+       .mover .charts .chart-box svg.vecpad .balance-stage .pivot .beam
+       .load .bal-state .sk-* .estore  (+ their light-mode overrides)
+  ═════════════════════════════════════════════ */
+  /* ─────────────────────────────────────────────
+     MOTION GRAPH EXPLORER (signature)
+  ───────────────────────────────────────────── */
+  .explorer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 22px 0;
+  }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab {
+    font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    padding:8px 14px; border-radius:8px; cursor:pointer;
+    background:#0e1626; border:1px solid var(--border); color:var(--muted);
+    transition:all .18s; user-select:none;
+  }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+
+  .track-wrap {
+    position:relative; height:56px; margin:6px 0 18px;
+    background:
+      repeating-linear-gradient(90deg,#0e1626 0 38px,#101a2c 38px 40px);
+    border:1px solid var(--border); border-radius:9px; overflow:hidden;
+  }
+  .track-line { position:absolute; left:0; right:0; top:50%; height:1px; background:#22304a; }
+  .mover {
+    position:absolute; top:50%; left:10%;
+    width:26px; height:18px; margin-top:-9px; margin-left:-13px;
+    background:linear-gradient(180deg,#6db8ff,#2f86d6);
+    border-radius:4px; box-shadow:0 0 14px #46a8ff66;
+    transition:none;
+  }
+  .mover::after {
+    content:''; position:absolute; left:3px; right:3px; top:4px; height:5px;
+    background:#0a2a3e; border-radius:2px;
+  }
+
+  .charts { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .chart-box { }
+  .chart-cap {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    margin-bottom:6px;
+  }
+  svg.graph { width:100%; height:auto; display:block;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  .axis { stroke:#2a3a55; stroke-width:1.2; }
+  .axis-lbl { fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:9px; }
+  .curve { fill:none; stroke-width:2.6; stroke-linecap:round; }
+  .tracer { fill:#fff; }
+
+  .scn-read {
+    margin-top:16px; background:#0c1c28; border:1px solid #1f4258;
+    border-radius:9px; padding:13px 16px; font-size:13.6px;
+  }
+  .scn-read .rk {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--motion);
+    margin-bottom:6px;
+  }
+  .replay {
+    margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#0c2536; color:var(--motion); border:1px solid var(--motion);
+    border-radius:7px; padding:7px 16px; cursor:pointer; letter-spacing:.06em;
+  }
+  .replay:hover { background:#103247; }
+
+  /* ─────────────────────────────────────────────
+     VECTOR RESULTANT TOOL
+  ───────────────────────────────────────────── */
+  .tool {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:20px; margin:22px 0;
+  }
+  .tool-grid { display:grid; grid-template-columns:1fr 230px; gap:20px; align-items:center; }
+  .slider-row { margin:14px 0; }
+  .slider-row label {
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] {
+    width:100%; -webkit-appearance:none; height:5px; border-radius:3px;
+    background:#22304a; outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--momentum); cursor:pointer; box-shadow:0 0 10px #8b7bff88;
+  }
+  input[type=range]::-moz-range-thumb {
+    width:17px; height:17px; border:none; border-radius:50%;
+    background:var(--momentum); cursor:pointer;
+  }
+  .vec-out {
+    background:#171229; border:1px solid #2e2350; border-radius:9px;
+    padding:14px 16px; text-align:center;
+  }
+  .vec-out .ro {
+    font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:#7d6aa8; margin-bottom:3px;
+  }
+  .vec-out .rv {
+    font-family:'Fraunces',serif; font-size:1.7rem; font-weight:700;
+    color:var(--momentum); line-height:1.1; margin-bottom:10px;
+  }
+  svg.vecpad { width:100%; height:auto; background:#0c1322;
+    border:1px solid var(--border); border-radius:9px; }
+
+  /* ─────────────────────────────────────────────
+     MOMENTS BALANCE
+  ───────────────────────────────────────────── */
+  .balance-stage {
+    height:170px; position:relative; margin:8px 0 4px;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .pivot {
+    position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+    width:0; height:0; border-left:22px solid transparent; border-right:22px solid transparent;
+    border-bottom:34px solid var(--force);
+  }
+  .beam {
+    position:absolute; bottom:48px; left:50%;
+    width:380px; height:12px; margin-left:-190px;
+    background:linear-gradient(180deg,#34425e,#222d42);
+    border-radius:4px; transform-origin:50% 50%;
+    transition:transform .4s cubic-bezier(.34,1.4,.5,1);
+  }
+  .load {
+    position:absolute; top:-30px; width:30px; height:30px; border-radius:5px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:10px; color:#0a0e16; font-weight:600;
+    background:var(--energy2); transform:translateX(-50%);
+  }
+  #loadL { background:var(--motion); }
+  #loadR { background:var(--force); }
+  .bal-state {
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em;
+    padding:8px 0; text-align:center; border-radius:8px; margin-top:6px;
+  }
+  .bal-state.bal { color:var(--power); background:#0f2018; border:1px solid #1f4a30; }
+  .bal-state.tip { color:var(--energy2); background:#231806; border:1px solid #4a3a10; }
+
+  /* ─────────────────────────────────────────────
+     EQUATION BANK
+  ───────────────────────────────────────────── */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqcell {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 12px; cursor:pointer; text-align:center;
+    transition:transform .16s, border-color .16s, box-shadow .16s;
+  }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion);
+    box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym {
+    font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600;
+    color:var(--bright); margin-bottom:4px;
+  }
+  .eqcell .eq-name {
+    font-size:10.5px; color:var(--muted); letter-spacing:.04em;
+  }
+  .eqcell[data-c="motion"]:hover   { border-color:var(--motion); }
+  .eqcell[data-c="force"]   { } .eqcell[data-c="force"]:hover  { border-color:var(--force); box-shadow:0 8px 22px #0008; }
+  .eqcell[data-c="energy"]:hover  { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover     { border-color:var(--momentum); }
+  .eqcell[data-c="power"]:hover   { border-color:var(--power); }
+
+  /* floating detail card — fully themed (vars, with a light override below) */
+  #eq-card {
+    display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px;
+    width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow);
+    overflow:hidden; transition:opacity .25s;
+  }
+  #eqc-top {
+    padding:18px 18px 14px; display:flex; gap:14px; align-items:center;
+    border-bottom:1px solid var(--card-divider); position:relative;
+  }
+  #eqc-badge {
+    flex-shrink:0; width:62px; height:62px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600;
+    background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd);
+  }
+  #eqc-head h4 {
+    font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px;
+  }
+  #eqc-formula {
+    font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--motion);
+  }
+  #eqc-close {
+    position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted);
+    cursor:pointer; user-select:none;
+  }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--card-label); margin:10px 0 6px;
+  }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill {
+    background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px;
+    padding:5px 9px; font-size:11.5px; color:var(--card-text);
+  }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr {
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text);
+    background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em;
+  }
+  #eqc-example {
+    background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55;
+  }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip {
+    background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px;
+  }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── ENERGY STORE CHIPS ── */
+  .estores { display:flex; flex-wrap:wrap; gap:9px; margin:16px 0; }
+  .estore {
+    background:#19202f; border:1px solid var(--border); border-radius:8px;
+    padding:9px 13px; font-size:12.6px; display:flex; align-items:center; gap:8px;
+  }
+  .estore .dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+
+  /* ── SANKEY / EFFICIENCY BAR ── */
+  .sankey { margin:18px 0; }
+  .sankey-bar { display:flex; height:46px; border-radius:8px; overflow:hidden; border:1px solid var(--border); }
+  .sk-useful { background:linear-gradient(180deg,#43d98c,#2f9d6c);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:#062014; font-weight:600; }
+  .sk-waste  { background:linear-gradient(180deg,#3a4256,#2a3043);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:#aeb8c8; }
+  .sankey-cap { font-size:11.5px; color:var(--muted); margin-top:7px; font-family:'JetBrains Mono',monospace; }
+
+  /* ── FOOTER ── */
+  .footer {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    text-align:center; padding-top:28px; border-top:1px solid var(--border);
+    letter-spacing:.07em; line-height:1.8;
+  }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .charts, .eqbank { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+    .tool-grid { grid-template-columns:1fr; }
+    .beam { width:280px; margin-left:-140px; }
+  }
+  /* ─────────────────────────────────────────────
+     THEME TOGGLE BUTTON
+  ───────────────────────────────────────────── */
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 10000;
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-size: 17px; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    transition: transform .25s, border-color .2s, background-color .35s;
+    line-height: 1;
+  }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  /* smooth cross-fade between themes */
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.graph, svg.vecpad,
+  .scn-read, .scn-tab, .replay, .vec-out, .bal-state, .estore, .chip,
+  table th, table td, .track-wrap, .beam, .eqcell, mark {
+    transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+  }
+
+  /* ═════════════════════════════════════════════
+     LIGHT THEME ("study paper")
+     Accents are deepened so coloured text stays
+     legible on a pale background. Formula chips and
+     the equation pop-up stay dark on purpose — they
+     read as code-like tokens and keep max contrast.
+  ═════════════════════════════════════════════ */
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;   /* warm lab-notebook paper */
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;   /* ink */
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;   /* deep electric blue */
+    --force:    #cb2531;   /* deep physics red (AA 4.5+) */
+    --energy:   #8f5d00;   /* deep amber (AA 4.5+) */
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;   /* deep indigo */
+    --power:    #107a50;   /* deep green (AA 4.5+) */
+    --cyan:     #0b7a67;   /* deep teal (AA 4.5+) */
+    --rose:     #ad1a7d;   /* deep alert magenta (AA 4.5+) */
+    /* floating detail-card — light theme */
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+
+  /* boxes */
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+
+  /* define callouts */
+  body[data-theme="light"] .define          { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.force-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.energy-c  { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.mom-c     { background:linear-gradient(90deg,#ece8fb99,transparent); }
+
+  /* cards & misc */
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip {
+    background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion);
+  }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+
+  /* graphs (SVG) — CSS overrides the inline presentation attributes */
+  body[data-theme="light"] svg.graph,
+  body[data-theme="light"] svg.vecpad { background:#fbfaf4; }
+  body[data-theme="light"] .axis      { stroke:#bcb4a2; }
+  body[data-theme="light"] .axis-lbl  { fill:#8c8674; }
+  body[data-theme="light"] .tracer    { fill:#14181f; }
+  body[data-theme="light"] #dtCurve   { stroke:var(--motion); }
+  body[data-theme="light"] #stCurve   { stroke:var(--cyan); }
+  body[data-theme="light"] #vx        { stroke:var(--motion); }
+  body[data-theme="light"] #vy        { stroke:var(--force); }
+  body[data-theme="light"] #vr        { stroke:var(--momentum); }
+  body[data-theme="light"] #dash1,
+  body[data-theme="light"] #dash2     { stroke:#cfc8b6; }
+  body[data-theme="light"] #ah1 path  { fill:var(--motion); }
+  body[data-theme="light"] #ah2 path  { fill:var(--force); }
+  body[data-theme="light"] #ah3 path  { fill:var(--momentum); }
+
+  /* motion explorer chrome */
+  body[data-theme="light"] .track-wrap {
+    background: repeating-linear-gradient(90deg,#efeada 0 38px,#e7e1d0 38px 40px);
+  }
+  body[data-theme="light"] .track-line { background:#d6cfbd; }
+  body[data-theme="light"] .scn-read   { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab    { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover  { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+  body[data-theme="light"] .replay     { background:#e2eefb; }
+  body[data-theme="light"] .replay:hover { background:#d3e4fb; }
+
+  /* vector tool */
+  body[data-theme="light"] .vec-out { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .vec-out .ro { color:#6a559a; }
+
+  /* moments balance */
+  body[data-theme="light"] .beam { background:linear-gradient(180deg,#d7d0be,#c4bca8); }
+  body[data-theme="light"] .bal-state.bal { background:#e7f6ee; border-color:#bae0cd; }
+  body[data-theme="light"] .bal-state.tip { background:#fbf2dc; border-color:#e7d5a6; color:#8a5a00; }
+
+  /* sankey */
+  body[data-theme="light"] .sk-waste { background:linear-gradient(180deg,#dcd7c9,#cdc7b6); color:#6f7484; }
+
+  /* energy-store chips */
+  body[data-theme="light"] .estore { background:#efeadd; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    .beam, body, .theme-toggle, .box, .card, .define, .explorer, .tool,
+    svg.graph, svg.vecpad, .scn-read, .scn-tab, .replay, .vec-out,
+    .bal-state, .estore, .chip, table th, table td, .track-wrap, .eqcell, mark { transition:none; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Physics 0625 · Extended · Topic 1</div>
+    <h1><span class="a">Motion</span>, <span class="b">Forces</span> &amp; <span class="c">Energy</span></h1>
+    <p class="header-sub">Intuitive notes built around the <em>why</em>. Every equation comes from a definition, every graph from a story about a moving thing. Tap the blue panels — they move.</p>
+  </div>
+
+
+  <!-- ── 01 · QUANTITIES & VECTORS ── -->
+  <div class="section">
+    <div class="sec-label">01 / 11 · 1.1 Physical Quantities</div>
+    <h2>Measuring, and the two flavours of quantity</h2>
+
+    <p>Physics is built on measurement. You find a <strong>length</strong> with a ruler, a <strong>volume</strong> with a measuring cylinder, and a <strong>time interval</strong> with a clock or digital timer. One trick worth knowing: to measure something tiny — a single sheet of paper, or one swing of a pendulum — measure <em>many</em> and divide. Time 20 swings, divide by 20: the human reaction-time error gets divided by 20 too.</p>
+
+    <div class="box intuition">
+      <div class="box-label">⏱️ Why measure multiples</div>
+      Your reaction time (~0.2 s) is the same whether you time 1 swing or 20. Spread across 20 swings it becomes 0.01 s per swing — the error shrinks without buying a better stopwatch. This is the cheapest precision upgrade in all of physics.
+    </div>
+
+    <h3>Scalars vs. vectors</h3>
+    <p>Every quantity is one of two kinds. A <strong>scalar</strong> has size only. A <strong>vector</strong> has size <em>and</em> direction — and direction changes everything.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Scalars — size only</div>
+        <div class="card-body"><strong>distance, speed, time, mass, energy, temperature.</strong> "5 kg" is complete. "20 °C" is complete. No arrow needed.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--momentum)">Vectors — size + direction</div>
+        <div class="card-body"><strong>force, weight, velocity, acceleration, momentum,</strong> electric &amp; gravitational field strength. "5 N" is incomplete — 5 N <em>which way?</em></div>
+      </div>
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🧭 Speed vs. velocity, the classic</div>
+      A car going round a roundabout at a steady 30 km/h has <em>constant speed</em> but <em>changing velocity</em> — because its direction keeps changing. Changing velocity means it is accelerating, even though the speedometer never moves. That single idea unlocks circular motion later.
+    </div>
+
+    <h3>Adding two perpendicular vectors</h3>
+    <p>When two forces (or velocities) act at right angles, the combined effect — the <strong>resultant</strong> — is the diagonal of the rectangle they form. Drag the sliders and watch Pythagoras do its job:</p>
+
+    <div class="tool">
+      <div class="tool-grid">
+        <div>
+          <svg class="vecpad" viewBox="0 0 260 200" id="vecpad" aria-label="Vector addition diagram">
+            <line x1="30" y1="170" x2="240" y2="170" class="axis"/>
+            <line x1="30" y1="170" x2="30" y2="20" class="axis"/>
+            <line id="vx" x1="30" y1="170" x2="150" y2="170" stroke="#46a8ff" stroke-width="3" marker-end="url(#ah1)"/>
+            <line id="vy" x1="30" y1="170" x2="30" y2="90"  stroke="#ff5263" stroke-width="3" marker-end="url(#ah2)"/>
+            <line id="vr" x1="30" y1="170" x2="150" y2="90"  stroke="#8b7bff" stroke-width="3.4" marker-end="url(#ah3)"/>
+            <line id="dash1" x1="150" y1="170" x2="150" y2="90" stroke="#2a3a55" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <line id="dash2" x1="30" y1="90" x2="150" y2="90" stroke="#2a3a55" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <defs>
+              <marker id="ah1" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#46a8ff"/></marker>
+              <marker id="ah2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff5263"/></marker>
+              <marker id="ah3" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#8b7bff"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>Horizontal force <b><span id="fxv">8</span> N</b></label>
+            <input type="range" id="fx" min="1" max="10" value="8">
+          </div>
+          <div class="slider-row">
+            <label>Vertical force <b><span id="fyv">6</span> N</b></label>
+            <input type="range" id="fy" min="1" max="10" value="6">
+          </div>
+          <div class="vec-out">
+            <div class="ro">Resultant magnitude</div>
+            <div class="rv"><span id="rmag">10.0</span> N</div>
+            <div class="ro">Direction (from horizontal)</div>
+            <div style="font-family:'JetBrains Mono',monospace;color:#c8b8f0;font-size:14px"><span id="rang">36.9</span>°</div>
+          </div>
+        </div>
+      </div>
+      <div class="scn-read">
+        <div class="rk" style="color:var(--momentum)">The maths behind it</div>
+        Magnitude by Pythagoras: <span class="eq-inline" style="color:var(--momentum)">R = √(Fₓ² + Fᵧ²)</span> &nbsp; · &nbsp; Direction by <span class="eq-inline" style="color:var(--momentum)">θ = tan⁻¹(Fᵧ / Fₓ)</span>. The 3-4-5 and 6-8-10 triangles show up constantly in exams — spot them and skip the calculator.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 02 · MOTION (signature) ── -->
+  <div class="section">
+    <div class="sec-label">02 / 11 · 1.2 Motion</div>
+    <h2>Motion — and the graphs that describe it</h2>
+
+    <p>Speed is <span class="eq-inline">v = s / t</span> — distance per unit time. <strong>Velocity</strong> is speed in a stated direction. <strong>Acceleration</strong> is how fast velocity itself changes: <span class="eq-inline">a = Δv / Δt</span>, measured in m/s². Near Earth's surface every dropped object speeds up at <mark>g ≈ 9.8 m/s²</mark>.</p>
+
+    <p>The whole topic lives in two graphs. Pick a story below and watch the object move while both graphs draw themselves in real time:</p>
+
+    <div class="explorer">
+      <div class="scn-tabs" id="scnTabs">
+        <div class="scn-tab active" data-scn="rest">At rest</div>
+        <div class="scn-tab" data-scn="constant">Constant speed</div>
+        <div class="scn-tab" data-scn="accel">Accelerating</div>
+        <div class="scn-tab" data-scn="decel">Decelerating</div>
+      </div>
+
+      <div class="track-wrap">
+        <div class="track-line"></div>
+        <div class="mover" id="mover"></div>
+      </div>
+
+      <div class="charts">
+        <div class="chart-box">
+          <div class="chart-cap">Distance – time</div>
+          <svg class="graph" viewBox="0 0 220 150" id="dtGraph">
+            <line x1="28" y1="124" x2="206" y2="124" class="axis"/>
+            <line x1="28" y1="124" x2="28" y2="14" class="axis"/>
+            <text x="112" y="144" text-anchor="middle" class="axis-lbl">time →</text>
+            <text x="14" y="70" text-anchor="middle" class="axis-lbl" transform="rotate(-90 14 70)">distance</text>
+            <path class="curve" id="dtCurve" stroke="#46a8ff" d=""/>
+            <circle class="tracer" id="dtDot" r="4" cx="28" cy="124"/>
+          </svg>
+        </div>
+        <div class="chart-box">
+          <div class="chart-cap">Speed – time</div>
+          <svg class="graph" viewBox="0 0 220 150" id="stGraph">
+            <line x1="28" y1="124" x2="206" y2="124" class="axis"/>
+            <line x1="28" y1="124" x2="28" y2="14" class="axis"/>
+            <text x="112" y="144" text-anchor="middle" class="axis-lbl">time →</text>
+            <text x="14" y="70" text-anchor="middle" class="axis-lbl" transform="rotate(-90 14 70)">speed</text>
+            <path class="curve" id="stCurve" stroke="#3ad9d4" d=""/>
+            <circle class="tracer" id="stDot" r="4" cx="28" cy="124"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="scn-read">
+        <div class="rk" id="scnTitle">At rest</div>
+        <div id="scnText">The object stays put. Distance–time is a flat horizontal line (no change in position); speed–time sits on zero.</div>
+      </div>
+      <button class="replay" id="replayBtn">▶ Replay motion</button>
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">📈 Read graphs like a sentence</div>
+      <strong>Gradient of distance–time = speed.</strong> Steeper line, faster object; flat line, stopped. <strong>Gradient of speed–time = acceleration,</strong> and the <strong>area under speed–time = distance travelled.</strong> A curve that gets steeper means speeding up; a curve flattening out means slowing down.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The trap examiners love</div>
+      A <em>horizontal line on a speed–time graph</em> does NOT mean stopped — it means <strong>constant speed</strong> (steady, non-zero). Only a horizontal line on a <em>distance–time</em> graph means stationary. Mixing these up is the single most common Paper 4 slip.
+    </div>
+
+    <h3>Falling objects &amp; terminal velocity</h3>
+    <p>Drop something and gravity pulls it down at g. But as it speeds up, air resistance (drag) grows. When drag grows to exactly balance weight, the resultant force is zero, acceleration stops, and the object falls at a steady <strong>terminal velocity</strong>.</p>
+
+    <div class="box analogy">
+      <div class="box-label">🪂 Skydiver story</div>
+      Jump out: weight &gt; drag, so you accelerate. Faster you go, bigger the drag, until drag = weight → zero resultant → terminal velocity (~55 m/s). Open the parachute: drag suddenly jumps above weight → you <em>decelerate</em> to a new, gentler terminal velocity (~5 m/s) for a safe landing.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · MASS & WEIGHT ── -->
+  <div class="section">
+    <div class="sec-label">03 / 11 · 1.3 Mass &amp; Weight</div>
+    <h2>Mass vs. weight — not the same thing</h2>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Mass — kg (scalar)</div>
+        <div class="card-body">The amount of matter in an object. <strong>Unchanging</strong> — the same on Earth, the Moon, or deep space. Measures how hard it is to change motion (inertia).</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Weight — N (vector)</div>
+        <div class="card-body">The <strong>gravitational force</strong> on that mass. Changes with location — you'd weigh ~1/6 as much on the Moon. Found from <span class="eq-inline" style="color:var(--force)">W = mg</span>.</div>
+      </div>
+    </div>
+
+    <div class="define force-c">
+      <span class="term">Gravitational field strength, g</span> — force per unit mass: <span class="eq-inline" style="color:var(--force)">g = W / m</span>. On Earth g ≈ 9.8 N/kg. This number is <em>numerically identical</em> to the acceleration of free fall (9.8 m/s²) — and that is no coincidence, it's the same physics seen two ways.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ One-liner that wins marks</div>
+      "Mass is a measure of the quantity of matter (kg); weight is the gravitational force acting on that mass (N)." Masses and weights are compared using a <strong>balance</strong>.
+    </div>
+  </div>
+
+
+  <!-- ── 04 · DENSITY ── -->
+  <div class="section">
+    <div class="sec-label">04 / 11 · 1.4 Density</div>
+    <h2>Density — how tightly matter is packed</h2>
+
+    <p><strong>Density</strong> is mass per unit volume: <span class="eq-inline">ρ = m / V</span> (kg/m³ or g/cm³). It decides whether things float.</p>
+
+    <div class="box intuition">
+      <div class="box-label">⚖️ Float or sink, in one rule</div>
+      An object <strong>floats</strong> if it is <em>less dense</em> than the liquid, and <strong>sinks</strong> if it is <em>more dense</em>. Steel sinks in water (ρ ≈ 7900 &gt; 1000) — yet a steel ship floats, because its <em>overall</em> density (steel + trapped air) is less than water's. Density is about the whole object, not the material alone.
+    </div>
+
+    <h3>Measuring density</h3>
+    <table>
+      <tr><th>Object</th><th>How to find volume</th></tr>
+      <tr><td><strong>Regular solid</strong> (cube, sphere)</td><td>Measure dimensions, calculate geometrically (e.g. l×w×h)</td></tr>
+      <tr><td><strong>Irregular solid</strong> (that sinks)</td><td>Displacement — drop into a measuring cylinder / eureka can, read the volume of water pushed aside</td></tr>
+      <tr><td><strong>Liquid</strong></td><td>Measure a known volume in a cylinder, weigh it (subtract the empty cylinder's mass)</td></tr>
+    </table>
+
+    <div class="box exam">
+      <div class="box-label">✅ Extended extra</div>
+      Two liquids that don't mix will layer by density — the <strong>less dense liquid floats on top</strong>. Given density data, you can predict the order of layers (e.g. oil on water on syrup).
+    </div>
+  </div>
+
+
+  <!-- ── 05 · FORCES ── -->
+  <div class="section">
+    <div class="sec-label">05 / 11 · 1.5 Forces</div>
+    <h2>Forces — what changes motion and shape</h2>
+
+    <p>A force is a push or pull. It can change an object's <strong>speed, direction, or shape</strong>. When forces act along the same line, add them (opposite directions subtract) to get the <strong>resultant</strong>.</p>
+
+    <div class="define force-c">
+      <span class="term">Newton's First Law</span> — an object stays at rest, or keeps moving in a straight line at constant speed, <em>unless acted on by a resultant force</em>. No resultant force ≠ no force; it means the forces are balanced.
+    </div>
+    <div class="define force-c">
+      <span class="term">Newton's Second Law</span> — <span class="eq-inline" style="color:var(--force)">F = ma</span>. The resultant force and the acceleration point the <em>same way</em>. Double the force → double the acceleration; double the mass → half the acceleration.
+    </div>
+
+    <h3>Springs &amp; Hooke's Law</h3>
+    <p>Pull a spring and it stretches in proportion to the force — up to a point. The stiffness is the <strong>spring constant</strong>: <span class="eq-inline">k = F / x</span> (N/m). This holds only up to the <strong>limit of proportionality</strong> — the point on a load–extension graph where the straight line starts to bend.</p>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Limit of proportionality</div>
+      Below the limit, extension ∝ load (straight line through the origin). Beyond it, the graph curves — equal loads now give bigger extensions. The syllabus wants you to <em>identify this point on a graph</em>; you don't need the elastic limit.
+    </div>
+
+    <h3>Friction, drag &amp; circular motion</h3>
+    <p><strong>Friction</strong> is the force between two surfaces that opposes motion and produces heating. In a fluid it's called <strong>drag</strong> (in a gas, air resistance). A force acting <em>perpendicular</em> to motion bends the path into a circle — turn the steering wheel harder (more force) and the car curves more tightly (smaller radius).</p>
+
+    <div class="box analogy">
+      <div class="box-label">🎡 Circular motion, qualitatively</div>
+      Keep mass and radius fixed → more force = faster circle. Keep mass and speed fixed → more force = tighter circle (smaller radius). Heavier object → needs more force to keep the same speed and radius. (You don't need the <span class="eq-inline">F = mv²/r</span> formula at IGCSE.)
+    </div>
+  </div>
+
+
+  <!-- ── 06 · MOMENTS ── -->
+  <div class="section">
+    <div class="sec-label">06 / 11 · 1.5.2–1.5.3 Turning Effects</div>
+    <h2>Moments — the turning effect of a force</h2>
+
+    <p>A force applied at a distance from a pivot makes things rotate. The size of that turning effect is the <strong>moment</strong>:</p>
+
+    <div class="define">
+      <span class="term">Moment</span> = force × perpendicular distance from the pivot &nbsp;→&nbsp; <span class="eq-inline">moment = F × d</span> (N·m). Bigger force or longer arm = bigger turn. That's why door handles sit far from the hinge, and why a long spanner loosens a tight bolt.
+    </div>
+
+    <p>Drag the loads on this beam. When the two moments match, it balances — this is the <strong>principle of moments</strong>:</p>
+
+    <div class="explorer">
+      <div class="balance-stage">
+        <div class="beam" id="beam">
+          <div class="load" id="loadL" style="left:60px">F₁</div>
+          <div class="load" id="loadR" style="left:300px">F₂</div>
+        </div>
+        <div class="pivot"></div>
+      </div>
+      <div class="bal-state bal" id="balState">Balanced — clockwise moment = anticlockwise moment</div>
+      <div class="tool-grid" style="margin-top:16px">
+        <div>
+          <div class="slider-row">
+            <label>Left force F₁ <b><span id="f1v">4</span> N</b></label>
+            <input type="range" id="f1" min="1" max="8" value="4">
+          </div>
+          <div class="slider-row">
+            <label>Left distance d₁ <b><span id="d1v">3</span> units</b></label>
+            <input type="range" id="d1" min="1" max="4" value="3">
+          </div>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>Right force F₂ <b><span id="f2v">3</span> N</b></label>
+            <input type="range" id="f2" min="1" max="8" value="3">
+          </div>
+          <div class="slider-row">
+            <label>Right distance d₂ <b><span id="d2v">4</span> units</b></label>
+            <input type="range" id="d2" min="1" max="4" value="4">
+          </div>
+        </div>
+      </div>
+      <div class="scn-read">
+        <div class="rk">Live moments</div>
+        Anticlockwise (left): <b id="mL">12</b> N·units &nbsp;·&nbsp; Clockwise (right): <b id="mR">12</b> N·units. For equilibrium the beam needs <em>both</em> no resultant force <em>and</em> no resultant moment.
+      </div>
+    </div>
+
+    <h3>Centre of gravity &amp; stability</h3>
+    <p>The <strong>centre of gravity</strong> is the single point where all an object's weight seems to act. Find it for an irregular lamina by hanging it from two points and drawing plumb lines — they cross at the C of G.</p>
+
+    <div class="box intuition">
+      <div class="box-label">🏎️ Why race cars are low &amp; wide</div>
+      An object is stable when its centre of gravity is <strong>low</strong> and its base is <strong>wide</strong>. It topples only when its line of weight falls outside the base. Low + wide = you'd have to tilt it a long way before that happens — exactly why racing cars hug the ground.
+    </div>
+  </div>
+
+
+  <!-- ── 07 · MOMENTUM ── -->
+  <div class="section">
+    <div class="sec-label">07 / 11 · 1.6 Momentum</div>
+    <h2>Momentum — &ldquo;mass in motion&rdquo;</h2>
+
+    <div class="define mom-c">
+      <span class="term">Momentum</span> = mass × velocity &nbsp;→&nbsp; <span class="eq-inline" style="color:var(--momentum)">p = mv</span> (kg·m/s). A vector — it points the way the object moves. A heavy slow lorry and a light fast bullet can carry the same momentum.
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">Impulse</span> = force × time it acts &nbsp;→&nbsp; <span class="eq-inline" style="color:var(--momentum)">impulse = FΔt = Δ(mv)</span>. And force <em>is</em> the rate of change of momentum: <span class="eq-inline" style="color:var(--momentum)">F = Δp / Δt</span> — which is just F = ma in disguise.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🛟 Why airbags and crumple zones work</div>
+      In a crash your momentum must drop to zero either way. Δp is fixed. But <span class="eq-inline" style="color:var(--momentum)">F = Δp/Δt</span> says: stretch the <em>time</em> Δt and the force F drops. Airbags, crumple zones, and bending your knees on landing all do one thing — extend the stopping time to shrink the force on you.
+    </div>
+
+    <h3>Conservation of momentum</h3>
+    <p>In any collision or explosion with no external forces, <strong>total momentum before = total momentum after</strong>. This is one of the most powerful tools in the topic — it lets you solve crashes you couldn't otherwise touch.</p>
+
+    <div class="box exam">
+      <div class="box-label">✅ Worked setup</div>
+      A 2 kg trolley at 3 m/s hits a stationary 1 kg trolley and they stick. Before: <span class="eq-inline" style="color:var(--power)">p = 2×3 + 1×0 = 6</span> kg·m/s. After (combined 3 kg moving at v): <span class="eq-inline" style="color:var(--power)">3v = 6 → v = 2 m/s</span>. Momentum conserved, every time.
+    </div>
+  </div>
+
+
+  <!-- ── 08 · ENERGY, WORK, POWER ── -->
+  <div class="section">
+    <div class="sec-label">08 / 11 · 1.7 Energy, Work &amp; Power</div>
+    <h2>Energy — stored, transferred, never lost</h2>
+
+    <p>Energy is never created or destroyed, only moved between <strong>stores</strong> and transferred by <strong>pathways</strong> (forces doing work, electric currents, heating, waves). The seven stores the 0625 syllabus names:</p>
+
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#46a8ff"></span>Kinetic (movement)</div>
+      <div class="estore"><span class="dot" style="background:#ffae3b"></span>Gravitational potential</div>
+      <div class="estore"><span class="dot" style="background:#ff5263"></span>Chemical</div>
+      <div class="estore"><span class="dot" style="background:#8b7bff"></span>Elastic (strain)</div>
+      <div class="estore"><span class="dot" style="background:#43d98c"></span>Nuclear</div>
+      <div class="estore"><span class="dot" style="background:#ff5b9e"></span>Electrostatic</div>
+      <div class="estore"><span class="dot" style="background:#e8d24a"></span>Internal (thermal)</div>
+    </div>
+
+    <div class="define energy-c">
+      <span class="term">Kinetic energy</span> <span class="eq-inline" style="color:var(--energy2)">Eₖ = ½mv²</span> — note the <em>v²</em>: double the speed gives <strong>four times</strong> the KE (and four times the braking distance).
+    </div>
+    <div class="define energy-c">
+      <span class="term">Gravitational PE change</span> <span class="eq-inline" style="color:var(--energy2)">ΔEₚ = mgΔh</span> — lift a mass higher and you store energy in the gravitational field. Drop it, and that store pours into kinetic.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎢 The rollercoaster trade</div>
+      At the top of the first hill: maximum GPE, near-zero KE. Plunging down: GPE → KE, so it's fastest at the bottom. Climbing the next hill: KE → GPE again. If there were no friction it would rise to exactly the same height forever. Friction quietly siphons some into thermal each loop — which is why later hills are always lower.
+    </div>
+
+    <h3>Work &amp; power</h3>
+    <div class="define energy-c">
+      <span class="term">Work done</span> = energy transferred = <span class="eq-inline" style="color:var(--energy2)">W = Fd</span> (joules). Push with a force F through a distance d in the force's direction — that's the energy you've moved.
+    </div>
+    <div class="define energy-c">
+      <span class="term">Power</span> = work done (or energy transferred) per second = <span class="eq-inline" style="color:var(--energy2)">P = W/t = ΔE/t</span> (watts). Two cranes lift the same load up the same height — same work — but the faster one has more <em>power</em>.
+    </div>
+  </div>
+
+
+  <!-- ── 09 · ENERGY RESOURCES ── -->
+  <div class="section">
+    <div class="sec-label">09 / 11 · 1.7.3 Energy Resources</div>
+    <h2>Energy resources &amp; efficiency</h2>
+
+    <p>We generate useful energy from many sources — most ultimately trace back to the Sun:</p>
+
+    <table>
+      <tr><th>Resource</th><th>Renewable?</th><th>Notes</th></tr>
+      <tr><td><strong>Fossil fuels</strong> (coal, oil, gas)</td><td>✗ No</td><td>Reliable, high output — but CO₂, finite</td></tr>
+      <tr><td><strong>Biofuels</strong></td><td>✓ Yes</td><td>Carbon-neutral-ish; competes with food land</td></tr>
+      <tr><td><strong>Hydro / waves / tides</strong></td><td>✓ Yes</td><td>Clean; geography-dependent</td></tr>
+      <tr><td><strong>Geothermal</strong></td><td>✓ Yes</td><td>Steady; only viable in hot-rock regions</td></tr>
+      <tr><td><strong>Nuclear</strong></td><td>✗ No*</td><td>Huge output, no CO₂; radioactive waste</td></tr>
+      <tr><td><strong>Solar</strong> (cells &amp; panels)</td><td>✓ Yes</td><td>Cells → electricity; panels → heat water</td></tr>
+      <tr><td><strong>Wind</strong></td><td>✓ Yes</td><td>Clean; intermittent (needs wind)</td></tr>
+    </table>
+
+    <div class="box exam">
+      <div class="box-label">✅ Extended must-knows</div>
+      Radiation from the <strong>Sun</strong> is the main source of energy for almost everything — <em>except geothermal, nuclear, and tidal.</em> The Sun's own energy comes from <strong>nuclear fusion</strong>, and research is ongoing into harnessing fusion for large-scale electricity on Earth.
+    </div>
+
+    <h3>Efficiency</h3>
+    <p>No transfer is perfect — some energy always ends up in less-useful stores (usually thermal, via friction). Efficiency measures how much you actually get out:</p>
+
+    <div class="sankey">
+      <div class="sankey-bar">
+        <div class="sk-useful" style="width:25%">25% useful</div>
+        <div class="sk-waste" style="width:75%">75% wasted as heat &amp; sound</div>
+      </div>
+      <div class="sankey-cap">A typical petrol car engine — energy in = energy out, but only about a quarter becomes useful movement. (A Sankey diagram, drawn to scale.)</div>
+    </div>
+
+    <div class="define energy-c">
+      <span class="term">Efficiency</span> = <span class="eq-inline" style="color:var(--energy2)">(useful output ÷ total input) × 100%</span>. Works with energy <em>or</em> power. It can never exceed 100% — that would break conservation of energy.
+    </div>
+  </div>
+
+
+  <!-- ── 10 · PRESSURE ── -->
+  <div class="section">
+    <div class="sec-label">10 / 11 · 1.8 Pressure</div>
+    <h2>Pressure — force spread over area</h2>
+
+    <div class="define">
+      <span class="term">Pressure</span> = force per unit area &nbsp;→&nbsp; <span class="eq-inline">p = F / A</span> (pascals, Pa = N/m²). Same force, smaller area = bigger pressure. That's why a sharp knife cuts (tiny area → huge pressure) and snowshoes don't sink (big area → tiny pressure).</div>
+
+    <div class="box intuition">
+      <div class="box-label">🌊 Why pressure grows with depth</div>
+      Dive underwater and your ears hurt more the deeper you go. Each layer of water has the weight of all the water above it pressing down. Pressure under a liquid rises with <strong>depth</strong> and with the liquid's <strong>density</strong>.
+    </div>
+
+    <div class="define">
+      <span class="term">Liquid pressure (Extended)</span> — the extra pressure at depth h is <span class="eq-inline">Δp = ρgΔh</span>. Denser liquid, or deeper down, or stronger gravity → more pressure. Notice area doesn't appear: pressure at a depth is the same regardless of the container's shape.
+    </div>
+  </div>
+
+
+  <!-- ── 11 · EQUATION BANK ── -->
+  <div class="section">
+    <div class="sec-label">11 / 11 · Reference</div>
+    <h2>The Topic 1 equation bank</h2>
+    <p>IGCSE Physics gives you <strong>no formula sheet</strong> — every equation here must be recalled from memory. Tap any tile for symbols, units, rearrangements, a worked example, and the exam trap:</p>
+
+    <div class="eqbank" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ The non-negotiables to memorise</div>
+      <span class="eq-inline" style="color:var(--rose)">v = s/t</span>
+      <span class="eq-inline" style="color:var(--rose)">a = Δv/Δt</span>
+      <span class="eq-inline" style="color:var(--rose)">F = ma</span>
+      <span class="eq-inline" style="color:var(--rose)">ρ = m/V</span>
+      <span class="eq-inline" style="color:var(--rose)">p = mv</span>
+      <span class="eq-inline" style="color:var(--rose)">Eₖ = ½mv²</span>
+      <span class="eq-inline" style="color:var(--rose)">ΔEₚ = mgΔh</span>
+      <span class="eq-inline" style="color:var(--rose)">W = Fd</span>
+      <span class="eq-inline" style="color:var(--rose)">P = W/t</span>
+      <span class="eq-inline" style="color:var(--rose)">p = F/A</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE PHYSICS · 0625 EXTENDED · TOPIC 1 — MOTION, FORCES &amp; ENERGY<br>
+    Built for understanding — every equation from a definition, every graph from a story.
+  </div>
+
+</div>
+
+<!-- ── FLOATING EQUATION CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Symbols &amp; units</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Rearrangements</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   1 · MOTION GRAPH EXPLORER
+════════════════════════════════════════════════ */
+(function(){
+  const T = 5;               // seconds of story
+  const DUR = 3400;          // ms animation
+  // each scenario: pos(0..1 along track), spd(0..1 of max)
+  const SCN = {
+    rest: {
+      title:'At rest',
+      text:'The object stays put. Distance–time is a flat horizontal line (no change in position); speed–time sits on zero — a stationary object.',
+      pos: t => 0.12,
+      spd: t => 0,
+    },
+    constant: {
+      title:'Constant speed',
+      text:'Position rises steadily, so distance–time is a straight diagonal whose gradient = the speed. Speed–time is a flat horizontal line above zero — steady, NOT stopped.',
+      pos: t => 0.10 + 0.78*(t/T),
+      spd: t => 0.58,
+    },
+    accel: {
+      title:'Accelerating',
+      text:'The object covers more ground each second, so distance–time curves upward (gets steeper). Speed–time is a straight line rising from zero — constant acceleration, area beneath = distance.',
+      pos: t => 0.10 + 0.78*Math.pow(t/T,2),
+      spd: t => (t/T),
+    },
+    decel: {
+      title:'Decelerating',
+      text:'It starts fast and slows to a halt. Distance–time curves but flattens out (gradient → 0). Speed–time is a straight line falling to zero — a negative acceleration (deceleration).',
+      pos: t => { const x=t/T; return 0.10 + 0.78*(2*x - x*x); },  // integral of (1-x)
+      spd: t => (1 - t/T),
+    }
+  };
+
+  // graph geometry (matches SVG viewBox 220x150)
+  const GX0=28, GX1=206, GY0=124, GY1=20;
+  const px = u => GX0 + (GX1-GX0)*u;          // u: 0..1 time
+  const py = v => GY0 - (GY0-GY1)*v;          // v: 0..1 value
+
+  const mover  = document.getElementById('mover');
+  const track  = mover.parentElement;
+  const dtCurve= document.getElementById('dtCurve');
+  const stCurve= document.getElementById('stCurve');
+  const dtDot  = document.getElementById('dtDot');
+  const stDot  = document.getElementById('stDot');
+  const titleEl= document.getElementById('scnTitle');
+  const textEl = document.getElementById('scnText');
+
+  let cur='rest', raf=null, startTs=null;
+
+  function buildCurves(s){
+    const N=60;
+    let dPath='', sPath='';
+    // distance curve scaled so its own max → 1 for nice framing
+    let maxPos=0;
+    for(let i=0;i<=N;i++){ maxPos=Math.max(maxPos, s.pos(i/N*T)-s.pos(0)); }
+    if(maxPos<=0) maxPos=1;
+    for(let i=0;i<=N;i++){
+      const t=i/N*T, u=i/N;
+      const dv=(s.pos(t)-s.pos(0))/maxPos;          // 0..1 distance travelled
+      const sv=s.spd(t);                            // 0..1 speed
+      dPath += (i?'L':'M')+px(u).toFixed(1)+','+py(dv*0.92).toFixed(1)+' ';
+      sPath += (i?'L':'M')+px(u).toFixed(1)+','+py(sv*0.92).toFixed(1)+' ';
+    }
+    return {dPath, sPath, maxPos};
+  }
+
+  function setScenario(key){
+    cur=key;
+    const s=SCN[key];
+    document.querySelectorAll('.scn-tab').forEach(t=>
+      t.classList.toggle('active', t.dataset.scn===key));
+    titleEl.textContent=s.title;
+    textEl.textContent=s.text;
+    const c=buildCurves(s);
+    dtCurve.setAttribute('d', c.dPath);
+    stCurve.setAttribute('d', c.sPath);
+    play();
+  }
+
+  function frame(ts){
+    if(!startTs) startTs=ts;
+    let p=(ts-startTs)/DUR; if(p>1) p=1;
+    const s=SCN[cur];
+    const t=p*T;
+    // mover
+    const trackW=track.clientWidth;
+    mover.style.left=(s.pos(t)*trackW)+'px';
+    // tracer dots
+    const c=buildCurves(s);
+    const dv=(s.pos(t)-s.pos(0))/c.maxPos;
+    const sv=s.spd(t);
+    dtDot.setAttribute('cx',px(p)); dtDot.setAttribute('cy',py(dv*0.92));
+    stDot.setAttribute('cx',px(p)); stDot.setAttribute('cy',py(sv*0.92));
+    if(p<1) raf=requestAnimationFrame(frame);
+  }
+  function play(){
+    cancelAnimationFrame(raf); startTs=null;
+    raf=requestAnimationFrame(frame);
+  }
+
+  document.getElementById('scnTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    setScenario(t.dataset.scn);
+  });
+  document.getElementById('replayBtn').addEventListener('click',play);
+
+  setScenario('rest');
+})();
+
+/* ════════════════════════════════════════════════
+   2 · VECTOR RESULTANT TOOL
+════════════════════════════════════════════════ */
+(function(){
+  const fx=document.getElementById('fx'), fy=document.getElementById('fy');
+  const O={x:30,y:170}, SCALE=14;
+  function upd(){
+    const X=+fx.value, Y=+fy.value;
+    document.getElementById('fxv').textContent=X;
+    document.getElementById('fyv').textContent=Y;
+    const ex=O.x+X*SCALE, ey=O.y-Y*SCALE;
+    document.getElementById('vx').setAttribute('x2',ex);
+    document.getElementById('vx').setAttribute('y2',O.y);
+    document.getElementById('vy').setAttribute('x2',O.x);
+    document.getElementById('vy').setAttribute('y2',ey);
+    document.getElementById('vr').setAttribute('x2',ex);
+    document.getElementById('vr').setAttribute('y2',ey);
+    document.getElementById('dash1').setAttribute('x1',ex);
+    document.getElementById('dash1').setAttribute('y1',O.y);
+    document.getElementById('dash1').setAttribute('x2',ex);
+    document.getElementById('dash1').setAttribute('y2',ey);
+    document.getElementById('dash2').setAttribute('x1',O.x);
+    document.getElementById('dash2').setAttribute('y1',ey);
+    document.getElementById('dash2').setAttribute('x2',ex);
+    document.getElementById('dash2').setAttribute('y2',ey);
+    const R=Math.sqrt(X*X+Y*Y);
+    const ang=Math.atan2(Y,X)*180/Math.PI;
+    document.getElementById('rmag').textContent=R.toFixed(1);
+    document.getElementById('rang').textContent=ang.toFixed(1);
+  }
+  fx.addEventListener('input',upd); fy.addEventListener('input',upd); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   3 · MOMENTS BALANCE
+════════════════════════════════════════════════ */
+(function(){
+  const f1=document.getElementById('f1'),d1=document.getElementById('d1'),
+        f2=document.getElementById('f2'),d2=document.getElementById('d2');
+  const beam=document.getElementById('beam'),
+        loadL=document.getElementById('loadL'), loadR=document.getElementById('loadR'),
+        state=document.getElementById('balState');
+  function upd(){
+    const F1=+f1.value,D1=+d1.value,F2=+f2.value,D2=+d2.value;
+    f1v.textContent=F1; d1v.textContent=D1; f2v.textContent=F2; d2v.textContent=D2;
+    const mL=F1*D1, mR=F2*D2;
+    document.getElementById('mL').textContent=mL;
+    document.getElementById('mR').textContent=mR;
+    // place loads along beam (centre at 190px, ~38px per unit)
+    loadL.style.left=(190 - D1*40)+'px';
+    loadR.style.left=(190 + D2*40)+'px';
+    // load size hints force
+    loadL.style.width=loadL.style.height=(20+F1*2)+'px';
+    loadR.style.width=loadR.style.height=(20+F2*2)+'px';
+    // tilt: clamp
+    let diff=mR-mL;
+    let tilt=Math.max(-11,Math.min(11, diff*1.4));
+    beam.style.transform='rotate('+tilt+'deg)';
+    if(mL===mR){
+      state.className='bal-state bal';
+      state.textContent='Balanced — clockwise moment = anticlockwise moment ('+mL+' = '+mR+')';
+    } else {
+      state.className='bal-state tip';
+      const side = mR>mL ? 'right (clockwise)' : 'left (anticlockwise)';
+      state.textContent='Tips '+side+' — moments unequal ('+mL+' vs '+mR+' N·units)';
+    }
+  }
+  [f1,d1,f2,d2].forEach(s=>s.addEventListener('input',upd)); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   4 · EQUATION BANK + FLOATING CARD
+════════════════════════════════════════════════ */
+const EQ = {
+  speed:    { c:'motion', name:'Speed', formula:'v = s / t',
+    syms:[['v','speed','m/s'],['s','distance','m'],['t','time','s']],
+    rearr:'s = v·t   ·   t = s / v',
+    ex:'A car travels 150 m in 6 s. v = 150 ÷ 6 = <b>25 m/s</b>.',
+    tip:'For a whole journey use <b>average speed = total distance ÷ total time</b> — not the average of the speeds.' },
+  accel:    { c:'motion', name:'Acceleration', formula:'a = Δv / Δt',
+    syms:[['a','acceleration','m/s²'],['Δv','change in velocity','m/s'],['Δt','time taken','s']],
+    rearr:'Δv = a·Δt   ·   Δt = Δv / a',
+    ex:'Speed rises 0 → 20 m/s in 4 s. a = 20 ÷ 4 = <b>5 m/s²</b>.',
+    tip:'A <b>deceleration</b> is just a negative acceleration — keep the minus sign in calculations.' },
+  weight:   { c:'force', name:'Weight / field strength', formula:'W = mg   (g = W/m)',
+    syms:[['W','weight','N'],['m','mass','kg'],['g','grav. field strength','N/kg']],
+    rearr:'m = W / g   ·   g = W / m',
+    ex:'A 5 kg bag on Earth: W = 5 × 9.8 = <b>49 N</b>.',
+    tip:'g ≈ 9.8 N/kg <b>numerically equals</b> the 9.8 m/s² acceleration of free fall — same physics.' },
+  density:  { c:'force', name:'Density', formula:'ρ = m / V',
+    syms:[['ρ','density','kg/m³'],['m','mass','kg'],['V','volume','m³']],
+    rearr:'m = ρ·V   ·   V = m / ρ',
+    ex:'200 g in 250 cm³: ρ = 200 ÷ 250 = <b>0.8 g/cm³</b> → floats on water.',
+    tip:'Object floats if its density &lt; liquid\'s density. Watch your <b>units</b> (g/cm³ vs kg/m³).' },
+  newton2:  { c:'force', name:'Newton\'s 2nd Law', formula:'F = ma',
+    syms:[['F','resultant force','N'],['m','mass','kg'],['a','acceleration','m/s²']],
+    rearr:'a = F / m   ·   m = F / a',
+    ex:'A 1200 kg car accelerates at 2 m/s². F = 1200 × 2 = <b>2400 N</b>.',
+    tip:'F here is the <b>resultant</b> force, and a points the same direction as F.' },
+  spring:   { c:'force', name:'Spring constant', formula:'k = F / x',
+    syms:[['k','spring constant','N/m'],['F','force / load','N'],['x','extension','m']],
+    rearr:'F = k·x   ·   x = F / k',
+    ex:'A 4 N load stretches a spring 0.08 m. k = 4 ÷ 0.08 = <b>50 N/m</b>.',
+    tip:'Only valid <b>below the limit of proportionality</b> — past it, F ∝ x breaks down.' },
+  moment:   { c:'force', name:'Moment of a force', formula:'moment = F × d',
+    syms:[['F','force','N'],['d','⊥ distance to pivot','m']],
+    rearr:'F = moment / d   ·   d = moment / F',
+    ex:'15 N applied 0.4 m from a hinge: moment = 15 × 0.4 = <b>6 N·m</b>.',
+    tip:'<b>d is the perpendicular distance</b> from the pivot to the line of the force — not along the force.' },
+  momentum: { c:'mom', name:'Momentum', formula:'p = mv',
+    syms:[['p','momentum','kg·m/s'],['m','mass','kg'],['v','velocity','m/s']],
+    rearr:'m = p / v   ·   v = p / m',
+    ex:'A 0.5 kg ball at 12 m/s: p = 0.5 × 12 = <b>6 kg·m/s</b>.',
+    tip:'Momentum is a <b>vector</b> — opposite directions have opposite signs in collision sums.' },
+  impulse:  { c:'mom', name:'Impulse', formula:'FΔt = Δ(mv)',
+    syms:[['F','force','N'],['Δt','contact time','s'],['Δ(mv)','momentum change','kg·m/s']],
+    rearr:'F = Δ(mv) / Δt   ·   Δt = Δ(mv) / F',
+    ex:'Stopping 6 kg·m/s of momentum in 0.3 s needs F = 6 ÷ 0.3 = <b>20 N</b>.',
+    tip:'Longer contact time → smaller force. The whole logic of <b>airbags &amp; crumple zones</b>.' },
+  force_p:  { c:'mom', name:'Force = rate of Δp', formula:'F = Δp / Δt',
+    syms:[['F','resultant force','N'],['Δp','change in momentum','kg·m/s'],['Δt','time','s']],
+    rearr:'Δp = F·Δt   ·   Δt = Δp / F',
+    ex:'Momentum changes by 50 kg·m/s in 2 s: F = 50 ÷ 2 = <b>25 N</b>.',
+    tip:'This <b>is</b> F = ma rewritten — a deeper, more general form of Newton\'s 2nd law.' },
+  ke:       { c:'energy', name:'Kinetic energy', formula:'Eₖ = ½mv²',
+    syms:[['Eₖ','kinetic energy','J'],['m','mass','kg'],['v','speed','m/s']],
+    rearr:'v = √(2Eₖ/m)   ·   m = 2Eₖ / v²',
+    ex:'A 2 kg ball at 3 m/s: Eₖ = ½ × 2 × 3² = <b>9 J</b>.',
+    tip:'It\'s <b>v²</b> — doubling speed gives 4× the KE (and ~4× braking distance).' },
+  gpe:      { c:'energy', name:'Gravitational PE', formula:'ΔEₚ = mgΔh',
+    syms:[['ΔEₚ','GPE change','J'],['m','mass','kg'],['g','9.8','N/kg'],['Δh','height change','m']],
+    rearr:'Δh = ΔEₚ /(mg)   ·   m = ΔEₚ /(gΔh)',
+    ex:'Lift 3 kg by 2 m: ΔEₚ = 3 × 9.8 × 2 = <b>58.8 J</b>.',
+    tip:'Only the <b>vertical</b> height Δh counts — path taken doesn\'t matter.' },
+  work:     { c:'energy', name:'Work done', formula:'W = Fd',
+    syms:[['W','work / energy','J'],['F','force','N'],['d','distance moved','m']],
+    rearr:'F = W / d   ·   d = W / F',
+    ex:'Push 20 N over 5 m: W = 20 × 5 = <b>100 J</b>.',
+    tip:'Work done = <b>energy transferred</b>. d must be along the force\'s direction.' },
+  power:    { c:'power', name:'Power', formula:'P = W/t = ΔE/t',
+    syms:[['P','power','W'],['W / ΔE','work / energy','J'],['t','time','s']],
+    rearr:'W = P·t   ·   t = W / P',
+    ex:'600 J transferred in 4 s: P = 600 ÷ 4 = <b>150 W</b>.',
+    tip:'Same work in less time = more power. 1 watt = 1 joule per second.' },
+  effic:    { c:'power', name:'Efficiency', formula:'(useful ÷ total) × 100%',
+    syms:[['useful','useful output','J or W'],['total','total input','J or W']],
+    rearr:'useful = efficiency × total',
+    ex:'40 J useful from 160 J input: (40 ÷ 160) × 100 = <b>25%</b>.',
+    tip:'Can never exceed <b>100%</b> — that would violate conservation of energy.' },
+  pressure: { c:'force', name:'Pressure', formula:'p = F / A',
+    syms:[['p','pressure','Pa (N/m²)'],['F','force','N'],['A','area','m²']],
+    rearr:'F = p·A   ·   A = F / p',
+    ex:'200 N on 0.5 m²: p = 200 ÷ 0.5 = <b>400 Pa</b>.',
+    tip:'Smaller area → bigger pressure (sharp knives, drawing pins).' },
+  liqp:     { c:'force', name:'Liquid pressure', formula:'Δp = ρgΔh',
+    syms:[['Δp','pressure change','Pa'],['ρ','density','kg/m³'],['g','9.8','N/kg'],['Δh','depth','m']],
+    rearr:'Δh = Δp /(ρg)   ·   ρ = Δp /(gΔh)',
+    ex:'2 m under water: Δp = 1000 × 9.8 × 2 = <b>19 600 Pa</b>.',
+    tip:'No area term — pressure at a depth is the <b>same in any shaped container</b>.' },
+};
+
+const ORDER=['speed','accel','weight','density','newton2','spring','moment',
+  'momentum','impulse','force_p','ke','gpe','work','power','effic','pressure','liqp'];
+
+const CMETA = {
+  motion:{col:'#46a8ff', bg:'#0c2536', bd:'#1f4258'},
+  force: {col:'#ff5263', bg:'#2a0f15', bd:'#4a1d26'},
+  energy:{col:'#ffae3b', bg:'#1a1306', bd:'#3a2c10'},
+  mom:   {col:'#8b7bff', bg:'#120c22', bd:'#2e2350'},
+  power: {col:'#43d98c', bg:'#0f2018', bd:'#1f4a30'},
+};
+
+(function buildBank(){
+  const bank=document.getElementById('eqbank');
+  ORDER.forEach(key=>{
+    const e=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=e.c; cell.dataset.key=key;
+    cell.innerHTML='<div class="eq-sym">'+e.formula+'</div><div class="eq-name">'+e.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+
+function openEqCard(key){
+  const e=EQ[key], m=CMETA[e.c]||CMETA.motion;
+  const card=document.getElementById('eq-card');
+  const badge=document.getElementById('eqc-badge');
+  badge.textContent=e.formula.split('=')[0].trim();
+  badge.style.color=m.col; badge.style.background=m.bg; badge.style.borderColor=m.bd;
+  document.getElementById('eqc-name').textContent=e.name;
+  const f=document.getElementById('eqc-formula');
+  f.textContent=e.formula; f.style.color=m.col;
+  // symbols
+  const sr=document.getElementById('eqc-syms'); sr.innerHTML='';
+  e.syms.forEach(s=>{
+    const pill=document.createElement('div'); pill.className='sym-pill';
+    pill.innerHTML='<b style="color:'+m.col+'">'+s[0]+'</b> '+s[1]+' <span>['+s[2]+']</span>';
+    sr.appendChild(pill);
+  });
+  document.getElementById('eqc-rearr').textContent=e.rearr;
+  document.getElementById('eqc-example').innerHTML=e.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Exam trap:</b> '+e.tip;
+  card.style.display='block';
+  requestAnimationFrame(()=>card.style.opacity='1');
+}
+function closeEqCard(){
+  const card=document.getElementById('eq-card');
+  card.style.opacity='0';
+  setTimeout(()=>card.style.display='none',250);
+}
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) &&
+     !e.target.closest('.eqcell')) closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   5 · THEME TOGGLE (light / dark)
+   Persists when storage is available; degrades
+   silently to in-memory if it isn't.
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){ try{ return localStorage.getItem('phys-theme'); }catch(e){ return null; } }
+  function safeSet(v){ try{ localStorage.setItem('phys-theme',v); }catch(e){} }
+  function apply(theme){
+    body.setAttribute('data-theme', theme);
+    // show the icon for the mode you'll switch TO
+    btn.textContent = (theme==='dark') ? SUN : MOON;
+    btn.setAttribute('aria-label',
+      (theme==='dark') ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  // initial: stored pref → else OS preference → else dark
+  let start = safeGet();
+  if(!start){
+    start = (window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+  apply(start);
+  btn.addEventListener('click',()=>{
+    const next = body.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    apply(next); safeSet(next);
+  });
+})();
+</script>
+</body>
+</html>

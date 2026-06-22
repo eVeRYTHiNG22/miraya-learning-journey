@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Topic 3: Waves</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    /* WAVES palette — leans into the spectrum (base stays locked) */
+    --motion:   #46a8ff;   /* blue   — general wave properties */
+    --cyan:     #3ad9d4;   /* teal   — reflection / light rays */
+    --energy:   #ffae3b;   /* amber  — refraction, lenses, dispersion (bending light) */
+    --energy2:  #ffae3b;
+    --force:    #ff5263;   /* red    — the electromagnetic spectrum */
+    --momentum: #8b7bff;   /* indigo — sound */
+    --power:    #43d98c;   /* green  — exam tips & success (fixed role) */
+    --rose:     #f25cc1;   /* magenta— alerts / must-memorise (fixed role, ≥30° from warm hues) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient field — cool (kinematic) up top, warm (energetic) below: neutral, locked */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page { max-width: 880px; margin: 0 auto; padding: 58px 40px 110px; position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 54px; padding-bottom: 30px; border-bottom: 1px solid var(--border); }
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66; border-radius: 20px; padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--motion); margin-bottom: 18px;
+  }
+  h1 {
+    font-family: 'Fraunces', serif; font-size: clamp(2.1rem, 5.2vw, 3.5rem); font-weight: 800;
+    color: var(--bright); line-height: 1.06; letter-spacing: -0.01em; margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--energy2); }
+  h1 .c { color: var(--momentum); }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 600px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 60px; opacity: 0; animation: rise 0.55s ease forwards; }
+  @keyframes rise { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 7px;
+  }
+  h2 { font-family: 'Fraunces', serif; font-size: 1.7rem; font-weight: 700; color: var(--bright);
+    margin-bottom: 14px; line-height: 1.18; letter-spacing: -0.01em; }
+  h3 { font-family: 'Fraunces', serif; font-size: 1.18rem; font-weight: 600; color: var(--bright); margin: 26px 0 10px; }
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+  body[data-theme="light"] em { color:#3a4253; }
+
+  .eq-inline {
+    font-family: 'JetBrains Mono', monospace; background: #0d1828; border: 1px solid #22324a;
+    border-radius: 5px; padding: 1px 7px; font-size: 13px; color: var(--motion); white-space: nowrap;
+  }
+  body[data-theme="light"] .eq-inline { background: #eef1f8; border-color: #d4dcec; }
+
+  /* ── BOXES ── */
+  .box { border-radius: 11px; padding: 17px 20px; margin: 18px 0; font-size: 14.2px; border: 1px solid; }
+  .box-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color: var(--motion); }
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define {
+    border-left: 3px solid var(--motion);
+    background: linear-gradient(90deg, #0c1c2880, transparent);
+    padding: 12px 18px; margin: 16px 0; border-radius: 0 8px 8px 0;
+  }
+  .define .term { font-family: 'Fraunces', serif; font-weight: 600; color: var(--bright); font-size: 1.02rem; }
+  .define.cyan-c { border-color: var(--cyan);     background:linear-gradient(90deg,#06222080,transparent); }
+  .define.refr-c { border-color: var(--energy2);  background:linear-gradient(90deg,#23180680,transparent); }
+  .define.em-c   { border-color: var(--force);    background:linear-gradient(90deg,#23120b80,transparent); }
+  .define.sound-c{ border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 16px 18px; transition: border-color .2s, transform .2s; }
+  .card:hover { transform: translateY(-3px); border-color:#3a557c; }
+  .card-title { font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px; }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th { background: var(--surface2); color: var(--motion); font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+
+  mark { background: linear-gradient(120deg,#15405a88,#1f5a7a88); color: var(--bright); padding:1px 4px; border-radius:3px; }
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY NOTE
+     · BASE IS LOCKED across all subjects (--bg,--surface*,--text,--muted,--border, paper light theme, ambient glow).
+     · SHARED (never delete): .explorer .scn-tabs .scn-tab .scn-read .rk .replay svg.graph .axis .axis-lbl
+       .curve .tracer .tool .tool-grid .slider-row .vec-out .eqbank .eqcell .box .define .card table .estore
+     · This topic's diagram styling lives in the .d-* / .mk-* classes below (all use var() so they auto-theme).
+  ═════════════════════════════════════════════ */
+
+  .explorer { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin: 22px 0; }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab { font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:8px 14px; border-radius:8px; cursor:pointer;
+    background:#0e1626; border:1px solid var(--border); color:var(--muted); transition:all .18s; user-select:none; }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+
+  .chart-cap { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  svg.graph { width:100%; height:auto; display:block; overflow:hidden;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  .axis { stroke:#2a3a55; stroke-width:1.2; }
+  .axis-lbl { fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:9px; }
+  .curve { fill:none; stroke-width:2.6; stroke-linecap:round; }
+  .tracer { fill:#fff; }
+
+  /* topic diagram strokes/fills — all var()-based so they flip automatically with the theme */
+  #waveCurve { stroke:var(--motion); }
+  .d-dot   { fill:var(--motion); }
+  .d-ray   { fill:none; stroke:var(--cyan);   stroke-width:2.6; stroke-linecap:round; }
+  .d-ray2  { fill:none; stroke:var(--energy2);stroke-width:2.6; stroke-linecap:round; }
+  .d-ray3  { fill:none; stroke:var(--force);  stroke-width:2.6; stroke-linecap:round; }
+  .d-normal{ stroke:var(--muted); stroke-width:1.2; stroke-dasharray:5 4; }
+  .d-glass { fill:var(--motion); opacity:.09; }
+  .d-lens  { stroke:var(--cyan); stroke-width:2.4; stroke-linecap:round; }
+  .d-obj   { fill:none; stroke:var(--motion); stroke-width:3; }
+  .d-img   { fill:none; stroke:var(--force);  stroke-width:3; }
+  .d-virtual { stroke-dasharray:5 4; opacity:.75; }
+  .d-mark  { fill:var(--muted); }
+  .mk-cyan { fill:var(--cyan); } .mk-amber { fill:var(--energy2); } .mk-red { fill:var(--force); } .mk-blue { fill:var(--motion); }
+
+  .scn-read { margin-top:16px; background:#0c1c28; border:1px solid #1f4258; border-radius:9px; padding:13px 16px; font-size:13.6px; }
+  .scn-read .rk { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--motion); margin-bottom:6px; }
+
+  /* tool (sliders + readout) */
+  .tool { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin:22px 0; }
+  .tool-grid { display:grid; grid-template-columns:1fr 230px; gap:20px; align-items:center; }
+  .slider-row { margin:14px 0; }
+  .slider-row label { display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.06em; margin-bottom:6px; }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] { width:100%; -webkit-appearance:none; height:5px; border-radius:3px; background:#22304a; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--motion); cursor:pointer; box-shadow:0 0 10px #46a8ff88; }
+  input[type=range]::-moz-range-thumb { width:17px; height:17px; border:none; border-radius:50%; background:var(--motion); cursor:pointer; }
+  .vec-out { background:#0c1c28; border:1px solid #1f4258; border-radius:9px; padding:14px 16px; text-align:center; }
+  .vec-out .ro { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+  .vec-out .rv { font-family:'Fraunces',serif; font-size:1.7rem; font-weight:700; color:var(--motion); line-height:1.1; margin-bottom:10px; }
+
+  /* ── EM-SPECTRUM CHIPS ── */
+  .estores { display:flex; flex-wrap:wrap; gap:9px; margin:16px 0; }
+  .estore { background:#19202f; border:1px solid var(--border); border-radius:8px; padding:9px 13px; font-size:12.6px; display:flex; align-items:center; gap:8px; }
+  .estore .dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+  .estore b { color:var(--bright); }
+
+  /* ── EQUATION BANK ── */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqcell { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 12px; cursor:pointer; text-align:center;
+    transition:transform .16s, border-color .16s, box-shadow .16s; }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion); box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--bright); margin-bottom:4px; }
+  .eqcell .eq-name { font-size:10.5px; color:var(--muted); letter-spacing:.04em; }
+  .eqcell[data-c="motion"]:hover { border-color:var(--motion); }
+  .eqcell[data-c="energy"]:hover { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover    { border-color:var(--momentum); }
+
+  /* floating detail card — fully themed */
+  #eq-card { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px; width:min(440px,94vw); z-index:9999;
+    box-shadow:var(--card-shadow); overflow:hidden; transition:opacity .25s; }
+  #eqc-top { padding:18px 18px 14px; display:flex; gap:14px; align-items:center; border-bottom:1px solid var(--card-divider); position:relative; }
+  #eqc-badge { flex-shrink:0; width:62px; height:62px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd); }
+  #eqc-head h4 { font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px; }
+  #eqc-formula { font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--motion); }
+  #eqc-close { position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted); cursor:pointer; user-select:none; }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--card-label); margin:10px 0 6px; }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill { background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px; padding:5px 9px; font-size:11.5px; color:var(--card-text); }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text); background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em; }
+  #eqc-example { background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0; padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip { background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0; padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px; }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── FOOTER ── */
+  .footer { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); text-align:center; padding-top:28px; border-top:1px solid var(--border); letter-spacing:.07em; line-height:1.8; }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .eqbank { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+    .tool-grid { grid-template-columns:1fr; }
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle { position: fixed; top: 16px; right: 16px; z-index: 10000; width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-size: 17px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    transition: transform .25s, border-color .2s, background-color .35s; line-height: 1; }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.graph, .scn-read, .scn-tab, .vec-out, .estore, .chip,
+  table th, table td, .eqcell, mark { transition: background-color .35s ease, border-color .35s ease, color .35s ease; }
+
+  /* ═════════════════════════════════════════════
+     LIGHT THEME ("study paper")
+  ═════════════════════════════════════════════ */
+  body[data-theme="light"] {
+    --bg:       #f4f1e8; --surface:  #fffdf8; --surface2: #efeadd; --border:   #ddd6c4;
+    --text:     #2c313c; --muted:    #6f7484; --bright:   #14181f;
+    --motion:   #1769d6; --cyan:     #0b7a67; --energy:   #8f5d00; --energy2:  #8f5d00;
+    --force:    #cb2531; --momentum: #5b40d6; --power:    #107a50; --rose:     #ad1a7d;
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a; --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4; --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+
+  body[data-theme="light"] .define          { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.cyan-c    { background:linear-gradient(90deg,#d9f2ec99,transparent); }
+  body[data-theme="light"] .define.refr-c    { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.em-c      { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.sound-c   { background:linear-gradient(90deg,#ece8fb99,transparent); }
+
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip { background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion); }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+
+  /* graphs / diagrams (SVG backgrounds + neutral chrome) */
+  body[data-theme="light"] svg.graph { background:#fbfaf4; }
+  body[data-theme="light"] .axis     { stroke:#bcb4a2; }
+  body[data-theme="light"] .axis-lbl { fill:#8c8674; }
+  body[data-theme="light"] .tracer   { fill:#14181f; }
+
+  /* explorer / tool chrome */
+  body[data-theme="light"] .scn-read { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab  { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover  { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+  body[data-theme="light"] .vec-out  { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .estore   { background:#efeadd; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    body, .theme-toggle, .box, .card, .define, .explorer, .tool, svg.graph, .scn-read, .scn-tab,
+    .vec-out, .estore, .chip, table th, table td, .eqcell, mark { transition:none; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Physics 0625 · Extended · Class 10 · Topic 3</div>
+    <h1><span class="a">Waves</span>, <span class="b">Light</span> &amp; <span class="c">Sound</span></h1>
+    <p class="header-sub">One idea runs through the whole topic: a wave carries <em>energy</em> from place to place without carrying the <em>stuff</em> it travels through. Drag the blue panels — the wave, the bending ray, and the lens all move.</p>
+  </div>
+
+
+  <!-- ── 01 · GENERAL PROPERTIES OF WAVES ── -->
+  <div class="section">
+    <div class="sec-label">01 / 09 · 3.1 General Properties</div>
+    <h2>What a wave is — energy on the move</h2>
+
+    <p>Flick one end of a long rope and a pulse races to the far end — but the rope itself ends up exactly where it started. That is the whole idea: <strong>a wave transfers energy without transferring matter.</strong> The particles just vibrate about a fixed spot; only the <em>disturbance</em> travels.</p>
+
+    <div class="box intuition">
+      <div class="box-label">🌊 The stadium-wave picture</div>
+      A "Mexican wave" sweeps right around a cricket stadium, yet not one person moves seats — each only stands up and sits down. The <em>wave</em> travels; the <em>people</em> stay put. Every wave in this topic works exactly like that: motion is passed along, the medium is not.
+    </div>
+
+    <h3>The anatomy of a wave</h3>
+    <p>Every wave is described by the same handful of terms. Here is one frozen in place:</p>
+
+    <svg class="graph" viewBox="0 0 440 150" id="waveLabel" aria-label="Labelled wave showing crest, trough, amplitude and wavelength">
+      <line x1="20" y1="75" x2="420" y2="75" class="d-normal"/>
+      <path class="curve" id="waveLabelCurve" stroke="#46a8ff" d=""/>
+      <line x1="62" y1="75" x2="62" y2="39" class="axis"/>
+      <text x="70" y="58" class="axis-lbl">amplitude</text>
+      <line x1="62" y1="129" x2="232" y2="129" class="axis"/>
+      <text x="116" y="143" class="axis-lbl">wavelength λ</text>
+      <text x="46" y="33" class="axis-lbl">crest</text>
+      <text x="136" y="124" class="axis-lbl">trough</text>
+      <text x="300" y="70" class="axis-lbl">undisturbed line</text>
+    </svg>
+
+    <table>
+      <tr><th>Term</th><th>Meaning</th></tr>
+      <tr><td><strong>Wavefront</strong></td><td>A line joining all points vibrating <em>in step</em> (e.g. the crest of a water ripple)</td></tr>
+      <tr><td><strong>Wavelength, λ</strong></td><td>Distance between two neighbouring points in step — crest to crest (metres)</td></tr>
+      <tr><td><strong>Amplitude</strong></td><td>Maximum distance a point moves from its rest position — sets how much energy the wave carries</td></tr>
+      <tr><td><strong>Frequency, f</strong></td><td>Number of complete waves passing a point each second (hertz, Hz)</td></tr>
+      <tr><td><strong>Wave speed, v</strong></td><td>How fast a crest travels through the medium (m/s)</td></tr>
+    </table>
+
+    <div class="define">
+      <span class="term">The wave equation</span> &nbsp;→&nbsp; <span class="eq-inline">v = f λ</span>. In one second, <em>f</em> whole waves leave the source, each <em>λ</em> long — so the front edge advances <em>f × λ</em> metres. That product is the speed.
+    </div>
+
+    <h3>See it move: speed = frequency × wavelength</h3>
+    <p>Change the wavelength and frequency and watch the speed follow. Switch between a <strong>transverse</strong> wave (vibration across the travel direction) and a <strong>longitudinal</strong> one (vibration along it):</p>
+
+    <div class="explorer">
+      <div class="scn-tabs" id="waveTabs">
+        <div class="scn-tab active" data-wv="trans">Transverse</div>
+        <div class="scn-tab" data-wv="long">Longitudinal</div>
+      </div>
+      <svg class="graph" viewBox="0 0 440 170" id="waveSvg" aria-label="Animated wave">
+        <line x1="20" y1="85" x2="420" y2="85" class="d-normal"/>
+        <path class="curve" id="waveCurve" stroke="#46a8ff" d=""/>
+        <g id="dotField"></g>
+      </svg>
+      <div class="tool-grid" style="margin-top:14px">
+        <div>
+          <div class="slider-row">
+            <label>Wavelength λ <b><span id="wlV">2.0</span> m</b></label>
+            <input type="range" id="wl" min="1" max="4" step="0.5" value="2">
+          </div>
+          <div class="slider-row">
+            <label>Frequency f <b><span id="frV">5</span> Hz</b></label>
+            <input type="range" id="fr" min="1" max="10" step="1" value="5">
+          </div>
+        </div>
+        <div class="vec-out">
+          <div class="ro">Wave speed&nbsp; v = f λ</div>
+          <div class="rv"><span id="wvV">10.0</span> m/s</div>
+          <div class="ro" id="waveNote">vibration ⟂ to travel</div>
+        </div>
+      </div>
+      <div class="scn-read">
+        <div class="rk" id="waveTitle">Transverse wave</div>
+        <div id="waveText">The medium vibrates at right angles to the direction the wave travels. Light, all electromagnetic waves, water waves and seismic S-waves are transverse.</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Transverse</div>
+        <div class="card-body">Vibration is <strong>perpendicular</strong> to travel. Has crests &amp; troughs. <strong>Examples:</strong> light &amp; all EM waves, water waves, seismic <strong>S</strong>-waves (secondary).</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--momentum)">Longitudinal</div>
+        <div class="card-body">Vibration is <strong>parallel</strong> to travel. Has compressions &amp; rarefactions. <strong>Examples:</strong> sound, seismic <strong>P</strong>-waves (primary).</div>
+      </div>
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Don't mix these up</div>
+      Bigger <strong>amplitude</strong> = more energy (louder sound / brighter light). Bigger <strong>frequency</strong> = more waves per second (higher pitch / "bluer" light). They are independent — you can change one without the other.
+    </div>
+  </div>
+
+
+  <!-- ── 02 · WAVE BEHAVIOUR & DIFFRACTION ── -->
+  <div class="section">
+    <div class="sec-label">02 / 09 · 3.1 Wave Behaviour</div>
+    <h2>What waves do: reflect, refract, diffract</h2>
+
+    <p>Send water ripples across a <strong>ripple tank</strong> and you can watch every wave behaviour in slow motion. All three happen to light and sound too — they are properties of <em>waves</em>, not of any one kind:</p>
+
+    <table>
+      <tr><th>Behaviour</th><th>What happens</th><th>Cause</th></tr>
+      <tr><td><strong>Reflection</strong></td><td>Bounces off a plane barrier; angle in = angle out</td><td>Barrier in the path</td></tr>
+      <tr><td><strong>Refraction</strong></td><td>Changes direction when it speeds up or slows down</td><td>A <strong>change of speed</strong> (in the tank, a change of water depth)</td></tr>
+      <tr><td><strong>Diffraction</strong></td><td>Spreads out after passing through a gap or round an edge</td><td>A gap or obstacle comparable to λ</td></tr>
+    </table>
+
+    <div class="box intuition">
+      <div class="box-label">💧 The ripple-tank trick for refraction</div>
+      Put a flat sheet of glass under part of the tank to make that region <em>shallower</em>. Waves slow down in shallow water, so they bunch up (shorter λ) and bend — exactly how a glass block bends light. Same physics, different wave.
+    </div>
+
+    <h3>Diffraction — how much do waves spread? <span style="color:var(--energy2);font-size:.8em">(Extended)</span></h3>
+    <p>How much a wave fans out through a gap depends on how the <strong>gap size compares with the wavelength</strong>:</p>
+
+    <svg class="graph" viewBox="0 0 440 150" id="diffSvg" aria-label="Diffraction through a wide gap versus a narrow gap">
+      <!-- wide gap, little spreading -->
+      <line x1="20" y1="20" x2="20" y2="60" class="axis" stroke-width="3"/>
+      <line x1="20" y1="90" x2="20" y2="130" class="axis" stroke-width="3"/>
+      <path class="d-ray" d="M20 22 H8 M20 34 H8 M20 46 H8 M20 58 H8" opacity="0"/>
+      <path class="d-ray" d="M6 26 Q14 26 20 26 M6 38 Q14 38 20 38 M6 50 Q14 50 20 50 M6 62 Q14 62 20 62"/>
+      <path class="d-ray" d="M30 64 Q40 75 32 86 M40 64 Q52 75 42 86 M50 64 Q64 75 52 86" fill="none"/>
+      <text x="22" y="146" class="axis-lbl">wide gap → mostly straight through, edges curl</text>
+
+      <line x1="250" y1="40" x2="250" y2="64" class="axis" stroke-width="3"/>
+      <line x1="250" y1="86" x2="250" y2="110" class="axis" stroke-width="3"/>
+      <path class="d-ray2" d="M236 50 Q244 50 250 50 M236 62 Q244 62 250 62 M236 74 Q244 74 250 74"/>
+      <path class="d-ray2" d="M250 75 Q300 40 330 36 M250 75 Q310 75 340 75 M250 75 Q300 110 330 114" fill="none"/>
+      <text x="252" y="146" class="axis-lbl">gap ≈ λ → spreads into a wide semicircle</text>
+    </svg>
+
+    <div class="define refr-c">
+      <span class="term">The diffraction rules</span> — a wave spreads out <strong>most</strong> when the gap is about the <em>same size</em> as its wavelength. A gap much wider than λ lets the wave pass nearly straight (only the edges curl). And the <strong>longer</strong> the wavelength, the more it diffracts — at both a gap and an edge.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">📻 Why radio reaches behind a hill but light doesn't</div>
+      Long-wavelength radio waves (metres long) diffract around hills and buildings, so the signal reaches you in the valley. Light's wavelength is under a millionth of a metre — far too small to bend round a hill — so shadows have sharp edges. Same wave behaviour, wildly different λ.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · REFLECTION OF LIGHT ── -->
+  <div class="section">
+    <div class="sec-label">03 / 09 · 3.2.1 Reflection</div>
+    <h2>Reflection — the mirror law</h2>
+
+    <p>All angles in optics are measured from the <strong>normal</strong> — the line drawn at 90° to the surface where the ray hits. Measuring from the mirror instead is the classic mark-loser.</p>
+
+    <svg class="graph" viewBox="0 0 440 170" id="reflSvg" aria-label="Reflection at a plane mirror, angle of incidence equals angle of reflection">
+      <line x1="40" y1="120" x2="400" y2="120" class="axis" stroke-width="3"/>
+      <text x="44" y="138" class="axis-lbl">mirror</text>
+      <line x1="220" y1="20" x2="220" y2="120" class="d-normal"/>
+      <text x="226" y="30" class="axis-lbl">normal</text>
+      <line x1="120" y1="35" x2="220" y2="120" class="d-ray" marker-end="url(#reflArrowIn)"/>
+      <line x1="220" y1="120" x2="320" y2="35" class="d-ray" marker-end="url(#reflArrowOut)"/>
+      <text x="150" y="92" class="axis-lbl">incident</text>
+      <text x="262" y="92" class="axis-lbl">reflected</text>
+      <text x="196" y="112" class="axis-lbl">i</text>
+      <text x="232" y="112" class="axis-lbl">r</text>
+      <defs>
+        <marker id="reflArrowIn" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-cyan"/></marker>
+        <marker id="reflArrowOut" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-cyan"/></marker>
+      </defs>
+    </svg>
+
+    <div class="define cyan-c">
+      <span class="term">Law of reflection</span> — the <strong>angle of incidence = angle of reflection</strong> (both measured from the normal). The incident ray, reflected ray and normal all lie in the same plane.
+    </div>
+
+    <h3>The image in a plane mirror</h3>
+    <p>Look in a flat mirror and your reflection has a fixed, predictable set of properties — worth memorising as a list:</p>
+
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#3ad9d4"></span>Same <b>size</b> as the object</div>
+      <div class="estore"><span class="dot" style="background:#3ad9d4"></span>Same <b>distance</b> behind the mirror</div>
+      <div class="estore"><span class="dot" style="background:#3ad9d4"></span><b>Virtual</b> (can't be caught on a screen)</div>
+      <div class="estore"><span class="dot" style="background:#3ad9d4"></span><b>Upright</b>, but laterally inverted</div>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ "Laterally inverted", not upside-down</div>
+      A mirror swaps <em>left and right</em>, not top and bottom — that's why text held to a mirror reads backwards but isn't flipped over. The image is the same way up.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Drawing a mirror image <span style="opacity:.7">(Extended)</span></div>
+      To locate the image: draw it the <strong>same perpendicular distance behind</strong> the mirror as the object is in front. Rays from the object reflect (i = r) so that they appear to <em>diverge from</em> that point behind the mirror — which is why it's virtual.
+    </div>
+  </div>
+
+
+  <!-- ── 04 · REFRACTION & TIR ── -->
+  <div class="section">
+    <div class="sec-label">04 / 09 · 3.2.2 Refraction</div>
+    <h2>Refraction &amp; total internal reflection</h2>
+
+    <p>Light <strong>changes speed</strong> when it crosses into a different material — slower in glass or water than in air. If it hits the boundary at an angle, that speed change makes it <strong>bend</strong>. You can show this in the lab by shining a ray-box beam into a rectangular or semicircular glass block and tracing the ray as it enters and leaves. The trick to getting the direction right:</p>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Which way does it bend?</div>
+      Into a <em>denser</em> medium (air → glass): light slows down and bends <strong>towards</strong> the normal. Out into a <em>less dense</em> medium (glass → air): it speeds up and bends <strong>away</strong> from the normal. "Slow = towards, fast = away."
+    </div>
+
+    <p>Drag the angle and switch direction. Notice how, going glass → air, a large enough angle traps the light completely:</p>
+
+    <div class="tool">
+      <div class="scn-tabs" id="refTabs">
+        <div class="scn-tab active" data-rf="in">Air → Glass</div>
+        <div class="scn-tab" data-rf="out">Glass → Air</div>
+      </div>
+      <div class="tool-grid">
+        <div>
+          <svg class="graph" viewBox="0 0 260 220" id="refSvg" aria-label="Refraction at a glass boundary">
+            <rect x="0" y="110" width="260" height="110" class="d-glass"/>
+            <line x1="0" y1="110" x2="260" y2="110" class="axis"/>
+            <line x1="130" y1="14" x2="130" y2="206" class="d-normal"/>
+            <line id="incident"  class="d-ray"  x1="64" y1="32" x2="130" y2="110" marker-end="url(#refArrowIn)"/>
+            <line id="refracted" class="d-ray2" x1="130" y1="110" x2="174" y2="193" marker-end="url(#refArrowR)"/>
+            <line id="reflected" class="d-ray3" x1="130" y1="110" x2="196" y2="188" marker-end="url(#refArrowF)" style="display:none"/>
+            <text x="8" y="22" class="axis-lbl">air</text>
+            <text x="8" y="128" class="axis-lbl">glass (n = 1.5)</text>
+            <text x="136" y="22" class="axis-lbl">normal</text>
+            <defs>
+              <marker id="refArrowIn" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-cyan"/></marker>
+              <marker id="refArrowR"  markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-amber"/></marker>
+              <marker id="refArrowF"  markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-red"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>Angle of incidence i <b><span id="aiV">30</span>°</b></label>
+            <input type="range" id="ai" min="0" max="80" value="30">
+          </div>
+          <div class="vec-out">
+            <div class="ro" id="refOutLbl">Angle of refraction r</div>
+            <div class="rv"><span id="arV">19.5</span>°</div>
+            <div class="ro" id="refMsg">bends towards the normal</div>
+          </div>
+        </div>
+      </div>
+      <div class="scn-read">
+        <div class="rk">What you're seeing</div>
+        <span id="refExplain">Light passes from air into denser glass, slows, and bends towards the normal. The refractive index n = 1.5 fixes how much.</span>
+      </div>
+    </div>
+
+    <div class="define refr-c">
+      <span class="term">Refractive index, n <span style="opacity:.7;font-size:.85em">(Extended)</span></span> — how strongly a material bends light, defined two equivalent ways:
+      <span class="eq-inline" style="color:var(--energy2)">n = sin i / sin r</span> &nbsp;and as a ratio of speeds&nbsp; <span class="eq-inline" style="color:var(--energy2)">n = v₁ / v₂</span> (speed in the first/less-dense medium ÷ speed in the denser medium). For glass n ≈ 1.5.
+    </div>
+
+    <h3>Total internal reflection &amp; the critical angle</h3>
+    <p>Going from glass to air, the ray bends away from the normal — so as you increase the angle, the refracted ray flattens toward the surface. At one special angle, the <strong>critical angle c</strong>, it refracts along the boundary. Beyond it, none escapes — it all reflects back inside.</p>
+
+    <div class="define refr-c">
+      <span class="term">Critical angle <span style="opacity:.7;font-size:.85em">(Extended)</span></span> — at the critical angle the angle of refraction is 90°. This links straight to the index: <span class="eq-inline" style="color:var(--energy2)">n = 1 / sin c</span>. For glass (n = 1.5), c ≈ <mark>41.8°</mark>. Above c you get <strong>total internal reflection</strong> (TIR).
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🔦 Optical fibres — light in a pipe</div>
+      A glass fibre is so thin that light always strikes its wall <em>above</em> the critical angle, so it totally-internally-reflects thousands of times and zig-zags along the fibre, losing almost nothing. This is how <strong>telecommunications</strong> (broadband, cable TV) and medical <strong>endoscopes</strong> carry signals and images down a bendy strand of glass.
+    </div>
+  </div>
+
+
+  <!-- ── 05 · THIN LENSES ── -->
+  <div class="section">
+    <div class="sec-label">05 / 09 · 3.2.3 Thin Lenses</div>
+    <h2>Thin lenses — bending light to a focus</h2>
+
+    <p>A <strong>converging (convex)</strong> lens is thickest in the middle; it refracts a parallel beam to meet at the <strong>principal focus, F</strong>. A <strong>diverging (concave)</strong> lens is thinnest in the middle; it spreads a parallel beam so it <em>appears</em> to come from F.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--cyan)">Converging (convex)</div>
+        <div class="card-body">Fat middle. Brings parallel rays <strong>together</strong> at a real focus. Used in cameras, projectors, magnifying glasses, the eye.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--energy2)">Diverging (concave)</div>
+        <div class="card-body">Thin middle. Spreads parallel rays <strong>apart</strong>; they seem to come from a focus behind. Used to correct short sight.</div>
+      </div>
+    </div>
+
+    <div class="define cyan-c">
+      <span class="term">Key terms</span> — the <strong>principal axis</strong> is the central line through the lens; the <strong>focal length, f</strong> is the distance from the lens to the principal focus F. A shorter focal length = a more powerful, more strongly bending lens.
+    </div>
+
+    <h3>Where does the image form? Slide the object</h3>
+    <p>For a converging lens, the whole story depends on where the object sits relative to F and 2F. Drag the object and watch the two construction rays build the image:</p>
+
+    <div class="explorer">
+      <svg class="graph" viewBox="0 0 440 220" id="lensSvg" aria-label="Converging lens ray diagram">
+        <line x1="10" y1="110" x2="430" y2="110" class="axis"/>
+        <line x1="220" y1="34" x2="220" y2="186" class="d-lens"/>
+        <!-- focal points -->
+        <circle cx="265" cy="110" r="3" class="d-mark"/><text x="259" y="126" class="axis-lbl">F</text>
+        <circle cx="310" cy="110" r="3" class="d-mark"/><text x="302" y="126" class="axis-lbl">2F</text>
+        <circle cx="175" cy="110" r="3" class="d-mark"/><text x="171" y="126" class="axis-lbl">F</text>
+        <circle cx="130" cy="110" r="3" class="d-mark"/><text x="124" y="126" class="axis-lbl">2F</text>
+        <text x="224" y="46" class="axis-lbl">lens</text>
+        <!-- rays (positions set by JS) -->
+        <line id="lR1"  class="d-ray"/>
+        <line id="lR1b" class="d-ray"/>
+        <line id="lR2"  class="d-ray"/>
+        <line id="lR1v" class="d-ray d-virtual" style="display:none"/>
+        <line id="lR2v" class="d-ray d-virtual" style="display:none"/>
+        <line id="lObj" class="d-obj" marker-end="url(#objArrow)"/>
+        <line id="lImg" class="d-img" marker-end="url(#imgArrow)"/>
+        <line id="lImgV" class="d-img d-virtual" marker-end="url(#imgArrowV)" style="display:none"/>
+        <defs>
+          <marker id="objArrow"  markerWidth="10" markerHeight="10" refX="5" refY="6" orient="auto"><path d="M0,6 L5,0 L10,6 Z" class="mk-blue"/></marker>
+          <marker id="imgArrow"  markerWidth="10" markerHeight="10" refX="5" refY="6" orient="auto"><path d="M0,6 L5,0 L10,6 Z" class="mk-red"/></marker>
+          <marker id="imgArrowV" markerWidth="10" markerHeight="10" refX="5" refY="6" orient="auto"><path d="M0,6 L5,0 L10,6 Z" class="mk-red"/></marker>
+        </defs>
+      </svg>
+      <div class="tool-grid" style="margin-top:14px">
+        <div>
+          <div class="slider-row">
+            <label>Object distance u <b><span id="ouV">2.0</span> f</b></label>
+            <input type="range" id="ou" min="0.5" max="4" step="0.1" value="2">
+          </div>
+          <div class="chart-cap" style="margin-top:4px">beyond 2F · at 2F · between F &amp; 2F · inside F</div>
+        </div>
+        <div class="vec-out">
+          <div class="ro">Image formed</div>
+          <div class="rv" style="font-size:1.15rem" id="imgNature">Real · same size</div>
+          <div class="ro" id="imgDetail">inverted · v = 2.0 f · m = 1.00</div>
+        </div>
+      </div>
+      <div class="scn-read">
+        <div class="rk">The two rays that locate every image</div>
+        <strong>Ray 1:</strong> travels parallel to the axis, then bends through F on the far side. <strong>Ray 2:</strong> goes straight through the centre of the lens, undeviated. Where they cross is the top of the image.
+      </div>
+    </div>
+
+    <table>
+      <tr><th>Object position</th><th>Image</th><th>Everyday use</th></tr>
+      <tr><td>Beyond 2F</td><td>Real, inverted, <strong>diminished</strong></td><td>Camera, the eye</td></tr>
+      <tr><td>At 2F</td><td>Real, inverted, same size</td><td>1:1 copier</td></tr>
+      <tr><td>Between F and 2F</td><td>Real, inverted, <strong>enlarged</strong></td><td>Projector</td></tr>
+      <tr><td>At F</td><td>No image (rays parallel — image at infinity)</td><td>Spotlight / searchlight</td></tr>
+      <tr><td>Inside F</td><td><strong>Virtual</strong>, upright, enlarged</td><td>Magnifying glass</td></tr>
+    </table>
+
+    <div class="box intuition">
+      <div class="box-label">🔍 What makes an image "virtual"</div>
+      A <strong>real</strong> image is where light rays actually meet — you can catch it on a screen (a projector's picture). A <strong>virtual</strong> image is where rays only <em>appear</em> to come from when you trace them backwards (the dashed lines); no light is really there, so it can't land on a screen — but your eye still sees it, as with a magnifying glass.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Correcting sight <span style="opacity:.7">(Extended)</span></div>
+      <strong>Short sight</strong> (can't see far) — the eye over-focuses, so use a <strong>diverging (concave)</strong> lens to spread rays out first. <strong>Long sight</strong> (can't see near) — the eye under-focuses, so use a <strong>converging (convex)</strong> lens to help bring rays together. A single converging lens held close also acts as a <strong>magnifying glass</strong> (object inside F).
+    </div>
+  </div>
+
+
+  <!-- ── 06 · DISPERSION ── -->
+  <div class="section">
+    <div class="sec-label">06 / 09 · 3.2.4 Dispersion</div>
+    <h2>Dispersion — splitting white light</h2>
+
+    <p>White light is a mixture of every colour. A glass <strong>prism</strong> refracts each colour by a slightly different amount — violet bends most, red least — so they fan out into the visible <strong>spectrum</strong>. That is dispersion, and it's why you see a rainbow when sunlight passes through raindrops.</p>
+
+    <svg class="graph" viewBox="0 0 440 160" id="prismSvg" aria-label="A prism dispersing white light into a spectrum">
+      <line x1="20" y1="70" x2="150" y2="70" class="d-ray" marker-end="url(#prismArrow)"/>
+      <text x="40" y="60" class="axis-lbl">white light</text>
+      <polygon points="190,30 235,118 145,118" fill="none" stroke="#7b8aa8" stroke-width="1.6"/>
+      <text x="172" y="138" class="axis-lbl">prism</text>
+      <line x1="225" y1="95" x2="410" y2="55"  stroke="#ff5263" stroke-width="2.4"/>
+      <line x1="225" y1="98" x2="410" y2="72"  stroke="#ffae3b" stroke-width="2.4"/>
+      <line x1="225" y1="101" x2="410" y2="89" stroke="#43d98c" stroke-width="2.4"/>
+      <line x1="225" y1="104" x2="410" y2="106" stroke="#46a8ff" stroke-width="2.4"/>
+      <line x1="225" y1="107" x2="410" y2="123" stroke="#8b7bff" stroke-width="2.4"/>
+      <text x="414" y="58" class="axis-lbl" style="fill:#ff5263">red</text>
+      <text x="414" y="126" class="axis-lbl" style="fill:#8b7bff">violet</text>
+      <defs>
+        <marker id="prismArrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-cyan"/></marker>
+      </defs>
+    </svg>
+
+    <div class="define refr-c">
+      <span class="term">The visible spectrum</span> — the traditional seven colours, in order: <strong>R</strong>ed, <strong>O</strong>range, <strong>Y</strong>ellow, <strong>G</strong>reen, <strong>B</strong>lue, <strong>I</strong>ndigo, <strong>V</strong>iolet. Red has the <strong>longest wavelength / lowest frequency</strong>; violet the <strong>shortest wavelength / highest frequency</strong>.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Memorise the order</div>
+      <strong>R O Y G B I V</strong> — "Richard Of York Gave Battle In Vain." Going red → violet, frequency <em>increases</em> and wavelength <em>decreases</em>. Light of a single frequency (one pure colour) is called <strong>monochromatic</strong>. <span style="opacity:.7">(Extended)</span>
+    </div>
+  </div>
+
+
+  <!-- ── 07 · ELECTROMAGNETIC SPECTRUM ── -->
+  <div class="section">
+    <div class="sec-label">07 / 09 · 3.3 EM Spectrum</div>
+    <h2>The electromagnetic spectrum</h2>
+
+    <p>Visible light is a tiny slice of a much bigger family. All electromagnetic waves are transverse, and in a vacuum they <strong>all travel at the same speed</strong> — <mark>c = 3.0 × 10⁸ m/s</mark> (and about the same in air). What changes across the family is the frequency and wavelength.</p>
+
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#5b8dee"></span>Radio</div>
+      <div class="estore"><span class="dot" style="background:#46a8ff"></span>Microwave</div>
+      <div class="estore"><span class="dot" style="background:#ff5263"></span>Infrared</div>
+      <div class="estore"><span class="dot" style="background:#43d98c"></span>Visible</div>
+      <div class="estore"><span class="dot" style="background:#8b7bff"></span>Ultraviolet</div>
+      <div class="estore"><span class="dot" style="background:#3ad9d4"></span>X-rays</div>
+      <div class="estore"><span class="dot" style="background:#ffae3b"></span>Gamma rays</div>
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Order = increasing frequency →</div>
+      <strong>Radio · Microwave · Infrared · Visible · Ultraviolet · X-rays · Gamma.</strong> Left → right: frequency &amp; energy <em>rise</em>, wavelength <em>falls</em>. Try: "<strong>R</strong>aging <strong>M</strong>artians <strong>I</strong>nvaded <strong>V</strong>enus <strong>U</strong>sing <strong>X</strong>-ray <strong>G</strong>uns."
+    </div>
+
+    <table>
+      <tr><th>Region</th><th>Typical uses</th><th>Danger of overexposure</th></tr>
+      <tr><td><strong>Radio</strong></td><td>Radio &amp; TV broadcasts, astronomy, RFID tags</td><td>—</td></tr>
+      <tr><td><strong>Microwave</strong></td><td>Satellite TV, mobile phones, microwave ovens</td><td>Internal heating of body cells</td></tr>
+      <tr><td><strong>Infrared</strong></td><td>Electric grills, TV remotes, thermal imaging, intruder alarms, optical fibres</td><td>Skin burns</td></tr>
+      <tr><td><strong>Visible</strong></td><td>Vision, photography, illumination</td><td>—</td></tr>
+      <tr><td><strong>Ultraviolet</strong></td><td>Security marking, detecting fake notes, sterilising water</td><td>Skin cancer &amp; eye damage</td></tr>
+      <tr><td><strong>X-rays</strong></td><td>Medical scans (bones), airport security scanners</td><td>Cell mutation / damage</td></tr>
+      <tr><td><strong>Gamma</strong></td><td>Sterilising food &amp; equipment, detecting and treating cancer</td><td>Cell mutation / damage</td></tr>
+    </table>
+
+    <div class="box intuition">
+      <div class="box-label">📡 Why microwaves for phones, radio for Bluetooth</div>
+      <strong>Mobiles &amp; wi-fi use microwaves</strong> — they pass through some walls and need only a short aerial. <strong>Bluetooth uses radio waves</strong> — they pass through walls but weaken doing so (so it stays short range). <strong>Optical fibres</strong> use visible light/infrared because glass is transparent to them and they carry huge data rates. Satellite communication is mainly by microwaves (low-orbit phones, geostationary TV). <span style="opacity:.7">(Extended)</span>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Digital vs analogue <span style="opacity:.7">(Extended)</span></div>
+      An <strong>analogue</strong> signal varies smoothly; a <strong>digital</strong> signal is just on/off pulses (0s and 1s). Digital is better because it can be <strong>regenerated cleanly</strong> (noise stripped off at each repeater), giving greater range, and it carries data at a higher rate. Sound can be sent either way.
+    </div>
+  </div>
+
+
+  <!-- ── 08 · SOUND ── -->
+  <div class="section">
+    <div class="sec-label">08 / 09 · 3.4 Sound</div>
+    <h2>Sound — a longitudinal pressure wave</h2>
+
+    <p>A vibrating source — a guitar string, a speaker cone, your vocal cords — pushes and pulls the air next to it. Those pushes travel outward as a <strong>longitudinal</strong> wave: regions where the air is squashed (<strong>compressions</strong>) and stretched (<strong>rarefactions</strong>) move away from the source.</p>
+
+    <div class="define sound-c">
+      <span class="term">Sound needs a medium</span> — solid, liquid or gas. With no particles to pass the vibration along, sound cannot travel: a ringing bell in a vacuum jar falls silent as the air is pumped out. (Light, being electromagnetic, still gets through.)
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--momentum)">Audible range</div>
+        <div class="card-body">Humans hear roughly <strong>20 Hz to 20 000 Hz</strong> (20 kHz). Sound above 20 kHz is <strong>ultrasound</strong>.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--momentum)">Speed of sound</div>
+        <div class="card-body">In air, about <strong>330–350 m/s</strong>. Faster in liquids, faster still in solids — particles are closer, so they pass the vibration on quicker. <span style="opacity:.7">(solids &gt; liquids &gt; gases — Extended)</span></div>
+      </div>
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🔊 Loudness vs pitch — two different dials</div>
+      <strong>Amplitude → loudness:</strong> bigger vibrations push the air harder, so the sound is louder. <strong>Frequency → pitch:</strong> more vibrations per second sound higher. A bass drum is loud and low (big amplitude, low frequency); a whistle is high (high frequency). They are independent.
+    </div>
+
+    <h3>Measuring the speed of sound</h3>
+    <div class="define sound-c">
+      <span class="term">A direct method</span> — stand a measured distance <em>d</em> from a large wall, clap, and time <em>t</em> from clap to <strong>echo</strong>. The sound travels <strong>2d</strong> (there and back), so speed <span class="eq-inline" style="color:var(--momentum)">v = 2d / t</span>. An echo is simply the <strong>reflection</strong> of sound off a hard surface.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Ultrasound &amp; sonar <span style="opacity:.7">(Extended)</span></div>
+      Ultrasound (&gt; 20 kHz) reflects off boundaries, so it's used for <strong>non-destructive testing</strong> (finding cracks inside metal), <strong>medical scanning</strong> of soft tissue (e.g. a fetal scan — no harmful radiation), and <strong>sonar</strong> for depth. Sonar maths: a pulse takes time <em>t</em> for the round trip, so depth = <span class="eq-inline" style="color:var(--momentum)">v × t ÷ 2</span>.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🐬 Worked sonar example</div>
+      A ship sends an ultrasound pulse to the seabed; the echo returns after <mark>0.04 s</mark>. Sound travels at ≈ 1500 m/s in seawater. Depth = (1500 × 0.04) ÷ 2 = <strong>30 m</strong>. Always halve — the time is for the trip <em>down and back</em>.
+    </div>
+  </div>
+
+
+  <!-- ── 09 · EQUATION BANK ── -->
+  <div class="section">
+    <div class="sec-label">09 / 09 · Reference</div>
+    <h2>The Topic 3 equation bank</h2>
+    <p>IGCSE Physics gives you <strong>no formula sheet</strong> — these must be recalled from memory. Tap any tile for symbols, units, rearrangements, a worked example, and the exam trap:</p>
+
+    <div class="eqbank" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ The non-negotiables to memorise</div>
+      <span class="eq-inline" style="color:var(--rose)">v = f λ</span>
+      <span class="eq-inline" style="color:var(--rose)">n = sin i / sin r</span>
+      <span class="eq-inline" style="color:var(--rose)">n = 1 / sin c</span>
+      <span class="eq-inline" style="color:var(--rose)">n = v₁ / v₂</span>
+      <span class="eq-inline" style="color:var(--rose)">v = 2d / t (echo)</span>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Numbers worth knowing by heart</div>
+      Speed of all EM waves in a vacuum: <strong>3.0 × 10⁸ m/s</strong> · Speed of sound in air: <strong>≈ 330–350 m/s</strong> · Human hearing: <strong>20 Hz – 20 kHz</strong> · Critical angle of glass (n = 1.5): <strong>≈ 41.8°</strong>.
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE PHYSICS · 0625 EXTENDED · CLASS 10 · TOPIC 3 — WAVES<br>
+    Built for understanding — energy travels, matter stays. Tap the panels, drag the rays.
+  </div>
+
+</div>
+
+<!-- ── FLOATING EQUATION CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Symbols &amp; units</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Rearrangements</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+const SVGNS='http://www.w3.org/2000/svg';
+function setLine(el,x1,y1,x2,y2){ el.setAttribute('x1',x1); el.setAttribute('y1',y1); el.setAttribute('x2',x2); el.setAttribute('y2',y2); }
+function show(el,on){ el.style.display = on ? '' : 'none'; }
+
+/* ════════════════════════════════════════════════
+   0 · STATIC LABELLED WAVE (drawn once)
+════════════════════════════════════════════════ */
+(function(){
+  const path=document.getElementById('waveLabelCurve');
+  const X0=20, X1=420, MID=75, A=36, LAM=170;
+  let d='';
+  for(let x=X0;x<=X1;x+=4){
+    const y=MID - A*Math.sin(2*Math.PI*(x-X0)/LAM);
+    d += (x===X0?'M':'L')+x+','+y.toFixed(1)+' ';
+  }
+  path.setAttribute('d',d);
+})();
+
+/* ════════════════════════════════════════════════
+   1 · WAVE EXPLORER (transverse / longitudinal)
+════════════════════════════════════════════════ */
+(function(){
+  const curve=document.getElementById('waveCurve');
+  const dotG=document.getElementById('dotField');
+  const wl=document.getElementById('wl'), fr=document.getElementById('fr');
+  const X0=20, X1=420, MID=85, A=40, AL=15;
+  const titleEl=document.getElementById('waveTitle'),
+        textEl =document.getElementById('waveText'),
+        noteEl =document.getElementById('waveNote');
+  let mode='trans', raf=null, t0=null;
+
+  // build the longitudinal dot row once
+  const NDOTS=48;
+  for(let i=0;i<=NDOTS;i++){
+    const x0=X0 + i*(X1-X0)/NDOTS;
+    const c=document.createElementNS(SVGNS,'circle');
+    c.setAttribute('r',3); c.setAttribute('cy',MID); c.setAttribute('cx',x0);
+    c.setAttribute('class','d-dot'); c.dataset.x0=x0;
+    dotG.appendChild(c);
+  }
+  const dots=dotG.querySelectorAll('circle');
+
+  function lamPx(){ return (+wl.value)*80; }   // 1 m → 80 px
+  function readout(){
+    const L=+wl.value, F=+fr.value;
+    document.getElementById('wlV').textContent=L.toFixed(1);
+    document.getElementById('frV').textContent=F;
+    document.getElementById('wvV').textContent=(L*F).toFixed(1);
+  }
+  function frame(ts){
+    if(!t0) t0=ts;
+    const t=(ts-t0)/1000;
+    const lp=lamPx(), ph=2*Math.PI*(+fr.value)*t;
+    if(mode==='trans'){
+      let d='';
+      for(let x=X0;x<=X1;x+=4){
+        const y=MID - A*Math.sin(2*Math.PI*(x-X0)/lp - ph);
+        d += (x===X0?'M':'L')+x+','+y.toFixed(1)+' ';
+      }
+      curve.setAttribute('d',d);
+    } else {
+      dots.forEach(c=>{
+        const x0=+c.dataset.x0;
+        const dx=AL*1.7*Math.sin(2*Math.PI*(x0-X0)/lp - ph);
+        c.setAttribute('cx',(x0+dx).toFixed(1));
+      });
+    }
+    raf=requestAnimationFrame(frame);
+  }
+  function setMode(m){
+    mode=m;
+    document.querySelectorAll('#waveTabs .scn-tab').forEach(t=>t.classList.toggle('active', t.dataset.wv===m));
+    show(curve, m==='trans');
+    show(dotG,  m==='long');
+    if(m==='trans'){
+      titleEl.textContent='Transverse wave';
+      textEl.textContent='The medium vibrates at right angles to the direction the wave travels. Light, all electromagnetic waves, water waves and seismic S-waves are transverse.';
+      noteEl.textContent='vibration ⟂ to travel';
+    } else {
+      titleEl.textContent='Longitudinal wave';
+      textEl.textContent='The medium vibrates back and forth along the travel direction, making compressions (dots bunched) and rarefactions (dots spread). Sound and seismic P-waves are longitudinal.';
+      noteEl.textContent='vibration ∥ to travel';
+    }
+  }
+  document.getElementById('waveTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return; setMode(t.dataset.wv);
+  });
+  wl.addEventListener('input',readout); fr.addEventListener('input',readout);
+
+  readout(); setMode('trans');
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){
+    // draw a single static frame instead of animating
+    t0=0; frame(0); cancelAnimationFrame(raf);
+  } else {
+    raf=requestAnimationFrame(frame);
+  }
+})();
+
+/* ════════════════════════════════════════════════
+   2 · REFRACTION & TOTAL INTERNAL REFLECTION
+════════════════════════════════════════════════ */
+(function(){
+  const N=1.5, PX=130, PY=110, L=86;
+  const ai=document.getElementById('ai');
+  const inc=document.getElementById('incident'),
+        refr=document.getElementById('refracted'),
+        refl=document.getElementById('reflected');
+  const arV=document.getElementById('arV'),
+        lbl=document.getElementById('refOutLbl'),
+        msg=document.getElementById('refMsg'),
+        explain=document.getElementById('refExplain');
+  const crit=Math.asin(1/N)*180/Math.PI;   // 41.81°
+  let mode='in';
+  const rad=d=>d*Math.PI/180, deg=r=>r*180/Math.PI;
+
+  function upd(){
+    const i=+ai.value; document.getElementById('aiV').textContent=i;
+    const ir=rad(i);
+    if(mode==='in'){
+      // air (top) → glass (bottom): bends toward normal
+      setLine(inc, PX - L*Math.sin(ir), PY - L*Math.cos(ir), PX, PY);
+      const r=Math.asin(Math.sin(ir)/N);
+      setLine(refr, PX, PY, PX + L*Math.sin(r), PY + L*Math.cos(r));
+      show(refr,true); show(refl,false);
+      arV.textContent=deg(r).toFixed(1);
+      lbl.textContent='Angle of refraction r';
+      msg.textContent='n = sin i / sin r = 1.50';
+      explain.textContent='Light passes from air into denser glass, slows down, and bends towards the normal. The refractive index n = 1.5 fixes how much.';
+    } else {
+      // glass (bottom) → air (top): bends away; TIR beyond the critical angle
+      setLine(inc, PX - L*Math.sin(ir), PY + L*Math.cos(ir), PX, PY);
+      const s=N*Math.sin(ir);
+      if(s>1){
+        setLine(refl, PX, PY, PX + L*Math.sin(ir), PY + L*Math.cos(ir));
+        show(refl,true); show(refr,false);
+        arV.textContent='—';
+        lbl.textContent='Total internal reflection';
+        msg.textContent='i > c = 41.8° → all light reflected';
+        explain.textContent='The angle of incidence exceeds the critical angle (41.8°), so no light escapes — it is all reflected back into the glass. This is total internal reflection.';
+      } else {
+        const r=Math.asin(s);
+        setLine(refr, PX, PY, PX + L*Math.sin(r), PY - L*Math.cos(r));
+        show(refr,true); show(refl,false);
+        arV.textContent=deg(r).toFixed(1);
+        lbl.textContent='Angle of refraction r';
+        msg.textContent='bends away · c = 41.8°';
+        explain.textContent='Light leaves dense glass for air, speeds up, and bends away from the normal. Push i past the critical angle (41.8°) and it can no longer escape.';
+      }
+    }
+  }
+  document.getElementById('refTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    mode=t.dataset.rf;
+    document.querySelectorAll('#refTabs .scn-tab').forEach(x=>x.classList.toggle('active',x.dataset.rf===mode));
+    upd();
+  });
+  ai.addEventListener('input',upd); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   3 · CONVERGING LENS RAY DIAGRAM
+════════════════════════════════════════════════ */
+(function(){
+  const Lx=220, AX=110, F=45, H=52, R=430;
+  const ou=document.getElementById('ou');
+  const lObj=document.getElementById('lObj'),
+        lImg=document.getElementById('lImg'),
+        lImgV=document.getElementById('lImgV'),
+        lR1=document.getElementById('lR1'),
+        lR1b=document.getElementById('lR1b'),
+        lR2=document.getElementById('lR2'),
+        lR1v=document.getElementById('lR1v'),
+        lR2v=document.getElementById('lR2v');
+  const nat=document.getElementById('imgNature'),
+        det=document.getElementById('imgDetail');
+
+  function upd(){
+    const u=+ou.value; document.getElementById('ouV').textContent=u.toFixed(1);
+    const xo=Lx - u*F, oy=AX - H;
+    setLine(lObj, xo, AX, xo, oy);
+
+    // object at (near) the focus → image at infinity
+    if(Math.abs(u-1) < 0.12){
+      setLine(lR1, xo, oy, Lx, oy);
+      const sl=(AX-oy)/F;                 // slope of ray through F
+      setLine(lR1b, Lx, oy, R, oy + (R-Lx)*sl);
+      const sl2=(AX-oy)/(Lx-xo);          // slope of ray through centre
+      setLine(lR2, xo, oy, R, AX + (R-xo)*sl2);
+      show(lR1,true); show(lR1b,true); show(lR2,true);
+      show(lImg,false); show(lImgV,false); show(lR1v,false); show(lR2v,false);
+      nat.textContent='Image at infinity';
+      det.textContent='object at F · refracted rays emerge parallel';
+      return;
+    }
+
+    const vf=u/(u-1);          // image distance in units of f
+    const xi=Lx + vf*F;        // >Lx real (right); <Lx virtual (left)
+    const m=Math.abs(vf)/u;    // magnification
+    const hi=H*m;
+
+    if(vf>0){
+      // real, inverted image (below axis)
+      const yi=AX + hi;
+      setLine(lR1,  xo, oy, Lx, oy);
+      setLine(lR1b, Lx, oy, xi, yi);
+      setLine(lR2,  xo, oy, xi, yi);
+      setLine(lImg, xi, AX, xi, yi);
+      show(lR1,true); show(lR1b,true); show(lR2,true); show(lImg,true);
+      show(lImgV,false); show(lR1v,false); show(lR2v,false);
+      nat.textContent = m>1.05 ? 'Real · enlarged' : (m<0.95 ? 'Real · diminished' : 'Real · same size');
+      det.textContent = 'inverted · v = '+vf.toFixed(1)+' f · m = '+m.toFixed(2);
+    } else {
+      // virtual, upright image (above axis, same side as object)
+      const yi=AX - hi;
+      setLine(lR1, xo, oy, Lx, oy);
+      const sl=(AX-oy)/F;
+      setLine(lR1b, Lx, oy, R, oy + (R-Lx)*sl);
+      const sl2=(AX-oy)/(Lx-xo);
+      setLine(lR2, xo, oy, R, AX + (R-xo)*sl2);
+      setLine(lR1v, Lx, oy, xi, yi);
+      setLine(lR2v, Lx, AX, xi, yi);
+      setLine(lImgV, xi, AX, xi, yi);
+      show(lR1,true); show(lR1b,true); show(lR2,true);
+      show(lR1v,true); show(lR2v,true); show(lImgV,true);
+      show(lImg,false);
+      nat.textContent='Virtual · enlarged';
+      det.textContent='upright · v = '+vf.toFixed(1)+' f · m = '+m.toFixed(2)+' (magnifier)';
+    }
+  }
+  ou.addEventListener('input',upd); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   4 · EQUATION BANK + FLOATING CARD
+════════════════════════════════════════════════ */
+const EQ = {
+  wavespeed:{ c:'motion', name:'Wave speed', formula:'v = f λ',
+    syms:[['v','wave speed','m/s'],['f','frequency','Hz'],['λ','wavelength','m']],
+    rearr:'f = v / λ   ·   λ = v / f',
+    ex:'Sound at 340 m/s with f = 170 Hz: λ = 340 ÷ 170 = <b>2 m</b>.',
+    tip:'Works for every wave. Keep <b>units</b> consistent — λ in metres, f in hertz.' },
+  freqperiod:{ c:'motion', name:'Frequency & period', formula:'f = 1 / T',
+    syms:[['f','frequency','Hz'],['T','period (time for 1 wave)','s']],
+    rearr:'T = 1 / f',
+    ex:'A wave of period 0.02 s: f = 1 ÷ 0.02 = <b>50 Hz</b>.',
+    tip:'Period is the time for <b>one</b> complete wave; frequency is waves per second — they are reciprocals.' },
+  refindex:{ c:'energy', name:'Refractive index', formula:'n = sin i / sin r',
+    syms:[['n','refractive index','(no unit)'],['i','angle of incidence','°'],['r','angle of refraction','°']],
+    rearr:'sin r = sin i / n   ·   sin i = n·sin r',
+    ex:'Air→glass, i = 30°, n = 1.5: sin r = sin30 ÷ 1.5 = 0.333 → r = <b>19.5°</b>.',
+    tip:'Always measure i and r <b>from the normal</b>, never from the surface.' },
+  critical:{ c:'energy', name:'Critical angle', formula:'n = 1 / sin c',
+    syms:[['n','refractive index','(no unit)'],['c','critical angle','°']],
+    rearr:'sin c = 1 / n   ·   c = sin⁻¹(1/n)',
+    ex:'Glass n = 1.5: sin c = 1 ÷ 1.5 = 0.667 → c = <b>41.8°</b>.',
+    tip:'TIR only happens going to a <b>less dense</b> medium and only when <b>i &gt; c</b>.' },
+  nspeeds:{ c:'energy', name:'Index from speeds', formula:'n = v₁ / v₂',
+    syms:[['n','refractive index','(no unit)'],['v₁','speed in region 1','m/s'],['v₂','speed in region 2','m/s']],
+    rearr:'v₂ = v₁ / n   ·   v₁ = n·v₂',
+    ex:'Light slows from 3.0×10⁸ to 2.0×10⁸ m/s entering glass: n = 3.0 ÷ 2.0 = <b>1.5</b>.',
+    tip:'n is the ratio of <b>speeds</b> — light is always slower in the denser (higher-n) medium.' },
+  echo:{ c:'mom', name:'Speed of sound (echo)', formula:'v = 2d / t',
+    syms:[['v','speed of sound','m/s'],['d','distance to wall','m'],['t','time for the echo','s']],
+    rearr:'d = v·t / 2   ·   t = 2d / v',
+    ex:'Echo off a wall 170 m away returns in 1.0 s: v = (2×170) ÷ 1.0 = <b>340 m/s</b>.',
+    tip:'Use <b>2d</b> — sound travels to the wall <b>and back</b>. Same idea gives sonar depth = v·t÷2.' },
+};
+const ORDER=['wavespeed','freqperiod','refindex','critical','nspeeds','echo'];
+const CMETA = {
+  motion:{col:'#46a8ff', bg:'#0c2536', bd:'#1f4258'},
+  energy:{col:'#ffae3b', bg:'#1a1306', bd:'#3a2c10'},
+  mom:   {col:'#8b7bff', bg:'#120c22', bd:'#2e2350'},
+};
+
+(function buildBank(){
+  const bank=document.getElementById('eqbank');
+  ORDER.forEach(key=>{
+    const e=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=e.c; cell.dataset.key=key;
+    cell.innerHTML='<div class="eq-sym">'+e.formula+'</div><div class="eq-name">'+e.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+
+function openEqCard(key){
+  const e=EQ[key], m=CMETA[e.c]||CMETA.motion;
+  const card=document.getElementById('eq-card');
+  const badge=document.getElementById('eqc-badge');
+  badge.textContent=e.formula.split('=')[0].trim();
+  badge.style.color=m.col; badge.style.background=m.bg; badge.style.borderColor=m.bd;
+  document.getElementById('eqc-name').textContent=e.name;
+  const f=document.getElementById('eqc-formula');
+  f.textContent=e.formula; f.style.color=m.col;
+  const sr=document.getElementById('eqc-syms'); sr.innerHTML='';
+  e.syms.forEach(s=>{
+    const pill=document.createElement('div'); pill.className='sym-pill';
+    pill.innerHTML='<b style="color:'+m.col+'">'+s[0]+'</b> '+s[1]+' <span>['+s[2]+']</span>';
+    sr.appendChild(pill);
+  });
+  document.getElementById('eqc-rearr').textContent=e.rearr;
+  document.getElementById('eqc-example').innerHTML=e.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Exam trap:</b> '+e.tip;
+  card.style.display='block';
+  requestAnimationFrame(()=>card.style.opacity='1');
+}
+function closeEqCard(){
+  const card=document.getElementById('eq-card');
+  card.style.opacity='0';
+  setTimeout(()=>card.style.display='none',250);
+}
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) && !e.target.closest('.eqcell')) closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   5 · THEME TOGGLE (light / dark)
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){ try{ return localStorage.getItem('phys-theme'); }catch(e){ return null; } }
+  function safeSet(v){ try{ localStorage.setItem('phys-theme',v); }catch(e){} }
+  function apply(theme){
+    body.setAttribute('data-theme', theme);
+    btn.textContent = (theme==='dark') ? SUN : MOON;
+    btn.setAttribute('aria-label', (theme==='dark') ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  let start = safeGet();
+  if(!start){ start = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark'; }
+  apply(start);
+  btn.addEventListener('click',()=>{
+    const next = body.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    apply(next); safeSet(next);
+  });
+})();
+</script>
+</body>
+</html>

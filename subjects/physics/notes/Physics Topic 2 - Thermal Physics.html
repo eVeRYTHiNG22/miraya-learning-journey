@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Topic 2: Thermal Physics</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    --motion:   #46a8ff;   /* electric blue — solids / cold end / conduction */
+    --force:    #ff5263;   /* physics red — temperature & radiation (hot end) */
+    --energy:   #ffae3b;   /* radiant amber — thermal energy, heat capacity, latent heat */
+    --energy2:  #ffae3b;
+    --momentum: #8b7bff;   /* indigo — gases & particle motion (the carrier) */
+    --power:    #43d98c;   /* green — exam tips / success (fixed role) */
+    --cyan:     #3ad9d4;   /* secondary cool — states & measurement */
+    --rose:     #f25cc1;   /* alert magenta — must-memorise; ≥30° hue gap from warm accents (CVD-safe) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient field — cool (low temperature) up top, warm (hot) below:
+     the background literally renders the blue-cold → red-hot axis thermal physics lives on */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 110px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 54px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--force); }
+  h1 .c { color: var(--energy2); }
+
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 600px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: rise 0.55s ease forwards;
+  }
+  @keyframes rise {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--bright);
+    margin-bottom: 14px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: var(--bright);
+    margin: 26px 0 10px;
+  }
+
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+
+  .eq-inline {
+    font-family: 'JetBrains Mono', monospace;
+    background: #0d1828;
+    border: 1px solid #22324a;
+    border-radius: 5px;
+    padding: 1px 7px;
+    font-size: 13px;
+    color: var(--motion);
+    white-space: nowrap;
+  }
+  body[data-theme="light"] .eq-inline {
+    background: #eef1f8;
+    border-color: #d4dcec;
+  }
+
+  /* ── BOXES ── */
+  .box {
+    border-radius: 11px;
+    padding: 17px 20px;
+    margin: 18px 0;
+    font-size: 14.2px;
+    border: 1px solid;
+  }
+  .box-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color: var(--motion); }
+
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define {
+    border-left: 3px solid var(--motion);
+    background: linear-gradient(90deg, #0c1c2880, transparent);
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .define .term {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--bright);
+    font-size: 1.02rem;
+  }
+  .define.force-c   { border-color: var(--force); background:linear-gradient(90deg,#23120b80,transparent); }
+  .define.energy-c  { border-color: var(--energy2); background:linear-gradient(90deg,#23180680,transparent); }
+  .define.mom-c     { border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:20px 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 16px 18px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { transform: translateY(-3px); border-color:#3a557c; }
+  .card-title {
+    font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px;
+  }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th {
+    background: var(--surface2); color: var(--motion);
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase;
+    padding:10px 14px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+
+  mark {
+    background: linear-gradient(120deg,#15405a88,#1f5a7a88);
+    color: var(--bright); padding:1px 4px; border-radius:3px;
+  }
+
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY NOTE (read before re-cloning)
+     · BASE IS LOCKED ACROSS ALL SUBJECTS: --bg, --surface*, --text,
+       --muted, --border, the paper light theme, and the neutral ambient
+       glow NEVER change per subject. Only the accent block changes.
+     · SHARED components (reused by any topic — never delete):
+       .explorer .scn-tabs .scn-tab .scn-read .rk .replay svg.graph
+       .axis .axis-lbl .curve .tracer .chart-cap .tool .tool-grid
+       .slider-row .vec-out .eqbank .eqcell .box .define .card table
+     · THERMAL-ONLY widgets in this file (safe to delete if dropped;
+       grep each class first): #parts circle (particle explorer),
+       .therm .merc (thermometer), .estore (state chips)
+     · Removed from the base template for this topic: the motion track
+       (.track-wrap/.mover/.charts), the moments balance (.beam/.pivot/.load),
+       the vector pad (svg.vecpad) and the sankey bar (.sk-*).
+  ═════════════════════════════════════════════ */
+
+  /* ─────────────────────────────────────────────
+     EXPLORER SHELL (shared) + PARTICLE MODEL (thermal)
+  ───────────────────────────────────────────── */
+  .explorer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 22px 0;
+  }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab {
+    font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    padding:8px 14px; border-radius:8px; cursor:pointer;
+    background:#0e1626; border:1px solid var(--border); color:var(--muted);
+    transition:all .18s; user-select:none;
+  }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+
+  .chart-cap {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    margin-bottom:6px;
+  }
+  svg.graph { width:100%; height:auto; display:block;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  .axis { stroke:#2a3a55; stroke-width:1.2; }
+  .axis-lbl { fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:9px; }
+  .curve { fill:none; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+  .tracer { fill:#fff; }
+
+  /* particles, coloured by state via the live accent vars (so they re-theme) */
+  #parts circle { transition: none; }
+  #parts.solid  circle { fill: var(--motion); }   /* cold, low energy → blue */
+  #parts.liquid circle { fill: var(--energy2); }  /* warmer → amber */
+  #parts.gas    circle { fill: var(--force); }     /* hot, high energy → red */
+
+  .scn-read {
+    margin-top:16px; background:#0c1c28; border:1px solid #1f4258;
+    border-radius:9px; padding:13px 16px; font-size:13.6px;
+  }
+  .scn-read .rk {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--motion);
+    margin-bottom:6px;
+  }
+  .replay {
+    margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#0c2536; color:var(--motion); border:1px solid var(--motion);
+    border-radius:7px; padding:7px 16px; cursor:pointer; letter-spacing:.06em;
+  }
+  .replay:hover { background:#103247; }
+
+  /* ─────────────────────────────────────────────
+     SLIDER TOOL (shared) + THERMOMETER (thermal)
+  ───────────────────────────────────────────── */
+  .tool {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:20px; margin:22px 0;
+  }
+  .tool-grid { display:grid; grid-template-columns:150px 1fr; gap:20px; align-items:center; }
+  .slider-row { margin:14px 0; }
+  .slider-row label {
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] {
+    width:100%; -webkit-appearance:none; height:5px; border-radius:3px;
+    background:#22304a; outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--force); cursor:pointer; box-shadow:0 0 10px #ff526388;
+  }
+  input[type=range]::-moz-range-thumb {
+    width:17px; height:17px; border:none; border-radius:50%;
+    background:var(--force); cursor:pointer;
+  }
+  .vec-out {
+    background:#231806; border:1px solid #4a3a10; border-radius:9px;
+    padding:14px 16px; text-align:center;
+  }
+  .vec-out .ro {
+    font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:#a8895a; margin-bottom:3px;
+  }
+  .vec-out .rv {
+    font-family:'Fraunces',serif; font-size:1.7rem; font-weight:700;
+    color:var(--force); line-height:1.1; margin-bottom:4px;
+  }
+  svg.therm { width:100%; height:auto; max-height:230px; background:#0c1322;
+    border:1px solid var(--border); border-radius:9px; }
+  .merc { fill:var(--force); }
+  .therm-tube { fill:none; stroke:#2a3a55; stroke-width:2; }
+
+  /* ─────────────────────────────────────────────
+     EQUATION BANK
+  ───────────────────────────────────────────── */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqcell {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 12px; cursor:pointer; text-align:center;
+    transition:transform .16s, border-color .16s, box-shadow .16s;
+  }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion);
+    box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym {
+    font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600;
+    color:var(--bright); margin-bottom:4px;
+  }
+  .eqcell .eq-name {
+    font-size:10.5px; color:var(--muted); letter-spacing:.04em;
+  }
+  .eqcell[data-c="motion"]:hover   { border-color:var(--motion); }
+  .eqcell[data-c="force"]:hover    { border-color:var(--force); box-shadow:0 8px 22px #0008; }
+  .eqcell[data-c="energy"]:hover   { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover      { border-color:var(--momentum); }
+  .eqcell[data-c="power"]:hover    { border-color:var(--power); }
+
+  /* floating detail card — fully themed (vars, with a light override below) */
+  #eq-card {
+    display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px;
+    width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow);
+    overflow:hidden; transition:opacity .25s;
+  }
+  #eqc-top {
+    padding:18px 18px 14px; display:flex; gap:14px; align-items:center;
+    border-bottom:1px solid var(--card-divider); position:relative;
+  }
+  #eqc-badge {
+    flex-shrink:0; width:62px; height:62px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600;
+    background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd);
+  }
+  #eqc-head h4 {
+    font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px;
+  }
+  #eqc-formula {
+    font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--motion);
+  }
+  #eqc-close {
+    position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted);
+    cursor:pointer; user-select:none;
+  }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--card-label); margin:10px 0 6px;
+  }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill {
+    background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px;
+    padding:5px 9px; font-size:11.5px; color:var(--card-text);
+  }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr {
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text);
+    background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em;
+  }
+  #eqc-example {
+    background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55;
+  }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip {
+    background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px;
+  }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── STATE CHIPS ── */
+  .estores { display:flex; flex-wrap:wrap; gap:9px; margin:16px 0; }
+  .estore {
+    background:#19202f; border:1px solid var(--border); border-radius:8px;
+    padding:9px 13px; font-size:12.6px; display:flex; align-items:center; gap:8px;
+  }
+  .estore .dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+
+  /* ── FOOTER ── */
+  .footer {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    text-align:center; padding-top:28px; border-top:1px solid var(--border);
+    letter-spacing:.07em; line-height:1.8;
+  }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .grid3, .eqbank { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+    .tool-grid { grid-template-columns:1fr; }
+  }
+  /* ─────────────────────────────────────────────
+     THEME TOGGLE BUTTON
+  ───────────────────────────────────────────── */
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 10000;
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-size: 17px; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    transition: transform .25s, border-color .2s, background-color .35s;
+    line-height: 1;
+  }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  /* smooth cross-fade between themes */
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.graph, svg.therm,
+  .scn-read, .scn-tab, .replay, .vec-out, .estore, .chip,
+  table th, table td, .eqcell, mark {
+    transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+  }
+
+  /* ═════════════════════════════════════════════
+     LIGHT THEME ("study paper")
+     Accents are deepened so coloured text stays
+     legible on a pale background. Formula chips and
+     the equation pop-up stay dark on purpose — they
+     read as code-like tokens and keep max contrast.
+  ═════════════════════════════════════════════ */
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;   /* warm lab-notebook paper */
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;   /* ink */
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;   /* deep electric blue */
+    --force:    #cb2531;   /* deep physics red (AA 4.5+) */
+    --energy:   #8f5d00;   /* deep amber (AA 4.5+) */
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;   /* deep indigo */
+    --power:    #107a50;   /* deep green (AA 4.5+) */
+    --cyan:     #0b7a67;   /* deep teal (AA 4.5+) */
+    --rose:     #ad1a7d;   /* deep alert magenta (AA 4.5+) */
+    /* floating detail-card — light theme */
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+
+  /* boxes */
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+
+  /* define callouts */
+  body[data-theme="light"] .define          { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.force-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.energy-c  { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.mom-c     { background:linear-gradient(90deg,#ece8fb99,transparent); }
+
+  /* cards & misc */
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip {
+    background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion);
+  }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+
+  /* graphs / thermometer (SVG) — CSS overrides the inline presentation attributes */
+  body[data-theme="light"] svg.graph,
+  body[data-theme="light"] svg.therm { background:#fbfaf4; }
+  body[data-theme="light"] .axis      { stroke:#bcb4a2; }
+  body[data-theme="light"] .axis-lbl  { fill:#8c8674; }
+  body[data-theme="light"] .tracer    { fill:#14181f; }
+  body[data-theme="light"] .therm-tube{ stroke:#bcb4a2; }
+  body[data-theme="light"] #heatCurve { stroke:var(--force); }
+  body[data-theme="light"] #dashMelt,
+  body[data-theme="light"] #dashBoil  { stroke:#cfc8b6; }
+
+  /* explorer chrome */
+  body[data-theme="light"] .scn-read   { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab    { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover  { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+  body[data-theme="light"] .replay     { background:#e2eefb; }
+  body[data-theme="light"] .replay:hover { background:#d3e4fb; }
+
+  /* slider tool output */
+  body[data-theme="light"] .vec-out { background:#fbf2dc; border-color:#e7d5a6; }
+  body[data-theme="light"] .vec-out .ro { color:#8a5a00; }
+
+  /* state chips */
+  body[data-theme="light"] .estore { background:#efeadd; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    body, .theme-toggle, .box, .card, .define, .explorer, .tool,
+    svg.graph, svg.therm, .scn-read, .scn-tab, .replay, .vec-out,
+    .estore, .chip, table th, table td, .eqcell, mark { transition:none; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Physics 0625 · Extended · Topic 2</div>
+    <h1><span class="a">Particles</span>, <span class="b">Heat</span> &amp; <span class="c">Temperature</span></h1>
+    <p class="header-sub">Thermal physics, built around one mental model: <em>everything is tiny particles, and heat is their hidden motion.</em> Get that, and expansion, heat capacity, latent heat and every transfer method fall out of it. Tap the panels — the particles move.</p>
+  </div>
+
+
+  <!-- ── 01 · STATES & PARTICLE MODEL (signature) ── -->
+  <div class="section">
+    <div class="sec-label">01 / 10 · 2.1.1–2.1.2 Kinetic Particle Model</div>
+    <h2>The one idea behind everything: matter is particles</h2>
+
+    <p>Every solid, liquid and gas is made of enormous numbers of tiny particles in constant motion. You can't see them, but their behaviour explains the <em>entire</em> topic. The difference between ice, water and steam is not the particles — they're the same H₂O — it's <strong>how much energy those particles have and how freely they can move.</strong></p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The whole topic in one sentence</div>
+      Heat is just particle movement you can't see. Add energy → particles move faster and push further apart. That single idea explains why things expand when heated, why gases push on their containers, and why a kettle stays at 100 °C while it boils. Hold onto it.
+    </div>
+
+    <p>Pick a state below. Watch how the same particles arrange and move differently — that's the only thing that changes:</p>
+
+    <div class="explorer">
+      <div class="scn-tabs" id="stateTabs">
+        <div class="scn-tab active" data-state="solid">Solid</div>
+        <div class="scn-tab" data-state="liquid">Liquid</div>
+        <div class="scn-tab" data-state="gas">Gas</div>
+      </div>
+
+      <svg class="graph" viewBox="0 0 360 190" id="partBox" aria-label="Particle model animation">
+        <rect x="6" y="6" width="348" height="178" rx="6" class="therm-tube"/>
+        <g id="parts" class="solid"></g>
+      </svg>
+
+      <div class="scn-read">
+        <div class="rk" id="stateTitle">Solid</div>
+        <div id="stateText">Particles are packed in a fixed, regular pattern, held by strong forces. They cannot move past each other — they only <strong>vibrate</strong> about fixed positions. Result: a solid has a fixed shape and a fixed volume, and is almost impossible to compress.</div>
+      </div>
+      <button class="replay" id="stateReplay">↻ Re-shuffle particles</button>
+    </div>
+
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#46a8ff"></span><strong>Solid</strong> — fixed shape &amp; volume</div>
+      <div class="estore"><span class="dot" style="background:#ffae3b"></span><strong>Liquid</strong> — fixed volume, takes container's shape</div>
+      <div class="estore"><span class="dot" style="background:#ff5263"></span><strong>Gas</strong> — fills its container, easily compressed</div>
+    </div>
+
+    <table>
+      <tr><th>Property</th><th>Solid</th><th>Liquid</th><th>Gas</th></tr>
+      <tr><td><strong>Arrangement</strong></td><td>Regular, close-packed</td><td>Close, irregular</td><td>Far apart, random</td></tr>
+      <tr><td><strong>Motion</strong></td><td>Vibrate in place</td><td>Slide past each other</td><td>Fast, free, random</td></tr>
+      <tr><td><strong>Forces between</strong></td><td>Strong</td><td>Moderate</td><td>Very weak / negligible</td></tr>
+      <tr><td><strong>Compressible?</strong></td><td>No</td><td>Almost none</td><td>Yes (lots of space)</td></tr>
+    </table>
+
+    <div class="box analogy">
+      <div class="box-label">🕺 The dance-floor analogy</div>
+      A <strong>solid</strong> is people standing in a tight grid, swaying on the spot — no one moves seats. A <strong>liquid</strong> is a packed dance floor: everyone's touching, but you can squeeze past to the bar. A <strong>gas</strong> is a few people sprinting around an empty hall, bouncing off the walls. Same people, three energies.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Common wrong intuition</div>
+      "Gas particles repel each other, that's why they spread out." No — in the IGCSE model, gas particles barely interact at all; they spread out simply because <em>nothing holds them back</em> and they're moving fast in random directions. Forces between gas particles are treated as negligible.
+    </div>
+  </div>
+
+
+  <!-- ── 02 · TEMPERATURE & INTERNAL ENERGY ── -->
+  <div class="section">
+    <div class="sec-label">02 / 10 · 2.1.2 Temperature &amp; Particle Energy</div>
+    <h2>What temperature actually <em>is</em></h2>
+
+    <p>Temperature is not "amount of heat". <strong>Temperature is a measure of the average kinetic energy of the particles.</strong> Hotter means the particles are jiggling, sliding or flying around <em>faster</em>, on average.</p>
+
+    <div class="define">
+      <span class="term">Internal energy</span> — the total energy of all the particles in an object: the <em>kinetic</em> energy of their motion <strong>plus</strong> the <em>potential</em> energy stored in the forces (bonds) between them. Heating an object increases its internal energy.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🔥 Temperature vs. energy — the bathtub trick</div>
+      A sparkler at 1000 °C and a bathtub of warm water at 40 °C: the sparkler is far <em>hotter</em> (its particles are faster), but the bath holds far more <em>thermal energy</em> overall, because it has vastly more particles. High temperature ≠ lots of energy. This is exactly why a tiny spark doesn't burn you but a bath can warm a room.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Mark-winning one-liner</div>
+      "Temperature measures the <strong>average kinetic energy</strong> of the particles." When you heat something and its temperature rises, you are saying its particles are <strong>moving faster on average</strong>.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · GAS PRESSURE & THE KELVIN SCALE ── -->
+  <div class="section">
+    <div class="sec-label">03 / 10 · 2.1.3 Gases &amp; the Absolute Scale</div>
+    <h2>Gas pressure, and why physicists count from −273 °C</h2>
+
+    <p>A gas pushes outward on its container. <strong>Why?</strong> Its particles are constantly colliding with the walls, and every collision is a tiny push. Billions per second add up to a steady <strong>pressure</strong>.</p>
+
+    <div class="box intuition">
+      <div class="box-label">🏓 Pressure = a hail of tiny impacts</div>
+      Picture popcorn popping inside a sealed pan, hammering the lid from below. More pops per second, or harder pops, means more force on the lid. Gas pressure is exactly that: the combined drumming of particles on the walls. Anything that makes them hit <em>more often</em> or <em>harder</em> raises the pressure.
+    </div>
+
+    <h3>The two ways to change gas pressure</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--momentum)">Heat it (volume fixed)</div>
+        <div class="card-body">More energy → faster particles → they hit the walls <strong>harder and more often</strong> → pressure rises. So pressure increases with temperature: <span class="eq-inline" style="color:var(--momentum)">p ∝ T</span> (T in kelvin).</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--momentum)">Squeeze it (temperature fixed)</div>
+        <div class="card-body">Smaller volume → particles reach the walls sooner → <strong>more collisions per second</strong> → pressure rises. So <span class="eq-inline" style="color:var(--momentum)">pV = constant</span> (Boyle's law).</div>
+      </div>
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">Boyle's Law (Extended)</span> — at constant temperature, <span class="eq-inline" style="color:var(--momentum)">pV = constant</span>, so <span class="eq-inline" style="color:var(--momentum)">p₁V₁ = p₂V₂</span>. Halve the volume and you double the pressure. The graph of p against V is a curve; p against 1/V is a straight line.
+    </div>
+
+    <h3>The Kelvin (absolute) temperature scale</h3>
+    <p>Cool a gas and its particles slow down. Keep cooling and there must be a point where motion is at its <em>absolute minimum</em>. That point is <mark>−273 °C = absolute zero = 0 K</mark>. You cannot get colder, because particles can't have less than zero motion.</p>
+
+    <div class="define mom-c">
+      <span class="term">Kelvin conversion</span> — <span class="eq-inline" style="color:var(--momentum)">T (in K) = θ (in °C) + 273</span>. A change of 1 °C equals a change of 1 K — the scale is just shifted, not stretched. Always use <strong>kelvin</strong> in gas-law calculations.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The trap that costs marks</div>
+      In any pressure–temperature gas calculation, temperature <strong>must be in kelvin</strong>. Doubling from 20 °C to 40 °C does <em>not</em> double the pressure — in kelvin that's 293 K → 313 K, a rise of only ~7%. Convert first, every time.
+    </div>
+  </div>
+
+
+  <!-- ── 04 · THERMAL EXPANSION ── -->
+  <div class="section">
+    <div class="sec-label">04 / 10 · 2.2.1 Thermal Expansion</div>
+    <h2>Why things grow when you heat them</h2>
+
+    <p>Heat almost anything and it expands; cool it and it contracts. The particle model explains it instantly: <strong>hotter particles vibrate (or move) more vigorously, so on average they push each other slightly further apart</strong> — the object takes up more space.</p>
+
+    <div class="box intuition">
+      <div class="box-label">↔️ Same particles, bigger gaps</div>
+      Expansion is <em>not</em> the particles themselves getting bigger. It's the average <strong>spacing</strong> between them increasing because they're swinging through a wider arc. The number of particles never changes — only the room they need.
+    </div>
+
+    <p>Gases expand most, liquids less, solids least — because the freer the particles, the more the extra energy spreads them out:</p>
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Gases — most</div>
+        <div class="card-body">Particles already free and fast; a little heat sends them much further apart.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--energy2)">Liquids — medium</div>
+        <div class="card-body">Used in thermometers: the liquid rises up a thin tube as it expands.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Solids — least</div>
+        <div class="card-body">Strong forces resist; expansion is small but powerful enough to matter.</div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Real-world applications to quote</div>
+      <strong>Expansion gaps</strong> in bridges and railway tracks stop them buckling in summer. <strong>Overhead power cables</strong> are hung with slack so they don't snap when they contract in winter. <strong>Liquid-in-glass thermometers</strong> work <em>because</em> liquids expand more than the glass around them.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The famous exception</div>
+      Water is unusual: between 0 °C and 4 °C it <em>expands</em> as it cools, and ice is <strong>less dense</strong> than liquid water — which is why ice floats and pipes burst in winter. (You won't be asked to explain this in detail, but don't claim "everything contracts when cooled".)
+    </div>
+  </div>
+
+
+  <!-- ── 05 · SPECIFIC HEAT CAPACITY (tool) ── -->
+  <div class="section">
+    <div class="sec-label">05 / 10 · 2.2.2 Specific Heat Capacity</div>
+    <h2>Specific heat capacity — why some things heat up slowly</h2>
+
+    <p>Pour the same energy into a kilogram of water and a kilogram of iron, and the iron gets far hotter. Water needs a <em>lot</em> of energy to change its temperature. That "stubbornness" is measured by the <strong>specific heat capacity</strong>.</p>
+
+    <div class="define energy-c">
+      <span class="term">Specific heat capacity, c</span> — the energy needed to raise the temperature of <strong>1 kg</strong> of a substance by <strong>1 °C</strong>: <span class="eq-inline" style="color:var(--energy2)">E = m·c·Δθ</span>, units J/(kg·°C). Water's is huge: <strong>4200 J/(kg·°C)</strong>.
+    </div>
+
+    <p>Choose a material, set the mass and the energy supplied, and watch the temperature rise <span class="eq-inline" style="color:var(--energy2)">Δθ = E / (m·c)</span>:</p>
+
+    <div class="tool">
+      <div class="tool-grid">
+        <div>
+          <svg class="therm" viewBox="0 0 90 220" aria-label="Thermometer showing temperature rise">
+            <rect class="therm-tube" x="35" y="14" width="20" height="160" rx="10"/>
+            <circle class="merc" cx="45" cy="188" r="18"/>
+            <rect id="merc" class="merc" x="39" y="40" width="12" height="134" rx="6"/>
+            <line x1="58" y1="40"  x2="66" y2="40"  class="axis"/>
+            <line x1="58" y1="90"  x2="66" y2="90"  class="axis"/>
+            <line x1="58" y1="140" x2="66" y2="140" class="axis"/>
+          </svg>
+        </div>
+        <div>
+          <div class="scn-tabs" id="matTabs" style="margin-bottom:14px">
+            <div class="scn-tab active" data-c="4200">Water</div>
+            <div class="scn-tab" data-c="900">Aluminium</div>
+            <div class="scn-tab" data-c="450">Iron</div>
+            <div class="scn-tab" data-c="385">Copper</div>
+          </div>
+          <div class="slider-row">
+            <label>Mass m <b><span id="shcMv">1.0</span> kg</b></label>
+            <input type="range" id="shcM" min="0.1" max="3" step="0.1" value="1">
+          </div>
+          <div class="slider-row">
+            <label>Energy supplied E <b><span id="shcEv">50,000</span> J</b></label>
+            <input type="range" id="shcE" min="2000" max="200000" step="1000" value="50000">
+          </div>
+          <div class="vec-out">
+            <div class="ro">Temperature rise Δθ</div>
+            <div class="rv"><span id="shcOut">11.9</span> °C</div>
+          </div>
+        </div>
+      </div>
+      <div class="scn-read">
+        <div class="rk" style="color:var(--energy2)">Read it back</div>
+        For the same energy, a <em>smaller</em> mass or a <em>smaller</em> c gives a bigger temperature jump. Notice how water (c = 4200) barely warms while copper (c = 385) shoots up — that's why metals heat fast and water resists.
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Why this matters in the real world</div>
+      Water's enormous c is why it's used in central-heating radiators and car coolant (it carries lots of energy), and why coastal towns have milder weather than inland ones — the sea soaks up summer heat and releases it slowly in winter. <strong>Method note:</strong> measure c by heating a known mass with an electrical heater, timing it, and using energy = power × time.
+    </div>
+  </div>
+
+
+  <!-- ── 06 · CHANGES OF STATE & LATENT HEAT (heating curve) ── -->
+  <div class="section">
+    <div class="sec-label">06 / 10 · 2.2.3 Changes of State &amp; Latent Heat</div>
+    <h2>Melting, boiling, and the energy that hides</h2>
+
+    <p>Keep heating a block of ice and something strange happens: while it melts, the thermometer <strong>stops rising</strong> even though you're still adding energy. Where does the energy go? Into <em>breaking the bonds</em> between particles, not speeding them up. That hidden energy is <strong>latent heat</strong>.</p>
+
+    <p>Press play and follow the tracer up the heating curve. Watch the two flat plateaus — that's latent heat at work:</p>
+
+    <div class="explorer">
+      <div class="chart-cap">Temperature vs. energy supplied (heating ice → water → steam)</div>
+      <svg class="graph" viewBox="0 0 360 200" id="heatGraph" aria-label="Heating curve">
+        <line x1="34" y1="170" x2="350" y2="170" class="axis"/>
+        <line x1="34" y1="170" x2="34" y2="14" class="axis"/>
+        <text x="192" y="190" text-anchor="middle" class="axis-lbl">energy supplied →</text>
+        <text x="16" y="92" text-anchor="middle" class="axis-lbl" transform="rotate(-90 16 92)">temperature</text>
+        <line id="dashMelt" x1="34" y1="132" x2="350" y2="132" stroke="#2a3a55" stroke-width="1" stroke-dasharray="4 3"/>
+        <line id="dashBoil" x1="34" y1="58"  x2="350" y2="58"  stroke="#2a3a55" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="338" y="129" text-anchor="end" class="axis-lbl">melting point</text>
+        <text x="338" y="55"  text-anchor="end" class="axis-lbl">boiling point</text>
+        <path class="curve" id="heatCurve" stroke="#ff5263" d=""/>
+        <circle class="tracer" id="heatDot" r="4.5" cx="34" cy="170"/>
+      </svg>
+      <div class="scn-read">
+        <div class="rk" id="heatPhase" style="color:var(--force)">Solid (ice) warming up</div>
+        <div id="heatText">Energy raises the particles' kinetic energy, so the temperature climbs steadily. Press play to begin the journey from ice to steam.</div>
+      </div>
+      <button class="replay" id="heatReplay">▶ Play heating curve</button>
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🧊 Why the temperature pauses while it melts</div>
+      During a change of state, every joule you add goes into <strong>pulling particles apart against their bonds</strong>, not into making them move faster. Average kinetic energy stays the same → temperature stays the same. The thermometer only climbs again once the change is complete.
+    </div>
+
+    <div class="define energy-c">
+      <span class="term">Specific latent heat, L</span> — the energy needed to change the state of <strong>1 kg</strong> without any temperature change: <span class="eq-inline" style="color:var(--energy2)">E = m·L</span>. Fusion (solid↔liquid) and vaporisation (liquid↔gas) have different L values; vaporisation needs far more.
+    </div>
+
+    <h3>Boiling vs. evaporation — not the same thing</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Boiling</div>
+        <div class="card-body">Happens at <strong>one fixed temperature</strong> (the boiling point), <strong>throughout</strong> the whole liquid, with bubbles. Energy supplied from outside.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Evaporation</div>
+        <div class="card-body">Happens at <strong>any temperature</strong>, only at the <strong>surface</strong>, with no bubbles. The fastest surface particles escape.</div>
+      </div>
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">💧 Why evaporation cools — the marathon effect</div>
+      Only the <em>fastest</em> particles have enough energy to escape from the surface. When they leave, the ones left behind are the slower ones — so the average kinetic energy of what remains <strong>drops</strong>, and the liquid cools. It's like the fastest runners leaving a group: the average speed of those left falls. This is exactly why sweating cools you down.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Faster evaporation — three levers</div>
+      Evaporation speeds up with <strong>higher temperature</strong>, <strong>larger surface area</strong>, and <strong>more draught / wind</strong> (which sweeps escaped particles away). That's why wet washing dries fastest on a warm, breezy day spread out wide.
+    </div>
+  </div>
+
+
+  <!-- ── 07 · CONDUCTION ── -->
+  <div class="section">
+    <div class="sec-label">07 / 10 · 2.3.1 Thermal Energy Transfer — Conduction</div>
+    <h2>Conduction — heat passed particle to particle</h2>
+
+    <p>Hold a metal spoon in hot soup and the handle soon warms, even though you never dipped it. That's <strong>conduction</strong>: thermal energy passing along a material without the material itself flowing. It's the main way heat moves through <strong>solids</strong>.</p>
+
+    <div class="box intuition">
+      <div class="box-label">🔗 Hand it down the line</div>
+      Heat one end of a solid: those particles vibrate harder and knock into their neighbours, passing energy along like a bucket chain. In <strong>metals</strong> there's a turbo boost — free electrons zip through the structure carrying energy quickly, which is why metals are the best conductors by far.
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Good conductors</div>
+        <div class="card-body"><strong>Metals</strong> (copper, aluminium) — thanks to free electrons. Used for saucepans, heat sinks, radiators.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Insulators (poor conductors)</div>
+        <div class="card-body"><strong>Air, plastic, wood, wool</strong> — no free electrons to carry energy, and in gases the particles are too far apart to pass it on. Used for handles, clothing, lagging.</div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Why trapped air is the secret</div>
+      Most insulators work by <strong>trapping air</strong> (a poor conductor) in small pockets so it can't move: wool, foam, double glazing, fibreglass loft lagging. Liquids and gases are generally poor conductors because their particles are far apart.
+    </div>
+  </div>
+
+
+  <!-- ── 08 · CONVECTION ── -->
+  <div class="section">
+    <div class="sec-label">08 / 10 · 2.3.2 Thermal Energy Transfer — Convection</div>
+    <h2>Convection — hot fluid floats, cool fluid sinks</h2>
+
+    <p><strong>Convection</strong> moves heat through <em>fluids</em> (liquids and gases) by the fluid itself flowing. It cannot happen in solids — the particles can't travel.</p>
+
+    <div class="define">
+      <span class="term">Convection current</span> — heat a fluid and it expands, becoming <strong>less dense</strong>, so it <strong>rises</strong>. Cooler, denser fluid sinks to take its place, gets heated in turn, and rises too. This circulating loop carries thermal energy through the whole fluid.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🎈 It's really just floating</div>
+      Hot fluid rises for the exact same reason a hot-air balloon rises: heating spreads the particles out, so the same mass takes up more volume → lower density → it floats up through the denser cool fluid around it. "Hot rises" is just "less dense floats" wearing a different hat.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Everyday convection to quote</div>
+      <strong>Radiators</strong> are placed low so warm air rises and circulates a whole room. <strong>Sea breezes</strong>: land heats faster than sea by day, warm air over land rises, cool air flows in off the sea. The <strong>freezer compartment sits at the top</strong> of a fridge so cold, dense air sinks down through the food below.
+    </div>
+  </div>
+
+
+  <!-- ── 09 · RADIATION ── -->
+  <div class="section">
+    <div class="sec-label">09 / 10 · 2.3.3 Thermal Energy Transfer — Radiation</div>
+    <h2>Radiation — heat that needs nothing to travel through</h2>
+
+    <p>The Sun's warmth reaches us across empty space, where there are no particles to conduct or convect. It arrives as <strong>infrared radiation</strong> — a type of electromagnetic wave. Every object emits it; the hotter the object, the more it pours out.</p>
+
+    <div class="box intuition">
+      <div class="box-label">🌞 No particles required</div>
+      Conduction and convection both need <em>matter</em> to pass energy along. Radiation doesn't — it's a wave, so it crosses a vacuum. That's the one thing that makes radiation special, and it's the favourite exam question: <em>how does heat get from the Sun to Earth?</em> Answer: <strong>radiation</strong>, because space is empty.
+    </div>
+
+    <div class="define force-c">
+      <span class="term">Emitting &amp; absorbing</span> — a surface that is <strong>matt (dull) black</strong> is the <em>best</em> emitter <strong>and</strong> the best absorber of infrared radiation. A <strong>shiny, white or silvery</strong> surface is the <em>worst</em> emitter and absorber — it reflects radiation instead.
+    </div>
+
+    <h3>What increases the radiation emitted?</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Higher temperature</div>
+        <div class="card-body">A hotter surface emits more infrared per second — and emits it faster than a cooler one.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Larger / darker surface</div>
+        <div class="card-body">Bigger surface area and a dull-black colour both increase the rate of emission.</div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Applications that test all three</div>
+      <strong>Houses painted white</strong> in hot countries reflect radiation and stay cool. <strong>Shiny emergency "space" blankets</strong> (used in disaster relief) reflect body radiation back in. A <strong>vacuum flask</strong> beats all three transfers at once: a vacuum stops conduction &amp; convection, and silvered walls stop radiation — so your drink stays hot for hours.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Don't mix the three up</div>
+      Conduction = through solids, particle to particle. Convection = fluids flowing in currents. Radiation = waves, no medium needed. If a question mentions a <em>vacuum</em> or <em>space</em>, the answer can only be <strong>radiation</strong>.
+    </div>
+  </div>
+
+
+  <!-- ── 10 · EQUATION BANK ── -->
+  <div class="section">
+    <div class="sec-label">10 / 10 · Reference</div>
+    <h2>The Thermal Physics equation bank</h2>
+    <p>IGCSE Physics gives you <strong>no formula sheet</strong> — these must be recalled from memory. Tap any tile for symbols, units, rearrangements, a worked example, and the exam trap:</p>
+
+    <div class="eqbank" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ The non-negotiables to memorise</div>
+      <span class="eq-inline" style="color:var(--rose)">E = mcΔθ</span>
+      <span class="eq-inline" style="color:var(--rose)">E = mL</span>
+      <span class="eq-inline" style="color:var(--rose)">T/K = θ/°C + 273</span>
+      <span class="eq-inline" style="color:var(--rose)">pV = constant</span>
+      <div style="margin-top:10px;font-size:13px;color:var(--muted)">The pressure–temperature relation <span class="eq-inline" style="color:var(--momentum)">p₁/T₁ = p₂/T₂</span> is shown above for understanding — in 0625 the temperature effect on gas pressure is only examined <em>qualitatively</em>, so <strong>pV = constant</strong> is the one gas equation you must be able to calculate with.</div>
+    </div>
+
+    <div class="box exam" style="margin-top:14px">
+      <div class="box-label">✅ The model that answers half the paper</div>
+      Almost every Topic 2 question is really one idea in disguise: <strong>"add energy → particles move faster / push apart."</strong> Faster particles = higher temperature, harder wall-hits = more pressure, wider spacing = expansion, broken bonds = change of state. Name the particles and you've started the answer.
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE PHYSICS · 0625 EXTENDED · TOPIC 2 — THERMAL PHYSICS<br>
+    Built for understanding — heat is hidden particle motion, and everything follows from that.
+  </div>
+
+</div>
+
+<!-- ── FLOATING EQUATION CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Symbols &amp; units</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Rearrangements</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ════════════════════════════════════════════════
+   1 · PARTICLE MODEL EXPLORER (solid / liquid / gas)
+════════════════════════════════════════════════ */
+(function(){
+  const svgNS='http://www.w3.org/2000/svg';
+  const group=document.getElementById('parts');
+  const titleEl=document.getElementById('stateTitle');
+  const textEl=document.getElementById('stateText');
+  // inner bounds of the box (viewBox 360x190, rect inset ~14)
+  const X0=20, X1=340, Y0=20, Y1=170;
+  const N=24;
+  const TEXT={
+    solid:{t:'Solid',d:'Particles are packed in a fixed, regular pattern, held by strong forces. They cannot move past each other — they only <strong>vibrate</strong> about fixed positions. Result: a fixed shape, a fixed volume, and almost no compressibility.'},
+    liquid:{t:'Liquid',d:'Particles are still close together and touching, but the forces are weaker, so they can <strong>slide past one another</strong>. A liquid keeps a fixed volume but flows to take the shape of its container.'},
+    gas:{t:'Gas',d:'Forces between particles are negligible, so they move <strong>fast in random directions</strong>, far apart, filling all the space and bouncing off the walls. A gas has no fixed shape or volume and is easily compressed.'}
+  };
+
+  // build particle objects
+  const P=[];
+  for(let i=0;i<N;i++){
+    const c=document.createElementNS(svgNS,'circle');
+    c.setAttribute('r','6.5');
+    group.appendChild(c);
+    P.push({el:c, x:0,y:0, hx:0,hy:0, vx:0,vy:0, ph:i*0.7});
+  }
+
+  let state='solid';
+
+  function seed(s){
+    if(s==='solid'){
+      // 6 cols x 4 rows lattice, centred
+      const cols=6, rows=4, gx=(X1-X0)/cols, gy=(Y1-Y0)/rows;
+      for(let i=0;i<N;i++){
+        const cx=i%cols, cy=Math.floor(i/cols);
+        P[i].hx=X0+gx*(cx+0.5);
+        P[i].hy=Y0+gy*(cy+0.5);
+        P[i].x=P[i].hx; P[i].y=P[i].hy;
+        P[i].ph=i*0.7;
+      }
+    } else if(s==='liquid'){
+      // close-packed but confined to lower portion of the box
+      const cols=6, gx=(X1-X0)/cols, ly=Y0+(Y1-Y0)*0.40;
+      for(let i=0;i<N;i++){
+        const cx=i%cols, cy=Math.floor(i/cols);
+        P[i].x=X0+gx*(cx+0.5)+( (cy%2)? gx*0.25 : -gx*0.12 );
+        P[i].y=ly+cy*24;
+        const a=(i*53%360)*Math.PI/180;
+        P[i].vx=Math.cos(a)*0.5; P[i].vy=Math.sin(a)*0.5;
+      }
+    } else { // gas
+      for(let i=0;i<N;i++){
+        P[i].x=X0+Math.random()*(X1-X0);
+        P[i].y=Y0+Math.random()*(Y1-Y0);
+        const a=(i*97%360)*Math.PI/180 + Math.random()*0.6;
+        const sp=2.3;
+        P[i].vx=Math.cos(a)*sp; P[i].vy=Math.sin(a)*sp;
+      }
+    }
+    draw();
+  }
+
+  function draw(){
+    for(let i=0;i<N;i++){
+      P[i].el.setAttribute('cx',P[i].x.toFixed(1));
+      P[i].el.setAttribute('cy',P[i].y.toFixed(1));
+    }
+  }
+
+  let tick=0, raf=null;
+  function frame(){
+    tick++;
+    if(state==='solid'){
+      for(let i=0;i<N;i++){
+        P[i].x=P[i].hx+3*Math.sin(tick*0.18+P[i].ph);
+        P[i].y=P[i].hy+3*Math.cos(tick*0.21+P[i].ph*1.3);
+      }
+    } else {
+      const yTop = (state==='liquid') ? Y0+(Y1-Y0)*0.32 : Y0;
+      for(let i=0;i<N;i++){
+        P[i].x+=P[i].vx; P[i].y+=P[i].vy;
+        if(P[i].x<X0){P[i].x=X0;P[i].vx=-P[i].vx;}
+        if(P[i].x>X1){P[i].x=X1;P[i].vx=-P[i].vx;}
+        if(P[i].y<yTop){P[i].y=yTop;P[i].vy=-P[i].vy;}
+        if(P[i].y>Y1){P[i].y=Y1;P[i].vy=-P[i].vy;}
+      }
+    }
+    draw();
+    raf=requestAnimationFrame(frame);
+  }
+
+  function setState(s){
+    state=s;
+    group.setAttribute('class',s);
+    document.querySelectorAll('#stateTabs .scn-tab').forEach(t=>
+      t.classList.toggle('active', t.dataset.state===s));
+    titleEl.textContent=TEXT[s].t;
+    textEl.innerHTML=TEXT[s].d;
+    seed(s);
+  }
+
+  document.getElementById('stateTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    setState(t.dataset.state);
+  });
+  document.getElementById('stateReplay').addEventListener('click',()=>seed(state));
+
+  setState('solid');
+  if(!REDUCED) raf=requestAnimationFrame(frame);
+})();
+
+/* ════════════════════════════════════════════════
+   2 · SPECIFIC HEAT CAPACITY TOOL  (Δθ = E / m c)
+════════════════════════════════════════════════ */
+(function(){
+  let c=4200;
+  const m=document.getElementById('shcM'), E=document.getElementById('shcE');
+  const merc=document.getElementById('merc');
+  const TUBE_TOP=40, TUBE_BOT=174;            // mercury column travel range
+  function upd(){
+    const M=+m.value, En=+E.value;
+    document.getElementById('shcMv').textContent=M.toFixed(1);
+    document.getElementById('shcEv').textContent=En.toLocaleString('en-US');
+    const dT=En/(M*c);
+    document.getElementById('shcOut').textContent=dT.toFixed(1);
+    // map 0..120 °C onto the tube; clamp
+    const frac=Math.max(0,Math.min(1,dT/120));
+    const h=(TUBE_BOT-TUBE_TOP)*frac;
+    merc.setAttribute('y',(TUBE_BOT-h).toFixed(1));
+    merc.setAttribute('height',h.toFixed(1));
+  }
+  document.getElementById('matTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    c=+t.dataset.c;
+    document.querySelectorAll('#matTabs .scn-tab').forEach(x=>
+      x.classList.toggle('active', x===t));
+    upd();
+  });
+  m.addEventListener('input',upd); E.addEventListener('input',upd);
+  upd();
+})();
+
+/* ════════════════════════════════════════════════
+   3 · HEATING CURVE (changes of state / latent heat)
+════════════════════════════════════════════════ */
+(function(){
+  const GX0=34, GX1=350, GYbot=170, Tsolid=152, Tmelt=132, Tboil=58, Tgas=26;
+  // piecewise: returns y (temperature) for x-fraction u in 0..1
+  const SEG=[
+    {to:0.16, y0:GYbot, y1:Tmelt, phase:'Solid (ice) warming up',
+      txt:'Energy raises the particles’ kinetic energy, so the temperature climbs steadily towards the melting point.'},
+    {to:0.34, y0:Tmelt, y1:Tmelt, phase:'Melting — temperature CONSTANT',
+      txt:'A change of state. All the energy goes into breaking bonds (latent heat of fusion), not into faster motion — so the thermometer holds still.'},
+    {to:0.52, y0:Tmelt, y1:Tboil, phase:'Liquid (water) warming up',
+      txt:'Bonds are loosened; particles speed up again and the temperature rises towards the boiling point.'},
+    {to:0.84, y0:Tboil, y1:Tboil, phase:'Boiling — temperature CONSTANT',
+      txt:'The longest plateau: latent heat of vaporisation pulls particles fully apart into a gas. It needs far more energy than melting did.'},
+    {to:1.00, y0:Tboil, y1:Tgas, phase:'Gas (steam) warming up',
+      txt:'Fully a gas now. Any further energy raises the temperature of the steam.'}
+  ];
+  function yAt(u){
+    let lo=0;
+    for(const s of SEG){
+      if(u<=s.to){ const f=(u-lo)/(s.to-lo||1); return s.y0+(s.y1-s.y0)*f; }
+      lo=s.to;
+    }
+    return Tgas;
+  }
+  function phaseAt(u){ let lo=0; for(const s of SEG){ if(u<=s.to) return s; lo=s.to;} return SEG[SEG.length-1]; }
+
+  const curve=document.getElementById('heatCurve');
+  const dot=document.getElementById('heatDot');
+  const phaseEl=document.getElementById('heatPhase');
+  const textEl=document.getElementById('heatText');
+
+  // build full path once
+  let d='';
+  const STEPS=120;
+  for(let i=0;i<=STEPS;i++){
+    const u=i/STEPS, x=GX0+(GX1-GX0)*u, y=yAt(u);
+    d+=(i?'L':'M')+x.toFixed(1)+','+y.toFixed(1)+' ';
+  }
+  curve.setAttribute('d',d);
+
+  let raf=null, startTs=null;
+  const DUR=6000;
+  function setReadout(u){
+    const s=phaseAt(u);
+    phaseEl.textContent=s.phase;
+    textEl.innerHTML=s.txt;
+  }
+  function frame(ts){
+    if(!startTs) startTs=ts;
+    let p=(ts-startTs)/DUR; if(p>1) p=1;
+    const x=GX0+(GX1-GX0)*p, y=yAt(p);
+    dot.setAttribute('cx',x.toFixed(1)); dot.setAttribute('cy',y.toFixed(1));
+    setReadout(p);
+    if(p<1) raf=requestAnimationFrame(frame);
+  }
+  function play(){
+    if(REDUCED){ dot.setAttribute('cx',GX1); dot.setAttribute('cy',yAt(1)); setReadout(1); return; }
+    cancelAnimationFrame(raf); startTs=null; raf=requestAnimationFrame(frame);
+  }
+  document.getElementById('heatReplay').addEventListener('click',play);
+  // initial resting position at the start of the curve
+  dot.setAttribute('cx',GX0); dot.setAttribute('cy',yAt(0));
+})();
+
+/* ════════════════════════════════════════════════
+   4 · EQUATION BANK + FLOATING CARD
+════════════════════════════════════════════════ */
+const EQ = {
+  shc:    { c:'energy', name:'Specific heat capacity', formula:'E = mcΔθ',
+    syms:[['E','energy','J'],['m','mass','kg'],['c','specific heat cap.','J/(kg·°C)'],['Δθ','temp change','°C']],
+    rearr:'c = E /(mΔθ)   ·   Δθ = E /(mc)   ·   m = E /(cΔθ)',
+    ex:'Heat 2 kg of water (c = 4200) by 30 °C: E = 2 × 4200 × 30 = <b>252 000 J</b>.',
+    tip:'The large c of water (4200) is why it heats and cools slowly — coasts stay milder than inland.' },
+  slh:    { c:'energy', name:'Specific latent heat', formula:'E = mL',
+    syms:[['E','energy','J'],['m','mass','kg'],['L','specific latent heat','J/kg']],
+    rearr:'L = E / m   ·   m = E / L',
+    ex:'Melt 0.5 kg of ice (L = 3.3 × 10⁵): E = 0.5 × 330000 = <b>165 000 J</b>.',
+    tip:'Temperature does NOT change during melting or boiling — energy goes into breaking bonds.' },
+  kelvin: { c:'motion', name:'Kelvin conversion', formula:'T/K = θ/°C + 273',
+    syms:[['T','absolute temp','K'],['θ','Celsius temp','°C']],
+    rearr:'θ/°C = T/K − 273',
+    ex:'25 °C = 25 + 273 = <b>298 K</b>.',
+    tip:'0 K = −273 °C = <b>absolute zero</b>: minimum particle energy, the coldest anything can be.' },
+  boyle:  { c:'mom', name:'Boyle’s law (Extended)', formula:'pV = constant',
+    syms:[['p','pressure','Pa'],['V','volume','m³']],
+    rearr:'p₁V₁ = p₂V₂',
+    ex:'Halve a gas’s volume at constant temperature → pressure <b>doubles</b>.',
+    tip:'Only at <b>constant temperature</b>. Squeeze gas → more wall-collisions per second → higher p.' },
+  presT:  { c:'mom', name:'Pressure–temperature (Extended)', formula:'p₁/T₁ = p₂/T₂',
+    syms:[['p','pressure','Pa'],['T','temperature','K']],
+    rearr:'p₂ = p₁ × T₂/T₁',
+    ex:'Gas at 300 K, 100 kPa, fixed volume, heated to 600 K → <b>200 kPa</b>.',
+    tip:'T must be in <b>kelvin</b>, never °C. Hotter gas → faster particles → harder, more frequent hits.' },
+};
+
+const ORDER=['shc','slh','kelvin','boyle','presT'];
+
+const CMETA = {
+  motion:{col:'#46a8ff', bg:'#0c2536', bd:'#1f4258'},
+  force: {col:'#ff5263', bg:'#2a0f15', bd:'#4a1d26'},
+  energy:{col:'#ffae3b', bg:'#1a1306', bd:'#3a2c10'},
+  mom:   {col:'#8b7bff', bg:'#120c22', bd:'#2e2350'},
+  power: {col:'#43d98c', bg:'#0f2018', bd:'#1f4a30'},
+};
+
+(function buildBank(){
+  const bank=document.getElementById('eqbank');
+  ORDER.forEach(key=>{
+    const e=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=e.c; cell.dataset.key=key;
+    cell.innerHTML='<div class="eq-sym">'+e.formula+'</div><div class="eq-name">'+e.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+
+function openEqCard(key){
+  const e=EQ[key], m=CMETA[e.c]||CMETA.motion;
+  const card=document.getElementById('eq-card');
+  const badge=document.getElementById('eqc-badge');
+  badge.textContent=e.formula.split('=')[0].trim();
+  badge.style.color=m.col; badge.style.background=m.bg; badge.style.borderColor=m.bd;
+  document.getElementById('eqc-name').textContent=e.name;
+  const f=document.getElementById('eqc-formula');
+  f.textContent=e.formula; f.style.color=m.col;
+  const sr=document.getElementById('eqc-syms'); sr.innerHTML='';
+  e.syms.forEach(s=>{
+    const pill=document.createElement('div'); pill.className='sym-pill';
+    pill.innerHTML='<b style="color:'+m.col+'">'+s[0]+'</b> '+s[1]+' <span>['+s[2]+']</span>';
+    sr.appendChild(pill);
+  });
+  document.getElementById('eqc-rearr').textContent=e.rearr;
+  document.getElementById('eqc-example').innerHTML=e.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Exam trap:</b> '+e.tip;
+  card.style.display='block';
+  requestAnimationFrame(()=>card.style.opacity='1');
+}
+function closeEqCard(){
+  const card=document.getElementById('eq-card');
+  card.style.opacity='0';
+  setTimeout(()=>card.style.display='none',250);
+}
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) &&
+     !e.target.closest('.eqcell')) closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   5 · THEME TOGGLE (light / dark)
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){ try{ return localStorage.getItem('phys-theme'); }catch(e){ return null; } }
+  function safeSet(v){ try{ localStorage.setItem('phys-theme',v); }catch(e){} }
+  function apply(theme){
+    body.setAttribute('data-theme', theme);
+    btn.textContent = (theme==='dark') ? SUN : MOON;
+    btn.setAttribute('aria-label',
+      (theme==='dark') ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  let start = safeGet();
+  if(!start){
+    start = (window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+  apply(start);
+  btn.addEventListener('click',()=>{
+    const next = body.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    apply(next); safeSet(next);
+  });
+})();
+</script>
+</body>
+</html>

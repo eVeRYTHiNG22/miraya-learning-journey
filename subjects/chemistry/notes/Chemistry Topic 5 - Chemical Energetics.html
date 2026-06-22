@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemistry Topic 5: Chemical Energetics</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    --motion:   #5b8dee;   /* blue   — ENDOthermic / energy in / cold */
+    --cyan:     #36c9b0;   /* teal   — bonds / bond energy */
+    --force:    #f06070;   /* coral  — EXOthermic / energy out / hot */
+    --momentum: #a57ef5;   /* violet — enthalpy ΔH / pathway diagrams */
+    --energy:   #f0b144;   /* amber  — activation energy Ea */
+    --energy2:  #f0b144;
+    --power:    #4ec994;   /* green  — exam tips / success (fixed role) */
+    --rose:     #f25cc1;   /* magenta — alerts / must-memorise (fixed role) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient field — neutral cool→warm glow (locked base, NOT subject-tinted) */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page { max-width: 880px; margin: 0 auto; padding: 58px 40px 110px; position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 54px; padding-bottom: 30px; border-bottom: 1px solid var(--border); }
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66; border-radius: 20px; padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--motion); margin-bottom: 18px;
+  }
+  h1 {
+    font-family: 'Fraunces', serif; font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    font-weight: 800; color: var(--bright); line-height: 1.06; letter-spacing: -0.01em; margin-bottom: 14px;
+  }
+  h1 .a { color: var(--force); }
+  h1 .b { color: var(--motion); }
+  h1 .c { color: var(--energy); }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 620px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 60px; opacity: 0; animation: rise 0.55s ease forwards; }
+  @keyframes rise { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 7px;
+  }
+  h2 { font-family: 'Fraunces', serif; font-size: 1.7rem; font-weight: 700; color: var(--bright); margin-bottom: 14px; line-height: 1.18; letter-spacing: -0.01em; }
+  h3 { font-family: 'Fraunces', serif; font-size: 1.18rem; font-weight: 600; color: var(--bright); margin: 26px 0 10px; }
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+
+  .eq-inline {
+    font-family: 'JetBrains Mono', monospace; background: #0d1828; border: 1px solid #22324a;
+    border-radius: 5px; padding: 1px 7px; font-size: 13px; color: var(--motion); white-space: nowrap;
+  }
+  body[data-theme="light"] .eq-inline { background: #eef1f8; border-color: #d4dcec; }
+
+  /* ── BOXES ── */
+  .box { border-radius: 11px; padding: 17px 20px; margin: 18px 0; font-size: 14.2px; border: 1px solid; }
+  .box-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color: var(--motion); }
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define { border-left: 3px solid var(--motion); background: linear-gradient(90deg, #0c1c2880, transparent); padding: 12px 18px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+  .define .term { font-family: 'Fraunces', serif; font-weight: 600; color: var(--bright); font-size: 1.02rem; }
+  .define.exo-c   { border-color: var(--force);    background:linear-gradient(90deg,#23110f80,transparent); }
+  .define.endo-c  { border-color: var(--motion);   background:linear-gradient(90deg,#0c1c2880,transparent); }
+  .define.ent-c   { border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+  .define.act-c   { border-color: var(--energy2);  background:linear-gradient(90deg,#23180680,transparent); }
+  .define.bond-c  { border-color: var(--cyan);     background:linear-gradient(90deg,#08221e80,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:20px 0; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 16px 18px; transition: border-color .2s, transform .2s; }
+  .card:hover { transform: translateY(-3px); border-color:#3a557c; }
+  .card-title { font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px; }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th { background: var(--surface2); color: var(--motion); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+
+  mark { background: linear-gradient(120deg,#15405a88,#1f5a7a88); color: var(--bright); padding:1px 4px; border-radius:3px; }
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY NOTE
+     · BASE IS LOCKED: --bg, --surface*, --text, --muted, --border, the
+       paper light theme and the neutral ambient glow never change per subject.
+     · SHARED (never delete): .explorer .scn-tabs .scn-tab .scn-read .rk
+       .tool .slider-row .vec-out .eqbank .eqcell .box .define .card table
+       + the floating #eq-card set.
+     · TOPIC-5 widgets below: energy-profile explorer (.ep-*) and the
+       bond-energy ΔH calculator (.bc-*).
+  ═════════════════════════════════════════════ */
+
+  /* ── EXPLORER / SCENARIO CHROME (shared) ── */
+  .explorer { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin: 22px 0; }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab { font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:8px 14px; border-radius:8px; cursor:pointer; background:#0e1626; border:1px solid var(--border); color:var(--muted); transition:all .18s; user-select:none; }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+  .scn-read { margin-top:16px; background:#0c1c28; border:1px solid #1f4258; border-radius:9px; padding:13px 16px; font-size:13.6px; }
+  .scn-read .rk { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--motion); margin-bottom:6px; }
+
+  /* shared SVG diagram frame */
+  svg.diagram { width:100%; height:auto; display:block; background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+
+  /* ── ENERGY-PROFILE EXPLORER ── */
+  .ep-curve  { fill:none; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+  .ep-exo  .ep-curve { stroke:var(--force); }
+  .ep-endo .ep-curve { stroke:var(--motion); }
+  .ep-axis   { stroke:var(--border); stroke-width:1.3; }
+  .ep-level  { stroke:var(--muted); stroke-width:1.1; stroke-dasharray:4 4; opacity:.8; }
+  .ep-ea     { stroke:var(--energy); fill:var(--energy); stroke-width:1.5; }
+  .ep-dhx    { stroke:var(--force);  fill:var(--force);  stroke-width:1.5; }
+  .ep-dhn    { stroke:var(--motion); fill:var(--motion); stroke-width:1.5; }
+  .ep-txt    { fill:var(--muted); font-family:'JetBrains Mono',monospace; font-size:10px; }
+  .ep-lbl    { fill:var(--bright); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
+  .ep-ea-t   { fill:var(--energy); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
+  .ep-dhx-t  { fill:var(--force);  font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
+  .ep-dhn-t  { fill:var(--motion); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
+
+  /* ── BOND-ENERGY ΔH CALCULATOR ── */
+  .tool { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin:22px 0; }
+  .rx-eq { font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--bright); text-align:center; background:var(--surface2); border:1px solid var(--border); border-radius:9px; padding:11px 14px; margin-bottom:16px; }
+  .bc-col-h { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+  .bc-broken .bc-col-h { color:var(--force); }
+  .bc-made   .bc-col-h { color:var(--motion); }
+  .bc-line { display:flex; justify-content:space-between; gap:10px; font-family:'JetBrains Mono',monospace; font-size:12.5px; padding:5px 0; border-bottom:1px solid var(--border); }
+  .bc-line:last-of-type { border-bottom:none; }
+  .bc-line span { color:var(--muted); }
+  .bc-line b { color:var(--text); }
+  .bc-sub { display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:12.5px; margin-top:8px; padding-top:8px; border-top:1px solid var(--border); }
+  .bc-sub b { color:var(--bright); }
+  .bc-out { background:var(--surface2); border:1px solid var(--border); border-radius:9px; padding:15px 16px; text-align:center; margin-top:16px; }
+  .bc-out .ro { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .bc-out .rv { font-family:'Fraunces',serif; font-size:1.9rem; font-weight:700; line-height:1.1; margin-bottom:6px; }
+  .bc-out .rverdict { font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.05em; }
+
+  /* slider row (shared, kept for completeness) */
+  .slider-row { margin:14px 0; }
+  .slider-row label { display:flex; justify-content:space-between; align-items:baseline; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.06em; margin-bottom:6px; }
+  .vec-out { background:#08221e; border:1px solid #1f5a4f; border-radius:9px; padding:14px 16px; text-align:center; }
+
+  /* ── KEY-TERMS BANK ── */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqcell { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 12px; cursor:pointer; text-align:center; transition:transform .16s, border-color .16s, box-shadow .16s; }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion); box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym { font-family:'Fraunces',serif; font-size:14.5px; font-weight:600; color:var(--bright); margin-bottom:4px; }
+  .eqcell[data-c="exo"]:hover  { border-color:var(--force); }
+  .eqcell[data-c="endo"]:hover { border-color:var(--motion); }
+  .eqcell[data-c="ent"]:hover  { border-color:var(--momentum); }
+  .eqcell[data-c="act"]:hover  { border-color:var(--energy2); }
+  .eqcell[data-c="bond"]:hover { border-color:var(--cyan); }
+
+  /* floating detail card — fully themed */
+  #eq-card { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px; width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow); overflow:hidden; transition:opacity .25s; }
+  #eqc-top { padding:18px 18px 14px; display:flex; gap:14px; align-items:center; border-bottom:1px solid var(--card-divider); position:relative; }
+  #eqc-badge { flex-shrink:0; width:62px; height:62px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:600; background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd); }
+  #eqc-head h4 { font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px; }
+  #eqc-formula { font-family:'Inter',sans-serif; font-size:12.5px; color:var(--card-text); line-height:1.45; }
+  #eqc-close { position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted); cursor:pointer; user-select:none; }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--card-label); margin:10px 0 6px; }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill { background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px; padding:5px 9px; font-size:11.5px; color:var(--card-text); }
+  #eqc-rearr { font-size:12.4px; color:var(--card-text); background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; line-height:1.5; }
+  #eqc-example { background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0; padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip { background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0; padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px; }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── PARTICLE / EXAMPLE CHIPS ── */
+  .estores { display:flex; flex-wrap:wrap; gap:9px; margin:16px 0; }
+  .estore { background:#19202f; border:1px solid var(--border); border-radius:8px; padding:9px 13px; font-size:12.6px; display:flex; align-items:center; gap:8px; }
+  .estore .dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+
+  /* ── FOOTER ── */
+  .footer { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); text-align:center; padding-top:28px; border-top:1px solid var(--border); letter-spacing:.07em; line-height:1.8; }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .grid3, .eqbank { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle { position: fixed; top: 16px; right: 16px; z-index: 10000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 17px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.3); transition: transform .25s, border-color .2s, background-color .35s; line-height: 1; }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.diagram, .scn-read, .scn-tab,
+  .vec-out, .bc-out, .rx-eq, .estore, .chip, table th, table td, .eqcell, mark {
+    transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+  }
+
+  /* ═════════════════════════════════════════════
+     LIGHT THEME ("study paper") — accents deepened for AA contrast
+  ═════════════════════════════════════════════ */
+  body[data-theme="light"] {
+    --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4;
+    --text:#2c313c; --muted:#6f7484; --bright:#14181f;
+
+    --motion:   #1769d6;   /* deep blue — endothermic */
+    --cyan:     #0b7a67;   /* deep teal — bonds */
+    --force:    #cb2531;   /* deep coral-red — exothermic */
+    --momentum: #5b40d6;   /* deep violet — enthalpy */
+    --energy:   #8f5d00;   /* deep amber — activation energy */
+    --energy2:  #8f5d00;
+    --power:    #107a50;   /* deep green */
+    --rose:     #ad1a7d;   /* deep magenta */
+
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+  /* boxes */
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+  /* define callouts */
+  body[data-theme="light"] .define         { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.exo-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.endo-c  { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.ent-c   { background:linear-gradient(90deg,#ece8fb99,transparent); }
+  body[data-theme="light"] .define.act-c   { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.bond-c  { background:linear-gradient(90deg,#dff3ef99,transparent); }
+  /* cards & misc */
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip { background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion); }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+  /* diagrams (SVG) */
+  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+  /* explorer chrome */
+  body[data-theme="light"] .scn-read { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab  { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover  { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+  /* bond calculator + chips */
+  body[data-theme="light"] .vec-out { background:#dff3ef; border-color:#a9ddd2; }
+  body[data-theme="light"] .estore { background:#efeadd; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    body, .theme-toggle, .box, .card, .define, .explorer, .tool, svg.diagram,
+    .scn-read, .scn-tab, .vec-out, .bc-out, .rx-eq, .estore, .chip, table th, table td, .eqcell, mark { transition:none; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Chemistry 0620 · Extended · Topic 5</div>
+    <h1>Chemical <span class="c">Energetics</span></h1>
+    <p class="header-sub">One idea runs through the whole topic: <em>every reaction is a trade in bond energy.</em> When a reaction gives heat out it is <span style="color:var(--force)"><strong>exothermic</strong></span>; when it soaks heat in it is <span style="color:var(--motion)"><strong>endothermic</strong></span>. Tap the panels — redraw the energy profile, then let the bond-energy calculator predict ΔH.</p>
+  </div>
+
+
+  <!-- ── 01 · THE BIG IDEA ── -->
+  <div class="section">
+    <div class="sec-label">01 / 09 · 5.1 Energy &amp; reactions</div>
+    <h2>Energy is stored in bonds — reactions just move it</h2>
+
+    <div class="box intuition">
+      <div class="box-label">🔋 The one mental model</div>
+      Think of every chemical bond as a tiny <strong>stretched spring holding energy</strong>. A reaction <em>breaks</em> some springs and <em>builds</em> new ones. Breaking always <strong>costs</strong> energy; building always <strong>pays back</strong> energy. Whether the reaction warms its surroundings or cools them comes down to one question: <strong>did building the new bonds pay back more than breaking the old ones cost?</strong>
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">💸 The energy bank account</div>
+      It's like spending and earning money. Breaking bonds is <em>spending</em> (energy goes out of the chemicals); making bonds is <em>earning</em> (energy comes back). If you earn more than you spend, you finish with spare cash to give away — that "spare" is heat released to the room (<span style="color:var(--force)">exothermic</span>). If you spend more than you earn, you must pull money in from outside — heat is taken from the room (<span style="color:var(--motion)">endothermic</span>).
+    </div>
+
+    <h3>System vs. surroundings — say which one you mean</h3>
+    <p>The <strong>system</strong> is the reacting chemicals. The <strong>surroundings</strong> are everything else — the solution they sit in, the test tube, the air, the thermometer. Energy that leaves the system goes <em>into</em> the surroundings (and vice-versa), so the temperature you read on a thermometer is really telling you about the <strong>surroundings</strong>.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Exothermic — gives out</div>
+        <div class="card-body">Thermal energy transfers <strong>from</strong> the system <strong>to</strong> the surroundings. Surroundings <strong>warm up</strong> → thermometer reading <strong>rises</strong>.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Endothermic — takes in</div>
+        <div class="card-body">Thermal energy transfers <strong>from</strong> the surroundings <strong>into</strong> the system. Surroundings <strong>cool down</strong> → thermometer reading <strong>falls</strong>.</div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ The temperature test — how you tell them apart in the lab</div>
+      Put a thermometer in the mixture. <strong>Temperature up = exothermic. Temperature down = endothermic.</strong> Always answer in terms of the <em>surroundings'</em> temperature — that is exactly what the Core objectives ask you to state.
+    </div>
+  </div>
+
+
+  <!-- ── 02 · EXOTHERMIC ── -->
+  <div class="section">
+    <div class="sec-label">02 / 09 · 5.1 Exothermic reactions</div>
+    <h2>Exothermic — heat flows out, surroundings warm up</h2>
+
+    <div class="define exo-c">
+      <span class="term">Exothermic reaction</span> — a reaction that <strong>transfers thermal energy to the surroundings</strong>, leading to an <strong>increase in the temperature</strong> of the surroundings.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🔥 Why it feels hot</div>
+      The products are at a <em>lower</em> energy than the reactants. That "lost" chemical energy doesn't vanish — it leaves the chemicals as heat, so the test tube, the solution and the air around it get warmer.
+    </div>
+
+    <h3>Everyday exothermic reactions</h3>
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#f06070"></span>Combustion (burning fuels)</div>
+      <div class="estore"><span class="dot" style="background:#f06070"></span>Neutralisation (acid + alkali)</div>
+      <div class="estore"><span class="dot" style="background:#f06070"></span>Respiration in your cells</div>
+      <div class="estore"><span class="dot" style="background:#f06070"></span>Most reactive-metal + acid reactions</div>
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🍳 From the Indian kitchen</div>
+      The <strong>LPG cylinder</strong> on a home stove burns methane/butane in air — combustion, strongly exothermic — which is the whole point: the heat released cooks the food. A <strong>chemical hand-warmer</strong> a trekker carries to Shimla works the same way: a slow exothermic reaction (iron rusting) releases heat into cold fingers.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Mark-scoring phrasing</div>
+      "Energy is <strong>transferred to the surroundings</strong>, so the temperature of the surroundings <strong>increases</strong>." Naming the direction (<em>to</em> the surroundings) <em>and</em> the temperature effect together is what scores both marks.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · ENDOTHERMIC ── -->
+  <div class="section">
+    <div class="sec-label">03 / 09 · 5.1 Endothermic reactions</div>
+    <h2>Endothermic — heat flows in, surroundings cool down</h2>
+
+    <div class="define endo-c">
+      <span class="term">Endothermic reaction</span> — a reaction that <strong>takes in thermal energy from the surroundings</strong>, leading to a <strong>decrease in the temperature</strong> of the surroundings.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🧊 Why it feels cold</div>
+      The products end up at a <em>higher</em> energy than the reactants. That extra energy has to come from somewhere — it is pulled out of the surroundings as heat, so the mixture and everything touching it gets <strong>colder</strong>.
+    </div>
+
+    <h3>Everyday endothermic changes</h3>
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#5b8dee"></span>Thermal decomposition (e.g. heating CaCO₃)</div>
+      <div class="estore"><span class="dot" style="background:#5b8dee"></span>Photosynthesis (energy taken from sunlight)</div>
+      <div class="estore"><span class="dot" style="background:#5b8dee"></span>Dissolving some salts in water</div>
+      <div class="estore"><span class="dot" style="background:#5b8dee"></span>The reaction in an instant cold pack</div>
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🏏 The cricketer's cold pack</div>
+      When a batsman is hit and the physio cracks an <strong>instant cold pack</strong>, a salt dissolves inside and that endothermic process <em>draws heat out</em> of the swelling, so it feels icy. A spoon of <strong>fruit-salt like Eno (or sherbet)</strong> on a warm tongue does the chemical version: the fizzing acid–bicarbonate reaction is endothermic and gives that cool tingle.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ "Endothermic = the reaction gets hotter" — NO</div>
+      An endothermic reaction makes the <strong>surroundings colder</strong>, not hotter. The chemicals are <em>absorbing</em> energy, so the thermometer (reading the surroundings) goes <strong>down</strong>. Don't confuse "needs heating to start" with "endothermic" either — many exothermic reactions (like combustion) still need a spark to begin.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Lock these directions in</div>
+      <span class="eq-inline" style="color:var(--rose)">EXO = EXit → energy out → surroundings WARMER</span>
+      <span class="eq-inline" style="color:var(--rose)">ENDO = INTO → energy in → surroundings COOLER</span>
+    </div>
+  </div>
+
+
+  <!-- ── 04 · REACTION PATHWAY DIAGRAMS ── -->
+  <div class="section">
+    <div class="sec-label">04 / 09 · 5.1 Reaction pathway diagrams</div>
+    <h2>Reaction pathway diagrams — energy as a journey</h2>
+
+    <p>A <strong>reaction pathway diagram</strong> (energy level diagram) plots <strong>energy</strong> up the side against the <strong>progress of the reaction</strong> along the bottom. It tells the whole energy story at a glance: where the reactants and products sit, the size of the energy barrier, and whether energy is released or absorbed.</p>
+
+    <div class="box intuition">
+      <div class="box-label">⛰️ Reading the hill</div>
+      Picture pushing a boulder over a hill. You must shove it <strong>up to the top</strong> first (that climb is the <span style="color:var(--energy)">activation energy</span>) before it can roll down the far side. Where it finally settles — <em>lower</em> than the start (exothermic) or <em>higher</em> (endothermic) — is decided by the products' energy level, and the height difference is the <span style="color:var(--momentum)">enthalpy change, ΔH</span>.
+    </div>
+
+    <p>Flip between an exothermic and an endothermic reaction. Watch where the products land, and how the <span style="color:var(--momentum)">ΔH</span> arrow flips direction:</p>
+
+    <div class="explorer ep-exo" id="epExplorer">
+      <div class="scn-tabs" id="epTabs">
+        <div class="scn-tab active" data-ep="exo">Exothermic</div>
+        <div class="scn-tab" data-ep="endo">Endothermic</div>
+      </div>
+      <svg class="diagram" viewBox="0 0 360 250" id="epSvg" aria-label="Reaction pathway diagram">
+        <g id="epInner"></g>
+      </svg>
+      <div class="scn-read" id="epRead">
+        <div class="rk">How to read it</div>
+        <span id="epReadTxt"></span>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ How to label a pathway diagram (Supplement)</div>
+      A full-mark diagram has <strong>five labels</strong>: axes (<em>energy</em> ↑, <em>progress of reaction</em> →), the <strong>reactants</strong> level, the <strong>products</strong> level, the <strong>activation energy Eₐ</strong> (reactants up to the peak), and the <strong>ΔH</strong> arrow (reactants to products). For exothermic the ΔH arrow points <strong>down</strong>; for endothermic it points <strong>up</strong>.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Measure Eₐ from the reactants, not the floor</div>
+      Activation energy is the climb from the <strong>reactant level up to the peak</strong> — not from the bottom of the graph. And ΔH is measured <strong>reactants → products</strong>, not products → peak. Mixing these up is the commonest pathway-diagram error.
+    </div>
+  </div>
+
+
+  <!-- ── 05 · ENTHALPY CHANGE ── -->
+  <div class="section">
+    <div class="sec-label">05 / 09 · 5.1 Enthalpy change, ΔH (Supplement)</div>
+    <h2>Enthalpy change, ΔH — putting a number and a sign on it</h2>
+
+    <div class="define ent-c">
+      <span class="term">Enthalpy change, ΔH</span> — the transfer of thermal energy during a reaction. <span class="eq-inline" style="color:var(--momentum)">ΔH is negative for exothermic</span> reactions and <span class="eq-inline" style="color:var(--momentum)">ΔH is positive for endothermic</span> reactions. It is usually measured in <strong>kJ/mol</strong>.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">➖ Why exothermic is negative</div>
+      ΔH is the energy of the products <em>minus</em> the energy of the reactants. In an exothermic reaction the products are <strong>lower</strong>, so products − reactants is a <strong>negative</strong> number — the chemicals <em>lost</em> energy (it left as heat). Endothermic: products are <strong>higher</strong>, so ΔH is <strong>positive</strong> — the chemicals <em>gained</em> energy.
+    </div>
+
+    <table>
+      <tr><th>Reaction type</th><th>Surroundings</th><th>Products vs reactants</th><th>Sign of ΔH</th></tr>
+      <tr><td><strong>Exothermic</strong></td><td>Warm up</td><td>Products <strong>lower</strong></td><td><strong style="color:var(--force)">ΔH negative (−)</strong></td></tr>
+      <tr><td><strong>Endothermic</strong></td><td>Cool down</td><td>Products <strong>higher</strong></td><td><strong style="color:var(--motion)">ΔH positive (+)</strong></td></tr>
+    </table>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Never drop the sign</div>
+      A ΔH answer is <strong>only complete with its sign and units</strong>: e.g. <span class="eq-inline" style="color:var(--rose)">ΔH = −184 kJ/mol</span>, not just "184". The minus sign <em>is</em> the information that the reaction is exothermic.
+    </div>
+  </div>
+
+
+  <!-- ── 06 · ACTIVATION ENERGY ── -->
+  <div class="section">
+    <div class="sec-label">06 / 09 · 5.1 Activation energy, Eₐ (Supplement)</div>
+    <h2>Activation energy, Eₐ — the barrier every reaction must clear</h2>
+
+    <div class="define act-c">
+      <span class="term">Activation energy, Eₐ</span> — the <strong>minimum energy that colliding particles must have in order to react</strong>.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🔥 Why even exothermic reactions need a spark</div>
+      Before new bonds can form, the <em>old</em> ones must start to break — and breaking bonds needs an input of energy. That up-front cost is the activation energy: the small "hill" particles must get over before the reaction can release its energy. It's why a petrol–air mixture is happy to sit in the tank, yet a single spark sets it off: the spark supplies Eₐ.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎢 The push before the drop</div>
+      A roller-coaster car at the station won't move on its own — even though it would <em>love</em> to be at the low point of the track. It must first be hauled <strong>up to the crest</strong> (activation energy). Once over, it rushes down. Exothermic reactions are downhill overall, but still start with that uphill climb.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Spot it on the diagram</div>
+      Eₐ is always the gap from the <strong>reactant energy level up to the top of the peak</strong>. A larger peak means a bigger barrier and (other things equal) a slower reaction — the bridge to Topic 6.2, where catalysts work by <em>lowering</em> Eₐ.
+    </div>
+  </div>
+
+
+  <!-- ── 07 · BOND BREAKING & MAKING ── -->
+  <div class="section">
+    <div class="sec-label">07 / 09 · 5.1 Bonds &amp; energy (Supplement)</div>
+    <h2>Bond breaking vs bond making — where ΔH actually comes from</h2>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ The two facts everything else rests on</div>
+      <span class="eq-inline" style="color:var(--rose)">Bond BREAKING is ENDOthermic — needs energy in</span>
+      <span class="eq-inline" style="color:var(--rose)">Bond MAKING is EXOthermic — gives energy out</span>
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🧲 Why breaking costs and making pays</div>
+      Atoms in a bond are held together by attraction — pulling them apart is like stretching a magnet off a fridge: you must <strong>put energy in</strong>. Letting atoms snap together into a new bond is the magnet slamming back — energy is <strong>released</strong>. So every reaction first spends energy breaking, then earns energy making.
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Breaking bonds (in reactants)</div>
+        <div class="card-body"><strong>Endothermic</strong> — energy is absorbed to pull bonded atoms apart. Counts as energy <strong>IN (+)</strong>.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Making bonds (in products)</div>
+        <div class="card-body"><strong>Exothermic</strong> — energy is given out as new bonds form. Counts as energy <strong>OUT (−)</strong>.</div>
+      </div>
+    </div>
+
+    <h3>The rule that decides exo or endo</h3>
+    <div class="define ent-c">
+      <span class="term">ΔH = energy to break bonds − energy released making bonds</span><br>
+      <span class="eq-inline" style="color:var(--momentum)">ΔH = Σ(bonds broken) − Σ(bonds made)</span>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Making releases MORE than breaking costs</div>
+        <div class="card-body">Σ(made) &gt; Σ(broken) → ΔH is <strong>negative</strong> → <strong>exothermic</strong>. Spare energy leaves as heat.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Breaking costs MORE than making releases</div>
+        <div class="card-body">Σ(broken) &gt; Σ(made) → ΔH is <strong>positive</strong> → <strong>endothermic</strong>. Extra energy must be pulled in.</div>
+      </div>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Don't flip breaking and making</div>
+      It is a guaranteed lost mark to write "breaking bonds releases energy". <strong>Breaking always needs energy; making always releases it.</strong> The overall sign of ΔH comes from which total wins, never from one bond alone.
+    </div>
+  </div>
+
+
+  <!-- ── 08 · CALCULATING ΔH FROM BOND ENERGIES ── -->
+  <div class="section">
+    <div class="sec-label">08 / 09 · 5.1 ΔH from bond energies (Supplement)</div>
+    <h2>Calculating ΔH from bond energies</h2>
+
+    <p>A <strong>bond energy</strong> is the energy needed to break one mole of a particular bond (and, equally, the energy released when that bond forms). Add up every bond broken in the reactants (energy in), subtract every bond made in the products (energy out), and you get ΔH:</p>
+
+    <div class="define bond-c">
+      <span class="term">Method</span> — <span class="eq-inline" style="color:var(--cyan)">ΔH = Σ(bond energies broken) − Σ(bond energies made)</span>. A <strong>negative</strong> answer means exothermic; a <strong>positive</strong> answer means endothermic.
+    </div>
+
+    <p>The calculator below uses these example bond energies (kJ/mol, of the kind given on the exam data sheet). Switch reactions and follow the running total:</p>
+
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#36c9b0"></span>H–H = 436</div>
+      <div class="estore"><span class="dot" style="background:#36c9b0"></span>Cl–Cl = 242</div>
+      <div class="estore"><span class="dot" style="background:#36c9b0"></span>H–Cl = 431</div>
+      <div class="estore"><span class="dot" style="background:#36c9b0"></span>C–H = 412</div>
+      <div class="estore"><span class="dot" style="background:#36c9b0"></span>O=O = 498</div>
+      <div class="estore"><span class="dot" style="background:#36c9b0"></span>C=O = 805</div>
+      <div class="estore"><span class="dot" style="background:#36c9b0"></span>O–H = 463</div>
+    </div>
+
+    <div class="tool">
+      <div class="scn-tabs" id="rxTabs"></div>
+      <div class="rx-eq" id="rxEq"></div>
+      <div class="grid2">
+        <div class="card bc-broken">
+          <div class="bc-col-h">▲ Bonds broken — energy IN (+)</div>
+          <div id="bcBroken"></div>
+          <div class="bc-sub"><span>Σ broken</span><b id="bcBrokenSum"></b></div>
+        </div>
+        <div class="card bc-made">
+          <div class="bc-col-h">▼ Bonds made — energy OUT (−)</div>
+          <div id="bcMade"></div>
+          <div class="bc-sub"><span>Σ made</span><b id="bcMadeSum"></b></div>
+        </div>
+      </div>
+      <div class="bc-out">
+        <div class="ro">ΔH = Σ broken − Σ made</div>
+        <div class="rv" id="bcResult"></div>
+        <div class="rverdict" id="bcVerdict"></div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Worked example — H₂ + Cl₂ → 2HCl</div>
+      Broken: 1 (H–H) + 1 (Cl–Cl) = 436 + 242 = <strong>678</strong>. Made: 2 (H–Cl) = 2 × 431 = <strong>862</strong>.
+      ΔH = 678 − 862 = <strong style="color:var(--force)">−184 kJ/mol</strong>. Negative → <strong>exothermic</strong> (more energy released forming the H–Cl bonds than was needed to break the H–H and Cl–Cl bonds).
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Count every bond, and mind the coefficients</div>
+      In CH₄ there are <strong>four</strong> C–H bonds, and "2O₂" means <strong>two</strong> O=O bonds. Multiply each bond energy by how many of that bond there are, on <em>both</em> sides. Dropping a bond or ignoring a "2" in front is the usual way these calculations go wrong.
+    </div>
+  </div>
+
+
+  <!-- ── 09 · KEY-TERMS BANK ── -->
+  <div class="section">
+    <div class="sec-label">09 / 09 · Reference</div>
+    <h2>The Topic 5 key-terms bank</h2>
+    <p>These are the definitions and rules examiners want back precisely. Tap any tile for the exact statement, key features, an example, and the exam trap:</p>
+
+    <div class="eqbank" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ The non-negotiables to memorise</div>
+      <span class="eq-inline" style="color:var(--rose)">exo → energy OUT → surroundings warmer → ΔH −</span>
+      <span class="eq-inline" style="color:var(--rose)">endo → energy IN → surroundings cooler → ΔH +</span>
+      <span class="eq-inline" style="color:var(--rose)">breaking = endothermic · making = exothermic</span>
+      <span class="eq-inline" style="color:var(--rose)">ΔH = Σ(broken) − Σ(made)</span>
+      <span class="eq-inline" style="color:var(--rose)">Eₐ = minimum energy to react</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE CHEMISTRY · 0620 EXTENDED · TOPIC 5 — CHEMICAL ENERGETICS<br>
+    Built for understanding — every reaction is a trade in bond energy.
+  </div>
+
+</div>
+
+<!-- ── FLOATING TERM CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Key features</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Why it matters</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   1 · ENERGY-PROFILE EXPLORER (exo / endo)
+════════════════════════════════════════════════ */
+(function(){
+  // y grows downward → smaller y = higher energy
+  const EP = {
+    exo: { yr:118, yp:50, ypr:188, mode:'exo',
+      read:'Products sit LOWER than the reactants. The chemicals lost energy — it was transferred OUT to the surroundings as heat — so the surroundings warm up and ΔH is negative (−). The amber arrow up to the peak is the activation energy Eₐ.' },
+    endo:{ yr:178, yp:50, ypr:116, mode:'endo',
+      read:'Products sit HIGHER than the reactants. The chemicals gained energy — it was taken IN from the surroundings — so the surroundings cool down and ΔH is positive (+). Even here the reaction must first climb the activation energy Eₐ up to the peak.' }
+  };
+  const inner = document.getElementById('epInner');
+  const exp   = document.getElementById('epExplorer');
+  const svg   = document.getElementById('epSvg');
+  const tabs  = document.getElementById('epTabs');
+  const readT = document.getElementById('epReadTxt');
+
+  function vArrow(x, ya, yb, cls){
+    const top=Math.min(ya,yb), bot=Math.max(ya,yb);
+    return '<line class="'+cls+'" x1="'+x+'" y1="'+(top+6)+'" x2="'+x+'" y2="'+(bot-6)+'"/>'+
+      '<polygon class="'+cls+'" points="'+(x-3.5)+','+(top+6)+' '+(x+3.5)+','+(top+6)+' '+x+','+top+'"/>'+
+      '<polygon class="'+cls+'" points="'+(x-3.5)+','+(bot-6)+' '+(x+3.5)+','+(bot-6)+' '+x+','+bot+'"/>';
+  }
+
+  function render(key){
+    const d = EP[key];
+    const yr=d.yr, yp=d.yp, ypr=d.ypr;
+    let s='';
+    // axes
+    s+='<line class="ep-axis" x1="46" y1="28" x2="46" y2="218"/>';
+    s+='<line class="ep-axis" x1="46" y1="218" x2="344" y2="218"/>';
+    s+='<text class="ep-txt" x="14" y="128" transform="rotate(-90 14 128)" text-anchor="middle">Energy</text>';
+    s+='<text class="ep-txt" x="195" y="236" text-anchor="middle">Progress of reaction →</text>';
+    // dashed level guides
+    s+='<line class="ep-level" x1="46" y1="'+yr+'" x2="135" y2="'+yr+'"/>';
+    s+='<line class="ep-level" x1="265" y1="'+ypr+'" x2="335" y2="'+ypr+'"/>';
+    // the energy curve
+    s+='<path class="ep-curve" d="M60,'+yr+' L135,'+yr+
+       ' C168,'+yr+' 182,'+yp+' 200,'+yp+
+       ' C218,'+yp+' 232,'+ypr+' 265,'+ypr+' L322,'+ypr+'"/>';
+    // activation energy arrow (reactant level up to peak)
+    s+=vArrow(150, yr, yp, 'ep-ea');
+    s+='<text class="ep-ea-t" x="156" y="'+((yr+yp)/2+4)+'">Eₐ</text>';
+    // ΔH arrow (reactant level to product level)
+    const dhCls = (key==='exo') ? 'ep-dhx' : 'ep-dhn';
+    const dhTxtCls = (key==='exo') ? 'ep-dhx-t' : 'ep-dhn-t';
+    s+=vArrow(305, yr, ypr, dhCls);
+    s+='<text class="'+dhTxtCls+'" x="280" y="'+((yr+ypr)/2+4)+'" text-anchor="end">ΔH</text>';
+    // level labels
+    s+='<text class="ep-lbl" x="62" y="'+(yr-8)+'">Reactants</text>';
+    const prX = (key==='exo') ? 264 : 264;
+    s+='<text class="ep-lbl" x="'+prX+'" y="'+(ypr-9)+'">Products</text>';
+
+    inner.innerHTML=s;
+    exp.classList.toggle('ep-exo', key==='exo');
+    exp.classList.toggle('ep-endo', key==='endo');
+    svg.classList.remove('ep-exo','ep-endo');           // class lives on .explorer wrapper
+    // curve colour keys off the wrapper class via CSS (.ep-exo .ep-curve / .ep-endo .ep-curve)
+    readT.textContent = d.read;
+    tabs.querySelectorAll('.scn-tab').forEach(t=>t.classList.toggle('active', t.dataset.ep===key));
+  }
+
+  tabs.addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    render(t.dataset.ep);
+  });
+  render('exo');
+})();
+
+/* ════════════════════════════════════════════════
+   2 · BOND-ENERGY ΔH CALCULATOR
+════════════════════════════════════════════════ */
+(function(){
+  const RX = {
+    hcl:  { name:'H₂ + Cl₂ → 2HCl',
+            broken:[['H–H',1,436],['Cl–Cl',1,242]],
+            made:[['H–Cl',2,431]] },
+    ch4:  { name:'CH₄ + 2O₂ → CO₂ + 2H₂O',
+            broken:[['C–H',4,412],['O=O',2,498]],
+            made:[['C=O',2,805],['O–H',4,463]] },
+    split:{ name:'2H₂O → 2H₂ + O₂',
+            broken:[['O–H',4,463]],
+            made:[['H–H',2,436],['O=O',1,498]] }
+  };
+  const ORDER=['hcl','ch4','split'];
+  const LABEL={hcl:'Form HCl',ch4:'Burn CH₄',split:'Split H₂O'};
+
+  const tabsEl=document.getElementById('rxTabs');
+  ORDER.forEach((k,i)=>{
+    const t=document.createElement('div');
+    t.className='scn-tab'+(i===0?' active':''); t.dataset.rx=k; t.textContent=LABEL[k];
+    tabsEl.appendChild(t);
+  });
+
+  function sumOf(list){ return list.reduce((a,b)=>a+b[1]*b[2],0); }
+  function rowsHtml(list){
+    return list.map(b=>'<div class="bc-line"><span>'+b[1]+' × '+b[0]+' ('+b[2]+')</span><b>'+(b[1]*b[2])+'</b></div>').join('');
+  }
+
+  function render(key){
+    const r=RX[key];
+    document.getElementById('rxEq').textContent=r.name;
+    document.getElementById('bcBroken').innerHTML=rowsHtml(r.broken);
+    document.getElementById('bcMade').innerHTML=rowsHtml(r.made);
+    const sb=sumOf(r.broken), sm=sumOf(r.made);
+    document.getElementById('bcBrokenSum').textContent=sb;
+    document.getElementById('bcMadeSum').textContent=sm;
+    const dh=sb-sm;
+    const exo=dh<0;
+    const col=exo?'var(--force)':'var(--motion)';
+    const res=document.getElementById('bcResult');
+    res.textContent='ΔH = '+(dh>0?'+':'')+dh+' kJ/mol';
+    res.style.color=col;
+    const v=document.getElementById('bcVerdict');
+    v.innerHTML=exo
+      ? 'negative → <b style="color:var(--force)">EXOthermic</b> (more energy out making bonds)'
+      : 'positive → <b style="color:var(--motion)">ENDOthermic</b> (more energy in breaking bonds)';
+    tabsEl.querySelectorAll('.scn-tab').forEach(t=>t.classList.toggle('active', t.dataset.rx===key));
+  }
+
+  tabsEl.addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    render(t.dataset.rx);
+  });
+  render('hcl');
+})();
+
+/* ════════════════════════════════════════════════
+   3 · KEY-TERMS BANK + FLOATING CARD
+════════════════════════════════════════════════ */
+const EQ = {
+  exothermic:{ c:'exo', badge:'🔥', name:'Exothermic reaction', def:'A reaction that transfers thermal energy to the surroundings, so the temperature of the surroundings increases.',
+    feats:['Energy OUT to surroundings','Surroundings warm up','Products lower than reactants','ΔH negative (−)'],
+    why:'Most useful energy reactions are exothermic — burning fuels, respiration, hand-warmers.',
+    eg:'Combustion of LPG on a stove; neutralising acid with alkali.',
+    tip:'State the direction (<b>to</b> the surroundings) AND the temperature rise for both marks.' },
+  endothermic:{ c:'endo', badge:'🧊', name:'Endothermic reaction', def:'A reaction that takes in thermal energy from the surroundings, so the temperature of the surroundings decreases.',
+    feats:['Energy IN from surroundings','Surroundings cool down','Products higher than reactants','ΔH positive (+)'],
+    why:'Explains cold packs, photosynthesis and thermal decomposition.',
+    eg:'An instant cold pack; heating limestone (CaCO₃ → CaO + CO₂).',
+    tip:'The <b>surroundings</b> get colder — don\'t say "the reaction gets hotter".' },
+  surroundings:{ c:'exo', badge:'🌡', name:'System & surroundings', def:'The system is the reacting chemicals; the surroundings are everything else (solution, container, air, thermometer).',
+    feats:['Thermometer reads the surroundings','Energy out of system → into surroundings','Used to define exo/endo'],
+    why:'Exothermic and endothermic are defined by what happens to the SURROUNDINGS, so you must name them.',
+    eg:'In a test tube, the water/solution and glass are the surroundings.',
+    tip:'A rising thermometer means the <b>surroundings</b> gained heat → exothermic.' },
+  enthalpy:{ c:'ent', badge:'ΔH', name:'Enthalpy change, ΔH', def:'The transfer of thermal energy during a reaction; negative for exothermic and positive for endothermic reactions.',
+    feats:['Measured in kJ/mol','Exo → ΔH negative','Endo → ΔH positive','= products − reactants'],
+    why:'It puts a signed number on the energy change, used in pathway diagrams and bond-energy sums.',
+    eg:'H₂ + Cl₂ → 2HCl has ΔH = −184 kJ/mol.',
+    tip:'Always quote the <b>sign</b> and units — the minus sign is what shows it\'s exothermic.' },
+  pathway:{ c:'ent', badge:'⛰', name:'Reaction pathway diagram', def:'A graph of energy (up) against progress of reaction (along), showing reactant and product levels, Eₐ and ΔH.',
+    feats:['Reactants & products as levels','Peak = activation energy','ΔH = reactants → products','Down = exo, up = endo'],
+    why:'It shows the whole energy story — barrier, direction and size of the change — in one picture.',
+    eg:'An exothermic curve ends below where it started; an endothermic one ends above.',
+    tip:'Measure Eₐ from the <b>reactant level</b> to the peak, not from the bottom of the graph.' },
+  activation:{ c:'act', badge:'Eₐ', name:'Activation energy, Eₐ', def:'The minimum energy that colliding particles must have in order to react.',
+    feats:['The energy barrier','Shown as the peak height above reactants','Needed even for exothermic reactions'],
+    why:'It explains why fuels need a spark to ignite and links to rate of reaction (Topic 6.2).',
+    eg:'A spark supplies the Eₐ that ignites a petrol–air mixture.',
+    tip:'Eₐ is the climb from <b>reactants up to the peak</b> — a property separate from ΔH.' },
+  breaking:{ c:'bond', badge:'✂', name:'Bond breaking', def:'Pulling bonded atoms apart; this process absorbs energy, so it is endothermic.',
+    feats:['Endothermic','Energy IN (+)','Happens to the reactant bonds first'],
+    why:'It is the energy "cost" side of every reaction and one half of the ΔH calculation.',
+    eg:'Breaking the H–H bond in hydrogen needs 436 kJ/mol.',
+    tip:'Breaking <b>always needs energy</b> — never write that breaking bonds releases energy.' },
+  making:{ c:'bond', badge:'🔗', name:'Bond making', def:'Forming new bonds as atoms come together; this process releases energy, so it is exothermic.',
+    feats:['Exothermic','Energy OUT (−)','Happens as products form'],
+    why:'It is the energy "payback" side; if it beats the breaking cost, the reaction is exothermic.',
+    eg:'Forming each H–Cl bond releases 431 kJ/mol.',
+    tip:'Making <b>always releases energy</b> — the opposite of bond breaking.' },
+  bondEnergy:{ c:'bond', badge:'kJ', name:'Bond energy & ΔH', def:'The energy to break (or release on forming) one mole of a bond; ΔH = Σ(bonds broken) − Σ(bonds made).',
+    feats:['Same value to break or make a bond','Σ broken = energy in','Σ made = energy out','Negative ΔH = exothermic'],
+    why:'It lets you predict ΔH and whether a reaction is exo or endo from a table of bond energies.',
+    eg:'H₂ + Cl₂ → 2HCl: (436+242) − (2×431) = −184 kJ/mol.',
+    tip:'Multiply each bond by how many there are, and watch the equation\'s coefficients.' }
+};
+
+const ORDER=['exothermic','endothermic','surroundings','enthalpy','pathway',
+  'activation','breaking','making','bondEnergy'];
+
+const CMETA = {
+  exo:  {col:'#f06070', bg:'#2a0f15', bd:'#4a1d26'},
+  endo: {col:'#5b8dee', bg:'#0c1a30', bd:'#1f3a66'},
+  ent:  {col:'#a57ef5', bg:'#160c26', bd:'#34255a'},
+  act:  {col:'#f0b144', bg:'#1a1306', bd:'#3a2c10'},
+  bond: {col:'#36c9b0', bg:'#08221e', bd:'#1f5a4f'}
+};
+
+(function buildBank(){
+  const bank=document.getElementById('eqbank');
+  ORDER.forEach(key=>{
+    const e=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=e.c; cell.dataset.key=key;
+    cell.innerHTML='<div class="eq-sym">'+e.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+
+function openEqCard(key){
+  const e=EQ[key], m=CMETA[e.c]||CMETA.ent;
+  const card=document.getElementById('eq-card');
+  const badge=document.getElementById('eqc-badge');
+  badge.textContent=e.badge;
+  badge.style.color=m.col; badge.style.background=m.bg; badge.style.borderColor=m.bd;
+  document.getElementById('eqc-name').textContent=e.name;
+  document.getElementById('eqc-formula').textContent=e.def;
+  const sr=document.getElementById('eqc-syms'); sr.innerHTML='';
+  e.feats.forEach(ft=>{
+    const pill=document.createElement('div'); pill.className='sym-pill';
+    pill.textContent=ft; sr.appendChild(pill);
+  });
+  document.getElementById('eqc-rearr').textContent=e.why;
+  document.getElementById('eqc-example').innerHTML=e.eg;
+  document.getElementById('eqc-tip').innerHTML='<b>Exam trap:</b> '+e.tip;
+  card.style.display='block';
+  requestAnimationFrame(()=>card.style.opacity='1');
+}
+function closeEqCard(){
+  const card=document.getElementById('eq-card');
+  card.style.opacity='0';
+  setTimeout(()=>card.style.display='none',250);
+}
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) &&
+     !e.target.closest('.eqcell')) closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   4 · THEME TOGGLE (light / dark)
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){ try{ return localStorage.getItem('chem-theme'); }catch(e){ return null; } }
+  function safeSet(v){ try{ localStorage.setItem('chem-theme',v); }catch(e){} }
+  function apply(theme){
+    body.setAttribute('data-theme', theme);
+    btn.textContent = (theme==='dark') ? SUN : MOON;
+    btn.setAttribute('aria-label', (theme==='dark') ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  let start = safeGet();
+  if(!start){ start = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark'; }
+  apply(start);
+  btn.addEventListener('click',()=>{
+    const next = body.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    apply(next); safeSet(next);
+  });
+})();
+</script>
+</body>
+</html>

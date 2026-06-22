@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Topic 4: Electricity and Magnetism</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    --motion:   #46a8ff;   /* electric blue — current & charge flow (and the − / electron convention) */
+    --force:    #ff5263;   /* physics red — resistance, heating, the + charge convention */
+    --energy:   #ffae3b;   /* radiant amber — voltage, e.m.f. & energy */
+    --energy2:  #ffae3b;
+    --momentum: #8b7bff;   /* indigo — magnetism & electromagnetism */
+    --power:    #43d98c;   /* green — power & useful output / exam wins */
+    --cyan:     #3ad9d4;   /* secondary cool — fields & measurement */
+    --rose:     #f25cc1;   /* alert magenta — ≥30° hue gap from warm accents (CVD-safe) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient field — cool (charge, current) up top, warm (resistance, energy) below */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 110px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 54px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--force); }
+  h1 .c { color: var(--energy2); }
+  h1 .d { color: var(--momentum); }
+
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 600px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: rise 0.55s ease forwards;
+  }
+  @keyframes rise {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+  .section:nth-of-type(12){animation-delay:.48s}
+  .section:nth-of-type(13){animation-delay:.52s}
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--bright);
+    margin-bottom: 14px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: var(--bright);
+    margin: 26px 0 10px;
+  }
+
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+
+  .eq-inline {
+    font-family: 'JetBrains Mono', monospace;
+    background: #0d1828;
+    border: 1px solid #22324a;
+    border-radius: 5px;
+    padding: 1px 7px;
+    font-size: 13px;
+    color: var(--motion);
+    white-space: nowrap;
+  }
+  body[data-theme="light"] .eq-inline {
+    background: #eef1f8;
+    border-color: #d4dcec;
+  }
+
+  /* ── BOXES ── */
+  .box {
+    border-radius: 11px;
+    padding: 17px 20px;
+    margin: 18px 0;
+    font-size: 14.2px;
+    border: 1px solid;
+  }
+  .box-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color: var(--motion); }
+
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define {
+    border-left: 3px solid var(--motion);
+    background: linear-gradient(90deg, #0c1c2880, transparent);
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .define .term {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--bright);
+    font-size: 1.02rem;
+  }
+  .define.force-c   { border-color: var(--force); background:linear-gradient(90deg,#23120b80,transparent); }
+  .define.energy-c  { border-color: var(--energy2); background:linear-gradient(90deg,#23180680,transparent); }
+  .define.mom-c     { border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 16px 18px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { transform: translateY(-3px); border-color:#3a557c; }
+  .card-title {
+    font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px;
+  }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th {
+    background: var(--surface2); color: var(--motion);
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase;
+    padding:10px 14px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+
+  mark {
+    background: linear-gradient(120deg,#15405a88,#1f5a7a88);
+    color: var(--bright); padding:1px 4px; border-radius:3px;
+  }
+
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY NOTE (read before cloning)
+     · BASE IS LOCKED ACROSS ALL SUBJECTS: --bg, --surface*, --text,
+       --muted, --border, the paper light theme, and the neutral ambient
+       glow NEVER change per subject. Only the accent block changes.
+     · SHARED components (reused by any topic — never delete):
+       .explorer .scn-tabs .scn-tab .scn-read .rk .replay svg.graph
+       .axis .axis-lbl .curve .tracer .chart-cap .tool .tool-grid
+       .slider-row .vec-out .eqbank .eqcell .box .define .card table
+     · TOPIC-SPECIFIC here: .iv-resistor/.iv-lamp/.iv-diode (I–V curves),
+       .tf-core/.tf-primary/.tf-secondary (transformer schematic),
+       .estore (chips), .sankey/.sk-* (power-loss bar).
+  ═════════════════════════════════════════════ */
+  /* ─────────────────────────────────────────────
+     SCENARIO GRAPH EXPLORER (signature) — used for I–V characteristics
+  ───────────────────────────────────────────── */
+  .explorer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 22px 0;
+  }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab {
+    font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    padding:8px 14px; border-radius:8px; cursor:pointer;
+    background:#0e1626; border:1px solid var(--border); color:var(--muted);
+    transition:all .18s; user-select:none;
+  }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+
+  .chart-cap {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    margin-bottom:6px;
+  }
+  svg.graph { width:100%; height:auto; display:block;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  .axis { stroke:#2a3a55; stroke-width:1.2; }
+  .axis-lbl { fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:9px; }
+  .curve { fill:none; stroke-width:2.8; stroke-linecap:round; stroke-linejoin:round; }
+  .tracer { fill:#fff; }
+
+  /* I–V characteristic curves — coloured by component, themed via vars */
+  .iv-resistor { stroke: var(--motion); }
+  .iv-lamp     { stroke: var(--energy2); }
+  .iv-diode    { stroke: var(--power); }
+
+  .scn-read {
+    margin-top:16px; background:#0c1c28; border:1px solid #1f4258;
+    border-radius:9px; padding:13px 16px; font-size:13.6px;
+  }
+  .scn-read .rk {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--motion);
+    margin-bottom:6px;
+  }
+  .replay {
+    margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:#0c2536; color:var(--motion); border:1px solid var(--motion);
+    border-radius:7px; padding:7px 16px; cursor:pointer; letter-spacing:.06em;
+  }
+  .replay:hover { background:#103247; }
+
+  /* ─────────────────────────────────────────────
+     SLIDER TOOLS — resistance combiner & transformer
+  ───────────────────────────────────────────── */
+  .tool {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:20px; margin:22px 0;
+  }
+  .tool-grid { display:grid; grid-template-columns:1fr 230px; gap:20px; align-items:center; }
+  .slider-row { margin:14px 0; }
+  .slider-row label {
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] {
+    width:100%; -webkit-appearance:none; height:5px; border-radius:3px;
+    background:#22304a; outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--momentum); cursor:pointer; box-shadow:0 0 10px #8b7bff88;
+  }
+  input[type=range]::-moz-range-thumb {
+    width:17px; height:17px; border:none; border-radius:50%;
+    background:var(--momentum); cursor:pointer;
+  }
+  .vec-out {
+    background:#171229; border:1px solid #2e2350; border-radius:9px;
+    padding:14px 16px; text-align:center;
+  }
+  .vec-out .ro {
+    font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:#7d6aa8; margin-bottom:3px;
+  }
+  .vec-out .rv {
+    font-family:'Fraunces',serif; font-size:1.7rem; font-weight:700;
+    color:var(--momentum); line-height:1.1; margin-bottom:10px;
+  }
+  svg.vecpad { width:100%; height:auto; background:#0c1322;
+    border:1px solid var(--border); border-radius:9px; }
+  /* transformer schematic strokes — themed via vars */
+  .tf-core      { stroke:var(--muted); fill:none; }
+  .tf-primary   { stroke:var(--motion); fill:none; }
+  .tf-secondary { stroke:var(--energy2); fill:none; }
+
+  /* ─────────────────────────────────────────────
+     EQUATION BANK
+  ───────────────────────────────────────────── */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqcell {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 12px; cursor:pointer; text-align:center;
+    transition:transform .16s, border-color .16s, box-shadow .16s;
+  }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion);
+    box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym {
+    font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600;
+    color:var(--bright); margin-bottom:4px;
+  }
+  .eqcell .eq-name {
+    font-size:10.5px; color:var(--muted); letter-spacing:.04em;
+  }
+  .eqcell[data-c="motion"]:hover   { border-color:var(--motion); }
+  .eqcell[data-c="force"]   { } .eqcell[data-c="force"]:hover  { border-color:var(--force); box-shadow:0 8px 22px #0008; }
+  .eqcell[data-c="energy"]:hover  { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover     { border-color:var(--momentum); }
+  .eqcell[data-c="power"]:hover   { border-color:var(--power); }
+
+  /* floating detail card — fully themed (vars, with a light override below) */
+  #eq-card {
+    display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px;
+    width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow);
+    overflow:hidden; transition:opacity .25s;
+  }
+  #eqc-top {
+    padding:18px 18px 14px; display:flex; gap:14px; align-items:center;
+    border-bottom:1px solid var(--card-divider); position:relative;
+  }
+  #eqc-badge {
+    flex-shrink:0; width:62px; height:62px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600;
+    background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd);
+  }
+  #eqc-head h4 {
+    font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px;
+  }
+  #eqc-formula {
+    font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--motion);
+  }
+  #eqc-close {
+    position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted);
+    cursor:pointer; user-select:none;
+  }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--card-label); margin:10px 0 6px;
+  }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill {
+    background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px;
+    padding:5px 9px; font-size:11.5px; color:var(--card-text);
+  }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr {
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text);
+    background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em;
+  }
+  #eqc-example {
+    background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55;
+  }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip {
+    background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px;
+  }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── CHIPS (enumerations: magnetic materials, components) ── */
+  .estores { display:flex; flex-wrap:wrap; gap:9px; margin:16px 0; }
+  .estore {
+    background:#19202f; border:1px solid var(--border); border-radius:8px;
+    padding:9px 13px; font-size:12.6px; display:flex; align-items:center; gap:8px;
+  }
+  .estore .dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+
+  /* ── SANKEY / POWER-LOSS BAR ── */
+  .sankey { margin:18px 0; }
+  .sankey-bar { display:flex; height:46px; border-radius:8px; overflow:hidden; border:1px solid var(--border); }
+  .sk-useful { background:linear-gradient(180deg,#43d98c,#2f9d6c);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:#062014; font-weight:600; }
+  .sk-waste  { background:linear-gradient(180deg,#ff7a6c,#d6483a);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:#2a0b07; font-weight:600; }
+  .sankey-cap { font-size:11.5px; color:var(--muted); margin-top:7px; font-family:'JetBrains Mono',monospace; }
+
+  /* ── FOOTER ── */
+  .footer {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    text-align:center; padding-top:28px; border-top:1px solid var(--border);
+    letter-spacing:.07em; line-height:1.8;
+  }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .eqbank { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+    .tool-grid { grid-template-columns:1fr; }
+  }
+  /* ─────────────────────────────────────────────
+     THEME TOGGLE BUTTON
+  ───────────────────────────────────────────── */
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 10000;
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-size: 17px; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    transition: transform .25s, border-color .2s, background-color .35s;
+    line-height: 1;
+  }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  /* smooth cross-fade between themes */
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.graph, svg.vecpad,
+  .scn-read, .scn-tab, .replay, .vec-out, .estore, .chip,
+  table th, table td, .eqcell, mark {
+    transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+  }
+
+  /* ═════════════════════════════════════════════
+     LIGHT THEME ("study paper")
+  ═════════════════════════════════════════════ */
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;   /* warm lab-notebook paper */
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;   /* ink */
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;   /* deep electric blue */
+    --force:    #cb2531;   /* deep physics red (AA 4.5+) */
+    --energy:   #8f5d00;   /* deep amber (AA 4.5+) */
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;   /* deep indigo */
+    --power:    #107a50;   /* deep green (AA 4.5+) */
+    --cyan:     #0b7a67;   /* deep teal (AA 4.5+) */
+    --rose:     #ad1a7d;   /* deep alert magenta (AA 4.5+) */
+    /* floating detail-card — light theme */
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+
+  /* boxes */
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+
+  /* define callouts */
+  body[data-theme="light"] .define          { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.force-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.energy-c  { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.mom-c     { background:linear-gradient(90deg,#ece8fb99,transparent); }
+
+  /* cards & misc */
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip {
+    background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion);
+  }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+
+  /* graphs (SVG) — CSS overrides the inline presentation attributes */
+  body[data-theme="light"] svg.graph,
+  body[data-theme="light"] svg.vecpad { background:#fbfaf4; }
+  body[data-theme="light"] .axis      { stroke:#bcb4a2; }
+  body[data-theme="light"] .axis-lbl  { fill:#8c8674; }
+  body[data-theme="light"] .tracer    { fill:#14181f; }
+
+  /* explorer chrome */
+  body[data-theme="light"] .scn-read   { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab    { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover  { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+  body[data-theme="light"] .replay     { background:#e2eefb; }
+  body[data-theme="light"] .replay:hover { background:#d3e4fb; }
+
+  /* slider tools */
+  body[data-theme="light"] .vec-out { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .vec-out .ro { color:#6a559a; }
+
+  /* sankey */
+  body[data-theme="light"] .sk-useful { background:linear-gradient(180deg,#3fbf86,#2f9d6c); color:#052012; }
+  body[data-theme="light"] .sk-waste  { background:linear-gradient(180deg,#e7796b,#d6483a); color:#fff; }
+
+  /* chips */
+  body[data-theme="light"] .estore { background:#efeadd; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    body, .theme-toggle, .box, .card, .define, .explorer, .tool,
+    svg.graph, svg.vecpad, .scn-read, .scn-tab, .replay, .vec-out,
+    .estore, .chip, table th, table td, .eqcell, mark { transition:none; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Physics 0625 · Extended · Class 10 · Topic 4</div>
+    <h1><span class="a">Electricity</span> &amp; <span class="d">Magnetism</span></h1>
+    <p class="header-sub">One idea ties this whole topic together: <em>a moving charge and a magnetic field are two halves of the same coin.</em> Charge, current and voltage build the circuit; magnetism turns current into motion — and motion back into electricity. Tap the panels; they respond.</p>
+  </div>
+
+
+  <!-- ── 01 · MAGNETISM ── -->
+  <div class="section">
+    <div class="sec-label">01 / 12 · 4.1 Simple Phenomena of Magnetism</div>
+    <h2>Magnets, poles &amp; invisible fields</h2>
+
+    <p>Every magnet has two <strong>poles</strong> — north (N) and south (S) — and the rule is the mirror of electric charge: <mark>like poles repel, unlike poles attract</mark>. A magnet also pulls on <em>unmagnetised</em> magnetic materials (it turns them into temporary magnets first — <strong>induced magnetism</strong>), but the pole-on-pole repulsion test is the only sure way to tell a true magnet from a lump of iron.</p>
+
+    <div class="box intuition">
+      <div class="box-label">🧲 The one true test for a magnet</div>
+      Attraction is a liar — a magnet attracts iron, but iron also attracts a magnet, and an unmagnetised nail will stick to either pole. Only <strong>repulsion</strong> proves both objects are magnets, because nothing but a like-pole pushes a pole away.
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">Magnetic field</span> — a region in which a magnetic pole feels a force. We draw it with <strong>field lines</strong> that run <em>from N to S outside the magnet</em>. The line's direction is the direction of the force on a tiny N pole placed there; where lines are <strong>closer together, the field is stronger</strong>.
+    </div>
+
+    <h3>Temporary vs permanent — soft iron vs steel</h3>
+    <table>
+      <tr><th>Property</th><th>Soft iron (temporary)</th><th>Steel (permanent)</th></tr>
+      <tr><td><strong>Magnetises</strong></td><td>Very easily</td><td>Only with difficulty</td></tr>
+      <tr><td><strong>Keeps its magnetism?</strong></td><td>No — loses it at once</td><td>Yes — retains it</td></tr>
+      <tr><td><strong>Best used for</strong></td><td>Electromagnet &amp; transformer cores</td><td>Bar magnets, compass needles</td></tr>
+    </table>
+
+    <div class="box analogy">
+      <div class="box-label">🛏️ Soft iron is a memory-foam magnet</div>
+      Press memory foam and it takes the shape instantly, then springs back the moment you let go — that's <strong>soft iron</strong>: magnetises and demagnetises in a flash, perfect when you want a magnet you can switch off. Steel is like stiff clay: hard to shape, but it <em>holds</em> the shape — perfect for a permanent magnet.
+    </div>
+
+    <p>The magnetic materials you need to know:</p>
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#8b7bff"></span>Iron</div>
+      <div class="estore"><span class="dot" style="background:#8b7bff"></span>Steel</div>
+      <div class="estore"><span class="dot" style="background:#8b7bff"></span>Cobalt</div>
+      <div class="estore"><span class="dot" style="background:#8b7bff"></span>Nickel</div>
+      <div class="estore"><span class="dot" style="background:#7b8aa8"></span>(everything else — copper, aluminium, plastic — is non-magnetic)</div>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ "Magnetic" ≠ "charged" ≠ "a magnet"</div>
+      A <em>magnetic material</em> (iron) is something a magnet can attract; it is not itself a magnet until magnetised. And magnetism has nothing to do with electric charge — a charged balloon and a bar magnet are different phenomena (until currents get involved, in Section 10).
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Plotting &amp; drawing field lines</div>
+      Plot a field with <strong>iron filings</strong> (show the shape) or a small <strong>plotting compass</strong> (shows shape <em>and</em> direction — the needle's N end points along the line). When you draw: arrows N→S, and field lines never cross (two field directions at one point is impossible). Uses: <strong>permanent magnets</strong> (compasses, fridge magnets, loudspeakers) keep a steady field; <strong>electromagnets</strong> (cranes, relays, MRI) give a field you can switch on, off and reverse.
+    </div>
+  </div>
+
+
+  <!-- ── 02 · STATIC ELECTRICITY & CHARGE ── -->
+  <div class="section">
+    <div class="sec-label">02 / 12 · 4.2.1 Electric Charge</div>
+    <h2>Static electricity — charge that sits still</h2>
+
+    <p>There are two kinds of electric charge, <strong>positive</strong> and <strong>negative</strong>, and they follow the same like-repels / unlike-attracts rule as magnetic poles. But here we know the mechanism exactly: charge is just <strong>electrons</strong> — tiny negative particles — being in surplus or short supply.</p>
+
+    <div class="box intuition">
+      <div class="box-label">⚡ Only the electrons move</div>
+      Protons are locked in the nucleus; they never travel. So when you "charge something up," all that happens is <strong>electrons move from one object to the other</strong>. Gain electrons → negatively charged. Lose electrons → positively charged (left with a surplus of unmoved protons). That single fact explains every static experiment.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎈 Balloon on your hair</div>
+      Rub a balloon on your hair: friction scrapes electrons <em>off your hair onto the balloon</em>. The balloon, now electron-rich, is <strong>negative</strong>; your hair, electron-poor, is <strong>positive</strong>. Opposite charges attract, so your hair stands up reaching for the balloon. No electron is created — they're just moved.
+    </div>
+
+    <div class="define">
+      <span class="term">Charging by friction</span> — rubbing two insulators transfers <em>negative charge (electrons) only</em>, in one direction. The two objects end up with <strong>equal and opposite</strong> charge. Charge is measured in <strong>coulombs (C)</strong>.
+    </div>
+
+    <h3>Conductors vs insulators</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Conductors — charge flows</div>
+        <div class="card-body">Metals (copper, steel) and <strong>graphite</strong> have <strong>free electrons</strong> that drift through the material. Touch a charged conductor and the charge escapes through you to earth.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Insulators — charge stays put</div>
+        <div class="card-body">Plastic, rubber, glass, dry air: <strong>no free electrons</strong>. Charge sits where you put it — which is exactly why static builds up on them.</div>
+      </div>
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">Electric field</span> — a region in which a charge feels a force. Its direction is the direction of the force on a <em>positive</em> charge. Patterns to know: <strong>radial</strong> around a point charge or a charged sphere (arrows out for +, in for −), and <strong>uniform</strong> (evenly spaced parallel lines, + plate → − plate) between two oppositely charged parallel plates.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Positive objects didn't gain "positives"</div>
+      A positively charged rod did not collect positive particles — it <strong>lost electrons</strong>. Always explain charging in terms of electrons moving. Saying "protons transferred" loses the mark every time.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · ELECTRIC CURRENT ── -->
+  <div class="section">
+    <div class="sec-label">03 / 12 · 4.2.2 Electric Current</div>
+    <h2>Current — charge that keeps flowing</h2>
+
+    <p>Static charge that sits still isn't much use. Connect a charged-up source (a cell) into a complete loop and the charge <em>flows</em> continuously — that flow is <strong>electric current</strong>. In a metal wire, the moving charges are the <strong>free electrons</strong>.</p>
+
+    <div class="define">
+      <span class="term">Electric current</span> — the charge passing a point per unit time: <span class="eq-inline">I = Q / t</span>. Measured in <strong>amperes (A)</strong>; <span class="eq-inline">1 A = 1 C/s</span>. Rearranged, the charge delivered is <span class="eq-inline">Q = I × t</span>. An <strong>ammeter</strong> (in <em>series</em>) reads it.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">💧 Current is a flow rate, not a fuel</div>
+      Current is <em>how fast</em> charge passes — like litres-per-second past a point in a pipe, not the water itself. A common myth is that current gets "used up" as it goes round. It doesn't: in a single loop the <strong>same current flows everywhere</strong>. What gets used up is <em>energy</em> (that's voltage's job, next section).
+    </div>
+
+    <h3>Two directions, one current: the great convention mix-up</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Conventional current</div>
+        <div class="card-body">The agreed direction for diagrams: from <strong>+ to −</strong> round the external circuit. Chosen ~250 years ago, before electrons were discovered.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Electron flow</div>
+        <div class="card-body">What <em>actually</em> moves in a metal: electrons drift the <strong>opposite</strong> way, from <strong>− to +</strong>. Same current — just the real carriers.</div>
+      </div>
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🔁 Why we never fixed the arrow</div>
+      Benjamin Franklin guessed the direction of flow and got it backwards. By the time electrons were found, every book, rule and motor diagram used "+ to −". Rather than reprint the world, physicists kept <strong>conventional current</strong> for all the rules (left-hand rule, field directions). Just remember: <em>electrons go the other way.</em>
+    </div>
+
+    <h3>d.c. vs a.c.</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Direct current (d.c.)</div>
+        <div class="card-body">Flows one way only, steady. From <strong>cells &amp; batteries</strong>. Powers phones, torches, anything with a battery.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--energy)">Alternating current (a.c.)</div>
+        <div class="card-body">Reverses direction back-and-forth, many times a second. The <strong>mains supply</strong> is a.c. (in India, 50 Hz). Essential for transformers later.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 04 · E.M.F. & P.D. ── -->
+  <div class="section">
+    <div class="sec-label">04 / 12 · 4.2.3 e.m.f. &amp; Potential Difference</div>
+    <h2>Voltage — the energy each coulomb carries</h2>
+
+    <p>If current is the <em>flow</em>, voltage is the <em>push</em> that drives it and the <em>energy</em> it delivers. Voltage always means <strong>joules per coulomb</strong> — energy per unit charge — and comes in two flavours depending on whether charge is <em>gaining</em> energy or <em>spending</em> it.</p>
+
+    <div class="define energy-c">
+      <span class="term">Electromotive force (e.m.f.)</span> — the electrical work done by a <em>source</em> in driving unit charge <strong>around a complete circuit</strong>: <span class="eq-inline" style="color:var(--energy)">E = W / Q</span>. It's the energy the cell <em>gives</em> each coulomb. Measured in <strong>volts (V)</strong>.
+    </div>
+
+    <div class="define energy-c">
+      <span class="term">Potential difference (p.d.)</span> — the work done by unit charge <em>passing through a component</em>: <span class="eq-inline" style="color:var(--energy)">V = W / Q</span>. It's the energy each coulomb <em>spends</em> in that component. Also measured in <strong>volts</strong>; <span class="eq-inline">1 V = 1 J/C</span>.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">⛲ The fountain model</div>
+      Picture charge as water in a fountain. The <strong>pump</strong> lifts every litre to the top — that energy-per-litre is the <strong>e.m.f.</strong> The water then falls through the wheels and jets, giving its energy up — the energy-per-litre handed to each component is the <strong>p.d.</strong> Add up every component's p.d. round the loop and you get back exactly the e.m.f.: energy in = energy out.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ e.m.f. gives, p.d. takes</div>
+      Same unit, opposite roles: <strong>e.m.f.</strong> is energy <em>supplied</em> per coulomb (the cell); <strong>p.d.</strong> is energy <em>transferred</em> per coulomb (a lamp, resistor). Measure p.d. with a <strong>voltmeter in parallel</strong> — connected <em>across</em> the component, never in the main line.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Voltmeter across, ammeter through</div>
+      The classic wiring slip: ammeter goes <strong>in series</strong> (the current must pass through it); voltmeter goes <strong>in parallel</strong> (it samples the p.d. across two points). Swap them and you short out the component or read nothing.
+    </div>
+  </div>
+
+
+  <!-- ── 05 · RESISTANCE & I–V (widget) ── -->
+  <div class="section">
+    <div class="sec-label">05 / 12 · 4.2.4 Resistance</div>
+    <h2>Resistance &amp; the shape of I–V graphs</h2>
+
+    <p>Push charge through any component and it pushes back — that opposition is <strong>resistance</strong>. The more a component resists, the smaller the current a given voltage can drive through it.</p>
+
+    <div class="define force-c">
+      <span class="term">Resistance</span> = p.d. ÷ current: <span class="eq-inline" style="color:var(--force)">R = V / I</span>, in <strong>ohms (Ω)</strong>. Rearranged, <span class="eq-inline" style="color:var(--force)">V = I R</span> — the single most-used line in the topic. To <em>measure</em> R: put a voltmeter across the component and an ammeter in series, vary the supply with a variable resistor, and calculate R = V/I (ideally repeat and average).
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🚿 What decides a wire's resistance</div>
+      Think of charge squeezing down a pipe. A <strong>longer</strong> pipe resists more (<span class="eq-inline" style="color:var(--force)">R ∝ L</span>); a <strong>fatter</strong> pipe resists less (<span class="eq-inline" style="color:var(--force)">R ∝ 1/A</span>). So a long thin wire has high resistance; a short thick wire has low resistance — exactly why thick cables carry big currents without heating up.
+    </div>
+
+    <p>Not everything obeys a straight-line rule. Tap the three components below and watch each one's <strong>current–voltage (I–V) characteristic</strong> draw itself:</p>
+
+    <div class="explorer">
+      <div class="scn-tabs" id="ivTabs">
+        <div class="scn-tab active" data-iv="resistor">Resistor</div>
+        <div class="scn-tab" data-iv="lamp">Filament lamp</div>
+        <div class="scn-tab" data-iv="diode">Diode</div>
+      </div>
+
+      <div class="chart-cap" id="ivCap">I–V characteristic · resistor</div>
+      <svg class="graph" viewBox="0 0 240 168" id="ivGraph" aria-label="Current against voltage graph">
+        <!-- axes through the centre so reverse voltage is visible -->
+        <line x1="16" y1="84" x2="226" y2="84" class="axis"/>
+        <line x1="120" y1="156" x2="120" y2="16" class="axis"/>
+        <text x="214" y="98" class="axis-lbl">V</text>
+        <text x="126" y="24" class="axis-lbl">I</text>
+        <text x="150" y="98" class="axis-lbl" id="ivQ1">+V</text>
+        <text x="40" y="98" class="axis-lbl" id="ivQ3">−V</text>
+        <path class="curve iv-resistor" id="ivCurve" d=""/>
+        <circle class="tracer" id="ivDot" r="4" cx="120" cy="84"/>
+      </svg>
+
+      <div class="scn-read">
+        <div class="rk" id="ivTitle">Resistor (constant resistance)</div>
+        <div id="ivText">Resistance stays constant, so current is directly proportional to voltage — a straight line through the origin (Ohm's law). Reverse the voltage and the line simply continues the other way: it is symmetric.</div>
+      </div>
+      <button class="replay" id="ivReplay">▶ Re-draw curve</button>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Read each curve in one line</div>
+      <strong>Resistor</strong>: straight line through the origin → constant R (ohmic). <strong>Filament lamp</strong>: bends over / flattens — as current heats the filament its resistance <em>rises</em>. <strong>Diode</strong>: conducts one way only; almost no current until ~0.6 V forward, then a steep rise; near-infinite resistance in reverse.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ "Ohm's law" isn't universal</div>
+      A <em>metal at constant temperature</em> gives I ∝ V (straight line). A filament lamp gets hot, so it is <strong>non-ohmic</strong> — its line curves. The gradient of an I–V graph is <em>not</em> resistance; resistance is V/I at a point. For the curved lamp graph, R is different at every point.
+    </div>
+  </div>
+
+
+  <!-- ── 06 · POWER, ENERGY & COST (Indian ₹) ── -->
+  <div class="section">
+    <div class="sec-label">06 / 12 · 4.2.5 Electrical Energy &amp; Power</div>
+    <h2>Power, energy &amp; the electricity bill</h2>
+
+    <p>A circuit's job is to <strong>transfer energy</strong> — from the cell or mains, into the components, and finally out into the surroundings (as light, heat, sound, movement). <strong>Power</strong> is how fast that happens.</p>
+
+    <div class="define energy-c">
+      <span class="term">Electrical power</span> = current × p.d.: <span class="eq-inline" style="color:var(--energy)">P = I V</span>, in <strong>watts (W)</strong>. Over a time <em>t</em>, the energy transferred is <span class="eq-inline" style="color:var(--energy)">E = I V t</span> (joules). Since P = IV, that's just <span class="eq-inline" style="color:var(--energy)">E = P t</span>.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">💡 Why P = IV makes sense</div>
+      Each coulomb hands over <em>V</em> joules (that's what p.d. means), and <em>I</em> coulombs pass every second (that's what current means). Joules-per-coulomb × coulombs-per-second = <strong>joules per second = watts</strong>. The formula is just the two definitions multiplied together.
+    </div>
+
+    <h3>Paying for it: the kilowatt-hour</h3>
+    <p>Your electricity bill isn't in joules — a joule is tiny. Instead it uses the <strong>kilowatt-hour (kW·h)</strong>, also called a "unit": the energy a <strong>1 kW</strong> appliance uses in <strong>1 hour</strong>.</p>
+
+    <div class="define energy-c">
+      <span class="term">Energy in kW·h</span> = power (in kW) × time (in hours). Then <span class="eq-inline" style="color:var(--energy)">cost = units (kW·h) × price per unit</span>. One unit equals <mark>3.6 MJ</mark> (1000 W × 3600 s).
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Worked example — a geyser in Mumbai (₹)</div>
+      A <strong>2 kW</strong> water geyser runs <strong>1.5 hours</strong> a day. <br>
+      Energy per day = <span class="eq-inline" style="color:var(--power)">2 × 1.5 = 3 kW·h</span> (3 units). <br>
+      At <strong>₹8 per unit</strong>: cost/day = <span class="eq-inline" style="color:var(--power)">3 × 8 = ₹24</span>. <br>
+      Over a 30-day month: <span class="eq-inline" style="color:var(--power)">24 × 30 = ₹720</span> — just for the geyser.
+    </div>
+
+    <p>Typical Indian household power ratings (mains ≈ 230 V) — handy for fuse and cost questions:</p>
+    <table>
+      <tr><th>Appliance</th><th>Typical power</th><th>Current at 230 V (I = P/V)</th></tr>
+      <tr><td><strong>LED bulb</strong></td><td>9 W</td><td>≈ 0.04 A</td></tr>
+      <tr><td><strong>Ceiling fan</strong></td><td>70 W</td><td>≈ 0.30 A</td></tr>
+      <tr><td><strong>Water geyser</strong></td><td>2000 W</td><td>≈ 8.7 A</td></tr>
+      <tr><td><strong>Air conditioner (1.5 ton)</strong></td><td>1500 W</td><td>≈ 6.5 A</td></tr>
+    </table>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ A kilowatt-hour is energy, not power</div>
+      "kW" is power (a rate); "kW·h" is energy (a rate × a time). Don't divide by time again. And convert <em>before</em> you multiply: watts → kilowatts, minutes → hours. A 100 W bulb for 30 min = 0.1 kW × 0.5 h = <strong>0.05 kW·h</strong>, not 100 × 30.
+    </div>
+  </div>
+
+
+  <!-- ── 07 · SERIES & PARALLEL (widget) ── -->
+  <div class="section">
+    <div class="sec-label">07 / 12 · 4.3.1–4.3.2 Series &amp; Parallel Circuits</div>
+    <h2>Series &amp; parallel — the two ways to wire things</h2>
+
+    <p>Components can be joined in a single loop (<strong>series</strong>) or on separate branches (<strong>parallel</strong>). The rules for each follow from two ideas: charge isn't created or destroyed (current), and energy is conserved (voltage).</p>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Series — one path</div>
+        <div class="card-body">
+          • <strong>Same current</strong> everywhere.<br>
+          • p.d.s <strong>add up</strong> to the supply.<br>
+          • Resistances add: <span class="eq-inline" style="color:var(--force)">R = R₁ + R₂ + …</span><br>
+          • Cell e.m.f.s in series <strong>add</strong> (two 1.5 V cells → 3 V).
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--power)">Parallel — branches</div>
+        <div class="card-body">
+          • <strong>Same p.d.</strong> across every branch.<br>
+          • Branch currents <strong>add</strong> to the main current.<br>
+          • Combined R: <span class="eq-inline" style="color:var(--force)">1/R = 1/R₁ + 1/R₂</span><br>
+          • Total R is <strong>less</strong> than the smallest branch.
+        </div>
+      </div>
+    </div>
+
+    <div class="define">
+      <span class="term">Kirchhoff, in plain words (Extended)</span> — <strong>Junctions:</strong> current in = current out (charge can't pile up). <strong>Loops:</strong> the p.d.s across components in series add up to the total p.d. across them. These two rules crack almost every circuit question.
+    </div>
+
+    <p>Set two resistors and compare wiring them in series vs parallel. Watch how parallel <em>always</em> drops below the smaller resistor:</p>
+
+    <div class="tool">
+      <div class="tool-grid">
+        <div>
+          <div class="slider-row">
+            <label>Resistor R₁ <b><span id="r1v">4</span> Ω</b></label>
+            <input type="range" id="r1" min="1" max="12" value="4" aria-label="Resistance R1">
+          </div>
+          <div class="slider-row">
+            <label>Resistor R₂ <b><span id="r2v">6</span> Ω</b></label>
+            <input type="range" id="r2" min="1" max="12" value="6" aria-label="Resistance R2">
+          </div>
+          <div class="scn-read" style="margin-top:6px">
+            <div class="rk">What you're seeing</div>
+            <strong>Series</strong> stacks the resistance up (R₁ + R₂). <strong>Parallel</strong> opens a second path for the current, so the combined resistance falls <em>below</em> either resistor — more routes, less opposition.
+          </div>
+        </div>
+        <div>
+          <div class="vec-out" style="margin-bottom:12px">
+            <div class="ro">Series&nbsp;&nbsp;R₁ + R₂</div>
+            <div class="rv" style="color:var(--force)"><span id="rSeries">10.0</span> Ω</div>
+          </div>
+          <div class="vec-out">
+            <div class="ro">Parallel&nbsp;&nbsp;R₁R₂ / (R₁+R₂)</div>
+            <div class="rv" style="color:var(--power)"><span id="rParallel">2.4</span> Ω</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Why home lights are in parallel</div>
+      Every lamp gets the <strong>full mains voltage</strong>, each can be switched <strong>on its own</strong>, and if one bulb blows the rest <strong>stay lit</strong> (the others' branches are unbroken). Old series fairy-lights showed the downside: one dead bulb killed the whole string.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Parallel resistance feels backwards</div>
+      Adding a resistor in <em>parallel</em> <strong>lowers</strong> the total resistance (and the answer is always smaller than the smallest branch). Students often add them like series by mistake — always use <span class="eq-inline" style="color:var(--force)">1/R = 1/R₁ + 1/R₂</span>, then remember to <strong>flip back</strong> to get R, not 1/R.
+    </div>
+  </div>
+
+
+  <!-- ── 08 · POTENTIAL DIVIDER ── -->
+  <div class="section">
+    <div class="sec-label">08 / 12 · 4.3.3 Action &amp; Use of Components</div>
+    <h2>The potential divider — splitting a voltage</h2>
+
+    <p>Put two resistors in series across a supply and they <strong>share out the voltage</strong>. Because the same current flows through both (series!), each one's p.d. is in proportion to its resistance — bigger resistor, bigger share.</p>
+
+    <div class="define">
+      <span class="term">Potential divider</span> — for two series resistors, <span class="eq-inline">V₁ / V₂ = R₁ / R₂</span>. The output taken across R₂ is <span class="eq-inline">V_out = V_in × R₂ / (R₁ + R₂)</span>. A <strong>variable</strong> divider (a potentiometer — slide the contact) gives any output from 0 up to the full supply.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Worked example</div>
+      A <strong>12 V</strong> supply across <strong>R₁ = 2 kΩ</strong> and <strong>R₂ = 4 kΩ</strong> in series. The output across R₂: <br>
+      <span class="eq-inline" style="color:var(--power)">V_out = 12 × 4 /(2 + 4) = 8 V</span>. <br>
+      Check the ratio: V₁ : V₂ = R₁ : R₂ = 2 : 4, so V₁ = 4 V and V₂ = 8 V — and 4 + 8 = 12 V. ✓
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🌡️ How gadgets "sense" the world</div>
+      Swap one resistor for a <strong>thermistor</strong> (resistance falls as it warms) or an <strong>LDR</strong> (resistance falls in bright light) and the divider's output voltage now <em>tracks temperature or light</em>. A dark room → high LDR resistance → it grabs a bigger share of voltage → that rising voltage switches a street-lamp on. This is the front end of almost every automatic sensor circuit.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Which resistor's voltage are you finding?</div>
+      <span class="eq-inline">V_out = V_in × R₂/(R₁+R₂)</span> gives the p.d. across <strong>R₂</strong> — the resistor in the formula's top. To get the <em>other</em> component's share, put <em>its</em> resistance on top. The biggest resistor always takes the biggest slice of the voltage.
+    </div>
+  </div>
+
+
+  <!-- ── 09 · ELECTRICAL SAFETY ── -->
+  <div class="section">
+    <div class="sec-label">09 / 12 · 4.4 Electrical Safety</div>
+    <h2>Electrical safety — keeping current where it belongs</h2>
+
+    <p>Mains electricity at 230 V is dangerous, so a house circuit is built with deliberate safety features. First, the hazards to recognise:</p>
+
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#ff5263"></span>Damaged insulation (bare wires)</div>
+      <div class="estore"><span class="dot" style="background:#ff5263"></span>Overheating cables</div>
+      <div class="estore"><span class="dot" style="background:#ff5263"></span>Damp conditions (water conducts)</div>
+      <div class="estore"><span class="dot" style="background:#ff5263"></span>Overloading sockets / extension leads</div>
+    </div>
+
+    <h3>The three mains wires</h3>
+    <table>
+      <tr><th>Wire</th><th>Job</th></tr>
+      <tr><td><strong>Live</strong> (line)</td><td>Carries the alternating supply <em>to</em> the appliance — the dangerous one, at 230 V.</td></tr>
+      <tr><td><strong>Neutral</strong></td><td>Completes the circuit, returning current; near 0 V.</td></tr>
+      <tr><td><strong>Earth</strong></td><td>A safety path to the ground; carries no current normally.</td></tr>
+    </table>
+
+    <div class="define force-c">
+      <span class="term">Switch &amp; fuse go in the LIVE wire</span> — so that when switched off, the appliance is cut off from the 230 V live side and is genuinely safe to touch. Put the switch in the neutral wire and the appliance stays "live" even when off.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🔥 A fuse is a deliberate weak link</div>
+      A <strong>fuse</strong> is a thin wire that <em>melts</em> if the current gets too big, breaking the circuit before the cabling overheats and starts a fire. Choose a rating <strong>just above</strong> the appliance's normal working current. A <strong>trip switch (MCB)</strong> does the same job magnetically — it snaps off on excess current and, unlike a fuse, you just reset it.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Choosing a fuse rating</div>
+      Find the normal current with <span class="eq-inline" style="color:var(--power)">I = P / V</span>, then pick the next standard fuse above it. A 230 V, 920 W microwave draws <span class="eq-inline" style="color:var(--power)">I = 920 / 230 = 4 A</span> → fit a <strong>5 A</strong> fuse (a 13 A fuse would let a fault current flow far too long).
+    </div>
+
+    <h3>Earthing vs double insulation</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--power)">Earthed metal case</div>
+        <div class="card-body">If a live wire touches the <strong>metal</strong> body, a huge current flows straight to earth → the fuse blows → the appliance is dead and safe. The earth wire + fuse work as a team.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Double insulation</div>
+        <div class="card-body">The case is <strong>non-conducting plastic</strong> (symbol ▣), so a loose live wire can never make it live. <strong>No earth wire needed</strong> — the fuse just protects the cabling.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 10 · MAGNETIC EFFECT, MOTOR EFFECT & DC MOTOR ── -->
+  <div class="section">
+    <div class="sec-label">10 / 12 · 4.5.3–4.5.5 · Electricity → Motion</div>
+    <h2>When current makes magnetism — and motion</h2>
+
+    <p>Here's where the two halves of the topic snap together: <strong>an electric current creates a magnetic field around it.</strong> Put that field in <em>another</em> magnet's field and the two push on each other — current produces a force, and force produces motion. Every electric motor lives on this idea.</p>
+
+    <div class="define mom-c">
+      <span class="term">Magnetic field of a current</span> — around a <strong>straight wire</strong> the field lines are <em>concentric circles</em>; their direction comes from the <strong>right-hand grip rule</strong> (thumb points along the conventional current, curled fingers show the field). A <strong>solenoid</strong> (coil) makes a field just like a <em>bar magnet</em>, with a N and S end. Strengthen it with: <strong>more current, more turns,</strong> or a <strong>soft-iron core</strong>. Reverse the current and the whole field flips.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Where this is used</div>
+      A <strong>relay</strong> uses a small current's electromagnet to pull a switch shut in a separate high-power circuit (a little current safely controls a big one). A <strong>loudspeaker</strong> feeds the varying audio current into a coil sitting in a magnet's field — the coil is pushed in and out, vibrating the cone to make sound.
+    </div>
+
+    <h3>The motor effect — force on a current in a field</h3>
+    <p>A current-carrying wire placed <em>across</em> a magnetic field feels a <strong>force</strong> (it gets pushed). This is the <strong>motor effect</strong>. Reverse <em>either</em> the current <em>or</em> the field and the force reverses; reverse <em>both</em> and it stays the same. The force is biggest when the wire is at 90° to the field, and zero when it lies along the field.</p>
+
+    <div class="box intuition">
+      <div class="box-label">✋ Fleming's LEFT-hand rule (motors)</div>
+      Hold the thumb and first two fingers of your <strong>left</strong> hand at right angles. <strong>F</strong>irst finger = <strong>F</strong>ield (N→S), se<strong>C</strong>ond finger = <strong>C</strong>urrent (conventional, + → −), and the thu<strong>M</strong>b shows the <strong>M</strong>otion (force). Left hand = the motor/force rule. (At IGCSE you find the <em>direction</em> only — there's no force formula to plug into.)
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Beams of charged particles (Extended)</div>
+      A moving charge <em>is</em> a current, so a beam of charges crossing a magnetic field is deflected by the same rule. Treat the conventional-current direction as the way <strong>positive</strong> charges move — for an <em>electron</em> beam, the current points <strong>opposite</strong> to the electrons' motion, so apply the left-hand rule accordingly.
+    </div>
+
+    <h3>The d.c. motor</h3>
+    <p>Bend the wire into a <strong>coil</strong> in a magnetic field: the motor effect pushes one side up and the other side down, so the coil <strong>spins</strong>. The turning effect grows with <strong>more turns, more current,</strong> or a <strong>stronger field</strong>.</p>
+
+    <div class="define mom-c">
+      <span class="term">Split-ring commutator</span> — the clever bit. Every half-turn it <strong>swaps the current direction</strong> in the coil, so the push on each side keeps driving rotation the same way instead of stalling. <strong>Brushes</strong> press against it to feed current to the spinning coil. Commutator = d.c. motor; remember it, because the generator (next) uses <em>slip rings</em> instead.
+    </div>
+  </div>
+
+
+  <!-- ── 11 · INDUCTION, GENERATOR & TRANSFORMER (widget) ── -->
+  <div class="section">
+    <div class="sec-label">11 / 12 · 4.5.1–4.5.2 &amp; 4.5.6 · Motion → Electricity</div>
+    <h2>Induction, generators &amp; transformers</h2>
+
+    <p>Run the last section in reverse. If a current makes magnetism, can magnetism make a current? Yes — and it powers the entire grid. <strong>Move a conductor across a magnetic field</strong> (or change the field through it) and you <strong>induce an e.m.f.</strong> in it. This is <strong>electromagnetic induction</strong>.</p>
+
+    <div class="box intuition">
+      <div class="box-label">🧲 The demonstration to remember</div>
+      Push a bar magnet into a coil joined to a sensitive galvanometer — the needle kicks. Pull it out — the needle kicks the <em>other</em> way. Hold it still inside — <strong>nothing</strong>. No movement, no change, no induced e.m.f. You're not "supplying" current; you're <em>generating</em> it from motion.
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">Size of the induced e.m.f.</span> grows with: a <strong>faster</strong> movement (or faster-changing field), <strong>more turns</strong> on the coil, and a <strong>stronger</strong> magnet. <strong>Direction (Extended):</strong> the induced e.m.f. always <em>opposes the change that causes it</em> (Lenz's law) — for the generator effect, the relative directions of force, field and induced current follow <strong>Fleming's RIGHT-hand rule</strong>.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🙅 Nature pushes back (Lenz's law)</div>
+      Push the magnet's N pole in and the coil induces a current that turns its <em>near</em> face into a N pole too — repelling you, resisting the push. Pull out and it becomes a S pole, trying to <em>hold the magnet back</em>. The induced current always fights the change. If it helped instead, you'd get energy from nothing — so this is really conservation of energy in disguise.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Left hand or right hand?</div>
+      <strong>Motor</strong> (current → motion) uses the <strong>LEFT</strong> hand. <strong>Generator</strong> (motion → current) uses the <strong>RIGHT</strong> hand. The fingers mean the same three quantities in both — first finger = field, second = current, thumb = motion — only the <em>hand</em> changes. Mix them up and your induced-current direction comes out backwards.
+    </div>
+
+    <h3>The a.c. generator</h3>
+    <p>Spin a coil in a magnetic field and its sides keep cutting field lines, inducing an e.m.f. that <strong>reverses every half-turn</strong> — alternating current. <strong>Slip rings</strong> and brushes connect the spinning coil to the outside circuit (no commutator — we <em>want</em> the reversal here).</p>
+
+    <div class="box exam">
+      <div class="box-label">✅ Reading the e.m.f.–time graph</div>
+      The output is a sine wave. The e.m.f. <strong>peaks</strong> when the coil's sides are sweeping <em>across</em> the field lines fastest — the moment the plane of the coil lies <em>parallel</em> to the field — and falls to <strong>zero</strong> a quarter-turn later, when the sides move <em>along</em> the field lines (plane of the coil <em>perpendicular</em> to the field) and cut none. Spin it faster → taller <em>and</em> more frequent peaks.
+    </div>
+
+    <h3>The transformer</h3>
+    <p>A <strong>transformer</strong> changes the size of an a.c. voltage. Two coils — primary and secondary — share a <strong>soft-iron core</strong>. Alternating current in the primary makes a constantly-changing magnetic field in the core; that changing field links the secondary and induces an a.c. e.m.f. in it.</p>
+
+    <div class="define mom-c">
+      <span class="term">Transformer equation</span> — voltages are in the same ratio as the turns: <span class="eq-inline" style="color:var(--momentum)">V_p / V_s = N_p / N_s</span>. More turns on the secondary (<em>N_s &gt; N_p</em>) → <strong>step-up</strong> (higher voltage out); fewer turns → <strong>step-down</strong>. It only works on <strong>a.c.</strong> — a steady d.c. gives an unchanging field and induces nothing.
+    </div>
+
+    <p>Set the turns and the input voltage, and read off the secondary voltage:</p>
+
+    <div class="tool">
+      <div class="tool-grid">
+        <div>
+          <svg class="vecpad" viewBox="0 0 240 140" id="tfPad" aria-label="Transformer schematic">
+            <!-- soft-iron core -->
+            <rect class="tf-core" x="96" y="26" width="48" height="88" rx="5" stroke-width="7"/>
+            <!-- primary windings (left leg) -->
+            <path class="tf-primary" id="tfPrim" stroke-width="3" d=""/>
+            <!-- secondary windings (right leg) -->
+            <path class="tf-secondary" id="tfSec" stroke-width="3" d=""/>
+            <text x="40" y="20" class="axis-lbl">PRIMARY</text>
+            <text x="168" y="20" class="axis-lbl">SECONDARY</text>
+          </svg>
+          <div class="scn-read" style="margin-top:12px">
+            <div class="rk" id="tfType">Step-down transformer</div>
+            <div id="tfNote">Fewer turns on the secondary than the primary, so the output voltage is lower than the input.</div>
+          </div>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>Primary voltage V_p <b><span id="vpv">230</span> V</b></label>
+            <input type="range" id="vp" min="10" max="240" step="10" value="230" aria-label="Primary voltage">
+          </div>
+          <div class="slider-row">
+            <label>Primary turns N_p <b><span id="npv">1000</span></b></label>
+            <input type="range" id="np" min="100" max="2000" step="100" value="1000" aria-label="Primary turns">
+          </div>
+          <div class="slider-row">
+            <label>Secondary turns N_s <b><span id="nsv">200</span></b></label>
+            <input type="range" id="ns" min="100" max="2000" step="100" value="200" aria-label="Secondary turns">
+          </div>
+          <div class="vec-out">
+            <div class="ro">Secondary voltage V_s</div>
+            <div class="rv"><span id="vsOut">46</span> V</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">Ideal transformer (Extended)</span> — a perfect transformer wastes no power, so power in = power out: <span class="eq-inline" style="color:var(--momentum)">I_p V_p = I_s V_s</span>. Step the voltage <em>up</em> and the current steps <em>down</em> by the same factor (and vice-versa). E.g. stepping 230 V down to 46 V at I_p = 1 A gives I_s = (230 × 1)/46 = <strong>5 A</strong>.
+    </div>
+
+    <h3>Why the grid uses enormous voltages</h3>
+    <p>Power stations send electricity across the country at hundreds of thousands of volts. The reason is energy lost heating the cables, given by <span class="eq-inline" style="color:var(--momentum)">P = I²R</span>:</p>
+
+    <div class="sankey">
+      <div class="sankey-bar">
+        <div class="sk-useful" style="width:50%">Low current, high V — tiny loss</div>
+        <div class="sk-waste" style="width:50%">High current, low V — huge I²R loss</div>
+      </div>
+      <div class="sankey-cap">Same power delivered two ways — the high-voltage route wastes almost nothing in the cables.</div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ The transmission argument (full marks)</div>
+      For a fixed power P = VI, raising V <strong>lowers</strong> the current I. Because cable loss is <span class="eq-inline" style="color:var(--momentum)">P_loss = I²R</span> — proportional to <em>current squared</em> — even a small drop in I slashes the wasted heat. Transformers <strong>step up</strong> the voltage for transmission (low current, low loss, thinner cheaper cables), then <strong>step down</strong> again to a safe 230 V for homes. <em>Example:</em> sending 20 kW through a 2 Ω line at 200 V needs I = 100 A → loss = 100² × 2 = 20 000 W (all of it!). At 20 000 V, I = 1 A → loss = 1² × 2 = just <strong>2 W</strong>.
+    </div>
+  </div>
+
+
+  <!-- ── 12 · EQUATION BANK ── -->
+  <div class="section">
+    <div class="sec-label">12 / 12 · Reference</div>
+    <h2>The Topic 4 equation bank</h2>
+    <p>IGCSE Physics gives you <strong>no formula sheet</strong> — every equation here must be recalled from memory. Tap any tile for symbols, units, rearrangements, a worked example, and the exam trap:</p>
+
+    <div class="eqbank" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ The non-negotiables to memorise</div>
+      <span class="eq-inline" style="color:var(--rose)">I = Q/t</span>
+      <span class="eq-inline" style="color:var(--rose)">V = IR</span>
+      <span class="eq-inline" style="color:var(--rose)">P = IV</span>
+      <span class="eq-inline" style="color:var(--rose)">E = IVt</span>
+      <span class="eq-inline" style="color:var(--rose)">R_series = R₁+R₂</span>
+      <span class="eq-inline" style="color:var(--rose)">1/R_parallel = 1/R₁+1/R₂</span>
+      <span class="eq-inline" style="color:var(--rose)">V_p/V_s = N_p/N_s</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE PHYSICS · 0625 EXTENDED · TOPIC 4 — ELECTRICITY &amp; MAGNETISM<br>
+    Built for understanding — current and magnetism are two halves of one idea.
+  </div>
+
+</div>
+
+<!-- ── FLOATING EQUATION CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Symbols &amp; units</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Rearrangements</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   1 · I–V CHARACTERISTIC EXPLORER
+════════════════════════════════════════════════ */
+(function(){
+  // graph geometry (viewBox 240 x 168), origin at centre (V=0, I=0)
+  const OX=120, OY=84, SX=100, SY=62;     // pixels per unit (V in [-1,1], I in [-1,1])
+  const GX = v => OX + v*SX;
+  const GY = i => OY - i*SY;
+
+  const COMP = {
+    resistor: {
+      cls:'iv-resistor', cap:'I–V characteristic · resistor',
+      title:'Resistor (constant resistance)',
+      text:'Resistance stays constant, so current is directly proportional to voltage — a straight line through the origin (Ohm’s law). Reverse the voltage and the line simply continues the other way: it is symmetric.',
+      f: v => v
+    },
+    lamp: {
+      cls:'iv-lamp', cap:'I–V characteristic · filament lamp',
+      title:'Filament lamp (non-ohmic)',
+      text:'As the current rises the filament heats up, so its resistance increases — the curve bends over and flattens at higher voltages. It is still symmetric: it behaves the same whichever way the current flows.',
+      f: v => Math.tanh(2.0*v)/Math.tanh(2.0)
+    },
+    diode: {
+      cls:'iv-diode', cap:'I–V characteristic · diode',
+      title:'Diode (one-way valve)',
+      text:'A diode conducts one way only. In reverse its resistance is almost infinite, so virtually no current flows. Forwards, almost nothing flows until about 0.6 V, then the current rises very steeply.',
+      f: v => {
+        if(v < 0.6) return 0;                         // reverse & below the ~0.6 V knee: no current
+        return Math.pow((v-0.6)/0.4, 1.4);            // steep forward rise → 1 at v=1
+      }
+    }
+  };
+
+  const curve = document.getElementById('ivCurve');
+  const dot   = document.getElementById('ivDot');
+  const cap   = document.getElementById('ivCap');
+  const titleEl=document.getElementById('ivTitle');
+  const textEl =document.getElementById('ivText');
+  const NSTEP=80, DUR=1500;
+  let cur='resistor', raf=null, startTs=null;
+
+  function clampI(i){ return i>1.12?1.12 : (i<-1.12?-1.12:i); }
+
+  function buildPath(f){
+    let d='';
+    for(let k=0;k<=NSTEP;k++){
+      const v=-1 + 2*k/NSTEP;
+      const i=clampI(f(v));
+      d += (k?'L':'M')+GX(v).toFixed(1)+','+GY(i).toFixed(1)+' ';
+    }
+    return d;
+  }
+
+  function setComp(key){
+    cur=key;
+    const c=COMP[key];
+    document.querySelectorAll('#ivTabs .scn-tab').forEach(t=>
+      t.classList.toggle('active', t.dataset.iv===key));
+    curve.setAttribute('class','curve '+c.cls);
+    curve.setAttribute('d', buildPath(c.f));
+    cap.textContent=c.cap;
+    titleEl.textContent=c.title;
+    textEl.textContent=c.text;
+    play();
+  }
+
+  function frame(ts){
+    if(!startTs) startTs=ts;
+    let p=(ts-startTs)/DUR; if(p>1) p=1;
+    const c=COMP[cur];
+    const v=-1 + 2*p;
+    const i=clampI(c.f(v));
+    dot.setAttribute('cx',GX(v).toFixed(1));
+    dot.setAttribute('cy',GY(i).toFixed(1));
+    if(p<1) raf=requestAnimationFrame(frame);
+  }
+  function play(){ cancelAnimationFrame(raf); startTs=null; raf=requestAnimationFrame(frame); }
+
+  document.getElementById('ivTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    setComp(t.dataset.iv);
+  });
+  document.getElementById('ivReplay').addEventListener('click',play);
+
+  setComp('resistor');
+})();
+
+/* ════════════════════════════════════════════════
+   2 · SERIES / PARALLEL RESISTANCE COMBINER
+════════════════════════════════════════════════ */
+(function(){
+  const r1=document.getElementById('r1'), r2=document.getElementById('r2');
+  function upd(){
+    const R1=+r1.value, R2=+r2.value;
+    document.getElementById('r1v').textContent=R1;
+    document.getElementById('r2v').textContent=R2;
+    const series=R1+R2;
+    const parallel=(R1*R2)/(R1+R2);
+    document.getElementById('rSeries').textContent=series.toFixed(1);
+    document.getElementById('rParallel').textContent=parallel.toFixed(1);
+  }
+  r1.addEventListener('input',upd); r2.addEventListener('input',upd); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   3 · TRANSFORMER CALCULATOR
+════════════════════════════════════════════════ */
+(function(){
+  const vp=document.getElementById('vp'), np=document.getElementById('np'), ns=document.getElementById('ns');
+  const prim=document.getElementById('tfPrim'), sec=document.getElementById('tfSec');
+
+  // draw a coil as a vertical run of half-loops on a core leg at x=cx
+  function coil(cx, turns, dir){
+    const top=32, bot=108, n=Math.max(3,Math.min(9,turns));
+    const step=(bot-top)/n, r=9*dir;
+    let d='M'+cx+','+top+' ';
+    for(let k=0;k<n;k++){
+      const y0=top+k*step, y1=y0+step;
+      // a half-loop bulging out to the side (dir = -1 left, +1 right)
+      d+='C'+(cx+r)+','+y0+' '+(cx+r)+','+y1+' '+cx+','+y1+' ';
+    }
+    return d;
+  }
+  function upd(){
+    const VP=+vp.value, NP=+np.value, NS=+ns.value;
+    document.getElementById('vpv').textContent=VP;
+    document.getElementById('npv').textContent=NP;
+    document.getElementById('nsv').textContent=NS;
+    const VS=VP*NS/NP;
+    document.getElementById('vsOut').textContent=(VS>=10? VS.toFixed(0) : VS.toFixed(1));
+    // schematic: turn-count hints the number of loops drawn
+    prim.setAttribute('d', coil(96, Math.round(NP/250), -1));
+    sec.setAttribute('d',  coil(144, Math.round(NS/250), +1));
+    const typeEl=document.getElementById('tfType'), noteEl=document.getElementById('tfNote');
+    if(NS>NP){
+      typeEl.textContent='Step-up transformer';
+      noteEl.textContent='More turns on the secondary than the primary, so the output voltage is higher than the input. (The current is correspondingly lower.)';
+    } else if(NS<NP){
+      typeEl.textContent='Step-down transformer';
+      noteEl.textContent='Fewer turns on the secondary than the primary, so the output voltage is lower than the input. (The current is correspondingly higher.)';
+    } else {
+      typeEl.textContent='1 : 1 (isolating) transformer';
+      noteEl.textContent='Equal turns, so the output voltage equals the input — used to isolate a circuit, not to change the voltage.';
+    }
+  }
+  [vp,np,ns].forEach(s=>s.addEventListener('input',upd)); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   4 · EQUATION BANK + FLOATING CARD
+════════════════════════════════════════════════ */
+const EQ = {
+  current:  { c:'motion', name:'Electric current', formula:'I = Q / t',
+    syms:[['I','current','A'],['Q','charge','C'],['t','time','s']],
+    rearr:'Q = I·t   ·   t = Q / I',
+    ex:'60 C passes a point in 30 s → I = 60 ÷ 30 = <b>2 A</b>.',
+    tip:'Current is the <b>same</b> all the way round a series circuit — it is not used up.' },
+  emf:      { c:'energy', name:'Electromotive force', formula:'E = W / Q',
+    syms:[['E','e.m.f.','V'],['W','work done by source','J'],['Q','charge','C']],
+    rearr:'W = E·Q   ·   Q = W / E',
+    ex:'A cell does 30 J driving 6 C round the circuit → E = 30 ÷ 6 = <b>5 V</b>.',
+    tip:'e.m.f. is energy the source <b>gives</b> each coulomb; p.d. is what a component <b>takes</b>. 1 V = 1 J/C.' },
+  pd:       { c:'energy', name:'Potential difference', formula:'V = W / Q',
+    syms:[['V','p.d.','V'],['W','work done in component','J'],['Q','charge','C']],
+    rearr:'W = V·Q   ·   Q = W / V',
+    ex:'A lamp transfers 8 J for every 2 C passing → V = 8 ÷ 2 = <b>4 V</b>.',
+    tip:'Voltmeter goes in <b>parallel</b> (across the component); ammeter in <b>series</b>.' },
+  resistance:{ c:'force', name:'Resistance', formula:'R = V / I',
+    syms:[['R','resistance','Ω'],['V','p.d.','V'],['I','current','A']],
+    rearr:'V = I·R   ·   I = V / R',
+    ex:'12 V across a resistor drives 3 A → R = 12 ÷ 3 = <b>4 Ω</b>.',
+    tip:'<b>V = IR</b> is the workhorse line — know it all three ways.' },
+  wireR:    { c:'force', name:'Resistance of a wire', formula:'R ∝ L / A',
+    syms:[['R','resistance','Ω'],['L','length','—'],['A','cross-sectional area','—']],
+    rearr:'R ∝ L (longer → more)   ·   R ∝ 1/A (thicker → less)',
+    ex:'Double the length → double R. Double the area → half R.',
+    tip:'<b>A is the thickness</b>, not the length. Long + thin = most resistance.' },
+  power:    { c:'power', name:'Electrical power', formula:'P = I V',
+    syms:[['P','power','W'],['I','current','A'],['V','p.d.','V']],
+    rearr:'I = P / V   ·   V = P / I',
+    ex:'A 230 V heater drawing 2 A → P = 230 × 2 = <b>460 W</b>.',
+    tip:'Also <b>P = I²R</b> (put V = IR into P = IV) — handy when you only know current and resistance.' },
+  energyE:  { c:'power', name:'Electrical energy', formula:'E = I V t',
+    syms:[['E','energy','J'],['I','current','A'],['V','p.d.','V'],['t','time','s']],
+    rearr:'E = P·t  (since P = IV)   ·   t = E /(IV)',
+    ex:'A 460 W heater for 60 s → E = 460 × 60 = <b>27 600 J</b>.',
+    tip:'In joules, use <b>seconds</b>. For the bill, switch to kilowatt-hours instead.' },
+  cost:     { c:'power', name:'Cost of electricity', formula:'cost = kW·h × price',
+    syms:[['energy','units','kW·h'],['power','rating','kW'],['time','use','h']],
+    rearr:'units = power(kW) × time(h)   ·   cost = units × price',
+    ex:'A 2 kW geyser for 1.5 h = 3 units. At ₹8/unit → 3 × 8 = <b>₹24</b>.',
+    tip:'1 kW·h ("1 unit") = <b>3.6 MJ</b>. Convert W→kW and min→h <i>before</i> multiplying.' },
+  series:   { c:'force', name:'Series resistance', formula:'R = R₁ + R₂ + …',
+    syms:[['R','total resistance','Ω'],['R₁,R₂','each resistor','Ω']],
+    rearr:'just add them up',
+    ex:'4 Ω + 6 Ω in series = <b>10 Ω</b>.',
+    tip:'Series components share the <b>same current</b>; their p.d.s add to the supply.' },
+  parallel: { c:'force', name:'Parallel resistance', formula:'1/R = 1/R₁ + 1/R₂',
+    syms:[['R','combined resistance','Ω'],['R₁,R₂','each branch','Ω']],
+    rearr:'two resistors:  R = R₁R₂ / (R₁ + R₂)',
+    ex:'4 Ω and 6 Ω in parallel = (4×6)/(4+6) = <b>2.4 Ω</b>.',
+    tip:'Always <b>less than the smallest</b> branch. Flip 1/R back to get R, not 1/R.' },
+  pdiv:     { c:'motion', name:'Potential divider', formula:'V₁/V₂ = R₁/R₂',
+    syms:[['V₁,V₂','each p.d.','V'],['R₁,R₂','each resistor','Ω']],
+    rearr:'V_out across R₂ = V_in × R₂ /(R₁ + R₂)',
+    ex:'12 V across 2 kΩ + 4 kΩ → across the 4 kΩ: 12 × 4/6 = <b>8 V</b>.',
+    tip:'The <b>bigger</b> resistor takes the bigger share of the voltage.' },
+  transformer:{ c:'mom', name:'Transformer', formula:'Vp/Vs = Np/Ns',
+    syms:[['Vp,Vs','primary/secondary p.d.','V'],['Np,Ns','turns','—']],
+    rearr:'Vs = Vp × Ns/Np',
+    ex:'230 V, Np=1000, Ns=200 → Vs = 230 × 200/1000 = <b>46 V</b> (step-down).',
+    tip:'More turns on a side → more volts on that side. <b>Ns &gt; Np = step-up</b>. a.c. only.' },
+  idealT:   { c:'mom', name:'Ideal transformer power', formula:'IpVp = IsVs',
+    syms:[['Ip,Is','primary/secondary current','A'],['Vp,Vs','primary/secondary p.d.','V']],
+    rearr:'Is = Vp·Ip / Vs',
+    ex:'Step-down 230 V→46 V at Ip = 1 A → Is = (230×1)/46 = <b>5 A</b>.',
+    tip:'Step the voltage <b>up</b> and the current steps <b>down</b> — power is conserved.' },
+  cableloss:{ c:'mom', name:'Cable power loss', formula:'P = I²R',
+    syms:[['P','power lost in cable','W'],['I','current','A'],['R','cable resistance','Ω']],
+    rearr:'loss ∝ I² — halve I, quarter the loss',
+    ex:'100 A in a 2 Ω cable loses 100²×2 = 20 000 W; at 1 A only <b>2 W</b>.',
+    tip:'<b>Why the grid runs at high voltage:</b> high V → low I → loss ∝ I² collapses.' },
+};
+
+const ORDER=['current','emf','pd','resistance','wireR','power','energyE','cost',
+  'series','parallel','pdiv','transformer','idealT','cableloss'];
+
+const CMETA = {
+  motion:{col:'#46a8ff', bg:'#0c2536', bd:'#1f4258'},
+  force: {col:'#ff5263', bg:'#2a0f15', bd:'#4a1d26'},
+  energy:{col:'#ffae3b', bg:'#1a1306', bd:'#3a2c10'},
+  mom:   {col:'#8b7bff', bg:'#120c22', bd:'#2e2350'},
+  power: {col:'#43d98c', bg:'#0f2018', bd:'#1f4a30'},
+};
+
+(function buildBank(){
+  const bank=document.getElementById('eqbank');
+  ORDER.forEach(key=>{
+    const e=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=e.c; cell.dataset.key=key;
+    cell.innerHTML='<div class="eq-sym">'+e.formula+'</div><div class="eq-name">'+e.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+
+function openEqCard(key){
+  const e=EQ[key], m=CMETA[e.c]||CMETA.motion;
+  const card=document.getElementById('eq-card');
+  const badge=document.getElementById('eqc-badge');
+  badge.textContent=e.formula.split('=')[0].trim();
+  badge.style.color=m.col; badge.style.background=m.bg; badge.style.borderColor=m.bd;
+  document.getElementById('eqc-name').textContent=e.name;
+  const f=document.getElementById('eqc-formula');
+  f.textContent=e.formula; f.style.color=m.col;
+  // symbols
+  const sr=document.getElementById('eqc-syms'); sr.innerHTML='';
+  e.syms.forEach(s=>{
+    const pill=document.createElement('div'); pill.className='sym-pill';
+    pill.innerHTML='<b style="color:'+m.col+'">'+s[0]+'</b> '+s[1]+' <span>['+s[2]+']</span>';
+    sr.appendChild(pill);
+  });
+  document.getElementById('eqc-rearr').textContent=e.rearr;
+  document.getElementById('eqc-example').innerHTML=e.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Exam trap:</b> '+e.tip;
+  card.style.display='block';
+  requestAnimationFrame(()=>card.style.opacity='1');
+}
+function closeEqCard(){
+  const card=document.getElementById('eq-card');
+  card.style.opacity='0';
+  setTimeout(()=>card.style.display='none',250);
+}
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) &&
+     !e.target.closest('.eqcell')) closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   5 · THEME TOGGLE (light / dark)
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){ try{ return localStorage.getItem('phys-theme'); }catch(e){ return null; } }
+  function safeSet(v){ try{ localStorage.setItem('phys-theme',v); }catch(e){} }
+  function apply(theme){
+    body.setAttribute('data-theme', theme);
+    btn.textContent = (theme==='dark') ? SUN : MOON;
+    btn.setAttribute('aria-label',
+      (theme==='dark') ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  let start = safeGet();
+  if(!start){
+    start = (window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+  apply(start);
+  btn.addEventListener('click',()=>{
+    const next = body.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    apply(next); safeSet(next);
+  });
+})();
+</script>
+</body>
+</html>

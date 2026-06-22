@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemistry Topic 3: Stoichiometry</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    --motion:   #36c9b0;   /* teal — the mole / amount of substance (primary) */
+    --force:    #f06070;   /* coral — formulae & reactants */
+    --energy:   #f0b144;   /* amber — mass: Ar, Mr */
+    --energy2:  #f0b144;
+    --momentum: #a57ef5;   /* violet — particles & the Avogadro constant */
+    --power:    #4ec994;   /* green — exam tips & correct answers */
+    --cyan:     #5b8dee;   /* blue — solutions & concentration */
+    --rose:     #f25cc1;   /* alert magenta — ≥30° hue gap from coral/amber (CVD-safe) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient field — neutral glow (locked, never tinted toward the subject) */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #2a1c5520 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #5a221820 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 110px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 54px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--momentum); }
+  h1 .c { color: var(--energy2); }
+
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 620px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: rise 0.55s ease forwards;
+  }
+  @keyframes rise {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--bright);
+    margin-bottom: 14px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: var(--bright);
+    margin: 26px 0 10px;
+  }
+
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+
+  .eq-inline {
+    font-family: 'JetBrains Mono', monospace;
+    background: #0d1828;
+    border: 1px solid #22324a;
+    border-radius: 5px;
+    padding: 1px 7px;
+    font-size: 13px;
+    color: var(--motion);
+    white-space: nowrap;
+  }
+  body[data-theme="light"] .eq-inline {
+    background: #eef1f8;
+    border-color: #d4dcec;
+  }
+
+  /* ── BOXES ── */
+  .box {
+    border-radius: 11px;
+    padding: 17px 20px;
+    margin: 18px 0;
+    font-size: 14.2px;
+    border: 1px solid;
+  }
+  .box-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .box.intuition { background:#082420; border-color:#15463f; }
+  .box.intuition .box-label { color: var(--motion); }
+
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define {
+    border-left: 3px solid var(--motion);
+    background: linear-gradient(90deg, #08242080, transparent);
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .define .term {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--bright);
+    font-size: 1.02rem;
+  }
+  .define.force-c   { border-color: var(--force); background:linear-gradient(90deg,#2a0f1480,transparent); }
+  .define.energy-c  { border-color: var(--energy2); background:linear-gradient(90deg,#23180680,transparent); }
+  .define.mom-c     { border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+  .define.sol-c     { border-color: var(--cyan); background:linear-gradient(90deg,#0e1c3a80,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 16px 18px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { transform: translateY(-3px); border-color:#2f6a60; }
+  .card-title {
+    font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px;
+  }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th {
+    background: var(--surface2); color: var(--motion);
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase;
+    padding:10px 14px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+
+  mark {
+    background: linear-gradient(120deg,#155a4c88,#1f7a6a88);
+    color: var(--bright); padding:1px 4px; border-radius:3px;
+  }
+
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY NOTE (read before cloning)
+     · BASE IS LOCKED ACROSS ALL SUBJECTS: --bg, --surface*, --text,
+       --muted, --border, the paper light theme, and the neutral ambient
+       glow NEVER change per subject. Only the accent block changes.
+     · SHARED components (reused by any topic — never delete):
+       .explorer .scn-tabs .scn-tab .scn-read .rk svg.vecpad .tool
+       .tool-grid .slider-row .vec-out .balance-stage .pivot .beam
+       .load .bal-state .eqbank .eqcell .box .define .card table
+     · This build's topic widgets: .lr-* (limiting-reactant bars) — delete
+       if a future topic drops that widget (grep the class first).
+  ═════════════════════════════════════════════ */
+
+  /* ─────────────────────────────────────────────
+     EXPLORER / SUBSTANCE-TAB SHELL
+  ───────────────────────────────────────────── */
+  .explorer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 22px 0;
+  }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab {
+    font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    padding:8px 14px; border-radius:8px; cursor:pointer;
+    background:#0e1626; border:1px solid var(--border); color:var(--muted);
+    transition:all .18s; user-select:none;
+  }
+  .scn-tab:hover { color:var(--text); border-color:#2f6a60; }
+  .scn-tab.active { background:#08231f; border-color:var(--motion); color:var(--motion); }
+
+  .scn-read {
+    margin-top:16px; background:#082420; border:1px solid #15463f;
+    border-radius:9px; padding:13px 16px; font-size:13.6px;
+  }
+  .scn-read .rk {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--motion);
+    margin-bottom:6px;
+  }
+
+  /* ─────────────────────────────────────────────
+     SLIDER TOOL (mole converter + limiting reactant)
+  ───────────────────────────────────────────── */
+  .tool {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:20px; margin:22px 0;
+  }
+  .tool-grid { display:grid; grid-template-columns:1fr 230px; gap:20px; align-items:center; }
+  .slider-row { margin:14px 0; }
+  .slider-row label {
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] {
+    width:100%; -webkit-appearance:none; height:5px; border-radius:3px;
+    background:#22304a; outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--motion); cursor:pointer; box-shadow:0 0 10px #36c9b088;
+  }
+  input[type=range]::-moz-range-thumb {
+    width:17px; height:17px; border:none; border-radius:50%;
+    background:var(--motion); cursor:pointer;
+  }
+  .vec-out {
+    background:#082420; border:1px solid #15463f; border-radius:9px;
+    padding:14px 16px; text-align:center;
+  }
+  .vec-out .ro {
+    font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:#5b9a8e; margin-bottom:3px;
+  }
+  .vec-out .rv {
+    font-family:'Fraunces',serif; font-size:1.7rem; font-weight:700;
+    color:var(--motion); line-height:1.1; margin-bottom:10px;
+  }
+
+  /* ─────────────────────────────────────────────
+     EQUATION BALANCER (reuses beam metaphor)
+  ───────────────────────────────────────────── */
+  .balance-stage {
+    height:150px; position:relative; margin:8px 0 4px;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .pivot {
+    position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+    width:0; height:0; border-left:22px solid transparent; border-right:22px solid transparent;
+    border-bottom:34px solid var(--force);
+  }
+  .beam {
+    position:absolute; bottom:48px; left:50%;
+    width:380px; height:12px; margin-left:-190px;
+    background:linear-gradient(180deg,#34425e,#222d42);
+    border-radius:4px; transform-origin:50% 50%;
+    transition:transform .4s cubic-bezier(.34,1.4,.5,1);
+  }
+  .load {
+    position:absolute; top:-34px; width:34px; height:34px; border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:10px; color:#06140f; font-weight:600;
+    background:var(--energy2); transform:translateX(-50%);
+  }
+  #loadL { background:var(--force); left:60px; }
+  #loadR { background:var(--motion); left:320px; }
+  .bal-state {
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.06em;
+    padding:8px 0; text-align:center; border-radius:8px; margin-top:6px;
+  }
+  .bal-state.bal { color:var(--power); background:#0f2018; border:1px solid #1f4a30; }
+  .bal-state.tip { color:var(--energy2); background:#231806; border:1px solid #4a3a10; }
+  .eqn-builder {
+    font-family:'JetBrains Mono',monospace; font-size:1.05rem; text-align:center;
+    color:var(--bright); margin-bottom:6px; letter-spacing:.02em;
+  }
+  .coef { color:var(--motion); font-weight:600; }
+
+  /* ─────────────────────────────────────────────
+     LIMITING-REACTANT BARS (topic widget)
+  ───────────────────────────────────────────── */
+  .lr-wrap { display:flex; flex-direction:column; gap:16px; margin:6px 0 4px; }
+  .lr-row .lr-cap {
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    margin-bottom:5px; letter-spacing:.04em;
+  }
+  .lr-row .lr-cap b { color:var(--bright); font-size:12.5px; }
+  .lr-track {
+    position:relative; height:24px; background:var(--surface2);
+    border:1px solid var(--border); border-radius:7px; overflow:hidden;
+  }
+  .lr-fill { position:absolute; left:0; top:0; bottom:0; border-radius:6px 0 0 6px; transition:width .25s ease; }
+  .lr-fill.a { background:linear-gradient(90deg,#2a9d8f,#36c9b0); }
+  .lr-fill.b { background:linear-gradient(90deg,#c84f5d,#f06070); }
+  .lr-tag {
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:9px;
+    letter-spacing:.12em; text-transform:uppercase; padding:1px 7px; border-radius:10px;
+    margin-left:8px; vertical-align:middle;
+  }
+  .lr-tag.lim { color:var(--rose); border:1px solid var(--rose); }
+  .lr-tag.exc { color:var(--power); border:1px solid var(--power); }
+
+  /* ─────────────────────────────────────────────
+     EQUATION / METHOD BANK
+  ───────────────────────────────────────────── */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqcell {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 12px; cursor:pointer; text-align:center;
+    transition:transform .16s, border-color .16s, box-shadow .16s;
+  }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion);
+    box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym {
+    font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600;
+    color:var(--bright); margin-bottom:4px;
+  }
+  .eqcell .eq-name {
+    font-size:10.5px; color:var(--muted); letter-spacing:.04em;
+  }
+  .eqcell[data-c="motion"]:hover { border-color:var(--motion); }
+  .eqcell[data-c="force"]:hover  { border-color:var(--force); box-shadow:0 8px 22px #0008; }
+  .eqcell[data-c="energy"]:hover { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover    { border-color:var(--momentum); }
+  .eqcell[data-c="sol"]:hover    { border-color:var(--cyan); }
+
+  /* floating detail card — fully themed (vars, with a light override below) */
+  #eq-card {
+    display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px;
+    width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow);
+    overflow:hidden; transition:opacity .25s;
+  }
+  #eqc-top {
+    padding:18px 18px 14px; display:flex; gap:14px; align-items:center;
+    border-bottom:1px solid var(--card-divider); position:relative;
+  }
+  #eqc-badge {
+    flex-shrink:0; width:62px; height:62px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600;
+    background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd);
+  }
+  #eqc-head h4 {
+    font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px;
+  }
+  #eqc-formula {
+    font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--motion);
+  }
+  #eqc-close {
+    position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted);
+    cursor:pointer; user-select:none;
+  }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--card-label); margin:10px 0 6px;
+  }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill {
+    background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px;
+    padding:5px 9px; font-size:11.5px; color:var(--card-text);
+  }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr {
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text);
+    background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em;
+  }
+  #eqc-example {
+    background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55;
+  }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip {
+    background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px;
+  }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── FOOTER ── */
+  .footer {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    text-align:center; padding-top:28px; border-top:1px solid var(--border);
+    letter-spacing:.07em; line-height:1.8;
+  }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .eqbank { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+    .tool-grid { grid-template-columns:1fr; }
+    .beam { width:280px; margin-left:-140px; }
+    #loadR { left:250px; }
+  }
+
+  /* ─────────────────────────────────────────────
+     THEME TOGGLE BUTTON
+  ───────────────────────────────────────────── */
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 10000;
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-size: 17px; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    transition: transform .25s, border-color .2s, background-color .35s;
+    line-height: 1;
+  }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  /* smooth cross-fade between themes */
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.vecpad,
+  .scn-read, .scn-tab, .vec-out, .bal-state, .chip,
+  table th, table td, .beam, .eqcell, .lr-track, mark {
+    transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+  }
+
+  /* ═════════════════════════════════════════════
+     LIGHT THEME ("study paper")
+     Accents are deepened so coloured text stays
+     legible on a pale background.
+  ═════════════════════════════════════════════ */
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;   /* warm lab-notebook paper */
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;   /* ink */
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #0b7a67;   /* deep teal (AA 4.5+) */
+    --force:    #cb2531;   /* deep coral-red (AA 4.5+) */
+    --energy:   #8f5d00;   /* deep amber (AA 4.5+) */
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;   /* deep violet (AA 4.5+) */
+    --power:    #107a50;   /* deep green (AA 4.5+) */
+    --cyan:     #1769d6;   /* deep blue (AA 4.5+) */
+    --rose:     #ad1a7d;   /* deep alert magenta (AA 4.5+) */
+    /* floating detail-card — light theme */
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#e7f5f1; --card-chip-bd:#bfe3da; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+
+  /* boxes */
+  body[data-theme="light"] .box.intuition { background:#e3f5f1; border-color:#b8e3da; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+
+  /* define callouts */
+  body[data-theme="light"] .define          { background:linear-gradient(90deg,#e3f5f199,transparent); }
+  body[data-theme="light"] .define.force-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.energy-c  { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.mom-c     { background:linear-gradient(90deg,#ece8fb99,transparent); }
+  body[data-theme="light"] .define.sol-c     { background:linear-gradient(90deg,#e4eefb99,transparent); }
+
+  /* cards & misc */
+  body[data-theme="light"] .card:hover { border-color:#86c4ba; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#b6e8dd,#9fe0d2); color:#14181f; }
+  body[data-theme="light"] .chip {
+    background:linear-gradient(135deg,#e0f2ee,#ece8fb); border-color:#bfe0d8; color:var(--motion);
+  }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,60,55,.14); }
+
+  /* substance-tab + readout chrome */
+  body[data-theme="light"] .scn-read   { background:#e3f5f1; border-color:#b8e3da; }
+  body[data-theme="light"] .scn-tab    { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover  { border-color:#86c4ba; }
+  body[data-theme="light"] .scn-tab.active { background:#dcf1ec; border-color:var(--motion); color:var(--motion); }
+
+  /* slider tool */
+  body[data-theme="light"] .vec-out { background:#e3f5f1; border-color:#b8e3da; }
+  body[data-theme="light"] .vec-out .ro { color:#3d8478; }
+
+  /* equation balancer */
+  body[data-theme="light"] .beam { background:linear-gradient(180deg,#d7d0be,#c4bca8); }
+  body[data-theme="light"] .bal-state.bal { background:#e7f6ee; border-color:#bae0cd; }
+  body[data-theme="light"] .bal-state.tip { background:#fbf2dc; border-color:#e7d5a6; color:#8a5a00; }
+
+  /* limiting-reactant bars */
+  body[data-theme="light"] .lr-fill.a { background:linear-gradient(90deg,#13a08c,#0b7a67); }
+  body[data-theme="light"] .lr-fill.b { background:linear-gradient(90deg,#d8454f,#cb2531); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    .beam, body, .theme-toggle, .box, .card, .define, .explorer, .tool,
+    svg.vecpad, .scn-read, .scn-tab, .vec-out, .lr-fill,
+    .bal-state, .chip, table th, table td, .eqcell, mark { transition:none; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Chemistry 0620 · Extended · Topic 3</div>
+    <h1><span class="a">Stoichi</span><span class="b">ometry</span></h1>
+    <p class="header-sub">The chemist's accounting. Atoms are too small to count one by one, so we weigh them and count by the <em>mole</em>. Every calculation in this topic — masses, gases, solutions, yields — comes back to one idea: a balanced equation is a recipe in particles. Tap the teal panels — they compute live.</p>
+  </div>
+
+
+  <!-- ── 01 · WHY COUNT BY MASS ── -->
+  <div class="section">
+    <div class="sec-label">01 / 11 · 3.1–3.3 · The big idea</div>
+    <h2>Why chemists count by weighing</h2>
+
+    <p>A balanced equation says <em>how many</em> particles react: 2 hydrogen molecules for every 1 oxygen. But you can't pick up two molecules — a single grain of sand already holds billions of billions of atoms. So chemists do something clever: instead of counting particles, they <strong>weigh</strong> them, because equal numbers of particles always have masses in a fixed ratio.</p>
+
+    <div class="box intuition">
+      <div class="box-label">🧮 The whole topic in one line</div>
+      <strong>Chemistry happens by number, but we measure by mass.</strong> Stoichiometry is just the bridge between the two — turning grams you can weigh on a balance into the <em>numbers of particles</em> the equation actually cares about, and back again. Master that bridge and every calculation in Topic 3 is the same calculation.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🌾 Counting rice by the sack</div>
+      No shopkeeper in Chennai counts rice grain by grain — they sell it by the <em>kilo</em>, knowing roughly how many grains that is. The <strong>mole</strong> is the chemist's version: a fixed, enormous count (6.02 × 10²³) that you reach for by weighing, never by counting. "One mole of carbon" is to atoms what "one sack of rice" is to grains.
+    </div>
+
+    <p>This section sets up three tools you'll use everywhere: <strong>formulae</strong> (the recipe for one particle), <strong>relative mass</strong> (how heavy that particle is), and the <strong>mole</strong> (how we turn mass into number). The rest of the topic is just applying them.</p>
+
+    <div class="box exam">
+      <div class="box-label">✅ How this topic is split</div>
+      <strong>Core</strong> (everyone): formulae, word &amp; symbol equations, A<sub>r</sub> and M<sub>r</sub>, reacting masses by simple proportion, and the units of concentration. <strong>Supplement / Extended</strong> (added on top): the mole and the Avogadro constant, gas volumes, full mole calculations, titrations, limiting reactants, empirical formulae, and percentage yield / purity. This page covers <em>both</em> — Extended-only parts are flagged.
+    </div>
+  </div>
+
+
+  <!-- ── 02 · FORMULAE ── -->
+  <div class="section">
+    <div class="sec-label">02 / 11 · 3.1 Formulae</div>
+    <h2>Chemical formulae — the recipe for one particle</h2>
+
+    <p>A <strong>chemical formula</strong> tells you which atoms, and how many of each, make up one unit of a substance. Subscripts multiply only the symbol before them; brackets multiply everything inside.</p>
+
+    <div class="define force-c">
+      <span class="term">Molecular formula</span> — the actual number and type of each different atom in one molecule. For example <span class="eq-inline" style="color:var(--force)">H₂SO₄</span> = 2 H, 1 S, 4 O; <span class="eq-inline" style="color:var(--force)">Ca(OH)₂</span> = 1 Ca, 2 O, 2 H (the bracket doubles the OH).
+    </div>
+
+    <h3>Deducing a formula from charges (ionic compounds)</h3>
+    <p>Ionic compounds aren't molecules — they're giant lattices — so we write the <strong>simplest ratio</strong> of ions that makes the overall charge zero. Trick: the size of each charge becomes the subscript of the <em>other</em> ion ("swap and drop"), then simplify.</p>
+
+    <table>
+      <tr><th>Cation</th><th>Anion</th><th>Balance the charge</th><th>Formula</th></tr>
+      <tr><td>Na<sup>+</sup></td><td>Cl<sup>−</sup></td><td>1 (+1) + 1 (−1) = 0</td><td><strong>NaCl</strong></td></tr>
+      <tr><td>Ca<sup>2+</sup></td><td>Cl<sup>−</sup></td><td>1 (+2) + 2 (−1) = 0</td><td><strong>CaCl₂</strong></td></tr>
+      <tr><td>Al<sup>3+</sup></td><td>O<sup>2−</sup></td><td>2 (+3) + 3 (−2) = 0</td><td><strong>Al₂O₃</strong></td></tr>
+      <tr><td>Na<sup>+</sup></td><td>CO₃<sup>2−</sup></td><td>2 (+1) + 1 (−2) = 0</td><td><strong>Na₂CO₃</strong></td></tr>
+      <tr><td>NH₄<sup>+</sup></td><td>SO₄<sup>2−</sup></td><td>2 (+1) + 1 (−2) = 0</td><td><strong>(NH₄)₂SO₄</strong></td></tr>
+    </table>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Brackets are not optional</div>
+      When you need <em>more than one</em> of a group of atoms (a polyatomic ion like OH<sup>−</sup>, NO₃<sup>−</sup>, SO₄<sup>2−</sup>, NH₄<sup>+</sup>), you must use brackets: <strong>Ca(OH)₂, Al(NO₃)₃, (NH₄)₂SO₄</strong>. Writing "CaOH₂" or "CaO₂H₂" changes the recipe and loses the mark.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Extended — empirical formula</div>
+      The <strong>empirical formula</strong> is the <em>simplest whole-number ratio</em> of atoms (or ions) in a compound. For an ionic compound the formula you write <em>is</em> the empirical formula. For molecules it can differ: glucose is molecular <span class="eq-inline" style="color:var(--power)">C₆H₁₂O₆</span> but empirical <span class="eq-inline" style="color:var(--power)">CH₂O</span>; ethane is <span class="eq-inline" style="color:var(--power)">C₂H₆</span> but empirical <span class="eq-inline" style="color:var(--power)">CH₃</span>.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ State the common formulae from memory</div>
+      You're expected to recall these: water <strong>H₂O</strong>, carbon dioxide <strong>CO₂</strong>, ammonia <strong>NH₃</strong>, methane <strong>CH₄</strong>, hydrochloric acid <strong>HCl</strong>, sulfuric acid <strong>H₂SO₄</strong>, nitric acid <strong>HNO₃</strong>, sodium hydroxide <strong>NaOH</strong>, calcium carbonate <strong>CaCO₃</strong>. Diatomic elements come as molecules: <strong>H₂, O₂, N₂, Cl₂</strong>.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · EQUATIONS + BALANCER ── -->
+  <div class="section">
+    <div class="sec-label">03 / 11 · 3.1 Formulae</div>
+    <h2>Equations — and why they must balance</h2>
+
+    <p>A <strong>word equation</strong> names reactants → products. A <strong>symbol equation</strong> uses formulae and must be <strong>balanced</strong>: atoms are never created or destroyed in a reaction, so every element has the <em>same number of atoms on both sides</em>. You balance by putting numbers (coefficients) <em>in front</em> of formulae — never by changing a subscript, which would change the substance itself.</p>
+
+    <div class="box intuition">
+      <div class="box-label">⚖️ Balancing = conservation of atoms</div>
+      The arrow is not "becomes" — it's "rearranges into". The same atoms that walked in must walk out, just bonded differently. So if the left has 4 H atoms, the right must have 4 H atoms. Balancing is bookkeeping for atoms, nothing more.
+    </div>
+
+    <p>Try it. Combustion of methane: set the four coefficients so every element matches. The beam levels and turns green only when <strong>C, H and O all balance at once</strong>:</p>
+
+    <div class="explorer">
+      <div class="eqn-builder">
+        <span class="coef" id="cA">1</span> CH₄ &nbsp;+&nbsp; <span class="coef" id="cB">1</span> O₂ &nbsp;→&nbsp;
+        <span class="coef" id="cC">1</span> CO₂ &nbsp;+&nbsp; <span class="coef" id="cD">1</span> H₂O
+      </div>
+      <div class="balance-stage">
+        <div class="beam" id="beam">
+          <div class="load" id="loadL">R</div>
+          <div class="load" id="loadR">P</div>
+        </div>
+        <div class="pivot"></div>
+      </div>
+      <div class="bal-state tip" id="balState">Not balanced yet — adjust the coefficients</div>
+      <div class="tool-grid" style="margin-top:16px">
+        <div>
+          <div class="slider-row">
+            <label>CH₄ coefficient <b><span id="aV">1</span></b></label>
+            <input type="range" id="ca" min="1" max="6" value="1">
+          </div>
+          <div class="slider-row">
+            <label>O₂ coefficient <b><span id="bV">1</span></b></label>
+            <input type="range" id="cb" min="1" max="6" value="1">
+          </div>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>CO₂ coefficient <b><span id="cV">1</span></b></label>
+            <input type="range" id="cc" min="1" max="6" value="1">
+          </div>
+          <div class="slider-row">
+            <label>H₂O coefficient <b><span id="dV">1</span></b></label>
+            <input type="range" id="cd" min="1" max="6" value="1">
+          </div>
+        </div>
+      </div>
+      <div class="scn-read">
+        <div class="rk">Atom tally — reactants vs products</div>
+        <div id="tally"></div>
+      </div>
+    </div>
+
+    <h3>State symbols</h3>
+    <p>Add the physical state of each substance in the reaction: <span class="eq-inline">(s)</span> solid, <span class="eq-inline">(l)</span> liquid, <span class="eq-inline">(g)</span> gas, <span class="eq-inline">(aq)</span> aqueous (dissolved in water). Example: <span class="eq-inline">CaCO₃(s) → CaO(s) + CO₂(g)</span>.</p>
+
+    <h3>Ionic equations <span style="color:var(--cyan);font-size:13px;font-family:'JetBrains Mono',monospace">[Extended]</span></h3>
+    <p>In solution, ionic compounds are split into free ions. An <strong>ionic equation</strong> shows only the particles that actually change — the rest are <strong>spectator ions</strong> and are cancelled from both sides.</p>
+
+    <div class="define mom-c">
+      <span class="term">Worked example — precipitating silver chloride</span><br>
+      Full: <span class="eq-inline" style="color:var(--momentum)">AgNO₃(aq) + NaCl(aq) → AgCl(s) + NaNO₃(aq)</span>.<br>
+      Na<sup>+</sup> and NO₃<sup>−</sup> are unchanged spectators, so the ionic equation is just
+      <span class="eq-inline" style="color:var(--momentum)">Ag⁺(aq) + Cl⁻(aq) → AgCl(s)</span>. Check it balances for <em>both</em> atoms and charge (+1 −1 = 0 each side).
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Two-second balance check</div>
+      After balancing, recount each element on a scrap of paper. For ionic equations also check the <strong>total charge</strong> is equal on both sides — a common dropped mark. The number of atoms <em>and</em> the charge must both conserve.
+    </div>
+  </div>
+
+
+  <!-- ── 04 · RELATIVE MASSES ── -->
+  <div class="section">
+    <div class="sec-label">04 / 11 · 3.2 Relative masses</div>
+    <h2>Relative atomic &amp; molecular mass</h2>
+
+    <p>Atoms are far too light to weigh in grams individually, so chemists compare them to a standard. Everything is measured against the carbon-12 atom.</p>
+
+    <div class="define energy-c">
+      <span class="term">Relative atomic mass, A<sub>r</sub></span> — the <em>average</em> mass of the isotopes of an element, compared to <span class="eq-inline" style="color:var(--energy2)">1/12</span> of the mass of one atom of carbon-12. It's an <strong>average</strong> because most elements are mixtures of isotopes (e.g. chlorine's A<sub>r</sub> = 35.5). It has <em>no units</em> — it's a ratio.
+    </div>
+
+    <div class="define energy-c">
+      <span class="term">Relative molecular mass, M<sub>r</sub></span> — the sum of the A<sub>r</sub> values of all the atoms in the formula. For ionic compounds (which have no molecules) the same number is called the <strong>relative formula mass</strong>, still written M<sub>r</sub>.
+    </div>
+
+    <h3>Working out M<sub>r</sub></h3>
+    <p>Just add up the A<sub>r</sub> of every atom in the formula:</p>
+    <table>
+      <tr><th>Compound</th><th>Atoms</th><th>Sum of A<sub>r</sub></th><th>M<sub>r</sub></th></tr>
+      <tr><td><strong>H₂O</strong></td><td>2 H + 1 O</td><td>(2×1) + 16</td><td><strong>18</strong></td></tr>
+      <tr><td><strong>CO₂</strong></td><td>1 C + 2 O</td><td>12 + (2×16)</td><td><strong>44</strong></td></tr>
+      <tr><td><strong>CaCO₃</strong></td><td>1 Ca + 1 C + 3 O</td><td>40 + 12 + (3×16)</td><td><strong>100</strong></td></tr>
+      <tr><td><strong>Ca(OH)₂</strong></td><td>1 Ca + 2 O + 2 H</td><td>40 + (2×16) + (2×1)</td><td><strong>74</strong></td></tr>
+      <tr><td><strong>H₂SO₄</strong></td><td>2 H + 1 S + 4 O</td><td>(2×1) + 32 + (4×16)</td><td><strong>98</strong></td></tr>
+    </table>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Brackets and subscripts trip people up</div>
+      In Ca(OH)₂ the subscript 2 multiplies <em>both</em> the O and the H inside the bracket — that's 2 O and 2 H, not 1 each. Mis-reading brackets is the most common M<sub>r</sub> error. (Useful A<sub>r</sub> values: H 1, C 12, N 14, O 16, Na 23, Mg 24, S 32, Cl 35.5, K 39, Ca 40, Fe 56, Cu 64.)
+    </div>
+  </div>
+
+
+  <!-- ── 05 · REACTING MASSES (CORE) ── -->
+  <div class="section">
+    <div class="sec-label">05 / 11 · 3.2 Relative masses</div>
+    <h2>Reacting masses by simple proportion <span style="color:var(--energy2);font-size:13px;font-family:'JetBrains Mono',monospace">[Core]</span></h2>
+
+    <p>You can solve many problems <em>without</em> the mole, using only the balanced equation and M<sub>r</sub> values. The balanced equation gives a fixed mass ratio; scale it up or down like a recipe.</p>
+
+    <div class="box analogy">
+      <div class="box-label">🍪 Scaling a recipe</div>
+      If 100 g of flour makes 8 biscuits, then 25 g makes 2 — you just scaled by ¼. A reaction is identical: once you know the mass ratio from the equation, every other amount is a simple proportion of it.
+    </div>
+
+    <div class="define energy-c">
+      <span class="term">Worked example — burning magnesium ribbon</span><br>
+      <span class="eq-inline" style="color:var(--energy2)">2Mg + O₂ → 2MgO</span>. From M<sub>r</sub>: 2 Mg = 2×24 = <strong>48 g</strong> makes 2 MgO = 2×40 = <strong>80 g</strong>.<br>
+      So how much MgO from 12 g of Mg? Scale by 12/48 = ¼ → <strong>20 g of MgO</strong>. <em>(Check: 48 → 80 means ×5/3, and 12 × 5/3 = 20. ✓)</em>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ The 3-step method</div>
+      <strong>1.</strong> Balance the equation. <strong>2.</strong> Find the M<sub>r</sub> of the substance you're <em>given</em> and the one you <em>want</em>, multiplied by their coefficients. <strong>3.</strong> Set up the proportion: <span class="eq-inline" style="color:var(--power)">(want) = (given) × ratio</span>. This Core method needs no moles at all.
+    </div>
+  </div>
+
+
+  <!-- ── 06 · THE MOLE + CONVERTER ── -->
+  <div class="section">
+    <div class="sec-label">06 / 11 · 3.3 The mole &amp; Avogadro constant</div>
+    <h2>The mole — turning mass into number <span style="color:var(--cyan);font-size:13px;font-family:'JetBrains Mono',monospace">[Extended]</span></h2>
+
+    <div class="define">
+      <span class="term">The mole (mol)</span> — the unit of <strong>amount of substance</strong>. One mole of <em>any</em> particle contains <span class="eq-inline">6.02 × 10²³</span> of them (atoms, ions, molecules, electrons…). That number is the <strong>Avogadro constant</strong>, N<sub>A</sub>.
+    </div>
+
+    <p>The magic of the mole: <strong>the mass of one mole of a substance, in grams, equals its A<sub>r</sub> or M<sub>r</sub></strong>. So one mole of carbon weighs 12 g, one mole of water weighs 18 g. That single fact connects the balance in your hand to the particle count in the equation:</p>
+
+    <div class="define">
+      <span class="term">The key relationship</span> &nbsp;→&nbsp; <span class="eq-inline">amount (mol) = mass (g) ÷ molar mass (g/mol)</span>, i.e. <span class="eq-inline">n = m / M</span>. Rearrange for whichever quantity is unknown. To get the number of particles: <span class="eq-inline" style="color:var(--momentum)">N = n × 6.02 × 10²³</span>.
+    </div>
+
+    <p>Pick a substance and slide the mass. The converter does <span class="eq-inline">n = m/M</span> and then multiplies by N<sub>A</sub> — watch how a weighable mass becomes an almost unimaginable particle count:</p>
+
+    <div class="tool">
+      <div class="scn-tabs" id="molTabs">
+        <div class="scn-tab active" data-sub="water">H₂O · 18</div>
+        <div class="scn-tab" data-sub="co2">CO₂ · 44</div>
+        <div class="scn-tab" data-sub="o2">O₂ · 32</div>
+        <div class="scn-tab" data-sub="nacl">NaCl · 58.5</div>
+        <div class="scn-tab" data-sub="caco3">CaCO₃ · 100</div>
+      </div>
+      <div class="tool-grid">
+        <div>
+          <div class="slider-row">
+            <label>Mass of <span id="subName">water</span> <b><span id="massV">18</span> g</b></label>
+            <input type="range" id="massR" min="0" max="100" step="1" value="18">
+          </div>
+          <div class="scn-read" style="margin-top:6px">
+            <div class="rk">What the converter is doing</div>
+            <span id="molWork">n = 18 ÷ 18 = 1.00 mol</span>
+          </div>
+        </div>
+        <div class="vec-out">
+          <div class="ro">Amount of substance</div>
+          <div class="rv"><span id="molOut">1.00</span> mol</div>
+          <div class="ro">Number of particles</div>
+          <div style="font-family:'JetBrains Mono',monospace;color:var(--momentum);font-size:15px"><span id="partOut">6.02 × 10²³</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ "Mole" is a number, not a mass</div>
+      A mole is a <em>count</em> (like "a dozen"), so 1 mol of lead and 1 mol of helium contain the <strong>same number</strong> of atoms — but very different masses, because the atoms differ in weight. Don't confuse the amount (mol) with the mass (g).
+    </div>
+  </div>
+
+
+  <!-- ── 07 · GAS VOLUMES ── -->
+  <div class="section">
+    <div class="sec-label">07 / 11 · 3.3 The mole &amp; Avogadro constant</div>
+    <h2>Gas volumes — the molar gas volume <span style="color:var(--cyan);font-size:13px;font-family:'JetBrains Mono',monospace">[Extended]</span></h2>
+
+    <p>Gases are awkward to weigh but easy to measure by volume. A remarkable fact (Avogadro's law) rescues us: <strong>at the same temperature and pressure, equal volumes of any gas contain equal numbers of molecules.</strong> So we don't even need the M<sub>r</sub> to count a gas — just its volume.</p>
+
+    <div class="define">
+      <span class="term">Molar gas volume</span> — at <strong>room temperature and pressure (r.t.p.)</strong>, one mole of <em>any</em> gas occupies <span class="eq-inline">24 dm³</span> (= 24 000 cm³). So <span class="eq-inline">amount of gas (mol) = volume (dm³) ÷ 24</span>, and <span class="eq-inline">volume = mol × 24</span>.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🎈 Why volume can count molecules</div>
+      Gas is mostly empty space — the molecules are so far apart that their own size barely matters. What sets the volume is just <em>how many</em> molecules are bouncing around (plus temperature and pressure). Fix the temperature and pressure, and volume becomes a direct headcount of molecules. That's why 24 dm³ works for hydrogen, oxygen, CO₂ — anything.
+    </div>
+
+    <div class="define">
+      <span class="term">Worked example</span> — what volume does 0.5 mol of CO₂ occupy at r.t.p.? <span class="eq-inline">V = 0.5 × 24 = 12 dm³</span>. And how many moles are in 6 dm³ of hydrogen at r.t.p.? <span class="eq-inline">n = 6 ÷ 24 = 0.25 mol</span>.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Only at r.t.p., only for gases</div>
+      The 24 dm³ rule applies to <strong>gases</strong> at <strong>r.t.p.</strong> only — never to liquids or solids, and not at other temperatures/pressures. And mind your units: <span class="eq-inline" style="color:var(--rose)">1 dm³ = 1000 cm³</span>. If a volume is in cm³, divide by 24 000 instead of 24.
+    </div>
+  </div>
+
+
+  <!-- ── 08 · CONCENTRATION + TITRATION ── -->
+  <div class="section">
+    <div class="sec-label">08 / 11 · 3.3 The mole &amp; Avogadro constant</div>
+    <h2>Concentration of solutions</h2>
+
+    <p>Concentration measures how much solute is packed into a given volume of solution. The 0620 syllabus uses two units — and you must be able to switch between them.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--cyan)">grams per dm³ <span style="font-size:12px;color:var(--muted)">[Core]</span></div>
+        <div class="card-body"><strong>g/dm³</strong> — mass of solute per dm³ of solution. Just mass ÷ volume.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--cyan)">moles per dm³ <span style="font-size:12px;color:var(--muted)">[Extended]</span></div>
+        <div class="card-body"><strong>mol/dm³</strong> — moles of solute per dm³ of solution: <span class="eq-inline" style="color:var(--cyan)">c = n / V</span>.</div>
+      </div>
+    </div>
+
+    <div class="define sol-c">
+      <span class="term">Linking the two units</span> &nbsp;→&nbsp; <span class="eq-inline" style="color:var(--cyan)">concentration (g/dm³) = concentration (mol/dm³) × molar mass</span>. Multiplying mol/dm³ by g/mol cancels the moles and leaves g/dm³.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Volumes are almost always in cm³</div>
+      Lab volumes come in cm³, but concentration is per <strong>dm³</strong>. Convert first: <span class="eq-inline" style="color:var(--rose)">V(dm³) = V(cm³) ÷ 1000</span>. Forgetting this gives an answer 1000× too big or small — the single biggest source of lost marks in titration questions.
+    </div>
+
+    <div class="define sol-c">
+      <span class="term">Worked example — concentration</span><br>
+      Dissolve 0.5 mol of NaOH to make 250 cm³ of solution. <span class="eq-inline" style="color:var(--cyan)">V = 250 ÷ 1000 = 0.25 dm³</span>, so <span class="eq-inline" style="color:var(--cyan)">c = 0.5 ÷ 0.25 = 2 mol/dm³</span>. In g/dm³: <span class="eq-inline" style="color:var(--cyan)">2 × 40 = 80 g/dm³</span> (M<sub>r</sub> of NaOH = 40).
+    </div>
+
+    <h3>Titrations <span style="color:var(--cyan);font-size:13px;font-family:'JetBrains Mono',monospace">[Extended]</span></h3>
+    <p>A titration finds an unknown concentration by reacting it exactly with a solution you <em>do</em> know. The method is always the same chain: <strong>volume + known concentration → moles → (use the equation's ratio) → moles of the other → unknown concentration.</strong></p>
+
+    <div class="define sol-c">
+      <span class="term">Worked example — finding a base's concentration</span><br>
+      25.0 cm³ of NaOH is neutralised by 20.0 cm³ of 0.10 mol/dm³ HCl. Reaction <span class="eq-inline" style="color:var(--cyan)">NaOH + HCl → NaCl + H₂O</span> (1 : 1).<br>
+      Moles HCl = <span class="eq-inline" style="color:var(--cyan)">0.10 × (20.0 ÷ 1000) = 0.0020 mol</span> → moles NaOH = 0.0020 (1:1).<br>
+      Concentration NaOH = <span class="eq-inline" style="color:var(--cyan)">0.0020 ÷ (25.0 ÷ 1000) = 0.080 mol/dm³</span>.
+    </div>
+  </div>
+
+
+  <!-- ── 09 · LIMITING REACTANT ── -->
+  <div class="section">
+    <div class="sec-label">09 / 11 · 3.3 The mole &amp; Avogadro constant</div>
+    <h2>Reacting moles &amp; the limiting reactant <span style="color:var(--cyan);font-size:13px;font-family:'JetBrains Mono',monospace">[Extended]</span></h2>
+
+    <p>With the mole, full reacting-mass problems become a clean three-step chain: <strong>mass → moles → (equation ratio) → moles → mass</strong>. The equation's coefficients <em>are</em> the mole ratio.</p>
+
+    <div class="box analogy">
+      <div class="box-label">🚲 Building bicycles — the limiting part</div>
+      One bicycle needs <strong>1 frame + 2 wheels</strong>. If a workshop in Pune has 10 frames but only 6 wheels, it can build just <strong>3 bicycles</strong> (6 wheels ÷ 2) — then stops, with 7 frames left over. The <em>wheels</em> ran out first: they are the <strong>limiting reactant</strong>. The frames are in <strong>excess</strong>. A reaction stops the instant one reactant is used up, no matter how much of the other remains.
+    </div>
+
+    <p>Reaction: <span class="eq-inline">Mg + 2HCl → MgCl₂ + H₂</span>. The acid is needed in a 2 : 1 ratio to the magnesium. Slide the amounts and see which runs out first — the limiting one is tagged, and it alone decides how much H₂ forms:</p>
+
+    <div class="tool">
+      <div class="tool-grid">
+        <div>
+          <div class="slider-row">
+            <label>Moles of Mg <b><span id="mgV">2</span> mol</b></label>
+            <input type="range" id="mgR" min="0.5" max="5" step="0.5" value="2">
+          </div>
+          <div class="slider-row">
+            <label>Moles of HCl <b><span id="hclV">6</span> mol</b></label>
+            <input type="range" id="hclR" min="0.5" max="10" step="0.5" value="6">
+          </div>
+          <div class="lr-wrap">
+            <div class="lr-row">
+              <div class="lr-cap"><span>Mg available <span id="mgTag" class="lr-tag"></span></span><b><span id="mgAmt">2</span> mol</b></div>
+              <div class="lr-track"><div class="lr-fill a" id="mgBar" style="width:40%"></div></div>
+            </div>
+            <div class="lr-row">
+              <div class="lr-cap"><span>HCl available <span id="hclTag" class="lr-tag"></span></span><b><span id="hclAmt">6</span> mol</b></div>
+              <div class="lr-track"><div class="lr-fill b" id="hclBar" style="width:60%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="vec-out">
+          <div class="ro">Limiting reactant</div>
+          <div class="rv" style="font-size:1.4rem"><span id="limOut">Mg</span></div>
+          <div class="ro">H₂ produced</div>
+          <div style="font-family:'Fraunces',serif;color:var(--motion);font-size:1.5rem;font-weight:700"><span id="h2Out">2.0</span> mol</div>
+          <div class="ro" style="margin-top:8px">In excess</div>
+          <div style="font-family:'JetBrains Mono',monospace;color:var(--power);font-size:13px"><span id="excOut">2.0 mol HCl</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ How to spot the limiting reactant</div>
+      Convert <em>both</em> reactants to moles, then divide each by its coefficient in the balanced equation. <strong>The smallest answer is the limiting reactant</strong> — it's the one that runs out first, and all product amounts are calculated from it. Never assume the one with fewer grams is limiting; check the moles ÷ ratio.
+    </div>
+  </div>
+
+
+  <!-- ── 10 · EMPIRICAL FORMULA + PERCENTAGES ── -->
+  <div class="section">
+    <div class="sec-label">10 / 11 · 3.3 The mole &amp; Avogadro constant</div>
+    <h2>Empirical formulae, yield &amp; purity <span style="color:var(--cyan);font-size:13px;font-family:'JetBrains Mono',monospace">[Extended]</span></h2>
+
+    <h3>Empirical &amp; molecular formula from data</h3>
+    <p>Given the mass (or %) of each element, you can recover the formula. Method: convert each mass to moles (÷A<sub>r</sub>), then find the simplest whole-number ratio (÷ by the smallest).</p>
+
+    <div class="define mom-c">
+      <span class="term">Worked example — empirical formula</span><br>
+      4.8 g of magnesium combines with 3.2 g of oxygen. Mg: <span class="eq-inline" style="color:var(--momentum)">4.8 ÷ 24 = 0.20 mol</span>; O: <span class="eq-inline" style="color:var(--momentum)">3.2 ÷ 16 = 0.20 mol</span>. Ratio 0.20 : 0.20 = <strong>1 : 1</strong> → empirical formula <strong>MgO</strong>.
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">Empirical → molecular</span><br>
+      A compound has empirical formula CH₂ and M<sub>r</sub> = 42. The empirical unit CH₂ has mass 14, so <span class="eq-inline" style="color:var(--momentum)">42 ÷ 14 = 3</span> units → molecular formula <strong>C₃H₆</strong>.
+    </div>
+
+    <h3>Percentage calculations</h3>
+    <div class="define energy-c">
+      <span class="term">Percentage composition by mass</span> &nbsp;→&nbsp; <span class="eq-inline" style="color:var(--energy2)">% of element = (total A<sub>r</sub> of that element ÷ M<sub>r</sub>) × 100</span>. E.g. % oxygen in water = <span class="eq-inline" style="color:var(--energy2)">(16 ÷ 18) × 100 = 88.9%</span>. % calcium in CaCO₃ = (40 ÷ 100) × 100 = <strong>40%</strong>.
+    </div>
+
+    <div class="define force-c">
+      <span class="term">Percentage yield</span> &nbsp;→&nbsp; <span class="eq-inline" style="color:var(--force)">(actual yield ÷ theoretical yield) × 100</span>. Real reactions lose product (side reactions, spills, reversible steps), so yield is below 100%. If theory predicts 8.0 g but you collect 6.0 g: <span class="eq-inline" style="color:var(--force)">(6.0 ÷ 8.0) × 100 = 75%</span>.
+    </div>
+
+    <div class="define force-c">
+      <span class="term">Percentage purity</span> &nbsp;→&nbsp; <span class="eq-inline" style="color:var(--force)">(mass of pure substance ÷ mass of impure sample) × 100</span>. A 5.0 g sample of limestone containing 4.5 g of pure CaCO₃ is <span class="eq-inline" style="color:var(--force)">(4.5 ÷ 5.0) × 100 = 90%</span> pure.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Yield vs purity — don't mix them up</div>
+      <strong>Yield</strong> compares how much product you <em>got</em> to how much the equation <em>predicts</em>. <strong>Purity</strong> compares how much of a sample is the <em>real</em> substance versus impurities. Different ideas, both capped at 100%. Read the question for which one it's asking.
+    </div>
+  </div>
+
+
+  <!-- ── 11 · REFERENCE BANK ── -->
+  <div class="section">
+    <div class="sec-label">11 / 11 · Reference</div>
+    <h2>The stoichiometry toolkit</h2>
+    <p>IGCSE Chemistry gives you A<sub>r</sub> values (Periodic Table) but <strong>not these relationships</strong> — recall them from memory. Tap any tile for symbols, units, a rearrangement, a worked example, and the exam trap:</p>
+
+    <div class="eqbank" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ The non-negotiables to memorise</div>
+      <span class="eq-inline" style="color:var(--rose)">n = m / M</span>
+      <span class="eq-inline" style="color:var(--rose)">N = n × 6.02×10²³</span>
+      <span class="eq-inline" style="color:var(--rose)">V<sub>gas</sub> = n × 24 dm³</span>
+      <span class="eq-inline" style="color:var(--rose)">c = n / V</span>
+      <span class="eq-inline" style="color:var(--rose)">1 dm³ = 1000 cm³</span>
+      <span class="eq-inline" style="color:var(--rose)">% yield = actual/theoretical ×100</span>
+    </div>
+
+    <div class="box exam" style="margin-top:14px">
+      <div class="box-label">✅ The universal recipe for any calculation question</div>
+      <strong>1.</strong> Write &amp; balance the equation. <strong>2.</strong> Convert what you're given into <strong>moles</strong> (÷M for mass, ÷24 for gas volume, c×V for solutions). <strong>3.</strong> Use the equation's <strong>mole ratio</strong> to find moles of what you want. <strong>4.</strong> Convert that back into the units asked for. Almost every Topic 3 mark is this one loop.
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE CHEMISTRY · 0620 EXTENDED · TOPIC 3 — STOICHIOMETRY<br>
+    Built for understanding — every gram traced back to a number of particles.
+  </div>
+
+</div>
+
+<!-- ── FLOATING EQUATION CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Symbols &amp; units</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Rearrangements</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   helper · superscript an integer (for ×10ⁿ display)
+════════════════════════════════════════════════ */
+function sup(n){
+  const map={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+  return String(n).split('').map(c=>map[c]||c).join('');
+}
+
+/* ════════════════════════════════════════════════
+   1 · EQUATION BALANCER  (CH₄ + O₂ → CO₂ + H₂O)
+════════════════════════════════════════════════ */
+(function(){
+  const ca=document.getElementById('ca'), cb=document.getElementById('cb'),
+        cc=document.getElementById('cc'), cd=document.getElementById('cd');
+  const beam=document.getElementById('beam'), state=document.getElementById('balState'),
+        tally=document.getElementById('tally'),
+        loadL=document.getElementById('loadL'), loadR=document.getElementById('loadR');
+  function upd(){
+    const a=+ca.value, b=+cb.value, c=+cc.value, d=+cd.value;
+    document.getElementById('aV').textContent=a;
+    document.getElementById('bV').textContent=b;
+    document.getElementById('cV').textContent=c;
+    document.getElementById('dV').textContent=d;
+    document.getElementById('cA').textContent=a;
+    document.getElementById('cB').textContent=b;
+    document.getElementById('cC').textContent=c;
+    document.getElementById('cD').textContent=d;
+    // atoms: CH4 = C1 H4 ; O2 = O2 ; CO2 = C1 O2 ; H2O = H2 O1
+    const C_L=a,       C_R=c;
+    const H_L=4*a,     H_R=2*d;
+    const O_L=2*b,     O_R=2*c + d;
+    const cOK=C_L===C_R, hOK=H_L===H_R, oOK=O_L===O_R;
+    const allOK=cOK&&hOK&&oOK;
+    const mark=ok=>ok?'✓':'✗';
+    tally.innerHTML =
+      'C: &nbsp;'+C_L+' &nbsp;vs&nbsp; '+C_R+' &nbsp;'+mark(cOK)+'<br>'+
+      'H: &nbsp;'+H_L+' &nbsp;vs&nbsp; '+H_R+' &nbsp;'+mark(hOK)+'<br>'+
+      'O: &nbsp;'+O_L+' &nbsp;vs&nbsp; '+O_R+' &nbsp;'+mark(oOK);
+    // total atoms each side → beam tilt
+    const totL=5*a + 2*b;          // CH4(5) + O2(2)
+    const totR=3*c + 3*d;          // CO2(3) + H2O(3)
+    let tilt=Math.max(-11,Math.min(11,(totR-totL)*1.1));
+    if(allOK) tilt=0;
+    beam.style.transform='rotate('+tilt+'deg)';
+    loadL.style.width=loadL.style.height=(26+totL*1.4)+'px';
+    loadR.style.width=loadR.style.height=(26+totR*1.4)+'px';
+    if(allOK){
+      state.className='bal-state bal';
+      state.textContent='Balanced! Every element matches — '+a+' CH₄ + '+b+' O₂ → '+c+' CO₂ + '+d+' H₂O';
+    } else {
+      state.className='bal-state tip';
+      state.textContent='Not balanced yet — adjust the coefficients';
+    }
+  }
+  [ca,cb,cc,cd].forEach(s=>s.addEventListener('input',upd)); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   2 · MOLE CONVERTER  (n = m / M ; N = n·Nᴀ)
+════════════════════════════════════════════════ */
+(function(){
+  const SUBS={
+    water:{name:'water',     mr:18},
+    co2:  {name:'CO₂',       mr:44},
+    o2:   {name:'O₂',        mr:32},
+    nacl: {name:'NaCl',      mr:58.5},
+    caco3:{name:'CaCO₃',     mr:100},
+  };
+  let cur='water';
+  const massR=document.getElementById('massR');
+  function fmtParticles(mol){
+    const v=mol*6.02e23;
+    if(v<=0) return '0';
+    const e=Math.floor(Math.log10(v));
+    const m=v/Math.pow(10,e);
+    return m.toFixed(2)+' × 10'+sup(e);
+  }
+  function upd(){
+    const s=SUBS[cur], mass=+massR.value, mol=mass/s.mr;
+    document.getElementById('subName').textContent=s.name;
+    document.getElementById('massV').textContent=mass;
+    document.getElementById('molOut').textContent=mol.toFixed(2);
+    document.getElementById('partOut').textContent=fmtParticles(mol);
+    document.getElementById('molWork').textContent=
+      'n = '+mass+' ÷ '+s.mr+' = '+mol.toFixed(2)+' mol';
+  }
+  document.getElementById('molTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    cur=t.dataset.sub;
+    document.querySelectorAll('#molTabs .scn-tab').forEach(x=>
+      x.classList.toggle('active', x===t));
+    upd();
+  });
+  massR.addEventListener('input',upd); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   3 · LIMITING REACTANT  (Mg + 2HCl → MgCl₂ + H₂)
+════════════════════════════════════════════════ */
+(function(){
+  const mgR=document.getElementById('mgR'), hclR=document.getElementById('hclR');
+  const mgBar=document.getElementById('mgBar'), hclBar=document.getElementById('hclBar');
+  const mgTag=document.getElementById('mgTag'), hclTag=document.getElementById('hclTag');
+  function upd(){
+    const nMg=+mgR.value, nHCl=+hclR.value;
+    document.getElementById('mgV').textContent=nMg;
+    document.getElementById('hclV').textContent=nHCl;
+    document.getElementById('mgAmt').textContent=nMg;
+    document.getElementById('hclAmt').textContent=nHCl;
+    mgBar.style.width=(nMg/5*100)+'%';
+    hclBar.style.width=(nHCl/10*100)+'%';
+    // Mg needs 2 HCl per Mg
+    const hclNeeded=2*nMg;
+    let lim, h2, excName, excAmt;
+    if(nHCl>=hclNeeded){           // Mg limiting (or exact)
+      lim='Mg'; h2=nMg; excName='HCl'; excAmt=nHCl-hclNeeded;
+    } else {                       // HCl limiting
+      lim='HCl'; h2=nHCl/2; excName='Mg'; excAmt=nMg-nHCl/2;
+    }
+    document.getElementById('limOut').textContent= excAmt===0 ? 'exact ratio' : lim;
+    document.getElementById('h2Out').textContent=h2.toFixed(1);
+    document.getElementById('excOut').textContent=
+      excAmt===0 ? 'nothing left over' : (excAmt.toFixed(1)+' mol '+excName);
+    // tags
+    mgTag.className='lr-tag'; hclTag.className='lr-tag';
+    mgTag.textContent=''; hclTag.textContent='';
+    if(excAmt===0){ /* no tags on exact */ }
+    else if(lim==='Mg'){ mgTag.className='lr-tag lim'; mgTag.textContent='limiting';
+                         hclTag.className='lr-tag exc'; hclTag.textContent='excess'; }
+    else { hclTag.className='lr-tag lim'; hclTag.textContent='limiting';
+           mgTag.className='lr-tag exc'; mgTag.textContent='excess'; }
+  }
+  [mgR,hclR].forEach(s=>s.addEventListener('input',upd)); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   4 · EQUATION / METHOD BANK + FLOATING CARD
+════════════════════════════════════════════════ */
+const EQ = {
+  mr:       { c:'energy', name:'Relative formula mass', formula:'Mr = Σ Ar',
+    syms:[['Mr','rel. molecular/formula mass','—'],['Ar','rel. atomic mass','—']],
+    rearr:'Add the Ar of every atom in the formula (×subscripts).',
+    ex:'CaCO₃ = 40 + 12 + (3×16) = <b>100</b>.',
+    tip:'Subscripts and brackets multiply — Ca(OH)₂ has 2 O and 2 H, so Mr = <b>74</b>.' },
+  moles:    { c:'motion', name:'Moles from mass', formula:'n = m / M',
+    syms:[['n','amount','mol'],['m','mass','g'],['M','molar mass','g/mol']],
+    rearr:'m = n·M   ·   M = m / n',
+    ex:'50 g CaCO₃ (M = 100): n = 50 ÷ 100 = <b>0.5 mol</b>.',
+    tip:'Molar mass M (g/mol) is numerically the same as Ar or Mr.' },
+  particles:{ c:'mom', name:'Number of particles', formula:'N = n × Nᴀ',
+    syms:[['N','number of particles','—'],['n','amount','mol'],['Nᴀ','6.02×10²³','/mol']],
+    rearr:'n = N / Nᴀ',
+    ex:'0.5 mol → 0.5 × 6.02×10²³ = <b>3.01×10²³</b> particles.',
+    tip:'Works for atoms, ions OR molecules — state which you mean.' },
+  gas:      { c:'motion', name:'Gas volume at r.t.p.', formula:'V = n × 24 dm³',
+    syms:[['V','volume','dm³'],['n','amount of gas','mol'],['24','molar gas volume','dm³/mol']],
+    rearr:'n = V / 24',
+    ex:'0.5 mol of CO₂: V = 0.5 × 24 = <b>12 dm³</b> at r.t.p.',
+    tip:'Gases only, r.t.p. only. In cm³? Use 24 000, since 1 dm³ = 1000 cm³.' },
+  conc:     { c:'sol', name:'Concentration (mol/dm³)', formula:'c = n / V',
+    syms:[['c','concentration','mol/dm³'],['n','amount','mol'],['V','volume','dm³']],
+    rearr:'n = c·V   ·   V = n / c',
+    ex:'0.5 mol in 0.25 dm³: c = 0.5 ÷ 0.25 = <b>2 mol/dm³</b>.',
+    tip:'Convert cm³ → dm³ first (÷1000). This is the #1 titration slip.' },
+  concg:    { c:'sol', name:'Concentration (g/dm³)', formula:'g/dm³ = mol/dm³ × M',
+    syms:[['','g/dm³','g/dm³'],['','mol/dm³','mol/dm³'],['M','molar mass','g/mol']],
+    rearr:'mol/dm³ = (g/dm³) / M',
+    ex:'2 mol/dm³ NaOH (M = 40): 2 × 40 = <b>80 g/dm³</b>.',
+    tip:'Multiplying mol/dm³ by g/mol cancels mol → leaves g/dm³.' },
+  empir:    { c:'energy', name:'Empirical formula', formula:'ratio of moles',
+    syms:[['','divide each mass by Ar','mol'],['','then ÷ by smallest','ratio']],
+    rearr:'mass → moles (÷Ar) → simplest whole-number ratio',
+    ex:'4.8 g Mg (0.2 mol) + 3.2 g O (0.2 mol) → 1:1 → <b>MgO</b>.',
+    tip:'Non-integer ratio? Multiply all up (e.g. ×2 turns 1:1.5 into 2:3).' },
+  yield:    { c:'force', name:'Percentage yield', formula:'(actual/theoretical)×100',
+    syms:[['actual','what you collected','g'],['theoretical','what the equation predicts','g']],
+    rearr:'actual = (%yield/100) × theoretical',
+    ex:'6.0 g out of a predicted 8.0 g: (6 ÷ 8)×100 = <b>75%</b>.',
+    tip:'Always ≤ 100%. Theoretical yield comes from the mole calculation.' },
+  purity:   { c:'force', name:'Percentage purity', formula:'(pure/sample)×100',
+    syms:[['pure','mass of pure substance','g'],['sample','mass of impure sample','g']],
+    rearr:'pure = (%purity/100) × sample',
+    ex:'4.5 g CaCO₃ in a 5.0 g sample: (4.5 ÷ 5)×100 = <b>90%</b>.',
+    tip:'Purity ≠ yield. Purity is about a sample; yield is about a reaction.' },
+};
+
+const ORDER=['mr','moles','particles','gas','conc','concg','empir','yield','purity'];
+
+const CMETA = {
+  motion:{col:'#36c9b0', bg:'#08231f', bd:'#15463f'},
+  force: {col:'#f06070', bg:'#2a0f15', bd:'#4a1d26'},
+  energy:{col:'#f0b144', bg:'#1a1306', bd:'#3a2c10'},
+  mom:   {col:'#a57ef5', bg:'#120c22', bd:'#2e2350'},
+  sol:   {col:'#5b8dee', bg:'#0e1c3a', bd:'#22345e'},
+};
+
+(function buildBank(){
+  const bank=document.getElementById('eqbank');
+  ORDER.forEach(key=>{
+    const e=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=e.c; cell.dataset.key=key;
+    cell.innerHTML='<div class="eq-sym">'+e.formula+'</div><div class="eq-name">'+e.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+
+function openEqCard(key){
+  const e=EQ[key], m=CMETA[e.c]||CMETA.motion;
+  const card=document.getElementById('eq-card');
+  const badge=document.getElementById('eqc-badge');
+  badge.textContent=e.formula.split('=')[0].trim().split(' ')[0]||'∑';
+  badge.style.color=m.col; badge.style.background=m.bg; badge.style.borderColor=m.bd;
+  document.getElementById('eqc-name').textContent=e.name;
+  const f=document.getElementById('eqc-formula');
+  f.textContent=e.formula; f.style.color=m.col;
+  const sr=document.getElementById('eqc-syms'); sr.innerHTML='';
+  e.syms.forEach(s=>{
+    const pill=document.createElement('div'); pill.className='sym-pill';
+    pill.innerHTML='<b style="color:'+m.col+'">'+s[0]+'</b> '+s[1]+' <span>['+s[2]+']</span>';
+    sr.appendChild(pill);
+  });
+  document.getElementById('eqc-rearr').textContent=e.rearr;
+  document.getElementById('eqc-example').innerHTML=e.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Exam trap:</b> '+e.tip;
+  card.style.display='block';
+  requestAnimationFrame(()=>card.style.opacity='1');
+}
+function closeEqCard(){
+  const card=document.getElementById('eq-card');
+  card.style.opacity='0';
+  setTimeout(()=>card.style.display='none',250);
+}
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) &&
+     !e.target.closest('.eqcell')) closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   5 · THEME TOGGLE (light / dark)
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){ try{ return localStorage.getItem('notes-theme'); }catch(e){ return null; } }
+  function safeSet(v){ try{ localStorage.setItem('notes-theme',v); }catch(e){} }
+  function apply(theme){
+    body.setAttribute('data-theme', theme);
+    btn.textContent = (theme==='dark') ? SUN : MOON;
+    btn.setAttribute('aria-label',
+      (theme==='dark') ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  let start = safeGet();
+  if(!start){
+    start = (window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+  apply(start);
+  btn.addEventListener('click',()=>{
+    const next = body.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    apply(next); safeSet(next);
+  });
+})();
+</script>
+</body>
+</html>

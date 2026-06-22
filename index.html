@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Notes — IGCSE Revision Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    --physics:  #46a8ff;   /* electric blue */
+    --chem:     #36c9b0;   /* reaction teal */
+    --maths:    #7c8cff;   /* abstraction indigo */
+    --power:    #43d98c;   /* green — practice papers / success */
+    --rose:     #f25cc1;   /* alert magenta */
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background .4s ease, color .4s ease;
+  }
+
+  /* ambient field — cool physics blue top, warm teal/indigo glow below */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%,  #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%,   #2a1c6630 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 70px 40px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 60px;
+    position: relative;
+  }
+  .header::after {
+    content:'';
+    display:block;
+    height: 2px;
+    margin-top: 34px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--physics), var(--chem) 48%, var(--maths) 96%, transparent);
+    opacity: .85;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: linear-gradient(135deg, #0e2c40, #18403a);
+    border: 1px solid #2f4a66;
+    border-radius: 30px;
+    padding: 6px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--physics);
+    margin-bottom: 22px;
+  }
+  .eyebrow .pulse {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--power);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--power) 70%, transparent);
+    animation: pulse 2.4s infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--power) 60%, transparent); }
+    70%  { box-shadow: 0 0 0 7px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin-bottom: 18px;
+  }
+  h1 .a { color: var(--physics); }
+  h1 .b { color: var(--chem); }
+  h1 .c { color: var(--maths); }
+  .header-sub {
+    color: var(--muted);
+    font-size: 15.5px;
+    max-width: 660px;
+  }
+  .stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 17px 11px 13px;
+  }
+  .stat .si {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 9px;
+    font-size: 15px;
+  }
+  .stat:nth-child(1) .si { background: color-mix(in srgb, var(--physics) 16%, transparent); }
+  .stat:nth-child(2) .si { background: color-mix(in srgb, var(--maths) 16%, transparent); }
+  .stat:nth-child(3) .si { background: color-mix(in srgb, var(--power) 16%, transparent); }
+  .stat b {
+    font-family: 'Fraunces', serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1;
+  }
+  .stat span { font-size: 12px; color: var(--muted); display: block; }
+
+  /* ── SUBJECT BLOCK ── */
+  .subject {
+    margin-bottom: 44px;
+    opacity: 0;
+    animation: rise .55s cubic-bezier(.2,.7,.3,1) forwards;
+  }
+  .subject:nth-of-type(1){ animation-delay:.05s }
+  .subject:nth-of-type(2){ animation-delay:.13s }
+  .subject:nth-of-type(3){ animation-delay:.21s }
+  @keyframes rise {
+    from { opacity:0; transform: translateY(20px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  .subject-head {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 20px;
+  }
+  .mono {
+    width: 38px; height: 38px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 11px;
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 19px;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+  }
+  .subject h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--bright);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .subject-board {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .count-pill {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 20px;
+    padding: 4px 12px;
+    white-space: nowrap;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  /* chapter card — holds the title + its action buttons */
+  .card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(160deg, var(--surface), color-mix(in srgb, var(--surface2) 70%, var(--surface)));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  }
+  .card::before {
+    content:'';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    opacity: .8;
+  }
+  .card::after {
+    content: attr(data-num);
+    position: absolute;
+    right: 14px; top: 6px;
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 54px;
+    line-height: 1;
+    color: var(--accent);
+    opacity: .07;
+    pointer-events: none;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    box-shadow: 0 14px 34px -14px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  .card-topic {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 7px;
+  }
+  .card-title {
+    font-size: 16.5px;
+    font-weight: 600;
+    color: var(--bright);
+    line-height: 1.3;
+    margin-bottom: 17px;
+    position: relative;
+  }
+  .btns { display: flex; gap: 9px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    transition: transform .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .btn .ico { font-size: 13px; }
+  .btn.notes {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 11%, transparent);
+  }
+  .btn.notes:hover {
+    transform: translateY(-2px);
+    background: color-mix(in srgb, var(--accent) 20%, transparent);
+    border-color: var(--accent);
+  }
+  .btn.paper {
+    color: var(--power);
+    border-color: color-mix(in srgb, var(--power) 45%, transparent);
+    background: color-mix(in srgb, var(--power) 11%, transparent);
+  }
+  .btn.paper:hover {
+    transform: translateY(-2px);
+    background: color-mix(in srgb, var(--power) 20%, transparent);
+    border-color: var(--power);
+  }
+
+  /* ── PROGRESS PANEL ── */
+  .progress-panel {
+    margin-top: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+  .pp-top { display: flex; align-items: center; margin-bottom: 11px; }
+  .pp-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pp-reset {
+    margin-left: auto;
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    font-size: 11px; padding: 4px 12px; border-radius: 20px; cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .pp-reset:hover { border-color: var(--rose); color: var(--rose); }
+  .bar { height: 9px; background: var(--surface2); border-radius: 6px; overflow: hidden; }
+  .bar > i {
+    display: block; height: 100%; width: 0; border-radius: 6px;
+    background: linear-gradient(90deg, var(--physics), var(--chem) 55%, var(--power));
+    transition: width .55s cubic-bezier(.2,.7,.3,1);
+  }
+  .pp-text { margin-top: 10px; font-size: 12.5px; color: var(--muted); }
+  .pp-text b { color: var(--bright); font-weight: 700; }
+
+  /* ── PER-CARD DONE TOGGLES ── */
+  .track {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-top: 15px; padding-top: 14px;
+    border-top: 1px dashed var(--border);
+  }
+  .done-toggle {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 11px;
+    font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    transition: border-color .18s ease, color .18s ease, background .18s ease;
+  }
+  .done-toggle:hover { border-color: var(--power); color: var(--text); }
+  .done-toggle .box {
+    width: 15px; height: 15px; border-radius: 5px;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; line-height: 1;
+    transition: background .18s ease, border-color .18s ease;
+  }
+  .done-toggle.is-done {
+    color: var(--power);
+    border-color: color-mix(in srgb, var(--power) 50%, transparent);
+    background: color-mix(in srgb, var(--power) 10%, transparent);
+  }
+  .done-toggle.is-done .box { background: var(--power); border-color: var(--power); color: #06210f; }
+  .done-toggle.is-done .box::after { content: '✓'; }
+  .done-toggle.auto { cursor: default; border-style: dashed; }
+  .done-toggle.auto:hover { border-color: var(--border); color: var(--muted); }
+  .card.all-done { border-color: color-mix(in srgb, var(--power) 45%, var(--border)); }
+  .card.all-done::before { background: var(--power); opacity: 1; }
+
+  /* ── FOOTER ── */
+  .foot {
+    margin-top: 60px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.85;
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle {
+    position: fixed;
+    top: 22px; right: 22px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .3s ease, border-color .3s ease;
+  }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--physics); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--physics); outline-offset: 3px; }
+
+  /* ── LIGHT THEME (warm paper) ── */
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --physics:  #1769d6;
+    --chem:     #0b7a67;
+    --maths:    #5b40d6;
+    --power:    #107a50;
+    --rose:     #ad1a7d;
+  }
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%,  #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%,   #5b40d610 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%);
+  }
+  body[data-theme="light"] .eyebrow {
+    background: linear-gradient(135deg, #e2eefb, #ddf0eb);
+    border-color: #c5d8ee;
+  }
+
+  @media (max-width: 560px) {
+    .page { padding: 52px 20px 90px; }
+    .cards { grid-template-columns: 1fr; }
+    .stat { flex: 1 1 100%; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+
+<div class="page">
+
+  <header class="header">
+    <span class="eyebrow"><span class="pulse"></span>IGCSE · Extended · Revision Hub</span>
+    <h1>Everything for <span class="a">Physics</span>, <span class="b">Chemistry</span><br>&amp; <span class="c">Maths</span> — in one place</h1>
+    <p class="header-sub">Pick a subject, open a chapter, and you’ll find its interactive notes and practice paper together. Built to read beautifully on phone, tablet or laptop — online or off.</p>
+    <div class="stats">
+      <div class="stat"><span class="si">📚</span><div><b>3</b><span>subjects</span></div></div>
+      <div class="stat"><span class="si">📘</span><div><b>11</b><span>topic notes</span></div></div>
+      <div class="stat"><span class="si">📝</span><div><b>3</b><span>practice papers</span></div></div>
+    </div>
+    <div class="progress-panel">
+      <div class="pp-top">
+        <span class="pp-label">Your progress</span>
+        <button id="resetProg" class="pp-reset" type="button">Reset</button>
+      </div>
+      <div class="bar"><i id="progFill"></i></div>
+      <div class="pp-text" id="progText">Tick “Notes” or “Paper” on a chapter as you finish it.</div>
+    </div>
+  </header>
+
+  <!-- ════════ PHYSICS ════════ -->
+  <section class="subject" data-subj="phys" style="--accent: var(--physics);">
+    <div class="subject-head">
+      <span class="mono">P</span>
+      <div>
+        <h2>Physics</h2>
+        <span class="subject-board">Cambridge IGCSE 0625</span>
+      </div>
+      <span class="count-pill">4 chapters</span>
+    </div>
+    <div class="cards">
+      <div class="card" data-num="1">
+        <div class="card-topic">Topic 1</div>
+        <div class="card-title">Motion, Forces and Energy</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%201%20-%20Motion,%20Forces%20and%20Energy.html"><span class="ico">📘</span>Notes</a>
+          <a class="btn paper" href="subjects/physics/practice-papers/Physics%20Topic%201%20Practice%20Paper%20-%20Motion,%20Forces%20and%20Energy.html"><span class="ico">📝</span>Practice Paper</a>
+        </div>
+      </div>
+      <div class="card" data-num="2">
+        <div class="card-topic">Topic 2</div>
+        <div class="card-title">Thermal Physics</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%202%20-%20Thermal%20Physics.html"><span class="ico">📘</span>Notes</a>
+        </div>
+      </div>
+      <div class="card" data-num="3">
+        <div class="card-topic">Topic 3</div>
+        <div class="card-title">Waves</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%203%20-%20Waves.html"><span class="ico">📘</span>Notes</a>
+        </div>
+      </div>
+      <div class="card" data-num="4">
+        <div class="card-topic">Topic 4</div>
+        <div class="card-title">Electricity and Magnetism</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%204%20-%20Electricity%20and%20Magnetism.html"><span class="ico">📘</span>Notes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ CHEMISTRY ════════ -->
+  <section class="subject" data-subj="chem" style="--accent: var(--chem);">
+    <div class="subject-head">
+      <span class="mono">C</span>
+      <div>
+        <h2>Chemistry</h2>
+        <span class="subject-board">Cambridge IGCSE 0620</span>
+      </div>
+      <span class="count-pill">5 chapters</span>
+    </div>
+    <div class="cards">
+      <div class="card" data-num="1">
+        <div class="card-topic">Topic 1</div>
+        <div class="card-title">The States of Matter</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/chemistry/notes/Chemistry%20Topic%201%20-%20The%20States%20of%20Matter.html"><span class="ico">📘</span>Notes</a>
+          <a class="btn paper" href="subjects/chemistry/practice-papers/Chemistry%20Topic%201%20Practice%20Paper%20-%20The%20States%20of%20Matter.html"><span class="ico">📝</span>Practice Paper</a>
+        </div>
+      </div>
+      <div class="card" data-num="2">
+        <div class="card-topic">Topic 2</div>
+        <div class="card-title">Atoms, Elements and Compounds</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/chemistry/notes/Chemistry%20Topic%202%20-%20Atoms,%20Elements%20and%20Compounds.html"><span class="ico">📘</span>Notes</a>
+        </div>
+      </div>
+      <div class="card" data-num="3">
+        <div class="card-topic">Topic 3</div>
+        <div class="card-title">Stoichiometry</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/chemistry/notes/Chemistry%20Topic%203%20-%20Stoichiometry.html"><span class="ico">📘</span>Notes</a>
+        </div>
+      </div>
+      <div class="card" data-num="4">
+        <div class="card-topic">Topic 4</div>
+        <div class="card-title">Electrochemistry</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/chemistry/notes/Chemistry%20Topic%204%20-%20Electrochemistry.html"><span class="ico">📘</span>Notes</a>
+        </div>
+      </div>
+      <div class="card" data-num="5">
+        <div class="card-topic">Topic 5</div>
+        <div class="card-title">Chemical Energetics</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/chemistry/notes/Chemistry%20Topic%205%20-%20Chemical%20Energetics.html"><span class="ico">📘</span>Notes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ MATHEMATICS ════════ -->
+  <section class="subject" data-subj="maths" style="--accent: var(--maths);">
+    <div class="subject-head">
+      <span class="mono">M</span>
+      <div>
+        <h2>Mathematics</h2>
+        <span class="subject-board">Cambridge IGCSE 0580</span>
+      </div>
+      <span class="count-pill">2 chapters</span>
+    </div>
+    <div class="cards">
+      <div class="card" data-num="1">
+        <div class="card-topic">Topic 1</div>
+        <div class="card-title">Number</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/mathematics/notes/Mathematics%20Topic%201%20-%20Number.html"><span class="ico">📘</span>Notes</a>
+          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%201%20Practice%20Paper%20-%20Number.html"><span class="ico">📝</span>Practice Paper</a>
+        </div>
+      </div>
+      <div class="card" data-num="2">
+        <div class="card-topic">Topic 2</div>
+        <div class="card-title">Algebra and Graphs</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/mathematics/notes/Mathematics%20Topic%202%20-%20Algebra%20and%20Graphs.html"><span class="ico">📘</span>Notes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    Tip: bookmark this page — new chapters and papers appear here as they’re added.<br>
+    Best viewed in Chrome, Safari or Edge. Tap the ☀ / ☾ button (top-right) to switch between dark and warm-paper reading modes.
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var body = document.body;
+    var btn = document.getElementById('themeToggle');
+    function safeGet(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+    function safeSet(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+    function apply(theme){
+      body.setAttribute('data-theme', theme);
+      btn.textContent = theme === 'dark' ? '☀' : '☾';
+    }
+    apply(safeGet() || 'dark');
+    btn.addEventListener('click', function () {
+      var next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      safeSet(next);
+    });
+  })();
+
+  /* ── PROGRESS TRACKER ──
+     One shared localStorage object 'studyProgress' maps an item id -> true.
+     Item ids:  note:<subj>:<n>   pp:<subj>:<n>   ex:<subj>:<n>
+     Notes & practice papers are ticked here by hand. Graded (exam) papers set
+     their own 'ex:<subj>:<n>' = true when the student submits, and the hub
+     reflects it on next focus. (Cross-page sync needs a real server, e.g.
+     GitHub Pages — under file:// a browser may not share storage between files.) */
+  (function () {
+    var KEY = 'studyProgress';
+    function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ return {}; } }
+    function save(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){} }
+    var prog = load();
+
+    // build a toggle row for every card, derived from the buttons it already has
+    document.querySelectorAll('.subject').forEach(function (sec) {
+      var subj = sec.getAttribute('data-subj');
+      sec.querySelectorAll('.card').forEach(function (card) {
+        var num = card.getAttribute('data-num');
+        var items = [];
+        if (card.querySelector('.btn.notes')) items.push({ type:'note', label:'Notes' });
+        var paper = card.querySelector('.btn.paper');
+        if (paper) {
+          var graded = paper.classList.contains('graded');
+          items.push({ type: graded ? 'ex' : 'pp', label: graded ? 'Exam' : 'Paper', auto: graded });
+        }
+        if (!items.length) return;
+        var track = document.createElement('div');
+        track.className = 'track';
+        items.forEach(function (it) {
+          var id = it.type + ':' + subj + ':' + num;
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'done-toggle' + (it.auto ? ' auto' : '');
+          b.setAttribute('data-id', id);
+          b.innerHTML = '<span class="box"></span><span class="lbl">' + it.label + '</span>';
+          if (it.auto) {
+            b.title = 'Marked done automatically when the exam is submitted';
+          } else {
+            b.addEventListener('click', function () {
+              if (prog[id]) { delete prog[id]; } else { prog[id] = true; }
+              save(prog); refresh();
+            });
+          }
+          track.appendChild(b);
+        });
+        card.appendChild(track);
+      });
+    });
+
+    function refresh() {
+      var total = 0, done = 0;
+      document.querySelectorAll('.subject').forEach(function (sec) {
+        var st = 0, sd = 0;
+        sec.querySelectorAll('.done-toggle').forEach(function (b) {
+          var on = !!prog[b.getAttribute('data-id')];
+          b.classList.toggle('is-done', on);
+          total++; st++; if (on) { done++; sd++; }
+        });
+        var pill = sec.querySelector('.count-pill');
+        if (pill) pill.textContent = sd + ' / ' + st + ' done';
+        sec.querySelectorAll('.card').forEach(function (card) {
+          var ts = card.querySelectorAll('.done-toggle');
+          var all = ts.length > 0;
+          ts.forEach(function (b) { if (!prog[b.getAttribute('data-id')]) all = false; });
+          card.classList.toggle('all-done', all);
+        });
+      });
+      var pct = total ? Math.round(done / total * 100) : 0;
+      var fill = document.getElementById('progFill'); if (fill) fill.style.width = pct + '%';
+      var txt = document.getElementById('progText');
+      if (txt) {
+        txt.innerHTML = done === 0
+          ? 'Nothing done yet — tick “Notes” or “Paper” on a chapter as you finish it.'
+          : '<b>' + done + ' of ' + total + '</b> done · ' + pct + '% · <b>' + (total - done) + '</b> left';
+      }
+    }
+
+    var reset = document.getElementById('resetProg');
+    if (reset) reset.addEventListener('click', function () {
+      if (confirm('Clear all progress ticks? This cannot be undone.')) { prog = {}; save(prog); refresh(); }
+    });
+
+    // re-read storage when the student comes back to this tab (e.g. after submitting an exam)
+    window.addEventListener('focus', function () { prog = load(); refresh(); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) { prog = load(); refresh(); } });
+
+    refresh();
+  })();
+</script>
+</body>
+</html>
