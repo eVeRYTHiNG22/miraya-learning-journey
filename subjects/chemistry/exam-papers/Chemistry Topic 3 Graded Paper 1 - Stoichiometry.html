@@ -883,11 +883,20 @@ function sendSubmission(){
   var payload = JSON.stringify({ title:document.title, submittedAt:new Date().toISOString(), packet:buildMarkingExport() });
   try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}   // local backup
   var st=$('sendStatus');
-  fetch(SUBMIT_ENDPOINT, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload})
-    .then(function(){ if(st) st.textContent='✅ Your answers have been submitted. To be safe, you can also download a backup copy below and send it to your teacher.'; })
+  // CORS mode (NOT no-cors) so we can READ the server's reply and show success ONLY when the
+  // file was actually saved. Apps Script returns Access-Control-Allow-Origin:* on /exec and its
+  // redirect, and a text/plain body is a CORS-safelisted request (no preflight is triggered).
+  fetch(SUBMIT_ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload})
+    .then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.text(); })
+    .then(function(t){
+      var ok=false;
+      try{ ok = (JSON.parse(t).ok===true); }catch(e){ ok = /(^|[^a-z])ok([^a-z]|$)/i.test(t||''); }  // accept {"ok":true} or legacy "ok"
+      if(!ok) throw new Error('server did not confirm');
+      if(st) st.textContent='✅ Confirmed — your answers have been received by your teacher.';
+    })
     .catch(function(){
-      if(st) st.textContent='⚠ Could not submit automatically (you may be offline). Use “⬇ Download your answers” below to save a copy.';
-      var d=$('downloadBtn'); if(d) d.style.display='';            // reveal the fallback download button
+      if(st) st.innerHTML='⚠ <b>Not confirmed.</b> We could not confirm your answers were received. Please tap “⬇ Download a backup copy” below and send the file to your teacher.';
+      var d=$('downloadBtn'); if(d) d.style.display='';            // make sure the fallback download button is visible
     });
 }
 function downloadAnswers(){
