@@ -271,6 +271,47 @@
   .num-unit { font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:14px; }
   .num-verdict { font-family:'JetBrains Mono',monospace; font-size:12px; }
 
+  /* ── FIGURES / DIAGRAMS (theme-aware inline SVG) ── */
+  .fig {
+    margin:12px 0 6px; padding:14px; border:1px solid var(--border);
+    border-radius:10px; background:var(--surface2); text-align:center;
+    transition:background-color .35s, border-color .2s;
+  }
+  .fig svg { max-width:100%; height:auto; color:var(--text); }
+  .fig svg text { fill:var(--text); font-family:'Inter',sans-serif; }
+  .fig .fig-cap {
+    margin-top:8px; font-size:11.5px; color:var(--muted);
+    font-family:'JetBrains Mono',monospace; letter-spacing:.03em;
+  }
+  .fig .grid-line { stroke:var(--border); stroke-width:1; }
+  .fig .axis      { stroke:var(--text); stroke-width:1.6; }
+  .fig .plot      { stroke:var(--motion); stroke-width:2.4; fill:none; }
+  .fig .accent    { stroke:var(--force); }
+
+  /* ── DRAW / PLOT answer = upload a photo of your diagram ── */
+  .draw-row { margin-top:10px; }
+  .draw-note { font-size:12.5px; color:var(--muted); margin-bottom:8px; }
+  .draw-pick {
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    border:1px dashed var(--motion); border-radius:9px; padding:10px 16px;
+    background:var(--surface2); color:var(--motion); font-size:13.5px; font-weight:500;
+    transition:background-color .2s, border-color .2s;
+  }
+  .draw-pick:hover { background:var(--surface); }
+  .draw-pick input { display:none; }
+  .draw-preview { margin-top:10px; display:none; }
+  .draw-preview.show { display:block; }
+  .draw-preview img {
+    max-width:100%; max-height:340px; border:1px solid var(--border);
+    border-radius:9px; display:block;
+  }
+  .draw-preview .draw-meta { font-size:11.5px; color:var(--muted); margin-top:5px; font-family:'JetBrains Mono',monospace; }
+  .draw-clear {
+    margin-top:7px; font-size:12px; color:var(--force); background:none;
+    border:none; cursor:pointer; text-decoration:underline; padding:0;
+  }
+  .draw-box { display:none; }
+
   /* print-only ruled answer lines */
   .print-lines { display:none; }
 
@@ -370,6 +411,12 @@
     .print-lines { display:block; margin-top:8px; }
     .print-lines .ln { border-bottom:1px dotted #444; height:26px; }
     .ctx { background:#f4f4f4; border-left:3px solid #444; }
+    /* figures print in black & white; hide the upload UI, show a blank box to draw in */
+    .fig { background:#fff; border:1px solid #999; }
+    .fig svg { color:#000; }
+    .fig svg text { fill:#000; }
+    .draw-row, .draw-preview { display:none !important; }
+    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:180px; margin-top:8px; }
     h1 .a, h1 .b, h1 .c, .q-no, .marks, .chip { color:#000 !important; }
   }
 </style>
@@ -547,6 +594,8 @@ const PAPER = {
 
     { n:8, kind:'parts',
       stem:'A loaded trolley of mass 2.0 kg is pushed along a smooth, level floor.',
+      fig:"<svg viewBox='0 0 240 104' width='240' role='img' aria-label='trolley pushed by a 5.0 N force'><line x1='10' y1='86' x2='230' y2='86' stroke='currentColor' stroke-width='1.6'/><rect x='60' y='48' width='80' height='26' rx='3' fill='none' stroke='currentColor' stroke-width='1.6'/><circle cx='78' cy='80' r='6' fill='none' stroke='currentColor' stroke-width='1.6'/><circle cx='122' cy='80' r='6' fill='none' stroke='currentColor' stroke-width='1.6'/><line x1='140' y1='61' x2='196' y2='61' stroke='currentColor' stroke-width='2'/><path d='M192 56 L202 61 L192 66 Z' fill='currentColor'/><text x='100' y='65' text-anchor='middle' font-size='11'>2.0 kg</text><text x='178' y='52' text-anchor='middle' font-size='11'>5.0 N</text></svg>",
+      figCap:"Fig. 8.1",
       parts:[
         { label:'(a)', kind:'text', marks:1, lines:2,
           prompt:'State the equation linking resultant force, mass and acceleration.',
@@ -573,6 +622,8 @@ const PAPER = {
 
     { n:9, kind:'parts',
       stem:'A student of weight 600 N runs up a flight of stairs.',
+      fig:"<svg viewBox='0 0 230 138' width='230' role='img' aria-label='staircase of vertical height 4.0 m'><path d='M40 120 V100 H70 V80 H100 V60 H130 V40 H160 V120 Z' fill='none' stroke='currentColor' stroke-width='1.6'/><line x1='185' y1='40' x2='185' y2='120' stroke='currentColor' stroke-width='1.4'/><path d='M181 46 L185 36 L189 46 Z' fill='currentColor'/><path d='M181 114 L185 124 L189 114 Z' fill='currentColor'/><text x='195' y='84' font-size='11'>4.0 m</text></svg>",
+      figCap:"Fig. 9.1",
       parts:[
         { label:'(a)', kind:'text', marks:1, lines:2,
           prompt:'State what is meant by the <b>work done</b> by a force.',
@@ -627,6 +678,13 @@ function msMarkup(ms, idPrefix){
   return h + '</div></div>';
 }
 
+function figMarkup(svg, cap){
+  return '<div class="fig">'+svg+(cap?'<div class="fig-cap">'+cap+'</div>':'')+'</div>';
+}
+
+/* uploaded diagram photos, keyed by part id (pid) -> {dataUrl, name} */
+var DRAW_IMAGES = {};
+
 function render(){
   const wrap = $('questions');
   let html = '';
@@ -642,6 +700,7 @@ function render(){
     html += '<div class="q" id="q'+q.n+'">';
     html += '<div class="q-head"><span class="q-no">'+q.n+'</span><div class="q-stem">'+(q.stem||'')+'</div><span class="marks">['+qMarks+']</span></div>';
     if(q.ctx) html += '<div class="ctx">'+q.ctx+'</div>';
+    if(q.fig) html += figMarkup(q.fig, q.figCap);
 
     if(q.kind==='mcq'){
       html += '<ul class="opts" data-q="'+q.n+'">';
@@ -657,11 +716,19 @@ function render(){
         const pid = 'q'+q.n+'p'+pi;
         html += '<div class="part" id="'+pid+'">';
         html += '<div><span class="part-label">'+p.label+'</span><span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
+        if(p.fig) html += figMarkup(p.fig, p.figCap);
         if(p.kind==='numeric'){
           html += '<div class="num-row"><input class="num" type="text" inputmode="decimal" data-ans="'+p.ans+'" data-tol="'+(p.tol||0)+'" placeholder="answer">'
                 + (p.unit?'<span class="num-unit">'+p.unit+'</span>':'')
                 + '<span class="num-verdict"></span></div>';
           html += lines(1);
+        } else if(p.kind==='draw'){
+          html += '<div class="draw-row" data-pid="'+pid+'">'
+                + '<div class="draw-note">'+(p.drawNote||'Draw your diagram on paper, then take a clear photo and upload it here.')+'</div>'
+                + '<label class="draw-pick">📷 Upload / take a photo'
+                + '<input type="file" accept="image/*" capture="environment" class="draw-in" data-pid="'+pid+'"></label>'
+                + '<div class="draw-preview" id="'+pid+'-prev"></div></div>';
+          html += '<div class="draw-box"></div>';
         } else {
           html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your answer…"></textarea>';
           html += lines(p.lines||3);
@@ -685,7 +752,9 @@ function updateProgress(){
   PAPER.questions.forEach(q=>{
     if(q.kind==='mcq'){ tot++; if(document.querySelector('input[name="q'+q.n+'"]:checked')) done++; }
     else q.parts.forEach((p,pi)=>{ tot++;
-      const root = $('q'+q.n+'p'+pi);
+      const pid = 'q'+q.n+'p'+pi;
+      if(p.kind==='draw'){ if(DRAW_IMAGES[pid]) done++; return; }
+      const root = $(pid);
       const f = root.querySelector('textarea.ans, input.num');
       if(f && f.value.trim()!=='') done++;
     });
@@ -815,7 +884,8 @@ function submit(auto){
     : fmt(Math.round(elapsed));
 
   // lock inputs
-  document.querySelectorAll('textarea.ans, input.num').forEach(f=>f.disabled=true);
+  document.querySelectorAll('textarea.ans, input.num, .draw-in').forEach(f=>f.disabled=true);
+  document.querySelectorAll('.draw-clear').forEach(b=>b.style.display='none');
 
   gradeMCQ();
   autoCheckNumeric();
@@ -861,9 +931,15 @@ function buildMarkingExport(){
       out+='Q'+q.n+'  '+stripTags(q.stem||'')+'\n';
       if(q.ctx) out+='   ['+stripTags(q.ctx)+']\n';
       q.parts.forEach((p,pi)=>{
-        const root=$('q'+q.n+'p'+pi);
-        const f=root?root.querySelector('textarea.ans, input.num'):null;
-        const val=f?f.value.trim():'';
+        const pid='q'+q.n+'p'+pi;
+        const root=$(pid);
+        let val;
+        if(p.kind==='draw'){
+          val = DRAW_IMAGES[pid] ? '[diagram photo attached: '+(DRAW_IMAGES[pid].name||pid)+']' : '(no diagram uploaded)';
+        } else {
+          const f=root?root.querySelector('textarea.ans, input.num'):null;
+          val=f?f.value.trim():'';
+        }
         out+='  '+p.label+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
         out+='     STUDENT ANSWER: '+(val||'(blank)')+'\n';
         out+='     MARK SCHEME: '+p.ms.map(m=>stripTags(m.p)+' ['+m.m+']').join('  |  ')+'\n\n';
@@ -884,9 +960,46 @@ function downloadAnswers(){
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
+/* ---- diagram photo upload (downscale in-browser, keep payload small) ---- */
+function handleDrawFile(input){
+  var pid = input.dataset.pid;
+  var file = input.files && input.files[0];
+  if(!file){ return; }
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var img = new Image();
+    img.onload = function(){
+      var max = 1400, w = img.width, h = img.height;
+      if(w > max || h > max){ var s = Math.min(max/w, max/h); w = Math.round(w*s); h = Math.round(h*s); }
+      var c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      var dataUrl;
+      try { dataUrl = c.toDataURL('image/jpeg', 0.82); }
+      catch(e){ dataUrl = ev.target.result; }
+      DRAW_IMAGES[pid] = { dataUrl: dataUrl, name: file.name || (pid+'.jpg') };
+      var prev = $(pid+'-prev');
+      if(prev){
+        prev.classList.add('show');
+        prev.innerHTML = '<img src="'+dataUrl+'" alt="your diagram">'
+          + '<div class="draw-meta">'+ (file.name||'photo') +' · uploaded</div>'
+          + '<button type="button" class="draw-clear" data-pid="'+pid+'">remove</button>';
+      }
+      if(!graded && started) updateProgress();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function clearDrawFile(pid){
+  delete DRAW_IMAGES[pid];
+  var prev = $(pid+'-prev'); if(prev){ prev.classList.remove('show'); prev.innerHTML=''; }
+  var inp = document.querySelector('.draw-in[data-pid="'+pid+'"]'); if(inp) inp.value='';
+  if(!graded && started) updateProgress();
+}
+
 /* ---- wire up ---- */
 render();
-function setInputsEnabled(on){ document.querySelectorAll('.opt input, textarea.ans, input.num').forEach(f=>{ f.disabled=!on; }); }
+function setInputsEnabled(on){ document.querySelectorAll('.opt input, textarea.ans, input.num, .draw-in').forEach(f=>{ f.disabled=!on; }); }
 $('questions').classList.add('locked');
 setInputsEnabled(false);
 if(FULLY_AUTO){
@@ -902,7 +1015,13 @@ $('timeLeft').textContent = fmt(PAPER.duration*60);
 updateProgress();
 
 document.addEventListener('input', e=>{ if(!graded && started) updateProgress(); });
-document.addEventListener('change', e=>{ if(!graded && started) updateProgress(); });
+document.addEventListener('change', e=>{
+  if(e.target && e.target.classList && e.target.classList.contains('draw-in')){ handleDrawFile(e.target); return; }
+  if(!graded && started) updateProgress();
+});
+document.addEventListener('click', e=>{
+  if(e.target && e.target.classList && e.target.classList.contains('draw-clear')){ clearDrawFile(e.target.dataset.pid); }
+});
 
 $('startTimed').addEventListener('click', ()=>start('timed'));
 $('startPractice').addEventListener('click', ()=>start('practice'));
