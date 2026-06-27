@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Topic 1 Graded Paper: Motion, Forces and Energy</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    /* ── chemistry accents (energy / state axis) — same identity as the notes ──
+       --motion = SOLID (blue) · --cyan = LIQUID (teal) · --force = GAS (coral)
+       --energy = HEAT/ENERGY (amber) · --momentum = DIFFUSION (violet)
+       --power = correct / marks earned (green, fixed role)
+       --rose  = alerts / must-memorise (magenta, fixed role) */
+    --motion:   #46a8ff;
+    --cyan:     #3ad9d4;
+    --force:    #ff5263;
+    --energy:   #ffae3b;
+    --energy2:  #ffae3b;
+    --momentum: #8b7bff;
+    --power:    #43d98c;
+    --rose:     #f25cc1;
+  }
+
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;
+    --cyan:     #0b7a67;
+    --force:    #cb2531;
+    --energy:   #8f5d00;
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;
+    --power:    #107a50;
+    --rose:     #ad1a7d;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color .35s ease, color .35s ease;
+  }
+
+  /* ambient field — cool (solid) up top, warm (gas) below: the energy axis */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle{position:fixed;top:70px;right:16px;z-index:10000;width:40px;height:40px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:var(--surface);border:1px solid var(--border);color:var(--text);
+    font-size:17px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);
+    transition:transform .25s,border-color .2s,background-color .35s;line-height:1;}
+  .theme-toggle:hover{transform:rotate(18deg);border-color:var(--motion);}
+  .theme-toggle:focus-visible{outline:2px solid var(--motion);outline-offset:3px;}
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 30px; padding-bottom: 26px; border-bottom: 1px solid var(--border); }
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+  body[data-theme="light"] .chip { background: linear-gradient(135deg,#e3eefb,#efe6fb); border-color:#cdd9f0; }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--cyan); }
+  h1 .c { color: var(--force); }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 620px; }
+
+  /* ── FRONT SHEET (exam meta + controls) ── */
+  .front {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin-bottom: 40px;
+    transition: background-color .35s, border-color .35s;
+  }
+  .front h2, .results h2, .ms-collated h2 {
+    font-family:'Fraunces',serif; font-size:1.35rem; font-weight:700;
+    color:var(--bright); margin-bottom:14px;
+  }
+  .meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 26px; margin-bottom:20px; }
+  @media (max-width:620px){ .meta-grid{ grid-template-columns:1fr; } }
+  .meta-item .k {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:2px;
+  }
+  .meta-item .v { color:var(--bright); font-weight:600; font-size:15px; }
+  .instructions { list-style:none; margin:6px 0 0; }
+  .instructions li { position:relative; padding-left:22px; margin-bottom:7px; font-size:14px; color:var(--text); }
+  .instructions li::before {
+    content:'▸'; position:absolute; left:2px; top:0; color:var(--motion); font-size:13px;
+  }
+
+  /* mode + start controls */
+  .controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px;
+    padding-top:20px; border-top:1px solid var(--border); }
+  .btn {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:14px; cursor:pointer;
+    border-radius:9px; padding:11px 20px; border:1px solid var(--border);
+    background:var(--surface2); color:var(--text);
+    transition:transform .15s, border-color .2s, background-color .2s, color .2s;
+  }
+  .btn:hover { transform:translateY(-2px); }
+  .btn:focus-visible { outline:2px solid var(--motion); outline-offset:3px; }
+  .btn.primary { background:var(--motion); border-color:var(--motion); color:#fff; }
+  body[data-theme="light"] .btn.primary { color:#fff; }
+  .btn.ghost { background:transparent; }
+  .controls .hint { font-size:12.5px; color:var(--muted); flex-basis:100%; }
+
+  /* ── STICKY EXAM BAR ── */
+  .exam-bar {
+    position:fixed; top:0; left:0; right:0; z-index:9000;
+    display:none; align-items:center; gap:18px;
+    padding:11px 20px; background:var(--surface); border-bottom:1px solid var(--border);
+    box-shadow:0 6px 22px rgba(0,0,0,.28); transition:background-color .35s,border-color .35s;
+  }
+  .exam-bar.show { display:flex; }
+  .exam-bar .timer {
+    font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:600;
+    color:var(--bright); letter-spacing:.04em; min-width:96px;
+  }
+  .exam-bar .timer .lbl { display:block; font-size:9px; letter-spacing:.16em; color:var(--muted); }
+  .exam-bar.warn .timer { color:var(--energy); }
+  .exam-bar.danger .timer { color:var(--force); }
+  .exam-bar .prog { font-size:12.5px; color:var(--muted); }
+  .exam-bar .prog b { color:var(--text); }
+  .exam-bar .spacer { flex:1; }
+  .exam-bar .mode-tag {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--cyan); border:1px solid var(--border);
+    border-radius:20px; padding:3px 11px;
+  }
+
+  /* ── SECTION HEADINGS ── */
+  .sec-head { margin:46px 0 8px; }
+  .sec-label {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:4px;
+  }
+  .sec-head h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); }
+  .sec-head .sec-sub { font-size:13px; color:var(--muted); margin-top:2px; }
+
+  /* ── QUESTION ── */
+  .q {
+    background:var(--surface); border:1px solid var(--border); border-radius:13px;
+    padding:22px 24px; margin:18px 0;
+    transition:background-color .35s, border-color .35s;
+  }
+  .q-head { display:flex; align-items:baseline; gap:12px; margin-bottom:10px; }
+  .q-no {
+    font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem; color:var(--motion);
+    min-width:26px;
+  }
+  .q-stem { color:var(--text); }
+  .q-stem p { margin-bottom:8px; }
+  .marks {
+    margin-left:auto; flex-shrink:0;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    border:1px solid var(--border); border-radius:6px; padding:2px 9px; white-space:nowrap;
+  }
+  .ctx {
+    border-left:3px solid var(--cyan);
+    background:linear-gradient(90deg,#06241f55,transparent);
+    padding:10px 16px; margin:10px 0 14px; border-radius:0 8px 8px 0; font-size:13.6px;
+  }
+  body[data-theme="light"] .ctx { background:linear-gradient(90deg,#def3ee99,transparent); }
+
+  .part { margin:14px 0; }
+  .part-label { font-weight:600; color:var(--bright); margin-right:6px; }
+  .part-prompt { display:inline; }
+  .part .marks-inline {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin-left:6px;
+  }
+
+  /* MCQ options */
+  .opts { list-style:none; margin:12px 0 2px; display:grid; gap:8px; }
+  .opt {
+    display:flex; gap:11px; align-items:flex-start; cursor:pointer;
+    border:1px solid var(--border); border-radius:9px; padding:9px 14px;
+    background:var(--surface2); transition:border-color .15s, background-color .2s;
+  }
+  .opt:hover { border-color:var(--motion); }
+  .opt input { margin-top:5px; accent-color:var(--motion); }
+  .opt .opt-key { font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--motion); margin-right:2px; }
+  .opt.correct { border-color:var(--power); background:#10241a; }
+  .opt.wrong   { border-color:var(--force); background:#2a1113; }
+  body[data-theme="light"] .opt.correct { background:#e7f6ee; }
+  body[data-theme="light"] .opt.wrong   { background:#fbe4e6; }
+  .opt .verdict { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:11px; }
+  .opt.correct .verdict { color:var(--power); }
+  .opt.wrong .verdict { color:var(--force); }
+
+  /* written answer area */
+  textarea.ans {
+    width:100%; margin-top:9px; resize:vertical; min-height:60px;
+    background:var(--surface2); color:var(--text);
+    border:1px solid var(--border); border-radius:9px; padding:10px 13px;
+    font-family:'Inter',sans-serif; font-size:14px; line-height:1.6;
+    transition:background-color .35s, border-color .2s;
+  }
+  textarea.ans:focus { outline:none; border-color:var(--motion); }
+  textarea.ans:disabled { opacity:.85; }
+
+  .num-row { display:flex; align-items:center; gap:10px; margin-top:9px; flex-wrap:wrap; }
+  input.num {
+    width:150px; background:var(--surface2); color:var(--text);
+    border:1px solid var(--border); border-radius:9px; padding:9px 13px;
+    font-family:'JetBrains Mono',monospace; font-size:15px;
+    transition:background-color .35s, border-color .2s;
+  }
+  input.num:focus { outline:none; border-color:var(--motion); }
+  input.num.correct { border-color:var(--power); }
+  input.num.wrong   { border-color:var(--force); }
+  .num-unit { font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:14px; }
+  .num-verdict { font-family:'JetBrains Mono',monospace; font-size:12px; }
+
+  /* print-only ruled answer lines */
+  .print-lines { display:none; }
+
+  /* ── MARK SCHEME (revealed after submit) ── */
+  .ms {
+    display:none; margin-top:14px; border-radius:10px; overflow:hidden;
+    border:1px solid var(--power);
+  }
+  .ms.show { display:block; }
+  .ms-head {
+    background:#0f2018; color:var(--power);
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; padding:8px 15px; display:flex; gap:10px; align-items:center;
+  }
+  body[data-theme="light"] .ms-head { background:#e7f6ee; }
+  .ms-head .self-note { margin-left:auto; color:var(--muted); letter-spacing:.04em; text-transform:none; font-size:11px; }
+  .ms-body { background:var(--surface2); padding:6px 6px; }
+  .ms-point {
+    display:flex; gap:11px; align-items:flex-start;
+    padding:9px 12px; border-radius:8px; cursor:pointer;
+    transition:background-color .15s;
+  }
+  .ms-point:hover { background:var(--surface); }
+  .ms-point input { margin-top:5px; accent-color:var(--power); width:16px; height:16px; flex-shrink:0; }
+  .ms-point .pt { flex:1; font-size:13.8px; color:var(--text); }
+  .ms-point .pm {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--power);
+    border:1px solid var(--power); border-radius:5px; padding:1px 7px; flex-shrink:0; white-space:nowrap;
+  }
+  .ms-point.auto { cursor:default; }
+  .ms-point.auto .lock {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em;
+    color:var(--muted); margin-left:8px;
+  }
+  .ms-note {
+    padding:8px 14px; font-size:12.5px; color:var(--muted); border-top:1px dashed var(--border);
+  }
+  #questions.locked { opacity:.5; pointer-events:none; }
+  .ms-point.read { cursor:default; padding:9px 12px 9px 14px; }
+  .ms.solution .ms-head .self-note { display:none; }
+
+  /* graded-mode "submitted" message (shown instead of a score on teacher-marked papers) */
+  .submitted-msg { display:none; }
+  body.graded .submitted-msg { display:block; margin:4px 0 6px; color:var(--text); font-size:15px; line-height:1.7; }
+  body.graded .submitted-msg b { color:var(--bright); }
+
+  /* ── RESULTS ── */
+  .results { display:none; margin:30px 0 10px; }
+  .results.show { display:block; }
+  .result-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:30px 30px; text-align:center;
+  }
+  .score-big {
+    font-family:'Fraunces',serif; font-weight:800; line-height:1;
+    font-size:clamp(3rem,11vw,5rem); color:var(--bright);
+  }
+  .score-big .den { color:var(--muted); font-size:.5em; }
+  .score-pct { font-family:'JetBrains Mono',monospace; font-size:18px; color:var(--motion); margin-top:6px; }
+  .band {
+    display:inline-block; margin-top:16px; padding:7px 18px; border-radius:22px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em;
+    border:1px solid var(--border); color:var(--bright); background:var(--surface2);
+  }
+  .result-meta { display:flex; justify-content:center; gap:30px; flex-wrap:wrap; margin-top:22px; }
+  .result-meta .rm .k {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .result-meta .rm .v { font-size:18px; color:var(--bright); font-weight:600; }
+  .result-actions { margin-top:24px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .disclaimer { font-size:12px; color:var(--muted); margin-top:16px; max-width:520px; margin-left:auto; margin-right:auto; }
+
+  .eq-inline {
+    font-family:'JetBrains Mono',monospace; background:#0d1828; border:1px solid #22324a;
+    border-radius:5px; padding:1px 7px; font-size:13px; color:var(--motion); white-space:nowrap;
+  }
+  body[data-theme="light"] .eq-inline { background:#eef1f8; border-color:#d4dcec; }
+
+  sub { font-size:.74em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, body { transition:none !important; animation:none !important; }
+    .btn:hover, .theme-toggle:hover { transform:none; }
+  }
+
+  /* ── PRINT: render as a clean blank exam paper ── */
+  @media print {
+    @page { margin:16mm; }
+    body { background:#fff; color:#000; font-size:12pt; }
+    body::before { display:none; }
+    #questions { opacity:1 !important; }
+    .theme-toggle, .exam-bar, .controls, .results, .front .controls,
+    .opt input, .ms, textarea.ans, input.num, .num-verdict { display:none !important; }
+    .page { max-width:none; padding:0; }
+    .front { border:none; padding:0; background:none; }
+    .q, .front { box-shadow:none; border:1px solid #999; break-inside:avoid; }
+    .q { background:#fff; }
+    .opt { background:#fff; border:1px solid #999; }
+    .opt::before { content:''; display:inline-block; width:13px; height:13px; border:1.4px solid #000; border-radius:50%; margin-top:3px; }
+    .print-lines { display:block; margin-top:8px; }
+    .print-lines .ln { border-bottom:1px dotted #444; height:26px; }
+    .ctx { background:#f4f4f4; border-left:3px solid #444; }
+    h1 .a, h1 .b, h1 .c, .q-no, .marks, .chip { color:#000 !important; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
+
+<a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+
+<!-- sticky exam bar -->
+<div class="exam-bar" id="examBar">
+  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">35:00</span></div>
+  <div class="prog">Answered <b id="progDone">0</b> / <span id="progTot">0</span></div>
+  <span class="mode-tag" id="modeTag">TIMED</span>
+  <div class="spacer"></div>
+  <button class="btn primary" id="btnSubmit">Submit &amp; mark</button>
+</div>
+
+<div class="page">
+
+  <header class="header">
+    <span class="chip">IGCSE Physics · 0625 · Extended · Graded exam</span>
+    <h1>Topic 1 Graded Paper<br><span class="a">Motion, </span><span class="b">Forces </span><span class="c">& Energy</span></h1>
+    <p class="header-sub">Measurement &amp; motion · mass, weight &amp; density · forces, moments &amp; momentum · energy, work, power &amp; pressure. A graded exam — when you submit, your answers are saved automatically.</p>
+  </header>
+
+  <!-- FRONT SHEET -->
+  <section class="front" id="front">
+    <h2>Before you begin</h2>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">35 minutes</div></div>
+      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">31 marks</div></div>
+      <div class="meta-item"><div class="k">Syllabus scope</div><div class="v">0625 · 1.1–1.8 Measurement · Motion · Mass &amp; weight · Density · Forces · Momentum · Energy, work &amp; power · Pressure</div></div>
+      <div class="meta-item"><div class="k">Level</div><div class="v">Extended (Core + Supplement)</div></div>
+    </div>
+    <ul class="instructions">
+      <li>Answer <b>all</b> questions. Section A is multiple choice; Section B is structured and calculation.</li>
+      <li>Show your <b>working</b> in all calculations — your teacher awards method marks for correct working.</li>
+      <li>This is a <b>graded exam</b>: your answers are <b>not</b> marked in this file and no answers are shown. In <b>Timed exam</b> mode a countdown runs; the paper locks when you submit or time runs out.</li>
+      <li>When you submit (or the time runs out) your answers are saved automatically — you don't need to download or send anything.</li>
+      <li>Useful data: g = 9.8 N/kg. Equations you may need: v = s/t ; a = Δv/Δt ; ρ = m/V ; F = ma ; W = mg ; p = F/A ; p = ρgh ; moment = F × d ; momentum = mv ; E<sub>k</sub> = ½mv² ; ΔE<sub>p</sub> = mgΔh ; W = Fd ; P = E/t.</li>
+    </ul>
+    <div class="controls">
+      <button class="btn primary" id="startTimed">▶ Start timed exam</button>
+      <button class="btn ghost" id="startPractice">Practice (no timer)</button>
+      <button class="btn ghost" id="printBtn">🖨 Print blank paper</button>
+      <span class="hint">Tip: use the ☀ / ☾ button (top-right) to switch between dark and light (paper) themes.</span>
+    </div>
+  </section>
+
+  <!-- questions render here -->
+  <div id="questions"></div>
+
+  <!-- RESULTS -->
+  <section class="results" id="results">
+    <h2 id="resultsTitle">Your result</h2>
+    <div class="result-card">
+      <p class="submitted-msg" id="submittedMsg">✅ <b>Paper submitted.</b> Your answers have been submitted.</p>
+      <div id="scoreWrap">
+        <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">31</span></span></div>
+        <div class="score-pct" id="scorePct">0%</div>
+        <div class="band" id="scoreBand">—</div>
+        <div class="result-meta">
+          <div class="rm"><div class="k">Auto-marked</div><div class="v" id="autoMarked">0</div></div>
+          <div class="rm" id="selfRow"><div class="k">Self-marked</div><div class="v" id="selfMarked">0</div></div>
+          <div class="rm"><div class="k">Time taken</div><div class="v" id="timeTaken">—</div></div>
+        </div>
+      </div>
+      <div class="result-actions">
+        <button class="btn" id="downloadBtn">⬇ Download answers (for marking)</button>
+        <button class="btn ghost" id="reviewBtn">Review answers ↑</button>
+        <button class="btn ghost" id="retakeBtn">↺ Retake</button>
+        <button class="btn ghost" id="printBtn2">🖨 Print</button>
+      </div>
+      <p class="disclaimer">Score updates live as you tick the mark-scheme points you earned. Grade labels are indicative only — real Cambridge grade boundaries change every exam session.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ===========================================================================
+   PRACTICE-PAPER ENGINE  — generic; drives everything from the PAPER object.
+   To build a new paper, edit PAPER only (and the header markup above).
+   Question kinds:
+     'mcq'    — options[], answer (0-based index). Auto-marked.
+     'parts'  — parts[]; each part is 'text' (self-marked) or 'numeric'
+                (final answer auto-checked; method points self-marked).
+   Each markable unit lists ms[] marking points: {p:'text', m:marks, auto?:bool}
+   =========================================================================== */
+const PAPER = {
+  "graded": true,
+  "duration": 50,
+  "questions": [
+    {
+      "n": 1,
+      "kind": "mcq",
+      "marks": 1,
+      "stem": "A student measures the total thickness of 100 identical sheets of paper as 8.0 mm. The thickness of one sheet is:",
+      "options": [
+        "0.0008 mm",
+        "0.008 mm",
+        "0.08 mm",
+        "0.8 mm"
+      ]
+    },
+    {
+      "n": 2,
+      "kind": "mcq",
+      "marks": 1,
+      "stem": "An object accelerates uniformly from rest. After a time t it has reached velocity v. The distance it has travelled is:",
+      "options": [
+        "vt",
+        "½vt",
+        "2vt",
+        "v/t"
+      ]
+    },
+    {
+      "n": 3,
+      "kind": "mcq",
+      "marks": 1,
+      "stem": "A 2.0 kg trolley moving at 3.0 m/s is brought to rest by a constant force in 1.5 s. The size of the force is:",
+      "options": [
+        "1.0 N",
+        "3.0 N",
+        "4.0 N",
+        "9.0 N"
+      ]
+    },
+    {
+      "n": 4,
+      "kind": "mcq",
+      "marks": 1,
+      "stem": "Which of the following has the greatest momentum?",
+      "options": [
+        "a car of mass 1000 kg moving at 10 m/s",
+        "a lorry of mass 2000 kg moving at 6 m/s",
+        "a van of mass 500 kg moving at 20 m/s",
+        "a motorcycle of mass 100 kg moving at 30 m/s"
+      ]
+    },
+    {
+      "n": 5,
+      "kind": "mcq",
+      "marks": 1,
+      "stem": "A force of 12 N acts at right angles on a surface of area 3.0 cm². The pressure on the surface is:",
+      "options": [
+        "4.0 × 10² Pa",
+        "4.0 × 10³ Pa",
+        "4.0 × 10⁴ Pa",
+        "4.0 × 10⁶ Pa"
+      ]
+    },
+    {
+      "n": 6,
+      "kind": "mcq",
+      "marks": 1,
+      "stem": "Two forces of 3.0 N and 4.0 N act on a point at right angles to each other. The size of their resultant is:",
+      "options": [
+        "1.0 N",
+        "5.0 N",
+        "7.0 N",
+        "12 N"
+      ]
+    },
+    {
+      "n": 7,
+      "kind": "parts",
+      "stem": "A high-speed train on the Mumbai–Ahmedabad line accelerates uniformly along a straight, level track.",
+      "parts": [
+        {
+          "label": "(a)",
+          "kind": "text",
+          "marks": 1,
+          "prompt": "State the difference between <b>speed</b> and <b>velocity</b>."
+        },
+        {
+          "label": "(b)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "m/s²",
+          "prompt": "The train speeds up from 8.0 m/s to 32 m/s in 12 s. Calculate its acceleration."
+        },
+        {
+          "label": "(c)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "m",
+          "prompt": "Calculate the distance the train travels during these 12 s."
+        },
+        {
+          "label": "(d)",
+          "kind": "text",
+          "marks": 2,
+          "prompt": "After this, the train moves at constant velocity. Describe, <b>in terms of the forces acting</b>, the motion of the train at constant velocity."
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "kind": "parts",
+      "stem": "A jeweller in Jaipur checks a gold-coloured bracelet to see whether it is pure gold.",
+      "parts": [
+        {
+          "label": "(a)",
+          "kind": "text",
+          "marks": 1,
+          "prompt": "Define <b>density</b>."
+        },
+        {
+          "label": "(b)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "g/cm³",
+          "prompt": "The bracelet has a mass of 96 g. Lowered into a measuring cylinder it raises the water level from 20.0 cm³ to 32.0 cm³. Calculate its density."
+        },
+        {
+          "label": "(c)",
+          "kind": "text",
+          "marks": 2,
+          "prompt": "Pure gold has a density of 19.3 g/cm³. State and explain what your answer shows about the bracelet."
+        }
+      ]
+    },
+    {
+      "n": 9,
+      "kind": "parts",
+      "stem": "A student investigates a spring, and then a balanced see-saw.",
+      "parts": [
+        {
+          "label": "(a)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "cm",
+          "prompt": "A spring extends by 4.0 cm when a load of 2.0 N hangs from it. Assuming it obeys Hooke's law, calculate the extension produced by a load of 5.0 N."
+        },
+        {
+          "label": "(b)",
+          "kind": "text",
+          "marks": 1,
+          "prompt": "State what is meant by the <b>limit of proportionality</b>."
+        },
+        {
+          "label": "(c)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "m",
+          "prompt": "A uniform see-saw is pivoted at its centre. A boy of weight 300 N sits 1.5 m from the pivot. A girl of weight 450 N sits on the other side. Calculate how far from the pivot she must sit to balance the see-saw."
+        },
+        {
+          "label": "(d)",
+          "kind": "text",
+          "marks": 2,
+          "prompt": "Explain, using the idea of centre of gravity, why a double-decker bus is more likely to topple over when the upper deck is full."
+        }
+      ]
+    },
+    {
+      "n": 10,
+      "kind": "parts",
+      "stem": "On a level road in Pune, a car of mass 1200 kg travelling at 15 m/s runs into the back of a stationary car of mass 800 kg. The two cars lock together and move off as one.",
+      "parts": [
+        {
+          "label": "(a)",
+          "kind": "text",
+          "marks": 1,
+          "prompt": "State the <b>principle of conservation of momentum</b>."
+        },
+        {
+          "label": "(b)",
+          "kind": "numeric",
+          "marks": 3,
+          "unit": "m/s",
+          "prompt": "Calculate the velocity of the cars immediately after the collision."
+        },
+        {
+          "label": "(c)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "N",
+          "prompt": "The cars are in contact for 0.30 s during the collision. Calculate the average force exerted on the 800 kg car."
+        }
+      ]
+    },
+    {
+      "n": 11,
+      "kind": "parts",
+      "stem": "A lift (elevator) in a Bengaluru office tower is driven by an electric motor. When fully loaded the lift has a total mass of 800 kg. (take g = 9.8 N/kg)",
+      "parts": [
+        {
+          "label": "(a)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "J",
+          "prompt": "Calculate the gain in gravitational potential energy when the lift rises 24 m."
+        },
+        {
+          "label": "(b)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "W",
+          "prompt": "The lift takes 16 s to rise. Calculate the useful output power of the motor."
+        },
+        {
+          "label": "(c)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "%",
+          "prompt": "The electrical input power to the motor is 16 kW. Calculate the efficiency of the motor."
+        },
+        {
+          "label": "(d)",
+          "kind": "text",
+          "marks": 1,
+          "prompt": "Suggest one reason the efficiency is less than 100 %."
+        }
+      ]
+    },
+    {
+      "n": 12,
+      "kind": "parts",
+      "stem": "A water tank on the roof of a building in Chennai supplies the taps below it. (density of water = 1000 kg/m³, g = 9.8 N/kg)",
+      "parts": [
+        {
+          "label": "(a)",
+          "kind": "text",
+          "marks": 1,
+          "prompt": "State the <b>two</b> factors, besides g, that affect the pressure at a point below the surface of a liquid."
+        },
+        {
+          "label": "(b)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "Pa",
+          "prompt": "Calculate the pressure due to the water at a tap 9.0 m below the water surface."
+        },
+        {
+          "label": "(c)",
+          "kind": "numeric",
+          "marks": 2,
+          "unit": "Pa",
+          "prompt": "Atmospheric pressure is 1.0 × 10⁵ Pa. Calculate the total pressure acting at this tap."
+        }
+      ]
+    }
+  ]
+};
+
+/* ---- where graded submissions are sent ----
+   Google Apps Script web-app /exec URL. Empty string = no endpoint configured, so a
+   graded paper falls back to the student downloading the answer packet. When set, a
+   graded paper auto-sends the student's answers to the teacher's Drive on submit and
+   hides the download button (revealing it only if the send fails, e.g. offline). */
+const SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec';
+
+/* ---- derive section labels & totals ---- */
+const TOTAL = PAPER.questions.reduce((s,q)=> s + (q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0)), 0);
+/* GRADED = teacher-marked exam: no answer key in this file, nothing revealed to the student.
+   On submit the student only downloads their answers to send to the teacher. Set PAPER.graded = true. */
+const GRADED = !!PAPER.graded;
+/* A paper is fully auto-markable when it has NO subjective (text) answers — every part is MCQ or numeric.
+   A GRADED paper is never auto-marked here (it has no key), so it is treated as not-fully-auto. */
+const FULLY_AUTO = !GRADED && !PAPER.questions.some(q => q.kind==='parts' && q.parts.some(p => p.kind==='text'));
+
+/* ---- DOM helpers ---- */
+const $ = id => document.getElementById(id);
+function esc(){}
+function lines(n){ let h='<div class="print-lines">'; for(let i=0;i<n;i++) h+='<div class="ln"></div>'; return h+'</div>'; }
+
+/* ---- render questions ---- */
+function msMarkup(ms, idPrefix){
+  const head = FULLY_AUTO ? 'Worked answer' : 'Mark scheme';
+  let h = '<div class="ms'+(FULLY_AUTO?' solution':'')+'" id="'+idPrefix+'-ms"><div class="ms-head">'+head
+        + (FULLY_AUTO ? '' : '<span class="self-note">tick each point you earned</span>')
+        + '</div><div class="ms-body">';
+  ms.forEach((pt,i)=>{
+    if(FULLY_AUTO){
+      h += '<div class="ms-point read"><span class="pt">'+pt.p+'</span></div>';
+    } else if(pt.auto){
+      h += '<label class="ms-point auto"><input type="checkbox" data-m="'+pt.m+'" data-auto="1" disabled>'
+         + '<span class="pt">'+pt.p+'</span><span class="pm">'+pt.m+' mk</span><span class="lock">AUTO</span></label>';
+    } else {
+      h += '<label class="ms-point"><input type="checkbox" data-m="'+pt.m+'">'
+         + '<span class="pt">'+pt.p+'</span><span class="pm">'+pt.m+' mk</span></label>';
+    }
+  });
+  return h + '</div></div>';
+}
+
+function render(){
+  const wrap = $('questions');
+  let html = '';
+  let inA=false, inB=false;
+  PAPER.questions.forEach(q=>{
+    // section dividers
+    if(q.kind==='mcq' && !inA){ inA=true;
+      html += '<div class="sec-head"><div class="sec-label">Section A</div><h2>Multiple choice</h2><div class="sec-sub">Select one answer per question. 1 mark each.</div></div>'; }
+    if(q.kind!=='mcq' && !inB){ inB=true;
+      html += '<div class="sec-head"><div class="sec-label">Section B</div><h2>Structured &amp; calculation</h2><div class="sec-sub">Answer in the spaces. Show working in calculations.</div></div>'; }
+
+    const qMarks = q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0);
+    html += '<div class="q" id="q'+q.n+'">';
+    html += '<div class="q-head"><span class="q-no">'+q.n+'</span><div class="q-stem">'+(q.stem||'')+'</div><span class="marks">['+qMarks+']</span></div>';
+    if(q.ctx) html += '<div class="ctx">'+q.ctx+'</div>';
+
+    if(q.kind==='mcq'){
+      html += '<ul class="opts" data-q="'+q.n+'">';
+      q.options.forEach((opt,i)=>{
+        const key = String.fromCharCode(65+i);
+        html += '<li><label class="opt" data-i="'+i+'"><input type="radio" name="q'+q.n+'" value="'+i+'">'
+              + '<span><span class="opt-key">'+key+'</span> '+opt+'</span><span class="verdict"></span></label></li>';
+      });
+      html += '</ul>';
+      if(!GRADED) html += msMarkup(q.ms, 'q'+q.n);
+    } else {
+      q.parts.forEach((p,pi)=>{
+        const pid = 'q'+q.n+'p'+pi;
+        html += '<div class="part" id="'+pid+'">';
+        html += '<div><span class="part-label">'+p.label+'</span><span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
+        if(p.kind==='numeric'){
+          html += '<div class="num-row"><input class="num" type="text" inputmode="decimal" data-ans="'+p.ans+'" data-tol="'+(p.tol||0)+'" placeholder="answer">'
+                + (p.unit?'<span class="num-unit">'+p.unit+'</span>':'')
+                + '<span class="num-verdict"></span></div>';
+          html += lines(1);
+        } else {
+          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your answer…"></textarea>';
+          html += lines(p.lines||3);
+        }
+        if(!GRADED) html += msMarkup(p.ms, pid);
+        html += '</div>';
+      });
+    }
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+/* ---- state & engine ---- */
+let started=false, graded=false, mode='timed', secs=0, timerId=null, startedAt=0;
+
+function fmt(s){ const m=Math.floor(s/60), ss=s%60; return m+':'+String(ss).padStart(2,'0'); }
+
+function updateProgress(){
+  let done=0, tot=0;
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq'){ tot++; if(document.querySelector('input[name="q'+q.n+'"]:checked')) done++; }
+    else q.parts.forEach((p,pi)=>{ tot++;
+      const root = $('q'+q.n+'p'+pi);
+      const f = root.querySelector('textarea.ans, input.num');
+      if(f && f.value.trim()!=='') done++;
+    });
+  });
+  $('progDone').textContent=done; $('progTot').textContent=tot;
+}
+
+function start(m){
+  if(started) return;
+  started=true; mode=m; graded=false;
+  $('front').style.display='none';
+  $('questions').classList.remove('locked');
+  setInputsEnabled(true);
+  $('examBar').classList.add('show');
+  $('modeTag').textContent = m==='timed' ? 'TIMED' : 'PRACTICE';
+  startedAt = performance.now();
+  if(m==='timed'){
+    secs = PAPER.duration*60;
+    $('timeLeft').textContent = fmt(secs);
+    timerId = setInterval(tick, 1000);
+  } else {
+    $('timeLeft').textContent = '∞';
+    $('btnSubmit').textContent = GRADED ? 'Finish & submit' : 'Finish & mark';
+    document.querySelector('.exam-bar .timer .lbl').textContent='NO LIMIT';
+  }
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function tick(){
+  secs--;
+  $('timeLeft').textContent = fmt(Math.max(0,secs));
+  const bar=$('examBar');
+  bar.classList.toggle('warn', secs<=300 && secs>60);
+  bar.classList.toggle('danger', secs<=60);
+  if(secs<=0){ clearInterval(timerId); submit(true); }
+}
+
+function autoCheckNumeric(){
+  document.querySelectorAll('input.num').forEach(inp=>{
+    const ans=parseFloat(inp.dataset.ans), tol=parseFloat(inp.dataset.tol)||0;
+    const val=parseFloat((inp.value||'').replace(/[^0-9.\-]/g,''));
+    const ok = !isNaN(val) && Math.abs(val-ans)<=tol;
+    inp.classList.add(ok?'correct':'wrong');
+    const v=inp.parentElement.querySelector('.num-verdict');
+    v.textContent = ok ? '✓ correct' : ((inp.value.trim()==='')?'✗ no answer (ans: '+ans+')':'✗ (ans: '+ans+')');
+    v.style.color = ok ? 'var(--power)' : 'var(--force)';
+    // auto-tick the linked auto mark-scheme point
+    const part = inp.closest('.part');
+    const autoCb = part && part.querySelector('.ms-point.auto input[data-auto]');
+    if(autoCb){ autoCb.checked = ok; }
+  });
+}
+
+function gradeMCQ(){
+  PAPER.questions.filter(q=>q.kind==='mcq').forEach(q=>{
+    const chosen = document.querySelector('input[name="q'+q.n+'"]:checked');
+    const ci = chosen ? parseInt(chosen.value,10) : -1;
+    document.querySelectorAll('.opts[data-q="'+q.n+'"] .opt').forEach(opt=>{
+      const i=parseInt(opt.dataset.i,10);
+      opt.querySelector('input').disabled=true;
+      if(i===q.answer){ opt.classList.add('correct'); opt.querySelector('.verdict').textContent='✓ correct'; }
+      if(i===ci && ci!==q.answer){ opt.classList.add('wrong'); opt.querySelector('.verdict').textContent='✗ your answer'; }
+    });
+    // auto-tick the auto mark-scheme point
+    const cb = document.querySelector('#q'+q.n+'-ms .ms-point.auto input[data-auto]');
+    if(cb) cb.checked = (ci===q.answer);
+  });
+}
+
+function computeScore(){
+  let auto=0, self=0;
+  if(FULLY_AUTO){
+    PAPER.questions.forEach(q=>{
+      if(q.kind==='mcq'){
+        const chosen=document.querySelector('input[name="q'+q.n+'"]:checked');
+        if(chosen && parseInt(chosen.value,10)===q.answer) auto+=q.marks;
+      } else {
+        q.parts.forEach((p,pi)=>{
+          const inp=$('q'+q.n+'p'+pi).querySelector('input.num');
+          if(!inp) return;
+          const ans=parseFloat(inp.dataset.ans), tol=parseFloat(inp.dataset.tol)||0;
+          const val=parseFloat((inp.value||'').replace(/[^0-9.\-]/g,''));
+          if(!isNaN(val) && Math.abs(val-ans)<=tol) auto+=p.marks;
+        });
+      }
+    });
+  } else {
+    document.querySelectorAll('.ms-point input:checked').forEach(cb=>{
+      const m=Number(cb.dataset.m);
+      if(cb.dataset.auto) auto+=m; else self+=m;
+    });
+  }
+  const total=auto+self;
+  $('scoreNum').textContent=total;
+  $('autoMarked').textContent=auto;
+  $('selfMarked').textContent=self;
+  const pct=Math.round(total/TOTAL*100);
+  $('scorePct').textContent=pct+'%';
+  $('scoreBand').textContent=band(pct);
+  return total;
+}
+
+function band(p){
+  if(p>=90) return 'Outstanding · ≈ Grade 9 / A*';
+  if(p>=80) return 'Excellent · ≈ Grade 8 / A*';
+  if(p>=70) return 'Strong · ≈ Grade 7 / A';
+  if(p>=60) return 'Good · ≈ Grade 6 / B';
+  if(p>=50) return 'Solid · ≈ Grade 5 / C';
+  if(p>=40) return 'Pass · ≈ Grade 4 / C–D';
+  if(p>=30) return 'Borderline · ≈ Grade 3 / D–E';
+  return 'Keep practising — review the notes';
+}
+
+function submit(auto){
+  if(graded) return;
+  if(!auto && mode==='timed'){
+    const q = GRADED ? 'Submit the paper now? You will not be able to change your answers.'
+                     : 'Submit and mark the paper now? You will not be able to change your answers.';
+    if(!confirm(q)) return;
+  }
+  graded=true;
+  if(timerId){ clearInterval(timerId); timerId=null; }
+
+  // time taken
+  const elapsed = (performance.now()-startedAt)/1000;
+  $('timeTaken').textContent = mode==='timed'
+    ? fmt(Math.max(0, Math.round(PAPER.duration*60 - secs)))
+    : fmt(Math.round(elapsed));
+
+  // lock inputs
+  document.querySelectorAll('textarea.ans, input.num').forEach(f=>f.disabled=true);
+
+  // GRADED (teacher-marked): no key in this file — reveal nothing, show only the "submitted" card.
+  if(GRADED){
+    try { var _p = JSON.parse(localStorage.getItem('studyProgress')||'{}'); _p['ex:phys:1:1'] = true; localStorage.setItem('studyProgress', JSON.stringify(_p)); } catch(e){}
+    document.querySelectorAll('.opts input[type="radio"]').forEach(r=>r.disabled=true);
+    $('results').classList.add('show');
+    $('btnSubmit').textContent='✓ Submitted';
+    $('btnSubmit').disabled=true;
+    $('examBar').classList.remove('warn','danger');
+    sendSubmission();
+    $('results').scrollIntoView({behavior:'smooth'});
+    return;
+  }
+
+  gradeMCQ();
+  autoCheckNumeric();
+
+  // reveal all mark schemes
+  document.querySelectorAll('.ms').forEach(ms=>ms.classList.add('show'));
+
+  // enable self-mark recompute
+  document.querySelectorAll('.ms-point input:not([disabled])').forEach(cb=>{
+    cb.addEventListener('change', computeScore);
+  });
+
+  $('scoreDen').textContent=TOTAL;
+  computeScore();
+
+  $('results').classList.add('show');
+  $('btnSubmit').textContent='✓ Submitted';
+  $('btnSubmit').disabled=true;
+  $('examBar').classList.remove('warn','danger');
+  $('results').scrollIntoView({behavior:'smooth'});
+}
+
+/* ---- export answers for teacher AI-marking ---- */
+function stripTags(s){
+  return (s||'').replace(/<[^>]+>/g,'')
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+    .replace(/&deg;/g,'°').replace(/\s+/g,' ').trim();
+}
+function buildMarkingExport(){
+  let out=(GRADED?'EXAM PAPER — STUDENT ANSWERS (for the teacher to grade)':'PRACTICE PAPER — ANSWERS FOR MARKING')+'\n';
+  out+='Paper: '+document.title+'\n';
+  out+='Marks available: '+TOTAL+'\n';
+  out+='='.repeat(64)+'\n\n';
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq'){
+      const chosen=document.querySelector('input[name="q'+q.n+'"]:checked');
+      const ci=chosen?parseInt(chosen.value,10):-1;
+      out+='Q'+q.n+'  (MCQ, '+q.marks+' mark)\n'+stripTags(q.stem)+'\n';
+      q.options.forEach((o,i)=>{ out+='   '+String.fromCharCode(65+i)+') '+stripTags(o)+'\n'; });
+      out+='   STUDENT ANSWER: '+(ci>=0?String.fromCharCode(65+ci):'(blank)')+'\n';
+      if(!GRADED) out+='   CORRECT: '+String.fromCharCode(65+q.answer)+'\n';
+      out+='\n';
+    } else {
+      out+='Q'+q.n+'  '+stripTags(q.stem||'')+'\n';
+      if(q.ctx) out+='   ['+stripTags(q.ctx)+']\n';
+      q.parts.forEach((p,pi)=>{
+        const root=$('q'+q.n+'p'+pi);
+        const f=root?root.querySelector('textarea.ans, input.num'):null;
+        const val=f?f.value.trim():'';
+        out+='  '+p.label+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
+        out+='     STUDENT ANSWER: '+(val||'(blank)')+'\n';
+        if(!GRADED) out+='     MARK SCHEME: '+p.ms.map(m=>stripTags(m.p)+' ['+m.m+']').join('  |  ')+'\n';
+        out+='\n';
+      });
+    }
+  });
+  out+='='.repeat(64)+'\n';
+  if(GRADED){
+    out+='FOR THE TEACHER: grade these answers against your own answer key for this paper.\n';
+    out+='(No mark scheme is included in this file — that is by design.)\n';
+  } else {
+    out+='FOR THE MARKER (AI): award marks strictly per each MARK SCHEME.\n';
+    out+='For every part give marks awarded / max, which points were met, and one line of feedback.\n';
+    out+='End with TOTAL / '+TOTAL+', a percentage, and an indicative grade.\n';
+  }
+  return out;
+}
+/* ---- auto-send a graded submission to the teacher's Drive endpoint ---- */
+function sendSubmission(){
+  if(!SUBMIT_ENDPOINT) return;                 // not configured → student uses the download button
+  var payload = JSON.stringify({ title:document.title, submittedAt:new Date().toISOString(), packet:buildMarkingExport() });
+  try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}   // local backup
+  var st=$('sendStatus');
+  // CORS mode (NOT no-cors) so we can READ the server's reply and show success ONLY when the
+  // file was actually saved. Apps Script returns Access-Control-Allow-Origin:* on /exec and its
+  // redirect, and a text/plain body is a CORS-safelisted request (no preflight is triggered).
+  fetch(SUBMIT_ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload})
+    .then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.text(); })
+    .then(function(t){
+      var ok=false;
+      try{ ok = (JSON.parse(t).ok===true); }catch(e){ ok = /(^|[^a-z])ok([^a-z]|$)/i.test(t||''); }  // accept {"ok":true} or legacy "ok"
+      if(!ok) throw new Error('server did not confirm');
+      if(st) st.textContent='✅ Confirmed — your answers have been received by your teacher.';
+    })
+    .catch(function(){
+      if(st) st.innerHTML='⚠ <b>Not confirmed.</b> We could not confirm your answers were received. Please tap “⬇ Download a backup copy” below and send the file to your teacher.';
+      var d=$('downloadBtn'); if(d) d.style.display='';            // make sure the fallback download button is visible
+    });
+}
+function downloadAnswers(){
+  const blob=new Blob([buildMarkingExport()],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=document.title.replace(/[:\\/?*"<>|]/g,' -')+' — answers.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ---- wire up ---- */
+render();
+function setInputsEnabled(on){ document.querySelectorAll('.opt input, textarea.ans, input.num').forEach(f=>{ f.disabled=!on; }); }
+$('questions').classList.add('locked');
+setInputsEnabled(false);
+if(FULLY_AUTO){
+  var _db=$('downloadBtn'); if(_db) _db.style.display='none';
+  var _sr=$('selfRow'); if(_sr) _sr.style.display='none';
+  var _dc=document.querySelector('.disclaimer');
+  if(_dc) _dc.textContent='This paper is marked automatically from the answer key. Grade labels are indicative only — real Cambridge grade boundaries change every exam session.';
+}
+if(GRADED){
+  document.body.classList.add('graded');
+  var _sp=$('startPractice'); if(_sp) _sp.style.display='none';    // graded: timed exam only, no practice mode
+  var _stt=$('startTimed'); if(_stt) _stt.textContent='▶ Start exam';
+  var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';        // hide score / breakdown
+  var _rt=$('resultsTitle'); if(_rt) _rt.textContent='Paper submitted';
+  var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';        // nothing to review
+  var _dc2=document.querySelector('.disclaimer'); if(_dc2) _dc2.style.display='none';
+  var _gd=$('downloadBtn');
+  if(SUBMIT_ENDPOINT){
+    if(_gd){ _gd.style.display=''; _gd.textContent='⬇ Download a backup copy'; }   // ALWAYS offer a manual backup: mode:'no-cors' can't confirm the save, so "submitted" is never proof
+    var _sm=$('submittedMsg');
+    if(_sm) _sm.innerHTML='✅ <b>Paper submitted.</b> <span id="sendStatus">Submitting your answers…</span>';
+  } else {
+    if(_gd) _gd.textContent='⬇ Download your answers';            // fallback → manual download + send
+  }
+}
+$('metaTime').textContent = PAPER.duration+' minutes';
+$('metaMarks').textContent = TOTAL+' marks';
+$('scoreDen').textContent = TOTAL;
+$('timeLeft').textContent = fmt(PAPER.duration*60);
+updateProgress();
+
+document.addEventListener('input', e=>{ if(!graded && started) updateProgress(); });
+document.addEventListener('change', e=>{ if(!graded && started) updateProgress(); });
+
+$('startTimed').addEventListener('click', ()=>start('timed'));
+$('startPractice').addEventListener('click', ()=>start('practice'));
+$('btnSubmit').addEventListener('click', ()=>submit(false));
+$('printBtn').addEventListener('click', ()=>window.print());
+$('printBtn2').addEventListener('click', ()=>window.print());
+$('reviewBtn').addEventListener('click', ()=>$('questions').scrollIntoView({behavior:'smooth'}));
+$('retakeBtn').addEventListener('click', ()=>location.reload());
+$('downloadBtn').addEventListener('click', downloadAnswers);
+
+/* ---- theme toggle ---- */
+(function(){
+  const body=document.body, btn=$('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){try{return localStorage.getItem('pp-theme');}catch(e){return null;}}
+  function safeSet(v){try{localStorage.setItem('pp-theme',v);}catch(e){}}
+  function apply(t){ body.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?SUN:MOON;
+    btn.setAttribute('aria-label',(t==='dark')?'Switch to light theme':'Switch to dark theme'); }
+  let startT=safeGet();
+  if(!startT) startT=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+  apply(startT);
+  btn.addEventListener('click', ()=>{ const n=body.getAttribute('data-theme')==='dark'?'light':'dark'; apply(n); safeSet(n); });
+})();
+</script>
+<style id="symbar-css">.symbar{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 2px;align-items:center}.symbar .symlbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#7b8aa8);margin-right:2px}.symbtn{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1;cursor:pointer;border:1px solid var(--border,#263247);background:var(--surface2,#19202f);color:var(--text,#d6deec);border-radius:6px;padding:5px 8px;min-width:30px}.symbtn:hover{border-color:var(--motion,var(--accent,#5b8dee))}@media print{.symbar{display:none}}</style><script>/*symbar-init*/(function(){var SUBJ="phys";var S={chem:[['→','→'],['⇌','⇌'],['(s)','(s)'],['(l)','(l)'],['(g)','(g)'],['(aq)','(aq)'],['x₂','₂'],['x₃','₃'],['x₄','₄'],['x⁺','⁺'],['x⁻','⁻'],['x²⁺','²⁺'],['x²⁻','²⁻'],['x³⁺','³⁺']],phys:[['×','×'],['÷','÷'],['→','→'],['Δ','Δ'],['°','°'],['Ω','Ω'],['µ','µ'],['λ','λ'],['θ','θ'],['±','±'],['≈','≈'],['√','√'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['⁻²','⁻²']],maths:[['×','×'],['÷','÷'],['±','±'],['√','√'],['π','π'],['°','°'],['≤','≤'],['≥','≥'],['≠','≠'],['≈','≈'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['½','½'],['₹','₹']]};var set=S[SUBJ]||[];if(!set.length)return;var boxes=document.querySelectorAll('textarea.ans');if(!boxes.length)return;function ins(ta,t){if(ta.disabled)return;var s=ta.selectionStart||0,e=ta.selectionEnd||0,v=ta.value;ta.value=v.slice(0,s)+t+v.slice(e);var p=s+t.length;ta.selectionStart=ta.selectionEnd=p;ta.focus();ta.dispatchEvent(new Event('input',{bubbles:true}));}boxes.forEach(function(ta){if(ta.previousElementSibling&&ta.previousElementSibling.className==='symbar')return;var bar=document.createElement('div');bar.className='symbar';var lb=document.createElement('span');lb.className='symlbl';lb.textContent='insert';bar.appendChild(lb);set.forEach(function(p){var b=document.createElement('button');b.type='button';b.className='symbtn';b.textContent=p[0];b.tabIndex=-1;b.addEventListener('mousedown',function(ev){ev.preventDefault();});b.addEventListener('click',function(){ins(ta,p[1]);});bar.appendChild(b);});ta.parentNode.insertBefore(bar,ta);});})();</script>
+</body>
+</html>
