@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Topic 5: Nuclear Physics</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    --motion:   #46a8ff;   /* electric blue — atom & nucleus structure */
+    --force:    #ff5263;   /* red — alpha radiation (heavy, ionising) */
+    --energy:   #ffae3b;   /* amber — beta radiation */
+    --energy2:  #ffae3b;
+    --momentum: #8b7bff;   /* indigo — decay & half-life */
+    --power:    #43d98c;   /* green — exam tips / useful output */
+    --cyan:     #3ad9d4;   /* teal — gamma radiation */
+    --rose:     #f25cc1;   /* alert magenta — ≥30° hue gap from warm accents (CVD-safe) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient field — cool blue glow above, a faint radioactive amber-red below */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page { max-width: 880px; margin: 0 auto; padding: 58px 40px 110px; position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 54px; padding-bottom: 30px; border-bottom: 1px solid var(--border); }
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66; border-radius: 20px; padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--motion); margin-bottom: 18px;
+  }
+  h1 {
+    font-family: 'Fraunces', serif; font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    font-weight: 800; color: var(--bright); line-height: 1.06;
+    letter-spacing: -0.01em; margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--cyan); }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 600px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 60px; opacity: 0; animation: rise 0.55s ease forwards; }
+  @keyframes rise { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 7px;
+  }
+  h2 { font-family: 'Fraunces', serif; font-size: 1.7rem; font-weight: 700; color: var(--bright); margin-bottom: 14px; line-height: 1.18; letter-spacing: -0.01em; }
+  h3 { font-family: 'Fraunces', serif; font-size: 1.18rem; font-weight: 600; color: var(--bright); margin: 26px 0 10px; }
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+
+  .eq-inline {
+    font-family: 'JetBrains Mono', monospace; background: #0d1828; border: 1px solid #22324a;
+    border-radius: 5px; padding: 1px 7px; font-size: 13px; color: var(--motion); white-space: nowrap;
+  }
+  body[data-theme="light"] .eq-inline { background: #eef1f8; border-color: #d4dcec; }
+
+  /* ── BOXES ── */
+  .box { border-radius: 11px; padding: 17px 20px; margin: 18px 0; font-size: 14.2px; border: 1px solid; }
+  .box-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color: var(--motion); }
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define { border-left: 3px solid var(--motion); background: linear-gradient(90deg, #0c1c2880, transparent); padding: 12px 18px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+  .define .term { font-family: 'Fraunces', serif; font-weight: 600; color: var(--bright); font-size: 1.02rem; }
+  .define.force-c   { border-color: var(--force); background:linear-gradient(90deg,#23120b80,transparent); }
+  .define.energy-c  { border-color: var(--energy2); background:linear-gradient(90deg,#23180680,transparent); }
+  .define.mom-c     { border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+  .define.cyan-c    { border-color: var(--cyan); background:linear-gradient(90deg,#06231f80,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 16px 18px; transition: border-color .2s, transform .2s; }
+  .card:hover { transform: translateY(-3px); border-color:#3a557c; }
+  .card-title { font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px; }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th { background: var(--surface2); color: var(--motion); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+
+  mark { background: linear-gradient(120deg,#15405a88,#1f5a7a88); color: var(--bright); padding:1px 4px; border-radius:3px; }
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY — base locked; only accents change per subject.
+     Shared shells reused here: .explorer .scn-tabs .scn-tab .scn-read .rk
+     .replay svg.graph .axis .axis-lbl .curve .tracer .chart-cap .tool
+     .tool-grid .slider-row .vec-out .eqbank .eqcell .estore boxes/define/card.
+     Custom (this topic only): .pen-svg barriers + decay curve overrides.
+  ═════════════════════════════════════════════ */
+  .explorer { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin: 22px 0; }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab { font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:8px 14px; border-radius:8px; cursor:pointer; background:#0e1626; border:1px solid var(--border); color:var(--muted); transition:all .18s; user-select:none; }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+
+  .chart-cap { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  svg.graph { width:100%; height:auto; display:block; background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  .axis { stroke:#2a3a55; stroke-width:1.2; }
+  .axis-lbl { fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:9px; }
+  .curve { fill:none; stroke-width:2.6; stroke-linecap:round; }
+  .tracer { fill:#fff; }
+
+  /* penetration explorer SVG */
+  svg.pen-svg { width:100%; height:auto; display:block; background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  .bar-rect { stroke-width:1.2; }
+  .bar-paper { fill:#3a4256; stroke:#566b82; }
+  .bar-alu   { fill:#5b6678; stroke:#8590a4; }
+  .bar-lead  { fill:#2a3346; stroke:#465670; }
+  .bar-lbl   { fill:#9aa6bc; font-family:'JetBrains Mono',monospace; font-size:9.5px; text-anchor:middle; }
+  .src-dot   { fill:var(--force); }
+  .stop-mark { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; }
+
+  .scn-read { margin-top:16px; background:#0c1c28; border:1px solid #1f4258; border-radius:9px; padding:13px 16px; font-size:13.6px; }
+  .scn-read .rk { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--motion); margin-bottom:6px; }
+  .replay { margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:11px; background:#0c2536; color:var(--motion); border:1px solid var(--motion); border-radius:7px; padding:7px 16px; cursor:pointer; letter-spacing:.06em; }
+  .replay:hover { background:#103247; }
+
+  /* slider tool */
+  .tool { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin:22px 0; }
+  .tool-grid { display:grid; grid-template-columns:1fr 230px; gap:20px; align-items:center; }
+  .slider-row { margin:14px 0; }
+  .slider-row label { display:flex; justify-content:space-between; align-items:baseline; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.06em; margin-bottom:6px; }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] { width:100%; -webkit-appearance:none; height:5px; border-radius:3px; background:#22304a; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:17px; height:17px; border-radius:50%; background:var(--momentum); cursor:pointer; box-shadow:0 0 10px #8b7bff88; }
+  input[type=range]::-moz-range-thumb { width:17px; height:17px; border:none; border-radius:50%; background:var(--momentum); cursor:pointer; }
+  .vec-out { background:#171229; border:1px solid #2e2350; border-radius:9px; padding:14px 16px; text-align:center; }
+  .vec-out .ro { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:#7d6aa8; margin-bottom:3px; }
+  .vec-out .rv { font-family:'Fraunces',serif; font-size:1.7rem; font-weight:700; color:var(--momentum); line-height:1.1; margin-bottom:10px; }
+
+  /* ── EQUATION / RELATIONS BANK ── */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqcell { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 12px; cursor:pointer; text-align:center; transition:transform .16s, border-color .16s, box-shadow .16s; }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion); box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:var(--bright); margin-bottom:4px; }
+  .eqcell .eq-name { font-size:10.5px; color:var(--muted); letter-spacing:.04em; }
+  .eqcell[data-c="motion"]:hover { border-color:var(--motion); }
+  .eqcell[data-c="force"]:hover  { border-color:var(--force); }
+  .eqcell[data-c="energy"]:hover { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover    { border-color:var(--momentum); }
+  .eqcell[data-c="cyan"]:hover   { border-color:var(--cyan); }
+  .eqcell[data-c="power"]:hover  { border-color:var(--power); }
+
+  #eq-card { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px; width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow); overflow:hidden; transition:opacity .25s; }
+  #eqc-top { padding:18px 18px 14px; display:flex; gap:14px; align-items:center; border-bottom:1px solid var(--card-divider); position:relative; }
+  #eqc-badge { flex-shrink:0; width:62px; height:62px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd); }
+  #eqc-head h4 { font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px; }
+  #eqc-formula { font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--motion); }
+  #eqc-close { position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted); cursor:pointer; user-select:none; }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--card-label); margin:10px 0 6px; }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill { background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px; padding:5px 9px; font-size:11.5px; color:var(--card-text); }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text); background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em; }
+  #eqc-example { background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0; padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip { background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0; padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px; }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── CHIPS (radiation / sources) ── */
+  .estores { display:flex; flex-wrap:wrap; gap:9px; margin:16px 0; }
+  .estore { background:#19202f; border:1px solid var(--border); border-radius:8px; padding:9px 13px; font-size:12.6px; display:flex; align-items:center; gap:8px; }
+  .estore .dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+
+  /* ── FOOTER ── */
+  .footer { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); text-align:center; padding-top:28px; border-top:1px solid var(--border); letter-spacing:.07em; line-height:1.8; }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .eqbank { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+    .tool-grid { grid-template-columns:1fr; }
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle { position: fixed; top: 16px; right: 16px; z-index: 10000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 17px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.3); transition: transform .25s, border-color .2s, background-color .35s; line-height: 1; }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.graph, svg.pen-svg, .scn-read, .scn-tab, .replay, .vec-out, .estore, .chip, table th, table td, .eqcell, mark { transition: background-color .35s ease, border-color .35s ease, color .35s ease; }
+
+  /* ═════════ LIGHT THEME ("study paper") ═════════ */
+  body[data-theme="light"] {
+    --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4;
+    --text:#2c313c; --muted:#6f7484; --bright:#14181f;
+    --motion:#1769d6; --force:#cb2531; --energy:#8f5d00; --energy2:#8f5d00;
+    --momentum:#5b40d6; --power:#107a50; --cyan:#0b7a67; --rose:#ad1a7d;
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+  body[data-theme="light"] .define          { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.force-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.energy-c  { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.mom-c     { background:linear-gradient(90deg,#ece8fb99,transparent); }
+  body[data-theme="light"] .define.cyan-c    { background:linear-gradient(90deg,#dcf3ef99,transparent); }
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip { background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion); }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+
+  /* graphs (SVG) — CSS overrides inline presentation attributes */
+  body[data-theme="light"] svg.graph, body[data-theme="light"] svg.pen-svg { background:#fbfaf4; }
+  body[data-theme="light"] .axis { stroke:#bcb4a2; }
+  body[data-theme="light"] .axis-lbl { fill:#8c8674; }
+  body[data-theme="light"] .tracer { fill:#14181f; }
+  body[data-theme="light"] #hlCurve { stroke:var(--momentum); }
+  body[data-theme="light"] .bar-paper { fill:#cfc8b6; stroke:#b3ab97; }
+  body[data-theme="light"] .bar-alu   { fill:#b8b09c; stroke:#9a927e; }
+  body[data-theme="light"] .bar-lead  { fill:#9a937e; stroke:#7c7560; }
+  body[data-theme="light"] .bar-lbl   { fill:#6f7484; }
+  body[data-theme="light"] .scn-read  { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab   { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+  body[data-theme="light"] .replay    { background:#e2eefb; }
+  body[data-theme="light"] .replay:hover { background:#d3e4fb; }
+  body[data-theme="light"] .vec-out   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .vec-out .ro { color:#6a559a; }
+  body[data-theme="light"] .estore    { background:#efeadd; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    body, .theme-toggle, .box, .card, .define, .explorer, .tool, svg.graph, svg.pen-svg, .scn-read, .scn-tab, .replay, .vec-out, .estore, .chip, table th, table td, .eqcell, mark { transition:none; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:JSON.parse(v)})}).catch(function(){});}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(c&&typeof c==='object'&&!c.error){CAP=true;localStorage.setItem=wrapped;var s=JSON.stringify(c);if(s!==(localStorage.getItem(KEY)||'{}')){raw(KEY,s);window.dispatchEvent(new Event('miraya-progress-synced'));}}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Physics 0625 · Extended · Topic 5</div>
+    <h1><span class="a">Nuclear</span> <span class="b">Physics</span></h1>
+    <p class="header-sub">Inside the atom is a tiny, dense, charged nucleus — and some nuclei are unstable. This whole topic is the story of <em>why</em> they break apart, what shoots out, and how we count it. Tap the panels — they move.</p>
+  </div>
+
+
+  <!-- ── 01 · THE ATOM ── -->
+  <div class="section">
+    <div class="sec-label">01 / 10 · 5.1.1 The Atom</div>
+    <h2>The atom — almost entirely empty space</h2>
+
+    <p>An atom is a <strong>positively charged nucleus</strong> at the centre, with <strong>negatively charged electrons</strong> in orbit around it. The nucleus is unbelievably small compared with the whole atom — if the atom were a cricket stadium, the nucleus would be a grain of rice on the centre spot. Everything else is empty space the electrons sweep through.</p>
+
+    <div class="box intuition">
+      <div class="box-label">⚛️ The core picture</div>
+      Tiny dense centre, mostly empty outside. Almost all the <strong>mass</strong> sits in the nucleus; almost all the <strong>volume</strong> is the electron cloud. Hold that image — every later idea hangs off it.
+    </div>
+
+    <h3>Ions — atoms that have gained or lost electrons</h3>
+    <p>A neutral atom has equal numbers of protons and electrons. Knock an electron off and the atom is left with more protons than electrons → a <strong>positive ion</strong>. Add an electron and it becomes a <strong>negative ion</strong>.</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Lose electron(s) → positive ion</div>
+        <div class="card-body">Fewer negatives than positives, so the overall charge is <strong>+</strong>. E.g. a sodium atom loses one electron to become Na⁺.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Gain electron(s) → negative ion</div>
+        <div class="card-body">More negatives than positives, so the overall charge is <strong>−</strong>. E.g. a chlorine atom gains one electron to become Cl⁻.</div>
+      </div>
+    </div>
+
+    <h3>How we know: the α-particle scattering experiment <span style="color:var(--muted);font-size:13px">(Extended)</span></h3>
+    <p>Geiger and Marsden (directed by Rutherford) fired fast <strong>alpha particles</strong> at an extremely thin sheet of gold foil and watched where they went.</p>
+    <table>
+      <tr><th>Observation</th><th>What it proves about the nucleus</th></tr>
+      <tr><td><strong>Most α-particles passed straight through</strong> undeflected</td><td>The atom is <strong>mostly empty space</strong></td></tr>
+      <tr><td><strong>A few were deflected through large angles</strong></td><td>The nucleus is <strong>positively charged</strong> (it repels the positive α)</td></tr>
+      <tr><td><strong>A very few bounced almost straight back</strong></td><td>The nucleus is <strong>very small</strong> and holds <strong>most of the atom's mass</strong></td></tr>
+    </table>
+    <div class="box analogy">
+      <div class="box-label">🎯 Why "bouncing back" is the killer clue</div>
+      Firing a cannonball at tissue paper and having it ricochet back would stun you — it can only happen if something tiny, hard and massive is hidden in there. Rutherford said exactly that. A spread-out "plum-pudding" of charge could never throw a fast α straight back; only a concentrated nucleus can.
+    </div>
+  </div>
+
+
+  <!-- ── 02 · THE NUCLEUS ── -->
+  <div class="section">
+    <div class="sec-label">02 / 10 · 5.1.2 The Nucleus</div>
+    <h2>Inside the nucleus — protons &amp; neutrons</h2>
+
+    <p>The nucleus is a bundle of two particles, together called <strong>nucleons</strong>:</p>
+    <table>
+      <tr><th>Particle</th><th>Relative charge</th><th>Relative mass</th><th>Where</th></tr>
+      <tr><td><strong>Proton</strong></td><td>+1</td><td>1</td><td>in the nucleus</td></tr>
+      <tr><td><strong>Neutron</strong></td><td>0</td><td>1</td><td>in the nucleus</td></tr>
+      <tr><td><strong>Electron</strong></td><td>−1</td><td>≈ 1/1840 (negligible)</td><td>orbiting outside</td></tr>
+    </table>
+
+    <div class="define">
+      <span class="term">Proton number, Z</span> (atomic number) — the number of protons in the nucleus. It alone decides which element the atom is. <span class="eq-inline">relative charge on nucleus = +Z</span>.
+    </div>
+    <div class="define">
+      <span class="term">Nucleon number, A</span> (mass number) — the total number of protons + neutrons. <span class="eq-inline">relative mass of nucleus ≈ A</span>, and the number of neutrons is <span class="eq-inline" style="color:var(--momentum)">N = A − Z</span>.
+    </div>
+
+    <h3>Nuclide notation</h3>
+    <p>Every nuclide is written with both numbers stacked before its chemical symbol:</p>
+    <div class="box remember">
+      <div class="box-label">⚠️ Read the notation</div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--bright)">&nbsp;<sup>A</sup><sub>Z</sub>X&nbsp;</span> — top = nucleon number A, bottom = proton number Z.
+      Example: <span style="font-family:'JetBrains Mono',monospace;color:var(--bright)"><sup>23</sup><sub>11</sub>Na</span> has 11 protons, 23 nucleons, so <strong>23 − 11 = 12 neutrons</strong>.
+    </div>
+
+    <h3>Isotopes</h3>
+    <div class="define mom-c">
+      <span class="term">Isotopes</span> — atoms of the <em>same element</em> (same proton number Z) but with <em>different numbers of neutrons</em> (different nucleon number A). An element can have several isotopes.
+    </div>
+    <div class="box intuition">
+      <div class="box-label">🧪 Same element, different weight</div>
+      Carbon is always Z = 6. But <span class="eq-inline">¹²₆C</span>, <span class="eq-inline">¹³₆C</span> and <span class="eq-inline">¹⁴₆C</span> have 6, 7 and 8 neutrons. They behave <em>identically</em> in chemistry (the electrons decide that) but differ in mass and in nuclear stability — <span class="eq-inline">¹⁴₆C</span> is radioactive and is what archaeologists use for carbon-dating.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Don't confuse the numbers</div>
+      Change Z and you change the <em>element</em>. Change only the neutron count (so A changes but Z stays) and you get an <em>isotope of the same element</em>. The element's identity is fixed by protons, never by neutrons.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · FISSION & FUSION ── -->
+  <div class="section">
+    <div class="sec-label">03 / 10 · 5.1.2 Fission &amp; Fusion <span style="color:var(--muted)">(Extended)</span></div>
+    <h2>Splitting and joining nuclei</h2>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Nuclear fission — splitting</div>
+        <div class="card-body">A <strong>large, heavy nucleus splits</strong> into two smaller nuclei (plus a few neutrons). Used in nuclear power stations. Releases energy.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--energy)">Nuclear fusion — joining</div>
+        <div class="card-body">Two <strong>small, light nuclei join</strong> to form a larger nucleus. Powers the Sun and stars (hydrogen → helium). Releases energy.</div>
+      </div>
+    </div>
+
+    <div class="define force-c">
+      <span class="term">Fission (example, qualitative)</span> — a uranium-235 nucleus absorbs a neutron and splits:
+      <span class="eq-inline" style="color:var(--force)">²³⁵₉₂U + ¹₀n → ¹⁴¹₅₆Ba + ⁹²₃₆Kr + 3 ¹₀n</span>. The spare neutrons can split more nuclei — a <strong>chain reaction</strong>.
+    </div>
+    <div class="define energy-c">
+      <span class="term">Fusion (example, qualitative)</span> — light hydrogen nuclei fuse into helium:
+      <span class="eq-inline" style="color:var(--energy2)">² ₁H + ³ ₁H → ⁴ ₂He + ¹₀n</span>. This needs enormous temperatures and pressures — found in the core of stars.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ What the syllabus actually asks</div>
+      You describe fission/fusion as the <strong>splitting or joining of nuclei</strong>, give the <strong>nuclide equation</strong>, and say <em>qualitatively</em> that mass changes into energy — but you are <strong>not</strong> asked for any numerical mass or energy values here. Both processes <strong>release energy</strong>.
+    </div>
+  </div>
+
+
+  <!-- ── 04 · DETECTION & BACKGROUND ── -->
+  <div class="section">
+    <div class="sec-label">04 / 10 · 5.2.1 Detecting Radioactivity</div>
+    <h2>Background radiation &amp; count rate</h2>
+
+    <p>Radioactivity is everywhere at a low level, all the time — this is <strong>background radiation</strong>. The main sources the syllabus names:</p>
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#ffae3b"></span>Radon gas (in the air)</div>
+      <div class="estore"><span class="dot" style="background:#ff5263"></span>Rocks &amp; buildings</div>
+      <div class="estore"><span class="dot" style="background:#43d98c"></span>Food &amp; drink</div>
+      <div class="estore"><span class="dot" style="background:#3ad9d4"></span>Cosmic rays (from space)</div>
+    </div>
+    <p>We measure ionising radiation with a <strong>detector connected to a counter</strong> (e.g. a Geiger–Müller tube and counter). The reading is a <strong>count rate</strong>, in <span class="eq-inline">counts / s</span> or <span class="eq-inline">counts / minute</span>.</p>
+
+    <div class="define mom-c">
+      <span class="term">Corrected count rate <span style="color:var(--muted);font-size:13px">(Extended)</span></span> — because the background is always being counted too, you must subtract it: <span class="eq-inline" style="color:var(--momentum)">corrected = measured − background</span>.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Worked example</div>
+      A detector near a source reads <span class="eq-inline" style="color:var(--power)">510 counts/min</span>. With the source removed, the background reads <span class="eq-inline" style="color:var(--power)">30 counts/min</span>. The true count rate from the source is <span class="eq-inline" style="color:var(--power)">510 − 30 = 480 counts/min</span>. Always correct for background <em>before</em> any half-life calculation that asks for it.
+    </div>
+  </div>
+
+
+  <!-- ── 05 · THE THREE EMISSIONS (signature widget) ── -->
+  <div class="section">
+    <div class="sec-label">05 / 10 · 5.2.2 The Three Emissions</div>
+    <h2>Alpha, beta &amp; gamma — three very different things</h2>
+
+    <p>Emission from a nucleus is <strong>spontaneous</strong> (you can't make it happen or stop it) and <strong>random in direction</strong>. Three kinds come out, and they differ in nature, ionising power and how far they penetrate. Pick one below and watch what stops it:</p>
+
+    <div class="explorer">
+      <div class="scn-tabs" id="penTabs">
+        <div class="scn-tab active" data-rad="alpha">α — alpha</div>
+        <div class="scn-tab" data-rad="beta">β — beta</div>
+        <div class="scn-tab" data-rad="gamma">γ — gamma</div>
+      </div>
+
+      <svg class="pen-svg" viewBox="0 0 440 180" id="penSvg" aria-label="Penetration of alpha, beta and gamma radiation through paper, aluminium and lead">
+        <!-- source -->
+        <circle class="src-dot" cx="26" cy="92" r="9"/>
+        <text x="26" y="118" class="bar-lbl">source</text>
+        <!-- barriers -->
+        <rect class="bar-rect bar-paper" x="150" y="40" width="7"  height="104"/>
+        <text x="153" y="158" class="bar-lbl">paper</text>
+        <rect class="bar-rect bar-alu"   x="262" y="34" width="14" height="110"/>
+        <text x="269" y="158" class="bar-lbl">few&#8201;mm Al</text>
+        <rect class="bar-rect bar-lead"  x="372" y="26" width="30" height="118"/>
+        <text x="387" y="158" class="bar-lbl">thick lead</text>
+        <!-- the ray, drawn as one line whose length we change -->
+        <line id="penRay" x1="35" y1="92" x2="150" y2="92" stroke="#ff5263" stroke-width="3.4" stroke-linecap="round"/>
+        <text id="penStop" class="stop-mark" x="160" y="86" fill="#ff5263">✕ stopped</text>
+      </svg>
+
+      <div class="scn-read">
+        <div class="rk" id="penTitle">Alpha (α)</div>
+        <div id="penText">An alpha particle is a helium nucleus — 2 protons + 2 neutrons. It is heavy and highly charged, so it ionises strongly but is stopped by just a sheet of paper (or a few cm of air).</div>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>Property</th><th style="color:var(--force)">Alpha (α)</th><th style="color:var(--energy)">Beta (β⁻)</th><th style="color:var(--cyan)">Gamma (γ)</th></tr>
+      <tr><td><strong>Nature</strong></td><td>Helium nucleus <span class="eq-inline" style="color:var(--force)">⁴₂He</span> (2p + 2n)</td><td>Fast electron <span class="eq-inline" style="color:var(--energy2)">⁰₋₁e</span></td><td>High-frequency EM wave <span class="eq-inline" style="color:var(--cyan)">⁰₀γ</span></td></tr>
+      <tr><td><strong>Relative charge</strong></td><td>+2</td><td>−1</td><td>0</td></tr>
+      <tr><td><strong>Ionising effect</strong></td><td>Strong (most)</td><td>Moderate</td><td>Weak (least)</td></tr>
+      <tr><td><strong>Penetration</strong></td><td>Least — stopped by paper / a few cm of air</td><td>Medium — stopped by a few mm of aluminium</td><td>Most — only greatly reduced by thick lead / concrete</td></tr>
+    </table>
+
+    <div class="box intuition">
+      <div class="box-label">🔄 The inverse rule that ties it together</div>
+      <strong>Most ionising = least penetrating</strong>, and vice-versa. Alpha is big and double-charged, so it crashes into atoms constantly — ionising hard but using up its energy fast (low penetration). Gamma has no charge and no mass, barely interacts, so it ionises weakly but sails a long way.
+    </div>
+
+    <h3>Deflection in fields <span style="color:var(--muted);font-size:13px">(Extended)</span></h3>
+    <p>Because α and β are charged, they curve in electric and magnetic fields; γ (no charge) goes straight.</p>
+    <ul style="margin:0 0 12px 20px;color:var(--text)">
+      <li><strong>α (+2)</strong> deflects <em>slightly</em> — it is heavy, so hard to push.</li>
+      <li><strong>β (−1)</strong> deflects <em>a lot, the opposite way</em> to α — it is very light, and has opposite charge.</li>
+      <li><strong>γ (0)</strong> is <em>not deflected</em> at all.</li>
+    </ul>
+    <div class="box exam">
+      <div class="box-label">✅ Explaining ionising effect (Extended)</div>
+      Account for ionising power using <strong>kinetic energy</strong> and <strong>electric charge</strong>: α has the most charge (+2) and is slow and massive, so it interacts most strongly and ionises the most; β has less charge; γ has no charge, so it ionises the least.
+    </div>
+  </div>
+
+
+  <!-- ── 06 · RADIOACTIVE DECAY ── -->
+  <div class="section">
+    <div class="sec-label">06 / 10 · 5.2.3 Radioactive Decay</div>
+    <h2>Decay — how the nucleus changes</h2>
+
+    <p><strong>Radioactive decay</strong> is a change in an <em>unstable</em> nucleus that emits α, β and/or γ. It is <strong>spontaneous and random</strong> — you cannot predict <em>when</em> any one nucleus will decay, and nothing (heat, pressure, chemistry) speeds it up or slows it down.</p>
+
+    <div class="box intuition">
+      <div class="box-label">🍿 Why "random" still gives a smooth curve</div>
+      One popcorn kernel pops at an unpredictable moment — random. But a whole bag pops in a smooth, predictable pattern over time. Same here: individual decays are random, yet a huge sample decays in a beautifully regular way. That regularity is the half-life.
+    </div>
+
+    <h3>What each decay does to the nucleus <span style="color:var(--muted);font-size:13px">(Extended)</span></h3>
+    <p>Isotopes are radioactive when the nucleus has <strong>too many neutrons</strong> and/or is simply <strong>too heavy</strong>. Decay nudges the nucleus toward stability:</p>
+    <table>
+      <tr><th>Decay</th><th>Nucleon no. A</th><th>Proton no. Z</th><th>Emitted</th></tr>
+      <tr><td><strong>Alpha (α)</strong></td><td><strong>− 4</strong></td><td><strong>− 2</strong></td><td><span class="eq-inline" style="color:var(--force)">⁴₂α</span> (helium nucleus)</td></tr>
+      <tr><td><strong>Beta (β⁻)</strong></td><td>unchanged</td><td><strong>+ 1</strong></td><td><span class="eq-inline" style="color:var(--energy2)">⁰₋₁β</span> (electron)</td></tr>
+      <tr><td><strong>Gamma (γ)</strong></td><td>unchanged</td><td>unchanged</td><td><span class="eq-inline" style="color:var(--cyan)">γ</span> (energy only)</td></tr>
+    </table>
+
+    <div class="define energy-c">
+      <span class="term">The beta decay trick</span> — a neutron turns into a proton plus the electron that is fired out: <span class="eq-inline" style="color:var(--energy2)">neutron → proton + electron</span>. That is why Z goes up by 1 while A stays the same. After α or β decay the nucleus is a <em>different element</em>.
+    </div>
+
+    <h3>Decay equations</h3>
+    <div class="box exam">
+      <div class="box-label">✅ Balancing rule — top and bottom must each total</div>
+      <p style="margin:4px 0">Alpha: &nbsp;<span class="eq-inline" style="color:var(--power)">²³⁸₉₂U → ²³⁴₉₀Th + ⁴₂α</span> &nbsp; <span style="color:var(--muted)">(238 = 234 + 4; 92 = 90 + 2)</span></p>
+      <p style="margin:4px 0">Beta: &nbsp;<span class="eq-inline" style="color:var(--power)">¹⁴₆C → ¹⁴₇N + ⁰₋₁β</span> &nbsp; <span style="color:var(--muted)">(14 = 14 + 0; 6 = 7 + (−1))</span></p>
+      Check both the top row (nucleon numbers) and bottom row (proton numbers) balance on each side — that is how you find the unknown product.
+    </div>
+  </div>
+
+
+  <!-- ── 07 · HALF-LIFE (signature widget) ── -->
+  <div class="section">
+    <div class="sec-label">07 / 10 · 5.2.4 Half-life</div>
+    <h2>Half-life — the clock of the nucleus</h2>
+
+    <div class="define mom-c">
+      <span class="term">Half-life</span> — the time taken for <strong>half the (undecayed) nuclei</strong> of an isotope in a sample to decay. Equivalently, the time for the count rate (activity) to fall to half its value.
+    </div>
+
+    <p>Each half-life that passes, whatever is left halves again: 100% → 50% → 25% → 12.5% … It never quite reaches zero. Drag the slider and watch the sample decay:</p>
+
+    <div class="tool">
+      <div class="tool-grid">
+        <div>
+          <div class="chart-cap">Undecayed nuclei vs. time</div>
+          <svg class="graph" viewBox="0 0 240 160" id="hlGraph" aria-label="Radioactive decay curve">
+            <line x1="34" y1="132" x2="226" y2="132" class="axis"/>
+            <line x1="34" y1="132" x2="34" y2="16" class="axis"/>
+            <text x="130" y="152" text-anchor="middle" class="axis-lbl">half-lives elapsed →</text>
+            <text x="14" y="74" text-anchor="middle" class="axis-lbl" transform="rotate(-90 14 74)">nuclei left</text>
+            <path class="curve" id="hlCurve" stroke="#8b7bff" d=""/>
+            <circle class="tracer" id="hlDot" r="4.5" cx="34" cy="20"/>
+          </svg>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>Half-lives elapsed <b><span id="nv">0</span></b></label>
+            <input type="range" id="nHL" min="0" max="6" value="0" step="1">
+          </div>
+          <div class="vec-out">
+            <div class="ro">Fraction remaining</div>
+            <div class="rv"><span id="fracR">1</span></div>
+            <div class="ro">Nuclei left (from 80 000)</div>
+            <div style="font-family:'JetBrains Mono',monospace;color:#c8b8f0;font-size:15px"><span id="nLeft">80 000</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="scn-read">
+        <div class="rk" style="color:var(--momentum)">Reading it back</div>
+        After <b><span id="nv2">0</span></b> half-lives the fraction left is <span class="eq-inline" style="color:var(--momentum)">(½)<sup><span id="np">0</span></sup> = <span id="fracR2">1</span></span>. To find a half-life from data, count how many times the activity has <em>halved</em>, then divide the total time by that number.
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Worked example — find the half-life</div>
+      A source's corrected count rate falls from <strong>800 → 400 → 200 → 100 counts/s</strong> over <strong>18 hours</strong>. That is <strong>3 halvings</strong> (800→400→200→100). So one half-life = <span class="eq-inline" style="color:var(--power)">18 ÷ 3 = 6 hours</span>.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Two classic slips</div>
+      (1) Half-life is the time to halve <em>again</em> from wherever you are — it is constant, not "time to reach zero". (2) For a half-life from real data, <strong>subtract the background first</strong> (the Extended version uses data from which background has <em>not</em> already been removed).
+    </div>
+
+    <h3>Choosing the right isotope for a job <span style="color:var(--muted);font-size:13px">(Extended)</span></h3>
+    <table>
+      <tr><th>Use</th><th>Radiation + half-life chosen because…</th></tr>
+      <tr><td><strong>Smoke alarms</strong></td><td>α source — its radiation is stopped by smoke (so the alarm "sees" smoke); long half-life so it lasts for years</td></tr>
+      <tr><td><strong>Irradiating food</strong> to kill bacteria</td><td>γ — penetrates the packaging and kills microbes without making the food radioactive</td></tr>
+      <tr><td><strong>Sterilising equipment</strong></td><td>γ — penetrates sealed packaging to kill all microbes</td></tr>
+      <tr><td><strong>Measuring/controlling thickness</strong> (paper, foil)</td><td>β — partly absorbed by the sheet; the amount getting through reveals the thickness</td></tr>
+      <tr><td><strong>Diagnosis &amp; treatment of cancer</strong></td><td>γ — penetrates the body to image or to destroy tumour cells</td></tr>
+    </table>
+  </div>
+
+
+  <!-- ── 08 · SAFETY ── -->
+  <div class="section">
+    <div class="sec-label">08 / 10 · 5.2.5 Safety Precautions</div>
+    <h2>Why radiation is dangerous — and how to stay safe</h2>
+
+    <div class="define force-c">
+      <span class="term">Effects on living things</span> — ionising radiation can cause <strong>cell death</strong>, <strong>mutations</strong> (damaged DNA), and <strong>cancer</strong>. The more dose received, the greater the risk.
+    </div>
+
+    <h3>The three ways to reduce exposure <span style="color:var(--muted);font-size:13px">(Extended)</span></h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">⏱️ Time</div>
+        <div class="card-body">Spend <strong>less time</strong> near a source — total dose builds up with exposure time.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--energy)">📏 Distance</div>
+        <div class="card-body">Stay <strong>further away</strong> — intensity falls off quickly with distance. Use tongs/handling tools, never bare hands.</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-title" style="color:var(--cyan)">🧱 Shielding</div>
+      <div class="card-body">Put <strong>absorbing material</strong> between you and the source — lead, thick concrete, or lead-lined aprons absorb the radiation before it reaches you.</div>
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Handling, using &amp; storing safely</div>
+      Keep sources in <strong>lead-lined containers</strong>, handle with <strong>long tongs</strong> (never bare hands), point them <strong>away</strong> from people, keep exposure <strong>brief</strong>, and <strong>store</strong> them locked in a clearly-labelled shielded box. Time + distance + shielding, every time.
+    </div>
+  </div>
+
+
+  <!-- ── 09 · RELATIONS BANK ── -->
+  <div class="section">
+    <div class="sec-label">09 / 10 · Reference</div>
+    <h2>The Topic 5 relations bank</h2>
+    <p>IGCSE Physics gives you <strong>no formula sheet</strong> — these must be recalled. Tap any tile for symbols, the rule, a worked example and the exam trap:</p>
+
+    <div class="eqbank" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ The non-negotiables to memorise</div>
+      <span class="eq-inline" style="color:var(--rose)">N = A − Z</span>
+      <span class="eq-inline" style="color:var(--rose)"><sup>A</sup><sub>Z</sub>X notation</span>
+      <span class="eq-inline" style="color:var(--rose)">corrected = measured − background</span>
+      <span class="eq-inline" style="color:var(--rose)">α: A−4, Z−2</span>
+      <span class="eq-inline" style="color:var(--rose)">β: A same, Z+1</span>
+      <span class="eq-inline" style="color:var(--rose)">fraction left = (½)ⁿ</span>
+    </div>
+  </div>
+
+
+  <!-- ── 10 · QUICK RECALL ── -->
+  <div class="section">
+    <div class="sec-label">10 / 10 · One-screen summary</div>
+    <h2>The whole topic, in eight lines</h2>
+    <div class="box exam">
+      <div class="box-label">✅ Last-minute recall</div>
+      <ul style="margin:4px 0 0 18px">
+        <li>Atom = tiny dense <strong>+ nucleus</strong> + orbiting <strong>− electrons</strong>; α-scattering proved it.</li>
+        <li>Nucleus = protons (+1) + neutrons (0); <strong>Z</strong> = protons, <strong>A</strong> = nucleons, <strong>N = A − Z</strong>.</li>
+        <li><strong>Isotopes</strong>: same Z, different A. <strong>Fission</strong> splits heavy nuclei; <strong>fusion</strong> joins light ones (the Sun).</li>
+        <li><strong>Background radiation</strong>: radon, rocks, food, cosmic rays. Corrected count = measured − background.</li>
+        <li>α = He nucleus (most ionising, least penetrating); β = electron; γ = EM wave (least ionising, most penetrating).</li>
+        <li>Decay is <strong>spontaneous &amp; random</strong>. α: A−4, Z−2. β: A same, Z+1 (n → p + e). γ: no change.</li>
+        <li><strong>Half-life</strong> = time for half the nuclei (or the activity) to decay — count the halvings.</li>
+        <li>Safety = reduce <strong>time</strong>, increase <strong>distance</strong>, use <strong>shielding</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE PHYSICS · 0625 EXTENDED · TOPIC 5 — NUCLEAR PHYSICS<br>
+    Built for understanding — the nucleus, what it emits, and how we count the decay.
+  </div>
+
+</div>
+
+<!-- ── FLOATING DETAIL CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Symbols &amp; meaning</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">The rule</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   1 · PENETRATION EXPLORER (α / β / γ)
+════════════════════════════════════════════════ */
+(function(){
+  const RAD = {
+    alpha: { title:'Alpha (α)', col:'#ff5263', x2:150, stopX:160, stop:'✕ stopped by paper',
+      text:'An alpha particle is a helium nucleus — 2 protons + 2 neutrons, charge +2. It is heavy and highly charged, so it ionises strongly but is stopped by just a sheet of paper (or a few cm of air).' },
+    beta:  { title:'Beta (β⁻)', col:'#ffae3b', x2:269, stopX:279, stop:'✕ stopped by Al',
+      text:'A beta particle is a fast electron (charge −1) flung out of the nucleus. It passes through paper but is stopped by a few mm of aluminium. Moderate ionising power, medium penetration.' },
+    gamma: { title:'Gamma (γ)', col:'#3ad9d4', x2:402, stopX:300, stop:'greatly reduced by lead',
+      text:'Gamma is a high-frequency electromagnetic wave — no charge, no mass. It passes through paper and aluminium and is only greatly reduced (not fully stopped) by thick lead or concrete. Weakest ioniser, deepest penetration.' }
+  };
+  const ray=document.getElementById('penRay');
+  const stop=document.getElementById('penStop');
+  const titleEl=document.getElementById('penTitle');
+  const textEl=document.getElementById('penText');
+  function set(key){
+    const r=RAD[key];
+    document.querySelectorAll('#penTabs .scn-tab').forEach(t=>t.classList.toggle('active',t.dataset.rad===key));
+    ray.setAttribute('x2', r.x2);
+    ray.setAttribute('stroke', r.col);
+    stop.setAttribute('x', r.stopX);
+    stop.setAttribute('fill', r.col);
+    stop.textContent = r.stop;
+    titleEl.textContent=r.title; titleEl.style.color=r.col;
+    textEl.textContent=r.text;
+  }
+  document.getElementById('penTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return; set(t.dataset.rad);
+  });
+  set('alpha');
+})();
+
+/* ════════════════════════════════════════════════
+   2 · HALF-LIFE DECAY WIDGET
+════════════════════════════════════════════════ */
+(function(){
+  const N0=80000, MAXN=6;
+  const GX0=34, GX1=226, GY0=132, GY1=20;
+  const px=u=>GX0+(GX1-GX0)*(u/MAXN);
+  const py=f=>GY0-(GY0-GY1)*f;
+  // build the smooth exponential curve once
+  (function(){
+    let d=''; const STEPS=72;
+    for(let i=0;i<=STEPS;i++){ const n=i/STEPS*MAXN; const f=Math.pow(0.5,n);
+      d+=(i?'L':'M')+px(n).toFixed(1)+','+py(f).toFixed(1)+' '; }
+    document.getElementById('hlCurve').setAttribute('d',d);
+  })();
+  const slider=document.getElementById('nHL');
+  const dot=document.getElementById('hlDot');
+  function fmt(x){ return x.toLocaleString('en-IN'); }
+  function fracStr(n){ return n===0 ? '1' : '1/'+Math.pow(2,n); }
+  function upd(){
+    const n=+slider.value;
+    const f=Math.pow(0.5,n);
+    document.getElementById('nv').textContent=n;
+    document.getElementById('nv2').textContent=n;
+    document.getElementById('np').textContent=n;
+    document.getElementById('fracR').textContent=fracStr(n);
+    document.getElementById('fracR2').textContent=fracStr(n);
+    document.getElementById('nLeft').textContent=fmt(Math.round(N0*f));
+    dot.setAttribute('cx',px(n)); dot.setAttribute('cy',py(f));
+  }
+  slider.addEventListener('input',upd); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   3 · RELATIONS BANK + FLOATING CARD
+════════════════════════════════════════════════ */
+const EQ = {
+  neutrons: { c:'mom', name:'Number of neutrons', formula:'N = A − Z',
+    syms:[['N','neutrons','—'],['A','nucleon number','—'],['Z','proton number','—']],
+    rearr:'A = Z + N   ·   Z = A − N',
+    ex:'For ²³⁹₉₄Pu: N = 239 − 94 = <b>145 neutrons</b>.',
+    tip:'Z fixes the <b>element</b>; only the neutron count changes between isotopes.' },
+  nuclide: { c:'motion', name:'Nuclide notation', formula:'<sup>A</sup><sub>Z</sub>X',
+    syms:[['A','top = nucleon no.','—'],['Z','bottom = proton no.','—'],['X','element symbol','—']],
+    rearr:'protons = Z · neutrons = A − Z · electrons (neutral atom) = Z',
+    ex:'<sup>23</sup><sub>11</sub>Na → 11 protons, 12 neutrons, 11 electrons.',
+    tip:'Top number is always the <b>bigger</b> one (nucleons ≥ protons).' },
+  charge: { c:'motion', name:'Charge & mass of nucleus', formula:'charge = +Z, mass ≈ A',
+    syms:[['+Z','relative charge','—'],['A','relative mass','—']],
+    rearr:'relative nuclear charge = +Z · relative nuclear mass ≈ A',
+    ex:'A ⁴₂He nucleus: relative charge +2, relative mass ≈ 4.',
+    tip:'Electrons are ~1/1840 the mass of a nucleon, so the <b>nucleus holds nearly all the mass</b>.' },
+  corrected: { c:'mom', name:'Corrected count rate', formula:'corrected = measured − background',
+    syms:[['measured','reading with source','counts/s'],['background','reading, no source','counts/s']],
+    rearr:'true source rate = measured count − background count',
+    ex:'Measured 510, background 30 → corrected = <b>480 counts/min</b>.',
+    tip:'Do this <b>before</b> a half-life calculation when the data still includes background.' },
+  alpha: { c:'force', name:'Alpha decay', formula:'A → A−4,  Z → Z−2',
+    syms:[['emits','⁴₂α (He nucleus)','—'],['A','−4','—'],['Z','−2','—']],
+    rearr:'ᴬ_Z X → ⁽ᴬ⁻⁴⁾_(Z−2) Y + ⁴₂α',
+    ex:'²³⁸₉₂U → ²³⁴₉₀Th + ⁴₂α. (238=234+4, 92=90+2).',
+    tip:'Top &amp; bottom numbers must <b>balance on both sides</b> — that finds the unknown.' },
+  beta: { c:'energy', name:'Beta decay', formula:'A same,  Z → Z+1',
+    syms:[['emits','⁰₋₁β (electron)','—'],['A','unchanged','—'],['Z','+1','—']],
+    rearr:'neutron → proton + electron, so Z rises by 1',
+    ex:'¹⁴₆C → ¹⁴₇N + ⁰₋₁β. (14=14+0, 6=7−1).',
+    tip:'A neutron becomes a proton; the new nucleus is a <b>different element</b>.' },
+  gamma: { c:'cyan', name:'Gamma emission', formula:'A, Z unchanged',
+    syms:[['emits','γ (energy only)','—'],['A','unchanged','—'],['Z','unchanged','—']],
+    rearr:'nucleus loses energy only — no change in A or Z',
+    ex:'An excited nucleus releases a γ-ray and becomes more stable.',
+    tip:'γ often follows α or β decay as the new nucleus <b>sheds excess energy</b>.' },
+  halflife: { c:'mom', name:'Fraction remaining', formula:'fraction = (½)ⁿ',
+    syms:[['n','number of half-lives','—'],['½','halves each half-life','—']],
+    rearr:'n = total time ÷ half-life · activity also × (½)ⁿ',
+    ex:'After 3 half-lives: (½)³ = <b>1/8</b> of the sample remains.',
+    tip:'Find a half-life by counting how many times the activity <b>halves</b>, then time ÷ that count.' },
+};
+const ORDER=['neutrons','nuclide','charge','corrected','alpha','beta','gamma','halflife'];
+const CMETA = {
+  motion:{col:'#46a8ff', bg:'#0c2536', bd:'#1f4258'},
+  force: {col:'#ff5263', bg:'#2a0f15', bd:'#4a1d26'},
+  energy:{col:'#ffae3b', bg:'#1a1306', bd:'#3a2c10'},
+  cyan:  {col:'#3ad9d4', bg:'#06231f', bd:'#114a44'},
+  mom:   {col:'#8b7bff', bg:'#120c22', bd:'#2e2350'},
+  power: {col:'#43d98c', bg:'#0f2018', bd:'#1f4a30'},
+};
+(function buildBank(){
+  const bank=document.getElementById('eqbank');
+  ORDER.forEach(key=>{
+    const e=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=e.c; cell.dataset.key=key;
+    cell.innerHTML='<div class="eq-sym">'+e.formula+'</div><div class="eq-name">'+e.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+function openEqCard(key){
+  const e=EQ[key], m=CMETA[e.c]||CMETA.motion;
+  const card=document.getElementById('eq-card');
+  const badge=document.getElementById('eqc-badge');
+  badge.innerHTML=e.name.split(' ')[0];
+  badge.style.color=m.col; badge.style.background=m.bg; badge.style.borderColor=m.bd;
+  document.getElementById('eqc-name').textContent=e.name;
+  const f=document.getElementById('eqc-formula');
+  f.innerHTML=e.formula; f.style.color=m.col;
+  const sr=document.getElementById('eqc-syms'); sr.innerHTML='';
+  e.syms.forEach(s=>{
+    const pill=document.createElement('div'); pill.className='sym-pill';
+    pill.innerHTML='<b style="color:'+m.col+'">'+s[0]+'</b> '+s[1]+' <span>['+s[2]+']</span>';
+    sr.appendChild(pill);
+  });
+  document.getElementById('eqc-rearr').innerHTML=e.rearr;
+  document.getElementById('eqc-example').innerHTML=e.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Exam trap:</b> '+e.tip;
+  card.style.display='block';
+  requestAnimationFrame(()=>card.style.opacity='1');
+}
+function closeEqCard(){
+  const card=document.getElementById('eq-card');
+  card.style.opacity='0';
+  setTimeout(()=>card.style.display='none',250);
+}
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) && !e.target.closest('.eqcell')) closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   4 · THEME TOGGLE
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){ try{ return localStorage.getItem('phys-theme'); }catch(e){ return null; } }
+  function safeSet(v){ try{ localStorage.setItem('phys-theme',v); }catch(e){} }
+  function apply(theme){
+    body.setAttribute('data-theme', theme);
+    btn.textContent = (theme==='dark') ? SUN : MOON;
+    btn.setAttribute('aria-label', (theme==='dark') ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  let start = safeGet();
+  if(!start){ start = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark'; }
+  apply(start);
+  btn.addEventListener('click',()=>{ const next = body.getAttribute('data-theme')==='dark' ? 'light' : 'dark'; apply(next); safeSet(next); });
+})();
+</script>
+<button id="markDoneBtn" data-mv="2" data-id="note:phys:5" type="button" aria-pressed="false" style="position:fixed;bottom:18px;right:18px;z-index:10000;font-family:Inter,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;border-radius:22px;padding:10px 18px;border:1px solid var(--border,#263247);background:var(--surface,#121826);color:var(--text,#d6deec);box-shadow:0 6px 20px rgba(0,0,0,.35);">○ Mark as complete</button>
+<script>(function(){var b=document.getElementById('markDoneBtn'),ID=b.getAttribute('data-id'),KEY="studyProgress";function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function r(){var d=!!load()[ID];b.textContent=d?'✓ Completed':'○ Mark as complete';b.setAttribute('aria-pressed',d?'true':'false');b.style.borderColor=d?'var(--power,#4ec994)':'var(--border,#263247)';b.style.color=d?'var(--power,#4ec994)':'var(--text,#d6deec)';}b.addEventListener('click',function(){var p=load();if(p[ID])delete p[ID];else p[ID]=true;try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}r();});window.addEventListener('miraya-progress-synced',r);r();})();</script>
+</body>
+</html>

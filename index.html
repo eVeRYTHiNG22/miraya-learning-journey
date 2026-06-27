@@ -428,6 +428,7 @@
 </style>
 </head>
 <body data-theme="dark">
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:JSON.parse(v)})}).catch(function(){});}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(c&&typeof c==='object'&&!c.error){CAP=true;localStorage.setItem=wrapped;var s=JSON.stringify(c);if(s!==(localStorage.getItem(KEY)||'{}')){raw(KEY,s);window.dispatchEvent(new Event('miraya-progress-synced'));}}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
 
 <div class="page">
@@ -438,7 +439,7 @@
     <p class="header-sub">Pick a subject, open a chapter, and you’ll find its interactive notes and practice paper together. Built to read beautifully on phone, tablet or laptop — online or off.</p>
     <div class="stats">
       <div class="stat"><span class="si">📚</span><div><b>3</b><span>subjects</span></div></div>
-      <div class="stat"><span class="si">📘</span><div><b>11</b><span>topic notes</span></div></div>
+      <div class="stat"><span class="si">📘</span><div><b>13</b><span>topic notes</span></div></div>
       <div class="stat"><span class="si">📝</span><div><b>4</b><span>practice papers</span></div></div>
     </div>
     <div class="progress-panel">
@@ -459,7 +460,7 @@
         <h2>Physics</h2>
         <span class="subject-board">Cambridge IGCSE 0625</span>
       </div>
-      <span class="count-pill">4 chapters</span>
+      <span class="count-pill">6 chapters</span>
     </div>
     <div class="cards">
       <div class="card" data-num="1">
@@ -489,6 +490,20 @@
         <div class="card-title">Electricity and Magnetism</div>
         <div class="btns">
           <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%204%20-%20Electricity%20and%20Magnetism.html"><span class="ico">📘</span>Notes</a>
+        </div>
+      </div>
+      <div class="card" data-num="5">
+        <div class="card-topic">Topic 5</div>
+        <div class="card-title">Nuclear Physics</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%205%20-%20Nuclear%20Physics.html"><span class="ico">📘</span>Notes</a>
+        </div>
+      </div>
+      <div class="card" data-num="6">
+        <div class="card-topic">Topic 6</div>
+        <div class="card-title">Space Physics</div>
+        <div class="btns">
+          <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%206%20-%20Space%20Physics.html"><span class="ico">📘</span>Notes</a>
         </div>
       </div>
     </div>
@@ -604,10 +619,10 @@
   /* ── PROGRESS TRACKER ──
      One shared localStorage object 'studyProgress' maps an item id -> true.
      Item ids:  note:<subj>:<n>   pp:<subj>:<n>   ex:<subj>:<n>
-     Notes & practice papers are ticked here by hand. Graded (exam) papers set
-     their own 'ex:<subj>:<n>' = true when the student submits, and the hub
-     reflects it on next focus. (Cross-page sync needs a real server, e.g.
-     GitHub Pages — under file:// a browser may not share storage between files.) */
+     Notes & practice papers are ticked on their own pages; graded (exam) papers set
+     'ex:<subj>:<n>' = true on submit. The /*miraya-sync*/ layer (injected near <body>)
+     keeps this localStorage object in step with the shared Apps Script record, so progress
+     syncs ACROSS DEVICES; it fires 'miraya-progress-synced' after each pull and we refresh. */
   (function () {
     var KEY = 'studyProgress';
     function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ return {}; } }
@@ -681,6 +696,8 @@
     // re-read storage when the student comes back to this tab (e.g. after submitting an exam)
     window.addEventListener('focus', function () { prog = load(); refresh(); });
     document.addEventListener('visibilitychange', function () { if (!document.hidden) { prog = load(); refresh(); } });
+    // the cross-device sync layer fires this after pulling the shared record from the server
+    window.addEventListener('miraya-progress-synced', function () { prog = load(); refresh(); });
 
     refresh();
   })();

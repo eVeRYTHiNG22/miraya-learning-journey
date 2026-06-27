@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Topic 6: Space Physics</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    --motion:   #46a8ff;   /* electric blue — Earth, orbits & the Solar System */
+    --force:    #ff5263;   /* red — hot stars, the Sun, supernovae */
+    --energy:   #ffae3b;   /* amber — planets, accretion, light */
+    --energy2:  #ffae3b;
+    --momentum: #8b7bff;   /* indigo — the Universe, redshift, Big Bang */
+    --power:    #43d98c;   /* green — exam tips / useful output */
+    --cyan:     #3ad9d4;   /* teal — light-years, Hubble & distance */
+    --rose:     #f25cc1;   /* alert magenta — ≥30° hue gap from warm accents (CVD-safe) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.72; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+  /* ambient field — cool blue glow above, a deep-space warm-violet glow below */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #2a1c5526 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #5a221820 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page { max-width: 880px; margin: 0 auto; padding: 58px 40px 110px; position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 54px; padding-bottom: 30px; border-bottom: 1px solid var(--border); }
+  .chip { display: inline-block; background: linear-gradient(135deg, #0e2c40, #2a1840); border: 1px solid #2f4a66; border-radius: 20px; padding: 4px 14px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--motion); margin-bottom: 18px; }
+  h1 { font-family: 'Fraunces', serif; font-size: clamp(2.1rem, 5.2vw, 3.5rem); font-weight: 800; color: var(--bright); line-height: 1.06; letter-spacing: -0.01em; margin-bottom: 14px; }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--momentum); }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 600px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 60px; opacity: 0; animation: rise 0.55s ease forwards; }
+  @keyframes rise { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+
+  .sec-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+  h2 { font-family: 'Fraunces', serif; font-size: 1.7rem; font-weight: 700; color: var(--bright); margin-bottom: 14px; line-height: 1.18; letter-spacing: -0.01em; }
+  h3 { font-family: 'Fraunces', serif; font-size: 1.18rem; font-weight: 600; color: var(--bright); margin: 26px 0 10px; }
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+
+  .eq-inline { font-family: 'JetBrains Mono', monospace; background: #0d1828; border: 1px solid #22324a; border-radius: 5px; padding: 1px 7px; font-size: 13px; color: var(--motion); white-space: nowrap; }
+  body[data-theme="light"] .eq-inline { background: #eef1f8; border-color: #d4dcec; }
+
+  /* ── BOXES ── */
+  .box { border-radius: 11px; padding: 17px 20px; margin: 18px 0; font-size: 14.2px; border: 1px solid; }
+  .box-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color: var(--motion); }
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define { border-left: 3px solid var(--motion); background: linear-gradient(90deg, #0c1c2880, transparent); padding: 12px 18px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+  .define .term { font-family: 'Fraunces', serif; font-weight: 600; color: var(--bright); font-size: 1.02rem; }
+  .define.force-c   { border-color: var(--force); background:linear-gradient(90deg,#23120b80,transparent); }
+  .define.energy-c  { border-color: var(--energy2); background:linear-gradient(90deg,#23180680,transparent); }
+  .define.mom-c     { border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+  .define.cyan-c    { border-color: var(--cyan); background:linear-gradient(90deg,#06231f80,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 16px 18px; transition: border-color .2s, transform .2s; }
+  .card:hover { transform: translateY(-3px); border-color:#3a557c; }
+  .card-title { font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px; }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th { background: var(--surface2); color: var(--motion); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+
+  mark { background: linear-gradient(120deg,#15405a88,#1f5a7a88); color: var(--bright); padding:1px 4px; border-radius:3px; }
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY — base locked; only accents change per subject.
+     Shared shells reused: .explorer .scn-tabs .scn-tab .scn-read .rk
+     svg.graph .axis .axis-lbl .curve .tracer .chart-cap .tool .tool-grid
+     .slider-row .vec-out .eqbank .eqcell .estore boxes/define/card.
+     Custom (this topic only): .life-svg stages + .spec spectrum widget.
+  ═════════════════════════════════════════════ */
+  .explorer { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin: 22px 0; }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab { font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:8px 14px; border-radius:8px; cursor:pointer; background:#0e1626; border:1px solid var(--border); color:var(--muted); transition:all .18s; user-select:none; }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+
+  .chart-cap { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  svg.graph { width:100%; height:auto; display:block; background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  .axis { stroke:#2a3a55; stroke-width:1.2; }
+  .axis-lbl { fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:9px; }
+  .curve { fill:none; stroke-width:2.6; stroke-linecap:round; }
+  .tracer { fill:#fff; }
+
+  /* star life-cycle SVG */
+  svg.life-svg { width:100%; height:auto; display:block; background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  .stage-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; text-anchor:middle; fill:#9aa6bc; }
+  .stage-arrow { stroke:#3a4a66; stroke-width:1.6; marker-end:url(#lifeArrow); }
+
+  .scn-read { margin-top:16px; background:#0c1c28; border:1px solid #1f4258; border-radius:9px; padding:13px 16px; font-size:13.6px; }
+  .scn-read .rk { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--motion); margin-bottom:6px; }
+
+  /* slider tool */
+  .tool { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin:22px 0; }
+  .tool-grid { display:grid; grid-template-columns:1fr 230px; gap:20px; align-items:center; }
+  .slider-row { margin:14px 0; }
+  .slider-row label { display:flex; justify-content:space-between; align-items:baseline; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.06em; margin-bottom:6px; }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] { width:100%; -webkit-appearance:none; height:5px; border-radius:3px; background:#22304a; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:17px; height:17px; border-radius:50%; background:var(--momentum); cursor:pointer; box-shadow:0 0 10px #8b7bff88; }
+  input[type=range]::-moz-range-thumb { width:17px; height:17px; border:none; border-radius:50%; background:var(--momentum); cursor:pointer; }
+  .vec-out { background:#171229; border:1px solid #2e2350; border-radius:9px; padding:14px 16px; text-align:center; }
+  .vec-out .ro { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:#7d6aa8; margin-bottom:3px; }
+  .vec-out .rv { font-family:'Fraunces',serif; font-size:1.55rem; font-weight:700; color:var(--momentum); line-height:1.1; margin-bottom:10px; }
+
+  /* spectrum bar for the redshift widget */
+  svg.spec { width:100%; height:auto; display:block; border:1px solid var(--border); border-radius:9px; }
+
+  /* ── EQUATION BANK ── */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqcell { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 12px; cursor:pointer; text-align:center; transition:transform .16s, border-color .16s, box-shadow .16s; }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion); box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:var(--bright); margin-bottom:4px; }
+  .eqcell .eq-name { font-size:10.5px; color:var(--muted); letter-spacing:.04em; }
+  .eqcell[data-c="motion"]:hover { border-color:var(--motion); }
+  .eqcell[data-c="force"]:hover  { border-color:var(--force); }
+  .eqcell[data-c="energy"]:hover { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover    { border-color:var(--momentum); }
+  .eqcell[data-c="cyan"]:hover   { border-color:var(--cyan); }
+  .eqcell[data-c="power"]:hover  { border-color:var(--power); }
+
+  #eq-card { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px; width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow); overflow:hidden; transition:opacity .25s; }
+  #eqc-top { padding:18px 18px 14px; display:flex; gap:14px; align-items:center; border-bottom:1px solid var(--card-divider); position:relative; }
+  #eqc-badge { flex-shrink:0; width:62px; height:62px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd); }
+  #eqc-head h4 { font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px; }
+  #eqc-formula { font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--motion); }
+  #eqc-close { position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted); cursor:pointer; user-select:none; }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--card-label); margin:10px 0 6px; }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill { background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px; padding:5px 9px; font-size:11.5px; color:var(--card-text); }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text); background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em; }
+  #eqc-example { background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0; padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip { background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0; padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px; }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── CHIPS ── */
+  .estores { display:flex; flex-wrap:wrap; gap:9px; margin:16px 0; }
+  .estore { background:#19202f; border:1px solid var(--border); border-radius:8px; padding:9px 13px; font-size:12.6px; display:flex; align-items:center; gap:8px; }
+  .estore .dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+
+  /* ── FOOTER ── */
+  .footer { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); text-align:center; padding-top:28px; border-top:1px solid var(--border); letter-spacing:.07em; line-height:1.8; }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .eqbank { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+    .tool-grid { grid-template-columns:1fr; }
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle { position: fixed; top: 16px; right: 16px; z-index: 10000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 17px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,.3); transition: transform .25s, border-color .2s, background-color .35s; line-height: 1; }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.graph, svg.life-svg, .scn-read, .scn-tab, .vec-out, .estore, .chip, table th, table td, .eqcell, mark { transition: background-color .35s ease, border-color .35s ease, color .35s ease; }
+
+  /* ═════════ LIGHT THEME ("study paper") ═════════ */
+  body[data-theme="light"] {
+    --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4;
+    --text:#2c313c; --muted:#6f7484; --bright:#14181f;
+    --motion:#1769d6; --force:#cb2531; --energy:#8f5d00; --energy2:#8f5d00;
+    --momentum:#5b40d6; --power:#107a50; --cyan:#0b7a67; --rose:#ad1a7d;
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #c9b6ff22 0%, transparent 60%);
+  }
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+  body[data-theme="light"] .define          { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.force-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.energy-c  { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.mom-c     { background:linear-gradient(90deg,#ece8fb99,transparent); }
+  body[data-theme="light"] .define.cyan-c    { background:linear-gradient(90deg,#dcf3ef99,transparent); }
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip { background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion); }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+  body[data-theme="light"] svg.graph, body[data-theme="light"] svg.life-svg { background:#fbfaf4; }
+  body[data-theme="light"] .axis { stroke:#bcb4a2; }
+  body[data-theme="light"] .axis-lbl { fill:#8c8674; }
+  body[data-theme="light"] .tracer { fill:#14181f; }
+  body[data-theme="light"] .stage-lbl { fill:#6f7484; }
+  body[data-theme="light"] .stage-arrow { stroke:#b3ab97; }
+  body[data-theme="light"] .scn-read  { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab   { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+  body[data-theme="light"] .vec-out   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .vec-out .ro { color:#6a559a; }
+  body[data-theme="light"] .estore    { background:#efeadd; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    body, .theme-toggle, .box, .card, .define, .explorer, .tool, svg.graph, svg.life-svg, .scn-read, .scn-tab, .vec-out, .estore, .chip, table th, table td, .eqcell, mark { transition:none; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:JSON.parse(v)})}).catch(function(){});}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(c&&typeof c==='object'&&!c.error){CAP=true;localStorage.setItem=wrapped;var s=JSON.stringify(c);if(s!==(localStorage.getItem(KEY)||'{}')){raw(KEY,s);window.dispatchEvent(new Event('miraya-progress-synced'));}}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Physics 0625 · Extended · Topic 6</div>
+    <h1><span class="a">Space</span> <span class="b">Physics</span></h1>
+    <p class="header-sub">From day and night on Earth out to the edge of the observable Universe — the same gravity that drops an apple keeps the planets in orbit and the galaxies in view. Tap the panels — they move.</p>
+  </div>
+
+
+  <!-- ── 01 · THE EARTH ── -->
+  <div class="section">
+    <div class="sec-label">01 / 10 · 6.1.1 The Earth</div>
+    <h2>Day, year, seasons &amp; the Moon</h2>
+
+    <p>Three motions set the rhythms of life on Earth — and the exam wants you to link each one to what we observe.</p>
+    <table>
+      <tr><th>Motion</th><th>Time</th><th>What we observe</th></tr>
+      <tr><td><strong>Earth spins on its (tilted) axis</strong></td><td>≈ 24 hours</td><td>The Sun appears to move across the sky; the cycle of <strong>day and night</strong></td></tr>
+      <tr><td><strong>Earth orbits the Sun</strong></td><td>≈ 365 days (1 year)</td><td>The cycle of the <strong>seasons</strong></td></tr>
+      <tr><td><strong>Moon orbits the Earth</strong></td><td>≈ 1 month</td><td>The <strong>phases of the Moon</strong></td></tr>
+    </table>
+
+    <div class="box intuition">
+      <div class="box-label">🌞 Why the Sun "moves" but doesn't</div>
+      The Sun isn't crossing the sky — <em>you</em> are riding a spinning Earth. From Mumbai the Sun rises in the east because the ground is rotating eastward toward it. One full spin ≈ 24 hours gives one day–night cycle.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The seasons myth</div>
+      Seasons are <strong>NOT</strong> caused by the Earth being closer to or further from the Sun. They are caused by the Earth's <strong>tilted axis</strong>: the hemisphere tilted <em>toward</em> the Sun gets more direct, concentrated sunlight and longer days → summer. (India is actually slightly <em>nearer</em> the Sun during the northern winter — proof distance isn't the cause.)
+    </div>
+
+    <h3>Orbital speed <span style="color:var(--muted);font-size:13px">(Extended)</span></h3>
+    <div class="define">
+      <span class="term">Average orbital speed</span> — for a roughly circular orbit, the body travels one circumference (2πr) in one period T: <span class="eq-inline">v = 2πr / T</span>, where r is the average orbit radius and T the orbital period.
+    </div>
+    <div class="box exam">
+      <div class="box-label">✅ Worked example — Earth's speed around the Sun</div>
+      r = 1.5 × 10¹¹ m, T = 1 year = 3.15 × 10⁷ s.
+      <span class="eq-inline" style="color:var(--power)">v = 2π × 1.5×10¹¹ ÷ 3.15×10⁷ ≈ 3.0 × 10⁴ m/s</span> — about 30 km every second. Keep r and T in metres and seconds.
+    </div>
+  </div>
+
+
+  <!-- ── 02 · THE SOLAR SYSTEM ── -->
+  <div class="section">
+    <div class="sec-label">02 / 10 · 6.1.2 The Solar System</div>
+    <h2>What's in the Solar System</h2>
+
+    <p>The Solar System is held together by the Sun's gravity and contains:</p>
+    <ul style="margin:0 0 14px 20px;color:var(--text)">
+      <li><strong>One star</strong> — the Sun</li>
+      <li><strong>Eight planets</strong> — in order from the Sun: <strong>Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune</strong></li>
+      <li><strong>Minor (dwarf) planets</strong> — e.g. <strong>Pluto</strong>, and <strong>asteroids</strong> in the asteroid belt (between Mars and Jupiter)</li>
+      <li><strong>Moons</strong> — natural satellites that orbit planets</li>
+      <li><strong>Smaller bodies</strong> — <strong>comets</strong> and other natural satellites</li>
+    </ul>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Learn the order (a mnemonic)</div>
+      <strong>M</strong>y <strong>V</strong>ery <strong>E</strong>asy <strong>M</strong>ethod <strong>J</strong>ust <strong>S</strong>peeds <strong>U</strong>p <strong>N</strong>ames → Mercury · Venus · Earth · Mars · Jupiter · Saturn · Uranus · Neptune. The asteroid belt sits between Mars and Jupiter — the boundary between the rocky and gas planets.
+    </div>
+
+    <h3>Rocky inner four vs. gas-giant outer four</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Inner 4 — small &amp; rocky</div>
+        <div class="card-body"><strong>Mercury, Venus, Earth, Mars.</strong> Close to the Sun, made of rock and metal, relatively small and dense.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--energy)">Outer 4 — large &amp; gaseous</div>
+        <div class="card-body"><strong>Jupiter, Saturn, Uranus, Neptune.</strong> Far from the Sun, made mostly of gas, much larger and less dense.</div>
+      </div>
+    </div>
+
+    <h3>Why the split? The accretion model</h3>
+    <div class="define energy-c">
+      <span class="term">Accretion</span> — the Solar System formed from a rotating <strong>interstellar cloud of gas and dust</strong> containing many elements. <strong>Gravity</strong> pulled material together; the cloud's rotation flattened it into an <strong>accretion disc</strong>, and matter clumped into the Sun and planets.
+    </div>
+    <div class="box intuition">
+      <div class="box-label">☀️ Why rock is near, gas is far</div>
+      Close to the new Sun it was too hot for ices and gases to survive — only rock and metal could condense, so the inner planets are small and rocky. Far out, where it was cold, planets could hold on to vast amounts of light gas → the giant gas planets.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · GRAVITY, ORBITS & LIGHT-TIME ── -->
+  <div class="section">
+    <div class="sec-label">03 / 10 · 6.1.2 Gravity &amp; Orbits</div>
+    <h2>Gravity holds it all together</h2>
+
+    <p>The <strong>Sun contains almost all the mass</strong> of the Solar System. Its gravitational attraction is the force that keeps every planet in orbit — the same kind of pull that gives you weight on Earth.</p>
+
+    <div class="define">
+      <span class="term">Gravitational field strength, g</span> — at a planet's surface, g depends on the <strong>mass of the planet</strong> (more mass → stronger field). Around a planet, g <strong>decreases</strong> as you move further away. On Earth g ≈ 9.8 N/kg; on the Moon only ≈ 1.6 N/kg.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Extended — orbital speed &amp; distance</div>
+      Because the Sun's gravity <strong>weakens with distance</strong>, planets further out move <strong>more slowly</strong> (Neptune crawls; Mercury races). In an <strong>elliptical</strong> orbit a single body speeds up when <em>closer</em> to the Sun and slows when <em>further</em> — explained by <strong>conservation of energy</strong> (it trades gravitational PE for kinetic energy as it falls inward).
+    </div>
+
+    <h3>Elliptical orbits <span style="color:var(--muted);font-size:13px">(Extended)</span></h3>
+    <p>Planets, minor planets and comets travel in <strong>ellipses</strong>, not perfect circles, and the <strong>Sun is not at the centre</strong> of the ellipse (it sits at a focus) — except when an orbit is nearly circular. Comets have very stretched ellipses, so they whip past the Sun fast and then spend years far away, moving slowly.</p>
+
+    <h3>How long does light take? <span style="color:var(--muted);font-size:13px"></span></h3>
+    <div class="define cyan-c">
+      <span class="term">Light-travel time</span> — light is fast but not instant. Time = distance ÷ speed, with <span class="eq-inline" style="color:var(--cyan)">v = 3.0 × 10⁸ m/s</span>.
+    </div>
+    <div class="box exam">
+      <div class="box-label">✅ Worked example — sunlight to Earth</div>
+      Sun–Earth distance ≈ 1.5 × 10¹¹ m. Time = <span class="eq-inline" style="color:var(--power)">1.5×10¹¹ ÷ 3.0×10⁸ = 500 s ≈ 8.3 minutes</span>. So you always see the Sun as it was ~8 minutes ago.
+    </div>
+  </div>
+
+
+  <!-- ── 04 · PLANETARY DATA WIDGET ── -->
+  <div class="section">
+    <div class="sec-label">04 / 10 · 6.1.2 Reading Planetary Data <span style="color:var(--muted)">(Extended)</span></div>
+    <h2>Patterns in the planet table</h2>
+
+    <p>A favourite Extended skill is <strong>reading trends</strong> from a data table. Notice how, moving outward from the Sun, the orbital distance rises, the year gets much longer, and the surface gets colder:</p>
+
+    <table>
+      <tr><th>Planet</th><th>Orbit radius (10⁹ km)</th><th>Year (Earth&nbsp;yrs)</th><th>Surface temp (°C)</th><th>g (N/kg)</th></tr>
+      <tr><td><strong>Mercury</strong></td><td>0.058</td><td>0.24</td><td>≈ 167</td><td>3.7</td></tr>
+      <tr><td><strong>Earth</strong></td><td>0.150</td><td>1.0</td><td>≈ 15</td><td>9.8</td></tr>
+      <tr><td><strong>Jupiter</strong></td><td>0.78</td><td>11.9</td><td>≈ −110</td><td>24.8</td></tr>
+      <tr><td><strong>Neptune</strong></td><td>4.5</td><td>165</td><td>≈ −200</td><td>11.2</td></tr>
+    </table>
+
+    <div class="box exam">
+      <div class="box-label">✅ What to say about the trends</div>
+      As orbital distance increases: the <strong>orbital period (year) increases</strong> (further out = slower + longer path), and the <strong>surface temperature falls</strong> (less radiation reaches the planet). Surface g does <em>not</em> follow a simple distance trend — it depends on the planet's own mass and radius (Jupiter is huge, so its g is the largest).
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🔢 Density from the data</div>
+      You can also work out density if given mass and volume (<span class="eq-inline">ρ = m / V</span> from Topic 1): the rocky inner planets come out <em>dense</em> (~5000 kg/m³), the gas giants come out <em>light</em> (Saturn is less dense than water!). The numbers themselves tell the rocky-vs-gas story.
+    </div>
+  </div>
+
+
+  <!-- ── 05 · THE SUN AS A STAR ── -->
+  <div class="section">
+    <div class="sec-label">05 / 10 · 6.2.1 The Sun as a Star</div>
+    <h2>Our local star</h2>
+
+    <div class="define force-c">
+      <span class="term">The Sun</span> — a <strong>medium-sized star</strong> made mostly of <strong>hydrogen and helium</strong>. It radiates most of its energy in the <strong>infrared, visible light and ultraviolet</strong> regions of the electromagnetic spectrum.
+    </div>
+
+    <div class="estores">
+      <div class="estore"><span class="dot" style="background:#ff5263"></span>Infrared (most of the heat)</div>
+      <div class="estore"><span class="dot" style="background:#ffae3b"></span>Visible light</div>
+      <div class="estore"><span class="dot" style="background:#8b7bff"></span>Ultraviolet</div>
+    </div>
+
+    <div class="define energy-c">
+      <span class="term">Where the energy comes from <span style="color:var(--muted);font-size:13px">(Extended)</span></span> — stars are powered by <strong>nuclear reactions</strong>. In a stable star like the Sun, this is the <strong>fusion of hydrogen into helium</strong>, which releases enormous amounts of energy (the same fusion you met in Topic 5).
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">⚖️ Why the Sun doesn't collapse or explode</div>
+      A star is a permanent tug-of-war: <strong>gravity pulling inward</strong> vs. the <strong>outward push of hot, high-pressure gas</strong> from fusion. While these balance, the star is stable and stays the same size. That balance is the definition of a main-sequence star.
+    </div>
+  </div>
+
+
+  <!-- ── 06 · STARS & LIFE CYCLE (signature widget) ── -->
+  <div class="section">
+    <div class="sec-label">06 / 10 · 6.2.2 Stars &amp; Galaxies</div>
+    <h2>Galaxies, light-years &amp; the life of a star</h2>
+
+    <p>Stars cluster into <strong>galaxies</strong> — each made of many <strong>billions of stars</strong>. Our Sun is one star in the galaxy called the <strong>Milky Way</strong>; every other star is far, far further from us than the Sun.</p>
+
+    <div class="define cyan-c">
+      <span class="term">Light-year</span> — the distance light travels through space in one year. <span class="eq-inline" style="color:var(--cyan)">1 light-year = 9.5 × 10¹⁵ m</span>. It is a <em>distance</em>, not a time. We need it because metres are hopeless for measuring between stars.
+    </div>
+
+    <h3>The life cycle of a star</h3>
+    <p>Every star is born from a cloud of gas and dust — but how it <em>dies</em> depends on its mass. Switch between a Sun-like star and a much more massive one:</p>
+
+    <div class="explorer">
+      <div class="scn-tabs" id="lifeTabs">
+        <div class="scn-tab active" data-mass="low">Low mass (like the Sun)</div>
+        <div class="scn-tab" data-mass="high">High mass (much heavier)</div>
+      </div>
+
+      <svg class="life-svg" viewBox="0 0 440 120" id="lifeSvg" aria-label="Life cycle of a star">
+        <defs>
+          <marker id="lifeArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3a4a66"/></marker>
+        </defs>
+        <!-- five stage nodes, repositioned/relabelled by JS -->
+        <g id="lifeStages"></g>
+      </svg>
+
+      <div class="scn-read">
+        <div class="rk" id="lifeTitle">Low-mass star (like the Sun)</div>
+        <div id="lifeText"></div>
+      </div>
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ The two endings to memorise</div>
+      <strong>Low mass</strong> (Sun-like): red giant → <strong>planetary nebula</strong> + <strong>white dwarf</strong> at its centre.<br>
+      <strong>High mass</strong>: red supergiant → <strong>supernova</strong> → leaving a <strong>neutron star</strong> or a <strong>black hole</strong>. The supernova throws out a nebula of hydrogen and new heavier elements, which may form new stars and planets.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">♻️ You are made of dead stars</div>
+      The heavy elements in your body — the iron in your blood, the calcium in your bones — were forged inside massive stars and scattered by supernovae. The Solar System condensed from exactly such enriched nebula material. That is the literal meaning of "we are stardust".
+    </div>
+  </div>
+
+
+  <!-- ── 07 · THE UNIVERSE & REDSHIFT (signature widget) ── -->
+  <div class="section">
+    <div class="sec-label">07 / 10 · 6.2.3 The Universe</div>
+    <h2>Redshift &amp; the expanding Universe</h2>
+
+    <p>The Milky Way is just <strong>one of many billions of galaxies</strong> in the Universe. Our galaxy is about <mark>100 000 light-years</mark> across. When we look at the light from distant galaxies, something striking shows up.</p>
+
+    <div class="define mom-c">
+      <span class="term">Redshift</span> — light from galaxies that are <strong>moving away</strong> from us is stretched to a <strong>longer wavelength</strong>, shifting it toward the red end of the spectrum. The light from distant galaxies is redshifted compared with the same light measured on Earth.
+    </div>
+
+    <p>Drag a galaxy further away and watch its dark spectral lines slide toward red — the further it is, the faster it recedes, the bigger the redshift:</p>
+
+    <div class="tool">
+      <div class="tool-grid">
+        <div>
+          <div class="chart-cap">Spectrum of a galaxy (dark lines shift →)</div>
+          <svg class="spec" viewBox="0 0 240 70" id="specSvg" aria-label="Redshifted spectrum">
+            <defs>
+              <linearGradient id="specGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0"   stop-color="#6a3df0"/>
+                <stop offset="0.2" stop-color="#3a7bff"/>
+                <stop offset="0.45" stop-color="#3ad97a"/>
+                <stop offset="0.65" stop-color="#ffd23b"/>
+                <stop offset="0.85" stop-color="#ff8c3b"/>
+                <stop offset="1"   stop-color="#ff3b3b"/>
+              </linearGradient>
+            </defs>
+            <rect x="6" y="8" width="228" height="40" rx="4" fill="url(#specGrad)"/>
+            <line id="specL1" x1="70"  y1="8" x2="70"  y2="48" stroke="#0a0d14" stroke-width="3"/>
+            <line id="specL2" x1="120" y1="8" x2="120" y2="48" stroke="#0a0d14" stroke-width="3"/>
+            <text x="10" y="64" class="axis-lbl">blue</text>
+            <text x="210" y="64" class="axis-lbl">red</text>
+          </svg>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>Galaxy distance <b><span id="dv">1.0</span> ×10²⁴ m</b></label>
+            <input type="range" id="dGal" min="1" max="60" value="1" step="1">
+          </div>
+          <div class="vec-out">
+            <div class="ro">Recession speed v = H₀d</div>
+            <div class="rv"><span id="vGal">2.2</span> ×10⁶ m/s</div>
+            <div class="ro">Redshift</div>
+            <div style="font-family:'JetBrains Mono',monospace;color:#c8b8f0;font-size:14px"><span id="zGal">small</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="scn-read">
+        <div class="rk" style="color:var(--momentum)">What it means</div>
+        <strong>Every</strong> distant galaxy is redshifted, and the further ones recede faster. The only sensible explanation: <strong>space itself is expanding</strong>, carrying the galaxies apart. Rewind that expansion and everything was once together — strong evidence for the <strong>Big Bang Theory</strong>.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 08 · CMBR, HUBBLE & AGE ── -->
+  <div class="section">
+    <div class="sec-label">08 / 10 · 6.2.3 Big Bang Evidence <span style="color:var(--muted)">(Extended)</span></div>
+    <h2>The Big Bang, the CMBR &amp; the age of the Universe</h2>
+
+    <div class="define mom-c">
+      <span class="term">Cosmic Microwave Background Radiation (CMBR)</span> — <strong>microwave radiation of a specific frequency, observed from every direction</strong> in space. It was produced <strong>shortly after the Universe formed</strong>; as the Universe expanded, this radiation stretched into the <strong>microwave</strong> region. It is a second, independent piece of evidence for the Big Bang.
+    </div>
+
+    <h3>Measuring the expansion: the Hubble constant</h3>
+    <div class="define cyan-c">
+      <span class="term">Speed &amp; distance of galaxies</span> — a galaxy's recession speed <strong>v</strong> can be found from the change in wavelength of its starlight (its redshift). Its distance <strong>d</strong> can be found from the <strong>brightness of a supernova</strong> in that galaxy.
+    </div>
+    <div class="define mom-c">
+      <span class="term">Hubble constant, H₀</span> — the ratio of a galaxy's recession speed to its distance: <span class="eq-inline" style="color:var(--momentum)">H₀ = v / d</span>. Current estimate: <span class="eq-inline" style="color:var(--momentum)">H₀ ≈ 2.2 × 10⁻¹⁸ per second</span>.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ The age of the Universe</div>
+      Rearranging Hubble's relation, <span class="eq-inline" style="color:var(--power)">d / v = 1 / H₀</span> gives an estimate of the <strong>age of the Universe</strong>. This works because, running the expansion backwards, all matter was once together at a single point.
+      <br>Age ≈ <span class="eq-inline" style="color:var(--power)">1 ÷ (2.2×10⁻¹⁸) ≈ 4.5 × 10¹⁷ s</span> ≈ <strong>14 billion years</strong>.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Units &amp; meaning of H₀</div>
+      H₀ has units of <strong>per second (1/s)</strong>, so 1/H₀ comes out in <strong>seconds</strong> — divide by ~3.15×10⁷ to get years. And "1/H₀ = age" is only an <em>estimate</em> that assumes the expansion rate has been steady.
+    </div>
+  </div>
+
+
+  <!-- ── 09 · EQUATION BANK ── -->
+  <div class="section">
+    <div class="sec-label">09 / 10 · Reference</div>
+    <h2>The Topic 6 equation bank</h2>
+    <p>IGCSE Physics gives you <strong>no formula sheet</strong> — these must be recalled. Tap any tile for symbols, units, a worked example and the exam trap:</p>
+
+    <div class="eqbank" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ The non-negotiables to memorise</div>
+      <span class="eq-inline" style="color:var(--rose)">v = 2πr/T</span>
+      <span class="eq-inline" style="color:var(--rose)">time = distance ÷ (3×10⁸)</span>
+      <span class="eq-inline" style="color:var(--rose)">1 ly = 9.5×10¹⁵ m</span>
+      <span class="eq-inline" style="color:var(--rose)">H₀ = v/d</span>
+      <span class="eq-inline" style="color:var(--rose)">age ≈ 1/H₀</span>
+      <span class="eq-inline" style="color:var(--rose)">H₀ ≈ 2.2×10⁻¹⁸ /s</span>
+    </div>
+  </div>
+
+
+  <!-- ── 10 · QUICK RECALL ── -->
+  <div class="section">
+    <div class="sec-label">10 / 10 · One-screen summary</div>
+    <h2>The whole topic, in nine lines</h2>
+    <div class="box exam">
+      <div class="box-label">✅ Last-minute recall</div>
+      <ul style="margin:4px 0 0 18px">
+        <li>Earth spins (24 h → day/night), orbits Sun (365 d → seasons, via <strong>tilt</strong>), Moon orbits Earth (~1 month → phases).</li>
+        <li>Orbital speed <span class="eq-inline">v = 2πr/T</span>.</li>
+        <li>Solar System = 1 star + 8 planets (Me-V-E-Ma-J-S-U-N) + dwarf planets, asteroids, moons, comets.</li>
+        <li>Inner 4 rocky &amp; small, outer 4 gas &amp; large — explained by the <strong>accretion model</strong> (gravity + rotating dust cloud).</li>
+        <li>Sun holds most of the mass; its <strong>gravity</strong> keeps planets in orbit. Orbits are <strong>elliptical</strong>; bodies move faster when nearer (energy conservation).</li>
+        <li>Sun = medium star, H + He, radiates IR/visible/UV, powered by <strong>fusion of H → He</strong>.</li>
+        <li>Star life: nebula → protostar → main sequence → red giant/supergiant → <strong>(low)</strong> planetary nebula + white dwarf / <strong>(high)</strong> supernova → neutron star or black hole.</li>
+        <li>Galaxies = billions of stars; Milky Way ~100 000 ly across; <span class="eq-inline">1 ly = 9.5×10¹⁵ m</span>.</li>
+        <li><strong>Redshift</strong> → Universe expanding → Big Bang; <strong>CMBR</strong> is further evidence; <span class="eq-inline">H₀ = v/d</span>, age ≈ 1/H₀ ≈ 14 billion yr.</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE PHYSICS · 0625 EXTENDED · TOPIC 6 — SPACE PHYSICS<br>
+    Built for understanding — one gravity, from day and night to the edge of the Universe.
+  </div>
+
+</div>
+
+<!-- ── FLOATING DETAIL CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Symbols &amp; units</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Rearrangements</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   1 · STAR LIFE-CYCLE EXPLORER
+════════════════════════════════════════════════ */
+(function(){
+  const LIFE = {
+    low: {
+      title:'Low-mass star (like the Sun)',
+      stages:[['Nebula','#8b7bff'],['Protostar','#46a8ff'],['Main-sequence\nstar','#ffd23b'],['Red giant','#ff7a3b'],['Planetary nebula\n+ white dwarf','#3ad9d4']],
+      text:'A nebula of gas and dust collapses under its own gravity into a hot protostar. When fusion balances gravity it becomes a stable main-sequence star. As its hydrogen runs low it swells into a red giant, then gently puffs off its outer layers as a planetary nebula, leaving a small hot white dwarf at the centre.'
+    },
+    high: {
+      title:'High-mass star (much heavier than the Sun)',
+      stages:[['Nebula','#8b7bff'],['Protostar','#46a8ff'],['Main-sequence\nstar','#ffd23b'],['Red supergiant','#ff5263'],['Supernova →\nneutron star /\nblack hole','#d6deec']],
+      text:'It starts the same way — nebula to protostar to main-sequence star — but being far more massive it expands into a huge red supergiant. It then explodes violently as a supernova, scattering hydrogen and newly-made heavier elements into space, and leaving behind a dense neutron star or, if heavy enough, a black hole.'
+    }
+  };
+  const SX=[40,140,225,315,400], SY=46, R=15;
+  const g=document.getElementById('lifeStages');
+  const titleEl=document.getElementById('lifeTitle');
+  const textEl=document.getElementById('lifeText');
+  function render(key){
+    const L=LIFE[key];
+    document.querySelectorAll('#lifeTabs .scn-tab').forEach(t=>t.classList.toggle('active',t.dataset.mass===key));
+    let svg='';
+    // arrows between nodes
+    for(let i=0;i<SX.length-1;i++){
+      svg+='<line class="stage-arrow" x1="'+(SX[i]+R+2)+'" y1="'+SY+'" x2="'+(SX[i+1]-R-4)+'" y2="'+SY+'"/>';
+    }
+    // nodes + labels
+    L.stages.forEach((s,i)=>{
+      svg+='<circle cx="'+SX[i]+'" cy="'+SY+'" r="'+R+'" fill="'+s[1]+'" stroke="#0a0d14" stroke-width="1.5"/>';
+      const lines=s[0].split('\n');
+      lines.forEach((ln,j)=>{
+        svg+='<text class="stage-lbl" x="'+SX[i]+'" y="'+(SY+R+13+j*10)+'">'+ln+'</text>';
+      });
+    });
+    g.innerHTML=svg;
+    titleEl.textContent=L.title;
+    textEl.textContent=L.text;
+  }
+  document.getElementById('lifeTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return; render(t.dataset.mass);
+  });
+  render('low');
+})();
+
+/* ════════════════════════════════════════════════
+   2 · REDSHIFT / HUBBLE WIDGET
+════════════════════════════════════════════════ */
+(function(){
+  const H0=2.2e-18;            // per second
+  const slider=document.getElementById('dGal');
+  const L1=document.getElementById('specL1'), L2=document.getElementById('specL2');
+  const x1_0=70, x2_0=120;     // rest positions of the two dark lines
+  function upd(){
+    const d=+slider.value*1e24;            // metres
+    const v=H0*d;                          // m/s
+    document.getElementById('dv').textContent=(+slider.value).toFixed(1);
+    document.getElementById('vGal').textContent=(v/1e6).toFixed(1);
+    // shift the dark lines toward red (right). max slider 60 → shift up to ~95 px within the 6..234 band
+    const shift=(+slider.value-1)/59 * 95;
+    const nx1=Math.min(228, x1_0+shift), nx2=Math.min(231, x2_0+shift);
+    L1.setAttribute('x1',nx1); L1.setAttribute('x2',nx1);
+    L2.setAttribute('x1',nx2); L2.setAttribute('x2',nx2);
+    let z='small';
+    if(+slider.value>15) z='moderate';
+    if(+slider.value>35) z='large';
+    document.getElementById('zGal').textContent=z;
+  }
+  slider.addEventListener('input',upd); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   3 · EQUATION BANK + FLOATING CARD
+════════════════════════════════════════════════ */
+const EQ = {
+  orbital: { c:'motion', name:'Orbital speed', formula:'v = 2πr / T',
+    syms:[['v','orbital speed','m/s'],['r','average orbit radius','m'],['T','orbital period','s']],
+    rearr:'r = vT / 2π   ·   T = 2πr / v',
+    ex:'Earth: r=1.5×10¹¹ m, T=3.15×10⁷ s → v ≈ <b>3.0×10⁴ m/s</b>.',
+    tip:'Keep r in metres and T in seconds; one orbit covers a distance of 2πr.' },
+  lighttime: { c:'cyan', name:'Light-travel time', formula:'t = d / c',
+    syms:[['t','time','s'],['d','distance','m'],['c','speed of light = 3.0×10⁸','m/s']],
+    rearr:'d = c·t   ·   c = d / t',
+    ex:'Sun→Earth: 1.5×10¹¹ ÷ 3.0×10⁸ = 500 s ≈ <b>8.3 min</b>.',
+    tip:'All EM waves travel at c in a vacuum — use the same speed for radio, light or γ.' },
+  lightyear: { c:'cyan', name:'Light-year', formula:'1 ly = 9.5×10¹⁵ m',
+    syms:[['1 ly','distance light travels in 1 year','m']],
+    rearr:'distance in m = (light-years) × 9.5×10¹⁵',
+    ex:'A star 4 ly away is 4 × 9.5×10¹⁵ = <b>3.8×10¹⁶ m</b> off.',
+    tip:'A light-year is a <b>distance, not a time</b> — a classic exam trap.' },
+  hubble: { c:'mom', name:'Hubble constant', formula:'H₀ = v / d',
+    syms:[['H₀','Hubble constant','1/s'],['v','recession speed','m/s'],['d','distance','m']],
+    rearr:'v = H₀·d   ·   d = v / H₀',
+    ex:'Galaxy at d=4.0×10²⁴ m: v = 2.2×10⁻¹⁸ × 4.0×10²⁴ = <b>8.8×10⁶ m/s</b>.',
+    tip:'Further galaxies recede faster — that proportionality <b>is</b> Hubble\'s relation.' },
+  age: { c:'mom', name:'Age of the Universe', formula:'age ≈ 1 / H₀',
+    syms:[['age','estimated age','s'],['H₀','2.2×10⁻¹⁸','1/s']],
+    rearr:'age = d / v = 1 / H₀',
+    ex:'1 ÷ 2.2×10⁻¹⁸ ≈ 4.5×10¹⁷ s ≈ <b>14 billion years</b>.',
+    tip:'Answer comes out in <b>seconds</b>; ÷3.15×10⁷ to convert to years.' },
+  gfield: { c:'force', name:'Gravitational field g', formula:'g = W / m',
+    syms:[['g','field strength','N/kg'],['W','weight','N'],['m','mass','kg']],
+    rearr:'W = mg   ·   m = W / g',
+    ex:'Earth g≈9.8 N/kg; Moon g≈1.6 N/kg — depends on the body\'s mass.',
+    tip:'g is bigger on more massive planets and <b>falls with distance</b> from them.' },
+};
+const ORDER=['orbital','lighttime','lightyear','hubble','age','gfield'];
+const CMETA = {
+  motion:{col:'#46a8ff', bg:'#0c2536', bd:'#1f4258'},
+  force: {col:'#ff5263', bg:'#2a0f15', bd:'#4a1d26'},
+  energy:{col:'#ffae3b', bg:'#1a1306', bd:'#3a2c10'},
+  cyan:  {col:'#3ad9d4', bg:'#06231f', bd:'#114a44'},
+  mom:   {col:'#8b7bff', bg:'#120c22', bd:'#2e2350'},
+  power: {col:'#43d98c', bg:'#0f2018', bd:'#1f4a30'},
+};
+(function buildBank(){
+  const bank=document.getElementById('eqbank');
+  ORDER.forEach(key=>{
+    const e=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=e.c; cell.dataset.key=key;
+    cell.innerHTML='<div class="eq-sym">'+e.formula+'</div><div class="eq-name">'+e.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+function openEqCard(key){
+  const e=EQ[key], m=CMETA[e.c]||CMETA.motion;
+  const card=document.getElementById('eq-card');
+  const badge=document.getElementById('eqc-badge');
+  badge.innerHTML=e.formula.split('=')[0].trim();
+  badge.style.color=m.col; badge.style.background=m.bg; badge.style.borderColor=m.bd;
+  document.getElementById('eqc-name').textContent=e.name;
+  const f=document.getElementById('eqc-formula');
+  f.innerHTML=e.formula; f.style.color=m.col;
+  const sr=document.getElementById('eqc-syms'); sr.innerHTML='';
+  e.syms.forEach(s=>{
+    const pill=document.createElement('div'); pill.className='sym-pill';
+    pill.innerHTML='<b style="color:'+m.col+'">'+s[0]+'</b> '+s[1]+' <span>['+s[2]+']</span>';
+    sr.appendChild(pill);
+  });
+  document.getElementById('eqc-rearr').innerHTML=e.rearr;
+  document.getElementById('eqc-example').innerHTML=e.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Exam trap:</b> '+e.tip;
+  card.style.display='block';
+  requestAnimationFrame(()=>card.style.opacity='1');
+}
+function closeEqCard(){
+  const card=document.getElementById('eq-card');
+  card.style.opacity='0';
+  setTimeout(()=>card.style.display='none',250);
+}
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) && !e.target.closest('.eqcell')) closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   4 · THEME TOGGLE
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){ try{ return localStorage.getItem('phys-theme'); }catch(e){ return null; } }
+  function safeSet(v){ try{ localStorage.setItem('phys-theme',v); }catch(e){} }
+  function apply(theme){
+    body.setAttribute('data-theme', theme);
+    btn.textContent = (theme==='dark') ? SUN : MOON;
+    btn.setAttribute('aria-label', (theme==='dark') ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  let start = safeGet();
+  if(!start){ start = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark'; }
+  apply(start);
+  btn.addEventListener('click',()=>{ const next = body.getAttribute('data-theme')==='dark' ? 'light' : 'dark'; apply(next); safeSet(next); });
+})();
+</script>
+<button id="markDoneBtn" data-mv="2" data-id="note:phys:6" type="button" aria-pressed="false" style="position:fixed;bottom:18px;right:18px;z-index:10000;font-family:Inter,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;border-radius:22px;padding:10px 18px;border:1px solid var(--border,#263247);background:var(--surface,#121826);color:var(--text,#d6deec);box-shadow:0 6px 20px rgba(0,0,0,.35);">○ Mark as complete</button>
+<script>(function(){var b=document.getElementById('markDoneBtn'),ID=b.getAttribute('data-id'),KEY="studyProgress";function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function r(){var d=!!load()[ID];b.textContent=d?'✓ Completed':'○ Mark as complete';b.setAttribute('aria-pressed',d?'true':'false');b.style.borderColor=d?'var(--power,#4ec994)':'var(--border,#263247)';b.style.color=d?'var(--power,#4ec994)':'var(--text,#d6deec)';}b.addEventListener('click',function(){var p=load();if(p[ID])delete p[ID];else p[ID]=true;try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}r();});window.addEventListener('miraya-progress-synced',r);r();})();</script>
+</body>
+</html>
