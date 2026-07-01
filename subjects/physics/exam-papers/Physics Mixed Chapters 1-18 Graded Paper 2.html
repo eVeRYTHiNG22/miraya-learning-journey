@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Mixed Chapters 1–18 Graded Paper 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2346a8ff'>M</text></svg>">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+    --motion:   #46a8ff;
+    --cyan:     #3ad9d4;
+    --force:    #ff5263;
+    --energy:   #ffae3b;
+    --energy2:  #ffae3b;
+    --momentum: #8b7bff;
+    --power:    #43d98c;
+    --rose:     #f25cc1;
+  }
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;
+    --muted:    #6f7484;
+    --bright:   #14181f;
+    --motion:   #1769d6;
+    --cyan:     #0b7a67;
+    --force:    #cb2531;
+    --energy:   #8f5d00;
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;
+    --power:    #107a50;
+    --rose:     #ad1a7d;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.72;
+    min-height: 100vh; -webkit-font-smoothing: antialiased;
+    transition: background-color .35s ease, color .35s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #0d2a5026 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #1a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+  .page { max-width:880px; margin:0 auto; padding:58px 40px 120px; position:relative; z-index:1; }
+  .theme-toggle{position:fixed;top:70px;right:16px;z-index:10000;width:40px;height:40px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:var(--surface);border:1px solid var(--border);color:var(--text);
+    font-size:17px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);
+    transition:transform .25s,border-color .2s,background-color .35s;line-height:1;}
+  .theme-toggle:hover{transform:rotate(18deg);border-color:var(--motion);}
+  .theme-toggle:focus-visible{outline:2px solid var(--motion);outline-offset:3px;}
+  .header { margin-bottom:30px; padding-bottom:26px; border-bottom:1px solid var(--border); }
+  .chip {
+    display:inline-block; background:linear-gradient(135deg,#0e2c40,#2a1840);
+    border:1px solid #2f4a66; border-radius:20px; padding:4px 14px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--motion); margin-bottom:18px;
+  }
+  body[data-theme="light"] .chip { background:linear-gradient(135deg,#e3eefb,#efe6fb); border-color:#cdd9f0; }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.8rem,5vw,2.9rem); font-weight:800;
+    color:var(--bright); line-height:1.08; letter-spacing:-0.01em; margin-bottom:14px; }
+  h1 .a { color:var(--motion); } h1 .b { color:var(--cyan); } h1 .c { color:var(--force); }
+  .header-sub { color:var(--muted); font-size:14px; max-width:640px; }
+  .front { background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:26px 28px; margin-bottom:40px; transition:background-color .35s,border-color .35s; }
+  .front h2,.results h2 { font-family:'Fraunces',serif; font-size:1.35rem; font-weight:700;
+    color:var(--bright); margin-bottom:14px; }
+  .meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 26px; margin-bottom:20px; }
+  @media (max-width:620px){ .meta-grid{ grid-template-columns:1fr; } }
+  .meta-item .k { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+  .meta-item .v { color:var(--bright); font-weight:600; font-size:15px; }
+  .instructions { list-style:none; margin:6px 0 0; }
+  .instructions li { position:relative; padding-left:22px; margin-bottom:7px; font-size:14px; color:var(--text); }
+  .instructions li::before { content:'▸'; position:absolute; left:2px; top:0; color:var(--motion); font-size:13px; }
+  .controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px;
+    padding-top:20px; border-top:1px solid var(--border); }
+  .btn { font-family:'Inter',sans-serif; font-weight:600; font-size:14px; cursor:pointer;
+    border-radius:9px; padding:11px 20px; border:1px solid var(--border);
+    background:var(--surface2); color:var(--text);
+    transition:transform .15s,border-color .2s,background-color .2s,color .2s; }
+  .btn:hover { transform:translateY(-2px); }
+  .btn:focus-visible { outline:2px solid var(--motion); outline-offset:3px; }
+  .btn.primary { background:var(--motion); border-color:var(--motion); color:#fff; }
+  body[data-theme="light"] .btn.primary { color:#fff; }
+  .btn.ghost { background:transparent; }
+  .controls .hint { font-size:12.5px; color:var(--muted); flex-basis:100%; }
+  .exam-bar { position:fixed; top:0; left:0; right:0; z-index:9000;
+    display:none; align-items:center; gap:18px; padding:11px 20px;
+    background:var(--surface); border-bottom:1px solid var(--border);
+    box-shadow:0 6px 22px rgba(0,0,0,.28); transition:background-color .35s,border-color .35s; }
+  .exam-bar.show { display:flex; }
+  .exam-bar .timer { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:600;
+    color:var(--bright); letter-spacing:.04em; min-width:96px; }
+  .exam-bar .timer .lbl { display:block; font-size:9px; letter-spacing:.16em; color:var(--muted); }
+  .exam-bar.warn .timer { color:var(--energy); }
+  .exam-bar.danger .timer { color:var(--force); }
+  .exam-bar .prog { font-size:12.5px; color:var(--muted); }
+  .exam-bar .prog b { color:var(--text); }
+  .exam-bar .spacer { flex:1; }
+  .exam-bar .mode-tag { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--cyan); border:1px solid var(--border);
+    border-radius:20px; padding:3px 11px; }
+  .sec-head { margin:46px 0 8px; }
+  .sec-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .sec-head h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); }
+  .sec-head .sec-sub { font-size:13px; color:var(--muted); margin-top:2px; }
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:13px;
+    padding:22px 24px; margin:18px 0; transition:background-color .35s,border-color .35s; }
+  .q-head { display:flex; align-items:baseline; gap:12px; margin-bottom:10px; }
+  .q-no { font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem; color:var(--motion); min-width:26px; }
+  .q-stem { color:var(--text); }
+  .marks { margin-left:auto; flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:11px;
+    color:var(--muted); border:1px solid var(--border); border-radius:6px; padding:2px 9px; white-space:nowrap; }
+  .ctx { border-left:3px solid var(--cyan); background:linear-gradient(90deg,#06241f55,transparent);
+    padding:10px 16px; margin:10px 0 14px; border-radius:0 8px 8px 0; font-size:13.6px; }
+  body[data-theme="light"] .ctx { background:linear-gradient(90deg,#def3ee99,transparent); }
+  .part { margin:14px 0; }
+  .part-label { font-weight:600; color:var(--bright); margin-right:6px; }
+  .part-prompt { display:inline; }
+  .part .marks-inline { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin-left:6px; }
+  .opts { list-style:none; margin:12px 0 2px; display:grid; gap:8px; }
+  .opt { display:flex; gap:11px; align-items:flex-start; cursor:pointer;
+    border:1px solid var(--border); border-radius:9px; padding:9px 14px;
+    background:var(--surface2); transition:border-color .15s,background-color .2s; }
+  .opt:hover { border-color:var(--motion); }
+  .opt input { margin-top:5px; accent-color:var(--motion); }
+  .opt .opt-key { font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--motion); margin-right:2px; }
+  .opt.correct { border-color:var(--power); background:#10241a; }
+  .opt.wrong   { border-color:var(--force); background:#2a1113; }
+  body[data-theme="light"] .opt.correct { background:#e7f6ee; }
+  body[data-theme="light"] .opt.wrong   { background:#fbe4e6; }
+  .opt .verdict { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:11px; }
+  .opt.correct .verdict { color:var(--power); } .opt.wrong .verdict { color:var(--force); }
+  textarea.ans { width:100%; margin-top:9px; resize:vertical; min-height:60px;
+    background:var(--surface2); color:var(--text); border:1px solid var(--border);
+    border-radius:9px; padding:10px 13px; font-family:'Inter',sans-serif; font-size:14px; line-height:1.6;
+    transition:background-color .35s,border-color .2s; }
+  textarea.ans:focus { outline:none; border-color:var(--motion); }
+  textarea.ans:disabled { opacity:.85; }
+  .num-row { display:flex; align-items:center; gap:10px; margin-top:9px; flex-wrap:wrap; }
+  input.num { width:150px; background:var(--surface2); color:var(--text); border:1px solid var(--border);
+    border-radius:9px; padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:15px;
+    transition:background-color .35s,border-color .2s; }
+  input.num:focus { outline:none; border-color:var(--motion); }
+  input.num.correct { border-color:var(--power); } input.num.wrong { border-color:var(--force); }
+  .num-unit { font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:14px; }
+  .num-verdict { font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .fig { margin:12px 0 6px; padding:14px; border:1px solid var(--border); border-radius:10px;
+    background:var(--surface2); text-align:center; transition:background-color .35s,border-color .2px; }
+  .fig svg { max-width:100%; height:auto; color:var(--text); }
+  .fig svg text { fill:var(--text); font-family:'Inter',sans-serif; }
+  .fig .fig-cap { margin-top:8px; font-size:11.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; letter-spacing:.03em; }
+  .fig .grid-line { stroke:var(--border); stroke-width:1; }
+  .fig .axis      { stroke:var(--text); stroke-width:1.6; }
+  .fig .plot      { stroke:var(--motion); stroke-width:2.4; fill:none; }
+  .fig .accent    { stroke:var(--force); fill:none; stroke-width:2; }
+  .draw-row { margin-top:10px; }
+  .draw-note { font-size:12.5px; color:var(--muted); margin-bottom:8px; }
+  .draw-pick { display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    border:1px dashed var(--motion); border-radius:9px; padding:10px 16px;
+    background:var(--surface2); color:var(--motion); font-size:13.5px; font-weight:500;
+    transition:background-color .2px,border-color .2px; }
+  .draw-pick:hover { background:var(--surface); }
+  .draw-pick input { display:none; }
+  .draw-preview { margin-top:10px; display:none; }
+  .draw-preview.show { display:block; }
+  .draw-preview img { max-width:100%; max-height:340px; border:1px solid var(--border); border-radius:9px; display:block; }
+  .draw-preview .draw-meta { font-size:11.5px; color:var(--muted); margin-top:5px; font-family:'JetBrains Mono',monospace; }
+  .draw-clear { margin-top:7px; font-size:12px; color:var(--force); background:none; border:none; cursor:pointer; text-decoration:underline; padding:0; }
+  .draw-box { display:none; }
+  .print-lines { display:none; }
+  .ms { display:none; margin-top:14px; border-radius:10px; overflow:hidden; border:1px solid var(--power); }
+  .ms.show { display:block; }
+  .ms-head { background:#0f2018; color:var(--power); font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.16em; text-transform:uppercase; padding:8px 15px; display:flex; gap:10px; align-items:center; }
+  body[data-theme="light"] .ms-head { background:#e7f6ee; }
+  .ms-head .self-note { margin-left:auto; color:var(--muted); letter-spacing:.04em; text-transform:none; font-size:11px; }
+  .ms-body { background:var(--surface2); padding:6px; }
+  .ms-point { display:flex; gap:11px; align-items:flex-start; padding:9px 12px; border-radius:8px; cursor:pointer; transition:background-color .15s; }
+  .ms-point:hover { background:var(--surface); }
+  .ms-point input { margin-top:5px; accent-color:var(--power); width:16px; height:16px; flex-shrink:0; }
+  .ms-point .pt { flex:1; font-size:13.8px; color:var(--text); }
+  .ms-point .pm { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--power);
+    border:1px solid var(--power); border-radius:5px; padding:1px 7px; flex-shrink:0; white-space:nowrap; }
+  .ms-point.auto { cursor:default; }
+  .ms-point.auto .lock { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--muted); margin-left:8px; }
+  .ms-point.read { cursor:default; padding:9px 12px 9px 14px; }
+  .ms.solution .ms-head .self-note { display:none; }
+  #questions.locked { opacity:.5; pointer-events:none; }
+  .submitted-msg { display:none; }
+  body.graded .submitted-msg { display:block; margin:4px 0 6px; color:var(--text); font-size:15px; line-height:1.7; }
+  body.graded .submitted-msg b { color:var(--bright); }
+  .results { display:none; margin:30px 0 10px; }
+  .results.show { display:block; }
+  .result-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:30px; text-align:center; }
+  .score-big { font-family:'Fraunces',serif; font-weight:800; line-height:1; font-size:clamp(3rem,11vw,5rem); color:var(--bright); }
+  .score-big .den { color:var(--muted); font-size:.5em; }
+  .score-pct { font-family:'JetBrains Mono',monospace; font-size:18px; color:var(--motion); margin-top:6px; }
+  .band { display:inline-block; margin-top:16px; padding:7px 18px; border-radius:22px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em;
+    border:1px solid var(--border); color:var(--bright); background:var(--surface2); }
+  .result-meta { display:flex; justify-content:center; gap:30px; flex-wrap:wrap; margin-top:22px; }
+  .result-meta .rm .k { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .result-meta .rm .v { font-size:18px; color:var(--bright); font-weight:600; }
+  .result-actions { margin-top:24px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .disclaimer { font-size:12px; color:var(--muted); margin-top:16px; max-width:520px; margin-left:auto; margin-right:auto; }
+  sub { font-size:.74em; }
+  @media (prefers-reduced-motion:reduce){ *,body{ transition:none !important; animation:none !important; } .btn:hover,.theme-toggle:hover{ transform:none; } }
+  @media print {
+    @page { margin:16mm; }
+    body { background:#fff; color:#000; font-size:12pt; }
+    body::before { display:none; }
+    #questions { opacity:1 !important; }
+    .theme-toggle,.exam-bar,.controls,.results,.front .controls,.opt input,.ms,textarea.ans,input.num,.num-verdict { display:none !important; }
+    .page { max-width:none; padding:0; }
+    .front { border:none; padding:0; background:none; }
+    .q,.front { box-shadow:none; border:1px solid #999; break-inside:avoid; }
+    .q { background:#fff; }
+    .opt { background:#fff; border:1px solid #999; }
+    .opt::before { content:''; display:inline-block; width:13px; height:13px; border:1.4px solid #000; border-radius:50%; margin-top:3px; }
+    .print-lines { display:block; margin-top:8px; }
+    .print-lines .ln { border-bottom:1px dotted #444; height:26px; }
+    .ctx { background:#f4f4f4; border-left:3px solid #444; }
+    .fig { background:#fff; border:1px solid #999; }
+    .fig svg { color:#000; }
+    .fig svg text { fill:#000; }
+    .draw-row,.draw-preview { display:none !important; }
+    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:180px; margin-top:8px; }
+    h1 .a,h1 .b,h1 .c,.q-no,.marks,.chip { color:#000 !important; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
+
+<a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+
+<div class="exam-bar" id="examBar">
+  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">120:00</span></div>
+  <div class="prog">Answered <b id="progDone">0</b> / <span id="progTot">0</span></div>
+  <span class="mode-tag" id="modeTag">TIMED</span>
+  <div class="spacer"></div>
+  <button class="btn primary" id="btnSubmit">Submit &amp; send</button>
+</div>
+
+<div class="page">
+  <header class="header">
+    <span class="chip">IGCSE Physics · 0625 · Extended · Graded exam</span>
+    <h1>Mixed Topics Graded Paper 2<br><span class="a">Chapters </span><span class="b">1</span><span class="c">–18</span></h1>
+    <p class="header-sub">Kinematics &amp; projectile · momentum &amp; collisions · pressure &amp; moments · gas laws &amp; thermal physics · waves, optics &amp; EM spectrum · magnetism &amp; electrostatics · electrical quantities · David Sang et al. (3rd ed.) chapters 1–18. A graded exam — submit and your answers are sent to your teacher automatically.</p>
+  </header>
+
+  <section class="front" id="front">
+    <h2>Before you begin</h2>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">120 minutes</div></div>
+      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">110 marks</div></div>
+      <div class="meta-item"><div class="k">Syllabus scope</div><div class="v">IGCSE Physics 0625 · Extended · Chapters 1–18 (David Sang, Mike Follows &amp; Sheila Tarpey, 3rd ed.) — all syllabus topics 1.1–4.2</div></div>
+      <div class="meta-item"><div class="k">Level</div><div class="v">Extended (Core + Supplement)</div></div>
+    </div>
+    <ul class="instructions">
+      <li>Answer <b>all</b> questions. Section A (Q1–20) is multiple choice (1 mark each). Section B (Q21–29) is structured and calculation.</li>
+      <li>Show <b>all working</b> in calculations — your teacher awards method marks for correct working even if the final answer is wrong.</li>
+      <li>This is a <b>graded exam</b>: no answers or mark scheme are shown here. In Timed mode a countdown runs; the paper locks on submit or at 0:00.</li>
+      <li>On submit your answers are sent automatically to your teacher. A backup download button is available if the send fails.</li>
+      <li><b>Useful data:</b> g = 9.8 N/kg · c = 3.0 × 10<sup>8</sup> m/s · e = 1.6 × 10<sup>−19</sup> C · speed of sound in air = 340 m/s · density of water = 1000 kg/m³ · density of seawater ≈ 1025 kg/m³ · atmospheric pressure = 1.01 × 10<sup>5</sup> Pa · SHC of water = 4200 J/(kg·°C)</li>
+      <li><b>Equations:</b> v = u + at · s = ut + ½at² · v² = u² + 2as · s = (u+v)t/2 · ρ = m/V · F = ma · W = mg · p = F/A · p = ρgh · moment = F × d · p = mv · impulse = FΔt = Δ(mv) · E<sub>k</sub> = ½mv² · ΔE<sub>p</sub> = mgΔh · W = Fd · P = W/t · η = useful output/input · Q = mcΔθ · v = fλ · n = sin i/sin r · sin c = 1/n · V = IR · P = IV = I²R · Q = It · E = VIt · W = QV</li>
+    </ul>
+    <div class="controls">
+      <button class="btn primary" id="startTimed">▶ Start timed exam</button>
+      <button class="btn ghost" id="startPractice">Practice (no timer)</button>
+      <button class="btn ghost" id="printBtn">🖨 Print blank paper</button>
+      <span class="hint">Tip: use the ☀ / ☾ button (top-right) to switch between dark and light (paper) themes.</span>
+    </div>
+  </section>
+
+  <div id="questions"></div>
+
+  <section class="results" id="results">
+    <h2 id="resultsTitle">Your result</h2>
+    <div class="result-card">
+      <p class="submitted-msg" id="submittedMsg">✅ <b>Paper submitted.</b> <span id="sendStatus">Sending your answers to your teacher…</span></p>
+      <div id="scoreWrap">
+        <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">110</span></span></div>
+        <div class="score-pct" id="scorePct">0%</div>
+        <div class="band" id="scoreBand">—</div>
+        <div class="result-meta">
+          <div class="rm"><div class="k">Auto-marked</div><div class="v" id="autoMarked">0</div></div>
+          <div class="rm" id="selfRow"><div class="k">Self-marked</div><div class="v" id="selfMarked">0</div></div>
+          <div class="rm"><div class="k">Time taken</div><div class="v" id="timeTaken">—</div></div>
+        </div>
+      </div>
+      <div class="result-actions">
+        <button class="btn" id="downloadBtn">⬇ Download a backup copy</button>
+        <button class="btn ghost" id="reviewBtn">Review answers ↑</button>
+        <button class="btn ghost" id="retakeBtn">↺ Retake</button>
+        <button class="btn ghost" id="printBtn2">🖨 Print</button>
+      </div>
+      <p class="disclaimer">Grade labels are indicative only — real Cambridge grade boundaries change each session.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const PAPER = {
+  "graded": true,
+  "duration": 120,
+  "questions": [
+    {"n":1,"kind":"mcq","marks":1,"stem":"A solid cylinder has mass 250 g, diameter 4.0 cm and length 10 cm. The density of the cylinder is: (Volume of a cylinder = π r² l)","options":["199 kg/m³","995 kg/m³","2000 kg/m³","7960 kg/m³"]},
+    {"n":2,"kind":"mcq","marks":1,"stem":"A train accelerates uniformly from 20 m/s to 40 m/s over 50 s. The distance covered during this acceleration is:","options":["500 m","750 m","1500 m","2000 m"]},
+    {"n":3,"kind":"mcq","marks":1,"stem":"A book rests on a table. The book exerts a downward force on the table. According to Newton's third law, the equal and opposite reaction force is:","options":["the upward normal force of the table on the book","the weight of the book","the normal force of the floor on the table","the friction force on the book"]},
+    {"n":4,"kind":"mcq","marks":1,"stem":"A tall, thin bottle of oil is more likely to topple than a short, wide bottle of the same mass because:","options":["its total weight is greater","its centre of mass is higher, so a smaller tilt takes the line of action of its weight outside its base","its centre of mass is lower, reducing stability","the normal force from the surface is smaller"]},
+    {"n":5,"kind":"mcq","marks":1,"stem":"An object of volume 2.0 × 10<sup>−3</sup> m³ is fully submerged in water of density 1000 kg/m³. The upthrust acting on the object is: (g = 9.8 N/kg)","options":["2.0 N","4.9 N","19.6 N","196 N"]},
+    {"n":6,"kind":"mcq","marks":1,"stem":"A pendulum bob is released from rest at a height of 0.45 m above its lowest point. Ignoring all resistive forces, the maximum speed of the bob at the lowest point is: (g = 9.8 N/kg)","options":["0.94 m/s","2.1 m/s","3.0 m/s","8.8 m/s"]},
+    {"n":7,"kind":"mcq","marks":1,"stem":"Nuclear power stations do not release carbon dioxide from fuel combustion. However, one significant problem with nuclear power is that the waste:","options":["is lighter than air and escapes into the atmosphere","produces large amounts of greenhouse gas","remains dangerously radioactive for thousands of years","can be safely neutralised by heating to high temperature"]},
+    {"n":8,"kind":"mcq","marks":1,"stem":"A 2400 W hair dryer operates at 80% efficiency. The rate at which energy is wasted (as thermal energy to the surroundings) is:","options":["480 W","1920 W","3000 W","192 W"]},
+    {"n":9,"kind":"mcq","marks":1,"stem":"A fixed mass of gas at constant temperature has pressure 1.5 × 10<sup>5</sup> Pa and volume 400 cm³. The volume when the pressure is increased to 6.0 × 10<sup>5</sup> Pa (temperature unchanged) is:","options":["25 cm³","100 cm³","160 cm³","1600 cm³"]},
+    {"n":10,"kind":"mcq","marks":1,"stem":"A substance is heated at a constant rate. Its temperature stays constant while it changes state from liquid to gas. During this time:","options":["energy is not being supplied to the substance","the particles are gaining kinetic energy only","the particles are gaining potential energy as they break free from each other","energy is being lost to the surroundings at the same rate it is supplied"]},
+    {"n":11,"kind":"mcq","marks":1,"stem":"Which statement about infrared radiation and ultraviolet radiation is correct?","options":["Infrared has a shorter wavelength than ultraviolet.","Both travel at the same speed in a vacuum.","Infrared can ionise atoms; ultraviolet cannot.","Ultraviolet has a lower frequency than infrared."]},
+    {"n":12,"kind":"mcq","marks":1,"stem":"Two speakers emit sound waves of the same frequency and amplitude. At a point equidistant from both speakers, the waves arrive exactly in phase (path difference = 0). What is heard at this point?","options":["silence (destructive interference)","a sound of maximum loudness (constructive interference)","a sound of reduced but non-zero loudness","alternating loud and quiet sounds"]},
+    {"n":13,"kind":"mcq","marks":1,"stem":"A transparent optical material has a refractive index of 1.6. The critical angle for total internal reflection at its boundary with air is approximately:","options":["28°","32°","39°","48°"]},
+    {"n":14,"kind":"mcq","marks":1,"stem":"Which of the following statements about electromagnetic waves in a vacuum is correct?","options":["Radio waves have the highest frequency of all electromagnetic waves.","X-rays have a lower frequency than visible light.","Gamma rays have the shortest wavelength of all electromagnetic waves.","Gamma rays travel faster than radio waves in a vacuum."]},
+    {"n":15,"kind":"mcq","marks":1,"stem":"Which type of electromagnetic radiation is used in airport security body scanners and luggage scanners to reveal objects hidden beneath clothing or inside bags?","options":["gamma rays","X-rays","ultraviolet","microwaves"]},
+    {"n":16,"kind":"mcq","marks":1,"stem":"Which statement correctly describes the magnetic field inside a long solenoid carrying a steady current?","options":["It is curved and strongest at the centre.","It is approximately uniform and parallel to the axis of the solenoid.","The field is zero everywhere inside a solenoid.","It points radially outward from the axis at every point inside."]},
+    {"n":17,"kind":"mcq","marks":1,"stem":"Two identical negative charges are placed a distance d apart. When the distance between them is halved, the electrostatic force between them:","options":["halves","doubles","stays the same","quadruples"]},
+    {"n":18,"kind":"mcq","marks":1,"stem":"In a circuit, a wire splits into two parallel branches. Branch 1 carries 0.30 A and branch 2 carries 0.50 A. The current in the main wire before the junction is:","options":["0.20 A","0.30 A","0.50 A","0.80 A"]},
+    {"n":19,"kind":"mcq","marks":1,"stem":"A current of 0.40 A flows through a wire for 5.0 minutes. The total charge that passes any cross-section of the wire in this time is:","options":["2.0 C","12 C","120 C","750 C"]},
+    {"n":20,"kind":"mcq","marks":1,"stem":"A charge of 25 C is moved through a potential difference of 6.0 V. The work done on the charge is:","options":["4.2 J","31 J","150 J","900 J"]},
+
+    {"n":21,"kind":"parts",
+     "stem":"A tennis ball is struck horizontally from the edge of a building 45 m above the ground in Bengaluru. The initial horizontal velocity of the ball is 15 m/s. Air resistance is negligible throughout.",
+     "ctx":"g = 9.8 N/kg",
+     "parts":[
+       {"label":"(a)","kind":"numeric","marks":2,"unit":"s","prompt":"Calculate the time for the ball to reach the ground."},
+       {"label":"(b)","kind":"numeric","marks":2,"unit":"m","prompt":"Calculate the horizontal distance from the base of the building at which the ball lands."},
+       {"label":"(c)","kind":"numeric","marks":2,"unit":"m/s","prompt":"Calculate the vertical component of the ball's velocity just before it hits the ground."},
+       {"label":"(d)","kind":"numeric","marks":2,"unit":"m/s","prompt":"Calculate the resultant (actual) speed of the ball just before impact. Show your method."},
+       {"label":"(e)","kind":"numeric","marks":2,"unit":"°","prompt":"Calculate the angle that the velocity makes below the horizontal at the moment of impact."},
+       {"label":"(f)","kind":"text","marks":2,"lines":4,"prompt":"Describe the path of the ball between leaving the building and hitting the ground. State which component of velocity is uniform and which is changing, and why."}
+     ]
+    },
+
+    {"n":22,"kind":"parts",
+     "stem":"A lorry of mass 12 000 kg is travelling at 20 m/s along a national highway. It collides with and couples to a stationary car of mass 1200 kg. The lorry and car then move together as one unit.",
+     "ctx":"Use the principle of conservation of momentum throughout this question.",
+     "parts":[
+       {"label":"(a)","kind":"numeric","marks":3,"unit":"m/s","prompt":"Calculate the velocity of the combined lorry and car immediately after the collision. Show your working."},
+       {"label":"(b)","kind":"text","marks":3,"lines":6,"prompt":"Show that kinetic energy is not conserved in this collision. Calculate the kinetic energy lost in the collision. State what form of energy this is converted into."},
+       {"label":"(c)","kind":"numeric","marks":2,"unit":"m/s²","prompt":"After the collision, the combined vehicle decelerates uniformly from its post-collision speed to rest in 6.0 s. Calculate the magnitude of the deceleration."},
+       {"label":"(d)","kind":"numeric","marks":3,"unit":"N","prompt":"Calculate the braking force required to produce this deceleration, and calculate the impulse exerted on the combined vehicle during braking."}
+     ]
+    },
+
+    {"n":23,"kind":"parts",
+     "stem":"This question is about turning forces, stability and fluid pressure.",
+     "ctx":"g = 9.8 N/kg · Atmospheric pressure = 1.01 × 10<sup>5</sup> Pa · Density of seawater = 1025 kg/m³",
+     "parts":[
+       {"label":"(a)","kind":"text","marks":1,"lines":2,"prompt":"State the condition for a system of forces to be in rotational equilibrium (the principle of moments)."},
+       {"label":"(b)","kind":"numeric","marks":2,"unit":"m","prompt":"A uniform plank (mass 10 kg, length 4.0 m) is pivoted at its centre. A child of mass 30 kg sits 1.2 m from the pivot on the left. Calculate the distance from the pivot at which a second child of mass 20 kg must sit on the right to balance the plank. (Ignore the weight of the plank for this calculation.)"},
+       {"label":"(c)","kind":"numeric","marks":2,"unit":"N","prompt":"Taking the weight of the plank into account, calculate the total force exerted on the pivot when the plank is balanced as in (b). (Total mass of system = 10 + 30 + 20 = 60 kg)"},
+       {"label":"(d)","kind":"numeric","marks":2,"unit":"Pa","prompt":"A scuba diver in the Indian Ocean explores a shipwreck at a depth of 25 m. Calculate the pressure due to the seawater alone at this depth."},
+       {"label":"(e)","kind":"numeric","marks":2,"unit":"Pa","prompt":"Calculate the total pressure at a depth of 25 m, including atmospheric pressure."},
+       {"label":"(f)","kind":"text","marks":1,"lines":2,"prompt":"Explain why a diver must not ascend to the surface too quickly after a deep dive."}
+     ]
+    },
+
+    {"n":24,"kind":"parts",
+     "stem":"An airtight plastic syringe contains 60 cm³ of air at a pressure of 1.0 × 10<sup>5</sup> Pa and a temperature of 20 °C.",
+     "ctx":"Treat air as an ideal gas throughout.",
+     "parts":[
+       {"label":"(a)","kind":"numeric","marks":2,"unit":"Pa","prompt":"The plunger is pushed in until the volume is 20 cm³ and the temperature remains constant. Calculate the new pressure of the gas inside the syringe."},
+       {"label":"(b)","kind":"numeric","marks":2,"unit":"Pa","prompt":"Starting again from the original state (60 cm³, 1.0 × 10<sup>5</sup> Pa, 20 °C), the temperature is raised to 80 °C while the volume is held constant at 60 cm³. Calculate the new pressure. (Remember: T must be in kelvin.)"},
+       {"label":"(c)","kind":"text","marks":3,"lines":6,"prompt":"Explain, in terms of the kinetic particle model, why increasing the temperature of a gas at constant volume increases its pressure."},
+       {"label":"(d)","kind":"text","marks":2,"lines":4,"prompt":"Describe the process of evaporation at the molecular level. Explain why evaporation causes the remaining liquid to cool."},
+       {"label":"(e)","kind":"text","marks":2,"lines":4,"prompt":"Ice at 0 °C absorbs energy from its surroundings and melts to water at 0 °C. Explain why the temperature does not rise during this process, even though energy is being supplied."}
+     ]
+    },
+
+    {"n":25,"kind":"parts",
+     "stem":"This question is about thermal radiation, the greenhouse effect and wave properties.",
+     "ctx":"Speed of light c = 3.0 × 10⁸ m/s",
+     "parts":[
+       {"label":"(a)","kind":"text","marks":3,"lines":6,"prompt":"Two identical tin cans are filled with the same volume of hot water at 70 °C. One can has a dull black outer surface; the other has a shiny silver outer surface. Predict which can will cool faster and explain your reasoning in terms of thermal radiation."},
+       {"label":"(b)","kind":"numeric","marks":2,"unit":"Hz","prompt":"An infrared radiation detector picks up waves of wavelength 1.5 × 10<sup>−5</sup> m. Calculate the frequency of this radiation."},
+       {"label":"(c)","kind":"text","marks":2,"lines":4,"prompt":"State one similarity and one difference between infrared radiation and ultraviolet radiation."},
+       {"label":"(d)","kind":"text","marks":3,"lines":6,"prompt":"Explain, with reference to wavelength, how a greenhouse maintains a higher internal temperature than the outside air. Your answer should describe the type of radiation entering and leaving the greenhouse, and explain what happens to the wavelength of radiation re-emitted by objects inside."}
+     ]
+    },
+
+    {"n":26,"kind":"parts",
+     "stem":"This question is about refraction, total internal reflection and optical fibres.",
+     "ctx":"Speed of light in a vacuum c = 3.0 × 10⁸ m/s",
+     "parts":[
+       {"label":"(a)","kind":"numeric","marks":3,"unit":"°","prompt":"An optical fibre used in telecommunications in India has a core of refractive index 1.62 and cladding of refractive index 1.47. Using sin c = n₂/n₁, calculate the critical angle at the core–cladding boundary."},
+       {"label":"(b)","kind":"text","marks":2,"lines":4,"prompt":"Explain why light travelling through the fibre must strike the core–cladding boundary at an angle <b>greater than</b> the critical angle in order to remain within the fibre."},
+       {"label":"(c)","kind":"text","marks":2,"lines":4,"prompt":"State one advantage of optical fibres over copper cables for transmitting data over long distances."},
+       {"label":"(d)","kind":"text","marks":3,"lines":6,"prompt":"A narrow beam of white light passes through a triangular glass prism. Describe what is observed on a screen beyond the prism. Explain why this occurs, referring to the relationship between refractive index, wavelength, and the speed of light in glass."}
+     ]
+    },
+
+    {"n":27,"kind":"parts",
+     "stem":"This question is about properties and uses of electromagnetic waves.",
+     "parts":[
+       {"label":"(a)","kind":"text","marks":2,"lines":4,"prompt":"State two properties of X-rays that make them useful in medical diagnosis (e.g. in taking radiographs of broken bones)."},
+       {"label":"(b)","kind":"text","marks":2,"lines":4,"prompt":"State one risk associated with the medical use of X-rays. Describe one precaution taken by hospital radiographers to reduce this risk."},
+       {"label":"(c)","kind":"text","marks":2,"lines":4,"prompt":"Microwaves are used in satellite communication. Give one property of microwaves that makes them suitable for this use, and state one hazard of exposure to intense microwave radiation."},
+       {"label":"(d)","kind":"text","marks":3,"lines":6,"prompt":"Describe how you would use a plotting compass to map the magnetic field around a bar magnet. Include in your answer: what you do, what you record, and what a completed field diagram shows about the strength and direction of the field."}
+     ]
+    },
+
+    {"n":28,"kind":"parts",
+     "stem":"This question is about electric charge, current and circuit analysis.",
+     "ctx":"Electronic charge e = 1.6 × 10<sup>−19</sup> C",
+     "parts":[
+       {"label":"(a)","kind":"numeric","marks":2,"unit":"electrons","prompt":"A current of 1.5 A flows through a wire for 2.0 minutes. Calculate the number of electrons that pass a cross-section of the wire in this time."},
+       {"label":"(b)","kind":"text","marks":2,"lines":4,"prompt":"A metal dome of a Van de Graaff generator is given a positive charge. Explain why the charge distributes itself on the outer surface of the dome rather than inside it."},
+       {"label":"(c)","kind":"text","marks":3,"lines":5,"prompt":"A resistor R₁ = 20 Ω and a resistor R₂ = 30 Ω are connected in series to a 12 V battery (negligible internal resistance).<br>(i) Calculate the total resistance of the circuit.<br>(ii) Calculate the current in the circuit.<br>(iii) Calculate the potential difference across R₂."},
+       {"label":"(d)","kind":"numeric","marks":2,"unit":"kJ","prompt":"A 60 W light bulb operates for 8.0 hours each day. Calculate the total energy transferred by the bulb in 30 days."},
+       {"label":"(e)","kind":"text","marks":2,"lines":4,"prompt":"The same light bulb is connected in a circuit along with a hair dryer. When the hair dryer is switched on, the brightness of the light bulb decreases noticeably. Explain this observation."}
+     ]
+    },
+
+    {"n":29,"kind":"parts",
+     "stem":"A student in Delhi investigates how the resistance of a light-dependent resistor (LDR) changes with light intensity.",
+     "ctx":"The LDR and a fixed resistor of 500 Ω are connected in series to a 5.0 V supply throughout this question.",
+     "parts":[
+       {"label":"(a)","kind":"numeric","marks":2,"unit":"A","prompt":"When the room is brightly lit, the LDR has a resistance of 200 Ω (and is alone in the circuit connected to the 5.0 V supply, with no fixed resistor). Calculate the current through the LDR in this case."},
+       {"label":"(b)","kind":"numeric","marks":2,"unit":"V","prompt":"When the room is dark, the LDR resistance increases to 2000 Ω. The LDR is now connected in series with the fixed 500 Ω resistor across the 5.0 V supply. Calculate the voltage across the 500 Ω resistor."},
+       {"label":"(c)","kind":"text","marks":2,"lines":4,"prompt":"Explain, in terms of charge carriers, why the resistance of the LDR decreases when more light falls on it."}
+     ]
+    }
+  ]
+};
+
+const SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec';
+
+const TOTAL = PAPER.questions.reduce((s,q)=> s + (q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0)), 0);
+const GRADED = !!PAPER.graded;
+const FULLY_AUTO = !GRADED && !PAPER.questions.some(q => q.kind==='parts' && q.parts.some(p => p.kind==='text'));
+
+const $ = id => document.getElementById(id);
+function lines(n){ let h='<div class="print-lines">'; for(let i=0;i<n;i++) h+='<div class="ln"></div>'; return h+'</div>'; }
+
+function msMarkup(ms, idPrefix){
+  const head = FULLY_AUTO ? 'Worked answer' : 'Mark scheme';
+  let h = '<div class="ms'+(FULLY_AUTO?' solution':'')+'" id="'+idPrefix+'-ms"><div class="ms-head">'+head
+        + (FULLY_AUTO ? '' : '<span class="self-note">tick each point you earned</span>')
+        + '</div><div class="ms-body">';
+  ms.forEach((pt,i)=>{
+    if(FULLY_AUTO){
+      h += '<div class="ms-point read"><span class="pt">'+pt.p+'</span></div>';
+    } else if(pt.auto){
+      h += '<label class="ms-point auto"><input type="checkbox" data-m="'+pt.m+'" data-auto="1" disabled>'
+         + '<span class="pt">'+pt.p+'</span><span class="pm">'+pt.m+' mk</span><span class="lock">AUTO</span></label>';
+    } else {
+      h += '<label class="ms-point"><input type="checkbox" data-m="'+pt.m+'">'
+         + '<span class="pt">'+pt.p+'</span><span class="pm">'+pt.m+' mk</span></label>';
+    }
+  });
+  return h + '</div></div>';
+}
+
+function figMarkup(svg, cap){
+  return '<div class="fig">'+svg+(cap?'<div class="fig-cap">'+cap+'</div>':'')+'</div>';
+}
+
+var DRAW_IMAGES = {};
+
+function render(){
+  const wrap = $('questions');
+  let html = '';
+  let inA=false, inB=false;
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq' && !inA){ inA=true;
+      html += '<div class="sec-head"><div class="sec-label">Section A</div><h2>Multiple choice</h2><div class="sec-sub">Select one answer per question. 1 mark each.</div></div>'; }
+    if(q.kind!=='mcq' && !inB){ inB=true;
+      html += '<div class="sec-head"><div class="sec-label">Section B</div><h2>Structured &amp; calculation</h2><div class="sec-sub">Answer in the spaces provided. Show working in all calculations.</div></div>'; }
+    const qMarks = q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0);
+    html += '<div class="q" id="q'+q.n+'">';
+    html += '<div class="q-head"><span class="q-no">'+q.n+'</span><div class="q-stem">'+(q.stem||'')+'</div><span class="marks">['+qMarks+']</span></div>';
+    if(q.ctx) html += '<div class="ctx">'+q.ctx+'</div>';
+    if(q.fig) html += figMarkup(q.fig, q.figCap);
+    if(q.kind==='mcq'){
+      html += '<ul class="opts" data-q="'+q.n+'">';
+      q.options.forEach((opt,i)=>{
+        const key = String.fromCharCode(65+i);
+        html += '<li><label class="opt" data-i="'+i+'"><input type="radio" name="q'+q.n+'" value="'+i+'">'
+              + '<span><span class="opt-key">'+key+'</span> '+opt+'</span><span class="verdict"></span></label></li>';
+      });
+      html += '</ul>';
+      if(!GRADED) html += msMarkup(q.ms, 'q'+q.n);
+    } else {
+      q.parts.forEach((p,pi)=>{
+        const pid = 'q'+q.n+'p'+pi;
+        html += '<div class="part" id="'+pid+'">';
+        html += '<div><span class="part-label">'+p.label+'</span><span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
+        if(p.fig) html += figMarkup(p.fig, p.figCap);
+        if(p.kind==='numeric'){
+          html += '<div class="num-row"><input class="num" type="text" inputmode="decimal" placeholder="answer">'
+                + (p.unit?'<span class="num-unit">'+p.unit+'</span>':'')
+                + '<span class="num-verdict"></span></div>';
+          html += lines(1);
+        } else if(p.kind==='draw'){
+          html += '<div class="draw-row" data-pid="'+pid+'">'
+                + '<div class="draw-note">'+(p.drawNote||'Draw on paper, then photograph and upload.')+'</div>'
+                + '<label class="draw-pick">📷 Upload / take a photo'
+                + '<input type="file" accept="image/*" capture="environment" class="draw-in" data-pid="'+pid+'"></label>'
+                + '<div class="draw-preview" id="'+pid+'-prev"></div></div>';
+          html += '<div class="draw-box"></div>';
+        } else {
+          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your answer…"></textarea>';
+          html += lines(p.lines||3);
+        }
+        if(!GRADED && p.ms) html += msMarkup(p.ms, pid);
+        html += '</div>';
+      });
+    }
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+let started=false, graded=false, mode='timed', secs=0, timerId=null, startedAt=0;
+function fmt(s){ const m=Math.floor(s/60), ss=s%60; return m+':'+String(ss).padStart(2,'0'); }
+
+function updateProgress(){
+  let done=0, tot=0;
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq'){ tot++; if(document.querySelector('input[name="q'+q.n+'"]:checked')) done++; }
+    else q.parts.forEach((p,pi)=>{ tot++;
+      const pid='q'+q.n+'p'+pi;
+      if(p.kind==='draw'){ if(DRAW_IMAGES[pid]) done++; return; }
+      const root=$(pid);
+      const f=root?root.querySelector('textarea.ans, input.num'):null;
+      if(f && f.value.trim()!=='') done++;
+    });
+  });
+  $('progDone').textContent=done; $('progTot').textContent=tot;
+}
+
+function start(m){
+  if(started) return;
+  started=true; mode=m; graded=false;
+  $('front').style.display='none';
+  $('questions').classList.remove('locked');
+  setInputsEnabled(true);
+  $('examBar').classList.add('show');
+  $('modeTag').textContent = m==='timed' ? 'TIMED' : 'PRACTICE';
+  startedAt=performance.now();
+  if(m==='timed'){
+    secs=PAPER.duration*60;
+    $('timeLeft').textContent=fmt(secs);
+    timerId=setInterval(tick,1000);
+  } else {
+    $('timeLeft').textContent='∞';
+    $('btnSubmit').textContent=GRADED?'Finish & submit':'Finish & mark';
+    document.querySelector('.exam-bar .timer .lbl').textContent='NO LIMIT';
+  }
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function tick(){
+  secs--;
+  $('timeLeft').textContent=fmt(Math.max(0,secs));
+  const bar=$('examBar');
+  bar.classList.toggle('warn',secs<=300&&secs>60);
+  bar.classList.toggle('danger',secs<=60);
+  if(secs<=0){ clearInterval(timerId); submit(true); }
+}
+
+function autoCheckNumeric(){
+  document.querySelectorAll('input.num').forEach(inp=>{
+    const ans=parseFloat(inp.dataset.ans), tol=parseFloat(inp.dataset.tol)||0;
+    const val=parseFloat((inp.value||'').replace(/[^0-9.\-]/g,''));
+    const ok=!isNaN(val)&&!isNaN(ans)&&Math.abs(val-ans)<=tol;
+    inp.classList.add(ok?'correct':'wrong');
+    const v=inp.parentElement.querySelector('.num-verdict');
+    if(v){ v.textContent=ok?'✓ correct':((inp.value.trim()==='')?'✗ no answer':'✗'); v.style.color=ok?'var(--power)':'var(--force)'; }
+  });
+}
+
+function gradeMCQ(){
+  PAPER.questions.filter(q=>q.kind==='mcq').forEach(q=>{
+    const chosen=document.querySelector('input[name="q'+q.n+'"]:checked');
+    const ci=chosen?parseInt(chosen.value,10):-1;
+    document.querySelectorAll('.opts[data-q="'+q.n+'"] .opt').forEach(opt=>{
+      const i=parseInt(opt.dataset.i,10);
+      opt.querySelector('input').disabled=true;
+      if(i===q.answer){ opt.classList.add('correct'); opt.querySelector('.verdict').textContent='✓ correct'; }
+      if(i===ci&&ci!==q.answer){ opt.classList.add('wrong'); opt.querySelector('.verdict').textContent='✗ your answer'; }
+    });
+    const cb=document.querySelector('#q'+q.n+'-ms .ms-point.auto input[data-auto]');
+    if(cb) cb.checked=(ci===q.answer);
+  });
+}
+
+function computeScore(){
+  let auto=0,self=0;
+  if(FULLY_AUTO){
+    PAPER.questions.forEach(q=>{
+      if(q.kind==='mcq'){ const c=document.querySelector('input[name="q'+q.n+'"]:checked'); if(c&&parseInt(c.value,10)===q.answer) auto+=q.marks; }
+      else { q.parts.forEach((p,pi)=>{ const inp=$('q'+q.n+'p'+pi).querySelector('input.num'); if(!inp)return; const a=parseFloat(inp.dataset.ans),t=parseFloat(inp.dataset.tol)||0,v=parseFloat((inp.value||'').replace(/[^0-9.\-]/g,'')); if(!isNaN(v)&&Math.abs(v-a)<=t) auto+=p.marks; }); }
+    });
+  } else { document.querySelectorAll('.ms-point input:checked').forEach(cb=>{ const m=Number(cb.dataset.m); if(cb.dataset.auto) auto+=m; else self+=m; }); }
+  const total=auto+self;
+  $('scoreNum').textContent=total; $('autoMarked').textContent=auto; $('selfMarked').textContent=self;
+  const pct=Math.round(total/TOTAL*100);
+  $('scorePct').textContent=pct+'%'; $('scoreBand').textContent=band(pct);
+  return total;
+}
+
+function band(p){
+  if(p>=90) return 'Outstanding · ≈ A*'; if(p>=80) return 'Excellent · ≈ A*';
+  if(p>=70) return 'Strong · ≈ A'; if(p>=60) return 'Good · ≈ B';
+  if(p>=50) return 'Solid · ≈ C'; if(p>=40) return 'Pass · ≈ C–D';
+  if(p>=30) return 'Borderline · ≈ D–E'; return 'Keep practising';
+}
+
+function submit(auto){
+  if(graded) return;
+  if(!auto&&mode==='timed'){
+    const q=GRADED?'Submit the paper now? You will not be able to change your answers.':'Submit and mark now? You cannot change answers afterwards.';
+    if(!confirm(q)) return;
+  }
+  graded=true;
+  if(timerId){ clearInterval(timerId); timerId=null; }
+  const elapsed=(performance.now()-startedAt)/1000;
+  $('timeTaken').textContent=mode==='timed'?fmt(Math.max(0,Math.round(PAPER.duration*60-secs))):fmt(Math.round(elapsed));
+  document.querySelectorAll('textarea.ans, input.num, .draw-in').forEach(f=>f.disabled=true);
+  document.querySelectorAll('.draw-clear').forEach(b=>b.style.display='none');
+
+  if(GRADED){
+    try{ var _p=JSON.parse(localStorage.getItem('studyProgress')||'{}'); _p['ex:phys:mix:2']=new Date().toISOString(); localStorage.setItem('studyProgress',JSON.stringify(_p)); }catch(e){}
+    document.querySelectorAll('.opts input[type="radio"]').forEach(r=>r.disabled=true);
+    $('results').classList.add('show');
+    $('btnSubmit').textContent='✓ Submitted'; $('btnSubmit').disabled=true;
+    $('examBar').classList.remove('warn','danger');
+    sendSubmission();
+    $('results').scrollIntoView({behavior:'smooth'});
+    return;
+  }
+  gradeMCQ(); autoCheckNumeric();
+  document.querySelectorAll('.ms').forEach(ms=>ms.classList.add('show'));
+  document.querySelectorAll('.ms-point input:not([disabled])').forEach(cb=>{ cb.addEventListener('change',computeScore); });
+  $('scoreDen').textContent=TOTAL; computeScore();
+  $('results').classList.add('show'); $('btnSubmit').textContent='✓ Submitted'; $('btnSubmit').disabled=true;
+  $('examBar').classList.remove('warn','danger');
+  $('results').scrollIntoView({behavior:'smooth'});
+}
+
+function stripTags(s){ return (s||'').replace(/<[^>]+>/g,' '); }
+
+function buildMarkingExport(){
+  let out='PHYSICS MIXED CHAPTERS 1–18 GRADED PAPER 2\n';
+  out+='Submitted: '+new Date().toLocaleString('en-IN')+'\n';
+  out+='Total marks: '+TOTAL+'\n';
+  out+='='.repeat(64)+'\n\n';
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq'){
+      const chosen=document.querySelector('input[name="q'+q.n+'"]:checked');
+      const ci=chosen?parseInt(chosen.value,10):-1;
+      const label=ci>=0?'ABCD'[ci]:'(no answer)';
+      out+='Q'+q.n+' [MCQ, '+q.marks+' mk] '+stripTags(q.stem)+'\n';
+      out+='  STUDENT ANSWER: '+label+(ci>=0?' — '+stripTags(q.options[ci]):'')+'\n\n';
+    } else {
+      out+='Q'+q.n+' '+stripTags(q.stem)+'\n';
+      q.parts.forEach((p,pi)=>{
+        const pid='q'+q.n+'p'+pi;
+        let val='';
+        if(p.kind==='draw'){ val=DRAW_IMAGES[pid]?'[diagram uploaded: '+DRAW_IMAGES[pid].name+']':'(no diagram)'; }
+        else { const root=$(pid)?$(pid).querySelector('textarea.ans, input.num'):null; val=root?root.value.trim():''; }
+        out+='  '+p.label+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
+        out+='     STUDENT ANSWER: '+(val||'(blank)')+'\n\n';
+      });
+    }
+  });
+  out+='='.repeat(64)+'\n';
+  out+='FOR THE TEACHER: grade these answers against the teacher answer key for this paper.\n';
+  out+='(No mark scheme is included in this file — that is by design.)\n';
+  return out;
+}
+
+function sendSubmission(){
+  if(!SUBMIT_ENDPOINT) return;
+  var images=Object.keys(DRAW_IMAGES).map(function(pid){ return {part:pid,name:DRAW_IMAGES[pid].name,dataUrl:DRAW_IMAGES[pid].dataUrl}; });
+  var payload=JSON.stringify({title:document.title,submittedAt:new Date().toISOString(),packet:buildMarkingExport(),images:images});
+  try{ localStorage.setItem('lastSubmission:'+document.title,payload); }catch(e){}
+  var st=$('sendStatus');
+  fetch(SUBMIT_ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:payload})
+    .then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.text(); })
+    .then(function(t){ var ok=false; try{ ok=(JSON.parse(t).ok===true); }catch(e){ ok=/(^|[^a-z])ok([^a-z]|$)/i.test(t||''); } if(!ok) throw new Error('no confirm'); if(st) st.textContent='✅ Confirmed — your answers have been received by your teacher.'; })
+    .catch(function(){ if(st) st.innerHTML='⚠ <b>Not confirmed.</b> Please tap "⬇ Download a backup copy" and send the file to your teacher.'; var d=$('downloadBtn'); if(d) d.style.display=''; });
+}
+
+function downloadAnswers(){
+  const blob=new Blob([buildMarkingExport()],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=document.title.replace(/[:\\/?*"<>|]/g,' -')+' — answers.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+function handleDrawFile(input){
+  var pid=input.dataset.pid; var file=input.files&&input.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(ev){ var img=new Image();
+    img.onload=function(){ var max=1400,w=img.width,h=img.height;
+      if(w>max||h>max){ var s=Math.min(max/w,max/h); w=Math.round(w*s); h=Math.round(h*s); }
+      var c=document.createElement('canvas'); c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      var dataUrl; try{ dataUrl=c.toDataURL('image/jpeg',0.82); }catch(e){ dataUrl=ev.target.result; }
+      DRAW_IMAGES[pid]={dataUrl:dataUrl,name:file.name||(pid+'.jpg')};
+      var prev=$(pid+'-prev'); if(prev){ prev.classList.add('show'); prev.innerHTML='<img src="'+dataUrl+'" alt="your diagram"><div class="draw-meta">'+(file.name||'photo')+' · uploaded</div><button type="button" class="draw-clear" data-pid="'+pid+'">remove</button>'; }
+      if(!graded&&started) updateProgress();
+    }; img.src=ev.target.result;
+  }; reader.readAsDataURL(file);
+}
+function clearDrawFile(pid){
+  delete DRAW_IMAGES[pid];
+  var prev=$(pid+'-prev'); if(prev){ prev.classList.remove('show'); prev.innerHTML=''; }
+  var inp=document.querySelector('.draw-in[data-pid="'+pid+'"]'); if(inp) inp.value='';
+  if(!graded&&started) updateProgress();
+}
+
+render();
+function setInputsEnabled(on){ document.querySelectorAll('.opt input, textarea.ans, input.num, .draw-in').forEach(f=>{ f.disabled=!on; }); }
+$('questions').classList.add('locked');
+setInputsEnabled(false);
+
+if(FULLY_AUTO){ var _db=$('downloadBtn'); if(_db) _db.style.display='none'; var _sr=$('selfRow'); if(_sr) _sr.style.display='none'; }
+if(GRADED){
+  document.body.classList.add('graded');
+  var _sp=$('startPractice'); if(_sp) _sp.style.display='none';
+  var _stt=$('startTimed'); if(_stt) _stt.textContent='▶ Start exam';
+  var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';
+  var _rt=$('resultsTitle'); if(_rt) _rt.textContent='Paper submitted';
+  var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';
+  var _dc2=document.querySelector('.disclaimer'); if(_dc2) _dc2.style.display='none';
+  var _gd=$('downloadBtn');
+  if(SUBMIT_ENDPOINT){ if(_gd){ _gd.style.display=''; _gd.textContent='⬇ Download a backup copy'; } var _sm=$('submittedMsg'); if(_sm) _sm.innerHTML='✅ <b>Paper submitted.</b> <span id="sendStatus">Submitting your answers…</span>'; }
+  else { if(_gd) _gd.textContent='⬇ Download your answers'; }
+}
+$('metaTime').textContent=PAPER.duration+' minutes';
+$('metaMarks').textContent=TOTAL+' marks';
+$('scoreDen').textContent=TOTAL;
+$('timeLeft').textContent=fmt(PAPER.duration*60);
+updateProgress();
+
+document.addEventListener('input',e=>{ if(!graded&&started) updateProgress(); });
+document.addEventListener('change',e=>{
+  if(e.target&&e.target.classList&&e.target.classList.contains('draw-in')){ handleDrawFile(e.target); return; }
+  if(!graded&&started) updateProgress();
+});
+document.addEventListener('click',e=>{ if(e.target&&e.target.classList&&e.target.classList.contains('draw-clear')){ clearDrawFile(e.target.dataset.pid); } });
+
+$('startTimed').addEventListener('click',()=>start('timed'));
+$('startPractice').addEventListener('click',()=>start('practice'));
+$('btnSubmit').addEventListener('click',()=>submit(false));
+$('printBtn').addEventListener('click',()=>window.print());
+$('printBtn2').addEventListener('click',()=>window.print());
+$('reviewBtn').addEventListener('click',()=>$('questions').scrollIntoView({behavior:'smooth'}));
+$('retakeBtn').addEventListener('click',()=>location.reload());
+$('downloadBtn').addEventListener('click',downloadAnswers);
+
+(function(){
+  const body=document.body,btn=$('themeToggle');
+  const SUN='☀',MOON='☾';
+  function safeGet(){try{return localStorage.getItem('pp-theme');}catch(e){return null;}}
+  function safeSet(v){try{localStorage.setItem('pp-theme',v);}catch(e){}}
+  function apply(t){ body.setAttribute('data-theme',t); btn.textContent=(t==='dark')?SUN:MOON; btn.setAttribute('aria-label',(t==='dark')?'Switch to light theme':'Switch to dark theme'); }
+  let startT=safeGet();
+  if(!startT) startT=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+  apply(startT);
+  btn.addEventListener('click',()=>{ const n=body.getAttribute('data-theme')==='dark'?'light':'dark'; apply(n); safeSet(n); });
+})();
+</script>
+<style id="symbar-css">.symbar{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 2px;align-items:center}.symbar .symlbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#7b8aa8);margin-right:2px}.symbtn{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1;cursor:pointer;border:1px solid var(--border,#263247);background:var(--surface2,#19202f);color:var(--text,#d6deec);border-radius:6px;padding:5px 8px;min-width:30px}.symbtn:hover{border-color:var(--motion,#46a8ff)}@media print{.symbar{display:none}}</style>
+<script>/*symbar-init*/(function(){var SUBJ="phys";var S={phys:[['×','×'],['÷','÷'],['→','→'],['Δ','Δ'],['°','°'],['Ω','Ω'],['µ','µ'],['λ','λ'],['θ','θ'],['±','±'],['≈','≈'],['√','√'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['⁻²','⁻²']]};var set=S[SUBJ]||[];if(!set.length)return;var boxes=document.querySelectorAll('textarea.ans');if(!boxes.length)return;function ins(ta,t){if(ta.disabled)return;var s=ta.selectionStart||0,e=ta.selectionEnd||0,v=ta.value;ta.value=v.slice(0,s)+t+v.slice(e);var p=s+t.length;ta.selectionStart=ta.selectionEnd=p;ta.focus();ta.dispatchEvent(new Event('input',{bubbles:true}));}boxes.forEach(function(ta){if(ta.previousElementSibling&&ta.previousElementSibling.className==='symbar')return;var bar=document.createElement('div');bar.className='symbar';var lb=document.createElement('span');lb.className='symlbl';lb.textContent='insert';bar.appendChild(lb);set.forEach(function(p){var b=document.createElement('button');b.type='button';b.className='symbtn';b.textContent=p[0];b.tabIndex=-1;b.addEventListener('mousedown',function(ev){ev.preventDefault();});b.addEventListener('click',function(){ins(ta,p[1]);});bar.appendChild(b);});ta.parentNode.insertBefore(bar,ta);});})();</script>
+</body>
+</html>
