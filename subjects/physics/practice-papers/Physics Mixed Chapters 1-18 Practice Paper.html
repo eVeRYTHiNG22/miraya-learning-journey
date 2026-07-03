@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Mixed Chapters 1-18 Practice Paper</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    /* physics accents (temperature axis) — same identity as the notes: --motion blue (kinematics) · --cyan teal (measurement) · --force red (forces) · --energy amber (energy) · --momentum indigo · --power green (fixed) · --rose magenta (fixed) */
+    --motion:   #46a8ff;
+    --cyan:     #3ad9d4;
+    --force:    #ff5263;
+    --energy:   #ffae3b;
+    --energy2:  #ffae3b;
+    --momentum: #8b7bff;
+    --power:    #43d98c;
+    --rose:     #f25cc1;
+  }
+
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;
+    --cyan:     #0b7a67;
+    --force:    #cb2531;
+    --energy:   #8f5d00;
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;
+    --power:    #107a50;
+    --rose:     #ad1a7d;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color .35s ease, color .35s ease;
+  }
+
+  /* ambient field — cool (solid) up top, warm (gas) below: the energy axis */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle{position:fixed;top:70px;right:16px;z-index:10000;width:40px;height:40px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:var(--surface);border:1px solid var(--border);color:var(--text);
+    font-size:17px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);
+    transition:transform .25s,border-color .2s,background-color .35s;line-height:1;}
+  .theme-toggle:hover{transform:rotate(18deg);border-color:var(--motion);}
+  .theme-toggle:focus-visible{outline:2px solid var(--motion);outline-offset:3px;}
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 30px; padding-bottom: 26px; border-bottom: 1px solid var(--border); }
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+  body[data-theme="light"] .chip { background: linear-gradient(135deg,#e3eefb,#efe6fb); border-color:#cdd9f0; }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--cyan); }
+  h1 .c { color: var(--force); }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 620px; }
+
+  /* ── FRONT SHEET (exam meta + controls) ── */
+  .front {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin-bottom: 40px;
+    transition: background-color .35s, border-color .35s;
+  }
+  .front h2, .results h2, .ms-collated h2 {
+    font-family:'Fraunces',serif; font-size:1.35rem; font-weight:700;
+    color:var(--bright); margin-bottom:14px;
+  }
+  .meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 26px; margin-bottom:20px; }
+  @media (max-width:620px){ .meta-grid{ grid-template-columns:1fr; } }
+  .meta-item .k {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:2px;
+  }
+  .meta-item .v { color:var(--bright); font-weight:600; font-size:15px; }
+  .instructions { list-style:none; margin:6px 0 0; }
+  .instructions li { position:relative; padding-left:22px; margin-bottom:7px; font-size:14px; color:var(--text); }
+  .instructions li::before {
+    content:'▸'; position:absolute; left:2px; top:0; color:var(--motion); font-size:13px;
+  }
+
+  /* mode + start controls */
+  .controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px;
+    padding-top:20px; border-top:1px solid var(--border); }
+  .btn {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:14px; cursor:pointer;
+    border-radius:9px; padding:11px 20px; border:1px solid var(--border);
+    background:var(--surface2); color:var(--text);
+    transition:transform .15s, border-color .2s, background-color .2s, color .2s;
+  }
+  .btn:hover { transform:translateY(-2px); }
+  .btn:focus-visible { outline:2px solid var(--motion); outline-offset:3px; }
+  .btn.primary { background:var(--motion); border-color:var(--motion); color:#fff; }
+  body[data-theme="light"] .btn.primary { color:#fff; }
+  .btn.ghost { background:transparent; }
+  .controls .hint { font-size:12.5px; color:var(--muted); flex-basis:100%; }
+
+  /* ── STICKY EXAM BAR ── */
+  .exam-bar {
+    position:fixed; top:0; left:0; right:0; z-index:9000;
+    display:none; align-items:center; gap:18px;
+    padding:11px 20px; background:var(--surface); border-bottom:1px solid var(--border);
+    box-shadow:0 6px 22px rgba(0,0,0,.28); transition:background-color .35s,border-color .35s;
+  }
+  .exam-bar.show { display:flex; }
+  .exam-bar .timer {
+    font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:600;
+    color:var(--bright); letter-spacing:.04em; min-width:96px;
+  }
+  .exam-bar .timer .lbl { display:block; font-size:9px; letter-spacing:.16em; color:var(--muted); }
+  .exam-bar.warn .timer { color:var(--energy); }
+  .exam-bar.danger .timer { color:var(--force); }
+  .exam-bar .prog { font-size:12.5px; color:var(--muted); }
+  .exam-bar .prog b { color:var(--text); }
+  .exam-bar .spacer { flex:1; }
+  .exam-bar .mode-tag {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--cyan); border:1px solid var(--border);
+    border-radius:20px; padding:3px 11px;
+  }
+
+  /* ── SECTION HEADINGS ── */
+  .sec-head { margin:46px 0 8px; }
+  .sec-label {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:4px;
+  }
+  .sec-head h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); }
+  .sec-head .sec-sub { font-size:13px; color:var(--muted); margin-top:2px; }
+
+  /* ── QUESTION ── */
+  .q {
+    background:var(--surface); border:1px solid var(--border); border-radius:13px;
+    padding:22px 24px; margin:18px 0;
+    transition:background-color .35s, border-color .35s;
+  }
+  .q-head { display:flex; align-items:baseline; gap:12px; margin-bottom:10px; }
+  .q-no {
+    font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem; color:var(--motion);
+    min-width:26px;
+  }
+  .q-stem { color:var(--text); }
+  .q-stem p { margin-bottom:8px; }
+  .marks {
+    margin-left:auto; flex-shrink:0;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    border:1px solid var(--border); border-radius:6px; padding:2px 9px; white-space:nowrap;
+  }
+  .ctx {
+    border-left:3px solid var(--cyan);
+    background:linear-gradient(90deg,#06241f55,transparent);
+    padding:10px 16px; margin:10px 0 14px; border-radius:0 8px 8px 0; font-size:13.6px;
+  }
+  body[data-theme="light"] .ctx { background:linear-gradient(90deg,#def3ee99,transparent); }
+
+  .part { margin:14px 0; }
+  .part-label { font-weight:600; color:var(--bright); margin-right:6px; }
+  .part-prompt { display:inline; }
+  .part .marks-inline {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin-left:6px;
+  }
+
+  /* MCQ options */
+  .opts { list-style:none; margin:12px 0 2px; display:grid; gap:8px; }
+  .opt {
+    display:flex; gap:11px; align-items:flex-start; cursor:pointer;
+    border:1px solid var(--border); border-radius:9px; padding:9px 14px;
+    background:var(--surface2); transition:border-color .15s, background-color .2s;
+  }
+  .opt:hover { border-color:var(--motion); }
+  .opt input { margin-top:5px; accent-color:var(--motion); }
+  .opt .opt-key { font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--motion); margin-right:2px; }
+  .opt.correct { border-color:var(--power); background:#10241a; }
+  .opt.wrong   { border-color:var(--force); background:#2a1113; }
+  body[data-theme="light"] .opt.correct { background:#e7f6ee; }
+  body[data-theme="light"] .opt.wrong   { background:#fbe4e6; }
+  .opt .verdict { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:11px; }
+  .opt.correct .verdict { color:var(--power); }
+  .opt.wrong .verdict { color:var(--force); }
+
+  /* written answer area */
+  textarea.ans {
+    width:100%; margin-top:9px; resize:vertical; min-height:60px;
+    background:var(--surface2); color:var(--text);
+    border:1px solid var(--border); border-radius:9px; padding:10px 13px;
+    font-family:'Inter',sans-serif; font-size:14px; line-height:1.6;
+    transition:background-color .35s, border-color .2s;
+  }
+  textarea.ans:focus { outline:none; border-color:var(--motion); }
+  textarea.ans:disabled { opacity:.85; }
+
+  .num-row { display:flex; align-items:center; gap:10px; margin-top:9px; flex-wrap:wrap; }
+  input.num {
+    width:150px; background:var(--surface2); color:var(--text);
+    border:1px solid var(--border); border-radius:9px; padding:9px 13px;
+    font-family:'JetBrains Mono',monospace; font-size:15px;
+    transition:background-color .35s, border-color .2s;
+  }
+  input.num:focus { outline:none; border-color:var(--motion); }
+  input.num.correct { border-color:var(--power); }
+  input.num.wrong   { border-color:var(--force); }
+  .num-unit { font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:14px; }
+  .num-verdict { font-family:'JetBrains Mono',monospace; font-size:12px; }
+
+  /* ── FIGURES / DIAGRAMS (theme-aware inline SVG) ── */
+  .fig {
+    margin:12px 0 6px; padding:14px; border:1px solid var(--border);
+    border-radius:10px; background:var(--surface2); text-align:center;
+    transition:background-color .35s, border-color .2s;
+  }
+  .fig svg { max-width:100%; height:auto; color:var(--text); }
+  .fig svg text { fill:var(--text); font-family:'Inter',sans-serif; }
+  .fig .fig-cap {
+    margin-top:8px; font-size:11.5px; color:var(--muted);
+    font-family:'JetBrains Mono',monospace; letter-spacing:.03em;
+  }
+  .fig .grid-line { stroke:var(--border); stroke-width:1; }
+  .fig .axis      { stroke:var(--text); stroke-width:1.6; }
+  .fig .plot      { stroke:var(--motion); stroke-width:2.4; fill:none; }
+  .fig .accent    { stroke:var(--force); }
+
+  /* ── DRAW / PLOT answer = upload a photo of your diagram ── */
+  .draw-row { margin-top:10px; }
+  .draw-note { font-size:12.5px; color:var(--muted); margin-bottom:8px; }
+  .draw-pick {
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    border:1px dashed var(--motion); border-radius:9px; padding:10px 16px;
+    background:var(--surface2); color:var(--motion); font-size:13.5px; font-weight:500;
+    transition:background-color .2s, border-color .2s;
+  }
+  .draw-pick:hover { background:var(--surface); }
+  .draw-pick input { display:none; }
+  .draw-preview { margin-top:10px; display:none; }
+  .draw-preview.show { display:block; }
+  .draw-preview img {
+    max-width:100%; max-height:340px; border:1px solid var(--border);
+    border-radius:9px; display:block;
+  }
+  .draw-preview .draw-meta { font-size:11.5px; color:var(--muted); margin-top:5px; font-family:'JetBrains Mono',monospace; }
+  .draw-clear {
+    margin-top:7px; font-size:12px; color:var(--force); background:none;
+    border:none; cursor:pointer; text-decoration:underline; padding:0;
+  }
+  .draw-box { display:none; }
+
+  /* print-only ruled answer lines */
+  .print-lines { display:none; }
+
+  /* ── MARK SCHEME (revealed after submit) ── */
+  .ms {
+    display:none; margin-top:14px; border-radius:10px; overflow:hidden;
+    border:1px solid var(--power);
+  }
+  .ms.show { display:block; }
+  .ms-head {
+    background:#0f2018; color:var(--power);
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; padding:8px 15px; display:flex; gap:10px; align-items:center;
+  }
+  body[data-theme="light"] .ms-head { background:#e7f6ee; }
+  .ms-head .self-note { margin-left:auto; color:var(--muted); letter-spacing:.04em; text-transform:none; font-size:11px; }
+  .ms-body { background:var(--surface2); padding:6px 6px; }
+  .ms-point {
+    display:flex; gap:11px; align-items:flex-start;
+    padding:9px 12px; border-radius:8px; cursor:pointer;
+    transition:background-color .15s;
+  }
+  .ms-point:hover { background:var(--surface); }
+  .ms-point input { margin-top:5px; accent-color:var(--power); width:16px; height:16px; flex-shrink:0; }
+  .ms-point .pt { flex:1; font-size:13.8px; color:var(--text); }
+  .ms-point .pm {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--power);
+    border:1px solid var(--power); border-radius:5px; padding:1px 7px; flex-shrink:0; white-space:nowrap;
+  }
+  .ms-point.auto { cursor:default; }
+  .ms-point.auto .lock {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em;
+    color:var(--muted); margin-left:8px;
+  }
+  .ms-note {
+    padding:8px 14px; font-size:12.5px; color:var(--muted); border-top:1px dashed var(--border);
+  }
+  #questions.locked { opacity:.5; pointer-events:none; }
+  .ms-point.read { cursor:default; padding:9px 12px 9px 14px; }
+  .ms.solution .ms-head .self-note { display:none; }
+
+
+  /* ── RESULTS ── */
+  .results { display:none; margin:30px 0 10px; }
+  .results.show { display:block; }
+  .result-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:30px 30px; text-align:center;
+  }
+  .score-big {
+    font-family:'Fraunces',serif; font-weight:800; line-height:1;
+    font-size:clamp(3rem,11vw,5rem); color:var(--bright);
+  }
+  .score-big .den { color:var(--muted); font-size:.5em; }
+  .score-pct { font-family:'JetBrains Mono',monospace; font-size:18px; color:var(--motion); margin-top:6px; }
+  .band {
+    display:inline-block; margin-top:16px; padding:7px 18px; border-radius:22px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em;
+    border:1px solid var(--border); color:var(--bright); background:var(--surface2);
+  }
+  .result-meta { display:flex; justify-content:center; gap:30px; flex-wrap:wrap; margin-top:22px; }
+  .result-meta .rm .k {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .result-meta .rm .v { font-size:18px; color:var(--bright); font-weight:600; }
+  .result-actions { margin-top:24px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .disclaimer { font-size:12px; color:var(--muted); margin-top:16px; max-width:520px; margin-left:auto; margin-right:auto; }
+
+  .eq-inline {
+    font-family:'JetBrains Mono',monospace; background:#0d1828; border:1px solid #22324a;
+    border-radius:5px; padding:1px 7px; font-size:13px; color:var(--motion); white-space:nowrap;
+  }
+  body[data-theme="light"] .eq-inline { background:#eef1f8; border-color:#d4dcec; }
+
+  sub { font-size:.74em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, body { transition:none !important; animation:none !important; }
+    .btn:hover, .theme-toggle:hover { transform:none; }
+  }
+
+  /* ── PRINT: render as a clean blank exam paper ── */
+  @media print {
+    @page { margin:16mm; }
+    body { background:#fff; color:#000; font-size:12pt; }
+    body::before { display:none; }
+    #questions { opacity:1 !important; }
+    .theme-toggle, .exam-bar, .controls, .results, .front .controls,
+    .opt input, .ms, textarea.ans, input.num, .num-verdict { display:none !important; }
+    .page { max-width:none; padding:0; }
+    .front { border:none; padding:0; background:none; }
+    .q, .front { box-shadow:none; border:1px solid #999; break-inside:avoid; }
+    .q { background:#fff; }
+    .opt { background:#fff; border:1px solid #999; }
+    .opt::before { content:''; display:inline-block; width:13px; height:13px; border:1.4px solid #000; border-radius:50%; margin-top:3px; }
+    .print-lines { display:block; margin-top:8px; }
+    .print-lines .ln { border-bottom:1px dotted #444; height:26px; }
+    .ctx { background:#f4f4f4; border-left:3px solid #444; }
+    /* figures print in black & white; hide the upload UI, show a blank box to draw in */
+    .fig { background:#fff; border:1px solid #999; }
+    .fig svg { color:#000; }
+    .fig svg text { fill:#000; }
+    .draw-row, .draw-preview { display:none !important; }
+    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:180px; margin-top:8px; }
+    h1 .a, h1 .b, h1 .c, .q-no, .marks, .chip { color:#000 !important; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
+
+<a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+
+<!-- sticky exam bar -->
+<div class="exam-bar" id="examBar">
+  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">90:00</span></div>
+  <div class="prog">Answered <b id="progDone">0</b> / <span id="progTot">0</span></div>
+  <span class="mode-tag" id="modeTag">TIMED</span>
+  <div class="spacer"></div>
+  <button class="btn primary" id="btnSubmit">Submit &amp; mark</button>
+</div>
+
+<div class="page">
+
+  <header class="header">
+    <span class="chip">IGCSE Physics · 0625 · Extended</span>
+    <h1>Mixed Practice Paper<br><span class="a">Chapters </span><span class="b">1</span><span class="c">–18</span></h1>
+    <p class="header-sub">One paper across every chapter — from making measurements to electrical quantities — with greater weighting on Chapters 12–18: sound · light &amp; lenses · the electromagnetic spectrum · magnetism · static electricity · current electricity. Multiple-choice, structured and calculation questions modelled on the Cambridge style. David Sang et al. (3rd ed.) chapters 1–18.</p>
+  </header>
+
+  <!-- FRONT SHEET -->
+  <section class="front" id="front">
+    <h2>Before you begin</h2>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">90 minutes</div></div>
+      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">80 marks</div></div>
+      <div class="meta-item"><div class="k">Syllabus scope</div><div class="v">IGCSE Physics 0625 · Extended · Chapters 1–18 (David Sang et al., 3rd ed.) — greater weighting to Chapters 12–18</div></div>
+      <div class="meta-item"><div class="k">Level</div><div class="v">Extended (Core + Supplement)</div></div>
+    </div>
+    <ul class="instructions">
+      <li>Answer <b>all</b> questions. Section A (Q1–12) is multiple choice (1 mark each); Section B (Q13–20) is structured and calculation.</li>
+      <li>Show your <b>working</b> in calculations — method marks are awarded even if the final answer is wrong.</li>
+      <li>In <b>Timed exam</b> mode a countdown runs; the paper locks and is marked when you submit or time runs out.</li>
+      <li>Multiple-choice and final numerical answers are marked automatically. For written answers you’ll see the mark scheme and tick the points you earned.</li>
+      <li><b>Useful data:</b> g = 9.8 N/kg. Any other data needed is given in the question.</li>
+    </ul>
+    <div class="controls">
+      <button class="btn primary" id="startTimed">▶ Start timed exam</button>
+      <button class="btn ghost" id="startPractice">Practice (no timer)</button>
+      <button class="btn ghost" id="printBtn">🖨 Print blank paper</button>
+      <span class="hint">Tip: use the ☀ / ☾ button (top-right) to switch between dark and light (paper) themes.</span>
+    </div>
+  </section>
+
+  <!-- questions render here -->
+  <div id="questions"></div>
+
+  <!-- RESULTS -->
+  <section class="results" id="results">
+    <h2>Your result</h2>
+    <div class="result-card">
+      <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">80</span></span></div>
+      <div class="score-pct" id="scorePct">0%</div>
+      <div class="band" id="scoreBand">—</div>
+      <div class="result-meta">
+        <div class="rm"><div class="k">Auto-marked</div><div class="v" id="autoMarked">0</div></div>
+        <div class="rm" id="selfRow"><div class="k">Self-marked</div><div class="v" id="selfMarked">0</div></div>
+        <div class="rm"><div class="k">Time taken</div><div class="v" id="timeTaken">—</div></div>
+      </div>
+      <div class="result-actions">
+        <button class="btn" id="downloadBtn">⬇ Download answers (for marking)</button>
+        <button class="btn ghost" id="reviewBtn">Review answers ↑</button>
+        <button class="btn ghost" id="retakeBtn">↺ Retake</button>
+        <button class="btn ghost" id="printBtn2">🖨 Print</button>
+      </div>
+      <p class="disclaimer">Score updates live as you tick the mark-scheme points you earned. Grade labels are indicative only — real Cambridge grade boundaries change every exam session.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ===========================================================================
+   PRACTICE-PAPER ENGINE  — generic; drives everything from the PAPER object.
+   To build a new paper, edit PAPER only (and the header markup above).
+   Question kinds:
+     'mcq'    — options[], answer (0-based index). Auto-marked.
+     'parts'  — parts[]; each part is 'text' (self-marked) or 'numeric'
+                (final answer auto-checked; method points self-marked).
+   Each markable unit lists ms[] marking points: {p:'text', m:marks, auto?:bool}
+   =========================================================================== */
+const PAPER = {
+  duration: 90,
+  questions: [
+
+    { n:1, kind:'mcq', marks:1,
+      stem:'A mango falls from rest from a tall tree. After falling a distance <i>h</i>, its speed is <i>v</i>. Air resistance is negligible. After falling a total distance 4<i>h</i> from rest, its speed is:',
+      options:['1.4 <i>v</i>','2 <i>v</i>','4 <i>v</i>','16 <i>v</i>'],
+      answer:1,
+      ms:[{p:'B — kinetic energy gained = potential energy lost, so ½mv² = mgh and v = √(2gh). Falling 4h gives √(2g × 4h) = 2√(2gh) = 2v. (Speed grows with the square root of the distance fallen.)', m:1, auto:true}] },
+
+    { n:2, kind:'mcq', marks:1,
+      stem:'A uniform metre rule of weight 1.5 N is pivoted at its 20 cm mark. The rule is balanced by a single downward force <i>F</i> applied at the 0 cm mark. The value of <i>F</i> is:',
+      options:['0.45 N','0.90 N','2.25 N','4.5 N'],
+      answer:2,
+      ms:[{p:'C — the weight of a uniform rule acts at its centre (the 50 cm mark), which is 0.30 m from the pivot: clockwise moment = 1.5 × 0.30 = 0.45 N·m. Balancing: F × 0.20 = 0.45, so F = 2.25 N.', m:1, auto:true}] },
+
+    { n:3, kind:'mcq', marks:1,
+      stem:'A spring extends by 4.0 cm when a load of 6.0 N hangs from it. Two identical springs are now joined end-to-end (in series) and the same 6.0 N load hangs from the bottom. Both springs obey Hooke’s law. The total extension is now:',
+      options:['2.0 cm','4.0 cm','8.0 cm','16.0 cm'],
+      answer:2,
+      ms:[{p:'C — the full 6.0 N tension acts through <b>each</b> spring, so each spring extends 4.0 cm. Total extension = 4.0 + 4.0 = 8.0 cm.', m:1, auto:true}] },
+
+    { n:4, kind:'mcq', marks:1,
+      stem:'Some ethanol is left in an open dish and slowly evaporates. The temperature of the ethanol remaining in the dish falls. This is because:',
+      options:[
+        'all the molecules lose kinetic energy at the same rate',
+        'the most energetic molecules escape from the surface, so the average kinetic energy of the molecules left behind decreases',
+        'the molecules left behind expand and take in thermal energy from the dish',
+        'evaporation releases thermal energy into the surroundings from the bottom of the liquid only'
+      ],
+      answer:1,
+      ms:[{p:'B — evaporation is the escape of the <b>most energetic</b> molecules from the surface. The average kinetic energy of the remaining molecules falls, and temperature is a measure of average kinetic energy — so the liquid cools.', m:1, auto:true}] },
+
+    { n:5, kind:'mcq', marks:1,
+      stem:'A microphone connected to an oscilloscope picks up a musical note. The note is then made <b>louder</b> and of <b>higher pitch</b>. The settings of the oscilloscope are not changed. Compared with the first trace, the new trace shows:',
+      options:[
+        'a larger amplitude and more complete waves across the screen',
+        'a larger amplitude and fewer complete waves across the screen',
+        'a smaller amplitude and more complete waves across the screen',
+        'a smaller amplitude and fewer complete waves across the screen'
+      ],
+      answer:0,
+      ms:[{p:'A — louder = larger amplitude (taller trace); higher pitch = higher frequency, so more complete waves fit across the same screen width.', m:1, auto:true}] },
+
+    { n:6, kind:'mcq', marks:1,
+      stem:'Sana stands 1.5 m in front of a plane mirror in her home in Jaipur. She walks 0.5 m straight towards the mirror. The distance between Sana and her image is now:',
+      options:['1.0 m','1.5 m','2.0 m','3.0 m'],
+      answer:2,
+      ms:[{p:'C — she is now 1.0 m in front of the mirror, and a plane-mirror image is the same distance behind the mirror as the object is in front: 1.0 m + 1.0 m = 2.0 m.', m:1, auto:true}] },
+
+    { n:7, kind:'mcq', marks:1,
+      stem:'Plane water waves in a fishing harbour in Goa approach a gap in a breakwater wall. The width of the gap is about the same as the wavelength of the waves. Which statement describes the waves beyond the gap?',
+      options:[
+        'they pass straight through, as straight wavefronts no wider than the gap',
+        'they spread out strongly beyond the gap, as roughly semicircular wavefronts',
+        'they are reflected back — waves of this wavelength cannot pass through the gap',
+        'they pass through with a lower frequency than before'
+      ],
+      answer:1,
+      ms:[{p:'B — this is diffraction. When the gap width is comparable to the wavelength, the waves spread strongly beyond the gap as near-semicircular wavefronts. (A much wider gap would give far less spreading, and the frequency of a wave never changes at a gap.)', m:1, auto:true}] },
+
+    { n:8, kind:'mcq', marks:1,
+      stem:'Which row correctly matches each communication system with the electromagnetic radiation it uses?',
+      options:[
+        'Bluetooth: radio waves · optical-fibre broadband: infrared or visible light',
+        'Bluetooth: microwaves · optical-fibre broadband: ultraviolet',
+        'Bluetooth: infrared · optical-fibre broadband: radio waves',
+        'Bluetooth: X-rays · optical-fibre broadband: visible light'
+      ],
+      answer:0,
+      ms:[{p:'A — Bluetooth uses radio waves (they pass through walls, though weakened). Optical fibres carry visible light or short-wavelength infrared, because glass is transparent to them and they carry very high data rates.', m:1, auto:true}] },
+
+    { n:9, kind:'mcq', marks:1,
+      stem:'Two metal bars X and Y look identical. When end A of bar X is brought near one end of bar Y, they attract. When end A is brought near the <b>other</b> end of Y, they again attract. Which conclusion is correct?',
+      options:[
+        'X must be a magnet',
+        'Y must be a magnet',
+        'both X and Y must be magnets',
+        'exactly one of the bars is a magnet and the other is unmagnetised, but these tests cannot show which'
+      ],
+      answer:3,
+      ms:[{p:'D — if both were magnets, one orientation would give repulsion; if neither were a magnet there would be no force at all. Attraction at both ends means exactly one bar is magnetised — but attraction cannot identify which one, because a magnet attracts unmagnetised magnetic material at either end. Only <b>repulsion</b> proves a bar is a magnet.', m:1, auto:true}] },
+
+    { n:10, kind:'mcq', marks:1,
+      stem:'A balloon rubbed on dry hair gains a negative charge. It then sticks to an uncharged wall. This is because:',
+      options:[
+        'the wall is a good conductor and earths the balloon',
+        'electrons in the wall’s surface are repelled away from the balloon, leaving the nearest surface positively charged, which attracts the balloon',
+        'protons in the wall move towards the balloon',
+        'the balloon shares its negative charge equally with the wall on contact'
+      ],
+      answer:1,
+      ms:[{p:'B — the negative balloon repels electrons in the wall away from the surface (electrostatic induction). The surface nearest the balloon is left positive, and unlike charges attract. Protons never move in a solid — only electrons move: friction transfers them between objects, and here they simply shift within the wall.', m:1, auto:true}] },
+
+    { n:11, kind:'mcq', marks:1,
+      stem:'A wire of length <i>L</i> and cross-sectional area <i>A</i> has resistance <i>R</i>. A second wire of the <b>same material</b> has length 2<i>L</i> and cross-sectional area <i>A</i>/2. Its resistance is:',
+      options:['<i>R</i>/4','<i>R</i>','2 <i>R</i>','4 <i>R</i>'],
+      answer:3,
+      ms:[{p:'D — resistance is directly proportional to length (doubling L doubles R) and inversely proportional to cross-sectional area (halving A doubles R again): 2 × 2 = 4, so the resistance is 4R.', m:1, auto:true}] },
+
+    { n:12, kind:'mcq', marks:1,
+      stem:'An electric geyser rated 1.5 kW runs for 40 minutes every day in a Bhopal home. Electricity costs ₹8.00 per kWh (one unit). The cost of running the geyser each day is:',
+      options:['₹4.00','₹6.00','₹8.00','₹12.00'],
+      answer:2,
+      ms:[{p:'C — energy = power × time = 1.5 kW × (40/60) h = 1.0 kWh. Cost = 1.0 × ₹8.00 = ₹8.00.', m:1, auto:true}] },
+
+    { n:13, kind:'parts',
+      stem:'A skydiver of mass 80 kg jumps from a small aircraft high above Mysuru and falls vertically. Fig. 13.1 shows the forces acting on her at one instant during the fall, before the parachute opens.',
+      fig:"<svg viewBox='0 0 220 175' width='220' role='img' aria-label='skydiver with air resistance acting upwards and weight acting downwards'><line x1='110' y1='44' x2='110' y2='14' stroke='currentColor' stroke-width='2'/><path d='M105 20 L110 8 L115 20 Z' fill='currentColor'/><text x='110' y='34' text-anchor='middle' font-size='11' transform='translate(64 0)'>air resistance</text><text x='166' y='48' text-anchor='middle' font-size='11'>384 N</text><circle cx='110' cy='58' r='8' fill='none' stroke='currentColor' stroke-width='1.8'/><line x1='110' y1='66' x2='110' y2='96' stroke='currentColor' stroke-width='1.8'/><line x1='110' y1='74' x2='92' y2='86' stroke='currentColor' stroke-width='1.8'/><line x1='110' y1='74' x2='128' y2='86' stroke='currentColor' stroke-width='1.8'/><line x1='110' y1='96' x2='96' y2='118' stroke='currentColor' stroke-width='1.8'/><line x1='110' y1='96' x2='124' y2='118' stroke='currentColor' stroke-width='1.8'/><line x1='110' y1='126' x2='110' y2='156' stroke='currentColor' stroke-width='2'/><path d='M105 150 L110 162 L115 150 Z' fill='currentColor'/><text x='128' y='150' font-size='11'>weight</text></svg>",
+      figCap:'Fig. 13.1 — forces on the falling skydiver',
+      parts:[
+        { label:'(a)', kind:'numeric', marks:2, ans:784, tol:0, unit:'N',
+          prompt:'Calculate the weight of the skydiver. (g = 9.8 N/kg)',
+          ms:[
+            {p:'W = mg = 80 × 9.8', m:1},
+            {p:'= 784 N.', m:1, auto:true}
+          ]},
+        { label:'(b)', kind:'numeric', marks:3, ans:5, tol:0, unit:'m/s²',
+          prompt:'At the instant shown in Fig. 13.1, the air resistance on the skydiver is 384 N. Calculate her acceleration at this instant.',
+          ms:[
+            {p:'Resultant force = 784 − 384 = 400 N (downwards).', m:1},
+            {p:'a = F ÷ m = 400 ÷ 80', m:1},
+            {p:'= 5.0 m/s².', m:1, auto:true}
+          ]},
+        { label:'(c)', kind:'text', marks:3, lines:5,
+          prompt:'Later in the fall, still before the parachute opens, the skydiver reaches <b>terminal velocity</b>. Explain, in terms of the forces acting on her, why terminal velocity is reached.',
+          ms:[
+            {p:'As her speed increases, the air resistance (drag) on her increases.', m:1},
+            {p:'Eventually the air resistance grows until it is equal and opposite to her weight.', m:1},
+            {p:'The resultant force is then zero, so the acceleration is zero and she falls at a constant (terminal) velocity.', m:1}
+          ]}
+      ]},
+
+    { n:14, kind:'parts',
+      stem:'A uniform wooden plank AB of length 4.0 m and weight 200 N rests on two supports, one under each end A and B, forming a walkway over a drain at a construction site in Ludhiana. A worker of weight 600 N stands on the plank at a point 1.0 m from end A, as shown in Fig. 14.1. The plank is in equilibrium.',
+      fig:"<svg viewBox='0 0 380 168' width='380' role='img' aria-label='plank AB on two end supports with a worker 1.0 m from A'><circle cx='115' cy='30' r='7' fill='none' stroke='currentColor' stroke-width='1.8'/><line x1='115' y1='37' x2='115' y2='58' stroke='currentColor' stroke-width='1.8'/><line x1='115' y1='44' x2='103' y2='53' stroke='currentColor' stroke-width='1.8'/><line x1='115' y1='44' x2='127' y2='53' stroke='currentColor' stroke-width='1.8'/><line x1='115' y1='58' x2='107' y2='70' stroke='currentColor' stroke-width='1.8'/><line x1='115' y1='58' x2='123' y2='70' stroke='currentColor' stroke-width='1.8'/><rect x='40' y='72' width='300' height='11' fill='none' stroke='currentColor' stroke-width='1.8'/><path d='M40 83 L28 105 L52 105 Z' fill='none' stroke='currentColor' stroke-width='1.8'/><path d='M340 83 L328 105 L352 105 Z' fill='none' stroke='currentColor' stroke-width='1.8'/><text x='40' y='122' text-anchor='middle' font-size='12'>A</text><text x='340' y='122' text-anchor='middle' font-size='12'>B</text><line x1='190' y1='83' x2='190' y2='108' stroke='currentColor' stroke-width='2'/><path d='M185 102 L190 114 L195 102 Z' fill='currentColor'/><text x='212' y='108' text-anchor='middle' font-size='11'>200 N</text><line x1='40' y1='128' x2='115' y2='128' stroke='currentColor' stroke-width='1.2'/><line x1='40' y1='123' x2='40' y2='133' stroke='currentColor' stroke-width='1.2'/><line x1='115' y1='123' x2='115' y2='133' stroke='currentColor' stroke-width='1.2'/><text x='77' y='142' font-size='11' text-anchor='middle'>1.0 m</text><line x1='40' y1='152' x2='340' y2='152' stroke='currentColor' stroke-width='1.2'/><line x1='40' y1='147' x2='40' y2='157' stroke='currentColor' stroke-width='1.2'/><line x1='340' y1='147' x2='340' y2='157' stroke='currentColor' stroke-width='1.2'/><text x='190' y='166' text-anchor='middle' font-size='11'>4.0 m (A to B)</text><text x='115' y='18' text-anchor='middle' font-size='11'>worker 600 N</text></svg>",
+      figCap:'Fig. 14.1 — plank AB on two supports (plank weight 200 N acts at its centre)',
+      parts:[
+        { label:'(a)', kind:'text', marks:2, lines:3,
+          prompt:'State the <b>two</b> conditions required for an object to be in equilibrium.',
+          ms:[
+            {p:'There is no resultant force acting on it.', m:1},
+            {p:'There is no resultant moment acting on it (about any point).', m:1}
+          ]},
+        { label:'(b)', kind:'numeric', marks:3, ans:250, tol:0, unit:'N',
+          prompt:'By taking moments about end A, calculate the upward force R<sub>B</sub> exerted by the support at B.',
+          ms:[
+            {p:'Clockwise moments about A: (600 × 1.0) + (200 × 2.0) = 1000 N·m (the plank’s 200 N weight acts at its centre, 2.0 m from A).', m:1},
+            {p:'Anticlockwise moment: R<sub>B</sub> × 4.0 = 1000.', m:1},
+            {p:'R<sub>B</sub> = 250 N.', m:1, auto:true}
+          ]},
+        { label:'(c)', kind:'numeric', marks:2, ans:550, tol:0, unit:'N',
+          prompt:'Calculate the upward force R<sub>A</sub> exerted by the support at A.',
+          ms:[
+            {p:'No resultant force: total upward force = total downward force = 600 + 200 = 800 N.', m:1},
+            {p:'R<sub>A</sub> = 800 − 250 = 550 N.', m:1, auto:true}
+          ]}
+      ]},
+
+    { n:15, kind:'parts',
+      stem:'A student in Nashik measures the specific heat capacity of aluminium. An electric immersion heater rated at 48 W and a thermometer are inserted into two holes in a 0.50 kg aluminium block, as shown in Fig. 15.1.',
+      ctx:'The heater runs for 250 s. The temperature of the block rises from 20.0 °C to 44.0 °C. The accepted value of the specific heat capacity of aluminium is 900 J/(kg·°C).',
+      fig:"<svg viewBox='0 0 260 168' width='260' role='img' aria-label='immersion heater and thermometer inserted into an aluminium block'><line x1='99' y1='30' x2='99' y2='16' stroke='currentColor' stroke-width='1.6'/><line x1='107' y1='30' x2='107' y2='16' stroke='currentColor' stroke-width='1.6'/><rect x='95' y='30' width='16' height='68' fill='none' stroke='currentColor' stroke-width='1.8'/><text x='60' y='26' text-anchor='middle' font-size='11'>heater 48 W</text><rect x='155' y='26' width='8' height='62' fill='none' stroke='currentColor' stroke-width='1.6'/><circle cx='159' cy='94' r='7' fill='none' stroke='currentColor' stroke-width='1.6'/><text x='208' y='24' text-anchor='middle' font-size='11'>thermometer</text><rect x='70' y='70' width='120' height='70' fill='none' stroke='currentColor' stroke-width='2'/><text x='130' y='158' text-anchor='middle' font-size='11'>aluminium block · 0.50 kg</text></svg>",
+      figCap:'Fig. 15.1 — measuring the specific heat capacity of aluminium',
+      parts:[
+        { label:'(a)', kind:'numeric', marks:3, ans:1000, tol:0, unit:'J/(kg·°C)',
+          prompt:'Calculate the value of the specific heat capacity of aluminium given by this experiment.',
+          ms:[
+            {p:'Energy supplied E = Pt = 48 × 250 = 12 000 J.', m:1},
+            {p:'c = E ÷ (mΔθ) = 12 000 ÷ (0.50 × 24.0)', m:1},
+            {p:'= 1000 J/(kg·°C).', m:1, auto:true}
+          ]},
+        { label:'(b)', kind:'text', marks:2, lines:4,
+          prompt:'The student’s experimental value is <b>higher</b> than the accepted value. Explain why, referring to where some of the energy supplied by the heater goes.',
+          ms:[
+            {p:'Some of the 12 000 J is transferred to the surroundings (and to the heater and thermometer themselves) instead of to the block.', m:1},
+            {p:'So the temperature rise of the block is smaller than it would be if all the energy entered the block — dividing the full 12 000 J by this smaller mΔθ makes the calculated c too large.', m:1}
+          ]},
+        { label:'(c)', kind:'text', marks:3, lines:5,
+          prompt:'Wet school uniforms hung out in Chennai dry much faster on a hot, windy day than on a cool, still day. Using the particle model of evaporation, explain the effect of (i) the higher temperature and (ii) the wind.',
+          ms:[
+            {p:'Evaporation is the escape of the most energetic molecules from the surface of the water.', m:1},
+            {p:'(i) At a higher temperature, more molecules have enough energy to escape from the surface, so evaporation is faster.', m:1},
+            {p:'(ii) The wind carries the escaped water-vapour molecules away from above the cloth, so fewer of them return to the liquid — increasing the net rate of evaporation.', m:1}
+          ]}
+      ]},
+
+    { n:16, kind:'parts',
+      stem:'A straight steel irrigation pipeline on a farm in Punjab is 990 m long. A farmer strikes one end of the empty pipe once with a hammer. A student with an ear close to the pipe at the far end hears <b>two</b> distinct sounds, one after the other.',
+      ctx:'Speed of sound in air = 330 m/s · speed of sound in steel = 4950 m/s.',
+      fig:"<svg viewBox='0 0 400 112' width='400' role='img' aria-label='990 m steel pipeline struck by a hammer at one end with a listener at the other end'><rect x='12' y='24' width='14' height='22' fill='currentColor'/><line x1='19' y1='46' x2='30' y2='60' stroke='currentColor' stroke-width='2.4'/><text x='52' y='16' text-anchor='middle' font-size='11'>hammer blow</text><line x1='30' y1='58' x2='362' y2='58' stroke='currentColor' stroke-width='1.8'/><line x1='30' y1='72' x2='362' y2='72' stroke='currentColor' stroke-width='1.8'/><line x1='30' y1='58' x2='30' y2='72' stroke='currentColor' stroke-width='1.8'/><line x1='362' y1='58' x2='362' y2='72' stroke='currentColor' stroke-width='1.8'/><circle cx='381' cy='42' r='7' fill='none' stroke='currentColor' stroke-width='1.8'/><line x1='381' y1='49' x2='381' y2='60' stroke='currentColor' stroke-width='1.8'/><text x='352' y='24' text-anchor='middle' font-size='11'>student listens</text><line x1='30' y1='94' x2='362' y2='94' stroke='currentColor' stroke-width='1.2'/><line x1='30' y1='89' x2='30' y2='99' stroke='currentColor' stroke-width='1.2'/><line x1='362' y1='89' x2='362' y2='99' stroke='currentColor' stroke-width='1.2'/><text x='196' y='110' text-anchor='middle' font-size='11'>990 m</text></svg>",
+      figCap:'Fig. 16.1 — the steel pipeline',
+      parts:[
+        { label:'(a)', kind:'text', marks:2, lines:4,
+          prompt:'Explain why the student hears two sounds.',
+          ms:[
+            {p:'The sound of the blow travels to the student through <b>both</b> the steel of the pipe and the air (two paths, one hammer blow).', m:1},
+            {p:'Sound travels much faster in steel (a solid) than in air, so the sound through the steel arrives first and the sound through the air arrives later.', m:1}
+          ]},
+        { label:'(b)', kind:'numeric', marks:4, ans:2.8, tol:0.05, unit:'s',
+          prompt:'Calculate the time interval between the two sounds heard. Show your working.',
+          ms:[
+            {p:'Time through air = 990 ÷ 330 = 3.0 s.', m:1},
+            {p:'Time through steel = 990 ÷ 4950 = 0.20 s.', m:1},
+            {p:'Interval = 3.0 − 0.20', m:1},
+            {p:'= 2.8 s.', m:1, auto:true}
+          ]},
+        { label:'(c)', kind:'text', marks:1, lines:2,
+          prompt:'This experiment shows sound travelling through a solid and through a gas. Describe evidence that sound <b>cannot</b> travel through a vacuum.',
+          ms:[
+            {p:'A ringing bell sealed in a jar can no longer be heard as the air is pumped out (sound needs a medium — with no particles there is nothing to carry the vibration).', m:1}
+          ]}
+      ]},
+
+    { n:17, kind:'parts',
+      stem:'This question is about the refraction of light and the images formed by a converging lens.',
+      parts:[
+        { label:'(a)', kind:'numeric', marks:2, ans:1.5, tol:0, unit:'',
+          prompt:'Light travels at 3.0 × 10<sup>8</sup> m/s in air and at 2.0 × 10<sup>8</sup> m/s in a glass block. Using the definition of refractive index as a ratio of speeds, calculate the refractive index of the glass.',
+          ms:[
+            {p:'n = speed in air ÷ speed in glass = (3.0 × 10⁸) ÷ (2.0 × 10⁸)', m:1},
+            {p:'= 1.5 (refractive index has no unit).', m:1, auto:true}
+          ]},
+        { label:'(b)', kind:'text', marks:2, lines:3,
+          prompt:'Fig. 17.1 shows an object O placed between F and 2F of a converging lens, and the image I that is formed. State <b>two</b> characteristics of the image I.',
+          fig:"<svg viewBox='0 0 400 200' width='400' role='img' aria-label='ray diagram: converging lens with object O between F and 2F, two rays, and the image I formed'><line x1='30' y1='100' x2='375' y2='100' stroke='currentColor' stroke-width='1.4'/><line x1='200' y1='28' x2='200' y2='172' stroke='currentColor' stroke-width='2'/><path d='M193 38 L200 26 L207 38 Z' fill='currentColor'/><path d='M193 162 L200 174 L207 162 Z' fill='currentColor'/><line x1='120' y1='95' x2='120' y2='105' stroke='currentColor' stroke-width='1.6'/><line x1='160' y1='95' x2='160' y2='105' stroke='currentColor' stroke-width='1.6'/><line x1='240' y1='95' x2='240' y2='105' stroke='currentColor' stroke-width='1.6'/><line x1='280' y1='95' x2='280' y2='105' stroke='currentColor' stroke-width='1.6'/><text x='120' y='120' text-anchor='middle' font-size='11'>2F</text><text x='160' y='120' text-anchor='middle' font-size='11'>F</text><text x='240' y='120' text-anchor='middle' font-size='11'>F</text><text x='280' y='120' text-anchor='middle' font-size='11'>2F</text><line x1='140' y1='100' x2='140' y2='72' stroke='currentColor' stroke-width='2.4'/><path d='M136 76 L140 66 L144 76 Z' fill='currentColor'/><text x='128' y='80' text-anchor='middle' font-size='12'>O</text><polyline points='140,70 200,70 320,160' class='plot' stroke-width='1.8'/><line x1='140' y1='70' x2='320' y2='160' class='plot' stroke-width='1.8'/><line x1='320' y1='100' x2='320' y2='160' stroke='currentColor' stroke-width='2.4'/><path d='M316 154 L320 164 L324 154 Z' fill='currentColor'/><text x='334' y='152' text-anchor='middle' font-size='12'>I</text></svg>",
+          figCap:'Fig. 17.1 — image formed by a converging lens (object between F and 2F)',
+          ms:[
+            {p:'One correct characteristic: the image is real / inverted / enlarged (larger than the object).', m:1},
+            {p:'A second correct characteristic from the same list.', m:1}
+          ]},
+        { label:'(c)', kind:'text', marks:3, lines:5,
+          prompt:'The same lens is now used as a <b>magnifying glass</b> to read small print. State where the print must be placed, and describe the image formed.',
+          ms:[
+            {p:'The print (object) must be placed <b>closer to the lens than the principal focus F</b> (inside the focal length).', m:1},
+            {p:'The image is virtual — it cannot be formed on a screen (the rays only appear to come from it).', m:1},
+            {p:'The image is upright and enlarged, on the same side of the lens as the print.', m:1}
+          ]},
+        { label:'(d)', kind:'text', marks:3, lines:5,
+          prompt:'A student sitting at the back of a classroom in Hyderabad cannot see the whiteboard clearly because she is <b>short-sighted</b>. State the type of lens used to correct short-sightedness, and explain how it corrects her vision.',
+          ms:[
+            {p:'A diverging lens is used.', m:1},
+            {p:'In a short-sighted eye, light from distant objects is focused <b>in front of</b> the retina.', m:1},
+            {p:'The diverging lens spreads out the rays before they enter the eye, so the eye brings them to a focus exactly on the retina.', m:1}
+          ]}
+      ]},
+
+    { n:18, kind:'parts',
+      stem:'A mobile-phone tower in Guwahati transmits a 4G signal using microwaves of frequency 2.4 GHz (2.4 × 10<sup>9</sup> Hz).',
+      parts:[
+        { label:'(a)', kind:'text', marks:1, lines:2,
+          prompt:'State the speed of electromagnetic waves in a vacuum.',
+          ms:[
+            {p:'3.0 × 10⁸ m/s.', m:1}
+          ]},
+        { label:'(b)', kind:'numeric', marks:3, ans:0.125, tol:0.006, unit:'m',
+          prompt:'Calculate the wavelength of the signal. (The speed of microwaves in air is approximately the same as in a vacuum.)',
+          ms:[
+            {p:'v = fλ, so λ = v ÷ f.', m:1},
+            {p:'λ = (3.0 × 10⁸) ÷ (2.4 × 10⁹)', m:1},
+            {p:'= 0.125 m.', m:1, auto:true}
+          ]},
+        { label:'(c)', kind:'text', marks:2, lines:4,
+          prompt:'Explain <b>two</b> reasons why microwaves are used for mobile-phone (cell-phone) communication.',
+          ms:[
+            {p:'Microwaves can penetrate some walls, so the signal reaches phones indoors.', m:1},
+            {p:'They need only a short aerial for transmission and reception (an aerial that fits inside a phone).', m:1}
+          ]},
+        { label:'(d)', kind:'text', marks:2, lines:4,
+          prompt:'The tower transmits the sound of a call as a <b>digital</b> signal. State what is meant by a digital signal, and give one benefit of digital transmission compared with analogue.',
+          ms:[
+            {p:'A digital signal has only two possible values/levels (0 and 1 — on and off pulses), unlike an analogue signal which varies continuously.', m:1},
+            {p:'Benefit: a higher rate of data transmission, OR increased range because the signal can be regenerated accurately (noise is removed at each regeneration).', m:1}
+          ]}
+      ]},
+
+    { n:19, kind:'parts',
+      stem:'This question is about magnetism and static electricity.',
+      parts:[
+        { label:'(a)', kind:'text', marks:2, lines:4,
+          prompt:'A scrap-metal crane in Faridabad uses an electromagnet with a <b>soft-iron</b> core to pick up and release car bodies. Explain why soft iron is used for the core rather than steel.',
+          ms:[
+            {p:'Soft iron is a temporary magnet — it is magnetised strongly while the current flows and loses almost all its magnetism as soon as the current is switched off, so the load is released.', m:1},
+            {p:'Steel becomes a permanent magnet — it would stay magnetised when the current is switched off, so the car body would not drop.', m:1}
+          ]},
+        { label:'(b)', kind:'text', marks:2, lines:4,
+          prompt:'The same crane magnet can pick up a hanging chain of steel bolts, each bolt clinging to the one above it even though only the top bolt touches the magnet. Explain, in terms of <b>induced magnetism</b>, why the lower bolts are attracted.',
+          ms:[
+            {p:'The magnet induces magnetism in the top bolt — the bolt becomes a magnet itself, with the induced pole nearest the magnet being opposite to the magnet’s pole.', m:1},
+            {p:'Each magnetised bolt then induces magnetism in the bolt below it, with unlike poles facing, so every bolt attracts the one beneath it.', m:1}
+          ]},
+        { label:'(c)', kind:'text', marks:4, lines:7,
+          prompt:'At an Indian Oil depot in Kochi, petrol flows quickly through a hose into a road tanker. A <b>copper</b> bonding wire connects the tanker to earth during filling. (i) Explain how the flowing petrol causes electric charge to build up. (ii) Explain why the bonding wire must be made of a conductor such as copper, and what could happen if the tanker were not earthed.',
+          ms:[
+            {p:'(i) Friction between the flowing petrol and the hose transfers electrons between them.', m:1},
+            {p:'One (the petrol/tanker) becomes negatively charged and the other positively charged — charge builds up as the flow continues.', m:1},
+            {p:'(ii) Copper is a conductor — its free electrons let the charge flow through the wire to earth as fast as it is produced, so no charge builds up (an insulating wire would not let the charge escape).', m:1},
+            {p:'Without earthing, the built-up charge could suddenly discharge as a spark, which could ignite the petrol vapour and cause a fire or explosion.', m:1}
+          ]}
+      ]},
+
+    { n:20, kind:'parts',
+      stem:'The heated rear window of a car in Delhi uses two identical heating elements, each of resistance 6.0 Ω, connected to the car’s 12 V battery. A selector switch connects the two elements either in <b>series</b> (the LOW setting) or in <b>parallel</b> (the HIGH setting).',
+      parts:[
+        { label:'(a) (i)', kind:'numeric', marks:1, ans:12, tol:0, unit:'Ω',
+          prompt:'On the LOW setting the two elements are in series. State the combined resistance of the two elements.',
+          ms:[
+            {p:'R = 6.0 + 6.0 = 12 Ω.', m:1, auto:true}
+          ]},
+        { label:'(a) (ii)', kind:'numeric', marks:1, ans:1, tol:0, unit:'A',
+          prompt:'Calculate the current drawn from the battery on the LOW setting.',
+          ms:[
+            {p:'I = V ÷ R = 12 ÷ 12 = 1.0 A.', m:1, auto:true}
+          ]},
+        { label:'(a) (iii)', kind:'numeric', marks:2, ans:12, tol:0, unit:'W',
+          prompt:'Calculate the total power delivered to the window on the LOW setting.',
+          ms:[
+            {p:'P = VI = 12 × 1.0', m:1},
+            {p:'= 12 W.', m:1, auto:true}
+          ]},
+        { label:'(b) (i)', kind:'numeric', marks:2, ans:3, tol:0, unit:'Ω',
+          prompt:'On the HIGH setting the two elements are in parallel, as shown in Fig. 20.1. Calculate the combined resistance of the two elements.',
+          fig:"<svg viewBox='0 0 340 190' width='340' role='img' aria-label='circuit: 12 V battery and switch S connected to two 6.0 ohm resistors in parallel'><g fill='none' stroke='currentColor' stroke-width='2'><line x1='40' y1='40' x2='108' y2='40'/><line x1='142' y1='40' x2='290' y2='40'/><line x1='40' y1='150' x2='290' y2='150'/><line x1='40' y1='40' x2='40' y2='78'/><line x1='40' y1='102' x2='40' y2='150'/><line x1='210' y1='40' x2='210' y2='75'/><line x1='210' y1='120' x2='210' y2='150'/><line x1='290' y1='40' x2='290' y2='75'/><line x1='290' y1='120' x2='290' y2='150'/></g><g stroke='currentColor' stroke-linecap='round'><line x1='26' y1='78' x2='54' y2='78' stroke-width='1.8'/><line x1='33' y1='88' x2='47' y2='88' stroke-width='4'/><line x1='40' y1='88' x2='40' y2='102' stroke-width='2'/></g><g fill='none' stroke='currentColor' stroke-width='2'><rect x='202' y='75' width='16' height='45' rx='2'/><rect x='282' y='75' width='16' height='45' rx='2'/><line x1='108' y1='40' x2='136' y2='26'/></g><g fill='currentColor' stroke='none'><circle cx='108' cy='40' r='3'/><circle cx='142' cy='40' r='3'/><circle cx='210' cy='40' r='3'/><circle cx='210' cy='150' r='3'/></g><text x='20' y='72' text-anchor='end' font-size='11'>12 V</text><text x='125' y='16' text-anchor='middle' font-size='11'>S</text><text x='186' y='100' text-anchor='end' font-size='11'>6.0 Ω</text><text x='306' y='100' font-size='11'>6.0 Ω</text></svg>",
+          figCap:'Fig. 20.1 — the HIGH setting: both elements in parallel',
+          ms:[
+            {p:'1/R = 1/6.0 + 1/6.0 = 2/6.0 (two equal resistors in parallel give half of one of them).', m:1},
+            {p:'R = 3.0 Ω.', m:1, auto:true}
+          ]},
+        { label:'(b) (ii)', kind:'numeric', marks:1, ans:4, tol:0, unit:'A',
+          prompt:'Calculate the current drawn from the battery on the HIGH setting.',
+          ms:[
+            {p:'I = V ÷ R = 12 ÷ 3.0 = 4.0 A.', m:1, auto:true}
+          ]},
+        { label:'(b) (iii)', kind:'numeric', marks:2, ans:48, tol:0, unit:'W',
+          prompt:'Calculate the total power delivered to the window on the HIGH setting.',
+          ms:[
+            {p:'P = VI = 12 × 4.0', m:1},
+            {p:'= 48 W.', m:1, auto:true}
+          ]},
+        { label:'(c)', kind:'numeric', marks:1, ans:4, tol:0, unit:'',
+          prompt:'Determine the ratio (power on HIGH) ÷ (power on LOW). Give a single number.',
+          ms:[
+            {p:'48 ÷ 12 = 4 (the HIGH setting is four times as powerful).', m:1, auto:true}
+          ]},
+        { label:'(d)', kind:'numeric', marks:2, ans:480, tol:0, unit:'C',
+          prompt:'The HIGH setting is used for 2.0 minutes to clear fog from the window. Calculate the charge that passes through the battery in this time.',
+          ms:[
+            {p:'Q = It = 4.0 × 120 (2.0 minutes = 120 s)', m:1},
+            {p:'= 480 C.', m:1, auto:true}
+          ]}
+      ]}
+
+  ]
+};
+
+/* ---- derive section labels & totals ---- */
+const TOTAL = PAPER.questions.reduce((s,q)=> s + (q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0)), 0);
+/* A paper is fully auto-markable when it has NO subjective (text) answers — every part is MCQ or numeric. */
+const FULLY_AUTO = !PAPER.questions.some(q => q.kind==='parts' && q.parts.some(p => p.kind==='text'));
+
+/* ---- DOM helpers ---- */
+const $ = id => document.getElementById(id);
+function esc(){}
+function lines(n){ let h='<div class="print-lines">'; for(let i=0;i<n;i++) h+='<div class="ln"></div>'; return h+'</div>'; }
+
+/* ---- render questions ---- */
+function msMarkup(ms, idPrefix){
+  const head = FULLY_AUTO ? 'Worked answer' : 'Mark scheme';
+  let h = '<div class="ms'+(FULLY_AUTO?' solution':'')+'" id="'+idPrefix+'-ms"><div class="ms-head">'+head
+        + (FULLY_AUTO ? '' : '<span class="self-note">tick each point you earned</span>')
+        + '</div><div class="ms-body">';
+  ms.forEach((pt,i)=>{
+    if(FULLY_AUTO){
+      h += '<div class="ms-point read"><span class="pt">'+pt.p+'</span></div>';
+    } else if(pt.auto){
+      h += '<label class="ms-point auto"><input type="checkbox" data-m="'+pt.m+'" data-auto="1" disabled>'
+         + '<span class="pt">'+pt.p+'</span><span class="pm">'+pt.m+' mk</span><span class="lock">AUTO</span></label>';
+    } else {
+      h += '<label class="ms-point"><input type="checkbox" data-m="'+pt.m+'">'
+         + '<span class="pt">'+pt.p+'</span><span class="pm">'+pt.m+' mk</span></label>';
+    }
+  });
+  return h + '</div></div>';
+}
+
+function figMarkup(svg, cap){
+  return '<div class="fig">'+svg+(cap?'<div class="fig-cap">'+cap+'</div>':'')+'</div>';
+}
+
+/* uploaded diagram photos, keyed by part id (pid) -> {dataUrl, name} */
+var DRAW_IMAGES = {};
+
+function render(){
+  const wrap = $('questions');
+  let html = '';
+  let inA=false, inB=false;
+  PAPER.questions.forEach(q=>{
+    // section dividers
+    if(q.kind==='mcq' && !inA){ inA=true;
+      html += '<div class="sec-head"><div class="sec-label">Section A</div><h2>Multiple choice</h2><div class="sec-sub">Select one answer per question. 1 mark each.</div></div>'; }
+    if(q.kind!=='mcq' && !inB){ inB=true;
+      html += '<div class="sec-head"><div class="sec-label">Section B</div><h2>Structured &amp; calculation</h2><div class="sec-sub">Answer in the spaces. Show working in calculations.</div></div>'; }
+
+    const qMarks = q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0);
+    html += '<div class="q" id="q'+q.n+'">';
+    html += '<div class="q-head"><span class="q-no">'+q.n+'</span><div class="q-stem">'+(q.stem||'')+'</div><span class="marks">['+qMarks+']</span></div>';
+    if(q.ctx) html += '<div class="ctx">'+q.ctx+'</div>';
+    if(q.fig) html += figMarkup(q.fig, q.figCap);
+
+    if(q.kind==='mcq'){
+      html += '<ul class="opts" data-q="'+q.n+'">';
+      q.options.forEach((opt,i)=>{
+        const key = String.fromCharCode(65+i);
+        html += '<li><label class="opt" data-i="'+i+'"><input type="radio" name="q'+q.n+'" value="'+i+'">'
+              + '<span><span class="opt-key">'+key+'</span> '+opt+'</span><span class="verdict"></span></label></li>';
+      });
+      html += '</ul>';
+      html += msMarkup(q.ms, 'q'+q.n);
+    } else {
+      q.parts.forEach((p,pi)=>{
+        const pid = 'q'+q.n+'p'+pi;
+        html += '<div class="part" id="'+pid+'">';
+        html += '<div><span class="part-label">'+p.label+'</span><span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
+        if(p.fig) html += figMarkup(p.fig, p.figCap);
+        if(p.kind==='numeric'){
+          html += '<div class="num-row"><input class="num" type="text" inputmode="decimal" data-ans="'+p.ans+'" data-tol="'+(p.tol||0)+'" placeholder="answer">'
+                + (p.unit?'<span class="num-unit">'+p.unit+'</span>':'')
+                + '<span class="num-verdict"></span></div>';
+          html += lines(1);
+        } else if(p.kind==='draw'){
+          html += '<div class="draw-row" data-pid="'+pid+'">'
+                + '<div class="draw-note">'+(p.drawNote||'Draw your diagram on paper, then take a clear photo and upload it here.')+'</div>'
+                + '<label class="draw-pick">📷 Upload / take a photo'
+                + '<input type="file" accept="image/*" capture="environment" class="draw-in" data-pid="'+pid+'"></label>'
+                + '<div class="draw-preview" id="'+pid+'-prev"></div></div>';
+          html += '<div class="draw-box"></div>';
+        } else {
+          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your answer…"></textarea>';
+          html += lines(p.lines||3);
+        }
+        html += msMarkup(p.ms, pid);
+        html += '</div>';
+      });
+    }
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+/* ---- state & engine ---- */
+let started=false, graded=false, mode='timed', secs=0, timerId=null, startedAt=0;
+
+function fmt(s){ const m=Math.floor(s/60), ss=s%60; return m+':'+String(ss).padStart(2,'0'); }
+
+function updateProgress(){
+  let done=0, tot=0;
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq'){ tot++; if(document.querySelector('input[name="q'+q.n+'"]:checked')) done++; }
+    else q.parts.forEach((p,pi)=>{ tot++;
+      const pid = 'q'+q.n+'p'+pi;
+      if(p.kind==='draw'){ if(DRAW_IMAGES[pid]) done++; return; }
+      const root = $(pid);
+      const f = root.querySelector('textarea.ans, input.num');
+      if(f && f.value.trim()!=='') done++;
+    });
+  });
+  $('progDone').textContent=done; $('progTot').textContent=tot;
+}
+
+function start(m){
+  if(started) return;
+  started=true; mode=m; graded=false;
+  $('front').style.display='none';
+  $('questions').classList.remove('locked');
+  setInputsEnabled(true);
+  $('examBar').classList.add('show');
+  $('modeTag').textContent = m==='timed' ? 'TIMED' : 'PRACTICE';
+  startedAt = performance.now();
+  if(m==='timed'){
+    secs = PAPER.duration*60;
+    $('timeLeft').textContent = fmt(secs);
+    timerId = setInterval(tick, 1000);
+  } else {
+    $('timeLeft').textContent = '∞';
+    $('btnSubmit').textContent = 'Finish & mark';
+    document.querySelector('.exam-bar .timer .lbl').textContent='NO LIMIT';
+  }
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function tick(){
+  secs--;
+  $('timeLeft').textContent = fmt(Math.max(0,secs));
+  const bar=$('examBar');
+  bar.classList.toggle('warn', secs<=300 && secs>60);
+  bar.classList.toggle('danger', secs<=60);
+  if(secs<=0){ clearInterval(timerId); submit(true); }
+}
+
+function autoCheckNumeric(){
+  document.querySelectorAll('input.num').forEach(inp=>{
+    const ans=parseFloat(inp.dataset.ans), tol=parseFloat(inp.dataset.tol)||0;
+    const val=parseFloat((inp.value||'').replace(/[^0-9.\-]/g,''));
+    const ok = !isNaN(val) && Math.abs(val-ans)<=tol;
+    inp.classList.add(ok?'correct':'wrong');
+    const v=inp.parentElement.querySelector('.num-verdict');
+    v.textContent = ok ? '✓ correct' : ((inp.value.trim()==='')?'✗ no answer (ans: '+ans+')':'✗ (ans: '+ans+')');
+    v.style.color = ok ? 'var(--power)' : 'var(--force)';
+    // auto-tick the linked auto mark-scheme point
+    const part = inp.closest('.part');
+    const autoCb = part && part.querySelector('.ms-point.auto input[data-auto]');
+    if(autoCb){ autoCb.checked = ok; }
+  });
+}
+
+function gradeMCQ(){
+  PAPER.questions.filter(q=>q.kind==='mcq').forEach(q=>{
+    const chosen = document.querySelector('input[name="q'+q.n+'"]:checked');
+    const ci = chosen ? parseInt(chosen.value,10) : -1;
+    document.querySelectorAll('.opts[data-q="'+q.n+'"] .opt').forEach(opt=>{
+      const i=parseInt(opt.dataset.i,10);
+      opt.querySelector('input').disabled=true;
+      if(i===q.answer){ opt.classList.add('correct'); opt.querySelector('.verdict').textContent='✓ correct'; }
+      if(i===ci && ci!==q.answer){ opt.classList.add('wrong'); opt.querySelector('.verdict').textContent='✗ your answer'; }
+    });
+    // auto-tick the auto mark-scheme point
+    const cb = document.querySelector('#q'+q.n+'-ms .ms-point.auto input[data-auto]');
+    if(cb) cb.checked = (ci===q.answer);
+  });
+}
+
+function computeScore(){
+  let auto=0, self=0;
+  if(FULLY_AUTO){
+    PAPER.questions.forEach(q=>{
+      if(q.kind==='mcq'){
+        const chosen=document.querySelector('input[name="q'+q.n+'"]:checked');
+        if(chosen && parseInt(chosen.value,10)===q.answer) auto+=q.marks;
+      } else {
+        q.parts.forEach((p,pi)=>{
+          const inp=$('q'+q.n+'p'+pi).querySelector('input.num');
+          if(!inp) return;
+          const ans=parseFloat(inp.dataset.ans), tol=parseFloat(inp.dataset.tol)||0;
+          const val=parseFloat((inp.value||'').replace(/[^0-9.\-]/g,''));
+          if(!isNaN(val) && Math.abs(val-ans)<=tol) auto+=p.marks;
+        });
+      }
+    });
+  } else {
+    document.querySelectorAll('.ms-point input:checked').forEach(cb=>{
+      const m=Number(cb.dataset.m);
+      if(cb.dataset.auto) auto+=m; else self+=m;
+    });
+  }
+  const total=auto+self;
+  $('scoreNum').textContent=total;
+  $('autoMarked').textContent=auto;
+  $('selfMarked').textContent=self;
+  const pct=Math.round(total/TOTAL*100);
+  $('scorePct').textContent=pct+'%';
+  $('scoreBand').textContent=band(pct);
+  return total;
+}
+
+function band(p){
+  if(p>=90) return 'Outstanding · ≈ Grade 9 / A*';
+  if(p>=80) return 'Excellent · ≈ Grade 8 / A*';
+  if(p>=70) return 'Strong · ≈ Grade 7 / A';
+  if(p>=60) return 'Good · ≈ Grade 6 / B';
+  if(p>=50) return 'Solid · ≈ Grade 5 / C';
+  if(p>=40) return 'Pass · ≈ Grade 4 / C–D';
+  if(p>=30) return 'Borderline · ≈ Grade 3 / D–E';
+  return 'Keep practising — review the notes';
+}
+
+function submit(auto){
+  if(graded) return;
+  if(!auto && mode==='timed'){
+    if(!confirm('Submit and mark the paper now? You will not be able to change your answers.')) return;
+  }
+  graded=true;
+  if(timerId){ clearInterval(timerId); timerId=null; }
+
+  // time taken
+  const elapsed = (performance.now()-startedAt)/1000;
+  $('timeTaken').textContent = mode==='timed'
+    ? fmt(Math.max(0, Math.round(PAPER.duration*60 - secs)))
+    : fmt(Math.round(elapsed));
+
+  // lock inputs
+  document.querySelectorAll('textarea.ans, input.num, .draw-in').forEach(f=>f.disabled=true);
+  document.querySelectorAll('.draw-clear').forEach(b=>b.style.display='none');
+
+  gradeMCQ();
+  autoCheckNumeric();
+
+  // reveal all mark schemes
+  document.querySelectorAll('.ms').forEach(ms=>ms.classList.add('show'));
+
+  // enable self-mark recompute
+  document.querySelectorAll('.ms-point input:not([disabled])').forEach(cb=>{
+    cb.addEventListener('change', computeScore);
+  });
+
+  $('scoreDen').textContent=TOTAL;
+  computeScore();
+
+  $('results').classList.add('show');
+  $('btnSubmit').textContent='✓ Submitted';
+  $('btnSubmit').disabled=true;
+  $('examBar').classList.remove('warn','danger');
+  setTimeout(function(){ $('results').scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
+}
+
+/* ---- export answers for teacher AI-marking ---- */
+function stripTags(s){
+  return (s||'').replace(/<[^>]+>/g,'')
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+    .replace(/&deg;/g,'°').replace(/\s+/g,' ').trim();
+}
+function buildMarkingExport(){
+  let out='PRACTICE PAPER — ANSWERS FOR MARKING\n';
+  out+='Paper: '+document.title+'\n';
+  out+='Marks available: '+TOTAL+'\n';
+  out+='='.repeat(64)+'\n\n';
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq'){
+      const chosen=document.querySelector('input[name="q'+q.n+'"]:checked');
+      const ci=chosen?parseInt(chosen.value,10):-1;
+      out+='Q'+q.n+'  (MCQ, '+q.marks+' mark)\n'+stripTags(q.stem)+'\n';
+      q.options.forEach((o,i)=>{ out+='   '+String.fromCharCode(65+i)+') '+stripTags(o)+'\n'; });
+      out+='   STUDENT ANSWER: '+(ci>=0?String.fromCharCode(65+ci):'(blank)')+'\n';
+      out+='   CORRECT: '+String.fromCharCode(65+q.answer)+'\n\n';
+    } else {
+      out+='Q'+q.n+'  '+stripTags(q.stem||'')+'\n';
+      if(q.ctx) out+='   ['+stripTags(q.ctx)+']\n';
+      q.parts.forEach((p,pi)=>{
+        const pid='q'+q.n+'p'+pi;
+        const root=$(pid);
+        let val;
+        if(p.kind==='draw'){
+          val = DRAW_IMAGES[pid] ? '[diagram photo attached: '+(DRAW_IMAGES[pid].name||pid)+']' : '(no diagram uploaded)';
+        } else {
+          const f=root?root.querySelector('textarea.ans, input.num'):null;
+          val=f?f.value.trim():'';
+        }
+        out+='  '+p.label+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
+        out+='     STUDENT ANSWER: '+(val||'(blank)')+'\n';
+        out+='     MARK SCHEME: '+p.ms.map(m=>stripTags(m.p)+' ['+m.m+']').join('  |  ')+'\n\n';
+      });
+    }
+  });
+  out+='='.repeat(64)+'\nFOR THE MARKER (AI): award marks strictly per each MARK SCHEME.\n';
+  out+='For every part give marks awarded / max, which points were met, and one line of feedback.\n';
+  out+='End with TOTAL / '+TOTAL+', a percentage, and an indicative grade.\n';
+  return out;
+}
+function downloadAnswers(){
+  const blob=new Blob([buildMarkingExport()],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=document.title.replace(/[:\\/?*"<>|]/g,' -')+' — answers.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ---- diagram photo upload (downscale in-browser, keep payload small) ---- */
+function handleDrawFile(input){
+  var pid = input.dataset.pid;
+  var file = input.files && input.files[0];
+  if(!file){ return; }
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var img = new Image();
+    img.onload = function(){
+      var max = 1400, w = img.width, h = img.height;
+      if(w > max || h > max){ var s = Math.min(max/w, max/h); w = Math.round(w*s); h = Math.round(h*s); }
+      var c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      var dataUrl;
+      try { dataUrl = c.toDataURL('image/jpeg', 0.82); }
+      catch(e){ dataUrl = ev.target.result; }
+      DRAW_IMAGES[pid] = { dataUrl: dataUrl, name: file.name || (pid+'.jpg') };
+      var prev = $(pid+'-prev');
+      if(prev){
+        prev.classList.add('show');
+        prev.innerHTML = '<img src="'+dataUrl+'" alt="your diagram">'
+          + '<div class="draw-meta">'+ (file.name||'photo') +' · uploaded</div>'
+          + '<button type="button" class="draw-clear" data-pid="'+pid+'">remove</button>';
+      }
+      if(!graded && started) updateProgress();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function clearDrawFile(pid){
+  delete DRAW_IMAGES[pid];
+  var prev = $(pid+'-prev'); if(prev){ prev.classList.remove('show'); prev.innerHTML=''; }
+  var inp = document.querySelector('.draw-in[data-pid="'+pid+'"]'); if(inp) inp.value='';
+  if(!graded && started) updateProgress();
+}
+
+/* ---- wire up ---- */
+render();
+function setInputsEnabled(on){ document.querySelectorAll('.opt input, textarea.ans, input.num, .draw-in').forEach(f=>{ f.disabled=!on; }); }
+$('questions').classList.add('locked');
+setInputsEnabled(false);
+if(FULLY_AUTO){
+  var _db=$('downloadBtn'); if(_db) _db.style.display='none';
+  var _sr=$('selfRow'); if(_sr) _sr.style.display='none';
+  var _dc=document.querySelector('.disclaimer');
+  if(_dc) _dc.textContent='This paper is marked automatically from the answer key. Grade labels are indicative only — real Cambridge grade boundaries change every exam session.';
+}
+$('metaTime').textContent = PAPER.duration+' minutes';
+$('metaMarks').textContent = TOTAL+' marks';
+$('scoreDen').textContent = TOTAL;
+$('timeLeft').textContent = fmt(PAPER.duration*60);
+updateProgress();
+
+document.addEventListener('input', e=>{ if(!graded && started) updateProgress(); });
+document.addEventListener('change', e=>{
+  if(e.target && e.target.classList && e.target.classList.contains('draw-in')){ handleDrawFile(e.target); return; }
+  if(!graded && started) updateProgress();
+});
+document.addEventListener('click', e=>{
+  if(e.target && e.target.classList && e.target.classList.contains('draw-clear')){ clearDrawFile(e.target.dataset.pid); }
+});
+
+$('startTimed').addEventListener('click', ()=>start('timed'));
+$('startPractice').addEventListener('click', ()=>start('practice'));
+$('btnSubmit').addEventListener('click', ()=>submit(false));
+$('printBtn').addEventListener('click', ()=>window.print());
+$('printBtn2').addEventListener('click', ()=>window.print());
+$('reviewBtn').addEventListener('click', ()=>$('questions').scrollIntoView({behavior:'smooth'}));
+$('retakeBtn').addEventListener('click', ()=>location.reload());
+$('downloadBtn').addEventListener('click', downloadAnswers);
+
+/* ---- theme toggle ---- */
+(function(){
+  const body=document.body, btn=$('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){try{return localStorage.getItem('pp-theme-phys');}catch(e){return null;}}
+  function safeSet(v){try{localStorage.setItem('pp-theme-phys',v);}catch(e){}}
+  function apply(t){ body.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?SUN:MOON;
+    btn.setAttribute('aria-label',(t==='dark')?'Switch to light theme':'Switch to dark theme'); }
+  let startT=safeGet();
+  if(!startT) startT=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+  apply(startT);
+  btn.addEventListener('click', ()=>{ const n=body.getAttribute('data-theme')==='dark'?'light':'dark'; apply(n); safeSet(n); });
+})();
+</script>
+
+<style id="symbar-css">.symbar{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 2px;align-items:center}.symbar .symlbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#7b8aa8);margin-right:2px}.symbtn{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1;cursor:pointer;border:1px solid var(--border,#263247);background:var(--surface2,#19202f);color:var(--text,#d6deec);border-radius:6px;padding:5px 8px;min-width:30px}.symbtn:hover{border-color:var(--motion,var(--accent,#5b8dee))}@media print{.symbar{display:none}}</style><script>/*symbar-init*/(function(){var SUBJ="phys";var S={chem:[['→','→'],['⇌','⇌'],['(s)','(s)'],['(l)','(l)'],['(g)','(g)'],['(aq)','(aq)'],['x₂','₂'],['x₃','₃'],['x₄','₄'],['x⁺','⁺'],['x⁻','⁻'],['x²⁺','²⁺'],['x²⁻','²⁻'],['x³⁺','³⁺']],phys:[['×','×'],['÷','÷'],['→','→'],['Δ','Δ'],['°','°'],['Ω','Ω'],['µ','µ'],['λ','λ'],['θ','θ'],['±','±'],['≈','≈'],['√','√'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['⁻²','⁻²']],maths:[['×','×'],['÷','÷'],['±','±'],['√','√'],['π','π'],['°','°'],['≤','≤'],['≥','≥'],['≠','≠'],['≈','≈'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['½','½'],['₹','₹']]};var set=S[SUBJ]||[];if(!set.length)return;var boxes=document.querySelectorAll('textarea.ans');if(!boxes.length)return;function ins(ta,t){if(ta.disabled)return;var s=ta.selectionStart||0,e=ta.selectionEnd||0,v=ta.value;ta.value=v.slice(0,s)+t+v.slice(e);var p=s+t.length;ta.selectionStart=ta.selectionEnd=p;ta.focus();ta.dispatchEvent(new Event('input',{bubbles:true}));}boxes.forEach(function(ta){if(ta.previousElementSibling&&ta.previousElementSibling.className==='symbar')return;var bar=document.createElement('div');bar.className='symbar';var lb=document.createElement('span');lb.className='symlbl';lb.textContent='insert';bar.appendChild(lb);set.forEach(function(p){var b=document.createElement('button');b.type='button';b.className='symbtn';b.textContent=p[0];b.tabIndex=-1;b.addEventListener('mousedown',function(ev){ev.preventDefault();});b.addEventListener('click',function(){ins(ta,p[1]);});bar.appendChild(b);});ta.parentNode.insertBefore(bar,ta);});})();</script>
+
+<button id="markDoneBtn" data-mv="3" data-id="pp:phys:mix" type="button" aria-pressed="false" style="position:fixed;bottom:18px;right:18px;z-index:10000;font-family:Inter,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;border-radius:22px;padding:10px 18px;border:1px solid var(--border,#263247);background:var(--surface,#121826);color:var(--text,#d6deec);box-shadow:0 6px 20px rgba(0,0,0,.35);">○ Mark as complete</button>
+<script>(function(){var b=document.getElementById('markDoneBtn'),ID=b.getAttribute('data-id'),KEY="studyProgress";function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function r(){var d=!!load()[ID];b.textContent=d?'✓ Completed':'○ Mark as complete';b.setAttribute('aria-pressed',d?'true':'false');b.style.borderColor=d?'var(--power,#4ec994)':'var(--border,#263247)';b.style.color=d?'var(--power,#4ec994)':'var(--text,#d6deec)';}b.addEventListener('click',function(){var p=load();if(p[ID])delete p[ID];else p[ID]=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}r();});window.addEventListener('miraya-progress-synced',r);r();})();</script>
+<script>/*miraya-scorerec*/(function(){var ID="pp:phys:mix",KEY="studyProgress";var sn=document.getElementById('scoreNum'),sd=document.getElementById('scoreDen'),res=document.getElementById('results');if(!sn||!res)return;function rec(){if(!res.classList.contains('show'))return;var m=parseInt((sn.textContent||'').replace(/[^0-9\-]/g,''),10);if(isNaN(m))return;var mx=parseInt(((sd&&sd.textContent)||'').replace(/[^0-9]/g,''),10);var p;try{p=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){p={}}var pv=p[ID],t=(pv&&typeof pv==='object'&&pv.t)||(typeof pv==='string'?pv:null)||new Date().toISOString();p[ID]={t:t,m:m,mx:isNaN(mx)?null:mx};try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}}new MutationObserver(rec).observe(sn,{childList:true,characterData:true,subtree:true});new MutationObserver(rec).observe(res,{attributes:true,attributeFilter:['class']});})();</script>
+</body>
+</html>
