@@ -714,7 +714,7 @@ function sendSubmission(){
   fetch(SUBMIT_ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:payload})
     .then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.text(); })
     .then(function(t){ var ok=false; try{ ok=(JSON.parse(t).ok===true); }catch(e){ ok=/(^|[^a-z])ok([^a-z]|$)/i.test(t||''); } if(!ok) throw new Error('no confirm'); if(st) st.textContent='✅ Confirmed — your answers have been received by your teacher.'; })
-    .catch(function(){ if(st) st.innerHTML='⚠ <b>Not confirmed.</b> Please tap "⬇ Download a backup copy" and send the file to your teacher.'; var d=$('downloadBtn'); if(d) d.style.display=''; });
+    .catch(function(){ try{ downloadAnswers(); }catch(e){} if(st) st.innerHTML='⚠ <b>Not confirmed.</b> A backup copy has been <b>downloaded to this device automatically</b> — please send that file to your teacher. (If it didn’t download, tap "⬇ Download a backup copy" below.)'; var d=$('downloadBtn'); if(d) d.style.display=''; });
 }
 
 function downloadAnswers(){
