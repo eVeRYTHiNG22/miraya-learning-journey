@@ -189,6 +189,7 @@
   .d-virtual { stroke-dasharray:5 4; opacity:.75; }
   .d-mark  { fill:var(--muted); }
   .mk-cyan { fill:var(--cyan); } .mk-amber { fill:var(--energy2); } .mk-red { fill:var(--force); } .mk-blue { fill:var(--motion); }
+  .wf-tick { stroke:var(--motion); stroke-width:2.2; opacity:.72; stroke-linecap:round; }
 
   .scn-read { margin-top:16px; background:#0c1c28; border:1px solid #1f4258; border-radius:9px; padding:13px 16px; font-size:13.6px; }
   .scn-read .rk { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--motion); margin-bottom:6px; }
@@ -541,17 +542,48 @@
 
     <p>Light <strong>changes speed</strong> when it crosses into a different material — slower in glass or water than in air. If it hits the boundary at an angle, that speed change makes it <strong>bend</strong>. You can show this in the lab by shining a ray-box beam into a rectangular or semicircular glass block and tracing the ray as it enters and leaves. The trick to getting the direction right:</p>
 
+    <div class="define refr-c">
+      <span class="term">First — what "rarer" and "denser" mean</span> — a <strong>rarer</strong> medium (like air) is one light travels <em>fast</em> in; a <strong>denser</strong> medium (like glass or water) is one light travels <em>slower</em> in. "Denser" here means <em>optically</em> denser — it's about the <em>speed</em> of light in the material, not its weight — so <strong>air is the rarer</strong> medium and <strong>glass the denser</strong> one. Every refraction is just one of two journeys: <mark>rarer → denser</mark> or <mark>denser → rarer</mark>.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🚗 Why it bends — the car-onto-sand picture</div>
+      Roll a toy car at an angle off a smooth road onto soft sand. The wheel that reaches the sand <em>first</em> slows down while the other wheel is still racing on the road — so the car <strong>slews round towards the normal</strong>. That's <strong>rarer → denser</strong>: the wave slows and turns <em>towards</em> the normal.
+      <br><br>
+      Now play it in reverse — the car rolls out of the sand back onto the road. The wheel that reaches the road first speeds up first, swinging the car <strong>away from the normal</strong>. That's <strong>denser → rarer</strong>: the wave speeds up and turns <em>away</em>. The ray only bends because <strong>one side of the wave changes speed before the other</strong>.
+    </div>
+
+    <p>You can watch the same thing happen to the wavefronts. Crossing from the rarer into the denser medium they <strong>slow, bunch closer together</strong> (shorter λ) and <strong>swing towards the normal</strong>:</p>
+
+    <svg class="graph" viewBox="0 0 440 210" id="wfSvg" aria-label="Wavefronts slowing, bunching closer together and bending towards the normal as they pass from a rarer medium into a denser medium">
+      <rect x="0" y="110" width="440" height="100" class="d-glass"/>
+      <line x1="0" y1="110" x2="440" y2="110" class="axis"/>
+      <line x1="220" y1="16" x2="220" y2="206" class="d-normal"/>
+      <text x="10" y="26" class="axis-lbl">rarer — e.g. air · light fast · long λ</text>
+      <text x="10" y="128" class="axis-lbl">denser — e.g. glass · light slow · short λ</text>
+      <text x="226" y="28" class="axis-lbl">normal</text>
+      <g id="wfFronts"></g>
+      <g id="wfRays"></g>
+      <defs>
+        <marker id="wfArrowIn" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-cyan"/></marker>
+        <marker id="wfArrowR"  markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" class="mk-amber"/></marker>
+      </defs>
+    </svg>
+    <div class="chart-cap" style="margin-top:6px">Blue ticks = wavefronts (crests); the arrowed rays run at right angles to them. Notice the ticks crowd together and turn towards the normal in the denser glass.</div>
+
     <div class="box remember">
-      <div class="box-label">⚠️ Which way does it bend?</div>
-      Into a <em>denser</em> medium (air → glass): light slows down and bends <strong>towards</strong> the normal. Out into a <em>less dense</em> medium (glass → air): it speeds up and bends <strong>away</strong> from the normal. "Slow = towards, fast = away."
+      <div class="box-label">⚠️ Which way does it bend? — the two journeys</div>
+      <strong>Rarer → denser</strong> (air → glass / water): light <em>slows down</em> → bends <strong>towards</strong> the normal, so <span class="eq-inline" style="color:var(--rose)">r &lt; i</span>.<br>
+      <strong>Denser → rarer</strong> (glass / water → air): light <em>speeds up</em> → bends <strong>away</strong> from the normal, so <span class="eq-inline" style="color:var(--rose)">r &gt; i</span>.<br>
+      One line for all of it: <mark>slow down → bend towards; speed up → bend away.</mark> And a ray travelling straight along the normal (i = 0°) still changes speed but does <strong>not</strong> bend at all.
     </div>
 
     <p>Drag the angle and switch direction. Notice how, going glass → air, a large enough angle traps the light completely:</p>
 
     <div class="tool">
       <div class="scn-tabs" id="refTabs">
-        <div class="scn-tab active" data-rf="in">Air → Glass</div>
-        <div class="scn-tab" data-rf="out">Glass → Air</div>
+        <div class="scn-tab active" data-rf="in">Air → Glass · rarer → denser</div>
+        <div class="scn-tab" data-rf="out">Glass → Air · denser → rarer</div>
       </div>
       <div class="tool-grid">
         <div>
@@ -586,13 +618,13 @@
       </div>
       <div class="scn-read">
         <div class="rk">What you're seeing</div>
-        <span id="refExplain">Light passes from air into denser glass, slows, and bends towards the normal. The refractive index n = 1.5 fixes how much.</span>
+        <span id="refExplain">Rarer → denser: light passes from air into optically denser glass, slows, and bends towards the normal (r &lt; i). The refractive index n = 1.5 fixes how much.</span>
       </div>
     </div>
 
     <div class="define refr-c">
       <span class="term">Refractive index, n <span style="opacity:.7;font-size:.85em">(Extended)</span></span> — how strongly a material bends light, defined two equivalent ways:
-      <span class="eq-inline" style="color:var(--energy2)">n = sin i / sin r</span> &nbsp;and as a ratio of speeds&nbsp; <span class="eq-inline" style="color:var(--energy2)">n = v₁ / v₂</span> (speed in the first/less-dense medium ÷ speed in the denser medium). For glass n ≈ 1.5.
+      <span class="eq-inline" style="color:var(--energy2)">n = sin i / sin r</span> &nbsp;and as a ratio of speeds&nbsp; <span class="eq-inline" style="color:var(--energy2)">n = v₁ / v₂</span> (speed in the rarer / less-dense medium ÷ speed in the denser medium). For glass n ≈ 1.5.
     </div>
 
     <h3>Total internal reflection &amp; the critical angle</h3>
@@ -1004,7 +1036,7 @@ function show(el,on){ el.style.display = on ? '' : 'none'; }
       arV.textContent=deg(r).toFixed(1);
       lbl.textContent='Angle of refraction r';
       msg.textContent='n = sin i / sin r = 1.50';
-      explain.textContent='Light passes from air into denser glass, slows down, and bends towards the normal. The refractive index n = 1.5 fixes how much.';
+      explain.textContent='Rarer → denser: light passes from air into optically denser glass, slows down, and bends towards the normal (r < i). The refractive index n = 1.5 fixes how much.';
     } else {
       // glass (bottom) → air (top): bends away; TIR beyond the critical angle
       setLine(inc, PX - L*Math.sin(ir), PY + L*Math.cos(ir), PX, PY);
@@ -1022,8 +1054,8 @@ function show(el,on){ el.style.display = on ? '' : 'none'; }
         show(refr,true); show(refl,false);
         arV.textContent=deg(r).toFixed(1);
         lbl.textContent='Angle of refraction r';
-        msg.textContent='bends away · c = 41.8°';
-        explain.textContent='Light leaves dense glass for air, speeds up, and bends away from the normal. Push i past the critical angle (41.8°) and it can no longer escape.';
+        msg.textContent='bends away (r > i) · c = 41.8°';
+        explain.textContent='Denser → rarer: light leaves optically denser glass for air, speeds up, and bends away from the normal (r > i). Push i past the critical angle (41.8°) and it can no longer escape.';
       }
     }
   }
@@ -1034,6 +1066,34 @@ function show(el,on){ el.style.display = on ? '' : 'none'; }
     upd();
   });
   ai.addEventListener('input',upd); upd();
+})();
+
+/* ════════════════════════════════════════════════
+   2b · WAVEFRONTS: RARER → DENSER (static)
+   Wavefronts slow, bunch up and pivot towards the normal.
+════════════════════════════════════════════════ */
+(function(){
+  const fronts=document.getElementById('wfFronts'), rays=document.getElementById('wfRays');
+  if(!fronts||!rays) return;
+  const PX=220, PY=110, D=Math.PI/180;
+  const i=40*D, r=Math.asin(Math.sin(i)/1.5);              // r ≈ 25.4°
+  const ti=[Math.sin(i),Math.cos(i)],  tr=[Math.sin(r),Math.cos(r)];   // ray travel dirs (into glass)
+  const pi=[Math.cos(i),-Math.sin(i)], pr=[Math.cos(r),-Math.sin(r)];  // wavefront dirs (⟂ to ray)
+  function mk(par,x1,y1,x2,y2,cls,marker){
+    const l=document.createElementNS(SVGNS,'line');
+    setLine(l,x1.toFixed(1),y1.toFixed(1),x2.toFixed(1),y2.toFixed(1));
+    l.setAttribute('class',cls); if(marker) l.setAttribute('marker-end',marker);
+    par.appendChild(l);
+  }
+  // rays: incident (rarer) then refracted (denser, closer to the normal)
+  mk(rays, PX-96*ti[0], PY-96*ti[1], PX, PY,               'd-ray',  'url(#wfArrowIn)');
+  mk(rays, PX, PY, PX+92*tr[0], PY+92*tr[1],               'd-ray2', 'url(#wfArrowR)');
+  // wavefronts: rarer = widely spaced, denser = bunched
+  const HL=15;
+  [18,48,78].forEach(dp=>{ const cx=PX-dp*ti[0], cy=PY-dp*ti[1];
+    mk(fronts, cx-HL*pi[0], cy-HL*pi[1], cx+HL*pi[0], cy+HL*pi[1], 'wf-tick'); });
+  [14,34,54,74].forEach(dp=>{ const cx=PX+dp*tr[0], cy=PY+dp*tr[1];
+    mk(fronts, cx-HL*pr[0], cy-HL*pr[1], cx+HL*pr[0], cy+HL*pr[1], 'wf-tick'); });
 })();
 
 /* ════════════════════════════════════════════════
@@ -1132,7 +1192,7 @@ const EQ = {
     syms:[['n','refractive index','(no unit)'],['c','critical angle','°']],
     rearr:'sin c = 1 / n   ·   c = sin⁻¹(1/n)',
     ex:'Glass n = 1.5: sin c = 1 ÷ 1.5 = 0.667 → c = <b>41.8°</b>.',
-    tip:'TIR only happens going to a <b>less dense</b> medium and only when <b>i &gt; c</b>.' },
+    tip:'TIR only happens going to a <b>rarer (less dense)</b> medium and only when <b>i &gt; c</b>.' },
   nspeeds:{ c:'energy', name:'Index from speeds', formula:'n = v₁ / v₂',
     syms:[['n','refractive index','(no unit)'],['v₁','speed in region 1','m/s'],['v₂','speed in region 2','m/s']],
     rearr:'v₂ = v₁ / n   ·   v₁ = n·v₂',
