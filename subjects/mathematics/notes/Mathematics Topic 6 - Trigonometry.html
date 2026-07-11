@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mathematics Topic 6: Trigonometric Graphs and Equations</title>
+<title>Mathematics Topic 6: Trigonometry</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
 <style>
@@ -17,16 +17,16 @@
     --bright:   #f0f4ff;
 
     /* MATHS palette — abstraction → shapes.
-       blue = functions/graphs · indigo = algebra/equations ·
-       amber = sequences/growth · cyan = differentiation ·
+       blue = functions/graphs · indigo = algebra/rules ·
+       amber = angles/growth · cyan = ratios/gradients ·
        green = exam tips (locked) · magenta = alerts (locked) */
     --motion:   #4db8ff;   /* blue — functions & graphs (primary) */
-    --force:    #ff5263;   /* red — contrast accent (roots, lines, warnings) */
-    --energy:   #f5b13c;   /* amber — sequences, proportion, growth */
+    --force:    #ff5263;   /* red — contrast accent (sides, lines, warnings) */
+    --energy:   #f5b13c;   /* amber — angles, elevation, growth */
     --energy2:  #f5b13c;
-    --momentum: #7c8cff;   /* indigo — algebra & equations */
+    --momentum: #7c8cff;   /* indigo — rules & equations */
     --power:    #48d39a;   /* green — exam tips / success (locked role) */
-    --cyan:     #3ad9d4;   /* cyan — differentiation / gradients */
+    --cyan:     #3ad9d4;   /* cyan — ratios / gradients */
     --rose:     #f25cc1;   /* alert magenta — ≥30° from warm accents (CVD-safe, locked) */
     /* floating detail-card tokens (themed) */
     --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
@@ -49,8 +49,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ambient field — cool symbolic blue/indigo top, warm amber below.
-     a neutral two-tone glow (the locked shared base — never tinted per subject) */
   body::before {
     content:'';
     position:fixed; inset:0;
@@ -105,14 +103,24 @@
   .header-sub {
     color: var(--muted);
     font-size: 14px;
-    max-width: 620px;
+    max-width: 640px;
   }
+  .toc {
+    display:flex; flex-wrap:wrap; gap:7px; margin-top:20px;
+  }
+  .toc a {
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; text-decoration:none;
+    color:var(--muted); background:var(--surface); border:1px solid var(--border);
+    border-radius:7px; padding:5px 10px; transition:all .16s;
+  }
+  .toc a:hover { color:var(--motion); border-color:var(--motion); }
 
   /* ── SECTION ── */
   .section {
     margin-bottom: 60px;
     opacity: 0;
     animation: rise 0.55s ease forwards;
+    scroll-margin-top: 20px;
   }
   @keyframes rise {
     from { opacity:0; transform:translateY(18px); }
@@ -127,6 +135,9 @@
   .section:nth-of-type(7){animation-delay:.28s}
   .section:nth-of-type(8){animation-delay:.32s}
   .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+  .section:nth-of-type(12){animation-delay:.48s}
 
   .sec-label {
     font-family: 'JetBrains Mono', monospace;
@@ -174,7 +185,6 @@
     background: #eef1f8;
     border-color: #d4dcec;
   }
-  /* block-level worked-line, for multi-step working */
   .work {
     font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text);
     background:var(--surface2); border:1px solid var(--border);
@@ -270,22 +280,29 @@
 
   .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
 
+  /* diagram frame (static SVG triangles / solids) */
+  svg.diagram { width:100%; height:auto; max-width:360px; display:block; margin:14px auto;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+  .dg-side  { stroke:var(--motion); stroke-width:2.4; fill:none; }
+  .dg-side2 { stroke:var(--force);  stroke-width:2.4; fill:none; }
+  .dg-hyp   { stroke:var(--power);  stroke-width:2.4; fill:none; }
+  .dg-hidden{ stroke:var(--muted);  stroke-width:1.6; stroke-dasharray:4 3; fill:none; }
+  .dg-fill  { fill:#4db8ff14; stroke:var(--motion); stroke-width:2; }
+  .dg-arc   { stroke:var(--energy2); stroke-width:2; fill:none; }
+  .dg-lbl   { font-family:'JetBrains Mono',monospace; font-size:12px; fill:var(--bright); }
+  .dg-lbl.m { fill:var(--muted); font-size:11px; }
+
   /* ═════════════════════════════════════════════
-     COMPONENT LIBRARY NOTE (read before cloning)
-     · BASE IS LOCKED ACROSS ALL SUBJECTS: --bg, --surface*, --text,
-       --muted, --border, the paper light theme, and the neutral ambient
-       glow NEVER change per subject. Only the accent block changes.
-     · SHARED components (reused by any topic — never delete):
-       .explorer .scn-tabs .scn-tab .scn-read .rk .replay svg.graph
-       .axis .axis-lbl .curve .tracer .chart-cap .tool .tool-grid
-       .slider-row .vec-out .eqbank .eqcell .box .define .card table
-     · WIDGETS in this file: trig graph explorer + trig-equation solver
-       (both svg.graph). No physics-only blocks retained.
+     COMPONENT LIBRARY NOTE
+     · BASE LOCKED across subjects (bg/surface/text/border/light-theme/glow).
+     · SHARED: .explorer .scn-tabs .scn-tab .scn-read .rk svg.graph .axis
+       .axis-lbl .curve .chart-cap .tool .slider-row .vec-out .eqbank .eqcell
+       .box .define .card table
+     · WIDGETS here: right-triangle SOHCAHTOA (svg.graph #triGraph),
+       three-graphs explorer (#tgGraph), equation solver (#slvGraph).
   ═════════════════════════════════════════════ */
 
-  /* ─────────────────────────────────────────────
-     EXPLORER / TOOL SHELL (signature)
-  ───────────────────────────────────────────── */
   .explorer {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -315,7 +332,6 @@
   .axis-lbl { fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:9px; }
   .curve { fill:none; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
   .tracer { fill:#fff; }
-  /* curves & markers — coloured via vars so they flip per theme automatically */
   #tgCurve  { stroke: var(--motion); }
   #slvCurve { stroke: var(--momentum); }
   #slvLine  { stroke: var(--force); stroke-width:2; stroke-dasharray:5 3; }
@@ -325,6 +341,12 @@
   .pt-zero  { fill: var(--motion); }
   .pt-sol   { fill: var(--force); stroke:#fff; stroke-width:1.2; }
   body[data-theme="light"] .pt-sol { stroke:#fffdf8; }
+  /* triangle widget parts */
+  #triOpp { stroke: var(--force); stroke-width:3; }
+  #triAdj { stroke: var(--motion); stroke-width:3; }
+  #triHyp { stroke: var(--power); stroke-width:3; }
+  #triArc { stroke: var(--energy2); stroke-width:2.2; fill:none; }
+  .tri-lbl { font-family:'JetBrains Mono',monospace; font-size:11px; }
 
   .scn-read {
     margin-top:16px; background:#0c1c28; border:1px solid #1f4258;
@@ -337,9 +359,7 @@
   }
   .scn-read b { color:var(--bright); }
 
-  /* ─────────────────────────────────────────────
-     TOOL (sliders + read-out)
-  ───────────────────────────────────────────── */
+  /* TOOL (sliders + read-out) */
   .tool {
     background:var(--surface); border:1px solid var(--border);
     border-radius:14px; padding:20px; margin:22px 0;
@@ -357,11 +377,11 @@
   }
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
-    background:var(--force); cursor:pointer; box-shadow:0 0 10px #ff526388;
+    background:var(--energy2); cursor:pointer; box-shadow:0 0 10px #f5b13c88;
   }
   input[type=range]::-moz-range-thumb {
     width:17px; height:17px; border:none; border-radius:50%;
-    background:var(--force); cursor:pointer;
+    background:var(--energy2); cursor:pointer;
   }
   .vec-out {
     background:#171229; border:1px solid #2e2350; border-radius:9px;
@@ -377,12 +397,10 @@
     color:var(--bright); line-height:1.45;
   }
   .vec-out .rv.big {
-    font-family:'Fraunces',serif; font-size:1.35rem; font-weight:700; color:var(--force);
+    font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--energy2);
   }
 
-  /* ─────────────────────────────────────────────
-     EQUATION / SKILL BANK
-  ───────────────────────────────────────────── */
+  /* EQUATION / SKILL BANK */
   .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
   .eqcell {
     background:var(--surface); border:1px solid var(--border); border-radius:10px;
@@ -392,7 +410,7 @@
   .eqcell:hover { transform:translateY(-3px); border-color:var(--motion);
     box-shadow:0 8px 22px #0008; }
   .eqcell .eq-sym {
-    font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600;
+    font-family:'JetBrains Mono',monospace; font-size:13.5px; font-weight:600;
     color:var(--bright); margin-bottom:4px;
   }
   .eqcell .eq-name {
@@ -405,7 +423,6 @@
   .eqcell[data-c="power"]:hover    { border-color:var(--power); }
   .eqcell[data-c="calc"]:hover     { border-color:var(--cyan); }
 
-  /* floating detail card — fully themed (vars, with a light override below) */
   #eq-card {
     display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
     background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px;
@@ -419,7 +436,7 @@
   #eqc-badge {
     flex-shrink:0; width:62px; height:62px; border-radius:12px;
     display:flex; align-items:center; justify-content:center;
-    font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:600;
+    font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:600;
     background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd);
   }
   #eqc-head h4 {
@@ -472,9 +489,8 @@
     .grid2, .grid3, .eqbank { grid-template-columns:1fr; }
     .eqbank { grid-template-columns:1fr 1fr; }
   }
-  /* ─────────────────────────────────────────────
-     THEME TOGGLE BUTTON
-  ───────────────────────────────────────────── */
+
+  /* THEME TOGGLE */
   .theme-toggle {
     position: fixed; top: 16px; right: 16px; z-index: 10000;
     width: 40px; height: 40px; border-radius: 50%;
@@ -488,37 +504,31 @@
   .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
   .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
 
-  /* smooth cross-fade between themes */
   body { transition: background-color .35s ease, color .35s ease; }
-  .box, .card, .define, .explorer, .tool, svg.graph,
-  .scn-read, .scn-tab, .replay, .vec-out, .chip, .work,
+  .box, .card, .define, .explorer, .tool, svg.graph, svg.diagram,
+  .scn-read, .scn-tab, .vec-out, .chip, .work, .toc a,
   table th, table td, .eqcell, mark {
     transition: background-color .35s ease, border-color .35s ease, color .35s ease;
   }
 
-  /* ═════════════════════════════════════════════
-     LIGHT THEME ("study paper")
-     Accents are deepened so coloured text stays
-     legible on a pale background.
-  ═════════════════════════════════════════════ */
+  /* ═════════ LIGHT THEME ═════════ */
   body[data-theme="light"] {
-    --bg:       #f4f1e8;   /* warm notebook paper */
+    --bg:       #f4f1e8;
     --surface:  #fffdf8;
     --surface2: #efeadd;
     --border:   #ddd6c4;
-    --text:     #2c313c;   /* ink */
+    --text:     #2c313c;
     --muted:    #6f7484;
     --bright:   #14181f;
 
-    --motion:   #1769d6;   /* deep blue (AA 4.5+) */
-    --force:    #cb2531;   /* deep red (AA 4.5+) */
-    --energy:   #8f5d00;   /* deep amber (AA 4.5+) */
+    --motion:   #1769d6;
+    --force:    #cb2531;
+    --energy:   #8f5d00;
     --energy2:  #8f5d00;
-    --momentum: #5b40d6;   /* deep indigo (AA 4.5+) */
-    --power:    #107a50;   /* deep green (AA 4.5+) */
-    --cyan:     #0b7a67;   /* deep teal (AA 4.5+) */
-    --rose:     #ad1a7d;   /* deep alert magenta (AA 4.5+) */
-    /* floating detail-card — light theme */
+    --momentum: #5b40d6;
+    --power:    #107a50;
+    --cyan:     #0b7a67;
+    --rose:     #ad1a7d;
     --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
     --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
     --card-label:#9a937e; --card-text:#3a3f4a;
@@ -533,21 +543,18 @@
       radial-gradient(ellipse 95% 55% at 50% 114%, #f3d29a22 0%, transparent 60%);
   }
 
-  /* boxes */
   body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
   body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
   body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
   body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
   body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
 
-  /* define callouts */
   body[data-theme="light"] .define          { background:linear-gradient(90deg,#e8f1fb99,transparent); }
   body[data-theme="light"] .define.force-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
   body[data-theme="light"] .define.energy-c  { background:linear-gradient(90deg,#fbf0d999,transparent); }
   body[data-theme="light"] .define.mom-c     { background:linear-gradient(90deg,#ece8fb99,transparent); }
   body[data-theme="light"] .define.calc-c    { background:linear-gradient(90deg,#dff3ef99,transparent); }
 
-  /* cards & misc */
   body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
   body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
   body[data-theme="light"] .chip {
@@ -555,29 +562,28 @@
   }
   body[data-theme="light"] .work { background:#efeadd; }
   body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+  body[data-theme="light"] .toc a { background:#fffdf8; }
 
-  /* graphs (SVG) — CSS overrides inline presentation attributes */
   body[data-theme="light"] svg.graph { background:#fbfaf4; }
   body[data-theme="light"] .axis      { stroke:#bcb4a2; }
   body[data-theme="light"] .grid      { stroke:#e4ddca; }
   body[data-theme="light"] .axis-lbl  { fill:#8c8674; }
   body[data-theme="light"] .tracer    { fill:#14181f; }
+  body[data-theme="light"] .dg-lbl    { fill:#14181f; }
 
-  /* explorer chrome */
   body[data-theme="light"] .scn-read   { background:#e8f1fb; border-color:#bdd7f2; }
   body[data-theme="light"] .scn-tab    { background:#efeadd; }
   body[data-theme="light"] .scn-tab:hover  { border-color:#9fc0ea; }
   body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
 
-  /* tool read-out */
   body[data-theme="light"] .vec-out { background:#ece8fb; border-color:#d2c8f2; }
   body[data-theme="light"] .vec-out .ro { color:#6a559a; }
 
   @media (prefers-reduced-motion: reduce) {
     .section { animation:none; opacity:1; }
     body, .theme-toggle, .box, .card, .define, .explorer, .tool,
-    svg.graph, .scn-read, .scn-tab, .replay, .vec-out, .work,
-    .chip, table th, table td, .eqcell, mark { transition:none; }
+    svg.graph, svg.diagram, .scn-read, .scn-tab, .vec-out, .work,
+    .chip, .toc a, table th, table td, .eqcell, mark { transition:none; }
   }
 </style>
 </head>
@@ -590,37 +596,184 @@
 
   <!-- HEADER -->
   <div class="header">
-    <div class="chip">IGCSE · Mathematics 0580 · Extended · Topic 6.3–6.4</div>
-    <h1><span class="a">Trig Graphs</span> &amp; <span class="b">Equations</span></h1>
-    <p class="header-sub">A one-page cheat sheet for the trig-functions part of Topic 6: the three graphs <span class="eq-inline">y = sin x</span>, <span class="eq-inline">y = cos x</span>, <span class="eq-inline">y = tan x</span> for 0°–360°, the exact values you must know, and the two-solution method for solving trig equations. Tap the panels — they move.</p>
+    <div class="chip">IGCSE · Mathematics 0580 · Extended · Topic 6</div>
+    <h1><span class="a">Trigonometry</span></h1>
+    <p class="header-sub">The whole of Topic 6 (E6.1–E6.6): Pythagoras, the sin/cos/tan ratios in right-angled triangles, angles of elevation, depression &amp; bearings, exact values, the three trig graphs and how to solve trig equations, the sine &amp; cosine rules for any triangle, triangle area, and Pythagoras + trig in 3D. Tap the blue panels — they move.</p>
+    <div class="toc">
+      <a href="#s1">1 · Pythagoras</a>
+      <a href="#s2">2 · SOHCAHTOA</a>
+      <a href="#s3">3 · Elevation &amp; bearings</a>
+      <a href="#s4">4 · Exact values</a>
+      <a href="#s5">5 · The graphs</a>
+      <a href="#s6">6 · Solving equations</a>
+      <a href="#s7">7 · Sine rule</a>
+      <a href="#s8">8 · Cosine rule</a>
+      <a href="#s9">9 · Triangle area</a>
+      <a href="#s10">10 · 3D trig</a>
+      <a href="#s11">11 · Skill bank</a>
+    </div>
   </div>
 
 
-  <!-- ── 01 · WHY THEY WAVE ── -->
-  <div class="section">
-    <div class="sec-label">01 / 07 · The big picture</div>
-    <h2>Why sine and cosine make waves</h2>
+  <!-- ── 01 · PYTHAGORAS ── -->
+  <div class="section" id="s1">
+    <div class="sec-label">01 / 11 · E6.1 · Right-angled triangles</div>
+    <h2>Pythagoras' theorem</h2>
 
-    <p>Imagine a point walking anticlockwise around a circle of radius&nbsp;1. At every angle <span class="eq-inline">x</span> it has a <strong>height</strong> and a <strong>sideways position</strong>. Plot the <em>height</em> against the angle and you get <span class="eq-inline" style="color:var(--motion)">y = sin x</span>; plot the <em>sideways position</em> and you get <span class="eq-inline" style="color:var(--motion)">y = cos x</span>. The circle repeats every 360°, so the graphs repeat every 360° — that's why they're waves.</p>
+    <p>In <strong>any right-angled triangle</strong>, the square drawn on the longest side (the <strong>hypotenuse</strong>, always opposite the right angle) has exactly the same area as the two smaller squares added together.</p>
 
     <div class="box intuition">
       <div class="box-label">💡 The core idea</div>
-      <strong>sin = height, cos = across.</strong> As the point climbs to the top of the circle the height rises to its maximum of <strong>1</strong> (at 90°); at the bottom it's <strong>−1</strong> (at 270°). The height can never be more than the radius, so <span class="eq-inline">sin x</span> and <span class="eq-inline">cos x</span> are always trapped between <mark>−1 and +1</mark>. <span class="eq-inline">tan x</span> is height ÷ across, which blows up to infinity whenever "across" hits zero.
+      <span class="eq-inline">a² + b² = c²</span>, where <span class="eq-inline">c</span> is the <strong>hypotenuse</strong>. To find the hypotenuse you <strong>add and square-root</strong>; to find a shorter side you <strong>subtract and square-root</strong> (<span class="eq-inline">b = √(c² − a²)</span>). Only ever works when there's a <mark>right angle</mark>.
     </div>
 
-    <div class="box analogy">
-      <div class="box-label">🎡 A picture you know</div>
-      Ride the <strong>Giant Wheel at a mela</strong>. Your height above the centre traces a sine wave as the wheel turns: up to the top, back to the middle, down to the bottom, back up — one full turn, one full wave. Keep spinning and the same wave repeats forever. That "repeat length" is the <strong>period</strong>.
+    <svg class="diagram" viewBox="0 0 300 200" role="img" aria-label="Right-angled triangle with legs a and b and hypotenuse c">
+      <polygon class="dg-fill" points="60,160 240,160 60,50"/>
+      <rect x="60" y="145" width="15" height="15" fill="none" stroke="#7b8aa8" stroke-width="1.4"/>
+      <text class="dg-lbl m" x="150" y="178">b (adjacent leg)</text>
+      <text class="dg-lbl m" x="30" y="108">a</text>
+      <text class="dg-lbl" x="158" y="98" fill="#48d39a">c (hyp)</text>
+    </svg>
+
+    <h3>Worked example — a leaning ladder</h3>
+    <p>A 5&nbsp;m ladder rests against a wall with its foot 1.5&nbsp;m from the base of the wall. How far up the wall does it reach?</p>
+    <div class="work">
+      <span class="step">ladder = hypotenuse (5), base = 1.5, height = h</span> h² + 1.5² = 5²<br>
+      <span class="step">subtract to find a shorter side</span> h² = 25 − 2.25 = 22.75<br>
+      <span class="step">square root</span> h = √22.75 = <strong>4.77 m</strong> (3 s.f.)
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Classic slip</div>
+      Adding when you should subtract. If the unknown is <strong>not</strong> the hypotenuse, you must take the <em>difference</em> of the squares. A quick sanity check: the hypotenuse is always the <strong>biggest</strong> side, so a shorter side can never come out longer than it.
     </div>
   </div>
 
 
-  <!-- ── 02 · THE THREE GRAPHS (widget) ── -->
-  <div class="section">
-    <div class="sec-label">02 / 07 · E6.4 · Recognise &amp; sketch</div>
+  <!-- ── 02 · SOHCAHTOA (widget) ── -->
+  <div class="section" id="s2">
+    <div class="sec-label">02 / 11 · E6.2 · Sides &amp; angles</div>
+    <h2>The three ratios — SOH-CAH-TOA</h2>
+
+    <p>Pythagoras links the three <em>sides</em>. Trigonometry brings in the <strong>angle</strong>. In a right-angled triangle the three sides get names <em>relative to the angle</em> <span class="eq-inline">θ</span> you're looking at: the <strong>hypotenuse</strong> (opposite the right angle), the <strong>opposite</strong> (facing θ), and the <strong>adjacent</strong> (the remaining side, next to θ).</p>
+
+    <div class="define mom-c">
+      <span class="term">SOH · CAH · TOA</span><br>
+      <span class="eq-inline" style="color:var(--force)">sin θ = O / H</span> &nbsp;
+      <span class="eq-inline" style="color:var(--motion)">cos θ = A / H</span> &nbsp;
+      <span class="eq-inline" style="color:var(--momentum)">tan θ = O / A</span>
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🪜 A picture you know</div>
+      A ramp at a shop. Make the ramp <strong>steeper</strong> (bigger angle) and for the same length it rises higher — <span class="eq-inline">sin θ</span> grows. Flatten it (smaller angle) and it barely rises but stretches far — <span class="eq-inline">cos θ</span> grows. Drag the slider below and watch the two legs trade off while the ramp (hypotenuse) stays the same length.
+    </div>
+
+    <div class="tool">
+      <div class="chart-cap">right-angled triangle · hypotenuse fixed at 10 units</div>
+      <svg class="graph" viewBox="0 0 320 250" id="triGraph" role="img" aria-label="Right-angled triangle with adjustable angle">
+        <line id="triAdj" x1="0" y1="0" x2="0" y2="0"/>
+        <line id="triOpp" x1="0" y1="0" x2="0" y2="0"/>
+        <line id="triHyp" x1="0" y1="0" x2="0" y2="0"/>
+        <path id="triArc"/>
+        <g id="triLbls"></g>
+      </svg>
+      <div class="slider-row">
+        <label>angle θ <b id="thVal">40°</b></label>
+        <input type="range" id="thSlide" min="10" max="80" step="1" value="40">
+      </div>
+      <div class="vec-out">
+        <div class="ro">Opposite = 10 sin θ</div><div class="rv" id="roOpp">6.43</div>
+        <div class="ro">Adjacent = 10 cos θ</div><div class="rv" id="roAdj">7.66</div>
+        <div class="ro">Ratios</div>
+        <div class="rv big" id="roRatio">sin 40° = 0.643</div>
+        <div class="rv" id="roAll">cos 40° = 0.766 · tan 40° = 0.839</div>
+      </div>
+    </div>
+
+    <h3>Choosing the right ratio</h3>
+    <p>Label the sides (O, A, H), see which two the question uses, and pick the ratio that pairs them. To find an <strong>angle</strong>, use the inverse: <span class="eq-inline">θ = sin⁻¹(O/H)</span>, etc.</p>
+    <div class="work">
+      <span class="step">Find side: opp = ?, angle 32°, hyp 9</span> sin 32° = O/9 → O = 9 sin 32° = 4.77<br>
+      <span class="step">Find angle: opp 4, adj 7</span> tan θ = 4/7 → θ = tan⁻¹(0.5714) = <strong>29.7°</strong>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Method that never fails</div>
+      <strong>1.</strong> Mark the right angle and the angle you care about. <strong>2.</strong> Label O, A, H. <strong>3.</strong> Underline the two sides in play. <strong>4.</strong> Pick SOH / CAH / TOA that uses exactly those two. Round angles to <strong>1 d.p.</strong> as the syllabus asks.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · ELEVATION, DEPRESSION, BEARINGS ── -->
+  <div class="section" id="s3">
+    <div class="sec-label">03 / 11 · E6.2 · Applications</div>
+    <h2>Elevation, depression &amp; bearings</h2>
+
+    <p>These are just right-angled-triangle problems dressed in words. The skill is drawing the triangle correctly from the description.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Angle of elevation</div>
+        <div class="card-body">Look <strong>up</strong> from the horizontal to an object. Measured from a horizontal line at your eye up to the line of sight.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Angle of depression</div>
+        <div class="card-body">Look <strong>down</strong> from the horizontal to an object. The angle of depression from A to B <strong>equals</strong> the angle of elevation from B to A (alternate angles between parallel horizontals).</div>
+      </div>
+    </div>
+
+    <h3>Worked example — height of a tree</h3>
+    <p>Standing 30&nbsp;m from the foot of a tree, Meera measures the angle of elevation of the top as 35°. How tall is the tree (eye level ≈ ground)?</p>
+    <div class="work">
+      <span class="step">opposite = height, adjacent = 30, angle 35°</span> tan 35° = h / 30<br>
+      <span class="step">rearrange</span> h = 30 × tan 35° = 30 × 0.7002 = <strong>21.0 m</strong> (1 d.p.)
+    </div>
+
+    <div class="define energy-c">
+      <span class="term">Bearings</span><br>
+      A bearing is a direction measured <strong>clockwise from North</strong>, always written with <strong>three figures</strong> — e.g. due East is <span class="eq-inline">090°</span>, South-West is <span class="eq-inline">225°</span>, and a small angle like 7° is written <span class="eq-inline">007°</span>.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Two classic slips</div>
+      <strong>(1)</strong> Bearings need <strong>3 digits</strong> — write 040°, not 40°. <strong>(2)</strong> "Perpendicular distance from a point to a line is the <strong>shortest</strong> distance" — it's the perpendicular (right-angle) drop, not a slanted one, so these often hide a right-angled triangle you must spot.
+    </div>
+  </div>
+
+
+  <!-- ── 04 · EXACT VALUES ── -->
+  <div class="section" id="s4">
+    <div class="sec-label">04 / 11 · E6.3 · Know these cold</div>
+    <h2>Exact trig values</h2>
+
+    <p>For special angles you're expected to write the value <strong>exactly</strong> (surd or fraction) with no calculator. This is a "recall" mark.</p>
+
+    <table>
+      <tr><th>x</th><th class="c">0°</th><th class="c">30°</th><th class="c">45°</th><th class="c">60°</th><th class="c">90°</th></tr>
+      <tr><td><strong>sin x</strong></td><td class="c">0</td><td class="c">½</td><td class="c">√2⁄2</td><td class="c">√3⁄2</td><td class="c">1</td></tr>
+      <tr><td><strong>cos x</strong></td><td class="c">1</td><td class="c">√3⁄2</td><td class="c">√2⁄2</td><td class="c">½</td><td class="c">0</td></tr>
+      <tr><td><strong>tan x</strong></td><td class="c">0</td><td class="c">1⁄√3</td><td class="c">1</td><td class="c">√3</td><td class="c">undefined</td></tr>
+    </table>
+
+    <div class="box remember">
+      <div class="box-label">🧠 The "0 1 2 3 4" hand trick</div>
+      Write <span class="eq-inline" style="color:var(--rose)">0 1 2 3 4</span> under the angles 0°, 30°, 45°, 60°, 90°. For <strong>sin</strong> take <strong>√(that number) ÷ 2</strong>: <span class="eq-inline">√0/2, √1/2, √2/2, √3/2, √4/2</span> = <span class="eq-inline">0, ½, √2⁄2, √3⁄2, 1</span>. <strong>cos</strong> is the same list <em>reversed</em>. And <span class="eq-inline">tan x = sin x ÷ cos x</span>.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Where marks are won</div>
+      <span class="eq-inline">cos 60° = ½</span> and <span class="eq-inline">sin 30° = ½</span> are equal (complementary angles), and <span class="eq-inline">tan 45° = 1</span> exactly. If a "solve" question gives <span class="eq-inline">cos x = ½</span>, you should <em>instantly</em> know 60° is one answer.
+    </div>
+  </div>
+
+
+  <!-- ── 05 · THE THREE GRAPHS (widget) ── -->
+  <div class="section" id="s5">
+    <div class="sec-label">05 / 11 · E6.4 · Recognise &amp; sketch</div>
     <h2>The three graphs, 0° to 360°</h2>
 
-    <p>You must be able to <strong>recognise, sketch and read</strong> each of these over <span class="eq-inline">0° ≤ x ≤ 360°</span>. Switch between them below — the key points (max ●, min ●, zeros ●) are marked, and the read-out lists the features examiners ask for.</p>
+    <p>You must <strong>recognise, sketch and read</strong> each graph over <span class="eq-inline">0° ≤ x ≤ 360°</span>. Switch between them — key points (max ●, min ●, zeros ●) are marked and the read-out lists the features examiners ask for.</p>
 
     <div class="explorer">
       <div class="scn-tabs" id="tgTabs">
@@ -640,7 +793,6 @@
       </div>
     </div>
 
-    <h3>Feature table — memorise the shapes</h3>
     <table>
       <tr><th>Feature</th><th class="c">y = sin x</th><th class="c">y = cos x</th><th class="c">y = tan x</th></tr>
       <tr><td><strong>Starts at (0°)</strong></td><td class="c">0</td><td class="c">1</td><td class="c">0</td></tr>
@@ -648,79 +800,36 @@
       <tr><td><strong>Period</strong></td><td class="c">360°</td><td class="c">360°</td><td class="c">180°</td></tr>
       <tr><td><strong>Maximum</strong></td><td class="c">1 at 90°</td><td class="c">1 at 0°, 360°</td><td class="c">none</td></tr>
       <tr><td><strong>Minimum</strong></td><td class="c">−1 at 270°</td><td class="c">−1 at 180°</td><td class="c">none</td></tr>
-      <tr><td><strong>Zeros (crosses x-axis)</strong></td><td class="c">0°, 180°, 360°</td><td class="c">90°, 270°</td><td class="c">0°, 180°, 360°</td></tr>
+      <tr><td><strong>Zeros</strong></td><td class="c">0°, 180°, 360°</td><td class="c">90°, 270°</td><td class="c">0°, 180°, 360°</td></tr>
       <tr><td><strong>Undefined at</strong></td><td class="c">—</td><td class="c">—</td><td class="c">90°, 270°</td></tr>
     </table>
 
     <div class="box pitfall">
       <div class="box-label">⚠️ Classic slip</div>
-      <span class="eq-inline">tan x</span> is <strong>not</strong> a wave between −1 and 1. It shoots up to +∞, then reappears from −∞ on the other side of a <strong>vertical asymptote</strong> at 90° and 270° (the dashed red lines). Its period is <strong>180°</strong>, not 360° like sine and cosine.
+      <span class="eq-inline">tan x</span> is <strong>not</strong> a wave between −1 and 1. It shoots to +∞ then reappears from −∞ across <strong>vertical asymptotes</strong> at 90° and 270° (dashed red). Its period is <strong>180°</strong>, not 360°.
     </div>
   </div>
 
 
-  <!-- ── 03 · EXACT VALUES ── -->
-  <div class="section">
-    <div class="sec-label">03 / 07 · E6.3 · Know these cold</div>
-    <h2>Exact trig values</h2>
+  <!-- ── 06 · SOLVING EQUATIONS (widget) ── -->
+  <div class="section" id="s6">
+    <div class="sec-label">06 / 11 · E6.4 · The key skill</div>
+    <h2>Solving trig equations</h2>
 
-    <p>For the special angles you're expected to write the value <strong>exactly</strong> (as a surd or fraction), without a calculator. This is a "recall" mark in the exam.</p>
-
-    <table>
-      <tr><th>x</th><th class="c">0°</th><th class="c">30°</th><th class="c">45°</th><th class="c">60°</th><th class="c">90°</th></tr>
-      <tr><td><strong>sin x</strong></td><td class="c">0</td><td class="c">½</td><td class="c">√2⁄2</td><td class="c">√3⁄2</td><td class="c">1</td></tr>
-      <tr><td><strong>cos x</strong></td><td class="c">1</td><td class="c">√3⁄2</td><td class="c">√2⁄2</td><td class="c">½</td><td class="c">0</td></tr>
-      <tr><td><strong>tan x</strong></td><td class="c">0</td><td class="c">1⁄√3</td><td class="c">1</td><td class="c">√3</td><td class="c">undefined</td></tr>
-    </table>
-
-    <div class="box remember">
-      <div class="box-label">🧠 The "1, 2, 3" hand trick</div>
-      Write <span class="eq-inline" style="color:var(--rose)">0 1 2 3 4</span> under the angles 0°, 30°, 45°, 60°, 90°. For <strong>sin</strong>, take <strong>√(that number) ÷ 2</strong>: so sin gives <span class="eq-inline">√0/2, √1/2, √2/2, √3/2, √4/2</span> = <span class="eq-inline">0, ½, √2⁄2, √3⁄2, 1</span>. <strong>cos</strong> is the same list <em>reversed</em>. And <span class="eq-inline">tan x = sin x ÷ cos x</span>.
-    </div>
-
-    <div class="box exam">
-      <div class="box-label">✅ Where marks are won</div>
-      Notice <span class="eq-inline">cos 60° = ½</span> and <span class="eq-inline">sin 30° = ½</span> — equal, because 60° and 30° are complementary. And <span class="eq-inline">tan 45° = 1</span> exactly (height = across at 45°). If a "solve" question gives you <span class="eq-inline">cos x = ½</span>, you should <em>instantly</em> know one answer is 60° without touching the calculator.
-    </div>
-  </div>
-
-
-  <!-- ── 04 · THE SECOND SOLUTION ── -->
-  <div class="section">
-    <div class="sec-label">04 / 07 · E6.4 · The key skill</div>
-    <h2>Why every equation has two answers</h2>
-
-    <p>Your calculator's <span class="eq-inline">sin⁻¹</span>, <span class="eq-inline">cos⁻¹</span>, <span class="eq-inline">tan⁻¹</span> only ever give <strong>one</strong> angle — the "principal" one. But a horizontal line <span class="eq-inline">y = k</span> usually cuts the wave <strong>twice</strong> between 0° and 360°. The exam wants <em>both</em> crossings, so you always find the calculator answer, then use the graph's symmetry to get its partner.</p>
-
-    <div class="box intuition">
-      <div class="box-label">💡 See it as a line crossing a wave</div>
-      "Solve <span class="eq-inline">sin x = 0.5</span>" just means: <strong>where does the flat line y = 0.5 meet the sine curve?</strong> Draw the line across the graph — it hits the curve twice. The calculator hands you the first crossing (30°); the shape of the graph gives you the second (150°).
-    </div>
+    <p>Your calculator's <span class="eq-inline">sin⁻¹</span>, <span class="eq-inline">cos⁻¹</span>, <span class="eq-inline">tan⁻¹</span> give only <strong>one</strong> angle, but a line <span class="eq-inline">y = k</span> usually cuts the wave <strong>twice</strong> in 0°–360°. Find the calculator angle, then use symmetry for its partner.</p>
 
     <div class="define mom-c">
       <span class="term">The three partner rules (0° ≤ x ≤ 360°)</span><br>
-      If the calculator gives you a first angle <span class="eq-inline">x₁</span>, the second solution is:
+      If the calculator gives a first angle <span class="eq-inline">x₁</span>, the second solution is:
       <ul style="margin-top:8px">
-        <li><span class="eq-inline" style="color:var(--motion)">sin x = k</span> &nbsp;→&nbsp; second angle = <strong>180° − x₁</strong></li>
-        <li><span class="eq-inline" style="color:var(--motion)">cos x = k</span> &nbsp;→&nbsp; second angle = <strong>360° − x₁</strong></li>
-        <li><span class="eq-inline" style="color:var(--momentum)">tan x = k</span> &nbsp;→&nbsp; second angle = <strong>180° + x₁</strong></li>
+        <li><span class="eq-inline" style="color:var(--motion)">sin x = k</span> → second angle = <strong>180° − x₁</strong></li>
+        <li><span class="eq-inline" style="color:var(--motion)">cos x = k</span> → second angle = <strong>360° − x₁</strong></li>
+        <li><span class="eq-inline" style="color:var(--momentum)">tan x = k</span> → second angle = <strong>180° + x₁</strong></li>
       </ul>
-      Then <strong>add 360°</strong> to any answer that came out negative, and <strong>keep only those in 0°–360°</strong>.
+      Then <strong>add 360°</strong> to any negative answer and keep only those in 0°–360°.
     </div>
 
-    <div class="box remember">
-      <div class="box-label">⚠️ Memory hook</div>
-      <span class="eq-inline" style="color:var(--rose)">Sine → 180 − x</span> &nbsp; <span class="eq-inline" style="color:var(--rose)">Cos → 360 − x</span> &nbsp; <span class="eq-inline" style="color:var(--rose)">Tan → 180 + x</span>. Sine and cosine both "reflect"; tangent "repeats every 180°".
-    </div>
-  </div>
-
-
-  <!-- ── 05 · SOLVER (widget) ── -->
-  <div class="section">
-    <div class="sec-label">05 / 07 · Interactive solver</div>
-    <h2>Watch the line cut the wave</h2>
-
-    <p>Pick a function, then drag <span class="eq-inline">k</span>. The dashed red line is <span class="eq-inline">y = k</span>; the red dots are the solutions of <span class="eq-inline">f(x) = k</span> in the range 0°–360°. See how sine gives a <em>180 − x</em> pair, cosine a <em>360 − x</em> pair, and tangent a <em>180 + x</em> pair.</p>
+    <p>Pick a function and drag <span class="eq-inline">k</span>. The dashed red line is <span class="eq-inline">y = k</span>; the red dots are the solutions.</p>
 
     <div class="tool">
       <div class="scn-tabs" id="slvTabs">
@@ -740,80 +849,188 @@
       </div>
       <div class="vec-out">
         <div class="ro">Equation</div>
-        <div class="rv" id="slvEq">sin x = 0.5</div>
+        <div class="rv" id="slvEq">sin x = 0.50</div>
         <div class="ro">Solutions in 0° ≤ x ≤ 360°</div>
         <div class="rv big" id="slvSol">30°, 150°</div>
         <div class="ro">How</div>
-        <div class="rv" id="slvHow">x₁ = 30° · partner = 180 − 30 = 150°</div>
+        <div class="rv" id="slvHow">sin⁻¹(0.50) = 30° · partner 180 − (30) = 150°</div>
       </div>
+    </div>
+
+    <h3>Worked example — 2 cos x + 1 = 0, for 0° ≤ x ≤ 360°</h3>
+    <div class="work">
+      <span class="step">rearrange</span> cos x = −½<br>
+      <span class="step">calculator angle from +½</span> cos⁻¹(½) = 60°<br>
+      <span class="step">cos negative → answers left &amp; right of 180°</span> 180 − 60 = 120°, 180 + 60 = 240°<br>
+      <span class="step">answer</span> x = <strong>120°, 240°</strong>
     </div>
 
     <div class="box pitfall">
       <div class="box-label">⚠️ No solution</div>
-      Slide sine or cosine to the very top or bottom: a line above <span class="eq-inline">y = 1</span> or below <span class="eq-inline">y = −1</span> never touches the wave. So <span class="eq-inline">sin x = 2</span> has <strong>no solution</strong> — sine can't exceed 1. Tangent, however, reaches every value, so <span class="eq-inline">tan x = k</span> always has two answers.
+      A line above <span class="eq-inline">y = 1</span> or below <span class="eq-inline">y = −1</span> never meets the sine/cosine wave, so <span class="eq-inline">sin x = 2</span> has <strong>no solution</strong>. Tangent reaches every value, so <span class="eq-inline">tan x = k</span> always has two answers in 0°–360°.
     </div>
   </div>
 
 
-  <!-- ── 06 · WORKED EXAMPLES ── -->
-  <div class="section">
-    <div class="sec-label">06 / 07 · Exam technique</div>
-    <h2>Worked examples — the full method</h2>
+  <!-- ── 07 · SINE RULE ── -->
+  <div class="section" id="s7">
+    <div class="sec-label">07 / 11 · E6.5 · Any triangle</div>
+    <h2>The sine rule</h2>
 
-    <h3>Example 1 · Solve 2 cos x + 1 = 0 for 0° ≤ x ≤ 360°</h3>
-    <div class="work">
-      <span class="step">rearrange to cos x = …</span> 2 cos x + 1 = 0 → cos x = −½<br>
-      <span class="step">calculator angle from +½</span> cos⁻¹(½) = 60°<br>
-      <span class="step">cos is negative → answers left &amp; right of 180°</span> 180 − 60 = 120°,&nbsp; 180 + 60 = 240°<br>
-      <span class="step">both in range</span> x = <strong>120°, 240°</strong>
+    <p>Real triangles aren't always right-angled. The <strong>sine rule</strong> links each side to the sine of the angle <em>opposite</em> it, so it works on any triangle. It's <strong>given</strong> in the exam's List of formulas — the skill is knowing <em>when</em> to use it.</p>
+
+    <div class="define force-c">
+      <span class="term">Sine rule</span><br>
+      <span class="eq-inline" style="color:var(--force)">a / sin A = b / sin B = c / sin C</span><br>
+      Use the "side-up" version to find a <strong>side</strong>; flip it (<span class="eq-inline">sin A / a = …</span>) to find an <strong>angle</strong>. Side <span class="eq-inline">a</span> is always opposite angle <span class="eq-inline">A</span>.
     </div>
+
+    <div class="box intuition">
+      <div class="box-label">💡 When to reach for it</div>
+      Use the sine rule when you have a <strong>matching side–angle pair</strong> (a side and the angle facing it) plus one more piece. That "opposite pair" is the signature — if you don't have one, use the cosine rule instead.
+    </div>
+
+    <svg class="diagram" viewBox="0 0 300 190" role="img" aria-label="General triangle ABC">
+      <polygon class="dg-fill" points="40,160 260,160 110,40"/>
+      <text class="dg-lbl" x="30" y="172">A</text>
+      <text class="dg-lbl" x="262" y="172">B</text>
+      <text class="dg-lbl" x="104" y="34">C</text>
+      <text class="dg-lbl m" x="180" y="110">a</text>
+      <text class="dg-lbl m" x="60" y="105">b</text>
+      <text class="dg-lbl m" x="150" y="175">c</text>
+    </svg>
+
+    <h3>Worked example</h3>
+    <p>In triangle ABC, angle A = 40°, angle C = 65° and side c = 12&nbsp;cm. Find side a.</p>
+    <div class="work">
+      <span class="step">side up (finding a side)</span> a / sin 40° = 12 / sin 65°<br>
+      <span class="step">rearrange</span> a = 12 × sin 40° ÷ sin 65°<br>
+      <span class="step">evaluate</span> a = 12 × 0.6428 ÷ 0.9063 = <strong>8.51 cm</strong> (3 s.f.)
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The ambiguous case (SSA)</div>
+      When you use the sine rule to find an <strong>angle</strong>, remember <span class="eq-inline">sin θ = sin(180° − θ)</span> — so there can be <strong>two</strong> valid triangles (an acute and an obtuse answer). Always check whether the obtuse option still fits (the three angles must total 180°).
+    </div>
+  </div>
+
+
+  <!-- ── 08 · COSINE RULE ── -->
+  <div class="section" id="s8">
+    <div class="sec-label">08 / 11 · E6.5 · Any triangle</div>
+    <h2>The cosine rule</h2>
+
+    <p>When the sine rule can't start — because you have <strong>no opposite side–angle pair</strong> — the cosine rule steps in. It's Pythagoras with a correction term for the angle, and it's also <strong>given</strong> in the exam.</p>
+
+    <div class="define force-c">
+      <span class="term">Cosine rule</span><br>
+      <span class="eq-inline" style="color:var(--force)">a² = b² + c² − 2bc·cos A</span> &nbsp;→ find a side<br>
+      <span class="eq-inline" style="color:var(--force)">cos A = (b² + c² − a²) / (2bc)</span> &nbsp;→ find an angle
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">💡 Two triggers</div>
+      Use the cosine rule when you know <strong>two sides and the angle between them</strong> (to find the third side), or <strong>all three sides</strong> (to find any angle). If <span class="eq-inline">A = 90°</span>, <span class="eq-inline">cos 90° = 0</span> and it collapses back to <span class="eq-inline">a² = b² + c²</span> — plain Pythagoras.
+    </div>
+
+    <h3>Worked example — find a side</h3>
+    <p>Two paths leave a junction at 58° to each other, one 7&nbsp;km long, the other 9&nbsp;km. How far apart are their far ends?</p>
+    <div class="work">
+      <span class="step">two sides + included angle</span> a² = 7² + 9² − 2·7·9·cos 58°<br>
+      <span class="step">evaluate</span> a² = 49 + 81 − 126 × 0.5299 = 63.23<br>
+      <span class="step">square root</span> a = <strong>7.95 km</strong> (3 s.f.)
+    </div>
+
+    <h3>Worked example — find an angle</h3>
+    <p>A triangle has sides 6, 7 and 8. Find the angle opposite the side of length 6.</p>
+    <div class="work">
+      <span class="step">cos A = (b² + c² − a²)/(2bc)</span> cos A = (49 + 64 − 36)/(2·7·8) = 77/112<br>
+      <span class="step">= 0.6875 → inverse cosine</span> A = cos⁻¹(0.6875) = <strong>46.6°</strong> (1 d.p.)
+    </div>
+  </div>
+
+
+  <!-- ── 09 · TRIANGLE AREA ── -->
+  <div class="section" id="s9">
+    <div class="sec-label">09 / 11 · E6.5 · Area</div>
+    <h2>Area of a triangle = ½ ab sin C</h2>
+
+    <p>The familiar <span class="eq-inline">½ × base × height</span> needs a perpendicular height. When you instead know <strong>two sides and the angle between them</strong>, this formula (also <strong>given</strong> in the exam) gets the area directly.</p>
+
+    <div class="define energy-c">
+      <span class="term">Area formula</span><br>
+      <span class="eq-inline" style="color:var(--energy)">Area = ½ · a · b · sin C</span><br>
+      where <span class="eq-inline">C</span> is the angle <em>between</em> the two sides <span class="eq-inline">a</span> and <span class="eq-inline">b</span> (the <strong>included</strong> angle).
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">💡 Why it works</div>
+      The height of the triangle is <span class="eq-inline">a·sin C</span> (drop a perpendicular from the tip — it's the opposite side of a little right-angled triangle). Put that into <span class="eq-inline">½ × base × height</span> with base <span class="eq-inline">b</span> and you get <span class="eq-inline">½ ab sin C</span>.
+    </div>
+
+    <h3>Worked example</h3>
+    <p>A triangular plot has two sides of 9&nbsp;m and 12&nbsp;m meeting at 43°. Find its area.</p>
+    <div class="work">
+      <span class="step">two sides + included angle</span> Area = ½ × 9 × 12 × sin 43°<br>
+      <span class="step">evaluate</span> = 54 × 0.6820 = <strong>36.8 m²</strong> (3 s.f.)
+    </div>
+
     <div class="box exam">
-      <div class="box-label">✅ Tip</div>
-      When <span class="eq-inline">k</span> is <strong>negative</strong>, work out the calculator angle from the <strong>positive</strong> value first (60° here), then place the two answers using the rule. It's cleaner than trusting the calculator's negative output.
-    </div>
-
-    <h3>Example 2 · Solve sin x = 0.6 for 0° ≤ x ≤ 360° (1 d.p.)</h3>
-    <div class="work">
-      <span class="step">first angle</span> x₁ = sin⁻¹(0.6) = 36.9°<br>
-      <span class="step">sine rule: partner = 180 − x₁</span> 180 − 36.9 = 143.1°<br>
-      <span class="step">answer</span> x = <strong>36.9°, 143.1°</strong>
-    </div>
-
-    <h3>Example 3 · Solve tan x = −1.5 for 0° ≤ x ≤ 360° (1 d.p.)</h3>
-    <div class="work">
-      <span class="step">angle from +1.5</span> tan⁻¹(1.5) = 56.3°<br>
-      <span class="step">tan is negative → answers in 2nd &amp; 4th quadrants</span> 180 − 56.3 = 123.7°,&nbsp; 360 − 56.3 = 303.7°<br>
-      <span class="step">check with partner rule</span> 123.7 and 123.7 + 180 = 303.7 ✓<br>
-      <span class="step">answer</span> x = <strong>123.7°, 303.7°</strong>
-    </div>
-
-    <h3>Example 4 · Solve sin x = 2/3 &nbsp;(using exact-value feel)</h3>
-    <div class="work">
-      <span class="step">first angle</span> x₁ = sin⁻¹(0.6667) = 41.8°<br>
-      <span class="step">partner = 180 − 41.8</span> 138.2°<br>
-      <span class="step">answer</span> x = <strong>41.8°, 138.2°</strong>
-    </div>
-
-    <div class="box remember">
-      <div class="box-label">⚠️ Read the range</div>
-      Everything above uses <span class="eq-inline">0° ≤ x ≤ 360°</span>. If a question gives a different range (e.g. −180° to 180°), find all answers with the partner rule then shift each by ±360° to land inside the stated range.
+      <div class="box-label">✅ Include the right angle</div>
+      The angle must sit <strong>between</strong> the two sides you multiply. If you're given a different angle, either relabel or find the included angle first (angles in a triangle sum to 180°).
     </div>
   </div>
 
 
-  <!-- ── 07 · SKILL BANK ── -->
-  <div class="section">
-    <div class="sec-label">07 / 07 · Reference</div>
-    <h2>Cheat-sheet skill bank</h2>
-    <p>Tap any tile for the rule, a worked line, and the exam trap:</p>
+  <!-- ── 10 · 3D TRIG ── -->
+  <div class="section" id="s10">
+    <div class="sec-label">10 / 11 · E6.6 · Three dimensions</div>
+    <h2>Pythagoras &amp; trig in 3D</h2>
+
+    <p>3D problems are solved by finding a <strong>right-angled triangle inside the solid</strong> and working in that flat plane. The trick is to sketch the triangle on its own before touching the calculator.</p>
+
+    <div class="define calc-c">
+      <span class="term">Space diagonal of a cuboid</span><br>
+      <span class="eq-inline" style="color:var(--cyan)">d = √(l² + w² + h²)</span> — Pythagoras used twice: first across the base (<span class="eq-inline">√(l²+w²)</span>), then up to the far corner.
+    </div>
+
+    <svg class="diagram" viewBox="0 0 300 200" role="img" aria-label="Cuboid with space diagonal">
+      <polygon class="dg-hidden" points="70,150 210,150 250,110 110,110"/>
+      <path class="dg-side" d="M70,150 L70,60 L210,60 L210,150"/>
+      <path class="dg-side" d="M70,60 L110,20 L250,20 L210,60"/>
+      <path class="dg-side" d="M250,20 L250,110 L210,150"/>
+      <line class="dg-hyp" x1="70" y1="150" x2="250" y2="20"/>
+      <text class="dg-lbl" x="150" y="95" fill="#48d39a">d</text>
+    </svg>
+
+    <h3>Worked example — angle between a line and a plane</h3>
+    <p>A box measures 6&nbsp;cm × 4&nbsp;cm × 3&nbsp;cm. Find the angle the space diagonal makes with the base.</p>
+    <div class="work">
+      <span class="step">base diagonal first (Pythagoras on the base)</span> √(6² + 4²) = √52 = 7.211 cm<br>
+      <span class="step">angle θ between diagonal and base: opposite = height 3, adjacent = base diagonal</span> tan θ = 3 / 7.211<br>
+      <span class="step">inverse tan</span> θ = tan⁻¹(0.4160) = <strong>22.6°</strong> (1 d.p.)
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ The angle-between-line-and-plane recipe</div>
+      <strong>1.</strong> Drop the line straight down onto the plane to get its "shadow" (projection). <strong>2.</strong> The required angle is between the line and that shadow. <strong>3.</strong> It lives in a right-angled triangle — find its sides with Pythagoras, then use SOH-CAH-TOA.
+    </div>
+  </div>
+
+
+  <!-- ── 11 · SKILL BANK ── -->
+  <div class="section" id="s11">
+    <div class="sec-label">11 / 11 · Reference</div>
+    <h2>Topic 6 formula &amp; skill bank</h2>
+    <p>The sine rule, cosine rule and area formula are <strong>given</strong> in the exam; the rest you should know on sight. Tap any tile for the form, a worked line, and the exam trap:</p>
 
     <div class="eqbank" id="eqbank"></div>
 
     <div class="box remember" style="margin-top:22px">
-      <div class="box-label">⚠️ Know these on sight</div>
-      <span class="eq-inline" style="color:var(--rose)">sin, cos: period 360°</span>
-      <span class="eq-inline" style="color:var(--rose)">tan: period 180°</span>
-      <span class="eq-inline" style="color:var(--rose)">−1 ≤ sin, cos ≤ 1</span>
+      <div class="box-label">⚠️ Know these cold</div>
+      <span class="eq-inline" style="color:var(--rose)">a² + b² = c²</span>
+      <span class="eq-inline" style="color:var(--rose)">SOH CAH TOA</span>
+      <span class="eq-inline" style="color:var(--rose)">bearings = 3 figures from N</span>
       <span class="eq-inline" style="color:var(--rose)">sin: 180 − x</span>
       <span class="eq-inline" style="color:var(--rose)">cos: 360 − x</span>
       <span class="eq-inline" style="color:var(--rose)">tan: 180 + x</span>
@@ -822,8 +1039,8 @@
 
   <hr class="divider">
   <div class="footer">
-    IGCSE MATHEMATICS · 0580 EXTENDED · TOPIC 6.3–6.4 — TRIG GRAPHS &amp; EQUATIONS<br>
-    Built for understanding — every wave a circle unrolled, every equation a line crossing that wave.
+    IGCSE MATHEMATICS · 0580 EXTENDED · TOPIC 6 — TRIGONOMETRY (E6.1–E6.6)<br>
+    Built for understanding — every ratio a right-angled triangle, every wave a circle unrolled.
   </div>
 
 </div>
@@ -868,36 +1085,29 @@ function el(tag,attrs){ const e=document.createElementNS(SVGNS,tag);
 function rad(d){ return d*Math.PI/180; }
 const DEG = 180/Math.PI;
 
-/* draw axes / gridlines / labels for a degree-x graph */
 function frame(g, M, f){
   g.textContent='';
   const yticks = (f==='tan') ? [-4,-2,0,2,4] : [-1,0,1];
-  // horizontal gridlines + y labels
   yticks.forEach(t=>{
     const yy=M.Y(t);
     g.appendChild(el('line',{class:(t===0?'axis':'grid'),x1:PX0,x2:PX1,y1:yy.toFixed(1),y2:yy.toFixed(1)}));
     g.appendChild(el('text',{class:'axis-lbl',x:PX0-6,y:(yy+3).toFixed(1),'text-anchor':'end'})).textContent=t;
   });
-  // vertical gridlines + x labels (degrees)
   [0,90,180,270,360].forEach(t=>{
     const xx=M.X(t);
     g.appendChild(el('line',{class:(t===0?'axis':'grid'),x1:xx.toFixed(1),x2:xx.toFixed(1),y1:PY0,y2:PY1}));
     g.appendChild(el('text',{class:'axis-lbl',x:xx.toFixed(1),y:PY1+13,'text-anchor':'middle'})).textContent=t+'°';
   });
-  // asymptotes for tan
   if(f==='tan'){
-    [90,270].forEach(a=>{
-      const xx=M.X(a);
-      g.appendChild(el('line',{class:'asym',x1:xx.toFixed(1),x2:xx.toFixed(1),y1:PY0,y2:PY1}));
-    });
+    [90,270].forEach(a=>{ const xx=M.X(a);
+      g.appendChild(el('line',{class:'asym',x1:xx.toFixed(1),x2:xx.toFixed(1),y1:PY0,y2:PY1})); });
   }
 }
-function fval(f,x){ // x in degrees
+function fval(f,x){
   if(f==='sin') return Math.sin(rad(x));
   if(f==='cos') return Math.cos(rad(x));
   return Math.tan(rad(x));
 }
-/* path string for a trig curve on mapper M, breaking tan at asymptotes */
 function curveD(f, M){
   let d='', pen=false;
   for(let x=0; x<=360; x+=1){
@@ -910,7 +1120,50 @@ function curveD(f, M){
 }
 
 /* ════════════════════════════════════════════════
-   1 · THREE-GRAPHS EXPLORER
+   1 · RIGHT-TRIANGLE SOHCAHTOA WIDGET
+════════════════════════════════════════════════ */
+(function(){
+  const slide=document.getElementById('thSlide'), thv=document.getElementById('thVal');
+  const adj=document.getElementById('triAdj'), opp=document.getElementById('triOpp'),
+        hyp=document.getElementById('triHyp'), arc=document.getElementById('triArc'),
+        lbls=document.getElementById('triLbls');
+  const roOpp=document.getElementById('roOpp'), roAdj=document.getElementById('roAdj'),
+        roRatio=document.getElementById('roRatio'), roAll=document.getElementById('roAll');
+  const SC=19;                 // px per unit; hypotenuse = 10 units
+  const X0=46, Y0=214;         // right-angle vertex sits bottom-left region
+  function draw(){
+    const th=+slide.value, r=rad(th);
+    const adjU=10*Math.cos(r), oppU=10*Math.sin(r);
+    const ax=X0+adjU*SC, ay=Y0, ox=ax, oy=Y0-oppU*SC;   // P1 (right angle) at (ax,Y0); P2 top at (ox,oy)
+    // P0 (angle θ) at (X0,Y0)
+    adj.setAttribute('x1',X0); adj.setAttribute('y1',Y0); adj.setAttribute('x2',ax); adj.setAttribute('y2',ay);
+    opp.setAttribute('x1',ax); opp.setAttribute('y1',ay); opp.setAttribute('x2',ox); opp.setAttribute('y2',oy);
+    hyp.setAttribute('x1',X0); hyp.setAttribute('y1',Y0); hyp.setAttribute('x2',ox); hyp.setAttribute('y2',oy);
+    // angle arc at P0
+    const rr=26, a2=Math.atan2(Y0-oy, ox-X0);
+    arc.setAttribute('d','M '+(X0+rr)+' '+Y0+' A '+rr+' '+rr+' 0 0 0 '+(X0+rr*Math.cos(a2))+' '+(Y0-rr*Math.sin(a2)));
+    // labels
+    lbls.textContent='';
+    lbls.appendChild(el('text',{class:'tri-lbl',x:X0+34,y:Y0-8,fill:'var(--energy2)'})).textContent='θ';
+    lbls.appendChild(el('text',{class:'tri-lbl',x:(X0+ax)/2-6,y:Y0+16,'text-anchor':'middle',fill:'var(--motion)'})).textContent='adjacent';
+    lbls.appendChild(el('text',{class:'tri-lbl',x:ax+8,y:(ay+oy)/2,fill:'var(--force)'})).textContent='opp';
+    lbls.appendChild(el('text',{class:'tri-lbl',x:(X0+ox)/2-30,y:(Y0+oy)/2-6,fill:'var(--power)'})).textContent='hyp = 10';
+    // right-angle marker at P1
+    lbls.appendChild(el('path',{d:'M '+(ax-9)+' '+Y0+' L '+(ax-9)+' '+(Y0-9)+' L '+ax+' '+(Y0-9),
+      fill:'none',stroke:'#7b8aa8','stroke-width':1.3}));
+    // read-outs
+    thv.textContent=th+'°';
+    roOpp.textContent=oppU.toFixed(2);
+    roAdj.textContent=adjU.toFixed(2);
+    roRatio.textContent='sin '+th+'° = '+Math.sin(r).toFixed(3);
+    roAll.textContent='cos '+th+'° = '+Math.cos(r).toFixed(3)+' · tan '+th+'° = '+Math.tan(r).toFixed(3);
+  }
+  slide.addEventListener('input',draw);
+  draw();
+})();
+
+/* ════════════════════════════════════════════════
+   2 · THREE-GRAPHS EXPLORER
 ════════════════════════════════════════════════ */
 (function(){
   const cap=document.getElementById('tgCap'), read=document.getElementById('tgRead');
@@ -919,13 +1172,13 @@ function curveD(f, M){
   const META={
     sin:{ y:[-1.3,1.3],
       pts:[[90,1,'pt-max'],[270,-1,'pt-min'],[0,0,'pt-zero'],[180,0,'pt-zero'],[360,0,'pt-zero']],
-      read:'Starts at 0, rises to a <b>maximum 1 at 90°</b>, back to 0 at 180°, down to a <b>minimum −1 at 270°</b>, back to 0 at 360°. Range <b>−1 ≤ y ≤ 1</b>, period <b>360°</b>. Has rotational symmetry about (180°, 0).' },
+      read:'Starts at 0, rises to a <b>maximum 1 at 90°</b>, back to 0 at 180°, down to a <b>minimum −1 at 270°</b>, back to 0 at 360°. Range <b>−1 ≤ y ≤ 1</b>, period <b>360°</b>. Rotational symmetry about (180°, 0).' },
     cos:{ y:[-1.3,1.3],
       pts:[[0,1,'pt-max'],[360,1,'pt-max'],[180,-1,'pt-min'],[90,0,'pt-zero'],[270,0,'pt-zero']],
       read:'Starts at its <b>maximum 1 at 0°</b>, falls through 0 at 90° to a <b>minimum −1 at 180°</b>, back up through 0 at 270° to 1 at 360°. Range <b>−1 ≤ y ≤ 1</b>, period <b>360°</b>. It is the sine curve shifted left by 90°.' },
     tan:{ y:[-4.2,4.2],
       pts:[[0,0,'pt-zero'],[180,0,'pt-zero'],[360,0,'pt-zero']],
-      read:'Zero at 0°, 180°, 360°. Shoots up to +∞ then reappears from −∞ across <b>vertical asymptotes at 90° and 270°</b>. Range is <b>all real numbers</b>; period is <b>180°</b> (not 360°). Undefined at 90° and 270°.' }
+      read:'Zero at 0°, 180°, 360°. Shoots to +∞ then reappears from −∞ across <b>vertical asymptotes at 90° and 270°</b>. Range is <b>all real numbers</b>; period is <b>180°</b>. Undefined at 90° and 270°.' }
   };
   function draw(f){
     const m=META[f], M=mk(0,360,m.y[0],m.y[1]);
@@ -944,11 +1197,10 @@ function curveD(f, M){
     t.classList.add('active'); draw(t.dataset.f);
   });
   draw('sin');
-  window.__tgRedraw=()=>draw(document.querySelector('#tgTabs .scn-tab.active').dataset.f);
 })();
 
 /* ════════════════════════════════════════════════
-   2 · EQUATION SOLVER
+   3 · EQUATION SOLVER
 ════════════════════════════════════════════════ */
 (function(){
   let f='sin';
@@ -958,9 +1210,11 @@ function curveD(f, M){
   const eqEl=document.getElementById('slvEq'), solEl=document.getElementById('slvSol'), howEl=document.getElementById('slvHow');
   const YR={ sin:[-1.3,1.3], cos:[-1.3,1.3], tan:[-4.2,4.2] };
 
+  function fmt(n){ const r=Math.round(n*10)/10; return Number.isInteger(r)?r:r.toFixed(1); }
   function norm(v){ v=((v%360)+360)%360; return Math.round(v*10)/10; }
-  function d(n){ return (''+fmt(n)).replace('-','−'); }           // proper minus sign for display
-  function withEnds(s){                                            // closed range 0°–360°: add the 360° endpoint when 0° is a solution
+  function d(n){ return (''+fmt(n)).replace('-','−'); }
+  function dedupe(a){ const o=[]; a.forEach(v=>{ if(!o.some(u=>Math.abs(u-v)<0.05)) o.push(v); }); return o.sort((p,q)=>p-q); }
+  function withEnds(s){
     const out=dedupe(s);
     if(out.some(v=>Math.abs(v)<0.05) && !out.some(v=>Math.abs(v-360)<0.05)){ out.push(360); out.sort((p,q)=>p-q); }
     return out;
@@ -979,15 +1233,12 @@ function curveD(f, M){
     return {sols:withEnds([norm(a),norm(p)]),
       how:'tan⁻¹('+K+') = '+d(a)+'° · partner '+d(a)+' + 180 = '+d(p)+'°'+(a<0?' · +360° to the negative angle':'')};
   }
-  function dedupe(a){ const out=[]; a.forEach(v=>{ if(!out.some(u=>Math.abs(u-v)<0.05)) out.push(v); }); return out.sort((p,q)=>p-q); }
-  function fmt(n){ const r=Math.round(n*10)/10; return Number.isInteger(r)?r:r.toFixed(1); }
 
   function draw(){
     const yr=YR[f], M=mk(0,360,yr[0],yr[1]);
     let k=+slide.value;
     frame(frameG,M,f);
     curve.setAttribute('d',curveD(f,M));
-    // clamp the visible line inside the plot box
     const kc=Math.max(yr[0],Math.min(yr[1],k));
     const ly=M.Y(kc);
     line.setAttribute('y1',ly.toFixed(1)); line.setAttribute('y2',ly.toFixed(1));
@@ -1014,48 +1265,57 @@ function curveD(f, M){
   });
   slide.addEventListener('input',draw);
   setF('sin');
-  window.__slvRedraw=draw;
 })();
 
 /* ════════════════════════════════════════════════
-   3 · SKILL BANK (tappable tiles)
+   4 · SKILL BANK (tappable tiles)
 ════════════════════════════════════════════════ */
 const EQ={
-  sinwave:{c:'motion',name:'Graph of y = sin x',formula:'wave, −1 to 1',
-    syms:[['start','0','at x=0'],['max','1','at 90°'],['min','−1','at 270°'],['period','360°','']],
-    rearr:'zeros at 0°, 180°, 360° · symmetry about (180°, 0)',
-    ex:'Height of a point going round a unit circle, plotted against angle.',
-    tip:'Range is −1 ≤ y ≤ 1 — a sin question can never answer more than 1.'},
-  coswave:{c:'motion',name:'Graph of y = cos x',formula:'wave, starts at 1',
-    syms:[['start','1','at x=0'],['min','−1','at 180°'],['zeros','90°, 270°',''],['period','360°','']],
-    rearr:'same shape as sine, shifted left by 90°',
-    ex:'Sideways position of a point on the unit circle, vs angle.',
-    tip:'cos is symmetric about x = 180° over 0°–360°: that’s why the partner is 360 − x.'},
-  tanwave:{c:'mom',name:'Graph of y = tan x',formula:'period 180°',
-    syms:[['zeros','0°, 180°, 360°',''],['asymptotes','90°, 270°',''],['range','all real y',''],['period','180°','']],
-    rearr:'tan x = sin x ÷ cos x · undefined where cos x = 0',
-    ex:'Blows up to ±∞ at 90° and 270°; repeats every 180°.',
-    tip:'Never draw tan as a −1..1 wave — that’s the most common sketch error.'},
+  pyth:{c:'force',name:'Pythagoras',formula:'a² + b² = c²',
+    syms:[['c','hypotenuse','longest'],['a, b','shorter sides',''],['angle','must be 90°','']],
+    rearr:'hyp = √(a²+b²) · short side = √(c² − a²)',
+    ex:'Ladder 5 m, base 1.5 m → height √(25−2.25) = 4.77 m.',
+    tip:'Subtract (not add) when the unknown is a shorter side.'},
+  soh:{c:'mom',name:'SOH-CAH-TOA',formula:'sin=O/H cos=A/H tan=O/A',
+    syms:[['O','opposite','faces θ'],['A','adjacent','next to θ'],['H','hypotenuse','opp. 90°']],
+    rearr:'side = H·sin θ etc. · angle = sin⁻¹(O/H) etc.',
+    ex:'opp 4, adj 7 → tan θ = 4/7 → θ = 29.7°.',
+    tip:'Label O, A, H first; pick the ratio using the two sides in play.'},
   exact:{c:'power',name:'Exact values',formula:'no calculator',
     syms:[['sin30','½',''],['sin45','√2⁄2',''],['sin60','√3⁄2',''],['tan45','1','']],
-    rearr:'sin: √0/2, √1/2, √2/2, √3/2, √4/2 · cos = reverse · tan = sin/cos',
-    ex:'cos 60° = ½, so cos x = ½ has 60° as one instant answer.',
-    tip:'tan 90° is undefined (cos 90° = 0), so it is NOT in the exact-value list.'},
-  sinsolve:{c:'force',name:'Solve sin x = k',formula:'partner: 180 − x',
-    syms:[['x₁','sin⁻¹k','calculator'],['x₂','180 − x₁',''],['range','0°–360°','']],
-    rearr:'x = sin⁻¹k and 180 − sin⁻¹k · add 360° if negative',
-    ex:'sin x = 0.6 → 36.9° and 180 − 36.9 = 143.1°.',
-    tip:'If |k| &gt; 1 there is NO solution — sine is stuck between −1 and 1.'},
-  cossolve:{c:'force',name:'Solve cos x = k',formula:'partner: 360 − x',
-    syms:[['x₁','cos⁻¹k','calculator'],['x₂','360 − x₁',''],['range','0°–360°','']],
-    rearr:'x = cos⁻¹k and 360 − cos⁻¹k',
-    ex:'2 cos x + 1 = 0 → cos x = −½ → 120° and 240°.',
-    tip:'For negative k, take cos⁻¹ of the positive value, then use 180 ± that angle.'},
-  tansolve:{c:'mom',name:'Solve tan x = k',formula:'partner: 180 + x',
-    syms:[['x₁','tan⁻¹k','calculator'],['x₂','180 + x₁',''],['range','0°–360°','']],
-    rearr:'x = tan⁻¹k and tan⁻¹k + 180 · add 360° if negative',
-    ex:'tan x = −1.5 → 123.7° and 303.7°.',
-    tip:'tan reaches every value, so tan x = k always has two answers in 0°–360°.'}
+    rearr:'sin: √0/2,√1/2,√2/2,√3/2,√4/2 · cos = reverse · tan = sin/cos',
+    ex:'cos 60° = ½, so cos x = ½ gives 60° instantly.',
+    tip:'tan 90° is undefined (cos 90° = 0).'},
+  graphs:{c:'motion',name:'The three graphs',formula:'sin cos tan, 0°–360°',
+    syms:[['sin,cos','period 360°',''],['tan','period 180°',''],['range','−1..1 (sin,cos)',''],['tan','asymptotes 90°,270°','']],
+    rearr:'sin & cos wave −1..1 · tan repeats every 180° with breaks',
+    ex:'sin: max 1 at 90°, min −1 at 270°, zeros 0/180/360.',
+    tip:'Never draw tan as a −1..1 wave.'},
+  solve:{c:'force',name:'Solve trig equations',formula:'two answers in 0°–360°',
+    syms:[['sin','180 − x',''],['cos','360 − x',''],['tan','180 + x','']],
+    rearr:'find calc angle x₁, then the partner rule; +360° if negative',
+    ex:'2cos x + 1 = 0 → cos x = −½ → 120°, 240°.',
+    tip:'|k| &gt; 1 → no solution for sin or cos.'},
+  sinerule:{c:'force',name:'Sine rule',formula:'a/sinA = b/sinB = c/sinC',
+    syms:[['use','opposite pair',''],['side','a=b·sinA/sinB',''],['angle','flip the fractions','']],
+    rearr:'given in the exam · find side or angle when a side–angle pair is known',
+    ex:'A=40°, C=65°, c=12 → a = 12 sin40/sin65 = 8.51 cm.',
+    tip:'Finding an angle? Watch the ambiguous case (θ or 180−θ).'},
+  cosinerule:{c:'mom',name:'Cosine rule',formula:'a² = b² + c² − 2bc·cosA',
+    syms:[['find side','2 sides + included angle',''],['find angle','all 3 sides',''],['cosA','(b²+c²−a²)/2bc','']],
+    rearr:'given in the exam · reduces to Pythagoras when A = 90°',
+    ex:'b=7, c=9, A=58° → a = √(49+81−126cos58°) = 7.95.',
+    tip:'Use it when there is NO side–angle pair to start the sine rule.'},
+  area:{c:'energy',name:'Triangle area',formula:'Area = ½ ab sin C',
+    syms:[['a, b','two sides',''],['C','included angle',''],['given','in the exam','']],
+    rearr:'C must be the angle between sides a and b',
+    ex:'a=9, b=12, C=43° → ½·9·12·sin43° = 36.8 m².',
+    tip:'The angle must sit between the two sides you multiply.'},
+  threeD:{c:'calc',name:'3D trigonometry',formula:'d = √(l²+w²+h²)',
+    syms:[['step 1','find a right triangle',''],['step 2','Pythagoras for sides',''],['step 3','SOH-CAH-TOA','']],
+    rearr:'angle line↔plane = angle between line and its shadow on the plane',
+    ex:'6×4×3 box: base diag √52; tanθ = 3/√52 → θ = 22.6°.',
+    tip:'Always sketch the flat right-angled triangle on its own first.'}
 };
 (function(){
   const bank=document.getElementById('eqbank');
@@ -1072,7 +1332,7 @@ const CMAP={motion:'var(--motion)',force:'var(--force)',energy:'var(--energy2)',
 function openEqCard(key){
   const q=EQ[key]; if(!q) return;
   const col=CMAP[q.c]||'var(--motion)';
-  document.getElementById('eqc-badge').textContent=q.formula.split(',')[0].slice(0,6);
+  document.getElementById('eqc-badge').textContent=q.name.split(' ')[0].slice(0,6);
   document.getElementById('eqc-badge').style.color=col;
   document.getElementById('eqc-name').textContent=q.name;
   const ff=document.getElementById('eqc-formula'); ff.textContent=q.formula; ff.style.color=col;
@@ -1091,7 +1351,7 @@ document.addEventListener('click',e=>{
 });
 
 /* ════════════════════════════════════════════════
-   4 · THEME TOGGLE
+   5 · THEME TOGGLE
 ════════════════════════════════════════════════ */
 (function(){
   const body=document.body, btn=document.getElementById('themeToggle');
