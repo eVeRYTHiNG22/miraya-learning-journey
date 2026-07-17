@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathematics Topic 7: Transformations and Vectors</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    /* MATHS palette — abstraction → geometry (Topic 7 roles).
+       blue = images / translations · indigo = vectors & rules ·
+       amber = enlargement / rotation · cyan = magnitude / lengths ·
+       red = mirror lines & centres · green = exam tips (locked) · magenta = alerts (locked) */
+    --motion:   #4db8ff;   /* blue — images, translations (primary) */
+    --force:    #ff5263;   /* red — mirror lines, centres, contrast */
+    --energy:   #f5b13c;   /* amber — enlargement, rotation angle */
+    --energy2:  #f5b13c;
+    --momentum: #7c8cff;   /* indigo — vectors & rules */
+    --power:    #48d39a;   /* green — exam tips / success (locked role) */
+    --cyan:     #3ad9d4;   /* cyan — magnitude / lengths */
+    --rose:     #f25cc1;   /* alert magenta — ≥30° from warm accents (CVD-safe, locked) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #4a3a1826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 110px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 54px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #122c44, #241a44);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--momentum); }
+  h1 .b { color: var(--motion); }
+
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 640px;
+  }
+  .toc {
+    display:flex; flex-wrap:wrap; gap:7px; margin-top:20px;
+  }
+  .toc a {
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; text-decoration:none;
+    color:var(--muted); background:var(--surface); border:1px solid var(--border);
+    border-radius:7px; padding:5px 10px; transition:all .16s;
+  }
+  .toc a:hover { color:var(--motion); border-color:var(--motion); }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: rise 0.55s ease forwards;
+    scroll-margin-top: 20px;
+  }
+  @keyframes rise {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--bright);
+    margin-bottom: 14px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: var(--bright);
+    margin: 26px 0 10px;
+  }
+
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+  ul { margin: 6px 0 14px 22px; }
+  li { margin-bottom: 5px; }
+
+  .eq-inline {
+    font-family: 'JetBrains Mono', monospace;
+    background: #0d1828;
+    border: 1px solid #22324a;
+    border-radius: 5px;
+    padding: 1px 7px;
+    font-size: 13px;
+    color: var(--motion);
+    white-space: nowrap;
+  }
+  body[data-theme="light"] .eq-inline {
+    background: #eef1f8;
+    border-color: #d4dcec;
+  }
+  .work {
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text);
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:8px; padding:11px 14px; margin:12px 0; line-height:1.9;
+    overflow-x:auto;
+  }
+  .work .step { color:var(--muted); }
+
+  /* ── BOXES ── */
+  .box {
+    border-radius: 11px;
+    padding: 17px 20px;
+    margin: 18px 0;
+    font-size: 14.2px;
+    border: 1px solid;
+  }
+  .box-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color: var(--motion); }
+
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define {
+    border-left: 3px solid var(--motion);
+    background: linear-gradient(90deg, #0c1c2880, transparent);
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .define .term {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--bright);
+    font-size: 1.02rem;
+  }
+  .define.force-c   { border-color: var(--force); background:linear-gradient(90deg,#23120b80,transparent); }
+  .define.energy-c  { border-color: var(--energy2); background:linear-gradient(90deg,#23180680,transparent); }
+  .define.mom-c     { border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+  .define.calc-c    { border-color: var(--cyan); background:linear-gradient(90deg,#08231f80,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:20px 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 16px 18px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { transform: translateY(-3px); border-color:#3a557c; }
+  .card-title {
+    font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px;
+  }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th {
+    background: var(--surface2); color: var(--motion);
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase;
+    padding:10px 14px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+  td.c, th.c { text-align:center; }
+
+  mark {
+    background: linear-gradient(120deg,#1c3a5a88,#243f6a88);
+    color: var(--bright); padding:1px 4px; border-radius:3px;
+  }
+
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* diagram frame (static SVG figures) */
+  svg.diagram { width:100%; height:auto; max-width:340px; display:block; margin:14px auto;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY NOTE
+     · BASE LOCKED across subjects (bg/surface/text/border/light-theme/glow).
+     · SHARED: .explorer .scn-tabs .scn-tab .scn-read .rk .tool .slider-row
+       .vec-out .eqbank .eqcell .box .define .card table
+     · WIDGETS here: coordinate-grid transformation explorer + vector adder +
+       magnitude explorer (svg.grid-svg). Column-vector notation .cvec.
+  ═════════════════════════════════════════════ */
+
+  .explorer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 22px 0;
+  }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab {
+    font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    padding:8px 14px; border-radius:8px; cursor:pointer;
+    background:#0e1626; border:1px solid var(--border); color:var(--muted);
+    transition:all .18s; user-select:none;
+  }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+
+  .chart-cap {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    margin-bottom:6px;
+  }
+
+  /* coordinate-grid widgets */
+  svg.grid-svg { width:100%; height:auto; max-width:430px; display:block; margin:8px auto 0;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  body[data-theme="light"] svg.grid-svg { background:#fbfaf4; }
+  .gl  { stroke:#16223a; stroke-width:1; }
+  .gl5 { stroke:#22314c; stroke-width:1; }
+  .gax { stroke:#3a4d6e; stroke-width:1.4; }
+  .gnum{ fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:9px; }
+  body[data-theme="light"] .gl  { stroke:#eae3d2; }
+  body[data-theme="light"] .gl5 { stroke:#ddd4bf; }
+  body[data-theme="light"] .gax { stroke:#c3bba7; }
+  body[data-theme="light"] .gnum{ fill:#9a937e; }
+  .obj { fill:#7b8aa81f; stroke:var(--muted); stroke-width:2; stroke-linejoin:round; }
+  .img { fill:#4db8ff26; stroke:var(--motion); stroke-width:2.6; stroke-linejoin:round; }
+  .vtx { fill:var(--muted); } .vtx-i { fill:var(--motion); }
+  .vlabel { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
+  .mirror { stroke:var(--force); stroke-width:2; stroke-dasharray:6 4; }
+  .centre { fill:var(--force); }
+  .ray { stroke:var(--energy2); stroke-width:1.2; stroke-dasharray:3 3; opacity:.75; }
+  .tarrow { stroke:var(--motion); stroke-width:2; fill:none; }
+  .vec-a { stroke:var(--motion); stroke-width:3; fill:none; stroke-linecap:round; }
+  .vec-b { stroke:var(--energy2); stroke-width:3; fill:none; stroke-linecap:round; }
+  .vec-r { stroke:var(--power); stroke-width:3.4; fill:none; stroke-linecap:round; }
+  .vec-leg { stroke:var(--cyan); stroke-width:2.2; fill:none; }
+  .vec-hyp { stroke:var(--motion); stroke-width:3; fill:none; stroke-linecap:round; }
+  .ra { stroke:var(--muted); stroke-width:1.3; fill:none; }
+  .ah-motion{ fill:var(--motion); } .ah-amber{ fill:var(--energy2); } .ah-green{ fill:var(--power); }
+  .ah-cyan{ fill:var(--cyan); } .ah-red{ fill:var(--force); } .ah-muted{ fill:var(--muted); }
+
+  /* column vector notation */
+  .cvec { display:inline-grid; grid-auto-flow:column; align-items:center; vertical-align:-0.42em;
+    gap:0; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1; }
+  .cvec .par { font-size:2.2em; font-weight:300; color:var(--muted); }
+  .cvec .col { display:grid; justify-items:center; gap:3px; padding:0 3px; color:var(--momentum); }
+  .k2 { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--muted); margin-right:5px; }
+
+  .scn-read {
+    margin-top:16px; background:#0c1c28; border:1px solid #1f4258;
+    border-radius:9px; padding:13px 16px; font-size:13.6px;
+  }
+  .scn-read .rk {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--motion);
+    margin-bottom:6px;
+  }
+  .scn-read b { color:var(--bright); }
+
+  /* TOOL (sliders + read-out) */
+  .tool {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:20px; margin:22px 0;
+  }
+  .slider-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 20px; margin-top:6px; }
+  .slider-row { margin:12px 0; }
+  .slider-row label {
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] {
+    width:100%; -webkit-appearance:none; height:5px; border-radius:3px;
+    background:#22304a; outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--energy2); cursor:pointer; box-shadow:0 0 10px #f5b13c88;
+  }
+  input[type=range]::-moz-range-thumb {
+    width:17px; height:17px; border:none; border-radius:50%;
+    background:var(--energy2); cursor:pointer;
+  }
+  .vec-out {
+    background:#171229; border:1px solid #2e2350; border-radius:9px;
+    padding:14px 16px; margin-top:16px;
+  }
+  .vec-out .ro {
+    font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:#8a7ab8; margin:9px 0 3px;
+  }
+  .vec-out .ro:first-child { margin-top:0; }
+  .vec-out .rv {
+    font-family:'JetBrains Mono',monospace; font-size:13.5px;
+    color:var(--bright); line-height:1.5;
+  }
+  .vec-out .rv.big {
+    font-family:'Fraunces',serif; font-size:1.25rem; font-weight:700; color:var(--cyan);
+  }
+  .rowpair { display:flex; gap:26px; flex-wrap:wrap; }
+
+  /* EQUATION / SKILL BANK */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqcell {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 12px; cursor:pointer; text-align:center;
+    transition:transform .16s, border-color .16s, box-shadow .16s;
+  }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion);
+    box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym {
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+    color:var(--bright); margin-bottom:4px;
+  }
+  .eqcell .eq-name {
+    font-size:10.5px; color:var(--muted); letter-spacing:.04em;
+  }
+  .eqcell[data-c="motion"]:hover   { border-color:var(--motion); }
+  .eqcell[data-c="force"]:hover    { border-color:var(--force); box-shadow:0 8px 22px #0008; }
+  .eqcell[data-c="energy"]:hover   { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover      { border-color:var(--momentum); }
+  .eqcell[data-c="power"]:hover    { border-color:var(--power); }
+  .eqcell[data-c="calc"]:hover     { border-color:var(--cyan); }
+
+  #eq-card {
+    display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px;
+    width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow);
+    overflow:hidden; transition:opacity .25s;
+  }
+  #eqc-top {
+    padding:18px 18px 14px; display:flex; gap:14px; align-items:center;
+    border-bottom:1px solid var(--card-divider); position:relative;
+  }
+  #eqc-badge {
+    flex-shrink:0; width:62px; height:62px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600;
+    background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd);
+  }
+  #eqc-head h4 {
+    font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px;
+  }
+  #eqc-formula {
+    font-family:'JetBrains Mono',monospace; font-size:13.5px; color:var(--motion);
+  }
+  #eqc-close {
+    position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted);
+    cursor:pointer; user-select:none;
+  }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--card-label); margin:10px 0 6px;
+  }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill {
+    background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px;
+    padding:5px 9px; font-size:11.5px; color:var(--card-text);
+  }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr {
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text);
+    background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em;
+  }
+  #eqc-example {
+    background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55;
+  }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip {
+    background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px;
+  }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── FOOTER ── */
+  .footer {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    text-align:center; padding-top:28px; border-top:1px solid var(--border);
+    letter-spacing:.07em; line-height:1.8;
+  }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .grid3, .eqbank, .slider-grid { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+  }
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 10000;
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-size: 17px; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    transition: transform .25s, border-color .2s, background-color .35s;
+    line-height: 1;
+  }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.grid-svg, svg.diagram,
+  .scn-read, .scn-tab, .vec-out, .chip, .work, .toc a,
+  table th, table td, .eqcell, mark {
+    transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+  }
+
+  /* ═════════ LIGHT THEME ═════════ */
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;
+    --force:    #cb2531;
+    --energy:   #8f5d00;
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;
+    --power:    #107a50;
+    --cyan:     #0b7a67;
+    --rose:     #ad1a7d;
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #f3d29a22 0%, transparent 60%);
+  }
+
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+
+  body[data-theme="light"] .define          { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.force-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.energy-c  { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.mom-c     { background:linear-gradient(90deg,#ece8fb99,transparent); }
+  body[data-theme="light"] .define.calc-c    { background:linear-gradient(90deg,#dff3ef99,transparent); }
+
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip {
+    background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion);
+  }
+  body[data-theme="light"] .work { background:#efeadd; }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+  body[data-theme="light"] .toc a { background:#fffdf8; }
+
+  body[data-theme="light"] .scn-read   { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab    { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover  { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+
+  body[data-theme="light"] .vec-out { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .vec-out .ro { color:#6a559a; }
+  body[data-theme="light"] .obj { fill:#6f748422; }
+  body[data-theme="light"] .img { fill:#1769d61c; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    body, .theme-toggle, .box, .card, .define, .explorer, .tool,
+    svg.grid-svg, svg.diagram, .scn-read, .scn-tab, .vec-out, .work,
+    .chip, .toc a, table th, table td, .eqcell, mark { transition:none; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
+
+<a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Mathematics 0580 · Extended · Topic 7</div>
+    <h1><span class="a">Transformations</span> <span class="b">&amp; Vectors</span></h1>
+    <p class="header-sub">The whole of Topic 7 (E7.1–E7.4): the four transformations — reflection, rotation, enlargement and translation — and exactly how to <em>describe</em> each for the marks; then vectors — column vectors, adding, subtracting and scaling them, the magnitude <span class="eq-inline">√(x²+y²)</span>, and vector geometry (position vectors, parallel, collinear and ratio proofs). Tap the tabs and drag the sliders — the grids move.</p>
+    <div class="toc">
+      <a href="#s1">1 · Object → image</a>
+      <a href="#s2">2 · Reflection</a>
+      <a href="#s3">3 · Rotation</a>
+      <a href="#s4">4 · Enlargement</a>
+      <a href="#s5">5 · Translation</a>
+      <a href="#s6">6 · Describe &amp; combine</a>
+      <a href="#s7">7 · Vectors</a>
+      <a href="#s8">8 · Magnitude</a>
+      <a href="#s9">9 · Vector geometry</a>
+      <a href="#s10">10 · Skill bank</a>
+    </div>
+  </div>
+
+
+  <!-- ── 01 · OBJECT → IMAGE ── -->
+  <div class="section" id="s1">
+    <div class="sec-label">01 / 10 · E7.1 · The big picture</div>
+    <h2>Object, image, and the four moves</h2>
+
+    <p>A <strong>transformation</strong> is a rule that picks up a shape (the <strong>object</strong>) and redraws it somewhere else (the <strong>image</strong>). The syllabus asks for exactly four of them, and every exam question is one of these four.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      Three of the four moves only <strong>relocate</strong> the shape — they never change its size or lengths, so object and image are <mark>congruent</mark> (identical, just repositioned): <strong>reflection</strong> (flip), <strong>rotation</strong> (turn), <strong>translation</strong> (slide). The fourth — <strong>enlargement</strong> — resizes it, so object and image are <mark>similar</mark> (same shape, different size).
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">📷 A picture you know</div>
+      Think of a photocopier. "Copy" at 100% and slide the paper around the glass = translation; flip the sheet over = reflection; turn it a quarter-turn = rotation. Hit "150% zoom" and you've done an enlargement — same picture, bigger. Only zoom changes the size.
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Congruent moves</div>
+        <div class="card-body"><strong>Reflection</strong>, <strong>rotation</strong>, <strong>translation</strong>. Lengths and angles are unchanged; the image is the same size as the object. Orientation may flip (reflection) or turn (rotation).</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--energy)">Similar move</div>
+        <div class="card-body"><strong>Enlargement</strong>. Every length is multiplied by the scale factor <span class="eq-inline">k</span>; area is multiplied by <span class="eq-inline">k²</span>. Angles stay the same, so the shape is unchanged — only its size.</div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ The whole topic in one sentence</div>
+      Two skills earn every mark: <strong>(1) perform</strong> a transformation (draw the image accurately with a ruler), and <strong>(2) describe</strong> a transformation fully (name it and state its numbers). Section&nbsp;6 is the checklist for skill&nbsp;2 — where most marks are lost.
+    </div>
+  </div>
+
+
+  <!-- ── 02 · REFLECTION ── -->
+  <div class="section" id="s2">
+    <div class="sec-label">02 / 10 · E7.1 · Flip</div>
+    <h2>Reflection</h2>
+
+    <p>A <strong>reflection</strong> flips the shape over a <strong>mirror line</strong>. Every point of the image is the same perpendicular distance from the mirror as the matching point of the object — just on the other side.</p>
+
+    <div class="box analogy">
+      <div class="box-label">🪞 A picture you know</div>
+      Fold the paper along the mirror line. The object and its image land <em>exactly</em> on top of each other. Points sitting <strong>on</strong> the mirror line don't move at all (they're on the fold).
+    </div>
+
+    <div class="define">
+      <span class="term">How to reflect a point</span><br>
+      Drop a line from the point <strong>perpendicular</strong> to the mirror, then continue the <em>same distance</em> past it. For the common mirror lines, learn these coordinate rules cold:
+    </div>
+
+    <table>
+      <tr><th>Mirror line</th><th class="c">Rule</th><th class="c">Example</th></tr>
+      <tr><td><strong>x-axis</strong> (y = 0)</td><td class="c">(x, y) → (x, −y)</td><td class="c">(3, 2) → (3, −2)</td></tr>
+      <tr><td><strong>y-axis</strong> (x = 0)</td><td class="c">(x, y) → (−x, y)</td><td class="c">(3, 2) → (−3, 2)</td></tr>
+      <tr><td><strong>y = x</strong></td><td class="c">(x, y) → (y, x)</td><td class="c">(3, 2) → (2, 3)</td></tr>
+      <tr><td><strong>y = −x</strong></td><td class="c">(x, y) → (−y, −x)</td><td class="c">(3, 2) → (−2, −3)</td></tr>
+      <tr><td><strong>x = a</strong> (vertical)</td><td class="c">(x, y) → (2a − x, y)</td><td class="c">mirror x=5: (3,2)→(7,2)</td></tr>
+      <tr><td><strong>y = b</strong> (horizontal)</td><td class="c">(x, y) → (x, 2b − y)</td><td class="c">mirror y=1: (3,2)→(3,0)</td></tr>
+    </table>
+
+    <h3>Worked example</h3>
+    <p>Reflect triangle <span class="eq-inline">P(2,1)</span>, <span class="eq-inline">Q(5,1)</span>, <span class="eq-inline">R(2,3)</span> in the line <span class="eq-inline">y = x</span>.</p>
+    <div class="work">
+      <span class="step">rule for y = x is (x, y) → (y, x): just swap the coordinates</span><br>
+      P(2,1) → P′(1,2) · Q(5,1) → Q′(1,5) · R(2,3) → R′(3,2)
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Classic slips</div>
+      <strong>(1)</strong> Reflecting in the wrong axis — always <em>read the mirror's equation</em>, don't assume. <strong>(2)</strong> Measuring distance slanted instead of <strong>perpendicular</strong> to the mirror. <strong>(3)</strong> Forgetting that a reflection <strong>reverses orientation</strong> — the image is a mirror-image (like a left hand becoming a right hand).
+    </div>
+  </div>
+
+
+  <!-- ── 03 · ROTATION ── -->
+  <div class="section" id="s3">
+    <div class="sec-label">03 / 10 · E7.1 · Turn</div>
+    <h2>Rotation</h2>
+
+    <p>A <strong>rotation</strong> turns the shape about a fixed point — the <strong>centre of rotation</strong> — through an angle, in a given direction. In IGCSE the angle is always a <strong>multiple of 90°</strong>.</p>
+
+    <div class="box analogy">
+      <div class="box-label">🕐 A picture you know</div>
+      A clock hand. The tip sweeps round but the pin at the centre never moves. That pin is the centre of rotation; every point of the shape keeps its <em>distance</em> from the pin and just swings round by the angle.
+    </div>
+
+    <div class="define energy-c">
+      <span class="term">Rules about the origin (0, 0)</span><br>
+      <span class="eq-inline" style="color:var(--energy)">90° anticlockwise</span>: (x, y) → (−y, x)<br>
+      <span class="eq-inline" style="color:var(--energy)">90° clockwise</span>: (x, y) → (y, −x)<br>
+      <span class="eq-inline" style="color:var(--energy)">180°</span> (either way): (x, y) → (−x, −y)
+    </div>
+
+    <h3>Worked example</h3>
+    <p>Rotate the point <span class="eq-inline">(4, 2)</span> about the origin.</p>
+    <div class="work">
+      <span class="step">90° anticlockwise → (−y, x)</span> (4, 2) → (−2, 4)<br>
+      <span class="step">90° clockwise → (y, −x)</span> (4, 2) → (2, −4)<br>
+      <span class="step">180° → (−x, −y)</span> (4, 2) → (−4, −2)
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Finding an unknown centre</div>
+      If you must <em>find</em> the centre of rotation from an object and its image: join two matching points to their images and draw the <strong>perpendicular bisector</strong> of each join — the centre is where the bisectors cross. In the exam, tracing paper is the fast check: pin your pencil at a trial centre and rotate until the object lands on the image.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Direction matters</div>
+      <strong>Anticlockwise</strong> is the positive direction (the way a clock's hands do <em>not</em> go). A 90° clockwise turn is the same image as a 270° anticlockwise turn — but you must still state a direction unless the angle is 180°.
+    </div>
+  </div>
+
+
+  <!-- ── 04 · ENLARGEMENT ── -->
+  <div class="section" id="s4">
+    <div class="sec-label">04 / 10 · E7.1 · Resize</div>
+    <h2>Enlargement</h2>
+
+    <p>An <strong>enlargement</strong> resizes a shape from a fixed point — the <strong>centre of enlargement</strong> — by a <strong>scale factor</strong> <span class="eq-inline">k</span>. Draw a ray from the centre through a vertex; the image vertex sits <span class="eq-inline">k</span> times as far along that ray.</p>
+
+    <div class="box analogy">
+      <div class="box-label">💡 A picture you know</div>
+      A projector. The bulb is the centre of enlargement; light rays fan out through the slide and hit the screen. Push the screen <strong>twice</strong> as far from the bulb and the picture is twice as wide and twice as tall — scale factor 2. The rays are the straight lines you draw from the centre.
+    </div>
+
+    <div class="define energy-c">
+      <span class="term">The ray rule</span><br>
+      <span class="eq-inline" style="color:var(--energy)">image = C + k · (point − C)</span>, where <span class="eq-inline">C</span> is the centre.<br>
+      Centre the origin makes it simple: <span class="eq-inline">(x, y) → (kx, ky)</span>. Every <strong>length</strong> is multiplied by <span class="eq-inline">k</span>; every <strong>area</strong> by <span class="eq-inline">k²</span>.
+    </div>
+
+    <h3>Positive, fractional and negative scale factors</h3>
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title" style="color:var(--energy)">k &gt; 1</div>
+        <div class="card-body">Image is <strong>bigger</strong>, same side of the centre. <br>SF 3, centre (1,1), vertex (2,3): image = (1,1)+3·(1,2) = <strong>(4,7)</strong>.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--cyan)">0 &lt; k &lt; 1</div>
+        <div class="card-body">Image is <strong>smaller</strong> (still an "enlargement"!). <br>SF ½, centre O, vertex (6,4): → <strong>(3,2)</strong>.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">k &lt; 0</div>
+        <div class="card-body">Image is on the <strong>opposite side</strong> of the centre and <strong>inverted</strong>. <br>SF −2, centre O, vertex (2,1): → <strong>(−4,−2)</strong>.</div>
+      </div>
+    </div>
+
+    <p>A <strong>negative</strong> scale factor sends the rays <em>backwards</em> through the centre, so the image turns up on the far side, upside-down, and <span class="eq-inline">|k|</span> times as big:</p>
+
+    <svg class="diagram" viewBox="0 0 300 200" role="img" aria-label="Enlargement with negative scale factor about a centre">
+      <!-- rays -->
+      <line class="ray" x1="150" y1="110" x2="90" y2="150"/>
+      <line class="ray" x1="150" y1="110" x2="30" y2="150"/>
+      <line class="ray" x1="150" y1="110" x2="90" y2="190"/>
+      <!-- object (up-right of centre) -->
+      <polygon class="obj" points="180,90 210,90 180,70"/>
+      <!-- image (SF -2, down-left, inverted, larger) -->
+      <polygon class="img" points="90,150 30,150 90,190"/>
+      <circle class="centre" cx="150" cy="110" r="4"/>
+      <text class="vlabel" x="156" y="108" fill="var(--force)">C</text>
+      <text class="vlabel" x="196" y="84" fill="var(--muted)">object</text>
+      <text class="vlabel" x="24" y="146" fill="var(--motion)">image (SF −2)</text>
+    </svg>
+
+    <div class="box exam">
+      <div class="box-label">✅ Reading the scale factor off a diagram</div>
+      Count how far a vertex is from the centre, then how far its image is: <span class="eq-inline">k = (image distance) ÷ (object distance)</span>. If the image is on the <strong>opposite</strong> side of the centre, <span class="eq-inline">k</span> is <strong>negative</strong>. Confirm with a second vertex.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Two traps</div>
+      <strong>(1)</strong> "Enlargement" includes <em>shrinking</em> — a fractional scale factor is still an enlargement, never call it a "reduction". <strong>(2)</strong> Area scales by <span class="eq-inline">k²</span>, not <span class="eq-inline">k</span>: an SF-3 enlargement has <strong>9×</strong> the area, not 3×.
+    </div>
+  </div>
+
+
+  <!-- ── 05 · TRANSLATION ── -->
+  <div class="section" id="s5">
+    <div class="sec-label">05 / 10 · E7.1 → E7.2 · Slide</div>
+    <h2>Translation &amp; the column vector</h2>
+
+    <p>A <strong>translation</strong> slides every point of the shape the same distance in the same direction — no turning, no flipping, no resizing. The slide is recorded as a <strong>column vector</strong>.</p>
+
+    <div class="define mom-c">
+      <span class="term">The column vector</span><br>
+      A translation is written
+      <span class="cvec"><span class="par">(</span><span class="col"><span>a</span><span>b</span></span><span class="par">)</span></span>:
+      the <strong>top</strong> number <span class="eq-inline">a</span> is the move <strong>across</strong> (right +, left −), the <strong>bottom</strong> number <span class="eq-inline">b</span> is the move <strong>up/down</strong> (up +, down −). So <span class="eq-inline">(x, y) → (x + a, y + b)</span>.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🧩 A picture you know</div>
+      Dragging an app icon across a phone screen, or sliding a carrom coin. It ends up somewhere new but points the same way and is the same size. The column vector is just the instruction "<em>go this far right, this far up</em>" — and it's the same instruction wherever on the grid you start.
+    </div>
+
+    <h3>Worked example</h3>
+    <p>Translate the triangle with a vertex at <span class="eq-inline">(5, 2)</span> by the vector
+      <span class="cvec"><span class="par">(</span><span class="col"><span>−3</span><span>4</span></span><span class="par">)</span></span>.</p>
+    <div class="work">
+      <span class="step">add the vector: x + (−3), y + 4</span><br>
+      (5, 2) → (5 − 3, 2 + 4) = <strong>(2, 6)</strong>
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">🧠 The bridge to vectors</div>
+      A translation <em>is</em> a vector. Everything in the rest of this topic — adding, subtracting, magnitude — is just doing arithmetic on these
+      <span class="cvec"><span class="par">(</span><span class="col"><span>a</span><span>b</span></span><span class="par">)</span></span>
+      instructions. To <strong>reverse</strong> a translation, negate both parts.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Describe it as a vector</div>
+      To describe a translation you must give the <strong>column vector</strong>. Writing "moved 3 left and 4 up" in words, or swapping the two numbers, loses the mark. Top = across, bottom = up.
+    </div>
+  </div>
+
+
+  <!-- ── 06 · DESCRIBE & COMBINE (widget) ── -->
+  <div class="section" id="s6">
+    <div class="sec-label">06 / 10 · E7.1 · The exam skill</div>
+    <h2>Describe it fully — and combine</h2>
+
+    <p>"Describe fully the single transformation…" is worth 2–3 marks, and students throw them away by naming the transformation but forgetting its numbers. Switch the tabs below: each shows the same object (grey, <span class="eq-inline">A B C</span>) mapped to its image (blue, <span class="eq-inline">A′ B′ C′</span>), with the exact wording that scores.</p>
+
+    <div class="explorer">
+      <div class="scn-tabs" id="trTabs">
+        <div class="scn-tab active" data-t="reflect">Reflection</div>
+        <div class="scn-tab" data-t="rotate">Rotation</div>
+        <div class="scn-tab" data-t="enlarge">Enlargement</div>
+        <div class="scn-tab" data-t="translate">Translation</div>
+      </div>
+      <svg class="grid-svg" viewBox="0 0 340 340" id="trSvg" role="img" aria-label="Transformation explorer on a coordinate grid">
+        <g id="trGrid"></g>
+        <g id="trAnn"></g>
+        <g id="trObj"></g>
+        <g id="trImg"></g>
+      </svg>
+      <div class="scn-read">
+        <div class="rk">The full description</div>
+        <div id="trDesc"></div>
+        <div style="margin-top:9px"><span class="k2">rule</span> <span class="eq-inline" id="trRule"></span></div>
+        <div style="margin-top:6px"><span class="k2">image</span> <span id="trImgco"></span></div>
+      </div>
+    </div>
+
+    <div class="define">
+      <span class="term">The description checklist</span>
+      <table style="margin-top:8px">
+        <tr><th>Transformation</th><th>You must state…</th></tr>
+        <tr><td><strong>Reflection</strong></td><td>the equation of the <strong>mirror line</strong> (e.g. <span class="eq-inline">y = x</span>)</td></tr>
+        <tr><td><strong>Rotation</strong></td><td>the <strong>centre</strong>, the <strong>angle</strong>, and the <strong>direction</strong></td></tr>
+        <tr><td><strong>Enlargement</strong></td><td>the <strong>centre</strong> and the <strong>scale factor</strong> (with sign)</td></tr>
+        <tr><td><strong>Translation</strong></td><td>the <strong>column vector</strong></td></tr>
+      </table>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ One transformation, one name</div>
+      "Describe the <strong>single</strong> transformation" means give <strong>one</strong> — never a chain. And never mix two: "reflection <em>and</em> rotation" scores zero. If the mapping doesn't fit one of the four cleanly, re-check the image; you've likely misread a coordinate.
+    </div>
+
+    <h3>Combinations (Extended)</h3>
+    <p>Extended questions may <strong>combine</strong> transformations — do the first, then apply the second to that image — and then ask for the <strong>single equivalent</strong> transformation.</p>
+    <div class="box analogy">
+      <div class="box-label">🔗 Worth memorising</div>
+      A reflection in the <span class="eq-inline">x-axis</span> <em>followed by</em> a reflection in the <span class="eq-inline">y-axis</span> is the same as a single <strong>rotation of 180° about the origin</strong>: <span class="eq-inline">(x,y) → (x,−y) → (−x,−y)</span>. Two reflections in intersecting lines always combine to a rotation about their crossing point.
+    </div>
+  </div>
+
+
+  <!-- ── 07 · VECTORS (widget) ── -->
+  <div class="section" id="s7">
+    <div class="sec-label">07 / 10 · E7.2 · Two dimensions</div>
+    <h2>Vectors — add, subtract, scale</h2>
+
+    <p>A <strong>vector</strong> has <strong>magnitude</strong> (length) <em>and</em> <strong>direction</strong>. It's written as a column vector
+      <span class="cvec"><span class="par">(</span><span class="col"><span>x</span><span>y</span></span><span class="par">)</span></span>,
+      or with a bold/underlined letter <span class="eq-inline">a</span>, or as <span class="eq-inline">AB</span> (the journey from A to B). Position doesn't matter — the same instruction anywhere on the grid is the same vector.</p>
+
+    <div class="define mom-c">
+      <span class="term">Arithmetic on vectors — do each part separately</span><br>
+      <span class="eq-inline" style="color:var(--momentum)">add:</span> component-wise (a+c over b+d) &nbsp;·&nbsp;
+      <span class="eq-inline" style="color:var(--momentum)">subtract:</span> (a−c over b−d) &nbsp;·&nbsp;
+      <span class="eq-inline" style="color:var(--momentum)">scalar × :</span> k·(x over y) = (kx over ky)
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🚶 A picture you know</div>
+      A vector is a journey: "4 blocks east, 1 block north". To <strong>add</strong> two journeys, do the first, then start the second from where you finished — <strong>tip to tail</strong> — and the single arrow from your start to your end is the sum. Drag the sliders: the blue arrow is <span class="eq-inline">a</span>, the amber arrow is <span class="eq-inline">b</span> laid on <span class="eq-inline">a</span>'s tip, and the green arrow is the resultant <span class="eq-inline">a + b</span>.
+    </div>
+
+    <div class="tool">
+      <div class="chart-cap">tip-to-tail vector addition · grid −10 … 10</div>
+      <svg class="grid-svg" viewBox="0 0 340 340" id="vaSvg" role="img" aria-label="Vector addition explorer">
+        <g id="vaGrid"></g>
+        <g id="vaVecs"></g>
+      </svg>
+      <div class="slider-grid">
+        <div class="slider-row"><label>a · across <b id="axv">4</b></label><input type="range" id="ax" min="-5" max="5" step="1" value="4"></div>
+        <div class="slider-row"><label>a · up <b id="ayv">1</b></label><input type="range" id="ay" min="-5" max="5" step="1" value="1"></div>
+        <div class="slider-row"><label>b · across <b id="bxv">1</b></label><input type="range" id="bx" min="-5" max="5" step="1" value="1"></div>
+        <div class="slider-row"><label>b · up <b id="byv">3</b></label><input type="range" id="by" min="-5" max="5" step="1" value="3"></div>
+      </div>
+      <div class="vec-out">
+        <div class="rowpair">
+          <div><div class="ro">vector a</div><div class="rv" id="vaA"></div></div>
+          <div><div class="ro">vector b</div><div class="rv" id="vaB"></div></div>
+        </div>
+        <div class="rowpair" style="margin-top:6px">
+          <div><div class="ro">sum a + b</div><div class="rv" id="vaSum"></div></div>
+          <div><div class="ro">difference a − b</div><div class="rv" id="vaDiff"></div></div>
+        </div>
+        <div class="ro">length of the resultant</div>
+        <div class="rv big" id="vaMag"></div>
+      </div>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ What subtraction means</div>
+      <span class="eq-inline">a − b</span> is <span class="eq-inline">a + (−b)</span> — reverse <span class="eq-inline">b</span> (flip its arrow), then add tip-to-tail. On a diagram, <span class="eq-inline">a − b</span> is the vector that goes from the tip of <span class="eq-inline">b</span> to the tip of <span class="eq-inline">a</span>. Muddling the order flips the sign of both components.
+    </div>
+  </div>
+
+
+  <!-- ── 08 · MAGNITUDE (widget) ── -->
+  <div class="section" id="s8">
+    <div class="sec-label">08 / 10 · E7.3 · Length</div>
+    <h2>Magnitude of a vector</h2>
+
+    <p>The <strong>magnitude</strong> (or <strong>modulus</strong>) of a vector is its <strong>length</strong>, written <span class="eq-inline">|a|</span> or <span class="eq-inline">|AB|</span>. The components form the two short sides of a right-angled triangle, so magnitude is just <strong>Pythagoras</strong>.</p>
+
+    <div class="define calc-c">
+      <span class="term">Magnitude</span><br>
+      For <span class="cvec"><span class="par">(</span><span class="col"><span>x</span><span>y</span></span><span class="par">)</span></span>: &nbsp;
+      <span class="eq-inline" style="color:var(--cyan)">|v| = √(x² + y²)</span>. It is always <span class="eq-inline">≥ 0</span>, and <span class="eq-inline">|AB|</span> equals the straight-line <strong>distance</strong> from A to B.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🐦 A picture you know</div>
+      "As the crow flies." Walk 3 m east then 4 m north and you've walked 7 m — but you're only <strong>5 m</strong> from the start in a straight line: <span class="eq-inline">√(3² + 4²) = √25 = 5</span>. Magnitude is that direct distance. Drag the sliders to see the triangle rebuild.
+    </div>
+
+    <div class="tool">
+      <div class="chart-cap">magnitude = hypotenuse of the component triangle</div>
+      <svg class="grid-svg" viewBox="0 0 320 320" id="mgSvg" style="max-width:360px" role="img" aria-label="Magnitude explorer">
+        <g id="mgGrid"></g>
+        <g id="mgVecs"></g>
+      </svg>
+      <div class="slider-grid">
+        <div class="slider-row"><label>x · across <b id="mgxv">3</b></label><input type="range" id="mgx" min="-8" max="8" step="1" value="3"></div>
+        <div class="slider-row"><label>y · up <b id="mgyv">4</b></label><input type="range" id="mgy" min="-8" max="8" step="1" value="4"></div>
+      </div>
+      <div class="vec-out">
+        <div class="ro">vector</div><div class="rv" id="mgVec"></div>
+        <div class="ro">magnitude</div><div class="rv big" id="mgCalc"></div>
+      </div>
+    </div>
+
+    <h3>Worked example — distance between two points</h3>
+    <p>Find <span class="eq-inline">|AB|</span> where <span class="eq-inline">A(1, 2)</span> and <span class="eq-inline">B(4, 6)</span>.</p>
+    <div class="work">
+      <span class="step">AB = (end − start) = (4−1, 6−2)</span> AB = (3, 4)<br>
+      <span class="step">magnitude = √(x² + y²)</span> |AB| = √(3² + 4²) = √25 = <strong>5</strong>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Square, add, then root</div>
+      <span class="eq-inline">|v|</span> is <strong>not</strong> <span class="eq-inline">x + y</span>. Square both components first, add, and only then take the square root. A negative component is fine — squaring removes the sign: <span class="eq-inline">|(−6, 8)| = √(36 + 64) = 10</span>.
+    </div>
+  </div>
+
+
+  <!-- ── 09 · VECTOR GEOMETRY ── -->
+  <div class="section" id="s9">
+    <div class="sec-label">09 / 10 · E7.4 · Reasoning &amp; proof</div>
+    <h2>Vector geometry</h2>
+
+    <p>The hardest marks in Topic 7 ask you to <strong>express</strong> a vector in terms of two others and then <strong>reason</strong>: show lines are parallel, points are collinear, or split a line in a ratio. The whole toolkit is one idea plus one rule.</p>
+
+    <div class="define">
+      <span class="term">Position vectors</span><br>
+      Give every point an arrow from the origin: <span class="eq-inline">a = OA</span>, <span class="eq-inline">b = OB</span>. Then to travel A→B, go back to O and out to B:
+      <span class="eq-inline" style="color:var(--motion)">AB = AO + OB = −a + b = b − a</span>. The <strong>midpoint</strong> of AB has position vector <span class="eq-inline">½(a + b)</span>.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">🧠 The one rule that unlocks it</div>
+      <span class="eq-inline" style="color:var(--rose)">AB = b − a</span> — always <strong>(where you're going) − (where you start)</strong>. Get this the right way round and every "express in terms of a and b" question falls out.
+    </div>
+
+    <h3>Worked example — express &amp; find</h3>
+    <p><span class="eq-inline">OA = a</span> and <span class="eq-inline">OB = b</span>. <span class="eq-inline">M</span> is the midpoint of <span class="eq-inline">AB</span>, and <span class="eq-inline">P</span> lies on <span class="eq-inline">AB</span> with <span class="eq-inline">AP : PB = 1 : 2</span>.</p>
+    <div class="work">
+      <span class="step">(a) AB</span> AB = b − a<br>
+      <span class="step">(b) OM = OA + ½AB</span> = a + ½(b − a) = <strong>½a + ½b</strong> = ½(a + b)<br>
+      <span class="step">(c) AP is ⅓ of AB (1 part of 1+2)</span> OP = a + ⅓(b − a) = <strong>⅔a + ⅓b</strong>
+    </div>
+
+    <h3>Proving parallel &amp; collinear</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Parallel</div>
+        <div class="card-body">Two vectors are parallel when one is a <strong>scalar multiple</strong> of the other: <span class="eq-inline">u = k v</span>. <br>e.g. <span class="eq-inline">(2, 3)</span> and <span class="eq-inline">(4, 6) = 2(2, 3)</span> — parallel.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Collinear</div>
+        <div class="card-body">Three points lie on one straight line when two vectors between them are parallel <strong>and share a point</strong>. <br>If <span class="eq-inline">AC = k·AB</span>, then A, B, C are collinear.</div>
+      </div>
+    </div>
+
+    <h3>Worked example — show three points are collinear</h3>
+    <p>Show that <span class="eq-inline">A(1, 2)</span>, <span class="eq-inline">B(3, 5)</span> and <span class="eq-inline">C(7, 11)</span> lie on a straight line.</p>
+    <div class="work">
+      <span class="step">AB = B − A</span> AB = (2, 3)<br>
+      <span class="step">AC = C − A</span> AC = (6, 9)<br>
+      <span class="step">is AC a multiple of AB?</span> (6, 9) = 3 × (2, 3) = 3·AB ✓<br>
+      <span class="step">AC ∥ AB and both pass through A</span> → A, B, C are <strong>collinear</strong>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ How to write a vector proof</div>
+      <strong>1.</strong> Express each needed vector in terms of <span class="eq-inline">a</span> and <span class="eq-inline">b</span> (or as columns). <strong>2.</strong> Factor out the scalar to show <span class="eq-inline">one = k × other</span>. <strong>3.</strong> Write the conclusion in words — "parallel", or "collinear because they share point A". State the ratio of lengths too: <span class="eq-inline">AC = 3·AB</span> means AC is 3 times as long.
+    </div>
+  </div>
+
+
+  <!-- ── 10 · SKILL BANK ── -->
+  <div class="section" id="s10">
+    <div class="sec-label">10 / 10 · Reference</div>
+    <h2>Topic 7 skill bank</h2>
+    <p>Nothing here is given in the exam — these are all recall. Tap any tile for the rule, a worked line, and the trap examiners set:</p>
+
+    <div class="eqbank" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ Know these cold</div>
+      <span class="eq-inline" style="color:var(--rose)">reflect y=x: swap (y,x)</span>
+      <span class="eq-inline" style="color:var(--rose)">rot 90° ACW: (−y,x)</span>
+      <span class="eq-inline" style="color:var(--rose)">enlarge: area ×k²</span>
+      <span class="eq-inline" style="color:var(--rose)">AB = b − a</span>
+      <span class="eq-inline" style="color:var(--rose)">|v| = √(x²+y²)</span>
+      <span class="eq-inline" style="color:var(--rose)">parallel: u = k v</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE MATHEMATICS · 0580 EXTENDED · TOPIC 7 — TRANSFORMATIONS &amp; VECTORS (E7.1–E7.4)<br>
+    Built for understanding — three moves that keep a shape, one that resizes it, and vectors as the arithmetic of arrows.
+  </div>
+
+</div>
+
+<!-- ── FLOATING DETAIL CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Key facts</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Rule / method</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   shared helpers — square coordinate grids
+════════════════════════════════════════════════ */
+const NS='http://www.w3.org/2000/svg';
+function E(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function neg(v){return (''+v).replace('-','−');}   // ASCII minus → real minus
+function cv(x,y){return '<span class="cvec"><span class="par">(</span><span class="col"><span>'
+  +neg(x)+'</span><span>'+neg(y)+'</span></span><span class="par">)</span></span>';}
+function gmap(size,pad,lo,hi){
+  const s=(size-2*pad)/(hi-lo);
+  return { s, lo, hi,
+    X:x=>+(pad+(x-lo)*s).toFixed(2),
+    Y:y=>+(pad+(hi-y)*s).toFixed(2) };
+}
+function grid(g,M){
+  g.textContent='';
+  const lo=Math.ceil(M.lo), hi=Math.floor(M.hi);
+  for(let v=lo; v<=hi; v++){
+    const c = v===0?'gax':(v%5===0?'gl5':'gl');
+    g.appendChild(E('line',{class:c,x1:M.X(M.lo),y1:M.Y(v),x2:M.X(M.hi),y2:M.Y(v)}));
+    g.appendChild(E('line',{class:c,x1:M.X(v),y1:M.Y(M.lo),x2:M.X(v),y2:M.Y(M.hi)}));
+  }
+  for(let v=lo; v<=hi; v++){
+    if(v===0 || v%5!==0) continue;
+    g.appendChild(E('text',{class:'gnum',x:M.X(v),y:M.Y(0)+11,'text-anchor':'middle'})).textContent=v;
+    g.appendChild(E('text',{class:'gnum',x:M.X(0)-5,y:M.Y(v)+3,'text-anchor':'end'})).textContent=v;
+  }
+}
+function poly(pts,M,cls){
+  return E('polygon',{class:cls,points:pts.map(p=>M.X(p[0])+','+M.Y(p[1])).join(' ')});
+}
+function ah(x1,y1,x2,y2,cls,w){        // arrowhead triangle at (x2,y2)
+  const a=Math.atan2(y2-y1,x2-x1); w=w||8;
+  const q=d=>(x2-w*Math.cos(a+d)).toFixed(1)+','+(y2-w*Math.sin(a+d)).toFixed(1);
+  return E('polygon',{class:cls,points:x2.toFixed(1)+','+y2.toFixed(1)+' '+q(-0.42)+' '+q(0.42)});
+}
+
+/* ════════════════════════════════════════════════
+   1 · TRANSFORMATION EXPLORER
+════════════════════════════════════════════════ */
+(function(){
+  const svg=document.getElementById('trSvg'); if(!svg) return;
+  const SIZE=340, PAD=24, LO=-6, HI=10;
+  const M=gmap(SIZE,PAD,LO,HI);
+  const gG=document.getElementById('trGrid'), aG=document.getElementById('trAnn'),
+        oG=document.getElementById('trObj'), iG=document.getElementById('trImg');
+  const OBJ=[[1,1],[4,1],[1,3]], NM=['A','B','C'];
+  const C={
+    reflect:{ map:p=>[10-p[0],p[1]],
+      desc:'<b>Reflection</b> in the line <b>x = 5</b>.',
+      rule:'(x, y) → (10 − x, y)',
+      ann:g=>{ const x=M.X(5);
+        g.appendChild(E('line',{class:'mirror',x1:x,y1:M.Y(HI),x2:x,y2:M.Y(LO)}));
+        g.appendChild(E('text',{class:'vlabel',x:x+5,y:M.Y(HI)+13,fill:'var(--force)'})).textContent='x = 5'; } },
+    rotate:{ map:p=>[p[1],-p[0]],
+      desc:'<b>Rotation</b>, <b>90° clockwise</b>, about the <b>origin (0, 0)</b>.',
+      rule:'(x, y) → (y, −x)',
+      ann:g=>{ g.appendChild(E('circle',{class:'centre',cx:M.X(0),cy:M.Y(0),r:4}));
+        g.appendChild(E('text',{class:'vlabel',x:M.X(0)-34,y:M.Y(0)-7,fill:'var(--force)'})).textContent='O ↻90°'; } },
+    enlarge:{ map:p=>[2*p[0],2*p[1]],
+      desc:'<b>Enlargement</b>, scale factor <b>2</b>, centre <b>(0, 0)</b>.',
+      rule:'(x, y) → (2x, 2y)',
+      ann:g=>{ OBJ.forEach(p=>{ const im=[2*p[0],2*p[1]];
+          g.appendChild(E('line',{class:'ray',x1:M.X(0),y1:M.Y(0),x2:M.X(im[0]),y2:M.Y(im[1])})); });
+        g.appendChild(E('circle',{class:'centre',cx:M.X(0),cy:M.Y(0),r:4}));
+        g.appendChild(E('text',{class:'vlabel',x:M.X(0)-16,y:M.Y(0)+15,fill:'var(--force)'})).textContent='O'; } },
+    translate:{ map:p=>[p[0]-4,p[1]+4],
+      desc:'<b>Translation</b> by the vector '+cv(-4,4)+'.',
+      rule:'(x, y) → (x − 4, y + 4)',
+      ann:g=>{ OBJ.forEach(p=>{ const im=[p[0]-4,p[1]+4];
+          const x1=M.X(p[0]),y1=M.Y(p[1]),x2=M.X(im[0]),y2=M.Y(im[1]);
+          g.appendChild(E('line',{class:'tarrow',x1:x1,y1:y1,x2:x2,y2:y2}));
+          g.appendChild(ah(x1,y1,x2,y2,'ah-motion',7)); }); } }
+  };
+  function labels(g,pts,prime,fill){
+    pts.forEach((p,i)=>{ g.appendChild(E('text',{class:'vlabel',x:M.X(p[0])+5,y:M.Y(p[1])-4,fill:fill}))
+      .textContent=NM[i]+prime; });
+  }
+  function draw(key){
+    const c=C[key];
+    grid(gG,M); aG.textContent=''; oG.textContent=''; iG.textContent='';
+    c.ann(aG);
+    const img=OBJ.map(c.map);
+    oG.appendChild(poly(OBJ,M,'obj'));
+    iG.appendChild(poly(img,M,'img'));
+    OBJ.forEach(p=>oG.appendChild(E('circle',{class:'vtx',cx:M.X(p[0]),cy:M.Y(p[1]),r:2.6})));
+    img.forEach(p=>iG.appendChild(E('circle',{class:'vtx-i',cx:M.X(p[0]),cy:M.Y(p[1]),r:2.6})));
+    labels(oG,OBJ,'','var(--muted)');
+    labels(iG,img,'′','var(--motion)');
+    document.getElementById('trDesc').innerHTML=c.desc;
+    document.getElementById('trRule').textContent=c.rule;
+    document.getElementById('trImgco').innerHTML=img.map((p,i)=>NM[i]+'′('+neg(p[0])+', '+neg(p[1])+')').join('&nbsp;·&nbsp;');
+  }
+  document.getElementById('trTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    document.querySelectorAll('#trTabs .scn-tab').forEach(b=>b.classList.remove('active'));
+    t.classList.add('active'); draw(t.dataset.t);
+  });
+  draw('reflect');
+})();
+
+/* ════════════════════════════════════════════════
+   2 · VECTOR ADDER (tip-to-tail)
+════════════════════════════════════════════════ */
+(function(){
+  const svg=document.getElementById('vaSvg'); if(!svg) return;
+  const SIZE=340, PAD=22, LO=-10, HI=10;
+  const M=gmap(SIZE,PAD,LO,HI);
+  const gG=document.getElementById('vaGrid'), vG=document.getElementById('vaVecs');
+  const S={ax:document.getElementById('ax'),ay:document.getElementById('ay'),
+           bx:document.getElementById('bx'),by:document.getElementById('by')};
+  function mid(p,q){return [(p[0]+q[0])/2,(p[1]+q[1])/2];}
+  function draw(){
+    const ax=+S.ax.value, ay=+S.ay.value, bx=+S.bx.value, by=+S.by.value;
+    const rx=ax+bx, ry=ay+by;
+    grid(gG,M); vG.textContent='';
+    const O=[M.X(0),M.Y(0)], At=[M.X(ax),M.Y(ay)], Rt=[M.X(rx),M.Y(ry)];
+    // a
+    if(ax||ay){ vG.appendChild(E('line',{class:'vec-a',x1:O[0],y1:O[1],x2:At[0],y2:At[1]}));
+      vG.appendChild(ah(O[0],O[1],At[0],At[1],'ah-motion')); }
+    // b tip-to-tail from a
+    if(bx||by){ vG.appendChild(E('line',{class:'vec-b',x1:At[0],y1:At[1],x2:Rt[0],y2:Rt[1]}));
+      vG.appendChild(ah(At[0],At[1],Rt[0],Rt[1],'ah-amber')); }
+    // resultant
+    if(rx||ry){ vG.appendChild(E('line',{class:'vec-r',x1:O[0],y1:O[1],x2:Rt[0],y2:Rt[1]}));
+      vG.appendChild(ah(O[0],O[1],Rt[0],Rt[1],'ah-green')); }
+    // labels
+    let m;
+    m=mid(O,At); vG.appendChild(E('text',{class:'vlabel',x:m[0]-11,y:m[1]-3,fill:'var(--motion)'})).textContent='a';
+    m=mid(At,Rt); vG.appendChild(E('text',{class:'vlabel',x:m[0]+5,y:m[1]-2,fill:'var(--energy2)'})).textContent='b';
+    m=mid(O,Rt); vG.appendChild(E('text',{class:'vlabel',x:m[0]+4,y:m[1]+13,fill:'var(--power)'})).textContent='a+b';
+    // read-outs
+    document.getElementById('vaA').innerHTML=cv(ax,ay);
+    document.getElementById('vaB').innerHTML=cv(bx,by);
+    document.getElementById('vaSum').innerHTML=cv(rx,ry);
+    document.getElementById('vaDiff').innerHTML=cv(ax-bx,ay-by);
+    const sum=rx*rx+ry*ry, mag=Math.sqrt(sum);
+    const val=Number.isInteger(mag)?(''+mag):('√'+sum+' ≈ '+mag.toFixed(2));
+    document.getElementById('vaMag').innerHTML='|a+b| = √(('+neg(rx)+')² + ('+neg(ry)+')²) = '+val;
+    ['ax','ay','bx','by'].forEach(k=>{ document.getElementById(k+'v').textContent=+S[k].value; });
+  }
+  Object.values(S).forEach(s=>s.addEventListener('input',draw));
+  draw();
+})();
+
+/* ════════════════════════════════════════════════
+   3 · MAGNITUDE EXPLORER
+════════════════════════════════════════════════ */
+(function(){
+  const svg=document.getElementById('mgSvg'); if(!svg) return;
+  const SIZE=320, PAD=22, LO=-9, HI=9;
+  const M=gmap(SIZE,PAD,LO,HI);
+  const gG=document.getElementById('mgGrid'), vG=document.getElementById('mgVecs');
+  const sx=document.getElementById('mgx'), sy=document.getElementById('mgy');
+  function draw(){
+    const x=+sx.value, y=+sy.value;
+    grid(gG,M); vG.textContent='';
+    const O=[M.X(0),M.Y(0)], P=[M.X(x),M.Y(y)], F=[M.X(x),M.Y(0)];
+    if(x!==0) vG.appendChild(E('line',{class:'vec-leg',x1:O[0],y1:O[1],x2:F[0],y2:F[1]}));
+    if(y!==0) vG.appendChild(E('line',{class:'vec-leg',x1:F[0],y1:F[1],x2:P[0],y2:P[1]}));
+    if(x!==0 && y!==0){ const sgnx=x>0?-1:1, sgny=y>0?-1:1, d=7;
+      vG.appendChild(E('path',{class:'ra',d:'M '+(F[0]+sgnx*d)+' '+F[1]+' L '+(F[0]+sgnx*d)+' '+(F[1]+sgny*d)+' L '+F[0]+' '+(F[1]+sgny*d)})); }
+    if(x!==0 || y!==0){ vG.appendChild(E('line',{class:'vec-hyp',x1:O[0],y1:O[1],x2:P[0],y2:P[1]}));
+      vG.appendChild(ah(O[0],O[1],P[0],P[1],'ah-motion')); }
+    if(x!==0) vG.appendChild(E('text',{class:'vlabel',x:(O[0]+F[0])/2,y:O[1]+(y>=0?14:-6),'text-anchor':'middle',fill:'var(--cyan)'})).textContent=neg(x);
+    if(y!==0) vG.appendChild(E('text',{class:'vlabel',x:F[0]+(x>=0?7:-7),y:(F[1]+P[1])/2+3,'text-anchor':x>=0?'start':'end',fill:'var(--cyan)'})).textContent=neg(y);
+    document.getElementById('mgVec').innerHTML=cv(x,y);
+    const sum=x*x+y*y, mag=Math.sqrt(sum);
+    const exact=Number.isInteger(mag);
+    const val=exact?('<b>'+mag+'</b>'):('<b>'+mag.toFixed(2)+'</b>');
+    document.getElementById('mgCalc').innerHTML='|v| = √(('+neg(x)+')² + ('+neg(y)+')²) = √'+sum+(exact?' = ':' ≈ ')+val;
+    document.getElementById('mgxv').textContent=x;
+    document.getElementById('mgyv').textContent=y;
+  }
+  sx.addEventListener('input',draw); sy.addEventListener('input',draw);
+  draw();
+})();
+
+/* ════════════════════════════════════════════════
+   4 · SKILL BANK (tappable tiles)
+════════════════════════════════════════════════ */
+const EQ={
+  reflect:{c:'motion',name:'Reflection',formula:'flip over a mirror line',
+    syms:[['describe','name the mirror LINE',''],['x-axis','(x,y)→(x,−y)',''],['y-axis','(x,y)→(−x,y)',''],['y=x','(x,y)→(y,x)','']],
+    rearr:'x=a → (2a−x, y) · y=b → (x, 2b−y) · congruent (same size), orientation reversed',
+    ex:'Reflect (5,2) in the y-axis → (−5,2). In y=x → (2,5).',
+    tip:'To DESCRIBE: the word "reflection" + the equation of the mirror line. No line = no marks.'},
+  rotate:{c:'energy',name:'Rotation',formula:'turn about a centre',
+    syms:[['describe','centre + angle + direction',''],['90° ACW','(x,y)→(−y,x)',''],['90° CW','(x,y)→(y,−x)',''],['180°','(x,y)→(−x,−y)','']],
+    rearr:'multiples of 90° · congruent · find the centre with perpendicular bisectors / tracing paper',
+    ex:'Rotate (3,1) by 90° anticlockwise about O → (−1,3).',
+    tip:'State all three: angle, direction AND centre. Only 180° needs no direction.'},
+  enlarge:{c:'force',name:'Enlargement',formula:'image = C + k(point − C)',
+    syms:[['k','scale factor',''],['C','centre',''],['k>1','bigger',''],['0<k<1','smaller','']],
+    rearr:'negative k → opposite side of C, inverted · length ×k, AREA ×k² · similar, not congruent',
+    ex:'SF 2 about O: (3,1)→(6,2). SF −2 about O: (3,1)→(−6,−2).',
+    tip:'DESCRIBE with scale factor AND centre. Count ray steps from the centre for k (with its sign).'},
+  translate:{c:'motion',name:'Translation',formula:'slide by a column vector',
+    syms:[['top','across: right + / left −',''],['bottom','up + / down −',''],['describe','give the vector','']],
+    rearr:'(x,y) → (x+a, y+b) for vector (a over b) · congruent · reverse = negate both',
+    ex:'Translate (2,5) by (−3 over 4) → (−1, 9).',
+    tip:'"Translation" + the column vector — never "moved 3 left, 4 up", and never swap the two numbers.'},
+  describe:{c:'power',name:'Describe it fully',formula:'the mark-scheme checklist',
+    syms:[['reflection','+ mirror line',''],['rotation','+ centre, angle, direction',''],['enlargement','+ centre, scale factor',''],['translation','+ column vector','']],
+    rearr:'a "single transformation" = ONE of the four. Name it, then give its numbers.',
+    ex:'"Rotation, 90° anticlockwise, centre (0,0)" scores; "it turns round" scores 0.',
+    tip:'Never give two transformations for a "single" one. Combos are only when the question says "combination".'},
+  colvec:{c:'mom',name:'Column vector',formula:'(x over y)',
+    syms:[['x','across (right +)',''],['y','up (+)',''],['a or AB','other notations','']],
+    rearr:'top number = horizontal move, bottom = vertical move',
+    ex:'AB = (4 over −3) means 4 right, 3 down.',
+    tip:'Top is x (across), bottom is y (up/down) — never swap them.'},
+  addsub:{c:'mom',name:'Add & subtract',formula:'component by component',
+    syms:[['a+b','tip-to-tail',''],['a−b','a + (−b)',''],['each part','add/subtract separately','']],
+    rearr:'(a over b) + (c over d) = (a+c over b+d)',
+    ex:'(4 over 1) + (1 over 3) = (5 over 4).',
+    tip:'a − b runs FROM the tip of b TO the tip of a (reverse b, then add).'},
+  scalar:{c:'mom',name:'Scalar multiple',formula:'k(x over y) = (kx over ky)',
+    syms:[['k>0','same direction',''],['k<0','reversed direction',''],['|k|','stretches the length','']],
+    rearr:'multiply BOTH components by k',
+    ex:'3(2 over −1) = (6 over −3).',
+    tip:'k·a is parallel to a — this is the whole basis of "show they are parallel".'},
+  magnitude:{c:'calc',name:'Magnitude |v|',formula:'|v| = √(x² + y²)',
+    syms:[['|v|','length of the vector',''],['x, y','the two components',''],['result','always ≥ 0','']],
+    rearr:'Pythagoras on the components · |AB| = straight-line distance A→B',
+    ex:'(3 over 4): |v| = √(9+16) = √25 = 5.',
+    tip:'Square, add, THEN root. |v| is never x + y; a minus sign vanishes when squared.'},
+  posvec:{c:'motion',name:'Position vectors',formula:'AB = b − a',
+    syms:[['a','OA (position of A)',''],['b','OB (position of B)',''],['midpoint','½(a + b)','']],
+    rearr:'AB = AO + OB = −a + b = b − a',
+    ex:'a=(1 over 2), b=(4 over 6) → AB = (3 over 4).',
+    tip:'AB = (end) − (start) = b − a, not a − b. Get the order right or the sign flips.'},
+  parallel:{c:'force',name:'Parallel & collinear',formula:'AC = k · AB',
+    syms:[['parallel','one = a multiple of the other',''],['collinear','parallel + shared point',''],['k','the scalar','']],
+    rearr:'if AC = k·AB then A, B, C are collinear (one straight line)',
+    ex:'AB=(2 over 3), AC=(6 over 9)=3·AB → A,B,C collinear.',
+    tip:'Parallel needs a common scalar; collinear also needs a point in common.'},
+  ratio:{c:'energy',name:'Ratio & similarity',formula:'divide a line in a ratio',
+    syms:[['AP:PB = m:n','',''],['AP','(m/(m+n))·AB',''],['OP','a + AP','']],
+    rearr:'P divides AB in m:n → OP = a + (m/(m+n))(b − a)',
+    ex:'AP:PB = 1:2 → OP = a + ⅓(b−a) = ⅔a + ⅓b.',
+    tip:'Travel to P: start at A (vector a), then a fraction of AB.'}
+};
+(function(){
+  const bank=document.getElementById('eqbank');
+  Object.keys(EQ).forEach(key=>{
+    const q=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=q.c;
+    cell.innerHTML='<div class="eq-sym">'+q.formula+'</div><div class="eq-name">'+q.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+const CMAP={motion:'var(--motion)',force:'var(--force)',energy:'var(--energy2)',mom:'var(--momentum)',power:'var(--power)',calc:'var(--cyan)'};
+function openEqCard(key){
+  const q=EQ[key]; if(!q) return;
+  const col=CMAP[q.c]||'var(--motion)';
+  const badge=document.getElementById('eqc-badge');
+  badge.textContent=q.name.split(' ')[0].slice(0,6); badge.style.color=col;
+  document.getElementById('eqc-name').textContent=q.name;
+  const ff=document.getElementById('eqc-formula'); ff.textContent=q.formula; ff.style.color=col;
+  document.getElementById('eqc-syms').innerHTML=q.syms.map(s=>
+    '<div class="sym-pill"><b>'+s[0]+'</b> '+s[1]+(s[2]?' <span>'+s[2]+'</span>':'')+'</div>').join('');
+  document.getElementById('eqc-rearr').textContent=q.rearr;
+  document.getElementById('eqc-example').innerHTML='<b>e.g.</b> '+q.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Trap:</b> '+q.tip;
+  document.getElementById('eq-card').style.display='block';
+}
+function closeEqCard(){ document.getElementById('eq-card').style.display='none'; }
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) && !e.target.closest('.eqcell'))
+    closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   5 · THEME TOGGLE
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){try{return localStorage.getItem('notes-theme');}catch(e){return null;}}
+  function safeSet(v){try{localStorage.setItem('notes-theme',v);}catch(e){}}
+  function apply(t){body.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?SUN:MOON;
+    btn.setAttribute('aria-label',(t==='dark')?'Switch to light theme':'Switch to dark theme');}
+  let start=safeGet();
+  if(!start) start=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+  apply(start);
+  btn.addEventListener('click',()=>{const n=body.getAttribute('data-theme')==='dark'?'light':'dark';apply(n);safeSet(n);});
+})();
+</script>
+
+<button id="markDoneBtn" data-mv="3" data-id="note:maths:7" type="button" aria-pressed="false" style="position:fixed;bottom:18px;right:18px;z-index:10000;font-family:Inter,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;border-radius:22px;padding:10px 18px;border:1px solid var(--border,#263247);background:var(--surface,#121826);color:var(--text,#d6deec);box-shadow:0 6px 20px rgba(0,0,0,.35);">○ Mark as complete</button>
+<script>(function(){var b=document.getElementById('markDoneBtn'),ID=b.getAttribute('data-id'),KEY="studyProgress";function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function r(){var d=!!load()[ID];b.textContent=d?'✓ Completed':'○ Mark as complete';b.setAttribute('aria-pressed',d?'true':'false');b.style.borderColor=d?'var(--power,#4ec994)':'var(--border,#263247)';b.style.color=d?'var(--power,#4ec994)':'var(--text,#d6deec)';}b.addEventListener('click',function(){var p=load();if(p[ID])delete p[ID];else p[ID]=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}r();});window.addEventListener('miraya-progress-synced',r);r();})();</script>
+</body>
+</html>
