@@ -686,14 +686,8 @@
         <div class="card-title">Transformations and Vectors</div>
         <div class="btns">
           <a class="btn notes" href="subjects/mathematics/notes/Mathematics%20Topic%207%20-%20Transformations%20and%20Vectors.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Transformations%20and%20Vectors.html"><span class="ico">📝</span>Practice Paper</a>
-        </div>
-      </div>
-      <div class="card" data-num="7v">
-        <div class="card-topic">Topic 7 · 7.2–7.3</div>
-        <div class="card-title">Vectors &amp; Magnitude</div>
-        <div class="btns">
-          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Vectors%20and%20Magnitude.html"><span class="ico">📝</span>Practice Paper</a>
+          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Transformations%20and%20Vectors.html" data-plabel="Paper (all)"><span class="ico">📝</span>Practice Paper</a>
+          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Vectors%20and%20Magnitude.html" data-ppid="pp:maths:7v" data-plabel="Paper (7.2–7.3)"><span class="ico">📝</span>Practice Paper · 7.2–7.3</a>
         </div>
       </div>
       <div class="card" data-num="mix">
@@ -770,7 +764,13 @@
         var num = card.getAttribute('data-num');
         var items = [];
         if (card.querySelector('.btn.notes')) items.push({ id:'note:'+subj+':'+num, label:'Notes' });
-        if (card.querySelector('.btn.paper:not(.graded)')) items.push({ id:'pp:'+subj+':'+num, label:'Paper' });
+        // One status chip per non-graded practice paper. Extra papers on the same
+        // topic carry data-ppid (their own progress id, matching the id their page
+        // writes) and data-plabel (chip label); a lone paper falls back to pp:subj:num.
+        card.querySelectorAll('.btn.paper:not(.graded)').forEach(function (p) {
+          items.push({ id: p.getAttribute('data-ppid') || ('pp:'+subj+':'+num),
+                       label: p.getAttribute('data-plabel') || 'Paper' });
+        });
         var gradedBtns = card.querySelectorAll('.btn.paper.graded');
         gradedBtns.forEach(function (g, i) {
           items.push({ id:'ex:'+subj+':'+num+':'+(i+1),
