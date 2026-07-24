@@ -206,6 +206,39 @@
     white-space: nowrap;
   }
 
+  /* ── COLLAPSIBLE SUBJECTS ── */
+  .subject-head { cursor: pointer; user-select: none; }
+  .subject-head:hover .collapse-btn {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  }
+  .collapse-btn {
+    width: 30px; height: 30px; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: color .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .collapse-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .collapse-btn .chev {
+    font-size: 12px; line-height: 1;
+    transition: transform .28s cubic-bezier(.2,.7,.3,1);
+  }
+  .subject.collapsed .collapse-btn .chev { transform: rotate(-90deg); }
+  .subject.collapsed .cards { display: none; }
+  @keyframes cardsIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .cards { animation: cardsIn .28s cubic-bezier(.2,.7,.3,1); }
+  /* collapse only applies in the "All" view — searching or focusing a single
+     subject reveals its cards regardless of the collapsed state */
+  body.searching .subject.collapsed .cards,
+  body.subjfilter .subject.collapsed .cards { display: grid; }
+
   .cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -976,6 +1009,8 @@
 
     function apply() {
       var q = (search.value || '').trim().toLowerCase();
+      document.body.classList.toggle('searching', !!q);
+      document.body.classList.toggle('subjfilter', filter !== 'all');
       var anyShown = false;
       sections.forEach(function (sec) {
         var subj = sec.getAttribute('data-subj');
@@ -1010,6 +1045,45 @@
     });
 
     apply();
+  })();
+
+  /* ── COLLAPSIBLE SUBJECTS ──
+     A chevron on the right of each subject header collapses/expands that subject's
+     chapter grid. The whole header row is clickable; the button carries the a11y
+     state. Collapsed subjects are remembered in localStorage ('hubCollapsed') so the
+     view survives a reload. Searching temporarily reveals matches (see CSS). */
+  (function () {
+    var KEY = 'hubCollapsed';
+    function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ return {}; } }
+    function save(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){} }
+    var state = load();
+
+    document.querySelectorAll('.subject').forEach(function (sec) {
+      var subj = sec.getAttribute('data-subj');
+      var head = sec.querySelector('.subject-head');
+      if (!head) return;
+      var name = (sec.querySelector('h2') || {}).textContent || 'subject';
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'collapse-btn';
+      btn.innerHTML = '<span class="chev">▾</span>';
+      head.appendChild(btn);
+
+      function paint() {
+        var c = !!state[subj];
+        sec.classList.toggle('collapsed', c);
+        btn.setAttribute('aria-expanded', c ? 'false' : 'true');
+        btn.setAttribute('aria-label', (c ? 'Expand ' : 'Collapse ') + name + ' chapters');
+      }
+      paint();
+
+      head.addEventListener('click', function () {
+        state[subj] = !state[subj];
+        save(state);
+        paint();
+      });
+    });
   })();
 </script>
 </body>
