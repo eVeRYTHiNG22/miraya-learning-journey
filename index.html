@@ -308,6 +308,72 @@
     border-color: color-mix(in srgb, var(--accent) 45%, transparent);
   }
 
+  /* ── STICKY NAV: subject filters + search ── */
+  .hubnav {
+    position: sticky;
+    top: 0;
+    z-index: 9;
+    margin: -8px -40px 40px;
+    padding: 13px 40px;
+    background: color-mix(in srgb, var(--bg) 90%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .hubnav-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px 14px;
+    flex-wrap: wrap;
+    padding-right: 50px;         /* clear the fixed theme toggle (top-right) */
+  }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 600;
+    padding: 7px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: color .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .chip:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent, var(--muted)) 55%, var(--border)); }
+  .chip.is-active {
+    color: var(--accent, var(--bright));
+    border-color: color-mix(in srgb, var(--accent, var(--text)) 55%, transparent);
+    background: color-mix(in srgb, var(--accent, var(--text)) 13%, transparent);
+  }
+  .chip:focus-visible { outline: 2px solid var(--accent, var(--physics)); outline-offset: 2px; }
+  .search {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 15px;
+    flex: 0 1 260px;
+    min-width: 170px;
+    transition: border-color .18s ease;
+  }
+  .search:focus-within { border-color: color-mix(in srgb, var(--physics) 55%, var(--border)); }
+  .search .ico { font-size: 13px; opacity: .65; }
+  #hubSearch {
+    background: none; border: none; outline: none;
+    color: var(--text);
+    font-family: 'Inter', sans-serif; font-size: 13.5px;
+    width: 100%;
+  }
+  #hubSearch::placeholder { color: var(--muted); }
+  .no-results {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 46px 20px;
+  }
+  .no-results b { color: var(--text); }
+
   /* ── PROGRESS PANEL ── */
   .progress-panel {
     margin-top: 24px;
@@ -434,6 +500,8 @@
     .page { padding: 52px 20px 90px; }
     .cards { grid-template-columns: 1fr; }
     .stat { flex: 1 1 100%; }
+    .hubnav { margin: -4px -20px 26px; padding: 11px 20px; }
+    .search { flex: 1 1 100%; margin-left: 0; }
   }
 </style>
 </head>
@@ -463,6 +531,21 @@
       <div class="pp-text" id="progText">Tick “Notes” or “Paper” on a chapter as you finish it.</div>
     </div>
   </header>
+
+  <nav class="hubnav" aria-label="Filter and search chapters">
+    <div class="hubnav-inner">
+      <div class="filters" id="hubFilters">
+        <button class="chip is-active" type="button" data-filter="all">All</button>
+        <button class="chip" type="button" data-filter="phys" style="--accent: var(--physics);">Physics</button>
+        <button class="chip" type="button" data-filter="chem" style="--accent: var(--chem);">Chemistry</button>
+        <button class="chip" type="button" data-filter="maths" style="--accent: var(--maths);">Maths</button>
+      </div>
+      <label class="search">
+        <span class="ico">🔍</span>
+        <input id="hubSearch" type="search" placeholder="Search chapters…" autocomplete="off" aria-label="Search chapters">
+      </label>
+    </div>
+  </nav>
 
   <!-- ════════ PHYSICS ════════ -->
   <section class="subject" data-subj="phys" style="--accent: var(--physics);">
@@ -753,6 +836,8 @@
     </div>
   </section>
 
+  <div class="no-results" id="noResults" style="display:none;">No chapters match your search — tap <b>All</b> or try another word.</div>
+
   <footer class="foot">
     Tip: bookmark this page — new chapters and papers appear here as they’re added.<br>
     Best viewed in Chrome, Safari or Edge. Tap the ☀ / ☾ button (top-right) to switch between dark and warm-paper reading modes.
@@ -869,6 +954,61 @@
     window.addEventListener('miraya-progress-synced', function () { prog = load(); refresh(); });
 
     refresh();
+  })();
+
+  /* ── HUB FILTER + SEARCH ──
+     Subject chips show one subject at a time; the search box does a live global
+     match on each card's topic + title. Typing searches across every subject (and
+     snaps the active chip back to “All”); picking a chip clears the search. Hidden
+     cards stay in the DOM so the progress tracker still counts them. */
+  (function () {
+    var sections = Array.prototype.slice.call(document.querySelectorAll('.subject'));
+    var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+    var search = document.getElementById('hubSearch');
+    var noRes = document.getElementById('noResults');
+    var filter = 'all';
+
+    function cardText(card) {
+      var t = card.querySelector('.card-title'), n = card.querySelector('.card-topic');
+      return ((n ? n.textContent : '') + ' ' + (t ? t.textContent : '')).toLowerCase();
+    }
+
+    function apply() {
+      var q = (search.value || '').trim().toLowerCase();
+      var anyShown = false;
+      sections.forEach(function (sec) {
+        var subj = sec.getAttribute('data-subj');
+        var shown = 0;
+        sec.querySelectorAll('.card').forEach(function (card) {
+          var vis = q ? (cardText(card).indexOf(q) !== -1)
+                      : (filter === 'all' || filter === subj);
+          card.style.display = vis ? '' : 'none';
+          if (vis) shown++;
+        });
+        sec.style.display = shown ? '' : 'none';
+        if (shown) anyShown = true;
+      });
+      if (noRes) noRes.style.display = anyShown ? 'none' : '';
+    }
+
+    chips.forEach(function (c) {
+      c.addEventListener('click', function () {
+        filter = c.getAttribute('data-filter');
+        chips.forEach(function (x) { x.classList.toggle('is-active', x === c); });
+        if (search.value) search.value = '';
+        apply();
+      });
+    });
+
+    search.addEventListener('input', function () {
+      if (search.value.trim()) {
+        filter = 'all';
+        chips.forEach(function (x) { x.classList.toggle('is-active', x.getAttribute('data-filter') === 'all'); });
+      }
+      apply();
+    });
+
+    apply();
   })();
 </script>
 </body>
