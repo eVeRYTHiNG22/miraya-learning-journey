@@ -303,6 +303,24 @@
   .curve { fill:none; stroke-width:2.8; stroke-linecap:round; stroke-linejoin:round; }
   .tracer { fill:#fff; }
 
+  /* ── content diagrams (static labelled figures) ── */
+  svg.diagram { width:100%; height:auto; display:block; max-width:600px; margin:18px auto;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  svg.diagram text { font-family:'JetBrains Mono',monospace; }
+  .dg-lbl   { fill:var(--text); font-size:11px; }
+  .dg-lbl.sm{ fill:var(--muted); font-size:9px; }
+  .dg-cap   { fill:var(--muted); font-size:9px; letter-spacing:.05em; }
+  .dg-line  { fill:none; stroke:var(--text); stroke-width:2; stroke-linecap:round; }
+  .dg-thin  { fill:none; stroke:var(--muted); stroke-width:1.2; }
+  .dg-field { fill:none; stroke:var(--cyan); stroke-width:1.7; }         /* magnetic field B */
+  .dg-fieldf{ fill:var(--cyan); }
+  .dg-cur   { fill:var(--energy); stroke:var(--energy); stroke-width:2.4; }/* current I (amber) */
+  .dg-force { fill:var(--power); stroke:var(--power); stroke-width:2.6; } /* force / motion F (green) */
+  .dg-N     { fill:var(--force); }                                        /* north pole (red) */
+  .dg-S     { fill:var(--motion); }                                       /* south pole (blue) */
+  .dg-coil  { fill:none; stroke:var(--momentum); stroke-width:2.6; }      /* coil / windings */
+  .dg-core  { fill:none; stroke:var(--muted); stroke-width:8; }           /* soft-iron core */
+
   /* I–V characteristic curves — coloured by component, themed via vars */
   .iv-resistor { stroke: var(--motion); }
   .iv-lamp     { stroke: var(--energy2); }
@@ -586,6 +604,7 @@
 
   /* chips */
   body[data-theme="light"] .estore { background:#efeadd; }
+  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
 
   @media (prefers-reduced-motion: reduce) {
     .section { animation:none; opacity:1; }
@@ -625,6 +644,53 @@
     <div class="define mom-c">
       <span class="term">Magnetic field</span> — a region in which a magnetic pole feels a force. We draw it with <strong>field lines</strong> that run <em>from N to S outside the magnet</em>. The line's direction is the direction of the force on a tiny N pole placed there; where lines are <strong>closer together, the field is stronger</strong>.
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="Magnetic field lines of a bar magnet, running from the north pole round to the south pole; lines are denser near the poles.">
+      <text class="dg-cap" x="20" y="24">A BAR MAGNET'S FIELD · lines run N → S outside</text>
+      <!-- field loops (top) -->
+      <path class="dg-field" d="M 200 150 C 150 118, 200 58, 280 58 C 360 58, 410 118, 360 150"/>
+      <path class="dg-field" d="M 206 142 C 182 122, 224 96, 280 96 C 336 96, 378 122, 354 142"/>
+      <!-- field loops (bottom) -->
+      <path class="dg-field" d="M 200 160 C 150 192, 200 252, 280 252 C 360 252, 410 192, 360 160"/>
+      <path class="dg-field" d="M 206 168 C 182 188, 224 214, 280 214 C 336 214, 378 188, 354 168"/>
+      <!-- N→S direction arrows (left→right over top and bottom) -->
+      <polygon class="dg-fieldf" points="274,52 274,64 286,58"/>
+      <polygon class="dg-fieldf" points="274,90 274,102 286,96"/>
+      <polygon class="dg-fieldf" points="274,246 274,258 286,252"/>
+      <polygon class="dg-fieldf" points="274,208 274,220 286,214"/>
+      <!-- the magnet -->
+      <rect class="dg-N" x="200" y="135" width="80" height="40" opacity="0.22"/>
+      <rect class="dg-S" x="280" y="135" width="80" height="40" opacity="0.22"/>
+      <rect x="200" y="135" width="160" height="40" rx="3" fill="none" stroke="var(--text)" stroke-width="2"/>
+      <line class="dg-thin" x1="280" y1="135" x2="280" y2="175"/>
+      <text class="dg-N" x="240" y="161" text-anchor="middle" font-size="18" font-weight="800">N</text>
+      <text class="dg-S" x="320" y="161" text-anchor="middle" font-size="18" font-weight="800">S</text>
+      <text class="dg-cap" x="280" y="288" text-anchor="middle">lines never cross · closer together = stronger field</text>
+    </svg>
+
+    <svg class="diagram" viewBox="0 0 560 170" role="img" aria-label="Unlike poles attract with field lines linking across the gap; like poles repel with a neutral point between them.">
+      <text class="dg-cap" x="20" y="22">UNLIKE ATTRACT · LIKE REPEL</text>
+      <!-- attract: S facing N -->
+      <rect x="40" y="70" width="70" height="30" fill="none" stroke="var(--text)" stroke-width="1.8"/>
+      <text class="dg-N" x="57" y="91" font-size="13" font-weight="700">N</text><text class="dg-S" x="90" y="91" font-size="13" font-weight="700">S</text>
+      <rect x="150" y="70" width="70" height="30" fill="none" stroke="var(--text)" stroke-width="1.8"/>
+      <text class="dg-N" x="167" y="91" font-size="13" font-weight="700">N</text><text class="dg-S" x="200" y="91" font-size="13" font-weight="700">S</text>
+      <path class="dg-field" d="M 122 78 C 135 66, 138 66, 150 78"/>
+      <path class="dg-field" d="M 122 92 C 135 104, 138 104, 150 92"/>
+      <polygon class="dg-fieldf" points="130,68 140,70 133,77"/>
+      <text class="dg-cap" x="130" y="130" text-anchor="middle">ATTRACT — lines link S → N</text>
+      <!-- repel: N facing N -->
+      <rect x="330" y="70" width="70" height="30" fill="none" stroke="var(--text)" stroke-width="1.8"/>
+      <text class="dg-S" x="347" y="91" font-size="13" font-weight="700">S</text><text class="dg-N" x="380" y="91" font-size="13" font-weight="700">N</text>
+      <rect x="440" y="70" width="70" height="30" fill="none" stroke="var(--text)" stroke-width="1.8"/>
+      <text class="dg-N" x="457" y="91" font-size="13" font-weight="700">N</text><text class="dg-S" x="490" y="91" font-size="13" font-weight="700">S</text>
+      <path class="dg-field" d="M 402 72 C 415 58, 415 58, 420 70"/>
+      <path class="dg-field" d="M 438 72 C 425 58, 425 58, 420 70"/>
+      <path class="dg-field" d="M 402 98 C 415 112, 415 112, 420 100"/>
+      <path class="dg-field" d="M 438 98 C 425 112, 425 112, 420 100"/>
+      <text x="420" y="88" text-anchor="middle" font-size="12" fill="var(--rose)" font-weight="700">×</text>
+      <text class="dg-cap" x="420" y="130" text-anchor="middle">REPEL — × = neutral point</text>
+    </svg>
 
     <h3>Temporary vs permanent — soft iron vs steel</h3>
     <table>
@@ -1058,6 +1124,49 @@
       A <strong>relay</strong> uses a small current's electromagnet to pull a switch shut in a separate high-power circuit (a little current safely controls a big one). A <strong>loudspeaker</strong> feeds the varying audio current into a coil sitting in a magnet's field — the coil is pushed in and out, vibrating the cone to make sound.
     </div>
 
+    <svg class="diagram" viewBox="0 0 600 320" role="img" aria-label="Magnetic field of a current: concentric circles around a straight wire, and a bar-magnet-like field through a solenoid.">
+      <text class="dg-cap" x="20" y="24">MAGNETIC FIELD OF A CURRENT</text>
+      <line class="dg-thin" x1="300" y1="40" x2="300" y2="300"/>
+
+      <!-- LEFT: straight wire, current out of page -->
+      <text class="dg-lbl" x="150" y="66" text-anchor="middle">Straight wire</text>
+      <circle class="dg-field" cx="150" cy="178" r="30"/>
+      <circle class="dg-field" cx="150" cy="178" r="54"/>
+      <circle class="dg-field" cx="150" cy="178" r="78"/>
+      <!-- anticlockwise circulation (current out of page) -->
+      <polygon class="dg-fieldf" points="150,146 150,158 139,152"/>
+      <polygon class="dg-fieldf" points="150,198 150,210 161,204"/>
+      <polygon class="dg-fieldf" points="150,122 150,134 139,128"/>
+      <polygon class="dg-fieldf" points="150,222 150,234 161,228"/>
+      <!-- wire cross-section: ⊙ = current toward you -->
+      <circle cx="150" cy="178" r="12" fill="none" stroke="var(--energy)" stroke-width="2.4"/>
+      <circle class="dg-cur" cx="150" cy="178" r="3.3"/>
+      <text class="dg-lbl sm" x="150" y="278" text-anchor="middle">current OUT of page ⊙</text>
+      <text class="dg-lbl sm" x="234" y="176" fill="var(--cyan)">B</text>
+      <text class="dg-cap" x="150" y="300" text-anchor="middle">right-hand grip rule</text>
+
+      <!-- RIGHT: solenoid -->
+      <text class="dg-lbl" x="440" y="66" text-anchor="middle">Solenoid (coil)</text>
+      <!-- external field loops (N on right → S on left, like a bar magnet) -->
+      <path class="dg-field" d="M 505 164 C 548 110, 372 92, 372 168"/>
+      <path class="dg-field" d="M 505 192 C 548 246, 372 264, 372 188"/>
+      <polygon class="dg-fieldf" points="446,86 434,90 444,97"/>
+      <polygon class="dg-fieldf" points="446,270 434,266 444,259"/>
+      <!-- internal field (straight, dense) pointing to the N end -->
+      <line class="dg-field" x1="392" y1="178" x2="506" y2="178"/>
+      <polygon class="dg-fieldf" points="506,172 506,184 517,178"/>
+      <!-- the coil: 5 loops -->
+      <ellipse class="dg-coil" cx="388" cy="178" rx="9" ry="36"/>
+      <ellipse class="dg-coil" cx="414" cy="178" rx="9" ry="36"/>
+      <ellipse class="dg-coil" cx="440" cy="178" rx="9" ry="36"/>
+      <ellipse class="dg-coil" cx="466" cy="178" rx="9" ry="36"/>
+      <ellipse class="dg-coil" cx="492" cy="178" rx="9" ry="36"/>
+      <text class="dg-S" x="356" y="184" font-size="16" font-weight="700">S</text>
+      <text class="dg-N" x="516" y="150" font-size="16" font-weight="700">N</text>
+      <text class="dg-lbl sm" x="440" y="248" text-anchor="middle" fill="var(--energy)">I</text>
+      <text class="dg-cap" x="440" y="300" text-anchor="middle">field like a bar magnet — reverse I to swap N/S</text>
+    </svg>
+
     <h3>The motor effect — force on a current in a field</h3>
     <p>A current-carrying wire placed <em>across</em> a magnetic field feels a <strong>force</strong> (it gets pushed). This is the <strong>motor effect</strong>. Reverse <em>either</em> the current <em>or</em> the field and the force reverses; reverse <em>both</em> and it stays the same. The force is biggest when the wire is at 90° to the field, and zero when it lies along the field.</p>
 
@@ -1077,6 +1186,67 @@
     <div class="define mom-c">
       <span class="term">Split-ring commutator</span> — the clever bit. Every half-turn it <strong>swaps the current direction</strong> in the coil, so the push on each side keeps driving rotation the same way instead of stalling. <strong>Brushes</strong> press against it to feed current to the spinning coil. Commutator = d.c. motor; remember it, because the generator (next) uses <em>slip rings</em> instead.
     </div>
+
+    <svg class="diagram" viewBox="0 0 640 340" role="img" aria-label="A d.c. motor: a coil between north and south poles; current out of the page on one side and into the page on the other gives opposite forces that spin the coil; a split-ring commutator and brushes feed the current. An inset shows Fleming's left-hand rule.">
+      <text class="dg-cap" x="20" y="24">THE d.c. MOTOR</text>
+      <line class="dg-thin" x1="410" y1="40" x2="410" y2="320"/>
+      <!-- poles -->
+      <rect class="dg-N" x="30" y="120" width="34" height="120" opacity="0.28"/>
+      <rect x="30" y="120" width="34" height="120" fill="none" stroke="var(--text)" stroke-width="1.6"/>
+      <text class="dg-N" x="47" y="112" text-anchor="middle" font-size="15" font-weight="800">N</text>
+      <rect class="dg-S" x="346" y="120" width="34" height="120" opacity="0.28"/>
+      <rect x="346" y="120" width="34" height="120" fill="none" stroke="var(--text)" stroke-width="1.6"/>
+      <text class="dg-S" x="363" y="112" text-anchor="middle" font-size="15" font-weight="800">S</text>
+      <!-- field N→S -->
+      <line class="dg-field" x1="66" y1="150" x2="342" y2="150"/>
+      <polygon class="dg-fieldf" points="342,144 342,156 352,150"/>
+      <text class="dg-lbl sm" x="150" y="143" fill="var(--cyan)">B (field, N → S)</text>
+      <!-- coil -->
+      <rect class="dg-coil" x="150" y="164" width="110" height="54" fill="none"/>
+      <!-- left side: current out of page ⊙ -->
+      <circle cx="150" cy="191" r="10" fill="none" stroke="var(--energy)" stroke-width="2.2"/>
+      <circle class="dg-cur" cx="150" cy="191" r="3"/>
+      <!-- right side: current into page × -->
+      <circle cx="260" cy="191" r="10" fill="none" stroke="var(--energy)" stroke-width="2.2"/>
+      <line stroke="var(--energy)" stroke-width="2" x1="254" y1="185" x2="266" y2="197"/>
+      <line stroke="var(--energy)" stroke-width="2" x1="266" y1="185" x2="254" y2="197"/>
+      <!-- forces: up on left, down on right -->
+      <line class="dg-force" x1="150" y1="164" x2="150" y2="122"/>
+      <polygon class="dg-force" points="144,126 156,126 150,114"/>
+      <text class="dg-force" x="126" y="132" font-size="12" fill="var(--power)">F</text>
+      <line class="dg-force" x1="260" y1="218" x2="260" y2="260"/>
+      <polygon class="dg-force" points="254,256 266,256 260,268"/>
+      <text class="dg-force" x="268" y="252" font-size="12" fill="var(--power)">F</text>
+      <text class="dg-lbl sm" x="205" y="250" text-anchor="middle">coil spins</text>
+      <!-- leads to commutator -->
+      <path class="dg-coil" d="M 188 218 L 188 278"/>
+      <path class="dg-coil" d="M 222 218 L 222 278"/>
+      <!-- split-ring commutator -->
+      <path class="dg-line" d="M 203 280 A 20 20 0 0 0 203 320"/>
+      <path class="dg-line" d="M 207 280 A 20 20 0 0 1 207 320"/>
+      <rect fill="var(--muted)" x="176" y="294" width="8" height="12"/>
+      <rect fill="var(--muted)" x="226" y="294" width="8" height="12"/>
+      <!-- battery -->
+      <path class="dg-line" d="M 180 306 L 180 326 L 200 326"/>
+      <path class="dg-line" d="M 230 306 L 230 326 L 214 326"/>
+      <line class="dg-line" x1="200" y1="318" x2="200" y2="334"/>
+      <line stroke="var(--text)" stroke-width="3" x1="209" y1="322" x2="209" y2="330"/>
+      <text class="dg-lbl sm" x="210" y="272" text-anchor="middle">split-ring commutator + brushes</text>
+      <text class="dg-cap" x="205" y="338" text-anchor="middle">reverse I each ½-turn → keeps spinning one way · ⊙ out, × in</text>
+
+      <!-- Fleming's left-hand rule inset -->
+      <text class="dg-lbl" x="525" y="70" text-anchor="middle">Fleming's LEFT hand</text>
+      <line class="dg-force" x1="520" y1="200" x2="520" y2="120"/>
+      <polygon class="dg-force" points="514,126 526,126 520,112"/>
+      <text class="dg-force" x="528" y="120" font-size="11" fill="var(--power)">F thuMb</text>
+      <line class="dg-field" x1="520" y1="200" x2="452" y2="230"/>
+      <polygon class="dg-fieldf" points="458,222 452,232 465,232"/>
+      <text class="dg-field" x="430" y="248" font-size="11" fill="var(--cyan)">B First</text>
+      <line class="dg-cur" x1="520" y1="200" x2="596" y2="200"/>
+      <polygon class="dg-cur" points="590,194 590,206 602,200"/>
+      <text class="dg-cur" x="548" y="192" font-size="11" fill="var(--energy)">I seCond</text>
+      <circle fill="var(--text)" cx="520" cy="200" r="2.5"/>
+    </svg>
   </div>
 
 
@@ -1113,6 +1283,59 @@
       <div class="box-label">✅ Reading the e.m.f.–time graph</div>
       The output is a sine wave. The e.m.f. <strong>peaks</strong> when the coil's sides are sweeping <em>across</em> the field lines fastest — the moment the plane of the coil lies <em>parallel</em> to the field — and falls to <strong>zero</strong> a quarter-turn later, when the sides move <em>along</em> the field lines (plane of the coil <em>perpendicular</em> to the field) and cut none. Spin it faster → taller <em>and</em> more frequent peaks.
     </div>
+
+    <svg class="diagram" viewBox="0 0 640 300" role="img" aria-label="An a.c. generator: a coil spinning between north and south poles connected through two slip rings and brushes to a load; beside it the e.m.f.–time graph is a sine wave, peaking when the coil plane is parallel to the field and zero when perpendicular.">
+      <text class="dg-cap" x="20" y="24">THE a.c. GENERATOR</text>
+      <line class="dg-thin" x1="360" y1="40" x2="360" y2="280"/>
+      <!-- poles -->
+      <rect class="dg-N" x="22" y="96" width="30" height="120" opacity="0.28"/>
+      <rect x="22" y="96" width="30" height="120" fill="none" stroke="var(--text)" stroke-width="1.6"/>
+      <text class="dg-N" x="37" y="88" text-anchor="middle" font-size="15" font-weight="800">N</text>
+      <rect class="dg-S" x="300" y="96" width="30" height="120" opacity="0.28"/>
+      <rect x="300" y="96" width="30" height="120" fill="none" stroke="var(--text)" stroke-width="1.6"/>
+      <text class="dg-S" x="315" y="88" text-anchor="middle" font-size="15" font-weight="800">S</text>
+      <!-- field -->
+      <line class="dg-field" x1="52" y1="128" x2="298" y2="128"/>
+      <polygon class="dg-fieldf" points="298,122 298,134 308,128"/>
+      <text class="dg-lbl sm" x="130" y="121" fill="var(--cyan)">B (field)</text>
+      <!-- rotating coil -->
+      <rect class="dg-coil" x="140" y="118" width="80" height="70" fill="none"/>
+      <path class="dg-force" d="M 236 150 A 40 40 0 0 1 214 196" fill="none"/>
+      <polygon class="dg-force" points="210,188 222,192 216,201"/>
+      <text class="dg-lbl sm" x="180" y="212" text-anchor="middle">coil spins</text>
+      <!-- slip rings + brushes -->
+      <path class="dg-coil" d="M 168 188 L 168 226"/>
+      <path class="dg-coil" d="M 192 188 L 192 240"/>
+      <ellipse class="dg-line" cx="168" cy="234" rx="7" ry="11" fill="none"/>
+      <ellipse class="dg-line" cx="192" cy="250" rx="7" ry="11" fill="none"/>
+      <rect fill="var(--muted)" x="150" y="228" width="7" height="12"/>
+      <rect fill="var(--muted)" x="200" y="244" width="7" height="12"/>
+      <text class="dg-lbl sm" x="150" y="276" text-anchor="middle">slip rings (full, NOT split)</text>
+      <!-- load -->
+      <path class="dg-line" d="M 150 240 L 132 240 L 132 268 L 250 268 L 250 250"/>
+      <path class="dg-line" d="M 204 256 L 260 256 L 260 262"/>
+      <circle cx="255" cy="256" r="12" fill="none" stroke="var(--text)" stroke-width="1.6"/>
+      <line class="dg-line" x1="247" y1="248" x2="263" y2="264"/><line class="dg-line" x1="263" y1="248" x2="247" y2="264"/>
+      <text class="dg-lbl sm" x="288" y="260">load</text>
+
+      <!-- e.m.f.–time graph -->
+      <line class="dg-thin" x1="400" y1="160" x2="620" y2="160"/>
+      <line class="dg-thin" x1="410" y1="96" x2="410" y2="220"/>
+      <text class="dg-lbl sm" x="404" y="90" fill="var(--cyan)">e.m.f.</text>
+      <text class="dg-lbl sm" x="612" y="176">t</text>
+      <path class="dg-field" d="M 410 160 C 428 108, 457 108, 475 160 C 493 212, 522 212, 540 160 C 558 108, 587 108, 605 160"/>
+      <!-- peak marker -->
+      <circle class="dg-fieldf" cx="442" cy="108" r="3"/>
+      <line class="dg-thin" x1="442" y1="108" x2="470" y2="82"/>
+      <text class="dg-lbl sm" x="474" y="80">peak — coil plane ∥ field</text>
+      <text class="dg-cap" x="474" y="94">(sides cut lines fastest)</text>
+      <!-- zero marker -->
+      <circle class="dg-fieldf" cx="475" cy="160" r="3"/>
+      <line class="dg-thin" x1="475" y1="160" x2="500" y2="196"/>
+      <text class="dg-lbl sm" x="504" y="194">zero — coil plane ⟂ field</text>
+      <text class="dg-cap" x="504" y="208">(sides cut none)</text>
+      <text class="dg-cap" x="510" y="240" text-anchor="middle">spin faster → taller &amp; more frequent peaks</text>
+    </svg>
 
     <h3>The transformer</h3>
     <p>A <strong>transformer</strong> changes the size of an a.c. voltage. Two coils — primary and secondary — share a <strong>soft-iron core</strong>. Alternating current in the primary makes a constantly-changing magnetic field in the core; that changing field links the secondary and induces an a.c. e.m.f. in it.</p>
