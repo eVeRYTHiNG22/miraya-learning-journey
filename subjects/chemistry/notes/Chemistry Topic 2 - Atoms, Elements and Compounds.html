@@ -89,6 +89,8 @@
   .section:nth-of-type(8){animation-delay:.32s}
   .section:nth-of-type(9){animation-delay:.36s}
   .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+  .section:nth-of-type(12){animation-delay:.48s}
 
   .sec-label {
     font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em;
@@ -167,7 +169,15 @@
   .scn-read .rk { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--motion); margin-bottom:6px; }
 
   /* shared SVG diagram frame */
-  svg.diagram { width:100%; height:auto; display:block; background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  svg.diagram { width:100%; height:auto; display:block; background:#0c1322; border:1px solid var(--border); border-radius:9px; margin:14px auto; }
+
+  /* static-diagram helper classes (labels, titles, frames, captions) */
+  .dg-ttl { fill:var(--bright); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; }
+  .dg-lbl { fill:var(--muted); font-family:'JetBrains Mono',monospace; font-size:9.5px; }
+  .dg-box { fill:none; stroke:#3a4a66; stroke-width:1.5; }
+  body[data-theme="light"] .dg-box { stroke:#c7bfaa; }
+  .dg-cap { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted);
+    text-align:center; letter-spacing:.03em; margin:-6px 0 20px; line-height:1.6; }
 
   /* ── ATOM BUILDER ── */
   .atom-stage { display:grid; grid-template-columns:1fr 250px; gap:20px; align-items:center; }
@@ -337,6 +347,44 @@
   /* particle chips */
   body[data-theme="light"] .estore { background:#efeadd; }
 
+  /* Check-yourself retrieval block */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* Papers panel */
+  .paper-links { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:26px 0 0; }
+  .paper-links .pl-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--power); margin-bottom:10px; }
+  .paper-links a { display:block; color:var(--text); text-decoration:none; font-size:14px;
+    padding:9px 12px; margin-top:8px; border:1px solid var(--border); border-radius:9px;
+    background:var(--surface2); transition:border-color .2s, color .2s; }
+  .paper-links a:hover { border-color:var(--power); color:var(--power); }
+  .paper-links .pl-note { font-size:12.5px; color:var(--muted); margin-top:10px; }
+
+  /* Save as PDF */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint, #eq-card { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; }
+    .section { animation:none !important; opacity:1 !important; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .section { animation:none; opacity:1; }
     body, .theme-toggle, .box, .card, .define, .explorer, .tool, svg.diagram,
@@ -349,6 +397,7 @@
 
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
 <div class="page">
 
   <!-- HEADER -->
@@ -361,7 +410,7 @@
 
   <!-- ── 01 · ELEMENTS, COMPOUNDS & MIXTURES ── -->
   <div class="section">
-    <div class="sec-label">01 / 10 · 2.1 Pure substances &amp; mixtures</div>
+    <div class="sec-label">01 / 11 · 2.1 Pure substances &amp; mixtures</div>
     <h2>Element, compound, mixture — the three things matter can be</h2>
 
     <div class="box intuition">
@@ -383,6 +432,68 @@
         <div class="card-body">Two or more substances <strong>not</strong> chemically combined; any ratio. Keep their own properties; split by physical means. e.g. <strong>air, sea water, alloys.</strong></div>
       </div>
     </div>
+
+    <h3>The four boxes examiners keep drawing</h3>
+    <p>Almost every 0620 question on 2.1 shows particle boxes like these and asks which is which. Read them by asking two questions: <strong>how many kinds of circle?</strong> and <strong>are they joined?</strong></p>
+
+    <svg class="diagram" viewBox="0 0 640 215" role="img" aria-label="Four particle boxes: A shows single atoms of one element, B shows diatomic molecules of one element, C shows identical molecules of one compound, D shows a mixture of an element and a compound">
+      <!-- A · element, single atoms -->
+      <text class="dg-ttl" x="90" y="22" text-anchor="middle">A</text>
+      <rect class="dg-box" x="20" y="32" width="140" height="140" rx="8"/>
+      <circle cx="48"  cy="64"  r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="88"  cy="56"  r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="128" cy="72"  r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="40"  cy="104" r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="80"  cy="100" r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="120" cy="112" r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="56"  cy="144" r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="104" cy="142" r="9" fill="currentColor" style="color:var(--motion)"/>
+      <text class="dg-lbl" x="90" y="190" text-anchor="middle" style="fill:var(--motion)">ELEMENT</text>
+      <text class="dg-lbl" x="90" y="204" text-anchor="middle">one kind of atom</text>
+
+      <!-- B · element, diatomic molecules -->
+      <text class="dg-ttl" x="245" y="22" text-anchor="middle">B</text>
+      <rect class="dg-box" x="175" y="32" width="140" height="140" rx="8"/>
+      <line x1="203" y1="64"  x2="221" y2="64"  stroke="currentColor" stroke-width="2.4" style="color:var(--motion)"/>
+      <line x1="258" y1="58"  x2="276" y2="58"  stroke="currentColor" stroke-width="2.4" style="color:var(--motion)"/>
+      <line x1="208" y1="112" x2="226" y2="112" stroke="currentColor" stroke-width="2.4" style="color:var(--motion)"/>
+      <line x1="265" y1="140" x2="283" y2="140" stroke="currentColor" stroke-width="2.4" style="color:var(--motion)"/>
+      <circle cx="203" cy="64"  r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="221" cy="64"  r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="258" cy="58"  r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="276" cy="58"  r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="208" cy="112" r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="226" cy="112" r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="265" cy="140" r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="283" cy="140" r="9" fill="currentColor" style="color:var(--motion)"/>
+      <text class="dg-lbl" x="245" y="190" text-anchor="middle" style="fill:var(--motion)">STILL AN ELEMENT</text>
+      <text class="dg-lbl" x="245" y="204" text-anchor="middle">same atoms, bonded in 2s</text>
+
+      <!-- C · compound -->
+      <text class="dg-ttl" x="400" y="22" text-anchor="middle">C</text>
+      <rect class="dg-box" x="330" y="32" width="140" height="140" rx="8"/>
+      <line x1="358" y1="64"  x2="376" y2="64"  stroke="currentColor" stroke-width="2.4" style="color:var(--muted)"/>
+      <line x1="413" y1="58"  x2="431" y2="58"  stroke="currentColor" stroke-width="2.4" style="color:var(--muted)"/>
+      <line x1="363" y1="112" x2="381" y2="112" stroke="currentColor" stroke-width="2.4" style="color:var(--muted)"/>
+      <line x1="420" y1="140" x2="438" y2="140" stroke="currentColor" stroke-width="2.4" style="color:var(--muted)"/>
+      <circle cx="358" cy="64"  r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="376" cy="64"  r="9" fill="currentColor" style="color:var(--force)"/>
+      <circle cx="413" cy="58"  r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="431" cy="58"  r="9" fill="currentColor" style="color:var(--force)"/>
+      <circle cx="363" cy="112" r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="381" cy="112" r="9" fill="currentColor" style="color:var(--force)"/>
+      <circle cx="420" cy="140" r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="438" cy="140" r="9" fill="currentColor" style="color:var(--force)"/>
+      <text class="dg-lbl" x="400" y="190" text-anchor="middle" style="fill:var(--force)">COMPOUND</text>
+      <text class="dg-lbl" x="400" y="204" text-anchor="middle">every molecule identical</text>
+
+      <!-- D · mixture -->
+      <text class="dg-ttl" x="555" y="22" text-anchor="middle">D</text>
+      <rect class="dg-box" x="485" y="32" width="140" height="140" rx="8"/>
+      <line x1="512" y1="60"  x2="530" y2="60"  stroke="currentColor" stroke-width="2.4" style="color:var(--motion)"/>
+      <line x1="515" y1="142" x2="533" y2="142" stroke="currentColor" stroke-width="2.4" style="color:var(--motion)"/>
+      <line x1="568" y1="58"  x2="586" y2="58"  stroke="currentColor" stroke-width="2.4" style="color:var(--muted)"/>
+      <line x1="560" y1="112" x2="578" y2="112" stroke="currentColor" stroke-width="2.4" style="color:var(--muted)"/>
+      <circle cx="512" cy="60"  r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="530" cy="60"  r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="515" cy="142" r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="533" cy="142" r="9" fill="currentColor" style="color:var(--motion)"/>
+      <circle cx="568" cy="58"  r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="586" cy="58"  r="9" fill="currentColor" style="color:var(--force)"/>
+      <circle cx="560" cy="112" r="9" fill="currentColor" style="color:var(--motion)"/><circle cx="578" cy="112" r="9" fill="currentColor" style="color:var(--force)"/>
+      <text class="dg-lbl" x="555" y="190" text-anchor="middle" style="fill:var(--energy)">MIXTURE</text>
+      <text class="dg-lbl" x="555" y="204" text-anchor="middle">element + compound together</text>
+    </svg>
+    <div class="dg-cap">Two colours of circle = two elements. Joined circles = chemically bonded. Only <strong>D</strong> holds more than one kind of substance, so only D can be split by physical means — and <strong>B is still an element</strong>, because both atoms in each pair are the same.</div>
 
     <h3>Compound vs. mixture — the difference that earns marks</h3>
     <table>
@@ -407,7 +518,7 @@
 
   <!-- ── 02 · INSIDE THE ATOM ── -->
   <div class="section">
-    <div class="sec-label">02 / 10 · 2.2 Atomic structure</div>
+    <div class="sec-label">02 / 11 · 2.2 Atomic structure</div>
     <h2>Inside the atom — three particles, two regions</h2>
 
     <div class="box intuition">
@@ -442,7 +553,7 @@
 
   <!-- ── 03 · PROTON & NUCLEON NUMBER + ATOM BUILDER ── -->
   <div class="section">
-    <div class="sec-label">03 / 10 · 2.2 Proton &amp; nucleon number</div>
+    <div class="sec-label">03 / 11 · 2.2 Proton &amp; nucleon number</div>
     <h2>Two numbers that pin down any atom</h2>
 
     <div class="define">
@@ -452,7 +563,36 @@
       <span class="term">Nucleon number, A</span> (mass number) — the total number of <strong>protons + neutrons</strong> in the nucleus. So <span class="eq-inline" style="color:var(--cyan)">neutrons = A − Z</span>, and (in a neutral atom) <span class="eq-inline" style="color:var(--cyan)">electrons = Z</span>.
     </div>
 
-    <p>We write these around the symbol as <span class="eq-inline">ᴬ𝓏X</span> — for example <span class="eq-inline" style="color:var(--cyan)">²³₁₁Na</span> means 11 protons, 11 electrons, and 23 − 11 = 12 neutrons.</p>
+    <p>We write these around the symbol: the <strong>nucleon number A on top</strong>, the <strong>proton number Z underneath</strong>, and any <strong>charge to the top right</strong>. Learn to read one cold — it is worth marks in almost every paper:</p>
+
+    <svg class="diagram" viewBox="0 0 640 235" role="img" aria-label="Anatomy of the nuclide symbol: sodium-23 atom on the left with nucleon number 23 above and proton number 11 below, and the chloride ion chlorine-35 with a minus charge on the right">
+      <!-- left: the atom -->
+      <text class="dg-ttl" x="160" y="24" text-anchor="middle">AN ATOM</text>
+      <text x="150" y="96"  text-anchor="end" fill="currentColor" style="color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600">23</text>
+      <text x="150" y="140" text-anchor="end" fill="currentColor" style="color:var(--force);font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600">11</text>
+      <text x="158" y="132" fill="currentColor" style="color:var(--bright);font-family:'JetBrains Mono',monospace;font-size:46px;font-weight:600">Na</text>
+      <text class="dg-lbl" x="24" y="48" style="fill:var(--cyan)">nucleon number A</text>
+      <line x1="122" y1="44" x2="140" y2="74" stroke="currentColor" stroke-width="1.2" style="color:var(--cyan)"/>
+      <text class="dg-lbl" x="24" y="170" style="fill:var(--force)">proton number Z</text>
+      <line x1="116" y1="166" x2="138" y2="148" stroke="currentColor" stroke-width="1.2" style="color:var(--force)"/>
+      <text class="dg-lbl" x="160" y="198" text-anchor="middle">11 p⁺ · 12 n · 11 e⁻</text>
+      <text class="dg-lbl" x="160" y="216" text-anchor="middle">neutrons = A − Z = 23 − 11 = 12</text>
+
+      <!-- divider -->
+      <line x1="320" y1="30" x2="320" y2="225" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5" style="color:var(--muted)" opacity="0.6"/>
+
+      <!-- right: the ion -->
+      <text class="dg-ttl" x="480" y="24" text-anchor="middle">AN ION</text>
+      <text x="470" y="96"  text-anchor="end" fill="currentColor" style="color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600">35</text>
+      <text x="470" y="140" text-anchor="end" fill="currentColor" style="color:var(--force);font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600">17</text>
+      <text x="478" y="132" fill="currentColor" style="color:var(--bright);font-family:'JetBrains Mono',monospace;font-size:46px;font-weight:600">Cl</text>
+      <text x="536" y="100" fill="currentColor" style="color:var(--momentum);font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700">−</text>
+      <text class="dg-lbl" x="500" y="54" style="fill:var(--momentum)">charge: 1 e⁻ GAINED</text>
+      <line x1="540" y1="60" x2="542" y2="80" stroke="currentColor" stroke-width="1.2" style="color:var(--momentum)"/>
+      <text class="dg-lbl" x="480" y="198" text-anchor="middle">17 p⁺ · 18 n · 18 e⁻</text>
+      <text class="dg-lbl" x="480" y="216" text-anchor="middle">protons never change — only electrons</text>
+    </svg>
+    <div class="dg-cap">Neutrons always come from <strong>A − Z</strong>. Electrons equal Z <em>only in a neutral atom</em> — for an ion, add one electron for every unit of negative charge and subtract one for every unit of positive charge.</div>
 
     <p>Pick an element below: the nucleus fills with protons and neutrons, and the electrons drop into their shells. Read off every number on the right.</p>
 
@@ -476,7 +616,7 @@
 
   <!-- ── 04 · ELECTRONIC CONFIGURATION ── -->
   <div class="section">
-    <div class="sec-label">04 / 10 · 2.2 Electronic configuration</div>
+    <div class="sec-label">04 / 11 · 2.2 Electronic configuration</div>
     <h2>Electron shells — and how they predict the Periodic Table</h2>
 
     <p>Electrons don't sit just anywhere. They fill <strong>shells</strong> (energy levels) from the inside out. The rule for the first 20 elements:</p>
@@ -494,7 +634,7 @@
     <div class="grid2">
       <div class="card">
         <div class="card-title" style="color:var(--motion)">Group number = outer electrons</div>
-        <div class="card-body">An element in <strong>Group VII</strong> has <strong>7</strong> electrons in its outer shell (e.g. chlorine 2,8,<strong>7</strong>). Group I → 1 outer electron; Group 0 (noble gases) → a full outer shell.</div>
+        <div class="card-body">An element in <strong>Group VII</strong> has <strong>7</strong> electrons in its outer shell (e.g. chlorine 2,8,<strong>7</strong>). Group I → 1 outer electron; Group VIII / Group 0 (noble gases) → a full outer shell.</div>
       </div>
       <div class="card">
         <div class="card-title" style="color:var(--cyan)">Period number = number of shells</div>
@@ -509,14 +649,14 @@
 
     <div class="box pitfall">
       <div class="box-label">⚠️ Noble gases &amp; hydrogen</div>
-      Helium is <span class="eq-inline">2</span> — its outer shell is full with just 2, so it sits in Group 0 with the other noble gases, <em>not</em> Group II. And hydrogen (just 1 electron) is a special case usually floated above the table.
+      Helium is <span class="eq-inline">2</span> — its outer shell is full with just 2, so it sits in Group VIII (Group 0) with the other noble gases, <em>not</em> Group II. And hydrogen (just 1 electron) is a special case usually floated above the table.
     </div>
   </div>
 
 
   <!-- ── 05 · ISOTOPES + Aᵣ MIXER ── -->
   <div class="section">
-    <div class="sec-label">05 / 10 · 2.3 Isotopes</div>
+    <div class="sec-label">05 / 11 · 2.3 Isotopes</div>
     <h2>Isotopes — same element, different weight</h2>
 
     <div class="define iso-c">
@@ -527,6 +667,47 @@
       <div class="box-label">⚖️ Same identity, different luggage</div>
       Add or remove <em>neutrons</em> and you change the atom's mass, but not who it is — protons are the identity, and they're untouched. Chlorine-35 and chlorine-37 are both chlorine: 17 protons each, but 18 vs 20 neutrons.
     </div>
+
+    <svg class="diagram" viewBox="0 0 640 275" role="img" aria-label="Chlorine-35 and chlorine-37 drawn side by side: both have 17 protons and the same 2,8,7 electron arrangement, but 18 and 20 neutrons respectively">
+      <!-- chlorine-35 -->
+      <circle class="shell-ring" cx="170" cy="125" r="50"/>
+      <circle class="shell-ring" cx="170" cy="125" r="78"/>
+      <circle class="shell-ring" cx="170" cy="125" r="106"/>
+      <circle class="electron" cx="170" cy="75"  r="4"/><circle class="electron" cx="170" cy="175" r="4"/>
+      <circle class="electron" cx="170"   cy="47"    r="4"/><circle class="electron" cx="225.2" cy="69.8"  r="4"/>
+      <circle class="electron" cx="248"   cy="125"   r="4"/><circle class="electron" cx="225.2" cy="180.2" r="4"/>
+      <circle class="electron" cx="170"   cy="203"   r="4"/><circle class="electron" cx="114.8" cy="180.2" r="4"/>
+      <circle class="electron" cx="92"    cy="125"   r="4"/><circle class="electron" cx="114.8" cy="69.8"  r="4"/>
+      <circle class="electron" cx="170"   cy="19"    r="4"/><circle class="electron" cx="252.9" cy="58.9"  r="4"/>
+      <circle class="electron" cx="273.3" cy="148.6" r="4"/><circle class="electron" cx="216.0" cy="220.5" r="4"/>
+      <circle class="electron" cx="124.0" cy="220.5" r="4"/><circle class="electron" cx="66.7"  cy="148.6" r="4"/>
+      <circle class="electron" cx="87.1"  cy="58.9"  r="4"/>
+      <circle class="nuc" cx="170" cy="125" r="28"/>
+      <text class="nuc-p" x="170" y="122" text-anchor="middle">17p⁺</text>
+      <text class="nuc-n" x="170" y="138" text-anchor="middle">18n</text>
+      <text class="dg-ttl" x="170" y="250" text-anchor="middle">CHLORINE-35</text>
+      <text class="dg-lbl" x="170" y="266" text-anchor="middle">17 p⁺ · 18 n · 17 e⁻ → 2,8,7</text>
+
+      <!-- chlorine-37 -->
+      <circle class="shell-ring" cx="470" cy="125" r="50"/>
+      <circle class="shell-ring" cx="470" cy="125" r="78"/>
+      <circle class="shell-ring" cx="470" cy="125" r="106"/>
+      <circle class="electron" cx="470" cy="75"  r="4"/><circle class="electron" cx="470" cy="175" r="4"/>
+      <circle class="electron" cx="470"   cy="47"    r="4"/><circle class="electron" cx="525.2" cy="69.8"  r="4"/>
+      <circle class="electron" cx="548"   cy="125"   r="4"/><circle class="electron" cx="525.2" cy="180.2" r="4"/>
+      <circle class="electron" cx="470"   cy="203"   r="4"/><circle class="electron" cx="414.8" cy="180.2" r="4"/>
+      <circle class="electron" cx="392"   cy="125"   r="4"/><circle class="electron" cx="414.8" cy="69.8"  r="4"/>
+      <circle class="electron" cx="470"   cy="19"    r="4"/><circle class="electron" cx="552.9" cy="58.9"  r="4"/>
+      <circle class="electron" cx="573.3" cy="148.6" r="4"/><circle class="electron" cx="516.0" cy="220.5" r="4"/>
+      <circle class="electron" cx="424.0" cy="220.5" r="4"/><circle class="electron" cx="366.7" cy="148.6" r="4"/>
+      <circle class="electron" cx="387.1" cy="58.9"  r="4"/>
+      <circle class="nuc" cx="470" cy="125" r="28"/>
+      <text class="nuc-p" x="470" y="122" text-anchor="middle">17p⁺</text>
+      <text class="nuc-n" x="470" y="138" text-anchor="middle">20n</text>
+      <text class="dg-ttl" x="470" y="250" text-anchor="middle">CHLORINE-37</text>
+      <text class="dg-lbl" x="470" y="266" text-anchor="middle">17 p⁺ · 20 n · 17 e⁻ → 2,8,7</text>
+    </svg>
+    <div class="dg-cap">The <strong>only</strong> difference is 2 extra neutrons in the nucleus. Every electron shell is identical — which is exactly why isotopes of an element are chemically identical.</div>
 
     <div class="box remember">
       <div class="box-label">⚠️ Why isotopes are chemically identical</div>
@@ -578,7 +759,7 @@
 
   <!-- ── 06 · IONS & IONIC BONDING ── -->
   <div class="section">
-    <div class="sec-label">06 / 10 · 2.4 Ions &amp; ionic bonds</div>
+    <div class="sec-label">06 / 11 · 2.4 Ions &amp; ionic bonds</div>
     <h2>Ionic bonding — atoms that <em>give and take</em> electrons</h2>
 
     <div class="box intuition">
@@ -641,6 +822,43 @@
       <text class="diag-lbl" x="235" y="170" text-anchor="middle">[Cl]⁻  2,8,8  (× = electron from Na)</text>
     </svg>
 
+    <h3>Dot-and-cross: magnesium oxide (the 2+ / 2− case)</h3>
+    <p>Same method, bigger charges. Magnesium (2,8,<strong>2</strong>) gives away <strong>both</strong> outer electrons; oxygen (2,<strong>6</strong>) needs exactly two. So one Mg serves one O and the formula is <strong>MgO</strong>:</p>
+
+    <svg class="diagram" viewBox="0 0 340 190" role="img" aria-label="Dot-and-cross diagram of magnesium oxide showing an Mg 2+ ion with an empty outer shell and an O 2- ion with eight outer electrons" style="max-width:440px">
+      <!-- Mg2+ ion: outer shell now empty -->
+      <line x1="36" y1="50" x2="36" y2="130" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <line x1="36" y1="50" x2="46" y2="50" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <line x1="36" y1="130" x2="46" y2="130" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <circle class="ion-pos" cx="90" cy="90" r="30"/>
+      <text class="ion-lbl-pos" x="90" y="95" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600">Mg</text>
+      <line x1="140" y1="50" x2="140" y2="130" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <line x1="140" y1="50" x2="130" y2="50" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <line x1="140" y1="130" x2="130" y2="130" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <text class="ion-lbl-pos" x="150" y="56" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700">2+</text>
+      <!-- O2- ion: 6 of its own dots + 2 crosses from Mg -->
+      <line x1="180" y1="40" x2="180" y2="140" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <line x1="180" y1="40" x2="190" y2="40" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <line x1="180" y1="140" x2="190" y2="140" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <circle class="ion-neg" cx="235" cy="90" r="34"/>
+      <text class="ion-lbl-neg" x="235" y="95" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600">O</text>
+      <circle class="e-dot" cx="269" cy="90" r="3.4"/>
+      <circle class="e-dot" cx="259" cy="66" r="3.4"/>
+      <circle class="e-dot" cx="211" cy="66" r="3.4"/>
+      <circle class="e-dot" cx="201" cy="90" r="3.4"/>
+      <circle class="e-dot" cx="211" cy="114" r="3.4"/>
+      <circle class="e-dot" cx="259" cy="114" r="3.4"/>
+      <text class="e-cross" x="227" y="63" text-anchor="middle">×</text>
+      <text class="e-cross" x="245" y="63" text-anchor="middle">×</text>
+      <line x1="290" y1="40" x2="290" y2="140" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <line x1="290" y1="40" x2="280" y2="40" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <line x1="290" y1="140" x2="280" y2="140" stroke="currentColor" stroke-width="1.4" style="color:var(--muted)"/>
+      <text class="ion-lbl-neg" x="300" y="46" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700">2−</text>
+      <text class="diag-lbl" x="90" y="158" text-anchor="middle">[Mg]²⁺ 2,8 — outer shell emptied</text>
+      <text class="diag-lbl" x="235" y="170" text-anchor="middle">[O]²⁻ 2,8  (× from Mg)</text>
+    </svg>
+    <div class="dg-cap">The positive ion is drawn with an <strong>empty</strong> outer circle — it has genuinely lost those electrons. Charges of 2+ and 2− cancel one-for-one, so MgO is 1 : 1; with Mg²⁺ and Cl⁻ you would need two chlorides, giving MgCl₂.</div>
+
     <h3>Why ionic compounds behave as they do</h3>
     <p>The ions stack into a <strong>giant ionic lattice</strong> — a regular 3-D grid of alternating + and − ions, held by strong attractions in every direction. That structure explains every property:</p>
     <table>
@@ -660,7 +878,7 @@
 
   <!-- ── 07 · COVALENT BONDING ── -->
   <div class="section">
-    <div class="sec-label">07 / 10 · 2.5 Simple molecules &amp; covalent bonds</div>
+    <div class="sec-label">07 / 11 · 2.5 Simple molecules &amp; covalent bonds</div>
     <h2>Covalent bonding — atoms that <em>share</em></h2>
 
     <div class="box intuition">
@@ -676,18 +894,18 @@
     <p>Oxygen (2,<strong>6</strong>) needs 2 more electrons; each hydrogen (<strong>1</strong>) needs 1. Oxygen shares one pair with each H — two bonds — and keeps two <strong>lone pairs</strong>:</p>
 
     <svg class="diagram" viewBox="0 0 300 180" aria-label="Dot-and-cross diagram of water" style="max-width:400px">
-      <circle class="cov-atom" cx="80" cy="90" r="22"/>
-      <text class="cov-lbl" x="80" y="95" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600">H</text>
-      <circle class="cov-atom" cx="150" cy="90" r="36"/>
+      <circle class="cov-atom" cx="94" cy="90" r="26"/>
+      <text class="cov-lbl" x="82" y="95" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600">H</text>
+      <circle class="cov-atom" cx="206" cy="90" r="26"/>
+      <text class="cov-lbl" x="218" y="95" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600">H</text>
+      <circle class="cov-atom" cx="150" cy="90" r="40"/>
       <text class="cov-lbl" x="150" y="95" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">O</text>
-      <circle class="cov-atom" cx="220" cy="90" r="22"/>
-      <text class="cov-lbl" x="220" y="95" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600">H</text>
-      <!-- left bonding pair: O dot + H cross -->
-      <circle class="e-dot" cx="112" cy="83" r="3.4"/>
-      <text class="e-cross" x="112" y="105" text-anchor="middle">×</text>
+      <!-- left bonding pair: O dot + H cross, sitting in the overlap of the two shells -->
+      <circle class="e-dot" cx="115" cy="83" r="3.4"/>
+      <text class="e-cross" x="115" y="105" text-anchor="middle">×</text>
       <!-- right bonding pair -->
-      <circle class="e-dot" cx="188" cy="83" r="3.4"/>
-      <text class="e-cross" x="188" y="105" text-anchor="middle">×</text>
+      <circle class="e-dot" cx="185" cy="83" r="3.4"/>
+      <text class="e-cross" x="185" y="105" text-anchor="middle">×</text>
       <!-- O lone pairs: top & bottom -->
       <circle class="e-dot" cx="140" cy="58" r="3.4"/>
       <circle class="e-dot" cx="160" cy="58" r="3.4"/>
@@ -707,6 +925,132 @@
       </div>
     </div>
 
+    <h3>The dot-and-cross diagrams you must be able to draw</h3>
+    <p>Same recipe every time: count the outer electrons, share enough pairs to fill every shell, then park the leftovers as <strong>lone pairs</strong>. Hydrogen is full at <strong>2</strong>; everything else here is full at <strong>8</strong>. The bottom row is Extended-only.</p>
+
+    <svg class="diagram" viewBox="0 0 640 675" role="img" aria-label="Dot-and-cross diagrams for methane, ammonia, carbon dioxide, nitrogen, ethene and methanol">
+      <!-- ── CH4 ── -->
+      <circle class="cov-atom" cx="150" cy="56"  r="20"/>
+      <circle class="cov-atom" cx="150" cy="144" r="20"/>
+      <circle class="cov-atom" cx="106" cy="100" r="20"/>
+      <circle class="cov-atom" cx="194" cy="100" r="20"/>
+      <circle class="cov-atom" cx="150" cy="100" r="34"/>
+      <text class="cov-lbl" x="150" y="106" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">C</text>
+      <text class="cov-lbl" x="150" y="62"  text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="150" y="150" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="106" y="106" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="194" y="106" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <circle class="e-dot" cx="142" cy="71"  r="3.2"/><text class="e-cross" x="159" y="75"  text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="142" cy="129" r="3.2"/><text class="e-cross" x="159" y="133" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="121" cy="92"  r="3.2"/><text class="e-cross" x="121" y="116" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="179" cy="92"  r="3.2"/><text class="e-cross" x="179" y="116" text-anchor="middle" style="font-size:13px">×</text>
+      <text class="dg-ttl" x="150" y="196" text-anchor="middle">CH₄ · METHANE</text>
+      <text class="dg-lbl" x="150" y="212" text-anchor="middle">• carbon  × hydrogen  ·  4 single bonds, no lone pairs</text>
+
+      <!-- ── NH3 ── -->
+      <circle class="cov-atom" cx="446" cy="102" r="20"/>
+      <circle class="cov-atom" cx="534" cy="102" r="20"/>
+      <circle class="cov-atom" cx="490" cy="146" r="20"/>
+      <circle class="cov-atom" cx="490" cy="102" r="34"/>
+      <text class="cov-lbl" x="490" y="108" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">N</text>
+      <text class="cov-lbl" x="446" y="108" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="534" y="108" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="490" y="152" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <circle class="e-dot" cx="461" cy="94"  r="3.2"/><text class="e-cross" x="461" y="118" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="519" cy="94"  r="3.2"/><text class="e-cross" x="519" y="118" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="482" cy="131" r="3.2"/><text class="e-cross" x="499" y="135" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="482" cy="76"  r="3.2"/><circle class="e-dot" cx="498" cy="76" r="3.2"/>
+      <text class="dg-ttl" x="490" y="196" text-anchor="middle">NH₃ · AMMONIA</text>
+      <text class="dg-lbl" x="490" y="212" text-anchor="middle">• nitrogen  × hydrogen  ·  3 bonds + 1 lone pair</text>
+
+      <line x1="40" y1="240" x2="600" y2="240" stroke="currentColor" stroke-width="1" stroke-dasharray="4 6" style="color:var(--muted)" opacity="0.5"/>
+
+      <!-- ── CO2 ── -->
+      <circle class="cov-atom" cx="102" cy="330" r="36"/>
+      <circle class="cov-atom" cx="198" cy="330" r="36"/>
+      <circle class="cov-atom" cx="150" cy="330" r="36"/>
+      <text class="cov-lbl" x="150" y="336" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">C</text>
+      <text class="cov-lbl" x="80"  y="336" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">O</text>
+      <text class="cov-lbl" x="220" y="336" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">O</text>
+      <circle class="e-dot" cx="131" cy="320" r="3.2"/><text class="e-cross" x="120" y="324" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="131" cy="342" r="3.2"/><text class="e-cross" x="120" y="346" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="169" cy="320" r="3.2"/><text class="e-cross" x="180" y="324" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="169" cy="342" r="3.2"/><text class="e-cross" x="180" y="346" text-anchor="middle" style="font-size:13px">×</text>
+      <text class="e-cross" x="94"  y="306" text-anchor="middle" style="font-size:13px">×</text><text class="e-cross" x="110" y="306" text-anchor="middle" style="font-size:13px">×</text>
+      <text class="e-cross" x="94"  y="362" text-anchor="middle" style="font-size:13px">×</text><text class="e-cross" x="110" y="362" text-anchor="middle" style="font-size:13px">×</text>
+      <text class="e-cross" x="190" y="306" text-anchor="middle" style="font-size:13px">×</text><text class="e-cross" x="206" y="306" text-anchor="middle" style="font-size:13px">×</text>
+      <text class="e-cross" x="190" y="362" text-anchor="middle" style="font-size:13px">×</text><text class="e-cross" x="206" y="362" text-anchor="middle" style="font-size:13px">×</text>
+      <text class="dg-ttl" x="150" y="412" text-anchor="middle">CO₂ · CARBON DIOXIDE</text>
+      <text class="dg-lbl" x="150" y="428" text-anchor="middle">• carbon  × oxygen  ·  two double bonds O=C=O</text>
+
+      <!-- ── N2 ── -->
+      <circle class="cov-atom" cx="462" cy="330" r="38"/>
+      <circle class="cov-atom" cx="518" cy="330" r="38"/>
+      <text class="cov-lbl" x="440" y="336" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">N</text>
+      <text class="cov-lbl" x="540" y="336" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">N</text>
+      <circle class="e-dot" cx="495" cy="314" r="3.2"/><text class="e-cross" x="485" y="318" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="495" cy="330" r="3.2"/><text class="e-cross" x="485" y="334" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="495" cy="346" r="3.2"/><text class="e-cross" x="485" y="350" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="432" cy="322" r="3.2"/><circle class="e-dot" cx="432" cy="338" r="3.2"/>
+      <text class="e-cross" x="548" y="326" text-anchor="middle" style="font-size:13px">×</text><text class="e-cross" x="548" y="342" text-anchor="middle" style="font-size:13px">×</text>
+      <text class="dg-ttl" x="490" y="412" text-anchor="middle">N₂ · NITROGEN</text>
+      <text class="dg-lbl" x="490" y="428" text-anchor="middle">• left N  × right N  ·  N≡N + 1 lone pair each</text>
+
+      <line x1="40" y1="470" x2="600" y2="470" stroke="currentColor" stroke-width="1" stroke-dasharray="4 6" style="color:var(--muted)" opacity="0.5"/>
+
+      <!-- ── C2H4 (Supplement) ── -->
+      <circle class="cov-atom" cx="122" cy="513" r="20"/>
+      <circle class="cov-atom" cx="122" cy="597" r="20"/>
+      <circle class="cov-atom" cx="178" cy="513" r="20"/>
+      <circle class="cov-atom" cx="178" cy="597" r="20"/>
+      <circle class="cov-atom" cx="122" cy="555" r="38"/>
+      <circle class="cov-atom" cx="178" cy="555" r="38"/>
+      <text class="cov-lbl" x="98"  y="561" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">C</text>
+      <text class="cov-lbl" x="202" y="561" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">C</text>
+      <text class="cov-lbl" x="122" y="519" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="122" y="603" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="178" y="519" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="178" y="603" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <!-- C=C double bond: 4 dots (2 from each carbon) -->
+      <circle class="e-dot" cx="143" cy="545" r="3.2"/><circle class="e-dot" cx="157" cy="545" r="3.2"/>
+      <circle class="e-dot" cx="143" cy="565" r="3.2"/><circle class="e-dot" cx="157" cy="565" r="3.2"/>
+      <!-- 4 C–H bonds -->
+      <circle class="e-dot" cx="115" cy="525" r="3.2"/><text class="e-cross" x="129" y="529" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="115" cy="585" r="3.2"/><text class="e-cross" x="129" y="589" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="171" cy="525" r="3.2"/><text class="e-cross" x="185" y="529" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="171" cy="585" r="3.2"/><text class="e-cross" x="185" y="589" text-anchor="middle" style="font-size:13px">×</text>
+      <text class="dg-ttl" x="150" y="642" text-anchor="middle">C₂H₄ · ETHENE</text>
+      <text class="dg-lbl" x="150" y="658" text-anchor="middle">• carbon  × hydrogen  ·  C=C double bond + 4 C–H</text>
+
+      <!-- ── CH3OH (Supplement) ── -->
+      <circle class="cov-atom" cx="398" cy="555" r="20"/>
+      <circle class="cov-atom" cx="442" cy="511" r="20"/>
+      <circle class="cov-atom" cx="442" cy="599" r="20"/>
+      <circle class="cov-atom" cx="498" cy="507" r="20"/>
+      <circle class="cov-atom" cx="442" cy="555" r="36"/>
+      <circle class="cov-atom" cx="498" cy="555" r="36"/>
+      <text class="cov-lbl" x="422" y="561" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">C</text>
+      <text class="cov-lbl" x="500" y="583" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600">O</text>
+      <text class="cov-lbl" x="398" y="561" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="442" y="517" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="442" y="605" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <text class="cov-lbl" x="498" y="513" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:12px">H</text>
+      <!-- 3 C–H bonds -->
+      <circle class="e-dot" cx="412" cy="548" r="3.2"/><text class="e-cross" x="412" y="570" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="435" cy="525" r="3.2"/><text class="e-cross" x="449" y="529" text-anchor="middle" style="font-size:13px">×</text>
+      <circle class="e-dot" cx="435" cy="585" r="3.2"/><text class="e-cross" x="449" y="589" text-anchor="middle" style="font-size:13px">×</text>
+      <!-- C–O bond: one electron from each (both dots) -->
+      <circle class="e-dot" cx="465" cy="555" r="3.2"/><circle class="e-dot" cx="475" cy="555" r="3.2"/>
+      <!-- O–H bond -->
+      <circle class="e-dot" cx="491" cy="523" r="3.2"/><text class="e-cross" x="505" y="527" text-anchor="middle" style="font-size:13px">×</text>
+      <!-- 2 lone pairs on O -->
+      <circle class="e-dot" cx="522" cy="536" r="3.2"/><circle class="e-dot" cx="522" cy="548" r="3.2"/>
+      <circle class="e-dot" cx="522" cy="562" r="3.2"/><circle class="e-dot" cx="522" cy="574" r="3.2"/>
+      <text class="dg-ttl" x="470" y="642" text-anchor="middle">CH₃OH · METHANOL</text>
+      <text class="dg-lbl" x="470" y="658" text-anchor="middle">• carbon or oxygen  × hydrogen  ·  all single bonds</text>
+    </svg>
+    <div class="dg-cap">Count the electrons back afterwards — it is the fastest way to catch a mistake. C shows 4, N shows 5, O shows 6 and each H shows 1 of their own; every shared pair then counts for <em>both</em> atoms, so C and N and O each end on 8 and every H on 2.</div>
+
     <h3>Why simple molecules are soft, low-melting non-conductors</h3>
     <div class="box remember">
       <div class="box-label">⚠️ Strong bonds, weak forces — keep them separate</div>
@@ -721,7 +1065,7 @@
 
   <!-- ── 08 · GIANT COVALENT STRUCTURES ── -->
   <div class="section">
-    <div class="sec-label">08 / 10 · 2.6 Giant covalent structures</div>
+    <div class="sec-label">08 / 11 · 2.6 Giant covalent structures</div>
     <h2>Giant covalent — when the bonds never stop</h2>
 
     <div class="box intuition">
@@ -732,13 +1076,82 @@
     <div class="grid2">
       <div class="card">
         <div class="card-title" style="color:var(--energy)">Diamond</div>
-        <div class="card-body">Each carbon bonds to <strong>4</strong> others in a rigid tetrahedral lattice. <strong>Hardest natural substance</strong>, very high melting point. <strong>No free electrons → does not conduct.</strong> Used in <strong>cutting/drilling tools.</strong></div>
+        <div class="card-body">Each carbon bonds to <strong>4</strong> others in a rigid tetrahedral lattice. <strong>Hardest natural substance</strong>, very high melting point. <strong>No free electrons → does not conduct electricity.</strong> Used in <strong>cutting/drilling tools.</strong></div>
       </div>
       <div class="card">
         <div class="card-title" style="color:var(--energy)">Graphite</div>
         <div class="card-body">Each carbon bonds to <strong>3</strong> others in flat <strong>layers</strong>. Spare electrons are <strong>delocalised → conducts electricity.</strong> Weak forces between layers let them <strong>slide</strong> → soft, slippery. Used as <strong>electrodes &amp; a lubricant.</strong></div>
       </div>
     </div>
+
+    <svg class="diagram" viewBox="0 0 640 278" role="img" aria-label="Giant covalent structures: diamond with each carbon bonded to four others, graphite with layers of carbons each bonded to three plus delocalised electrons between layers, and silicon(IV) oxide with each silicon bonded to four oxygens">
+      <!-- ══ DIAMOND ══ -->
+      <text class="dg-ttl" x="110" y="26" text-anchor="middle">DIAMOND, C</text>
+      <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="color:var(--energy2)">
+        <line x1="110" y1="130" x2="110" y2="78"/>
+        <line x1="110" y1="130" x2="58"  y2="130"/>
+        <line x1="110" y1="130" x2="162" y2="130"/>
+        <line x1="110" y1="130" x2="110" y2="182"/>
+        <line x1="110" y1="78"  x2="78"  y2="52"/><line x1="110" y1="78"  x2="142" y2="52"/>
+        <line x1="58"  y1="130" x2="32"  y2="98"/><line x1="58"  y1="130" x2="32"  y2="162"/>
+        <line x1="162" y1="130" x2="188" y2="98"/><line x1="162" y1="130" x2="188" y2="162"/>
+        <line x1="110" y1="182" x2="78"  y2="208"/><line x1="110" y1="182" x2="142" y2="208"/>
+      </g>
+      <g fill="currentColor" style="color:var(--energy2)">
+        <circle cx="110" cy="130" r="11"/>
+        <circle cx="110" cy="78"  r="9"/><circle cx="58" cy="130" r="9"/>
+        <circle cx="162" cy="130" r="9"/><circle cx="110" cy="182" r="9"/>
+      </g>
+      <text class="dg-lbl" x="110" y="205" text-anchor="middle">network continues in 3-D</text>
+      <text class="dg-lbl" x="110" y="240" text-anchor="middle">each C bonded to 4 others</text>
+      <text class="dg-lbl" x="110" y="255" text-anchor="middle" style="font-size:8.5px">rigid 3-D network, no free e⁻</text>
+      <text class="dg-lbl" x="110" y="270" text-anchor="middle" style="font-size:8.5px">hard · v. high m.p. · electrical insulator</text>
+
+      <!-- ══ GRAPHITE ══ -->
+      <text class="dg-ttl" x="320" y="26" text-anchor="middle">GRAPHITE, C</text>
+      <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" style="color:var(--energy2)">
+        <polyline points="250,84 272,70 294,84 316,70 338,84 360,70 382,84"/>
+        <polyline points="250,134 272,120 294,134 316,120 338,134 360,120 382,134"/>
+        <polyline points="250,184 272,170 294,184 316,170 338,184 360,170 382,184"/>
+      </g>
+      <g fill="currentColor" style="color:var(--energy2)">
+        <circle cx="250" cy="84" r="5"/><circle cx="272" cy="70" r="5"/><circle cx="294" cy="84" r="5"/><circle cx="316" cy="70" r="5"/><circle cx="338" cy="84" r="5"/><circle cx="360" cy="70" r="5"/><circle cx="382" cy="84" r="5"/>
+        <circle cx="250" cy="134" r="5"/><circle cx="272" cy="120" r="5"/><circle cx="294" cy="134" r="5"/><circle cx="316" cy="120" r="5"/><circle cx="338" cy="134" r="5"/><circle cx="360" cy="120" r="5"/><circle cx="382" cy="134" r="5"/>
+        <circle cx="250" cy="184" r="5"/><circle cx="272" cy="170" r="5"/><circle cx="294" cy="184" r="5"/><circle cx="316" cy="170" r="5"/><circle cx="338" cy="184" r="5"/><circle cx="360" cy="170" r="5"/><circle cx="382" cy="184" r="5"/>
+      </g>
+      <g class="free-e">
+        <circle cx="262" cy="105" r="3.2"/><circle cx="306" cy="105" r="3.2"/><circle cx="350" cy="105" r="3.2"/><circle cx="378" cy="105" r="3.2"/>
+        <circle cx="262" cy="155" r="3.2"/><circle cx="306" cy="155" r="3.2"/><circle cx="350" cy="155" r="3.2"/><circle cx="378" cy="155" r="3.2"/>
+      </g>
+      <text class="dg-lbl" x="320" y="205" text-anchor="middle" style="fill:var(--motion)">• = delocalised e⁻, free along the layers</text>
+      <text class="dg-lbl" x="320" y="240" text-anchor="middle">each C bonded to 3 (3rd into page)</text>
+      <text class="dg-lbl" x="320" y="255" text-anchor="middle" style="font-size:8.5px">1 spare e⁻ per C → CONDUCTS</text>
+      <text class="dg-lbl" x="320" y="270" text-anchor="middle" style="font-size:8.5px">weak forces between layers → they slide</text>
+
+      <!-- ══ SILICON(IV) OXIDE ══ -->
+      <text class="dg-ttl" x="530" y="26" text-anchor="middle">SILICON(IV) OXIDE, SiO₂</text>
+      <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="color:var(--muted)">
+        <line x1="530" y1="130" x2="530" y2="80"/><line x1="530" y1="130" x2="480" y2="130"/>
+        <line x1="530" y1="130" x2="580" y2="130"/><line x1="530" y1="130" x2="530" y2="180"/>
+        <line x1="530" y1="80"  x2="530" y2="44"/><line x1="480" y1="130" x2="444" y2="130"/>
+        <line x1="580" y1="130" x2="616" y2="130"/><line x1="530" y1="180" x2="530" y2="216"/>
+      </g>
+      <g fill="currentColor" style="color:var(--force)">
+        <circle cx="530" cy="80" r="9"/><circle cx="480" cy="130" r="9"/>
+        <circle cx="580" cy="130" r="9"/><circle cx="530" cy="180" r="9"/>
+      </g>
+      <g fill="currentColor" style="color:var(--motion)">
+        <circle cx="530" cy="130" r="13"/>
+        <circle cx="530" cy="44" r="8"/><circle cx="444" cy="130" r="8"/>
+        <circle cx="616" cy="130" r="8"/><circle cx="530" cy="216" r="8"/>
+      </g>
+      <text x="530" y="134" text-anchor="middle" fill="currentColor" style="color:var(--bg);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600">Si</text>
+      <text class="dg-lbl" x="530" y="205" text-anchor="middle"><tspan style="fill:var(--motion)">● Si</tspan>   <tspan style="fill:var(--force)">● O</tspan></text>
+      <text class="dg-lbl" x="530" y="240" text-anchor="middle">each Si → 4 O, each O → 2 Si</text>
+      <text class="dg-lbl" x="530" y="255" text-anchor="middle" style="font-size:8.5px">one giant network, like diamond</text>
+      <text class="dg-lbl" x="530" y="270" text-anchor="middle" style="font-size:8.5px">hard · v. high m.p. · electrical insulator</text>
+    </svg>
+    <div class="dg-cap">Three giant covalent lattices. Melting any of them means breaking <strong>strong covalent bonds</strong>, not weak intermolecular forces — that is the whole reason their melting points are enormous.</div>
 
     <table>
       <tr><th>Property</th><th>Diamond</th><th>Graphite</th></tr>
@@ -763,7 +1176,7 @@
 
   <!-- ── 09 · METALLIC BONDING + BONDING EXPLORER ── -->
   <div class="section">
-    <div class="sec-label">09 / 10 · 2.7 Metallic bonding</div>
+    <div class="sec-label">09 / 11 · 2.7 Metallic bonding</div>
     <h2>Metallic bonding &amp; the three structures side by side</h2>
 
     <div class="define giant-c">
@@ -844,9 +1257,67 @@
   </div>
 
 
-  <!-- ── 10 · KEY-TERMS BANK ── -->
+  <!-- ── 10 · CHECK YOURSELF ── -->
   <div class="section">
-    <div class="sec-label">10 / 10 · Reference</div>
+    <div class="sec-label">10 / 11 · Check Yourself</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+    <p>Cover the page and answer these on paper first. Re-reading the note feels productive and isn't; <strong>retrieving</strong> is what makes it stick. Tap each card for the mark-scheme answer.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>State <strong>three</strong> differences between a <strong>compound</strong> and a <strong>mixture</strong>. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">A compound's elements are <strong>chemically combined / bonded</strong>, a mixture's are not ✓. A compound has a <strong>fixed ratio / composition</strong>, a mixture can be in any proportion ✓. A compound has <strong>new properties unlike its elements</strong>, whereas the parts of a mixture keep their own properties ✓. <em>(Also accept: a compound can only be separated by a chemical reaction / electrolysis, a mixture by physical means.)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>An atom of calcium is written <sup>40</sup><sub>20</sub>Ca. State its number of protons, neutrons and electrons, give its electronic configuration, and hence deduce its group and period. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>Protons = 20</strong> (= Z) and, as it is a neutral atom, <strong>electrons = 20</strong> ✓. <strong>Neutrons = A − Z = 40 − 20 = 20</strong> ✓. Configuration <strong>2,8,8,2</strong> ✓. It has <strong>2 outer-shell electrons → Group II</strong>, and <strong>4 occupied shells → Period 4</strong> ✓.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span>Boron has two isotopes: boron-10 (19.9%) and boron-11 (80.1%). Calculate the relative atomic mass of boron, giving your answer to <strong>one decimal place</strong>. Then explain why the two isotopes react identically. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><em>A</em><sub>r</sub> = (10 × 19.9 + 11 × 80.1) ÷ 100 ✓ = (199 + 881.1) ÷ 100 = 1080.1 ÷ 100 = 10.801 ✓ = <strong>10.8</strong> ✓. They react identically because both have the <strong>same proton number, so the same number of electrons and the same electronic configuration (2,3)</strong> — and chemical reactions involve only the outer electrons ✓. <em>(The extra neutron changes mass, a physical property, not chemistry.)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>Magnesium (2,8,2) reacts with oxygen (2,6). Describe the formation of the ionic bond in magnesium oxide, giving the electronic configuration of each ion and the formula of the compound. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Each magnesium atom <strong>loses its 2 outer electrons</strong> to form <strong>Mg<sup>2+</sup>, configuration 2,8</strong> ✓. Each oxygen atom <strong>gains those 2 electrons</strong> to form <strong>O<sup>2−</sup>, configuration 2,8</strong> ✓. Both ions now have a full outer shell (a noble-gas arrangement) ✓. The oppositely charged ions are held by a <strong>strong electrostatic attraction</strong>; since the charges are 2+ and 2−, they combine 1 : 1 → formula <strong>MgO</strong> ✓.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>Explain, in terms of structure and bonding, why sodium chloride has a high melting point, does not conduct electricity when solid, but does conduct when molten. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">It has a <strong>giant ionic lattice</strong> of alternating Na<sup>+</sup> and Cl<sup>−</sup> ions ✓. There are <strong>many strong electrostatic attractions</strong> between the oppositely charged ions, so a <strong>large amount of energy</strong> is needed to break them → high melting point ✓. When solid, the <strong>ions are held in fixed positions and cannot move</strong>, so no charge can flow ✓. When molten, the lattice has broken down so the <strong>ions are free to move and carry the charge</strong> ✓. <em>(Say "ions", never "electrons", for an ionic compound.)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>For a molecule of ammonia, NH<sub>3</sub>: state how many <strong>bonding pairs</strong> and how many <strong>lone pairs</strong> of electrons surround the nitrogen atom, and explain why ammonia has a very low boiling point. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>3 bonding pairs</strong> (one to each hydrogen) and <strong>1 lone pair</strong> on the nitrogen ✓ — nitrogen has 5 outer electrons, 3 used in bonding and 2 left over as the lone pair, giving it a full shell of 8 ✓. Ammonia is a <strong>simple molecular</strong> substance: the <strong>forces between the molecules are weak</strong> ✓, so only a little energy is needed to separate them when it boils ✓. <em>(The strong N–H covalent bonds are NOT broken on boiling.)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span><strong>(a)</strong> Explain why graphite conducts electricity and is soft, while diamond does neither. <strong>(b)</strong> Silicon(IV) oxide melts above 1700 °C but carbon dioxide turns straight to a gas at −78 °C, although both contain only covalent bonds. Explain. <em>[5]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>(a)</strong> In graphite each carbon bonds to only <strong>3</strong> others, so one electron per atom is <strong>delocalised</strong> and free to move along the layers → it conducts ✓; the <strong>weak forces between the layers</strong> let them slide over each other → soft / a lubricant ✓. In diamond each carbon bonds to <strong>4</strong> others in a rigid 3-D network, so there are <strong>no free electrons</strong> (no conduction) and no layers to slide (very hard) ✓.<br><strong>(b)</strong> Silicon(IV) oxide is <strong>giant covalent</strong>, so melting it means <strong>breaking many strong covalent bonds</strong> ✓. Carbon dioxide is <strong>simple molecular</strong>, so only the <strong>weak forces between separate CO<sub>2</sub> molecules</strong> have to be overcome — the covalent bonds inside each molecule stay intact ✓.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>Explain, in terms of structure and bonding, why metals conduct electricity and can be hammered into shape. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">A metal is a <strong>giant lattice of positive metal ions</strong> surrounded by a <strong>"sea" of delocalised electrons</strong> ✓; the metallic bond is the electrostatic attraction between the two ✓. Those <strong>delocalised electrons are free to move</strong> through the structure and carry charge → it conducts ✓. Because the ions are in <strong>layers that can slide over one another</strong> without breaking the attraction to the electron sea, the metal changes shape instead of shattering → malleable and ductile ✓.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 11 · KEY-TERMS BANK ── -->
+  <div class="section">
+    <div class="sec-label">11 / 11 · Reference</div>
     <h2>The Topic 2 key-terms bank</h2>
     <p>These are the definitions examiners want back word-for-word. Tap any tile for the precise definition, key features, an example, and the exam trap:</p>
 
@@ -863,6 +1334,12 @@
       <span class="eq-inline" style="color:var(--rose)">ionic bond = electrostatic attraction of opposite ions</span>
       <span class="eq-inline" style="color:var(--rose)">covalent bond = shared pair of electrons</span>
     </div>
+  </div>
+
+  <div class="paper-links">
+    <div class="pl-label">📝 Now go and use it — papers that test Topic 2</div>
+    <a href="../practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html">Chemistry SA-1 Practice Paper — Grade X <span style="color:var(--muted);font-size:12.5px">· mixed topics; includes electronic configuration, isotopes and bonding</span></a>
+    <div class="pl-note">There is no Topic 2-only practice paper or graded paper yet — the SA-1 paper above is the only one on disk that examines this topic. Ask for a Topic 2 paper when you want to be tested on atomic structure and bonding on their own.</div>
   </div>
 
   <hr class="divider">
@@ -907,7 +1384,7 @@
     O:  {name:'Oxygen',   Z:8,  A:16, shells:[2,6],   type:'Non-metal (Group VI)'},
     Na: {name:'Sodium',   Z:11, A:23, shells:[2,8,1], type:'Metal (Group I)'},
     Cl: {name:'Chlorine', Z:17, A:35, shells:[2,8,7], type:'Non-metal (Group VII)'},
-    Ar: {name:'Argon',    Z:18, A:40, shells:[2,8,8], type:'Noble gas (Group 0)'}
+    Ar: {name:'Argon',    Z:18, A:40, shells:[2,8,8], type:'Noble gas (Group VIII)'}
   };
   const ORDER = ['H','He','Li','C','O','Na','Cl','Ar'];
   const CX=160, CY=140, RAD=[40,76,112];
