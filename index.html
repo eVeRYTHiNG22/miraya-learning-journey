@@ -715,6 +715,79 @@
   .theme-toggle:hover { transform: rotate(18deg); border-color: var(--physics); }
   .theme-toggle:focus-visible { outline: 2px solid var(--physics); outline-offset: 3px; }
 
+  /* ── SEND A FILE (upload) ── */
+  .upload-fab {
+    position: fixed; right: 22px; bottom: 22px; z-index: 12;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 18px; border-radius: 30px;
+    font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 700;
+    color: #06210f; cursor: pointer; border: none;
+    background: linear-gradient(135deg, var(--power), color-mix(in srgb, var(--power) 65%, var(--chem)));
+    box-shadow: 0 10px 26px -10px color-mix(in srgb, var(--power) 80%, transparent);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .upload-fab:hover { transform: translateY(-2px); box-shadow: 0 15px 32px -10px color-mix(in srgb, var(--power) 85%, transparent); }
+  .upload-fab:focus-visible { outline: 2px solid var(--power); outline-offset: 3px; }
+
+  .upload-modal {
+    position: fixed; inset: 0; z-index: 30;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    background: color-mix(in srgb, #05070c 62%, transparent);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  }
+  .upload-modal[hidden] { display: none; }
+  .um-card {
+    position: relative; width: 100%; max-width: 440px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 26px 24px 22px;
+    box-shadow: 0 30px 70px -20px #000a;
+  }
+  .um-close {
+    position: absolute; top: 12px; right: 12px;
+    width: 30px; height: 30px; border-radius: 8px;
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    font-size: 17px; line-height: 1; cursor: pointer;
+  }
+  .um-close:hover { color: var(--rose); border-color: color-mix(in srgb, var(--rose) 40%, var(--border)); }
+  .um-card h3 { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 700; color: var(--bright); margin-bottom: 6px; }
+  .um-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+  .um-drop {
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    min-height: 92px; padding: 16px;
+    border: 1.5px dashed var(--border); border-radius: 12px;
+    color: var(--muted); font-size: 13px; cursor: pointer;
+    background: color-mix(in srgb, var(--power) 5%, transparent);
+    transition: border-color .15s ease, background .15s ease, color .15s ease;
+  }
+  .um-drop:hover, .um-drop.drag { border-color: var(--power); color: var(--text); background: color-mix(in srgb, var(--power) 9%, transparent); }
+  .um-drop input { display: none; }
+  .um-files { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .um-file {
+    display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text);
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px;
+  }
+  .um-file .uf-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .um-file .uf-size { color: var(--muted); margin-left: auto; white-space: nowrap; font-size: 11px; }
+  .um-file .uf-x { cursor: pointer; color: var(--muted); font-size: 15px; padding: 0 2px; line-height: 1; }
+  .um-file .uf-x:hover { color: var(--rose); }
+  .um-note {
+    width: 100%; margin-top: 14px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 9px;
+    padding: 10px 12px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px;
+  }
+  .um-note:focus { outline: none; border-color: color-mix(in srgb, var(--power) 55%, var(--border)); }
+  .um-actions { display: flex; justify-content: flex-end; margin-top: 14px; }
+  .um-send {
+    padding: 10px 22px; border-radius: 9px; border: none; cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 700; color: #06210f;
+    background: var(--power); transition: opacity .15s ease, transform .15s ease;
+  }
+  .um-send:hover:not(:disabled) { transform: translateY(-1px); }
+  .um-send:disabled { opacity: .45; cursor: not-allowed; }
+  .um-status { margin-top: 12px; min-height: 1.2em; text-align: center; font-size: 12.5px; color: var(--muted); }
+  .um-status.ok { color: var(--power); font-weight: 600; }
+  .um-status.err { color: var(--rose); }
+
   /* ── LIGHT THEME (warm paper) ── */
   body[data-theme="light"] {
     --bg:       #f4f1e8;
@@ -755,6 +828,23 @@
 <script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
 
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+
+<button class="upload-fab" id="uploadFab" type="button" aria-haspopup="dialog" title="Send a file to your teacher">📤 <span>Send a file</span></button>
+<div class="upload-modal" id="uploadModal" role="dialog" aria-modal="true" aria-label="Send a file to your teacher" hidden>
+  <div class="um-card">
+    <button class="um-close" id="umClose" type="button" aria-label="Close">×</button>
+    <h3>📤 Send a file to your teacher</h3>
+    <p class="um-sub">A schedule, a new syllabus, a photo of a doubt — anything. It goes straight to your teacher, who’ll add it to your study hub.</p>
+    <label class="um-drop" id="umDrop">
+      <input type="file" id="umInput" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg,.webp,.heic,.txt">
+      <span id="umDropTxt">Tap to choose files — or drop them here</span>
+    </label>
+    <div class="um-files" id="umFiles"></div>
+    <input type="text" class="um-note" id="umNote" placeholder="Add a note (optional) — e.g. “SA-2 timetable”" maxlength="120">
+    <div class="um-actions"><button class="um-send" id="umSend" type="button" disabled>Send</button></div>
+    <div class="um-status" id="umStatus" role="status" aria-live="polite"></div>
+  </div>
+</div>
 
 <div class="page">
 
@@ -1659,6 +1749,95 @@
         var s = document.getElementById('hubSearch');
         if (s) { e.preventDefault(); s.focus(); }
       }
+    });
+  })();
+
+  /* ── SEND A FILE ──
+     Uploads one or more files to the teacher's Google Drive via the same Apps Script
+     endpoint the sync/results use (window.MirayaSync.ep). Files are base64-encoded and
+     POSTed as {type:'upload', note, files:[{name,dataUrl}]}. It's a delivery inbox — the
+     teacher then folds the file into the project (cache a syllabus, update the countdown…). */
+  (function () {
+    var fab = document.getElementById('uploadFab');
+    var modal = document.getElementById('uploadModal');
+    if (!fab || !modal) return;
+    var closeBtn = document.getElementById('umClose');
+    var drop = document.getElementById('umDrop');
+    var input = document.getElementById('umInput');
+    var filesEl = document.getElementById('umFiles');
+    var noteEl = document.getElementById('umNote');
+    var sendBtn = document.getElementById('umSend');
+    var statusEl = document.getElementById('umStatus');
+    var MAX = 25 * 1024 * 1024;        // 25 MB per file
+    var picked = [];
+
+    function fmtSize(b){ return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB'; }
+    function setStatus(msg, cls){ statusEl.textContent = msg || ''; statusEl.className = 'um-status' + (cls ? ' ' + cls : ''); }
+    function renderFiles(){
+      filesEl.innerHTML = '';
+      picked.forEach(function (f, idx) {
+        var row = document.createElement('div'); row.className = 'um-file';
+        var nm = document.createElement('span'); nm.className = 'uf-name'; nm.textContent = f.name;
+        var sz = document.createElement('span'); sz.className = 'uf-size'; sz.textContent = fmtSize(f.size);
+        var x = document.createElement('span'); x.className = 'uf-x'; x.textContent = '×'; x.title = 'Remove';
+        x.addEventListener('click', function () { picked.splice(idx, 1); renderFiles(); });
+        row.appendChild(nm); row.appendChild(sz); row.appendChild(x);
+        filesEl.appendChild(row);
+      });
+      sendBtn.disabled = picked.length === 0;
+    }
+    function addFiles(list){
+      var over = [];
+      Array.prototype.forEach.call(list, function (f) {
+        if (f.size > MAX) { over.push(f.name); return; }
+        picked.push(f);
+      });
+      renderFiles();
+      setStatus(over.length ? ('Too big (max 25 MB): ' + over.join(', ')) : '', over.length ? 'err' : '');
+    }
+    function openModal(){ modal.hidden = false; setStatus(''); setTimeout(function () { closeBtn.focus(); }, 30); }
+    function closeModal(){ modal.hidden = true; }
+
+    fab.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+    input.addEventListener('change', function () { addFiles(input.files); input.value = ''; });
+    ['dragenter','dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('drag'); }); });
+    ['dragleave','drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('drag'); }); });
+    drop.addEventListener('drop', function (e) { if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files); });
+
+    function readAsDataURL(file){
+      return new Promise(function (resolve, reject) {
+        var r = new FileReader();
+        r.onload = function () { resolve({ name: file.name, dataUrl: r.result }); };
+        r.onerror = function () { reject(r.error); };
+        r.readAsDataURL(file);
+      });
+    }
+
+    sendBtn.addEventListener('click', function () {
+      var ep = (window.MirayaSync && window.MirayaSync.ep) || '';
+      if (!ep) { setStatus('Uploads aren’t set up yet — tell your teacher.', 'err'); return; }
+      if (!picked.length) return;
+      sendBtn.disabled = true; setStatus('Sending…');
+      Promise.all(picked.map(readAsDataURL)).then(function (files) {
+        var body = JSON.stringify({ type: 'upload', note: (noteEl.value || '').trim(), at: new Date().toISOString(), files: files });
+        return fetch(ep, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body });
+      }).then(function (r) { return r.text(); }).then(function (t) {
+        var c = {}; try { c = JSON.parse(t); } catch (e) {}
+        if (c && c.ok) {
+          setStatus('✓ Sent to your teacher!', 'ok');
+          picked = []; noteEl.value = ''; renderFiles();
+          setTimeout(closeModal, 1300);
+        } else {
+          setStatus('Hmm, that didn’t go through. Please try again.', 'err');
+          sendBtn.disabled = false;
+        }
+      }).catch(function () {
+        setStatus('Couldn’t send — check your connection and try again.', 'err');
+        sendBtn.disabled = false;
+      });
     });
   })();
 </script>
