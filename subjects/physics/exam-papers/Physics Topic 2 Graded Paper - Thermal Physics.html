@@ -16,11 +16,7 @@
     --muted:    #7b8aa8;
     --bright:   #f0f4ff;
 
-    /* ── chemistry accents (energy / state axis) — same identity as the notes ──
-       --motion = SOLID (blue) · --cyan = LIQUID (teal) · --force = GAS (coral)
-       --energy = HEAT/ENERGY (amber) · --momentum = DIFFUSION (violet)
-       --power = correct / marks earned (green, fixed role)
-       --rose  = alerts / must-memorise (magenta, fixed role) */
+    /* physics accents (motion / energy axis) — same identity as the notes */
     --motion:   #46a8ff;
     --cyan:     #3ad9d4;
     --force:    #ff5263;
@@ -63,7 +59,7 @@
     transition: background-color .35s ease, color .35s ease;
   }
 
-  /* ambient field — cool (solid) up top, warm (gas) below: the energy axis */
+  /* ambient field — cool (motion) up top, warm (energy) below */
   body::before {
     content:'';
     position:fixed; inset:0;
@@ -124,7 +120,7 @@
   h1 .a { color: var(--motion); }
   h1 .b { color: var(--cyan); }
   h1 .c { color: var(--force); }
-  .header-sub { color: var(--muted); font-size: 14px; max-width: 620px; }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 640px; }
 
   /* ── FRONT SHEET (exam meta + controls) ── */
   .front {
@@ -357,7 +353,7 @@
   .ms-point.read { cursor:default; padding:9px 12px 9px 14px; }
   .ms.solution .ms-head .self-note { display:none; }
 
-  /* graded-mode "submitted" message (shown instead of a score on teacher-marked papers) */
+  /* graded-mode "submitted" message */
   .submitted-msg { display:none; }
   body.graded .submitted-msg { display:block; margin:4px 0 6px; color:var(--text); font-size:15px; line-height:1.7; }
   body.graded .submitted-msg b { color:var(--bright); }
@@ -396,53 +392,63 @@
   body[data-theme="light"] .eq-inline { background:#eef1f8; border-color:#d4dcec; }
 
   sub { font-size:.74em; }
+  sup { font-size:.74em; }
 
   @media (prefers-reduced-motion: reduce) {
     *, body { transition:none !important; animation:none !important; }
     .btn:hover, .theme-toggle:hover { transform:none; }
   }
 
-  /* ── PRINT: render as a clean blank exam paper ── */
+  /* ── PRINT: dense, paper-saving blank exam paper ── */
   @media print {
-    @page { margin:16mm; }
-    body { background:#fff; color:#000; font-size:12pt; }
+    @page { margin:10mm 12mm; }
+    body { background:#fff; color:#000; font-size:10.5pt; line-height:1.38; }
     body::before { display:none; }
     #questions { opacity:1 !important; }
     .theme-toggle, .exam-bar, .controls, .results, .front .controls,
-    .opt input, .ms, textarea.ans, input.num, .num-verdict { display:none !important; }
+    .opt input, .ms, textarea.ans, input.num, .num-verdict,
+    .symbar, .hub-home, #markDoneBtn, .pdf-btn { display:none !important; }
     .page { max-width:none; padding:0; }
-    .front { border:none; padding:0; background:none; }
-    .q, .front { box-shadow:none; border:1px solid #999; break-inside:avoid; }
-    .q { background:#fff; }
+    .header { margin-bottom:12px; padding-bottom:10px; }
+    h1 { font-size:1.45rem; margin-bottom:5px; line-height:1.1; }
+    .header-sub { font-size:9.5pt; }
+    .front { border:none; padding:0; background:none; margin-bottom:14px; }
+    .front h2 { font-size:1.05rem; margin-bottom:7px; }
+    .meta-grid { gap:3px 20px; margin-bottom:7px; }
+    .meta-item .v { font-size:10pt; }
+    .instructions li { margin-bottom:2px; font-size:9pt; padding-left:16px; }
+    .q, .front { box-shadow:none; break-inside:auto; }
+    .q { background:#fff; border:1px solid #999; border-radius:7px; padding:8px 12px; margin:8px 0; }
+    .q-head { margin-bottom:4px; }
+    .part { margin:6px 0; break-inside:avoid; }
+    .sec-head { margin:14px 0 3px; break-after:avoid; }
     .opt { background:#fff; border:1px solid #999; }
     .opt::before { content:''; display:inline-block; width:13px; height:13px; border:1.4px solid #000; border-radius:50%; margin-top:3px; }
-    .print-lines { display:block; margin-top:8px; }
-    .print-lines .ln { border-bottom:1px dotted #444; height:26px; }
-    .ctx { background:#f4f4f4; border-left:3px solid #444; }
-    /* figures print in black & white; hide the upload UI, show a blank box to draw in */
+    .print-lines { display:block; margin-top:3px; }
+    .print-lines .ln { border-bottom:1px dotted #555; height:20px; }
+    .ctx { background:#f4f4f4; border-left:3px solid #444; padding:6px 12px; margin:6px 0; }
     .fig { background:#fff; border:1px solid #999; }
     .fig svg { color:#000; }
     .fig svg text { fill:#000; }
     .draw-row, .draw-preview { display:none !important; }
-    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:180px; margin-top:8px; }
+    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:150px; margin-top:6px; }
     h1 .a, h1 .b, h1 .c, .q-no, .marks, .chip { color:#000 !important; }
   }
 </style>
 </head>
 <body data-theme="dark">
-<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
-
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
 
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
 
 <!-- sticky exam bar -->
 <div class="exam-bar" id="examBar">
-  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">35:00</span></div>
+  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">120:00</span></div>
   <div class="prog">Answered <b id="progDone">0</b> / <span id="progTot">0</span></div>
   <span class="mode-tag" id="modeTag">TIMED</span>
   <div class="spacer"></div>
-  <button class="btn primary" id="btnSubmit">Submit &amp; mark</button>
+  <button class="btn primary" id="btnSubmit">Submit</button>
 </div>
 
 <div class="page">
@@ -450,27 +456,28 @@
   <header class="header">
     <span class="chip">IGCSE Physics · 0625 · Extended · Graded exam</span>
     <h1>Topic 2 Graded Paper<br><span class="a">Thermal </span><span class="b">Phy</span><span class="c">sics</span></h1>
-    <p class="header-sub">Kinetic particle model &amp; the gas laws · temperature &amp; the kelvin scale · specific heat capacity · changes of state · conduction, convection &amp; radiation. A graded exam — your answers are saved automatically when you submit.</p>
+    <p class="header-sub">A full 100-mark Topic&nbsp;2 mock in two sections — <b>Section A multiple choice</b> (30 marks, Paper-2 style) and <b>Section B structured &amp; calculation</b> (70 marks, Paper-4 style). Pitched at the top of the Extended range. This is a <b>teacher-marked</b> paper: your answers are submitted for grading and no marks are shown here.</p>
   </header>
 
   <!-- FRONT SHEET -->
   <section class="front" id="front">
     <h2>Before you begin</h2>
     <div class="meta-grid">
-      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">35 minutes</div></div>
-      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">31 marks</div></div>
-      <div class="meta-item"><div class="k">Syllabus scope</div><div class="v">0625 · 2.1 Kinetic particle model of matter · 2.2 Thermal properties &amp; temperature · 2.3 Transfer of thermal energy</div></div>
+      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">120 minutes</div></div>
+      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">100 marks</div></div>
+      <div class="meta-item"><div class="k">Syllabus scope</div><div class="v">0625 · 2.1–2.3 Kinetic particle model &amp; gas laws · Temperature &amp; the kelvin scale · Thermal expansion · Specific heat capacity · Melting, boiling &amp; evaporation · Conduction, convection &amp; radiation</div></div>
       <div class="meta-item"><div class="k">Level</div><div class="v">Extended (Core + Supplement)</div></div>
     </div>
     <ul class="instructions">
-      <li>Answer <b>all</b> questions. Section A is multiple choice; Section B is structured and calculation.</li>
-      <li>Show your <b>working</b> in all calculations — your teacher awards method marks for correct working.</li>
-      <li>This is a <b>graded exam</b>: your answers are <b>not</b> marked in this file and no answers are shown. In <b>Timed exam</b> mode a countdown runs; the paper locks when you submit or time runs out.</li>
-      <li>When you submit (or the time runs out) your answers are saved automatically — you don't need to download or send anything.</li>
-      <li>Useful data: specific heat capacity of water = 4200 J/(kg·°C). Equations you may need: E = mcΔθ ; for a fixed mass of gas at constant temperature, pV = constant ; T(in K) = θ(in °C) + 273.</li>
+      <li>Answer <b>all</b> questions. <b>Section A (Q1–Q30)</b> is multiple choice — one mark each. <b>Section B (Q31–Q39)</b> is structured and calculation.</li>
+      <li>Show <b>all</b> your working and use appropriate units — your teacher awards method marks for correct working, not just the final answer.</li>
+      <li>A calculator may be used throughout. Give non-exact answers to a sensible number of significant figures (usually 2 or 3).</li>
+      <li>This is a <b>graded exam</b>: it is marked by your teacher. When you submit, your answers are sent for grading — <b>no score or correct answers are shown here</b>.</li>
+      <li>In timed mode a <b>2-hour countdown</b> runs. The paper is submitted when you press <b>Submit</b> or when time runs out.</li>
+      <li>Useful data: specific heat capacity of water = 4200 J/(kg&nbsp;°C); T(in K) = θ(in °C) + 273. Any other specific heat capacities are given in the questions. Recall your own equations — no formula sheet is provided.</li>
     </ul>
     <div class="controls">
-      <button class="btn primary" id="startTimed">▶ Start timed exam</button>
+      <button class="btn primary" id="startTimed">▶ Start exam</button>
       <button class="btn ghost" id="startPractice">Practice (no timer)</button>
       <button class="btn ghost" id="printBtn">🖨 Print blank paper</button>
       <span class="hint">Tip: use the ☀ / ☾ button (top-right) to switch between dark and light (paper) themes.</span>
@@ -486,7 +493,7 @@
     <div class="result-card">
       <p class="submitted-msg" id="submittedMsg">✅ <b>Paper submitted.</b> Your answers have been submitted.</p>
       <div id="scoreWrap">
-        <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">31</span></span></div>
+        <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">100</span></span></div>
         <div class="score-pct" id="scorePct">0%</div>
         <div class="band" id="scoreBand">—</div>
         <div class="result-meta">
@@ -510,274 +517,254 @@
 <script>
 /* ===========================================================================
    PRACTICE-PAPER ENGINE  — generic; drives everything from the PAPER object.
-   To build a new paper, edit PAPER only (and the header markup above).
-   Question kinds:
-     'mcq'    — options[], answer (0-based index). Auto-marked.
-     'parts'  — parts[]; each part is 'text' (self-marked) or 'numeric'
-                (final answer auto-checked; method points self-marked).
-   Each markable unit lists ms[] marking points: {p:'text', m:marks, auto?:bool}
+   GRADED, two named sections (Section A multiple choice / Section B structured)
+   via each question's `section` key + PAPER.sections.
    =========================================================================== */
 const PAPER = {
-  "graded": true,
-  "duration": 45,
-  "questions": [
-    {
-      "n": 1,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "A temperature of 27 °C on the absolute (kelvin) scale is:",
-      "options": [
-        "246 K",
-        "273 K",
-        "300 K",
-        "327 K"
-      ]
-    },
-    {
-      "n": 2,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "In which state of matter are the particles, on average, furthest apart and moving fastest?",
-      "options": [
-        "solid",
-        "liquid",
-        "gas",
-        "they are the same in all three states"
-      ]
-    },
-    {
-      "n": 3,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "A fixed mass of gas at constant temperature has a volume of 300 cm³ at a pressure of 100 kPa. It is compressed to 120 cm³. Its new pressure is:",
-      "options": [
-        "40 kPa",
-        "120 kPa",
-        "250 kPa",
-        "360 kPa"
-      ]
-    },
-    {
-      "n": 4,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "The pressure of a gas in a sealed, rigid container rises when it is heated. This is because the particles:",
-      "options": [
-        "expand and take up more space",
-        "hit the walls more often and with greater force",
-        "stick to the walls of the container",
-        "change into a liquid"
-      ]
-    },
-    {
-      "n": 5,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "Which method of thermal energy transfer can take place through a vacuum?",
-      "options": [
-        "conduction",
-        "convection",
-        "radiation",
-        "none of these"
-      ]
-    },
-    {
-      "n": 6,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "Which surface is the best emitter of infrared radiation?",
-      "options": [
-        "shiny silver",
-        "dull white",
-        "dull black",
-        "polished metal"
-      ]
-    },
-    {
-      "n": 7,
-      "kind": "parts",
-      "stem": "An electric immersion heater is used to warm water in a bucket. (specific heat capacity of water = 4200 J/(kg·°C))",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "Define <b>specific heat capacity</b>."
-        },
-        {
-          "label": "(b)",
-          "kind": "numeric",
-          "marks": 3,
-          "unit": "J",
-          "prompt": "2.5 kg of water is heated from 22 °C to 72 °C. Calculate the energy supplied to the water."
-        },
-        {
-          "label": "(c)",
-          "kind": "numeric",
-          "marks": 2,
-          "unit": "s",
-          "prompt": "The heater has a power of 2100 W. Assuming no energy is lost, calculate the time taken to heat the water."
-        },
-        {
-          "label": "(d)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "In practice the time taken is longer than this. Suggest why."
-        }
-      ]
-    },
-    {
-      "n": 8,
-      "kind": "parts",
-      "stem": "This question is about the kinetic particle model of gases.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Use the kinetic particle model to explain how a gas exerts a pressure on the walls of its container."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Explain, in terms of the particles, why the pressure of a fixed mass of gas increases when its temperature is raised at constant volume."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "State what is meant by <b>absolute zero</b> (0 K)."
-        }
-      ]
-    },
-    {
-      "n": 9,
-      "kind": "parts",
-      "stem": "A diver in the sea releases a bubble of gas, which rises to the surface. Assume the temperature of the gas stays constant.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "State the relationship between the pressure and the volume of a fixed mass of gas at constant temperature."
-        },
-        {
-          "label": "(b)",
-          "kind": "numeric",
-          "marks": 3,
-          "unit": "cm³",
-          "prompt": "At a depth where the pressure is 3.0 × 10⁵ Pa the bubble has a volume of 20 cm³. Calculate its volume just below the surface, where the pressure is 1.0 × 10⁵ Pa."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "Explain, in terms of the particles, why the volume changes as the bubble rises."
-        }
-      ]
-    },
-    {
-      "n": 10,
-      "kind": "parts",
-      "stem": "A vacuum flask keeps a hot drink warm. It has double glass walls with a vacuum between them, and the wall surfaces are silvered.",
-      "fig": "<svg viewBox='0 0 210 188' width='210' role='img' aria-label='vacuum flask cross-section with double walls and a vacuum'><g fill='none' stroke='currentColor' stroke-width='2'><path d='M45 25 V150 a35 35 0 0 0 70 0 V25'/><path d='M62 25 V145 a18 18 0 0 0 36 0 V25'/></g><path d='M62 40 V145 a18 18 0 0 0 36 0 V40 Z' fill='var(--surface)'/><text x='80' y='98' text-anchor='middle' font-size='10'>liquid</text><path d='M126 70 L57 88' stroke='currentColor' stroke-width='0.8' fill='none'/><text x='128' y='68' font-size='10'>vacuum</text><path d='M126 124 L62 110' stroke='currentColor' stroke-width='0.8' fill='none'/><text x='128' y='120' font-size='10'>silvered</text><text x='128' y='132' font-size='10'>surfaces</text></svg>",
-      "figCap": "Fig. 10.1  vacuum flask",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Explain how the vacuum reduces the loss of thermal energy."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "Explain how the silvered surfaces reduce the loss of thermal energy."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "A metal spoon left standing in the hot drink soon feels hot at the top end. Name the process responsible and explain it using particles."
-        }
-      ]
-    },
-    {
-      "n": 11,
-      "kind": "parts",
-      "stem": "A puddle of water on a hot day in Delhi slowly dries up, even though it never reaches boiling point.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Explain, in terms of particles, how evaporation causes the remaining water (and the ground) to cool."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "State <b>two</b> differences between evaporation and boiling."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "State two factors that would increase the rate of evaporation of the puddle."
-        }
-      ]
-    },
-    {
-      "n": 12,
-      "kind": "parts",
-      "stem": "Engineers leave small gaps between the steel rails of a railway line.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Explain why these gaps are needed, and what could happen on a very hot day without them."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "For the same rise in temperature, state which expands the most: solids, liquids or gases."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 2,
-          "fig": "<svg viewBox='0 0 300 128' width='300' role='img' aria-label='bimetallic strip straight when cold and bent when heated'><rect x='20' y='38' width='110' height='7' fill='var(--surface)' stroke='currentColor' stroke-width='1.3'/><rect x='20' y='45' width='110' height='7' fill='none' stroke='currentColor' stroke-width='1.3'/><text x='75' y='30' text-anchor='middle' font-size='10'>cold (straight)</text><text x='136' y='44' font-size='8'>brass</text><text x='136' y='52' font-size='8'>iron</text><path d='M175 40 q62 2 92 40' fill='none' stroke='currentColor' stroke-width='1.3'/><path d='M175 47 q58 2 86 38' fill='none' stroke='currentColor' stroke-width='1.3'/><text x='210' y='30' text-anchor='middle' font-size='10'>heated (bends)</text><text x='292' y='98' text-anchor='end' font-size='8'>brass on outside</text></svg>",
-          "figCap": "Fig. 12.1",
-          "prompt": "Describe how a bimetallic strip behaves when it is heated, and explain why."
-        }
-      ]
-    }
+  graded: true,
+  duration: 120,                 // minutes (2 hours)
+  sections: {
+    A: { label:'Section A', title:'Multiple choice', sub:'Questions 1–30 · 30 marks · choose the one correct answer (A, B, C or D). 1 mark each.' },
+    B: { label:'Section B', title:'Structured & calculation', sub:'Questions 31–39 · 70 marks · answer in the spaces. Show all working and give units.' }
+  },
+  questions: [
+
+    /* ═══════════ SECTION A — MULTIPLE CHOICE (30) ═══════════ */
+
+    { n:1, section:'A', kind:'mcq', marks:1,
+      stem:'The temperature of a fixed mass of gas is raised from 27 °C to 127 °C. On the kelvin scale, the temperature has risen by:',
+      options:['100 K','154 K','400 K','200 K'] },
+
+    { n:2, section:'A', kind:'mcq', marks:1,
+      stem:'A thermometer that reads in kelvin shows a temperature of 300 K. On the Celsius scale this is:',
+      options:['573 °C','−27 °C','27 °C','300 °C'] },
+
+    { n:3, section:'A', kind:'mcq', marks:1,
+      stem:'Which row correctly describes the particles in a gas?',
+      options:['regularly arranged; vibrating about fixed positions','close together; sliding past one another','far apart; arranged in a regular pattern','far apart; moving randomly at high speed'] },
+
+    { n:4, section:'A', kind:'mcq', marks:1,
+      stem:'A fixed mass of gas has a volume of 250 cm³ at a pressure of 80 kPa. At constant temperature it is compressed to 200 cm³. Its new pressure is:',
+      options:['64 kPa','100 kPa','320 kPa','40 kPa'] },
+
+    { n:5, section:'A', kind:'mcq', marks:1,
+      stem:'A bubble of gas of volume 2.0 cm³ is released at the bottom of a lake, where the pressure is 3.0 atmospheres. Assuming the temperature stays constant, its volume just below the surface, where the pressure is 1.0 atmosphere, is:',
+      options:['0.67 cm³','3.0 cm³','6.0 cm³','2.0 cm³'] },
+
+    { n:6, section:'A', kind:'mcq', marks:1,
+      stem:'The pressure of a gas in a sealed, rigid container rises when it is heated. This is because the particles:',
+      options:['expand and take up more space','hit the walls more often and with greater force','stick to the walls of the container','turn into a liquid'] },
+
+    { n:7, section:'A', kind:'mcq', marks:1,
+      stem:'Absolute zero (0 K) is:',
+      options:['the temperature at which the particles have the least kinetic energy','the temperature 0 °C','the temperature at which water freezes','the temperature at which a gas has its greatest volume'] },
+
+    { n:8, section:'A', kind:'mcq', marks:1,
+      stem:'A 0.50 kg block of aluminium (specific heat capacity 900 J/(kg °C)) is heated from 20 °C to 80 °C. The energy supplied to it is:',
+      options:['450 J','54 000 J','27 J','27 000 J'] },
+
+    { n:9, section:'A', kind:'mcq', marks:1,
+      stem:'When 46 000 J of energy is supplied to a mass of water (specific heat capacity 4200 J/(kg °C)), its temperature rises by 25 °C. The mass of the water is:',
+      options:['4.4 kg','0.44 kg','2.3 kg','1.8 kg'] },
+
+    { n:10, section:'A', kind:'mcq', marks:1,
+      stem:'Equal masses of water (c = 4200 J/(kg °C)) and cooking oil (c = 2100 J/(kg °C)) are each given the same amount of thermal energy. Which statement is correct?',
+      options:['the oil and the water have the same temperature rise','the water has the greater temperature rise','the oil has a temperature rise twice that of the water','the water has a temperature rise twice that of the oil'] },
+
+    { n:11, section:'A', kind:'mcq', marks:1,
+      stem:'A 2.0 kW heater warms 4.0 kg of water (c = 4200 J/(kg °C)) by 30 °C. Assuming no energy is lost, the time taken is:',
+      options:['252 s','63 s','25 s','504 s'] },
+
+    { n:12, section:'A', kind:'mcq', marks:1,
+      stem:'For the same rise in temperature, which state of matter expands the most?',
+      options:['solids','liquids','all expand equally','gases'] },
+
+    { n:13, section:'A', kind:'mcq', marks:1,
+      stem:'When a bimetallic strip is heated it bends. The metal on the outside of the curve is:',
+      options:['the metal that expands less','the metal that expands more','the denser metal','neither — they expand equally'] },
+
+    { n:14, section:'A', kind:'mcq', marks:1,
+      stem:'Small gaps are left between the steel sections of a railway line in order:',
+      options:['to let rainwater drain away','to reduce the noise of the trains','to allow for expansion in hot weather','to save steel'] },
+
+    { n:15, section:'A', kind:'mcq', marks:1,
+      stem:'Which of these is the best conductor of thermal energy?',
+      options:['copper','glass','water','air'] },
+
+    { n:16, section:'A', kind:'mcq', marks:1,
+      stem:'The high rate of thermal conduction in a metal is mainly due to:',
+      options:['convection currents inside the metal','radiation from the metal surface','evaporation','the movement of free (delocalised) electrons'] },
+
+    { n:17, section:'A', kind:'mcq', marks:1,
+      stem:'Convection is an important method of thermal energy transfer in:',
+      options:['solids only','liquids and gases','a vacuum only','solids and liquids only'] },
+
+    { n:18, section:'A', kind:'mcq', marks:1,
+      stem:'When a fluid is heated it rises, setting up a convection current. This is because the heated fluid:',
+      options:['becomes more dense','gains mass','becomes less dense','loses particles'] },
+
+    { n:19, section:'A', kind:'mcq', marks:1,
+      stem:'Which method of thermal energy transfer can take place through a vacuum?',
+      options:['radiation','conduction','convection','none of these'] },
+
+    { n:20, section:'A', kind:'mcq', marks:1,
+      stem:'Which surface is the best emitter of infrared radiation?',
+      options:['shiny silver','dull white','polished metal','dull black'] },
+
+    { n:21, section:'A', kind:'mcq', marks:1,
+      stem:'Which single surface is both the best absorber and the best emitter of infrared radiation?',
+      options:['a shiny silver surface','a dull black surface','a shiny white surface','a polished metal surface'] },
+
+    { n:22, section:'A', kind:'mcq', marks:1,
+      stem:'Evaporation causes the temperature of the remaining liquid to fall because:',
+      options:['the slowest-moving particles escape from the surface','all the particles gain energy','the most energetic particles escape from the surface','the particles move closer together'] },
+
+    { n:23, section:'A', kind:'mcq', marks:1,
+      stem:'Which statement about evaporation and boiling is correct?',
+      options:['Evaporation occurs only at the surface of the liquid','Boiling occurs only at the surface of the liquid','Evaporation occurs at one fixed temperature','Boiling can occur at any temperature'] },
+
+    { n:24, section:'A', kind:'mcq', marks:1,
+      stem:'Which of the following would <b>not</b> increase the rate of evaporation of water from an open dish?',
+      options:['raising the temperature of the water','increasing the surface area of the water','blowing air across the surface of the water','increasing the humidity of the surrounding air'] },
+
+    { n:25, section:'A', kind:'mcq', marks:1,
+      stem:'When a solid melts, the energy supplied at constant temperature is used mainly for:',
+      options:['raising the temperature of the substance','breaking the forces between the particles (increasing their potential energy)','increasing the kinetic energy of the particles','doing work on the surroundings'] },
+
+    { n:26, section:'A', kind:'mcq', marks:1,
+      stem:'During the flat (horizontal) part of a heating curve at the melting point, the substance is:',
+      options:['entirely solid','entirely liquid','a mixture of solid and liquid, changing state','a mixture of liquid and gas'] },
+
+    { n:27, section:'A', kind:'mcq', marks:1,
+      stem:'For a fixed mass of gas at constant temperature, the graph of pressure against volume is:',
+      options:['a curve in which the pressure decreases as the volume increases','a straight line through the origin','a horizontal straight line','a vertical straight line'] },
+
+    { n:28, section:'A', kind:'mcq', marks:1,
+      stem:'The specific heat capacity of a substance is:',
+      options:['the energy needed to melt 1 kg of the substance','the power needed to heat the substance','the energy needed to raise the temperature of any mass of the substance by 1 °C','the energy needed to raise the temperature of 1 kg of the substance by 1 °C'] },
+
+    { n:29, section:'A', kind:'mcq', marks:1,
+      stem:'In a vacuum (Thermos) flask, which row correctly matches each feature to the type of energy transfer it mainly reduces?',
+      options:['vacuum → radiation; silvered surfaces → conduction','vacuum → conduction and convection; silvered surfaces → radiation','vacuum → radiation; silvered surfaces → convection','vacuum → convection; silvered surfaces → conduction'] },
+
+    { n:30, section:'A', kind:'mcq', marks:1,
+      stem:'A fixed mass of gas is compressed to half its original volume at constant temperature. Its pressure:',
+      options:['halves','stays the same','doubles','becomes one quarter'] },
+
+    /* ═══════════ SECTION B — STRUCTURED & CALCULATION (70) ═══════════ */
+
+    { n:31, section:'B', kind:'parts',
+      stem:'An electric immersion heater is used to heat water in an insulated container. (specific heat capacity of water = 4200 J/(kg °C))',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'<b>Show that</b> the energy needed to raise the temperature of 1.5 kg of water from 18 °C to 100 °C is about 5.2 × 10⁵ J. State the equation you use.' },
+        { label:'(b)', kind:'text', marks:3, lines:5,
+          prompt:'The heater is only 85 % efficient at transferring electrical energy to the water, and its power rating is 2000 W. Calculate the time it takes to raise the temperature of the water from 18 °C to 100 °C.' },
+        { label:'(c)', kind:'text', marks:3, lines:5,
+          prompt:'In practice the water may take even longer to reach 100 °C than your answer to (b) predicts. Explain, in terms of energy transfer, <b>two</b> reasons why.' }
+      ]},
+
+    { n:32, section:'B', kind:'parts',
+      stem:'A student plans an experiment to determine the specific heat capacity of a solid metal block. The block has holes drilled in it for an electric heater and a thermometer.',
+      parts:[
+        { label:'(a)', kind:'text', marks:5, lines:8,
+          prompt:'Describe an experiment to determine the specific heat capacity of the metal block. State the apparatus required, the measurements you would take, and how you would use them to calculate the specific heat capacity. You may draw a labelled diagram as part of your answer.' },
+        { label:'(b)', kind:'text', marks:2, lines:4,
+          prompt:'The value obtained from this experiment is usually <b>larger</b> than the true value. Explain, in terms of energy transfer, why.' }
+      ]},
+
+    { n:33, section:'B', kind:'parts',
+      stem:'A gas-tight syringe contains 60 cm³ of air at atmospheric pressure, 1.0 × 10⁵ Pa. The piston is slowly pushed in until the volume of the trapped air is 24 cm³. The temperature of the air stays constant throughout.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'<b>Show that</b> the new pressure of the trapped air is 2.5 × 10⁵ Pa. State the relationship you use.' },
+        { label:'(b)', kind:'text', marks:3, lines:5,
+          prompt:'Explain, in terms of the motion of the particles, why the pressure of the air increases as its volume is reduced at constant temperature.' },
+        { label:'(c)', kind:'text', marks:2, lines:4,
+          prompt:'The air in the syringe is now warmed while its volume is kept constant. State and explain what happens to the pressure of the air.' }
+      ]},
+
+    { n:34, section:'B', kind:'parts',
+      stem:'This question is about the kinetic particle model and the absolute scale of temperature.',
+      parts:[
+        { label:'(a)', kind:'text', marks:2, lines:3,
+          prompt:'State what is meant by <b>absolute zero</b>, and give its value in degrees Celsius (°C).' },
+        { label:'(b)', kind:'text', marks:4, lines:6,
+          prompt:'A fixed mass of gas is held in a sealed, rigid container. Explain, in terms of the motion and the collisions of the particles, why the pressure of the gas increases when its temperature is raised.' },
+        { label:'(c)', kind:'text', marks:2, lines:4,
+          prompt:'The gas is now cooled towards absolute zero. Explain, in terms of the particles, why the pressure of the gas falls.' }
+      ]},
+
+    { n:35, section:'B', kind:'parts',
+      stem:'This question is about the thermal expansion of solids, liquids and gases.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Explain why gaps are left between the steel sections of a railway line, and describe what could happen on a very hot day if no gaps were left.' },
+        { label:'(b)', kind:'text', marks:2, lines:3,
+          prompt:'For the same rise in temperature, state which of solids, liquids and gases expands the <b>most</b> and which expands the <b>least</b>.' },
+        { label:'(c)', kind:'text', marks:3, lines:5,
+          fig:"<svg viewBox='0 0 300 128' width='300' role='img' aria-label='bimetallic strip straight when cold and bent when heated'><rect x='20' y='40' width='110' height='7' fill='var(--surface)' stroke='currentColor' stroke-width='1.3'/><rect x='20' y='47' width='110' height='7' fill='none' stroke='currentColor' stroke-width='1.3'/><text x='75' y='32' text-anchor='middle' font-size='10'>cold (straight)</text><text x='138' y='46' font-size='8'>brass</text><text x='138' y='54' font-size='8'>invar</text><path d='M175 42 q62 2 92 40' fill='none' stroke='currentColor' stroke-width='1.3'/><path d='M175 49 q58 2 86 38' fill='none' stroke='currentColor' stroke-width='1.3'/><text x='210' y='32' text-anchor='middle' font-size='10'>heated (bends)</text></svg>",
+          figCap:'Fig. 35.1  a bimetallic strip made of brass and invar',
+          prompt:'A bimetallic strip is made from brass and invar. Brass expands more than invar for the same rise in temperature. Describe how the strip behaves when it is heated and explain why, and state <b>one</b> practical use of a bimetallic strip.' }
+      ]},
+
+    { n:36, section:'B', kind:'parts',
+      stem:'Fig. 36.1 shows a vacuum (Thermos) flask used to keep a drink hot. It has double glass walls with a vacuum between them, and the inner surfaces of the walls are silvered.',
+      fig:"<svg viewBox='0 0 220 190' width='220' role='img' aria-label='vacuum flask cross-section with double walls, a vacuum and silvered surfaces'><g fill='none' stroke='currentColor' stroke-width='2'><path d='M48 26 V150 a36 36 0 0 0 72 0 V26'/><path d='M66 26 V145 a19 19 0 0 0 38 0 V26'/></g><path d='M66 40 V145 a19 19 0 0 0 38 0 V40 Z' fill='var(--surface)'/><text x='85' y='100' text-anchor='middle' font-size='10'>hot drink</text><path d='M132 70 L60 88' stroke='currentColor' stroke-width='0.8' fill='none'/><text x='134' y='68' font-size='10'>vacuum</text><path d='M132 126 L66 112' stroke='currentColor' stroke-width='0.8' fill='none'/><text x='134' y='122' font-size='10'>silvered</text><text x='134' y='134' font-size='10'>surfaces</text></svg>",
+      figCap:'Fig. 36.1  vacuum flask',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Explain how the vacuum and the silvered surfaces each reduce the loss of thermal energy from the drink. Name the method of energy transfer that each one reduces.' },
+        { label:'(b)', kind:'text', marks:3, lines:5,
+          prompt:'A metal spoon is left standing in the hot drink. After a short time the top of the spoon, which is above the liquid, feels hot. Name the process responsible and explain how it transfers energy along the metal spoon. Refer to the particles in your answer.' },
+        { label:'(c)', kind:'text', marks:2, lines:4,
+          prompt:'A room heater is usually fixed near the floor rather than near the ceiling. Explain, in terms of convection, why this warms the whole room more effectively.' }
+      ]},
+
+    { n:37, section:'B', kind:'parts',
+      stem:'On a hot, dry day a shallow puddle of water slowly dries up, even though its temperature never reaches the boiling point of water.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Explain, in terms of the particles, how evaporation takes place and why it causes the temperature of the remaining water to fall.' },
+        { label:'(b)', kind:'text', marks:3, lines:5,
+          prompt:'State <b>three</b> changes that would increase the rate at which the puddle evaporates, and for <b>one</b> of them explain, in terms of the particles, why it increases the rate.' }
+      ]},
+
+    { n:38, section:'B', kind:'parts',
+      stem:'Fig. 38.1 shows the temperature–time graph obtained when a pure solid is heated at a steady rate from below its melting point until it has all turned to gas.',
+      fig:"<svg viewBox='0 0 300 176' width='300' role='img' aria-label='temperature-time heating curve with two horizontal plateaux'><g fill='none'><line class='axis' x1='44' y1='146' x2='286' y2='146'/><line class='axis' x1='44' y1='146' x2='44' y2='22'/><polyline class='plot' points='44,128 92,104 150,104 196,58 250,58 282,36'/><line class='grid-line' stroke-dasharray='4 3' x1='44' y1='104' x2='150' y2='104'/><line class='grid-line' stroke-dasharray='4 3' x1='44' y1='58' x2='250' y2='58'/></g><text x='39' y='108' text-anchor='end' font-size='10'>T₁</text><text x='39' y='62' text-anchor='end' font-size='10'>T₂</text><text x='121' y='100' text-anchor='middle' font-size='9'>P</text><text x='223' y='54' text-anchor='middle' font-size='9'>Q</text><text x='8' y='18' font-size='10'>temperature</text><text x='284' y='168' text-anchor='end' font-size='10'>time</text></svg>",
+      figCap:'Fig. 38.1  heating curve (P and Q are the flat regions)',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'The graph has two flat (horizontal) regions, P and Q. State what is happening to the substance in each of these regions, and explain, in terms of energy and the particles, why the temperature does not rise even though energy is still being supplied.' },
+        { label:'(b)', kind:'text', marks:3, lines:5,
+          prompt:'State <b>two</b> differences between boiling and evaporation, and give the temperature, in °C, at which water boils at standard atmospheric pressure.' }
+      ]},
+
+    { n:39, section:'B', kind:'parts',
+      stem:'A 0.40 kg block of iron is heated to 200 °C and then quickly lowered into 0.50 kg of water at 20 °C in a well-insulated container. The iron and water are left until they reach the same final temperature θ. (specific heat capacity of iron = 460 J/(kg °C); specific heat capacity of water = 4200 J/(kg °C))',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Write down an expression for the thermal energy <b>lost</b> by the iron block, and an expression for the thermal energy <b>gained</b> by the water, in terms of the final temperature θ.' },
+        { label:'(b)', kind:'text', marks:4, lines:6,
+          prompt:'Assuming no energy is transferred to the container or the surroundings, calculate the final temperature θ. Give your answer to an appropriate number of significant figures.' },
+        { label:'(c)', kind:'text', marks:3, lines:5,
+          prompt:'In practice the measured final temperature is a little <b>lower</b> than your calculated value. Explain, in terms of energy transfer, why.' }
+      ]}
+
   ]
 };
 
-/* ---- where graded submissions are sent ----
-   Google Apps Script web-app /exec URL. Empty string = no endpoint configured, so a
-   graded paper falls back to the student downloading the answer packet. When set, a
-   graded paper auto-sends the student's answers to the teacher's Drive on submit and
-   hides the download button (revealing it only if the send fails, e.g. offline). */
+/* ---- where graded submissions are sent (Google Apps Script /exec) ---- */
 const SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec';
 
-/* ---- derive section labels & totals ---- */
+/* ---- derive totals ---- */
 const TOTAL = PAPER.questions.reduce((s,q)=> s + (q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0)), 0);
-/* GRADED = teacher-marked exam: no answer key in this file, nothing revealed to the student.
-   On submit the student only downloads their answers to send to the teacher. Set PAPER.graded = true. */
 const GRADED = !!PAPER.graded;
-/* A paper is fully auto-markable when it has NO subjective (text) answers — every part is MCQ or numeric.
-   A GRADED paper is never auto-marked here (it has no key), so it is treated as not-fully-auto. */
 const FULLY_AUTO = !GRADED && !PAPER.questions.some(q => q.kind==='parts' && q.parts.some(p => p.kind==='text'));
 
 /* ---- DOM helpers ---- */
 const $ = id => document.getElementById(id);
-function esc(){}
 function lines(n){ let h='<div class="print-lines">'; for(let i=0;i<n;i++) h+='<div class="ln"></div>'; return h+'</div>'; }
 
 /* ---- render questions ---- */
@@ -804,19 +791,19 @@ function figMarkup(svg, cap){
   return '<div class="fig">'+svg+(cap?'<div class="fig-cap">'+cap+'</div>':'')+'</div>';
 }
 
-/* uploaded diagram photos, keyed by part id (pid) -> {dataUrl, name} */
 var DRAW_IMAGES = {};
 
 function render(){
   const wrap = $('questions');
   let html = '';
-  let inA=false, inB=false;
+  let curSec = null;
   PAPER.questions.forEach(q=>{
-    // section dividers
-    if(q.kind==='mcq' && !inA){ inA=true;
-      html += '<div class="sec-head"><div class="sec-label">Section A</div><h2>Multiple choice</h2><div class="sec-sub">Select one answer per question. 1 mark each.</div></div>'; }
-    if(q.kind!=='mcq' && !inB){ inB=true;
-      html += '<div class="sec-head"><div class="sec-label">Section B</div><h2>Structured &amp; calculation</h2><div class="sec-sub">Answer in the spaces. Show working in calculations.</div></div>'; }
+    // named-section dividers
+    if(q.section !== curSec){
+      curSec = q.section;
+      const s = PAPER.sections[curSec];
+      html += '<div class="sec-head"><div class="sec-label">'+s.label+'</div><h2>'+s.title+'</h2><div class="sec-sub">'+s.sub+'</div></div>';
+    }
 
     const qMarks = q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0);
     html += '<div class="q" id="q'+q.n+'">';
@@ -837,7 +824,7 @@ function render(){
       q.parts.forEach((p,pi)=>{
         const pid = 'q'+q.n+'p'+pi;
         html += '<div class="part" id="'+pid+'">';
-        html += '<div><span class="part-label">'+p.label+'</span><span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
+        html += '<div>'+(p.label?'<span class="part-label">'+p.label+'</span>':'')+'<span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
         if(p.fig) html += figMarkup(p.fig, p.figCap);
         if(p.kind==='numeric'){
           html += '<div class="num-row"><input class="num" type="text" inputmode="decimal" data-ans="'+p.ans+'" data-tol="'+(p.tol||0)+'" placeholder="answer">'
@@ -852,7 +839,7 @@ function render(){
                 + '<div class="draw-preview" id="'+pid+'-prev"></div></div>';
           html += '<div class="draw-box"></div>';
         } else {
-          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your answer…"></textarea>';
+          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your working and answer…"></textarea>';
           html += lines(p.lines||3);
         }
         if(!GRADED) html += msMarkup(p.ms, pid);
@@ -924,7 +911,6 @@ function autoCheckNumeric(){
     const v=inp.parentElement.querySelector('.num-verdict');
     v.textContent = ok ? '✓ correct' : ((inp.value.trim()==='')?'✗ no answer (ans: '+ans+')':'✗ (ans: '+ans+')');
     v.style.color = ok ? 'var(--power)' : 'var(--force)';
-    // auto-tick the linked auto mark-scheme point
     const part = inp.closest('.part');
     const autoCb = part && part.querySelector('.ms-point.auto input[data-auto]');
     if(autoCb){ autoCb.checked = ok; }
@@ -941,7 +927,6 @@ function gradeMCQ(){
       if(i===q.answer){ opt.classList.add('correct'); opt.querySelector('.verdict').textContent='✓ correct'; }
       if(i===ci && ci!==q.answer){ opt.classList.add('wrong'); opt.querySelector('.verdict').textContent='✗ your answer'; }
     });
-    // auto-tick the auto mark-scheme point
     const cb = document.querySelector('#q'+q.n+'-ms .ms-point.auto input[data-auto]');
     if(cb) cb.checked = (ci===q.answer);
   });
@@ -1001,20 +986,19 @@ function submit(auto){
   graded=true;
   if(timerId){ clearInterval(timerId); timerId=null; }
 
-  // time taken
   const elapsed = (performance.now()-startedAt)/1000;
   $('timeTaken').textContent = mode==='timed'
     ? fmt(Math.max(0, Math.round(PAPER.duration*60 - secs)))
     : fmt(Math.round(elapsed));
 
-  // lock inputs
   document.querySelectorAll('textarea.ans, input.num, .draw-in').forEach(f=>f.disabled=true);
   document.querySelectorAll('.draw-clear').forEach(b=>b.style.display='none');
 
   // GRADED (teacher-marked): no key in this file — reveal nothing, show only the "submitted" card.
   if(GRADED){
-    try { var _p = JSON.parse(localStorage.getItem('studyProgress')||'{}'); _p['ex:phys:2:1'] = new Date().toISOString(); localStorage.setItem('studyProgress', JSON.stringify(_p)); } catch(e){}
     document.querySelectorAll('.opts input[type="radio"]').forEach(r=>r.disabled=true);
+    // auto-complete this paper's hub tile
+    try { var _p = JSON.parse(localStorage.getItem('studyProgress')||'{}'); _p['ex:phys:2:1'] = new Date().toISOString(); localStorage.setItem('studyProgress', JSON.stringify(_p)); } catch(e){}
     $('results').classList.add('show');
     $('btnSubmit').textContent='✓ Submitted';
     $('btnSubmit').disabled=true;
@@ -1026,30 +1010,24 @@ function submit(auto){
 
   gradeMCQ();
   autoCheckNumeric();
-
-  // reveal all mark schemes
   document.querySelectorAll('.ms').forEach(ms=>ms.classList.add('show'));
-
-  // enable self-mark recompute
   document.querySelectorAll('.ms-point input:not([disabled])').forEach(cb=>{
     cb.addEventListener('change', computeScore);
   });
-
   $('scoreDen').textContent=TOTAL;
   computeScore();
-
   $('results').classList.add('show');
   $('btnSubmit').textContent='✓ Submitted';
   $('btnSubmit').disabled=true;
   $('examBar').classList.remove('warn','danger');
-  $('results').scrollIntoView({behavior:'smooth'});
+  setTimeout(function(){ $('results').scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
 }
 
-/* ---- export answers for teacher AI-marking ---- */
+/* ---- export answers ---- */
 function stripTags(s){
   return (s||'').replace(/<[^>]+>/g,'')
     .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
-    .replace(/&deg;/g,'°').replace(/\s+/g,' ').trim();
+    .replace(/&deg;/g,'°').replace(/&frasl;/g,'/').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 }
 function buildMarkingExport(){
   let out=(GRADED?'EXAM PAPER — STUDENT ANSWERS (for the teacher to grade)':'PRACTICE PAPER — ANSWERS FOR MARKING')+'\n';
@@ -1066,7 +1044,7 @@ function buildMarkingExport(){
       if(!GRADED) out+='   CORRECT: '+String.fromCharCode(65+q.answer)+'\n';
       out+='\n';
     } else {
-      out+='Q'+q.n+'  '+stripTags(q.stem||'')+'\n';
+      out+='Q'+q.n+'  ['+(PAPER.sections[q.section]?PAPER.sections[q.section].title:'')+']  '+stripTags(q.stem||'')+'\n';
       if(q.ctx) out+='   ['+stripTags(q.ctx)+']\n';
       q.parts.forEach((p,pi)=>{
         const pid='q'+q.n+'p'+pi;
@@ -1078,7 +1056,7 @@ function buildMarkingExport(){
           const f=root?root.querySelector('textarea.ans, input.num'):null;
           val=f?f.value.trim():'';
         }
-        out+='  '+p.label+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
+        out+='  '+(p.label||('('+String.fromCharCode(97+pi)+')'))+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
         out+='     STUDENT ANSWER: '+(val||'(blank)')+'\n';
         if(!GRADED) out+='     MARK SCHEME: '+p.ms.map(m=>stripTags(m.p)+' ['+m.m+']').join('  |  ')+'\n';
         out+='\n';
@@ -1096,28 +1074,26 @@ function buildMarkingExport(){
   }
   return out;
 }
-/* ---- auto-send a graded submission to the teacher's Drive endpoint ---- */
+
+/* ---- auto-send a graded submission ---- */
 function sendSubmission(){
-  if(!SUBMIT_ENDPOINT) return;                 // not configured → student uses the download button
+  if(!SUBMIT_ENDPOINT) return;
   var images = Object.keys(DRAW_IMAGES).map(function(pid){ return { part:pid, name:DRAW_IMAGES[pid].name, dataUrl:DRAW_IMAGES[pid].dataUrl }; });
   var payload = JSON.stringify({ title:document.title, submittedAt:new Date().toISOString(), packet:buildMarkingExport(), images:images });
-  try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}   // local backup
+  try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}
   var st=$('sendStatus');
-  // CORS mode (NOT no-cors) so we can READ the server's reply and show success ONLY when the
-  // file was actually saved. Apps Script returns Access-Control-Allow-Origin:* on /exec and its
-  // redirect, and a text/plain body is a CORS-safelisted request (no preflight is triggered).
   fetch(SUBMIT_ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload})
     .then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.text(); })
     .then(function(t){
       var ok=false;
-      try{ ok = (JSON.parse(t).ok===true); }catch(e){ ok = /(^|[^a-z])ok([^a-z]|$)/i.test(t||''); }  // accept {"ok":true} or legacy "ok"
+      try{ ok = (JSON.parse(t).ok===true); }catch(e){ ok = /(^|[^a-z])ok([^a-z]|$)/i.test(t||''); }
       if(!ok) throw new Error('server did not confirm');
       if(st) st.textContent='✅ Confirmed — your answers have been received by your teacher.';
     })
     .catch(function(){
-      try{ downloadAnswers(); }catch(e){}                          // bonus: auto-save a copy to the student's device so answers are never lost if the send failed
+      try{ downloadAnswers(); }catch(e){}
       if(st) st.innerHTML='⚠ <b>Not confirmed.</b> We could not confirm your answers were received, so a backup copy has been <b>downloaded to this device automatically</b> — please send that file to your teacher. (If it didn’t download, tap “⬇ Download a backup copy” below.)';
-      var d=$('downloadBtn'); if(d) d.style.display='';            // keep the manual fallback button visible too
+      var d=$('downloadBtn'); if(d) d.style.display='';
     });
 }
 function downloadAnswers(){
@@ -1129,7 +1105,7 @@ function downloadAnswers(){
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
-/* ---- diagram photo upload (downscale in-browser, keep payload small) ---- */
+/* ---- diagram photo upload ---- */
 function handleDrawFile(input){
   var pid = input.dataset.pid;
   var file = input.files && input.files[0];
@@ -1179,19 +1155,19 @@ if(FULLY_AUTO){
 }
 if(GRADED){
   document.body.classList.add('graded');
-  var _sp=$('startPractice'); if(_sp) _sp.style.display='none';    // graded: timed exam only, no practice mode
+  var _sp=$('startPractice'); if(_sp) _sp.style.display='none';
   var _stt=$('startTimed'); if(_stt) _stt.textContent='▶ Start exam';
-  var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';        // hide score / breakdown
+  var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';
   var _rt=$('resultsTitle'); if(_rt) _rt.textContent='Paper submitted';
-  var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';        // nothing to review
+  var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';
   var _dc2=document.querySelector('.disclaimer'); if(_dc2) _dc2.style.display='none';
   var _gd=$('downloadBtn');
   if(SUBMIT_ENDPOINT){
-    if(_gd){ _gd.style.display=''; _gd.textContent='⬇ Download a backup copy'; }   // ALWAYS offer a manual backup: mode:'no-cors' can't confirm the save, so "submitted" is never proof
+    if(_gd){ _gd.style.display=''; _gd.textContent='⬇ Download a backup copy'; }
     var _sm=$('submittedMsg');
     if(_sm) _sm.innerHTML='✅ <b>Paper submitted.</b> <span id="sendStatus">Submitting your answers…</span>';
   } else {
-    if(_gd) _gd.textContent='⬇ Download your answers';            // fallback → manual download + send
+    if(_gd) _gd.textContent='⬇ Download your answers';
   }
 }
 $('metaTime').textContent = PAPER.duration+' minutes';
@@ -1233,7 +1209,6 @@ $('downloadBtn').addEventListener('click', downloadAnswers);
   btn.addEventListener('click', ()=>{ const n=body.getAttribute('data-theme')==='dark'?'light':'dark'; apply(n); safeSet(n); });
 })();
 </script>
-
 
 <style id="symbar-css">.symbar{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 2px;align-items:center}.symbar .symlbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#7b8aa8);margin-right:2px}.symbtn{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1;cursor:pointer;border:1px solid var(--border,#263247);background:var(--surface2,#19202f);color:var(--text,#d6deec);border-radius:6px;padding:5px 8px;min-width:30px}.symbtn:hover{border-color:var(--motion,var(--accent,#5b8dee))}@media print{.symbar{display:none}}</style><script>/*symbar-init*//*symbar-v3*/(function(){var SUBJ="phys";var S={chem:[['→','→'],['⇌','⇌'],['(s)','(s)'],['(l)','(l)'],['(g)','(g)'],['(aq)','(aq)'],['x₂','₂'],['x₃','₃'],['x₄','₄'],['x⁺','⁺'],['x⁻','⁻'],['x²⁺','²⁺'],['x²⁻','²⁻'],['x³⁺','³⁺']],phys:[['×','×'],['÷','÷'],['→','→'],['Δ','Δ'],['°','°'],['Ω','Ω'],['µ','µ'],['λ','λ'],['θ','θ'],['±','±'],['≈','≈'],['√','√'],['sin','sin'],['cos','cos'],['tan','tan'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['⁻²','⁻²']],maths:[['×','×'],['÷','÷'],['±','±'],['√','√'],['π','π'],['°','°'],['θ','θ'],['≤','≤'],['≥','≥'],['≠','≠'],['≈','≈'],['sin','sin'],['cos','cos'],['tan','tan'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['½','½'],['$','$'],['₹','₹']]};var set=S[SUBJ]||[];if(!set.length)return;var boxes=document.querySelectorAll('textarea.ans');if(!boxes.length)return;function ins(ta,t){if(ta.disabled)return;var s=ta.selectionStart||0,e=ta.selectionEnd||0,v=ta.value;ta.value=v.slice(0,s)+t+v.slice(e);var p=s+t.length;ta.selectionStart=ta.selectionEnd=p;ta.focus();ta.dispatchEvent(new Event('input',{bubbles:true}));}boxes.forEach(function(ta){if(ta.previousElementSibling&&ta.previousElementSibling.className==='symbar')return;var bar=document.createElement('div');bar.className='symbar';var lb=document.createElement('span');lb.className='symlbl';lb.textContent='insert';bar.appendChild(lb);set.forEach(function(p){var b=document.createElement('button');b.type='button';b.className='symbtn';b.textContent=p[0];b.tabIndex=-1;b.addEventListener('mousedown',function(ev){ev.preventDefault();});b.addEventListener('click',function(){ins(ta,p[1]);});bar.appendChild(b);});ta.parentNode.insertBefore(bar,ta);});})();</script>
 </body>
