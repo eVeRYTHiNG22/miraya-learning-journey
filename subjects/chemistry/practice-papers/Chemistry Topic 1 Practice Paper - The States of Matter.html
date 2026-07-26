@@ -463,7 +463,7 @@
       <li>Show your <b>working</b> in calculations — method marks are awarded even if the final answer is wrong.</li>
       <li>In <b>Timed exam</b> mode a countdown runs; the paper locks and is marked when you submit or time runs out.</li>
       <li>Multiple-choice and final numerical answers are marked automatically. For written answers you'll see the mark scheme and tick the points you earned.</li>
-      <li>Relative atomic masses (where needed): H = 1, N = 14, O = 16, C = 12, Cl = 35.5.</li>
+      <li>Relative atomic masses (A<sub>r</sub>), where needed: H = 1, N = 14, Cl = 35.5, Br = 80.</li>
     </ul>
     <div class="controls">
       <button class="btn primary" id="startTimed">▶ Start timed exam</button>
@@ -510,141 +510,217 @@
                 (final answer auto-checked; method points self-marked).
    Each markable unit lists ms[] marking points: {p:'text', m:marks, auto?:bool}
    =========================================================================== */
+const HEATCURVE = "<svg viewBox='0 0 380 235' width='380' role='img' aria-label='temperature against time heating curve for a pure substance, showing a melting plateau at 20 degrees and a boiling plateau at 80 degrees'>"
+ + "<line class='axis' x1='45' y1='22' x2='45' y2='195'/>"
+ + "<line class='axis' x1='45' y1='195' x2='362' y2='195'/>"
+ + "<line class='grid-line' x1='45' y1='163' x2='160' y2='163' stroke-dasharray='3 3'/>"
+ + "<line class='grid-line' x1='45' y1='67' x2='315' y2='67' stroke-dasharray='3 3'/>"
+ + "<polyline class='plot' points='45,195 100,163 160,163 250,67 315,67 345,50'/>"
+ + "<text x='39' y='199' text-anchor='end' font-size='10'>0</text>"
+ + "<text x='39' y='167' text-anchor='end' font-size='10'>20</text>"
+ + "<text x='39' y='71' text-anchor='end' font-size='10'>80</text>"
+ + "<text x='72' y='190' text-anchor='middle' font-size='12'>A</text>"
+ + "<text x='130' y='156' text-anchor='middle' font-size='12'>B</text>"
+ + "<text x='198' y='118' text-anchor='middle' font-size='12'>C</text>"
+ + "<text x='282' y='60' text-anchor='middle' font-size='12'>D</text>"
+ + "<text x='205' y='222' text-anchor='middle' font-size='10'>time →</text>"
+ + "<text x='16' y='108' text-anchor='middle' font-size='10' transform='rotate(-90 16 108)'>temperature / °C</text>"
+ + "</svg>";
+
+const DIFFTUBE = "<svg viewBox='0 0 340 104' width='340' role='img' aria-label='diffusion tube with ammonia and hydrochloric acid forming a white ring nearer the hydrochloric acid end'><rect x='30' y='40' width='280' height='30' rx='15' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='34' y='43' width='20' height='24' rx='6' fill='var(--surface)' stroke='currentColor' stroke-width='1'/><rect x='286' y='43' width='20' height='24' rx='6' fill='var(--surface)' stroke='currentColor' stroke-width='1'/><line x1='218' y1='40' x2='218' y2='70' stroke='currentColor' stroke-width='3'/><line x1='218' y1='33' x2='218' y2='40' stroke='currentColor' stroke-width='0.8'/><text x='218' y='29' text-anchor='middle' font-size='9'>white ring</text><text x='44' y='86' text-anchor='middle' font-size='9'>cotton wool</text><text x='44' y='96' text-anchor='middle' font-size='9'>(NH₃)</text><text x='296' y='86' text-anchor='middle' font-size='9'>cotton wool</text><text x='296' y='96' text-anchor='middle' font-size='9'>(HCl)</text></svg>";
+
 const PAPER = {
-  duration: 35,                 // minutes
+  duration: 45,                 // minutes (40 marks × 0.94 × 1.15 ≈ 43 → 45)
   questions: [
 
-    /* ── SECTION A — MULTIPLE CHOICE (5 × 1) ── */
+    /* ── SECTION A — MULTIPLE CHOICE (8 × 1) — mirrors 0620 Paper 2 item shapes ── */
     { n:1, kind:'mcq', marks:1,
-      stem:'Which row best describes the particles in a <b>solid</b>?',
+      stem:'Which row correctly describes the particles in a <b>solid</b>?',
       options:[
-        'Far apart, randomly arranged, moving quickly in all directions',
-        'Close together, regular (ordered) arrangement, vibrating about fixed positions',
-        'Close together, randomly arranged, sliding past one another',
-        'Far apart, regular arrangement, vibrating about fixed positions'
+        'far apart &nbsp;·&nbsp; regular arrangement &nbsp;·&nbsp; vibrate about fixed positions',
+        'close together &nbsp;·&nbsp; regular arrangement &nbsp;·&nbsp; vibrate about fixed positions',
+        'close together &nbsp;·&nbsp; random arrangement &nbsp;·&nbsp; slide past one another',
+        'far apart &nbsp;·&nbsp; random arrangement &nbsp;·&nbsp; move quickly in all directions'
       ],
       answer:1,
-      ms:[{p:'B — in a solid particles are packed closely in a regular pattern and only vibrate about fixed positions.', m:1, auto:true}] },
+      ms:[{p:'B — in a solid the particles are packed closely in a regular (ordered) pattern and only vibrate about fixed positions.', m:1, auto:true}] },
 
     { n:2, kind:'mcq', marks:1,
-      stem:'Wet clothes hung on a line dry on a warm, sunny day, even though the water never reaches 100 °C. Which change of state has taken place?',
-      options:['Melting','Boiling','Evaporation','Condensation'],
+      stem:'A pool of water on a road dries up on a warm day, even though its temperature never reaches 100&nbsp;°C. Which change of state has taken place?',
+      options:['melting','boiling','evaporation','condensation'],
       answer:2,
-      ms:[{p:'C — evaporation happens at the surface of a liquid at temperatures below its boiling point; boiling would need the water to reach 100 °C.', m:1, auto:true}] },
+      ms:[{p:'C — evaporation occurs at the surface of a liquid at temperatures below its boiling point; boiling would require the water to reach 100&nbsp;°C.', m:1, auto:true}] },
 
     { n:3, kind:'mcq', marks:1,
-      stem:'A fixed mass of gas is cooled at constant pressure. Its volume:',
-      options:['increases','decreases','stays exactly the same','first increases, then decreases'],
-      answer:1,
-      ms:[{p:'B — cooling makes particles move more slowly and hit the walls less often/hard, so the gas contracts and volume decreases.', m:1, auto:true}] },
-
-    { n:4, kind:'mcq', marks:1,
-      stem:'A few crystals of purple potassium manganate(VII) are placed at the bottom of a beaker of <b>still</b> water. After several hours the whole beaker is pale purple. The colour spreads because of:',
-      options:['convection currents','diffusion','the crystals only dissolving at the top','evaporation of the water'],
-      answer:1,
-      ms:[{p:'B — particles spread from high to low concentration by their own random motion: diffusion (no stirring or heating needed).', m:1, auto:true}] },
-
-    { n:5, kind:'mcq', marks:1,
-      stem:'Two gases are released at the same point at the same time: gas X (M<sub>r</sub> = 17) and gas Y (M<sub>r</sub> = 44). Which statement is correct?',
+      stem:'Which change would cause the volume of a <b>fixed mass of gas</b> to <b>decrease</b>?',
       options:[
-        'X and Y diffuse at exactly the same rate',
-        'Y diffuses faster because it has more mass',
-        'X diffuses faster because it has the lower molecular mass',
-        'Neither gas diffuses because the air is still'
+        'increasing the temperature at constant pressure',
+        'decreasing the pressure at constant temperature',
+        'increasing the pressure at constant temperature',
+        'heating the gas inside a sealed rigid container'
       ],
       answer:2,
-      ms:[{p:'C — lighter molecules (lower M<sub>r</sub>) move faster on average, so X diffuses faster than Y.', m:1, auto:true}] },
+      ms:[{p:'C — at constant temperature, increasing the pressure forces the particles closer together, so the gas contracts and its volume decreases.', m:1, auto:true}] },
 
-    /* ── SECTION B — STRUCTURED & CALCULATION ── */
-    { n:6, kind:'parts', stem:'This question is about the arrangement and movement of particles in the three states of matter.',
+    { n:4, kind:'mcq', marks:1,
+      fig:HEATCURVE, figCap:'Temperature of a pure substance heated at a steady rate',
+      stem:'The graph shows the temperature of a pure substance as it is heated at a steady rate. During which labelled section is the substance <b>boiling</b>?',
+      options:['A','B','C','D'],
+      answer:3,
+      ms:[{p:'D — boiling occurs at the higher, upper plateau (80&nbsp;°C), where the temperature stays constant as the liquid turns to gas. Section B is melting.', m:1, auto:true}] },
+
+    { n:5, kind:'mcq', marks:1,
+      stem:'Four gases and their relative molecular masses (M<sub>r</sub>) are listed below. Which gas diffuses <b>fastest</b>?',
+      options:[
+        'methane, CH<sub>4</sub> (M<sub>r</sub> = 16)',
+        'oxygen, O<sub>2</sub> (M<sub>r</sub> = 32)',
+        'carbon dioxide, CO<sub>2</sub> (M<sub>r</sub> = 44)',
+        'sulfur dioxide, SO<sub>2</sub> (M<sub>r</sub> = 64)'
+      ],
+      answer:0,
+      ms:[{p:'A — the gas with the lowest M<sub>r</sub> has the fastest-moving molecules on average, so methane diffuses fastest.', m:1, auto:true}] },
+
+    { n:6, kind:'mcq', marks:1,
+      stem:'In a diffusion-tube experiment, a white ring of ammonium chloride forms <b>nearer the hydrochloric acid</b> end. Which statement explains this?',
+      options:[
+        'NH<sub>3</sub> molecules are heavier, so they move more slowly',
+        'NH<sub>3</sub> molecules are lighter, so they diffuse faster and travel further',
+        'HCl molecules are lighter, so they diffuse faster and travel further',
+        'both gases diffuse at exactly the same rate'
+      ],
+      answer:1,
+      ms:[{p:'B — NH<sub>3</sub> (M<sub>r</sub> = 17) is lighter than HCl (M<sub>r</sub> = 36.5), so it diffuses faster and travels further along the tube before the gases meet, forming the ring nearer the HCl end.', m:1, auto:true}] },
+
+    { n:7, kind:'mcq', marks:1,
+      stem:'Which statement explains why a gas can be <b>compressed</b> much more easily than a liquid?',
+      options:[
+        'the particles in a gas are larger than the particles in a liquid',
+        'there are large spaces between the particles in a gas',
+        'the particles in a gas are stationary',
+        'a gas has no mass'
+      ],
+      answer:1,
+      ms:[{p:'B — a gas has large spaces between its widely separated particles, so they can be pushed closer together; in a liquid the particles are already touching.', m:1, auto:true}] },
+
+    { n:8, kind:'mcq', marks:1,
+      stem:'Which row correctly describes what happens to the particles of a substance when it changes from a liquid to a gas by <b>boiling</b>?',
+      options:[
+        'spacing between particles increases &nbsp;·&nbsp; forces of attraction become much weaker',
+        'spacing between particles increases &nbsp;·&nbsp; forces of attraction become much stronger',
+        'spacing between particles decreases &nbsp;·&nbsp; forces of attraction become much weaker',
+        'spacing between particles stays the same &nbsp;·&nbsp; forces of attraction become much weaker'
+      ],
+      answer:0,
+      ms:[{p:'A — on boiling, the particles move far apart so the spacing between them increases, and the forces of attraction between them become much weaker (almost negligible in a gas). The temperature is constant during boiling, so the average speed does not change.', m:1, auto:true}] },
+
+    /* ── SECTION B — STRUCTURED & CALCULATION — mirrors 0620 Paper 4 Theory ── */
+    { n:9, kind:'parts',
+      stem:'This question is about the arrangement and movement of particles in the three states of matter.',
       parts:[
-        { label:'(a)', kind:'text', marks:2, lines:3,
-          prompt:'Describe the <b>arrangement</b> and the <b>movement</b> of the particles in a <b>liquid</b>.',
-          ms:[
-            {p:'Arrangement: particles are close together / touching, but randomly (irregularly) arranged.', m:1},
-            {p:'Movement: particles can move around / slide past one another.', m:1}
-          ]},
-        { label:'(b)', kind:'text', marks:2, lines:3,
+        { label:'(a)', kind:'text', marks:3, lines:4,
           fig:"<svg viewBox='0 0 322 122' width='322' role='img' aria-label='particle arrangement in a solid, a liquid and a gas'><g fill='none' stroke='currentColor' stroke-width='1.4'><rect x='15' y='20' width='86' height='76'/><rect x='118' y='20' width='86' height='76'/><rect x='221' y='20' width='86' height='76'/></g><g fill='currentColor'><circle cx='28' cy='33' r='6'/><circle cx='46' cy='33' r='6'/><circle cx='64' cy='33' r='6'/><circle cx='82' cy='33' r='6'/><circle cx='28' cy='51' r='6'/><circle cx='46' cy='51' r='6'/><circle cx='64' cy='51' r='6'/><circle cx='82' cy='51' r='6'/><circle cx='28' cy='69' r='6'/><circle cx='46' cy='69' r='6'/><circle cx='64' cy='69' r='6'/><circle cx='82' cy='69' r='6'/><circle cx='28' cy='87' r='6'/><circle cx='46' cy='87' r='6'/><circle cx='64' cy='87' r='6'/><circle cx='82' cy='87' r='6'/><circle cx='128' cy='60' r='6'/><circle cx='141' cy='55' r='6'/><circle cx='154' cy='62' r='6'/><circle cx='167' cy='56' r='6'/><circle cx='180' cy='63' r='6'/><circle cx='193' cy='58' r='6'/><circle cx='133' cy='76' r='6'/><circle cx='147' cy='72' r='6'/><circle cx='161' cy='78' r='6'/><circle cx='175' cy='73' r='6'/><circle cx='189' cy='79' r='6'/><circle cx='151' cy='90' r='6'/><circle cx='236' cy='36' r='6'/><circle cx='272' cy='49' r='6'/><circle cx='250' cy='72' r='6'/><circle cx='291' cy='39' r='6'/><circle cx='279' cy='84' r='6'/><circle cx='239' cy='82' r='6'/></g><text x='58' y='114' text-anchor='middle' font-size='11'>solid</text><text x='161' y='114' text-anchor='middle' font-size='11'>liquid</text><text x='264' y='114' text-anchor='middle' font-size='11'>gas</text></svg>",
           figCap:"Particle arrangement in the three states",
-          prompt:'Explain, in terms of the particles, why a liquid <b>takes the shape</b> of its container but a solid keeps its <b>own shape</b>.',
+          prompt:'Describe the <b>separation</b>, the <b>arrangement</b> and the <b>motion</b> of the particles in a <b>gas</b>.',
           ms:[
-            {p:'In a liquid the particles can move/slide past each other, so the liquid flows to fit the container.', m:1},
-            {p:'In a solid the particles are held in fixed positions (strong forces) and only vibrate, so the shape is fixed.', m:1}
+            {p:'Separation: the particles are far apart / widely separated (large spaces between them).', m:1},
+            {p:'Arrangement: the particles are randomly (irregularly) arranged.', m:1},
+            {p:'Motion: the particles move quickly / freely in all (random) directions.', m:1}
+          ]},
+        { label:'(b)', kind:'text', marks:3, lines:4,
+          prompt:'Name the change of state taking place in each of the following: <b>(i)</b> a puddle of water disappears on a warm day, well below 100&nbsp;°C; &nbsp; <b>(ii)</b> steam turns to droplets on a cold window; &nbsp; <b>(iii)</b> a spoonful of sugar disappears when stirred into a cup of tea.',
+          ms:[
+            {p:'(i) evaporation', m:1},
+            {p:'(ii) condensation', m:1},
+            {p:'(iii) dissolving (not melting).', m:1}
           ]},
         { label:'(c)', kind:'text', marks:2, lines:3,
-          prompt:'Explain why a gas can be <b>compressed</b> easily but a liquid <b>cannot</b>.',
+          prompt:'Explain, in terms of the particles, why a <b>solid</b> has a fixed shape but a <b>gas</b> fills any container it is put in.',
           ms:[
-            {p:'In a gas the particles are far apart with large spaces between them, so they can be pushed closer together.', m:1},
-            {p:'In a liquid the particles are already close together/touching with little space, so they cannot be pushed closer.', m:1}
+            {p:'In a solid the particles are held in fixed positions by strong forces of attraction (they only vibrate), so the shape is fixed.', m:1},
+            {p:'In a gas the particles are far apart and move freely/randomly in all directions, so they spread out to fill the whole container.', m:1}
           ]}
       ]},
 
-    { n:7, kind:'parts',
-      stem:'On a hot day in Delhi, Aarav takes a glass of chilled lassi out of the fridge. Drops of water soon appear on the outside of the glass, and the ice cubes in his drink slowly turn to liquid.',
+    { n:10, kind:'parts',
+      stem:'A pure substance is taken from below its melting point and heated at a steady rate until it becomes a gas. The graph shows how its temperature changes with time.',
+      fig:HEATCURVE, figCap:'Heating curve for the pure substance',
       parts:[
-        { label:'(a)', kind:'text', marks:2, lines:2,
-          prompt:'Name the change of state in each case: <b>(i)</b> the ice cubes turning to liquid &nbsp; <b>(ii)</b> water vapour in the air forming drops on the cold glass.',
+        { label:'(a)', kind:'numeric', marks:1, ans:20, tol:0, unit:'°C',
+          prompt:'Use the graph to state the <b>melting point</b> of the substance.',
+          ms:[{p:'20&nbsp;°C (the lower plateau, section B).', m:1, auto:true}]},
+        { label:'(b)', kind:'numeric', marks:1, ans:80, tol:0, unit:'°C',
+          prompt:'Use the graph to state the <b>boiling point</b> of the substance.',
+          ms:[{p:'80&nbsp;°C (the upper plateau, section D).', m:1, auto:true}]},
+        { label:'(c)', kind:'text', marks:1, lines:2,
+          prompt:'State the physical state(s) of the substance during section <b>C</b>.',
+          ms:[{p:'Liquid (only) — section C is between the melting and boiling plateaus.', m:1}]},
+        { label:'(d)', kind:'text', marks:2, lines:3,
+          prompt:'During section <b>B</b> the substance is melting and its temperature stays <b>constant</b>, even though heating continues. Explain why.',
           ms:[
-            {p:'(i) melting', m:1},
-            {p:'(ii) condensation', m:1}
+            {p:'The heat energy supplied is used to overcome / weaken the forces of attraction between the particles (to separate them from their fixed positions).', m:1},
+            {p:'…rather than to increase the kinetic energy of the particles, so the temperature does not rise.', m:1}
           ]},
-        { label:'(b)', kind:'text', marks:1, lines:2,
-          prompt:'The same water, if poured into a tray and left in the freezer, turns into ice. Name this change of state.',
-          ms:[{p:'Freezing (solidifying).', m:1}]},
-        { label:'(c)', kind:'text', marks:3, lines:4,
-          prompt:'Use the <b>kinetic particle theory</b> to explain what happens to the particles, and to the forces between them, when the <b>ice melts</b>.',
+        { label:'(e)', kind:'text', marks:3, lines:4,
+          prompt:'Using the <b>kinetic particle theory</b>, describe what happens to the particles during section <b>A</b> and then during section <b>B</b>.',
           ms:[
-            {p:'On heating, the particles gain (kinetic) energy and vibrate more strongly.', m:1},
-            {p:'Some of the forces of attraction between the particles are overcome / weakened.', m:1},
-            {p:'The particles break free from their fixed positions and can move/slide past one another (so it becomes a liquid).', m:1}
+            {p:'Section A: the particles gain kinetic energy and vibrate more strongly / faster (about fixed positions).', m:1},
+            {p:'Section B: the energy overcomes some of the forces of attraction between the particles.', m:1},
+            {p:'Section B: the particles break free from their fixed positions and begin to move around / slide past one another (the solid becomes a liquid).', m:1}
           ]}
       ]},
 
-    { n:8, kind:'parts',
+    { n:11, kind:'parts',
+      stem:'A fixed mass of gas is sealed inside a gas syringe fitted with a movable plunger.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:4,
+          prompt:'The syringe is warmed so that the gas is heated at <b>constant pressure</b>. Explain, in terms of the particles, why the <b>volume of the gas increases</b>.',
+          ms:[
+            {p:'The particles gain kinetic energy and move faster (on average).', m:1},
+            {p:'They collide with the walls / plunger more often and with greater force.', m:1},
+            {p:'To keep the pressure constant the plunger is pushed out, so the volume increases.', m:1}
+          ]},
+        { label:'(b)', kind:'text', marks:3, lines:4,
+          prompt:'The plunger is now pushed in firmly at <b>constant temperature</b>, increasing the pressure on the gas. Explain, in terms of the particles, why the <b>volume of the gas decreases</b>.',
+          ms:[
+            {p:'There are large spaces between the widely separated gas particles.', m:1},
+            {p:'At constant temperature the particles keep the same average speed, but the greater pressure pushes them closer together, reducing the spaces between them.', m:1},
+            {p:'So the gas occupies a smaller volume / the volume decreases.', m:1}
+          ]},
+        { label:'(c)', kind:'text', marks:2, lines:3,
+          prompt:'Explain why the <b>gas</b> in the syringe can be compressed easily, but a <b>liquid</b> in the syringe could not.',
+          ms:[
+            {p:'In the gas the particles are far apart with large spaces between them, so they can be pushed closer together.', m:1},
+            {p:'In a liquid the particles are already close together / touching with almost no space, so they cannot be pushed closer.', m:1}
+          ]}
+      ]},
+
+    { n:12, kind:'parts',
       ctx:'A long dry glass tube is set up horizontally. Cotton wool soaked in concentrated <b>ammonia</b> solution (giving off NH<sub>3</sub> gas) is put in one end, and cotton wool soaked in concentrated <b>hydrochloric acid</b> (giving off HCl gas) in the other. A white ring of solid ammonium chloride forms inside the tube where the two gases meet — closer to the HCl end.',
-      stem:'This question is about diffusion of gases.',
-      fig:"<svg viewBox='0 0 340 104' width='340' role='img' aria-label='diffusion tube with ammonia and hydrochloric acid forming a white ring'><rect x='30' y='40' width='280' height='30' rx='15' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='34' y='43' width='20' height='24' rx='6' fill='var(--surface)' stroke='currentColor' stroke-width='1'/><rect x='286' y='43' width='20' height='24' rx='6' fill='var(--surface)' stroke='currentColor' stroke-width='1'/><line x1='205' y1='40' x2='205' y2='70' stroke='currentColor' stroke-width='3'/><line x1='205' y1='33' x2='205' y2='40' stroke='currentColor' stroke-width='0.8'/><text x='205' y='29' text-anchor='middle' font-size='9'>white ring</text><text x='44' y='86' text-anchor='middle' font-size='9'>cotton wool</text><text x='44' y='96' text-anchor='middle' font-size='9'>(NH₃)</text><text x='296' y='86' text-anchor='middle' font-size='9'>cotton wool</text><text x='296' y='96' text-anchor='middle' font-size='9'>(HCl)</text></svg>",
-      figCap:"Diffusion of NH₃ and HCl in a glass tube",
+      stem:'This question is about the diffusion of gases. (A<sub>r</sub>: H = 1, N = 14, Cl = 35.5, Br = 80)',
+      fig:DIFFTUBE, figCap:"Diffusion of NH₃ and HCl in a glass tube",
       parts:[
         { label:'(a)', kind:'numeric', marks:1, ans:17, tol:0, unit:'',
-          prompt:'Calculate the relative molecular mass (M<sub>r</sub>) of ammonia, NH<sub>3</sub>. (A<sub>r</sub>: N = 14, H = 1)',
+          prompt:'Calculate the relative molecular mass (M<sub>r</sub>) of ammonia, NH<sub>3</sub>.',
           ms:[{p:'14 + (3 × 1) = 17', m:1, auto:true}]},
         { label:'(b)', kind:'numeric', marks:1, ans:36.5, tol:0, unit:'',
-          prompt:'Calculate the M<sub>r</sub> of hydrogen chloride, HCl. (A<sub>r</sub>: H = 1, Cl = 35.5)',
+          prompt:'Calculate the M<sub>r</sub> of hydrogen chloride, HCl.',
           ms:[{p:'1 + 35.5 = 36.5', m:1, auto:true}]},
         { label:'(c)', kind:'text', marks:3, lines:4,
           prompt:'The white ring forms nearer the <b>HCl</b> end. Use your answers to (a) and (b) to explain why.',
           ms:[
-            {p:'NH₃ has a lower Mᵣ / is lighter than HCl.', m:1},
+            {p:'NH₃ has a lower M<sub>r</sub> / is lighter than HCl.', m:1},
             {p:'Lighter molecules move / diffuse faster (on average).', m:1},
-            {p:'So NH₃ travels further along the tube before they meet, so the ring forms nearer the (slower) HCl end.', m:1}
+            {p:'So NH₃ travels further along the tube before the gases meet, so the ring forms nearer the (slower) HCl end.', m:1}
           ]},
         { label:'(d)', kind:'text', marks:2, lines:3,
           prompt:'<b>Define</b> the term <i>diffusion</i>.',
           ms:[
             {p:'The (net) movement / spreading of particles from a region of higher concentration…', m:1},
             {p:'…to a region of lower concentration (due to the random motion of the particles).', m:1}
-          ]}
-      ]},
-
-    { n:9, kind:'parts',
-      stem:'A fixed mass of gas is sealed inside a gas syringe.',
-      parts:[
-        { label:'(a)', kind:'text', marks:3, lines:4,
-          prompt:'The syringe is warmed so the gas is heated at <b>constant pressure</b>. Explain, in terms of the particles, why the <b>volume of the gas increases</b>.',
-          ms:[
-            {p:'The particles gain (kinetic) energy and move faster.', m:1},
-            {p:'They hit the walls of the syringe more often and with greater force.', m:1},
-            {p:'To keep the pressure constant the plunger is pushed out, so the volume increases.', m:1}
           ]},
-        { label:'(b)', kind:'text', marks:3, lines:4,
-          prompt:'The plunger is now pushed in hard at <b>constant temperature</b>, increasing the pressure on the gas. Explain, in terms of the particles, why the <b>volume of the gas decreases</b>.',
-          ms:[
-            {p:'There are large spaces between the gas particles (the particles themselves take up little volume).', m:1},
-            {p:'At constant temperature the particles keep the same average speed, but the higher pressure forces them closer together, reducing the spaces between them.', m:1},
-            {p:'So the gas occupies a smaller volume / the volume decreases.', m:1}
-          ]}
+        { label:'(e)', kind:'text', marks:1, lines:2,
+          prompt:'Predict how the position of the white ring would change if the hydrochloric acid were replaced by hydrogen bromide, HBr (M<sub>r</sub> = 81). Explain your answer.',
+          ms:[{p:'HBr (M<sub>r</sub> = 81) is even heavier than HCl, so it diffuses even more slowly; the ring would form even nearer the HBr end (further from the NH₃ end).', m:1}]}
       ]}
 
   ]
