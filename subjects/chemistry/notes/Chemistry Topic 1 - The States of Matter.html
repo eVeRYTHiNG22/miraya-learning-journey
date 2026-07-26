@@ -568,6 +568,9 @@
   body[data-theme="light"] .axis     { stroke:#bcb4a2; }
   body[data-theme="light"] .axis-lbl { fill:#8c8674; }
   body[data-theme="light"] .tracer   { fill:#14181f; }
+  /* the NH4Cl ring is near-white — it must darken on warm paper or it vanishes */
+  body[data-theme="light"] #ring     { stroke:#14181f; }
+  body[data-theme="light"] #ringGlow { fill:#8a8474; }
 
   /* explorer chrome */
   body[data-theme="light"] .scn-read   { background:#e8f1fb; border-color:#bdd7f2; }
@@ -586,6 +589,54 @@
     body, .theme-toggle, .box, .card, .define, .explorer, .tool,
     svg.graph, svg.pbox-svg, svg.dtube, svg.cyl, .scn-read, .scn-tab, .replay,
     .vec-out, .chip, table th, table td, .eqcell, mark { transition:none; }
+  }
+
+  /* ── STATIC LABELLED DIAGRAMS ── */
+  svg.diagram{width:100%;height:auto;display:block;background:#0c1322;border:1px solid var(--border);border-radius:9px;margin:14px auto;}
+  body[data-theme="light"] svg.diagram{background:#fbfaf4;}
+  .dg-lbl { fill:var(--muted); font-family:'JetBrains Mono',monospace; font-size:9px; }
+  .dg-ttl { fill:var(--bright); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; }
+  .dg-box { fill:none; stroke:#3a4a66; stroke-width:1.6; }
+  body[data-theme="light"] .dg-box { stroke:#c7bfaa; }
+  .dg-cap { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted);
+    text-align:center; letter-spacing:.03em; margin:-4px 0 20px; line-height:1.6; }
+
+  /* Check-yourself retrieval block */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* Papers panel */
+  .paper-links { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:26px 0 0; }
+  .paper-links .pl-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--power); margin-bottom:10px; }
+  .paper-links a { display:block; color:var(--text); text-decoration:none; font-size:14px;
+    padding:9px 12px; margin-top:8px; border:1px solid var(--border); border-radius:9px;
+    background:var(--surface2); transition:border-color .2s, color .2s; }
+  .paper-links a:hover { border-color:var(--power); color:var(--power); }
+  .paper-links .pl-note { font-size:12.5px; color:var(--muted); margin-top:10px; }
+
+  /* Save as PDF */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint, .replay, #eq-card { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; }
+    .section { animation:none !important; opacity:1 !important; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   }
 </style>
 </head>
@@ -606,7 +657,7 @@
 
   <!-- ── 01 · THE PARTICLE MODEL ── -->
   <div class="section">
-    <div class="sec-label">01 / 06 · 1.1 Kinetic particle theory</div>
+    <div class="sec-label">01 / 07 · 1.1 Kinetic particle theory</div>
     <h2>The one idea behind the whole topic</h2>
 
     <p>All matter is made of incredibly small <strong>particles</strong> (atoms, molecules or ions) that are <strong>always moving</strong>. How much energy those particles have — and so how fast they move and how tightly they're held — is the <em>only</em> thing that changes between a solid, a liquid and a gas. This is the <strong>kinetic particle theory</strong> ("kinetic" just means <em>moving</em>).</p>
@@ -630,7 +681,7 @@
 
   <!-- ── 02 · THE THREE STATES ── -->
   <div class="section">
-    <div class="sec-label">02 / 06 · 1.1 Solids, liquids &amp; gases</div>
+    <div class="sec-label">02 / 07 · 1.1 Solids, liquids &amp; gases</div>
     <h2>The three states, and how the particles sit</h2>
 
     <p>You must be able to describe each state by its <strong>properties</strong> and by the <strong>arrangement, separation and motion</strong> of its particles. Pick a state below and watch the particles behave — then drag the temperature slider to feel them gain energy:</p>
@@ -674,6 +725,74 @@
       </div>
     </div>
 
+    <h3>The diagram you must be able to draw</h3>
+    <p>Exam papers ask you to <strong>draw or complete</strong> particle diagrams for the three states. Copy this one until you can reproduce it from memory — the marks are for <em>separation</em> and <em>arrangement</em>, so a gas box must look mostly empty and a solid box must look like a neat grid.</p>
+
+    <svg class="diagram" viewBox="0 0 620 216" role="img" aria-label="Particle diagrams of a solid, a liquid and a gas: the solid shows a regular close-packed grid of particles that only vibrate, the liquid shows close but randomly arranged particles that slide past each other, the gas shows a few widely separated particles moving quickly in all directions">
+      <defs>
+        <marker id="d1a-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--bright)"/></marker>
+        <marker id="d1a-l" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--bright)"/></marker>
+        <marker id="d1a-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--force)"/></marker>
+      </defs>
+
+      <!-- SOLID -->
+      <text x="110" y="24" text-anchor="middle" class="dg-ttl" style="fill:var(--motion)">SOLID</text>
+      <rect class="dg-box" x="20" y="34" width="180" height="118" rx="5"/>
+      <g style="color:var(--motion)" fill="currentColor">
+        <circle cx="44" cy="58" r="10"/><circle cx="68" cy="58" r="10"/><circle cx="92" cy="58" r="10"/><circle cx="116" cy="58" r="10"/><circle cx="140" cy="58" r="10"/><circle cx="164" cy="58" r="10"/>
+        <circle cx="44" cy="82" r="10"/><circle cx="68" cy="82" r="10"/><circle cx="92" cy="82" r="10"/><circle cx="116" cy="82" r="10"/><circle cx="140" cy="82" r="10"/><circle cx="164" cy="82" r="10"/>
+        <circle cx="44" cy="106" r="10"/><circle cx="68" cy="106" r="10"/><circle cx="92" cy="106" r="10"/><circle cx="116" cy="106" r="10"/><circle cx="140" cy="106" r="10"/><circle cx="164" cy="106" r="10"/>
+        <circle cx="44" cy="130" r="10"/><circle cx="68" cy="130" r="10"/><circle cx="92" cy="130" r="10"/><circle cx="116" cy="130" r="10"/><circle cx="140" cy="130" r="10"/><circle cx="164" cy="130" r="10"/>
+      </g>
+      <g stroke="var(--bright)" stroke-width="1.4" marker-start="url(#d1a-s)" marker-end="url(#d1a-s)">
+        <line x1="105" y1="58" x2="127" y2="58"/>
+        <line x1="57" y1="106" x2="79" y2="106"/>
+        <line x1="153" y1="130" x2="175" y2="130"/>
+      </g>
+      <text x="110" y="171" text-anchor="middle" class="dg-lbl">close together · regular pattern</text>
+      <text x="110" y="185" text-anchor="middle" class="dg-lbl">vibrate about fixed positions</text>
+      <text x="110" y="203" text-anchor="middle" class="dg-lbl" style="fill:var(--motion)">strong forces · lowest energy</text>
+
+      <!-- LIQUID -->
+      <text x="310" y="24" text-anchor="middle" class="dg-ttl" style="fill:var(--cyan)">LIQUID</text>
+      <rect class="dg-box" x="220" y="34" width="180" height="118" rx="5"/>
+      <g style="color:var(--cyan)" fill="currentColor">
+        <circle cx="250" cy="62" r="10"/><circle cx="274" cy="54" r="10"/><circle cx="298" cy="66" r="10"/><circle cx="322" cy="56" r="10"/><circle cx="346" cy="64" r="10"/><circle cx="370" cy="56" r="10"/>
+        <circle cx="246" cy="90" r="10"/><circle cx="272" cy="82" r="10"/><circle cx="296" cy="94" r="10"/><circle cx="322" cy="82" r="10"/><circle cx="348" cy="92" r="10"/><circle cx="372" cy="84" r="10"/>
+        <circle cx="252" cy="118" r="10"/><circle cx="278" cy="110" r="10"/><circle cx="302" cy="120" r="10"/><circle cx="328" cy="110" r="10"/><circle cx="354" cy="118" r="10"/><circle cx="378" cy="110" r="10"/>
+        <circle cx="258" cy="139" r="10"/><circle cx="284" cy="136" r="10"/><circle cx="310" cy="140" r="10"/><circle cx="336" cy="136" r="10"/><circle cx="362" cy="139" r="10"/>
+      </g>
+      <g fill="none" stroke="var(--bright)" stroke-width="1.4" marker-end="url(#d1a-l)">
+        <path d="M262 74 q16 -9 34 -3"/>
+        <path d="M356 104 q-18 8 -36 2"/>
+      </g>
+      <text x="310" y="171" text-anchor="middle" class="dg-lbl">still close together · random</text>
+      <text x="310" y="185" text-anchor="middle" class="dg-lbl">slide past one another</text>
+      <text x="310" y="203" text-anchor="middle" class="dg-lbl" style="fill:var(--cyan)">weaker forces · more energy</text>
+
+      <!-- GAS -->
+      <text x="510" y="24" text-anchor="middle" class="dg-ttl" style="fill:var(--force)">GAS</text>
+      <rect class="dg-box" x="420" y="34" width="180" height="118" rx="5"/>
+      <g style="color:var(--force)" fill="currentColor">
+        <circle cx="455" cy="60" r="10"/><circle cx="520" cy="50" r="10"/><circle cx="585" cy="72" r="10"/>
+        <circle cx="470" cy="110" r="10"/><circle cx="540" cy="96" r="10"/><circle cx="505" cy="140" r="10"/>
+        <circle cx="578" cy="132" r="10"/>
+      </g>
+      <g fill="none" stroke="var(--force)" stroke-width="1.4" marker-end="url(#d1a-g)">
+        <line x1="466" y1="52" x2="490" y2="42"/>
+        <line x1="520" y1="62" x2="520" y2="80"/>
+        <line x1="576" y1="80" x2="558" y2="94"/>
+        <line x1="482" y1="112" x2="500" y2="116"/>
+        <line x1="530" y1="106" x2="514" y2="124"/>
+        <line x1="516" y1="144" x2="536" y2="149"/>
+        <line x1="570" y1="122" x2="556" y2="110"/>
+      </g>
+      <text x="510" y="171" text-anchor="middle" class="dg-lbl">far apart · random · empty space</text>
+      <text x="510" y="185" text-anchor="middle" class="dg-lbl">move quickly in all directions</text>
+      <text x="510" y="203" text-anchor="middle" class="dg-lbl" style="fill:var(--force)">negligible forces · highest energy</text>
+    </svg>
+    <div class="dg-cap">The three states as the examiner wants them drawn — arrangement, separation and motion in one picture. Arrows show the motion: vibration (solid), sliding (liquid), fast free movement (gas).</div>
+
     <div class="box pitfall">
       <div class="box-label">⚠️ The wording trap</div>
       Don't write "particles in a gas have no forces" — say <em>negligible (very weak)</em> forces. And a gas is "easily compressed" because the particles are <strong>far apart</strong> (lots of empty space), <em>not</em> because the particles themselves shrink — particles never change size.
@@ -688,7 +807,7 @@
 
   <!-- ── 03 · CHANGES OF STATE ── -->
   <div class="section">
-    <div class="sec-label">03 / 06 · 1.1 Changes of state</div>
+    <div class="sec-label">03 / 07 · 1.1 Changes of state</div>
     <h2>Changing state — adding or removing energy</h2>
 
     <p>Heat a substance and its particles gain energy; cool it and they lose energy. At certain temperatures this tips it from one state into another. The five changes you must name:</p>
@@ -701,6 +820,44 @@
       <tr><td><strong>Evaporating</strong></td><td>liquid → gas</td><td>taken in</td><td>any temperature, at the surface only</td></tr>
       <tr><td><strong>Condensing</strong></td><td>gas → liquid</td><td>given out</td><td>at/below the boiling point</td></tr>
     </table>
+
+    <svg class="diagram" viewBox="0 0 620 252" role="img" aria-label="Map of the changes of state: solid to liquid is melting and liquid to gas is boiling or evaporating, both taking energy in; gas to liquid is condensing and liquid to solid is freezing, both giving energy out">
+      <defs>
+        <marker id="d2a-in" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--energy)"/></marker>
+        <marker id="d2a-out" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--motion)"/></marker>
+      </defs>
+
+      <!-- energy-in band -->
+      <text x="310" y="34" text-anchor="middle" class="dg-lbl" style="fill:var(--energy)">ENERGY TAKEN IN — particles gain energy, forces of attraction are overcome</text>
+      <line x1="70" y1="52" x2="550" y2="52" stroke="var(--energy)" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#d2a-in)"/>
+
+      <!-- the three states -->
+      <rect class="dg-box" x="30" y="110" width="130" height="50" rx="8" style="stroke:var(--motion)"/>
+      <text x="95" y="141" text-anchor="middle" class="dg-ttl" style="fill:var(--motion)">SOLID</text>
+      <rect class="dg-box" x="245" y="110" width="130" height="50" rx="8" style="stroke:var(--cyan)"/>
+      <text x="310" y="141" text-anchor="middle" class="dg-ttl" style="fill:var(--cyan)">LIQUID</text>
+      <rect class="dg-box" x="460" y="110" width="130" height="50" rx="8" style="stroke:var(--force)"/>
+      <text x="525" y="141" text-anchor="middle" class="dg-ttl" style="fill:var(--force)">GAS</text>
+
+      <!-- forward (endothermic) arrows -->
+      <line x1="168" y1="122" x2="237" y2="122" stroke="var(--energy)" stroke-width="1.8" marker-end="url(#d2a-in)"/>
+      <text x="202" y="100" text-anchor="middle" class="dg-lbl" style="fill:var(--energy)">melting</text>
+      <line x1="383" y1="122" x2="452" y2="122" stroke="var(--energy)" stroke-width="1.8" marker-end="url(#d2a-in)"/>
+      <text x="417" y="100" text-anchor="middle" class="dg-lbl" style="fill:var(--energy)">boiling · evaporating</text>
+
+      <!-- reverse (exothermic) arrows -->
+      <line x1="237" y1="148" x2="168" y2="148" stroke="var(--motion)" stroke-width="1.8" marker-end="url(#d2a-out)"/>
+      <text x="202" y="180" text-anchor="middle" class="dg-lbl" style="fill:var(--motion)">freezing</text>
+      <line x1="452" y1="148" x2="383" y2="148" stroke="var(--motion)" stroke-width="1.8" marker-end="url(#d2a-out)"/>
+      <text x="417" y="180" text-anchor="middle" class="dg-lbl" style="fill:var(--motion)">condensing</text>
+
+      <!-- energy-out band -->
+      <line x1="550" y1="206" x2="70" y2="206" stroke="var(--motion)" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#d2a-out)"/>
+      <text x="310" y="228" text-anchor="middle" class="dg-lbl" style="fill:var(--motion)">ENERGY GIVEN OUT — particles lose energy, forces of attraction pull them together</text>
+
+      <text x="310" y="246" text-anchor="middle" class="dg-lbl">boiling: throughout the liquid, at the b.p. · evaporating: surface only, any temperature</text>
+    </svg>
+    <div class="dg-cap">The five changes of state you must be able to name, with the direction of energy flow. Freezing point = melting point for the same pure substance.</div>
 
     <div class="box analogy">
       <div class="box-label">🌫️ Evaporation vs boiling — the classic mix-up</div>
@@ -732,6 +889,41 @@
       During melting or boiling, the energy you supply is <strong>not</strong> raising the temperature — it is being used to <strong>overcome the forces of attraction</strong> holding the particles together (pulling them apart into the next state). Temperature only climbs again once the change of state is complete. That's why a pure substance has a <strong>sharp, constant</strong> melting and boiling point.
     </div>
 
+    <h3>The cooling curve — the same story backwards</h3>
+    <p>The Supplement objective names <strong>heating <em>and</em> cooling curves</strong>, and cooling curves are the ones students get wrong. Cool a gas steadily and the temperature falls — but it <strong>pauses twice</strong>, at exactly the same two temperatures the heating curve paused at. This time energy is being <strong>given out</strong> to the surroundings as the forces of attraction pull the particles together:</p>
+
+    <svg class="diagram" viewBox="0 0 620 262" role="img" aria-label="Cooling curve for a pure substance: temperature falls as the gas cools, is constant at the boiling point while it condenses, falls as the liquid cools, is constant at the freezing point while it freezes, then falls as the solid cools">
+      <!-- axes -->
+      <line x1="60" y1="215" x2="598" y2="215" class="axis"/>
+      <line x1="60" y1="215" x2="60" y2="25" class="axis"/>
+      <text x="330" y="254" text-anchor="middle" class="dg-lbl">time / energy given out to the surroundings →</text>
+      <text x="26" y="120" text-anchor="middle" class="dg-lbl" transform="rotate(-90 26 120)">temperature</text>
+
+      <!-- plateau guides -->
+      <line x1="60" y1="80" x2="150" y2="80" class="plateau-guide"/>
+      <line x1="60" y1="140" x2="330" y2="140" class="plateau-guide"/>
+      <text x="55" y="76" text-anchor="end" class="dg-lbl" style="fill:var(--force)">b.p.</text>
+      <text x="55" y="136" text-anchor="end" class="dg-lbl" style="fill:var(--motion)">m.p.</text>
+
+      <!-- the curve -->
+      <path d="M75 45 L150 80 L255 80 L330 140 L430 140 L560 192" fill="none" stroke="var(--cyan)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- segment labels -->
+      <text x="82" y="36" class="dg-lbl">gas cooling</text>
+      <text x="202" y="70" text-anchor="middle" class="dg-lbl" style="fill:var(--force)">condensing (gas → liquid)</text>
+      <text x="290" y="104" text-anchor="end" class="dg-lbl">liquid cooling</text>
+      <text x="380" y="130" text-anchor="middle" class="dg-lbl" style="fill:var(--motion)">freezing (liquid → solid)</text>
+      <text x="500" y="160" class="dg-lbl">solid cooling</text>
+
+      <!-- state bands under the axis -->
+      <text x="105" y="232" text-anchor="middle" class="dg-lbl" style="fill:var(--force)">gas</text>
+      <text x="202" y="232" text-anchor="middle" class="dg-lbl">gas + liquid</text>
+      <text x="292" y="232" text-anchor="middle" class="dg-lbl" style="fill:var(--cyan)">liquid</text>
+      <text x="380" y="232" text-anchor="middle" class="dg-lbl">liquid + solid</text>
+      <text x="495" y="232" text-anchor="middle" class="dg-lbl" style="fill:var(--motion)">solid</text>
+    </svg>
+    <div class="dg-cap">Cooling curve of a pure substance. Both flat sections sit at a single, sharp temperature — that is the test for purity; a mixture freezes over a range and has no true plateau.</div>
+
     <div class="box exam">
       <div class="box-label">✅ Particle changes during a state change (Extended)</div>
       Be ready to describe what happens to <strong>arrangement, separation and motion</strong>. Melting: regular → random, particles slightly further apart, vibration becomes sliding. Boiling: particles move far apart, forces become negligible, motion becomes fast and free. State both <em>directions</em> if asked.
@@ -741,7 +933,7 @@
 
   <!-- ── 04 · GASES: TEMPERATURE & PRESSURE ── -->
   <div class="section">
-    <div class="sec-label">04 / 06 · 1.1 Gases — temperature &amp; pressure</div>
+    <div class="sec-label">04 / 07 · 1.1 Gases — temperature &amp; pressure</div>
     <h2>How temperature &amp; pressure change a gas's volume</h2>
 
     <p>A gas pushes outwards because its particles are constantly hitting the walls of the container — each collision is a tiny push. Add up billions of collisions per second over an area and you get <strong>gas pressure</strong>. Change the temperature or squeeze the container and the volume responds. Drag the sliders:</p>
@@ -785,6 +977,56 @@
       <span class="term">Effect of pressure (at constant temperature)</span> — increasing the pressure squeezes the same particles into a smaller space, so the <strong>volume decreases</strong>. Pushed into a smaller space, the particles hit each unit of wall more often — which is also why squeezing a gas raises its pressure.
     </div>
 
+    <svg class="diagram" viewBox="0 0 620 210" role="img" aria-label="Two containers holding the same ten gas particles: on the left a large container at pressure P with occasional collisions with the walls, on the right a container of half the volume where the same particles hit the walls twice as often, giving pressure 2P">
+      <defs>
+        <marker id="d4a-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--force)"/></marker>
+        <marker id="d4a-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--energy)"/></marker>
+      </defs>
+
+      <!-- LEFT: volume V -->
+      <text x="145" y="28" text-anchor="middle" class="dg-ttl" style="fill:var(--force)">volume V · pressure P</text>
+      <rect class="dg-box" x="40" y="45" width="210" height="120" rx="5"/>
+      <g style="color:var(--force)" fill="currentColor">
+        <circle cx="70" cy="70" r="8"/><circle cx="120" cy="58" r="8"/><circle cx="180" cy="80" r="8"/><circle cx="225" cy="62" r="8"/>
+        <circle cx="60" cy="120" r="8"/><circle cx="110" cy="140" r="8"/><circle cx="165" cy="125" r="8"/><circle cx="215" cy="145" r="8"/>
+        <circle cx="150" cy="98" r="8"/><circle cx="90" cy="98" r="8"/>
+      </g>
+      <g stroke="var(--force)" stroke-width="1.4" marker-end="url(#d4a-c)">
+        <line x1="234" y1="62" x2="248" y2="60"/>
+        <line x1="52" y1="114" x2="42" y2="108"/>
+        <line x1="120" y1="50" x2="123" y2="47"/>
+      </g>
+      <text x="145" y="185" text-anchor="middle" class="dg-lbl">10 particles, plenty of empty space</text>
+      <text x="145" y="199" text-anchor="middle" class="dg-lbl">wall hit relatively rarely</text>
+
+      <!-- squeeze arrow -->
+      <line x1="268" y1="105" x2="356" y2="105" stroke="var(--energy)" stroke-width="2" marker-end="url(#d4a-p)"/>
+      <text x="312" y="92" text-anchor="middle" class="dg-lbl" style="fill:var(--energy)">squeeze</text>
+      <text x="312" y="126" text-anchor="middle" class="dg-lbl" style="fill:var(--energy)">same T, same</text>
+      <text x="312" y="139" text-anchor="middle" class="dg-lbl" style="fill:var(--energy)">particles</text>
+
+      <!-- RIGHT: volume V/2 -->
+      <text x="432" y="28" text-anchor="middle" class="dg-ttl" style="fill:var(--force)">volume V/2 · pressure much higher</text>
+      <rect class="dg-box" x="380" y="45" width="105" height="120" rx="5"/>
+      <g style="color:var(--force)" fill="currentColor">
+        <circle cx="400" cy="62" r="8"/><circle cx="440" cy="56" r="8"/><circle cx="470" cy="72" r="8"/>
+        <circle cx="394" cy="92" r="8"/><circle cx="432" cy="100" r="8"/><circle cx="468" cy="104" r="8"/>
+        <circle cx="400" cy="128" r="8"/><circle cx="438" cy="132" r="8"/><circle cx="470" cy="148" r="8"/>
+        <circle cx="414" cy="155" r="8"/>
+      </g>
+      <g stroke="var(--force)" stroke-width="1.4" marker-end="url(#d4a-c)">
+        <line x1="478" y1="72" x2="483" y2="70"/>
+        <line x1="388" y1="86" x2="382" y2="83"/>
+        <line x1="476" y1="104" x2="483" y2="105"/>
+        <line x1="390" y1="122" x2="382" y2="119"/>
+        <line x1="440" y1="48" x2="441" y2="46"/>
+        <line x1="477" y1="150" x2="483" y2="152"/>
+      </g>
+      <text x="432" y="185" text-anchor="middle" class="dg-lbl">same particles, half the space</text>
+      <text x="432" y="199" text-anchor="middle" class="dg-lbl">→ far more wall hits per second</text>
+    </svg>
+    <div class="dg-cap">Why squeezing a gas raises its pressure: the particles are unchanged and moving just as fast, but each one now has much less distance to travel before it hits a wall, so it reaches a wall far more often — collisions per second on each unit of wall area go up, and so does the pressure.</div>
+
     <div class="box pitfall">
       <div class="box-label">⚠️ Explain pressure correctly</div>
       Gas pressure is caused by particles <strong>colliding with the container walls</strong> — say "more frequent collisions <em>and</em> harder collisions", not just "particles move faster". A common lost mark is forgetting that <em>both</em> the force per collision and the number of collisions per second matter.
@@ -799,7 +1041,7 @@
 
   <!-- ── 05 · DIFFUSION ── -->
   <div class="section">
-    <div class="sec-label">05 / 06 · 1.2 Diffusion</div>
+    <div class="sec-label">05 / 07 · 1.2 Diffusion</div>
     <h2>Diffusion — particles spreading on their own</h2>
 
     <div class="define mom-c">
@@ -848,9 +1090,67 @@
   </div>
 
 
-  <!-- ── 06 · KEY TERMS BANK ── -->
+  <!-- ── 06 · CHECK YOURSELF ── -->
   <div class="section">
-    <div class="sec-label">06 / 06 · Reference</div>
+    <div class="sec-label">06 / 07 · Check Yourself</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+    <p>Cover the page and answer these out loud or on paper first. Reading the note again feels productive and isn't; <strong>retrieving</strong> is what makes it stick. Tap each card to see the mark-scheme answer.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>Describe how the particles in a <strong>liquid</strong> differ from the particles in a <strong>gas</strong>, in terms of separation, arrangement, motion and the forces between them. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>Separation:</strong> in a liquid the particles are close together / touching; in a gas they are far apart ✓. <strong>Arrangement:</strong> both are randomly arranged — neither has a regular pattern ✓. <strong>Motion:</strong> liquid particles slide over one another; gas particles move quickly and randomly in all directions ✓. <strong>Forces:</strong> weak in the liquid but negligible in the gas ✓.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>A pure solid is heated steadily. Explain why its temperature stays <strong>constant</strong> while it is melting, even though heating continues. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The energy supplied is used to <strong>overcome / weaken the forces of attraction</strong> between the particles ✓, breaking down the regular arrangement so the particles can slide past each other ✓. It is <strong>not</strong> increasing the average kinetic energy of the particles, so the temperature does not rise until <strong>all</strong> the solid has melted ✓.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span>Using <em>A</em><sub>r</sub>: H = 1, N = 14, Cl = 35.5 — calculate the relative molecular mass of NH<sub>3</sub> and of HCl, and use your values to state which gas diffuses faster. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><em>M</em><sub>r</sub>(NH<sub>3</sub>) = 14 + (3 × 1) = <strong>17</strong> ✓. <em>M</em><sub>r</sub>(HCl) = 1 + 35.5 = <strong>36.5</strong> ✓. NH<sub>3</sub> has the <strong>smaller</strong> <em>M</em><sub>r</sub>, so at the same temperature its molecules move faster and it <strong>diffuses faster</strong> ✓.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>Explain, in terms of the kinetic particle theory, why the volume of a fixed mass of gas <strong>increases</strong> when it is heated at constant pressure. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The particles gain <strong>kinetic energy</strong> and move <strong>faster</strong> ✓, so they collide with the container walls <strong>more frequently and with greater force</strong> ✓. For the pressure to stay the same the gas must <strong>expand</strong> — the larger volume spreads those collisions over a bigger wall area, bringing the force per unit area back down ✓.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>State <strong>two</strong> differences between evaporation and boiling. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Evaporation happens <strong>only at the surface</strong>, boiling happens <strong>throughout the liquid</strong> (bubbles form inside it) ✓. Evaporation happens at <strong>any temperature</strong>, boiling only at the <strong>boiling point</strong> ✓. <em>(Also accept: evaporation is slower / only the highest-energy surface particles escape.)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>Cotton wool soaked in concentrated ammonia solution is put at one end of a long glass tube and cotton wool soaked in concentrated hydrochloric acid at the other. State where the white ring forms and explain why. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The ring forms <strong>nearer the hydrochloric acid (HCl) end</strong> ✓. NH<sub>3</sub> has a <strong>lower <em>M</em><sub>r</sub> (17) than HCl (36.5)</strong>, so at the same temperature its molecules move / diffuse <strong>faster</strong> ✓ and travel <strong>further</strong> along the tube before the two gases meet ✓. <em>(The ring is solid ammonium chloride: NH<sub>3</sub> + HCl → NH<sub>4</sub>Cl.)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>A pure substance is cooled from a gas to a solid. Describe the shape of the <strong>cooling curve</strong> and name what is happening at each flat section. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The temperature <strong>falls</strong> as the gas cools ✓, then stays <strong>constant</strong> at the <strong>boiling point</strong> while the gas <strong>condenses</strong> to a liquid ✓. It falls again as the liquid cools, then stays constant a second time at the <strong>freezing (melting) point</strong> while the liquid <strong>freezes</strong> to a solid ✓, then falls as the solid cools. During both flat sections <strong>energy is given out</strong> to the surroundings as the forces of attraction pull the particles together ✓.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>Explain why a gas can be compressed easily but a liquid cannot. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">In a gas the particles are <strong>far apart with a lot of empty space between them</strong>, so they can be pushed much closer together ✓. In a liquid the particles are <strong>already touching / very close</strong>, so there is almost no space left to remove ✓. <em>(Never say the particles themselves get smaller — particles do not change size.)</em></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 07 · KEY TERMS BANK ── -->
+  <div class="section">
+    <div class="sec-label">07 / 07 · Reference</div>
     <h2>The Topic 1 key-terms bank</h2>
     <p>This topic is about <strong>precise wording</strong>, not formulas. Tap any tile for the exam-ready definition, the particle picture, an example, and the classic trap:</p>
 
@@ -865,6 +1165,13 @@
       <span class="eq-inline" style="color:var(--rose)">pressure = wall collisions</span>
       <span class="eq-inline" style="color:var(--rose)">lighter (low Mr) → diffuses faster</span>
     </div>
+  </div>
+
+  <div class="paper-links">
+    <div class="pl-label">📝 Now go and use it — Topic 1 papers</div>
+    <a href="../practice-papers/Chemistry%20Topic%201%20Practice%20Paper%20-%20The%20States%20of%20Matter.html">Chemistry Topic 1 Practice Paper — The States of Matter <span style="color:var(--muted);font-size:12.5px">· self-marking, reveals the mark scheme</span></a>
+    <a href="../practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html">Chemistry SA-1 Practice Paper — Grade X <span style="color:var(--muted);font-size:12.5px">· mixed topics, includes States of Matter</span></a>
+    <div class="pl-note">There is no graded (teacher-marked) paper for Topic 1 yet — ask for one when you're ready to be tested on it.</div>
   </div>
 
   <hr class="divider">
@@ -938,7 +1245,7 @@ const REDUCE = window.matchMedia &&
   }
 
   // solid lattice home positions (centred packed block)
-  const gx0=70, gy0=46, gdx=32, gdy=30;
+  const gx0=105, gy0=63, gdx=18, gdy=18;
   ps.forEach((p,i)=>{
     const r=Math.floor(i/COLS), c=i%COLS;
     p.hx=gx0+c*gdx; p.hy=gy0+r*gdy;
@@ -1359,6 +1666,7 @@ document.addEventListener('click',e=>{
 </script>
 
 
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
 <button id="markDoneBtn" data-mv="3" data-id="note:chem:1" type="button" aria-pressed="false" style="position:fixed;bottom:18px;right:18px;z-index:10000;font-family:Inter,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;border-radius:22px;padding:10px 18px;border:1px solid var(--border,#263247);background:var(--surface,#121826);color:var(--text,#d6deec);box-shadow:0 6px 20px rgba(0,0,0,.35);">○ Mark as complete</button>
 <script>(function(){var b=document.getElementById('markDoneBtn'),ID=b.getAttribute('data-id'),KEY="studyProgress";function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function r(){var d=!!load()[ID];b.textContent=d?'✓ Completed':'○ Mark as complete';b.setAttribute('aria-pressed',d?'true':'false');b.style.borderColor=d?'var(--power,#4ec994)':'var(--border,#263247)';b.style.color=d?'var(--power,#4ec994)':'var(--text,#d6deec)';}b.addEventListener('click',function(){var p=load();if(p[ID])delete p[ID];else p[ID]=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}r();});window.addEventListener('miraya-progress-synced',r);r();})();</script>
 </body>
