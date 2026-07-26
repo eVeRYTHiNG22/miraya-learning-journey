@@ -539,6 +539,55 @@
   .card.all-done { border-color: color-mix(in srgb, var(--power) 45%, var(--border)); }
   .card.all-done::before { background: var(--power); opacity: 1; }
 
+  /* ── MOCK / MIXED-PAPER CARDS ──
+     Full-syllabus mocks, SA-1 papers and mixed-topic practice are NOT chapters, so they
+     never sit in the chapter grid: each subject keeps them in a separate block below it
+     ("Mock & mixed papers"), and they are styled to read as exams, not topics — dashed
+     border, striped accent edge, a pill kicker and a word watermark (data-tag) instead
+     of a chapter number. Mark such a card: class="card mock" + data-tag="…". */
+  .mixed-block { margin-top: 24px; }
+  .mixed-head {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 2px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .mixed-head b { color: var(--accent); font-weight: 700; }
+  .mixed-head::after {
+    content: ''; flex: 1 1 auto; height: 1px; min-width: 20px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 35%, transparent), transparent);
+  }
+  .subject.collapsed .mixed-block { display: none; }
+  body.searching .subject.collapsed .mixed-block,
+  body.subjfilter .subject.collapsed .mixed-block { display: block; }
+
+  .card.mock {
+    border-style: dashed;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 8%, var(--surface)), var(--surface2));
+  }
+  .card.mock::before {
+    background: repeating-linear-gradient(180deg, var(--accent) 0 8px, transparent 8px 15px);
+    opacity: .9;
+  }
+  .card.mock.all-done::before {
+    background: repeating-linear-gradient(180deg, var(--power) 0 8px, transparent 8px 15px);
+    opacity: 1;
+  }
+  .card.mock::after {                     /* word watermark, not a chapter number */
+    content: attr(data-tag);
+    right: 14px; bottom: 10px;
+    font-size: 30px; letter-spacing: .03em; opacity: .1;
+  }
+  .card.mock .card-topic {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    letter-spacing: .09em;
+  }
+
   /* ── EXAM COUNTDOWN BAND ── */
   .examband {
     display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
@@ -907,6 +956,7 @@
         <button class="chip" type="button" data-filter="chem" style="--accent: var(--chem);">Chemistry</button>
         <button class="chip" type="button" data-filter="maths" style="--accent: var(--maths);">Maths</button>
         <button class="chip" type="button" data-filter="sa1" style="--accent: var(--rose);" title="Show only chapters in the SA-1 exam scope">🎯 SA-1 scope</button>
+        <button class="chip" type="button" data-filter="mock" style="--accent: var(--power);" title="Show only mock / mixed-topic papers (not chapter topics)">📑 Mocks &amp; mixed</button>
       </div>
       <label class="search">
         <span class="ico">🔍</span>
@@ -990,11 +1040,16 @@
           <a data-min="40" class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%206%20Graded%20Paper%20-%20Space%20Physics.html"><span class="ico">📑</span>Graded Paper</a>
         </div>
       </div>
-      <div class="card" data-num="mix">
-        <div class="card-topic">Mixed Ch 1–18</div>
-        <div class="card-title">Full Syllabus Mixed Papers</div>
-        <div class="btns">
-          <a data-min="75" class="btn paper graded" data-exid="ex:phys:mix:3" href="subjects/physics/exam-papers/Physics%20Mixed%20Chapters%201-18%20Graded%20Paper%203.html"><span class="ico">📑</span>Graded Paper 1</a>
+    </div>
+    <div class="mixed-block">
+      <div class="mixed-head"><b>Mock &amp; mixed papers</b> · across chapters, not a topic</div>
+      <div class="cards">
+        <div class="card mock" data-num="mix" data-tag="MIXED">
+          <div class="card-topic">📑 Mixed mock · Ch 1–18</div>
+          <div class="card-title">Full Syllabus Mixed Papers</div>
+          <div class="btns">
+            <a data-min="75" class="btn paper graded" data-exid="ex:phys:mix:3" href="subjects/physics/exam-papers/Physics%20Mixed%20Chapters%201-18%20Graded%20Paper%203.html"><span class="ico">📑</span>Graded Paper 1</a>
+          </div>
         </div>
       </div>
     </div>
@@ -1011,13 +1066,6 @@
       <span class="count-pill">7 chapters</span>
     </div>
     <div class="cards">
-      <div class="card" data-num="sa1">
-        <div class="card-topic">SA-1 Mock · Ch 1–22</div>
-        <div class="card-title">Summative Assessment 1 — Practice Paper</div>
-        <div class="btns">
-          <a data-min="35" class="btn paper" href="subjects/chemistry/practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html" data-added="2026-07-23"><span class="ico">📝</span>Practice Paper</a>
-        </div>
-      </div>
       <div class="card" data-num="1">
         <div class="card-topic">Topic 1</div>
         <div class="card-title">The States of Matter</div>
@@ -1110,6 +1158,18 @@
         </div>
       </div>
     </div>
+    <div class="mixed-block">
+      <div class="mixed-head"><b>Mock &amp; mixed papers</b> · across chapters, not a topic</div>
+      <div class="cards">
+        <div class="card mock" data-num="sa1" data-tag="SA-1">
+          <div class="card-topic">📑 SA-1 mock · Ch 1–22</div>
+          <div class="card-title">Summative Assessment 1 — Practice Paper</div>
+          <div class="btns">
+            <a data-min="35" class="btn paper" href="subjects/chemistry/practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html" data-added="2026-07-23"><span class="ico">📝</span>Practice Paper</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ════════ MATHEMATICS ════════ -->
@@ -1176,26 +1236,31 @@
           <a data-min="50" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Transformations%20on%20the%20Grid.html" data-added="2026-07-25" data-ppid="pp:maths:7g" data-plabel="Grid worksheet"><span class="ico">📝</span>Practice Paper · Grid Worksheet</a>
         </div>
       </div>
-      <div class="card" data-num="sa1">
-        <div class="card-topic">SA-1 · Ch 1–32</div>
-        <div class="card-title">Chapters 1–32 Graded Paper</div>
-        <div class="btns">
-          <a data-min="120" class="btn paper graded" data-exid="ex:maths:sa1:1" href="subjects/mathematics/exam-papers/Mathematics%20Chapters%201-32%20Graded%20Paper%20-%20Non-Calculator.html" data-added="2026-07-26"><span class="ico">📑</span>Graded · Non-calc</a>
-          <a data-min="120" class="btn paper graded" data-exid="ex:maths:sa1:2" href="subjects/mathematics/exam-papers/Mathematics%20Chapters%201-32%20Graded%20Paper%20-%20Calculator.html" data-added="2026-07-26"><span class="ico">📑</span>Graded · Calc</a>
+    </div>
+    <div class="mixed-block">
+      <div class="mixed-head"><b>Mock &amp; mixed papers</b> · across chapters, not a topic</div>
+      <div class="cards">
+        <div class="card mock" data-num="sa1" data-tag="SA-1">
+          <div class="card-topic">📑 SA-1 mock · Ch 1–32</div>
+          <div class="card-title">Chapters 1–32 Graded Paper</div>
+          <div class="btns">
+            <a data-min="120" class="btn paper graded" data-exid="ex:maths:sa1:1" href="subjects/mathematics/exam-papers/Mathematics%20Chapters%201-32%20Graded%20Paper%20-%20Non-Calculator.html" data-added="2026-07-26"><span class="ico">📑</span>Graded · Non-calc</a>
+            <a data-min="120" class="btn paper graded" data-exid="ex:maths:sa1:2" href="subjects/mathematics/exam-papers/Mathematics%20Chapters%201-32%20Graded%20Paper%20-%20Calculator.html" data-added="2026-07-26"><span class="ico">📑</span>Graded · Calc</a>
+          </div>
         </div>
-      </div>
-      <div class="card" data-num="fa1">
-        <div class="card-topic">Mixed · Non-Calc</div>
-        <div class="card-title">Non-Calculator Practice 1</div>
-        <div class="btns">
-          <a data-min="35" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Non-Calculator%20Practice%20Paper%201%20-%20Mixed%20Topics.html"><span class="ico">📝</span>Practice Paper</a>
+        <div class="card mock" data-num="fa1" data-tag="MIXED">
+          <div class="card-topic">📝 Mixed topics · Non-calc</div>
+          <div class="card-title">Non-Calculator Practice 1</div>
+          <div class="btns">
+            <a data-min="35" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Non-Calculator%20Practice%20Paper%201%20-%20Mixed%20Topics.html"><span class="ico">📝</span>Practice Paper</a>
+          </div>
         </div>
-      </div>
-      <div class="card" data-num="fa2">
-        <div class="card-topic">Mixed · Non-Calc</div>
-        <div class="card-title">Non-Calculator Practice 2</div>
-        <div class="btns">
-          <a data-min="35" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Non-Calculator%20Practice%20Paper%202%20-%20Mixed%20Topics.html"><span class="ico">📝</span>Practice Paper</a>
+        <div class="card mock" data-num="fa2" data-tag="MIXED">
+          <div class="card-topic">📝 Mixed topics · Non-calc</div>
+          <div class="card-title">Non-Calculator Practice 2</div>
+          <div class="btns">
+            <a data-min="35" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Non-Calculator%20Practice%20Paper%202%20-%20Mixed%20Topics.html"><span class="ico">📝</span>Practice Paper</a>
+          </div>
         </div>
       </div>
     </div>
@@ -1503,9 +1568,18 @@
         sec.querySelectorAll('.card').forEach(function (card) {
           var vis = q ? (cardText(card).indexOf(q) !== -1)
                       : filter === 'sa1' ? (card.getAttribute('data-sa1') !== 'out')
+                      : filter === 'mock' ? card.classList.contains('mock')
                       : (filter === 'all' || filter === subj);
           card.style.display = vis ? '' : 'none';
           if (vis) shown++;
+        });
+        // hide a subject's "Mock & mixed papers" block (and its heading) when none of
+        // its cards survive the current filter/search
+        sec.querySelectorAll('.mixed-block').forEach(function (blk) {
+          var any = Array.prototype.some.call(blk.querySelectorAll('.card'), function (c) {
+            return c.style.display !== 'none';
+          });
+          blk.style.display = any ? '' : 'none';
         });
         sec.style.display = shown ? '' : 'none';
         if (shown) anyShown = true;
