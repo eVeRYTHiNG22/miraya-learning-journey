@@ -684,6 +684,49 @@
     svg.graph, svg.vecpad, .scn-read, .scn-tab, .replay, .vec-out,
     .bal-state, .estore, .chip, table th, table td, .track-wrap, .eqcell, mark { transition:none; }
   }
+
+  /* ═════════════════════════════════════════════
+     CHECK-YOURSELF RETRIEVAL BLOCK
+  ═════════════════════════════════════════════ */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ── paper links panel ── */
+  .paperlinks { display:grid; gap:10px; margin:16px 0 4px; }
+  .plink { display:flex; align-items:center; gap:11px; text-decoration:none;
+    background:var(--surface); border:1px solid var(--border); border-radius:11px;
+    padding:13px 16px; color:var(--text); transition:border-color .2s, transform .2s; }
+  .plink:hover { border-color:var(--motion); transform:translateX(3px); }
+  .plink .pl-ico { font-size:17px; flex:none; }
+  .plink .pl-name { font-weight:600; font-size:14.5px; }
+  .plink .pl-sub { font-family:'JetBrains Mono',monospace; font-size:10.5px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:2px; }
+
+  /* ── save as PDF ── */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn,
+    .cy-hint, .replay, #eq-card { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; }
+    svg.diagram, .dg-cap, .cy-item, .plink, table { break-inside:avoid; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
 </style>
 </head>
 <body data-theme="dark">
@@ -691,6 +734,7 @@
 
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
 <div class="page">
 
   <!-- HEADER -->
@@ -703,7 +747,7 @@
 
   <!-- ── 01 · QUANTITIES & VECTORS ── -->
   <div class="section">
-    <div class="sec-label">01 / 11 · 1.1 Physical Quantities</div>
+    <div class="sec-label">01 / 12 · 1.1 Physical Quantities</div>
     <h2>Measuring, and the two flavours of quantity</h2>
 
     <p>Physics is built on measurement. You find a <strong>length</strong> with a ruler, a <strong>volume</strong> with a measuring cylinder, and a <strong>time interval</strong> with a clock or digital timer. One trick worth knowing: to measure something tiny — a single sheet of paper, or one swing of a pendulum — measure <em>many</em> and divide. Time 20 swings, divide by 20: the human reaction-time error gets divided by 20 too.</p>
@@ -780,10 +824,10 @@
 
   <!-- ── 02 · MOTION (signature) ── -->
   <div class="section">
-    <div class="sec-label">02 / 11 · 1.2 Motion</div>
+    <div class="sec-label">02 / 12 · 1.2 Motion</div>
     <h2>Motion — and the graphs that describe it</h2>
 
-    <p>Speed is <span class="eq-inline">v = s / t</span> — distance per unit time. <strong>Velocity</strong> is speed in a stated direction. <strong>Acceleration</strong> is how fast velocity itself changes: <span class="eq-inline">a = Δv / Δt</span>, measured in m/s². Near Earth's surface every dropped object speeds up at <mark>g ≈ 9.8 m/s²</mark>.</p>
+    <p>Speed is <span class="eq-inline">v = s / t</span> — distance per unit time. <strong>Velocity</strong> is speed in a stated direction. <strong>Acceleration</strong> is how fast velocity itself changes: <span class="eq-inline">a = Δv / Δt</span>, measured in m/s². Near Earth's surface, and while air resistance is negligible, every dropped object speeds up at <mark>g ≈ 9.8 m/s²</mark>.</p>
 
     <p>The whole topic lives in two graphs. Pick a story below and watch the object move while both graphs draw themselves in real time:</p>
 
@@ -842,6 +886,48 @@
       A <em>horizontal line on a speed–time graph</em> does NOT mean stopped — it means <strong>constant speed</strong> (steady, non-zero). Only a horizontal line on a <em>distance–time</em> graph means stationary. Mixing these up is the single most common Paper 4 slip.
     </div>
 
+    <p>Here is the figure the exam actually asks you to work on. A bus accelerates uniformly from rest to <strong>18 m/s in 6 s</strong>, then holds that speed until <strong>t = 20 s</strong>. Both of the marks on offer come out of the same picture — one from the <em>slope</em>, one from the <em>area</em>:</p>
+
+    <svg class="diagram" viewBox="0 0 480 300" role="img" aria-label="Speed–time graph made of two straight sections. Speed is on the vertical axis in metres per second, time on the horizontal axis in seconds. From the origin a straight sloping line rises to 18 metres per second at 6 seconds; a leader line labels its gradient as the acceleration, 3 metres per second squared. From 6 seconds the line is horizontal at 18 metres per second until 20 seconds. The area under the sloping section is shaded as a triangle labelled area equals a half times 6 times 18, which is 54 metres. The area under the horizontal section is shaded as a rectangle labelled area equals 14 times 18, which is 252 metres.">
+      <!-- y axis + arrowhead -->
+      <line class="dg-axis" x1="60" y1="40" x2="60" y2="250"/>
+      <line class="dg-axis" x1="60" y1="40" x2="55" y2="50"/>
+      <line class="dg-axis" x1="60" y1="40" x2="65" y2="50"/>
+      <!-- x axis + arrowhead -->
+      <line class="dg-axis" x1="60" y1="250" x2="450" y2="250"/>
+      <line class="dg-axis" x1="450" y1="250" x2="440" y2="245"/>
+      <line class="dg-axis" x1="450" y1="250" x2="440" y2="255"/>
+      <!-- area under the accelerating section: triangle = ½ × 6 × 18 = 54 m -->
+      <polygon points="60,250 168,70 168,250" fill="currentColor" style="color:var(--motion)" fill-opacity=".15"/>
+      <!-- area under the constant-speed section: rectangle = 14 × 18 = 252 m -->
+      <rect x="168" y="70" width="252" height="180" fill="currentColor" style="color:var(--cyan)" fill-opacity=".18"/>
+      <!-- guides: v = 18 across, and the t = 6 s division -->
+      <line class="dg-guide" x1="60" y1="70" x2="420" y2="70"/>
+      <line class="dg-guide" x1="168" y1="70" x2="168" y2="250"/>
+      <!-- the speed–time line itself -->
+      <path d="M60 250 L168 70 L420 70" fill="none" stroke="currentColor"
+            style="color:var(--motion)" stroke-width="2.8" stroke-linecap="round"/>
+      <!-- gradient leader: stays strictly on the upper-left of the line, touching it at (114,160) -->
+      <line class="dg-guide" x1="146" y1="58" x2="114" y2="160"/>
+      <text class="dg-lbl sm" x="150" y="52" style="fill:var(--motion)">gradient = acceleration = 3 m/s²</text>
+      <!-- area labels, sized to sit inside the shapes they describe -->
+      <text class="dg-lbl sm" x="128" y="214" text-anchor="middle">area =</text>
+      <text class="dg-lbl sm" x="128" y="227" text-anchor="middle">½ × 6 × 18</text>
+      <text class="dg-lbl sm" x="128" y="240" text-anchor="middle" style="fill:var(--motion)">= 54 m</text>
+      <text class="dg-lbl sm" x="294" y="152" text-anchor="middle">area =</text>
+      <text class="dg-lbl sm" x="294" y="165" text-anchor="middle">14 × 18</text>
+      <text class="dg-lbl sm" x="294" y="178" text-anchor="middle" style="fill:var(--cyan)">= 252 m</text>
+      <!-- scale numbers -->
+      <text class="dg-lbl sm" x="52" y="74" text-anchor="end">18</text>
+      <text class="dg-lbl sm" x="52" y="254" text-anchor="end">0</text>
+      <text class="dg-lbl sm" x="168" y="266" text-anchor="middle">6</text>
+      <text class="dg-lbl sm" x="420" y="266" text-anchor="middle">20</text>
+      <!-- axis titles -->
+      <text class="dg-lbl" x="255" y="288" text-anchor="middle">time, t (s)</text>
+      <text class="dg-lbl" x="24" y="150" text-anchor="middle" transform="rotate(-90 24 150)">speed, v (m/s)</text>
+    </svg>
+    <div class="dg-cap"><strong>Gradient = acceleration</strong> (18 ÷ 6 = 3 m/s²); <strong>area under the line = distance travelled</strong>. Split the area into shapes you know: triangle 54 m + rectangle 252 m = <strong>306 m</strong> in the 20 s. A single sloping section can also be done in one step as a trapezium, ½(u + v)t.</div>
+
     <h3>Falling objects &amp; terminal velocity</h3>
     <p>Drop something and gravity pulls it down at g. But as it speeds up, air resistance (drag) grows. When drag grows to exactly balance weight, the resultant force is zero, acceleration stops, and the object falls at a steady <strong>terminal velocity</strong>.</p>
 
@@ -883,7 +969,7 @@
 
   <!-- ── 03 · MASS & WEIGHT ── -->
   <div class="section">
-    <div class="sec-label">03 / 11 · 1.3 Mass &amp; Weight</div>
+    <div class="sec-label">03 / 12 · 1.3 Mass &amp; Weight</div>
     <h2>Mass vs. weight — not the same thing</h2>
 
     <div class="grid2">
@@ -910,7 +996,7 @@
 
   <!-- ── 04 · DENSITY ── -->
   <div class="section">
-    <div class="sec-label">04 / 11 · 1.4 Density</div>
+    <div class="sec-label">04 / 12 · 1.4 Density</div>
     <h2>Density — how tightly matter is packed</h2>
 
     <p><strong>Density</strong> is mass per unit volume: <span class="eq-inline">ρ = m / V</span> (kg/m³ or g/cm³). It decides whether things float.</p>
@@ -928,6 +1014,75 @@
       <tr><td><strong>Liquid</strong></td><td>Measure a known volume in a cylinder, weigh it (subtract the empty cylinder's mass)</td></tr>
     </table>
 
+    <p>The irregular-solid method is a standard practical figure — learn to read both versions:</p>
+
+    <svg class="diagram" viewBox="0 0 520 330" role="img" aria-label="Two-panel apparatus diagram for finding the volume of an irregular solid by displacement. Panel a: a measuring cylinder part filled with water. A dashed line marks the initial level, labelled V one equals 40 cubic centimetres. A stone rests on the bottom and the water surface has risen to a higher line labelled V two equals 65 cubic centimetres. An annotation states that the volume of the stone equals V two minus V one, which is 25 cubic centimetres. Panel b: a displacement can filled to the level of its side spout, with a stone hanging on a thread being lowered in. Water runs out of the spout and is collected in a small measuring cylinder below, and the collected water equals the volume of the stone.">
+      <!-- ══ panel (a) ══ -->
+      <text class="dg-title" x="14" y="22">(a) Measuring cylinder</text>
+      <line class="dg-guide" x1="258" y1="34" x2="258" y2="318"/>
+
+      <!-- water (final level V₂ at y=150) -->
+      <rect x="70" y="150" width="60" height="140" fill="currentColor" style="color:var(--cyan)" fill-opacity=".22"/>
+      <!-- cylinder walls + base -->
+      <line class="dg-axis" x1="70" y1="54" x2="70" y2="290"/>
+      <line class="dg-axis" x1="130" y1="54" x2="130" y2="290"/>
+      <line class="dg-axis" x1="70" y1="290" x2="130" y2="290"/>
+      <!-- graduations -->
+      <line class="dg-axis" x1="120" y1="90"  x2="130" y2="90"/>
+      <line class="dg-axis" x1="120" y1="120" x2="130" y2="120"/>
+      <line class="dg-axis" x1="120" y1="180" x2="130" y2="180"/>
+      <line class="dg-axis" x1="120" y1="240" x2="130" y2="240"/>
+      <line class="dg-axis" x1="120" y1="270" x2="130" y2="270"/>
+      <!-- final water surface V₂ -->
+      <line x1="70" y1="150" x2="130" y2="150" stroke="currentColor" style="color:var(--cyan)" stroke-width="2.2"/>
+      <line class="dg-guide" x1="130" y1="150" x2="142" y2="150"/>
+      <text class="dg-lbl sm" x="146" y="147" style="fill:var(--cyan)">V₂ = 65 cm³</text>
+      <text class="dg-lbl sm" x="146" y="160">(stone in)</text>
+      <!-- initial level V₁, dashed -->
+      <line class="dg-guide" x1="70" y1="196" x2="142" y2="196"/>
+      <text class="dg-lbl sm" x="146" y="193">V₁ = 40 cm³</text>
+      <text class="dg-lbl sm" x="146" y="206">(water only)</text>
+      <!-- the stone -->
+      <polygon points="82,264 100,252 118,260 114,280 90,282" fill="currentColor"
+               style="color:var(--muted)" fill-opacity=".45" stroke="currentColor" stroke-width="1.4"/>
+      <line class="dg-guide" x1="120" y1="270" x2="142" y2="270"/>
+      <text class="dg-lbl sm" x="146" y="273">stone</text>
+      <!-- result -->
+      <text class="dg-lbl sm" x="14" y="310" style="fill:var(--energy)">V = V₂ − V₁ = 25 cm³</text>
+
+      <!-- ══ panel (b) ══ -->
+      <text class="dg-title" x="272" y="22">(b) Displacement can</text>
+      <!-- stone hanging on a thread -->
+      <line class="dg-guide" x1="342" y1="52" x2="342" y2="146"/>
+      <text class="dg-lbl sm" x="292" y="48">stone on a thread</text>
+      <polygon points="330,148 346,140 358,150 352,168 334,170" fill="currentColor"
+               style="color:var(--muted)" fill-opacity=".45" stroke="currentColor" stroke-width="1.4"/>
+      <!-- water in the can, filled exactly to the spout (y=132) -->
+      <rect x="292" y="132" width="108" height="98" fill="currentColor" style="color:var(--cyan)" fill-opacity=".22"/>
+      <!-- can walls + base -->
+      <line class="dg-axis" x1="292" y1="108" x2="292" y2="230"/>
+      <line class="dg-axis" x1="400" y1="108" x2="400" y2="230"/>
+      <line class="dg-axis" x1="292" y1="230" x2="400" y2="230"/>
+      <line x1="292" y1="132" x2="400" y2="132" stroke="currentColor" style="color:var(--cyan)" stroke-width="2.2"/>
+      <!-- side spout -->
+      <line class="dg-axis" x1="400" y1="126" x2="436" y2="138"/>
+      <line class="dg-axis" x1="400" y1="138" x2="434" y2="150"/>
+      <text class="dg-lbl sm" x="404" y="120">spout</text>
+      <!-- the jet of displaced water -->
+      <path d="M434 146 Q 452 160 456 186" fill="none" stroke="currentColor"
+            style="color:var(--cyan)" stroke-width="2.2"/>
+      <text class="dg-lbl sm" x="296" y="250">displacement can</text>
+      <!-- catching cylinder -->
+      <rect x="436" y="222" width="42" height="52" fill="currentColor" style="color:var(--cyan)" fill-opacity=".22"/>
+      <line class="dg-axis" x1="436" y1="188" x2="436" y2="274"/>
+      <line class="dg-axis" x1="478" y1="188" x2="478" y2="274"/>
+      <line class="dg-axis" x1="436" y1="274" x2="478" y2="274"/>
+      <line x1="436" y1="222" x2="478" y2="222" stroke="currentColor" style="color:var(--cyan)" stroke-width="2.2"/>
+      <text class="dg-lbl sm" x="457" y="296" text-anchor="middle" style="fill:var(--energy)">collected water</text>
+      <text class="dg-lbl sm" x="457" y="309" text-anchor="middle" style="fill:var(--energy)">= volume of stone</text>
+    </svg>
+    <div class="dg-cap"><strong>(a)</strong> The rise in level <em>is</em> the object's volume: V = V₂ − V₁ = 65 − 40 = <strong>25 cm³</strong>. <strong>(b)</strong> Fill a displacement can right up to the spout first, then lower the object in — the water that runs out has the same volume as the object. Either way, if that stone's mass is 66 g, ρ = m/V = 66 ÷ 25 = <strong>2.64 g/cm³</strong>. It only works for an object that <em>sinks</em> and is fully submerged.</div>
+
     <div class="box exam">
       <div class="box-label">✅ Extended extra</div>
       Two liquids that don't mix will layer by density — the <strong>less dense liquid floats on top</strong>. Given density data, you can predict the order of layers (e.g. oil on water on syrup).
@@ -937,7 +1092,7 @@
 
   <!-- ── 05 · FORCES ── -->
   <div class="section">
-    <div class="sec-label">05 / 11 · 1.5 Forces</div>
+    <div class="sec-label">05 / 12 · 1.5 Forces</div>
     <h2>Forces — what changes motion and shape</h2>
 
     <p>A force is a push or pull. It can change an object's <strong>speed, direction, or shape</strong>. When forces act along the same line, add them (opposite directions subtract) to get the <strong>resultant</strong>.</p>
@@ -955,6 +1110,11 @@
     <div class="box pitfall">
       <div class="box-label">⚠️ Limit of proportionality</div>
       Below the limit, extension ∝ load (straight line through the origin). Beyond it, the graph curves — equal loads now give bigger extensions. The syllabus wants you to <em>identify this point on a graph</em>; you don't need the elastic limit.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Describe the experiment (a guaranteed question)</div>
+      Clamp the spring vertically in a <strong>stand and boss</strong>, with a fixed <strong>metre rule</strong> alongside it and a pointer on the spring. Record the pointer reading with <em>no</em> load — that's your zero. Add <strong>known masses</strong> (e.g. 100 g = 0.98 N) one at a time, recording the new reading each time; <strong>extension = new reading − original reading</strong>. Take readings <em>at eye level</em> to avoid parallax, then <strong>unload step by step</strong> and check you get the same readings back — if you do, the spring has not been stretched past its limit. Plot load (y) against extension (x).
     </div>
 
     <svg class="diagram" viewBox="0 0 460 300" role="img" aria-label="Load–extension graph for a spring. Load or force is on the vertical axis, extension on the horizontal axis. A straight line rises from the origin, showing load is proportional to extension (F proportional to x), up to a marked point P, the limit of proportionality. Beyond P the line curves away, so equal increases in load now give larger extensions.">
@@ -990,12 +1150,42 @@
       <div class="box-label">🎡 Circular motion, qualitatively</div>
       Keep mass and radius fixed → more force = faster circle. Keep mass and speed fixed → more force = tighter circle (smaller radius). Heavier object → needs more force to keep the same speed and radius. (You don't need the <span class="eq-inline">F = mv²/r</span> formula at IGCSE.)
     </div>
+
+    <svg class="diagram" viewBox="0 0 420 300" role="img" aria-label="A ball moving on a circular path shown as a dashed circle with its centre marked. The ball is drawn at the top of the circle. A straight arrow from the ball points horizontally to the right, along the tangent, labelled v for velocity. A second arrow from the ball points vertically downwards towards the centre of the circle, labelled F, the force that is always directed towards the centre. A small right-angle marker between the two arrows shows they are perpendicular. A dashed radius drawn from the centre out to the circle is labelled r, and a small arrowhead on the circle at the right shows the direction of travel.">
+      <!-- the circular path -->
+      <circle class="dg-guide" cx="200" cy="160" r="95" fill="none"/>
+      <!-- direction-of-travel marker on the path -->
+      <polygon points="291,152 299,152 295,164" fill="currentColor" style="color:var(--muted)"/>
+      <text class="dg-lbl sm" x="306" y="164">direction of travel</text>
+      <!-- centre, and the radius drawn on a separate spoke so it can't be mistaken for F -->
+      <circle cx="200" cy="160" r="3" fill="currentColor" style="color:var(--muted)"/>
+      <text class="dg-lbl sm" x="192" y="152" text-anchor="end">centre</text>
+      <line class="dg-guide" x1="200" y1="160" x2="133" y2="227"/>
+      <text class="dg-lbl sm" x="176" y="198">r</text>
+      <!-- the ball -->
+      <circle cx="200" cy="65" r="7" fill="currentColor" style="color:var(--momentum)"/>
+      <!-- velocity: along the tangent -->
+      <line x1="212" y1="65" x2="296" y2="65" stroke="currentColor" style="color:var(--motion)" stroke-width="2.8"/>
+      <path d="M290 60 L300 65 L290 70 Z" fill="currentColor" style="color:var(--motion)"/>
+      <text class="dg-lbl sm" x="306" y="69" style="fill:var(--motion)">v (tangent)</text>
+      <!-- force: along the radius, towards the centre -->
+      <line x1="200" y1="77" x2="200" y2="126" stroke="currentColor" style="color:var(--force)" stroke-width="2.8"/>
+      <path d="M195 120 L200 130 L205 120 Z" fill="currentColor" style="color:var(--force)"/>
+      <text class="dg-lbl sm" x="210" y="94" style="fill:var(--force)">F</text>
+      <text class="dg-lbl sm" x="210" y="108">(to centre)</text>
+      <!-- right-angle marker between v and F -->
+      <line class="dg-axis" x1="211" y1="60" x2="211" y2="76"/>
+      <line class="dg-axis" x1="211" y1="76" x2="199" y2="76"/>
+      <!-- the punchline -->
+      <text class="dg-lbl sm" x="210" y="286" text-anchor="middle">speed constant · direction changing → velocity changing → accelerating</text>
+    </svg>
+    <div class="dg-cap">The force is <strong>perpendicular to the velocity</strong>, so it never speeds the ball up or slows it down — it only bends the path. Because the <em>direction</em> of the velocity keeps changing, the ball is <strong>accelerating</strong> even at constant speed. Cut the string (remove F) and it flies off along the <em>tangent</em>, not outwards.</div>
   </div>
 
 
   <!-- ── 06 · MOMENTS ── -->
   <div class="section">
-    <div class="sec-label">06 / 11 · 1.5.2–1.5.3 Turning Effects</div>
+    <div class="sec-label">06 / 12 · 1.5.2–1.5.3 Turning Effects</div>
     <h2>Moments — the turning effect of a force</h2>
 
     <p>A force applied at a distance from a pivot makes things rotate. The size of that turning effect is the <strong>moment</strong>:</p>
@@ -1115,7 +1305,7 @@
 
   <!-- ── 07 · MOMENTUM ── -->
   <div class="section">
-    <div class="sec-label">07 / 11 · 1.6 Momentum</div>
+    <div class="sec-label">07 / 12 · 1.6 Momentum</div>
     <h2>Momentum — &ldquo;mass in motion&rdquo;</h2>
 
     <div class="define mom-c">
@@ -1143,7 +1333,7 @@
 
   <!-- ── 08 · ENERGY, WORK, POWER ── -->
   <div class="section">
-    <div class="sec-label">08 / 11 · 1.7 Energy, Work &amp; Power</div>
+    <div class="sec-label">08 / 12 · 1.7 Energy, Work &amp; Power</div>
     <h2>Energy — stored, transferred, never lost</h2>
 
     <p>Energy is never created or destroyed, only moved between <strong>stores</strong> and transferred by <strong>pathways</strong> (forces doing work, electric currents, heating, waves). The seven stores the 0625 syllabus names:</p>
@@ -1182,7 +1372,7 @@
 
   <!-- ── 09 · ENERGY RESOURCES ── -->
   <div class="section">
-    <div class="sec-label">09 / 11 · 1.7.3 Energy Resources</div>
+    <div class="sec-label">09 / 12 · 1.7.3 Energy Resources</div>
     <h2>Energy resources &amp; efficiency</h2>
 
     <p>We generate useful energy from many sources — most ultimately trace back to the Sun:</p>
@@ -1197,6 +1387,50 @@
       <tr><td><strong>Solar</strong> (cells &amp; panels)</td><td>✓ Yes</td><td>Cells → electricity; panels → heat water</td></tr>
       <tr><td><strong>Wind</strong></td><td>✓ Yes</td><td>Clean; intermittent (needs wind)</td></tr>
     </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:-6px">* Uranium is finite, so nuclear is <strong>not renewable</strong> — but it <em>is</em> low-carbon. Don't confuse "renewable" with "clean": they are separate judgements, and the syllabus asks you to weigh renewability, availability, reliability, scale <em>and</em> environmental impact.</p>
+
+    <h3>The boiler–turbine–generator chain</h3>
+    <p>Most of those resources — fossil fuels, biofuels, nuclear, geothermal, even concentrated solar-thermal power stations — all end up doing the <em>same three things</em>. The syllabus wants you to name the parts, so learn the chain once and reuse it:</p>
+
+    <svg class="diagram" viewBox="0 0 540 180" role="img" aria-label="A flow chart of four labelled boxes joined by arrows. Box one, heat source, from fuel, nuclear or geothermal. An arrow labelled heat leads to box two, the boiler, which heats water to make steam. An arrow labelled steam leads to box three, the turbine, where steam pushes the blades round. An arrow labelled rotation leads to box four, the generator, where a coil spins in a magnetic field. A final arrow labelled electricity leaves the generator.">
+      <text class="dg-title" x="14" y="20">Whenever a resource is burned or heated, this is the route to electricity</text>
+      <!-- flow labels, above the arrows -->
+      <text class="dg-lbl sm" x="118" y="52" text-anchor="middle">heat</text>
+      <text class="dg-lbl sm" x="238" y="52" text-anchor="middle">steam</text>
+      <text class="dg-lbl sm" x="358" y="52" text-anchor="middle">rotation</text>
+      <text class="dg-lbl sm" x="496" y="52" text-anchor="middle" style="fill:var(--power)">electricity</text>
+      <!-- the four boxes -->
+      <rect x="10"  y="58" width="96" height="62" rx="8" class="dg-fill" stroke="currentColor" style="color:var(--muted)" stroke-width="1.4"/>
+      <rect x="130" y="58" width="96" height="62" rx="8" class="dg-fill" stroke="currentColor" style="color:var(--force)" stroke-width="1.4"/>
+      <rect x="250" y="58" width="96" height="62" rx="8" class="dg-fill" stroke="currentColor" style="color:var(--motion)" stroke-width="1.4"/>
+      <rect x="370" y="58" width="96" height="62" rx="8" class="dg-fill" stroke="currentColor" style="color:var(--power)" stroke-width="1.4"/>
+      <!-- connecting arrows -->
+      <line class="dg-axis" x1="108" y1="89" x2="126" y2="89"/><path d="M124 85 L132 89 L124 93 Z" fill="currentColor" style="color:var(--muted)"/>
+      <line class="dg-axis" x1="228" y1="89" x2="246" y2="89"/><path d="M244 85 L252 89 L244 93 Z" fill="currentColor" style="color:var(--muted)"/>
+      <line class="dg-axis" x1="348" y1="89" x2="366" y2="89"/><path d="M364 85 L372 89 L364 93 Z" fill="currentColor" style="color:var(--muted)"/>
+      <line x1="468" y1="89" x2="518" y2="89" stroke="currentColor" style="color:var(--power)" stroke-width="2"/>
+      <path d="M516 84 L526 89 L516 94 Z" fill="currentColor" style="color:var(--power)"/>
+      <!-- box 1 -->
+      <text class="dg-title" x="58" y="82" text-anchor="middle">HEAT SOURCE</text>
+      <text class="dg-lbl sm" x="58" y="99" text-anchor="middle">fuel · nuclear</text>
+      <text class="dg-lbl sm" x="58" y="112" text-anchor="middle">· geothermal</text>
+      <!-- box 2 -->
+      <text class="dg-title" x="178" y="82" text-anchor="middle" style="fill:var(--force)">BOILER</text>
+      <text class="dg-lbl sm" x="178" y="99" text-anchor="middle">heats water</text>
+      <text class="dg-lbl sm" x="178" y="112" text-anchor="middle">to make steam</text>
+      <!-- box 3 -->
+      <text class="dg-title" x="298" y="82" text-anchor="middle" style="fill:var(--motion)">TURBINE</text>
+      <text class="dg-lbl sm" x="298" y="99" text-anchor="middle">steam pushes</text>
+      <text class="dg-lbl sm" x="298" y="112" text-anchor="middle">blades round</text>
+      <!-- box 4 -->
+      <text class="dg-title" x="418" y="82" text-anchor="middle" style="fill:var(--power)">GENERATOR</text>
+      <text class="dg-lbl sm" x="418" y="99" text-anchor="middle">coil spins in</text>
+      <text class="dg-lbl sm" x="418" y="112" text-anchor="middle">magnetic field</text>
+      <!-- the exceptions -->
+      <text class="dg-lbl sm" x="14" y="152">Skips the boiler: hydroelectric, wind, waves and tides drive the turbine <tspan style="font-style:italic">directly</tspan>.</text>
+      <text class="dg-lbl sm" x="14" y="166">Skips all of it: solar <tspan style="font-style:italic">cells</tspan> make electricity from light — no turbine, no generator.</text>
+    </svg>
+    <div class="dg-cap">Fossil fuels, biofuels, nuclear and geothermal all just supply <strong>heat</strong> — the boiler, turbine and generator that follow are identical. Moving water and wind turn the <strong>turbine</strong> directly (no boiler), and <strong>solar cells</strong> bypass the chain completely.</div>
 
     <div class="box exam">
       <div class="box-label">✅ Extended must-knows</div>
@@ -1217,12 +1451,42 @@
     <div class="define energy-c">
       <span class="term">Efficiency</span> = <span class="eq-inline" style="color:var(--energy2)">(useful output ÷ total input) × 100%</span>. Works with energy <em>or</em> power. It can never exceed 100% — that would break conservation of energy.
     </div>
+
+    <p>A proper <strong>Sankey diagram</strong> is drawn <em>to scale</em>: the width of every arrow is proportional to the energy it carries, so the branches must add back up to the input. Read the numbers off it, then divide:</p>
+
+    <svg class="diagram" viewBox="0 0 540 260" role="img" aria-label="A Sankey diagram for an electric motor lifting a load, drawn to scale. A wide horizontal input band on the left carries 1200 joules of electrical energy. At the branch point it splits three ways. The widest branch continues horizontally to the right and carries 780 joules as useful gravitational potential energy of the lifted load. A narrower branch turns diagonally downwards carrying 300 joules wasted as thermal energy by friction and resistance. The narrowest branch turns more steeply downwards carrying 120 joules wasted as sound. The three branch widths are in proportion to their energies and add up to the input.">
+      <text class="dg-title" x="14" y="22">Electric motor lifting a load — energies drawn to scale</text>
+      <!-- input band: 1200 J = 120 px tall -->
+      <rect x="14" y="40" width="156" height="120" fill="currentColor" style="color:var(--energy)" fill-opacity=".38"/>
+      <text class="dg-title" x="92" y="94" text-anchor="middle">1200 J</text>
+      <text class="dg-lbl sm" x="92" y="112" text-anchor="middle">electrical energy in</text>
+      <!-- useful branch: 780 J = 78 px tall -->
+      <rect x="170" y="40" width="260" height="78" fill="currentColor" style="color:var(--power)" fill-opacity=".38"/>
+      <polygon points="430,30 470,79 430,128" fill="currentColor" style="color:var(--power)" fill-opacity=".38"/>
+      <text class="dg-title" x="298" y="72" text-anchor="middle" style="fill:var(--power)">780 J useful</text>
+      <text class="dg-lbl sm" x="298" y="90" text-anchor="middle">gravitational PE of the load</text>
+      <!-- wasted thermal: 300 J = 30 px thick -->
+      <polygon points="170,118 300,196 300,226 170,148" fill="currentColor" style="color:var(--force)" fill-opacity=".38"/>
+      <polygon points="300,186 346,211 300,236" fill="currentColor" style="color:var(--force)" fill-opacity=".38"/>
+      <text class="dg-lbl sm" x="352" y="206" style="fill:var(--force)">300 J thermal</text>
+      <text class="dg-lbl sm" x="352" y="219">friction + hot coil</text>
+      <!-- wasted sound: 120 J = 12 px thick -->
+      <polygon points="170,148 250,232 250,244 170,160" fill="currentColor" style="color:var(--rose)" fill-opacity=".38"/>
+      <polygon points="250,226 286,238 250,250" fill="currentColor" style="color:var(--rose)" fill-opacity=".38"/>
+      <text class="dg-lbl sm" x="292" y="248" style="fill:var(--rose)">120 J sound</text>
+      <!-- the check -->
+      <text class="dg-lbl sm" x="14" y="188">780 + 300 + 120</text>
+      <text class="dg-lbl sm" x="14" y="201">= 1200 J ✓</text>
+      <text class="dg-lbl sm" x="14" y="220" style="fill:var(--energy)">nothing is lost —</text>
+      <text class="dg-lbl sm" x="14" y="233" style="fill:var(--energy)">only made less useful</text>
+    </svg>
+    <div class="dg-cap">Efficiency = <strong>780 ÷ 1200 × 100% = 65%</strong>. The arrows <em>must</em> balance (780 + 300 + 120 = 1200 J) — energy is conserved, so the "wasted" 420 J has not vanished, it has just spread into stores you cannot use. If an exam gives you only two of the three branches, find the third by subtraction.</div>
   </div>
 
 
   <!-- ── 10 · PRESSURE ── -->
   <div class="section">
-    <div class="sec-label">10 / 11 · 1.8 Pressure</div>
+    <div class="sec-label">10 / 12 · 1.8 Pressure</div>
     <h2>Pressure — force spread over area</h2>
 
     <div class="define">
@@ -1236,12 +1500,107 @@
     <div class="define">
       <span class="term">Liquid pressure (Extended)</span> — the extra pressure at depth h is <span class="eq-inline">Δp = ρgΔh</span>. Denser liquid, or deeper down, or stronger gravity → more pressure. Notice area doesn't appear: pressure at a depth is the same regardless of the container's shape.
     </div>
+
+    <svg class="diagram" viewBox="0 0 500 280" role="img" aria-label="A tank of water with three small holes in its right-hand wall at three different depths. Water spurts out of each hole. The jet from the shallowest hole is slow and short, the jet from the middle hole is faster, and the jet from the deepest hole is the fastest, because the pressure is greatest at the greatest depth. A dimension line on the left marks the depth h from the water surface down to the deepest hole. To the right the equation for the change in pressure, delta p equals rho times g times delta h, is written out with its terms named.">
+      <text class="dg-title" x="14" y="24">Pressure below a liquid surface</text>
+      <!-- the water -->
+      <rect x="60" y="60" width="170" height="180" fill="currentColor" style="color:var(--cyan)" fill-opacity=".2"/>
+      <!-- tank walls + base -->
+      <line class="dg-axis" x1="60" y1="40" x2="60" y2="240"/>
+      <line class="dg-axis" x1="230" y1="40" x2="230" y2="240"/>
+      <line class="dg-axis" x1="60" y1="240" x2="230" y2="240"/>
+      <!-- water surface -->
+      <line x1="60" y1="60" x2="230" y2="60" stroke="currentColor" style="color:var(--cyan)" stroke-width="2.2"/>
+      <text class="dg-lbl sm" x="72" y="228">water</text>
+      <!-- the three jets: deeper hole → greater pressure → faster jet -->
+      <path d="M230 95 Q 256 97 270 112"  fill="none" stroke="currentColor" style="color:var(--cyan)" stroke-width="2.2"/>
+      <path d="M230 150 Q 276 152 302 176" fill="none" stroke="currentColor" style="color:var(--cyan)" stroke-width="2.4"/>
+      <path d="M230 205 Q 298 207 342 240" fill="none" stroke="currentColor" style="color:var(--cyan)" stroke-width="2.6"/>
+      <!-- the holes -->
+      <circle cx="230" cy="95"  r="2.6" fill="currentColor" style="color:var(--force)"/>
+      <circle cx="230" cy="150" r="2.6" fill="currentColor" style="color:var(--force)"/>
+      <circle cx="230" cy="205" r="2.6" fill="currentColor" style="color:var(--force)"/>
+      <text class="dg-lbl sm" x="256" y="128">slowest jet</text>
+      <text class="dg-lbl sm" x="350" y="234" style="fill:var(--cyan)">fastest jet</text>
+      <!-- depth dimension line on the left -->
+      <line class="dg-axis" x1="42" y1="60" x2="42" y2="205"/>
+      <line class="dg-axis" x1="36" y1="60" x2="60" y2="60"/>
+      <line class="dg-axis" x1="36" y1="205" x2="60" y2="205"/>
+      <text class="dg-lbl" x="32" y="136" text-anchor="end">Δh</text>
+      <!-- the equation, in clear space top-right -->
+      <text class="dg-title" x="380" y="52" text-anchor="middle" style="fill:var(--motion)">Δp = ρ g Δh</text>
+      <text class="dg-lbl sm" x="380" y="72" text-anchor="middle">ρ = density of liquid</text>
+      <text class="dg-lbl sm" x="380" y="85" text-anchor="middle">Δh = depth below surface</text>
+      <text class="dg-lbl sm" x="380" y="98" text-anchor="middle">no area term — the tank's</text>
+      <text class="dg-lbl sm" x="380" y="111" text-anchor="middle">shape makes no difference</text>
+      <!-- the punchline -->
+      <text class="dg-lbl sm" x="14" y="268">Deeper hole → more water pressing above it → greater pressure → water leaves faster.</text>
+    </svg>
+    <div class="dg-cap">Each hole is at a different depth, so each feels a different pressure — the <strong>deepest jet leaves fastest</strong>. Worked value: 2.5 m down in water (ρ = 1000 kg/m³, g = 9.8 N/kg), Δp = 1000 × 9.8 × 2.5 = <strong>24 500 Pa ≈ 24.5 kPa</strong>. Note the sideways jets: liquid pressure pushes <em>in every direction</em>, not just downwards.</div>
   </div>
 
 
-  <!-- ── 11 · EQUATION BANK ── -->
+  <!-- ── 11 · CHECK YOURSELF ── -->
   <div class="section">
-    <div class="sec-label">11 / 11 · Reference</div>
+    <div class="sec-label">11 / 12 · Retrieval Practice</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+    <p>Eight questions on the ideas Topic 1 papers actually turn on. Work each one on paper <em>first</em> — reading an answer you didn't attempt teaches you almost nothing. Take g = 9.8 N/kg throughout.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>Explain, in terms of the forces acting, why a skydiver who jumps from a plane reaches a terminal velocity. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">At first the weight is greater than the air resistance, so there is a <strong>downward resultant force</strong> and the skydiver accelerates <em>(1)</em>. As the speed increases, the <strong>air resistance increases</strong> <em>(1)</em>. When the air resistance has grown until it is <strong>equal to the weight</strong>, the resultant force is zero, so the acceleration is zero and the speed stays constant — the terminal velocity <em>(1)</em>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>A cyclist accelerates uniformly from 4.0 m/s to 13.0 m/s in 6.0 s. <b>(a)</b> Calculate the acceleration. <b>(b)</b> Calculate the distance travelled in those 6.0 s, and state which feature of a speed–time graph you used. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><b>(a)</b> a = Δv / Δt = (13.0 − 4.0) / 6.0 = <strong>1.5 m/s²</strong>.<br><b>(b)</b> Distance = the <strong>area under the speed–time graph</strong> — here a trapezium: ½(4.0 + 13.0) × 6.0 = <strong>51 m</strong>. (Same answer by splitting it: rectangle 4.0 × 6.0 = 24 m, plus triangle ½ × 6.0 × 9.0 = 27 m.)</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span>A stone is lowered into a measuring cylinder of water and the level rises from 40 cm³ to 65 cm³. The stone's mass is 66 g. <b>(a)</b> Calculate its density in g/cm³. <b>(b)</b> State one reason this method would <em>not</em> work for a piece of cork. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><b>(a)</b> V = 65 − 40 = <strong>25 cm³</strong>; ρ = m / V = 66 / 25 = <strong>2.64 g/cm³</strong>.<br><b>(b)</b> Cork is <strong>less dense than water, so it floats</strong> — it would not be fully submerged, so the volume of water displaced would be less than the volume of the cork.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>A spring extends by 4.8 cm when a load of 6.0 N hangs from it; up to this load its load–extension graph is a straight line through the origin. <b>(a)</b> Calculate the spring constant in N/m. <b>(b)</b> Define the limit of proportionality. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><b>(a)</b> Convert first: 4.8 cm = <strong>0.048 m</strong>. k = F / x = 6.0 / 0.048 = <strong>125 N/m</strong>. <em>(Forgetting the cm → m conversion gives 1.25 and loses the mark.)</em><br><b>(b)</b> The point on a load–extension graph <strong>beyond which the extension is no longer proportional to the load</strong> — i.e. where the straight line first stops being straight.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>A uniform metre rule is balanced on a pivot at its 50.0 cm mark. A 2.0 N weight hangs at the 20.0 cm mark and a 3.0 N weight at the 35.0 cm mark. A single weight <em>W</em> is hung at the 80.0 cm mark so the rule balances again. Calculate <em>W</em>. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Distances from the pivot: 0.300 m, 0.150 m and 0.300 m. The rule is <strong>uniform and pivoted at its centre</strong>, so its own weight acts at the pivot and has no moment.<br>Anticlockwise = (2.0 × 0.300) + (3.0 × 0.150) = 0.600 + 0.450 = <strong>1.050 N·m</strong>.<br>Clockwise = W × 0.300. Setting them equal: W = 1.050 / 0.300 = <strong>3.5 N</strong>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>A tennis ball of mass 0.058 kg travelling at 25 m/s is struck by a racket and returns <em>along the same straight line</em> at 32 m/s. It is in contact with the racket for 0.0060 s. Calculate the average resultant force on the ball. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The velocity <strong>reverses</strong>, so the speeds <strong>add</strong>: change in velocity = 32 + 25 = <strong>57 m/s</strong>.<br>Δp = mΔv = 0.058 × 57 = <strong>3.31 kg·m/s</strong>.<br>F = Δp / Δt = 3.306 / 0.0060 = <strong>551 N</strong> (≈ 550 N).<br><em>Using 32 − 25 = 7 m/s is the single most common error in the whole topic.</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>A pump raises 450 kg of water through a vertical height of 12 m in 40 s. The electrical power supplied to the pump is 1800 W. Calculate <b>(a)</b> the useful power output and <b>(b)</b> the efficiency of the pump. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><b>(a)</b> Useful energy = ΔEₚ = mgΔh = 450 × 9.8 × 12 = <strong>52 920 J</strong>. Useful power = ΔE / t = 52 920 / 40 = <strong>1323 W</strong>.<br><b>(b)</b> Efficiency = (useful power output / total power input) × 100% = (1323 / 1800) × 100% = <strong>73.5 %</strong>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>A diver is 18 m below the surface of sea water of density 1030 kg/m³. <b>(a)</b> Calculate the pressure due to the water at that depth. <b>(b)</b> Explain why the answer does not depend on the surface area of the diver's body. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><b>(a)</b> Δp = ρgΔh = 1030 × 9.8 × 18 = <strong>181 692 Pa ≈ 1.8 × 10⁵ Pa</strong> (182 kPa). <em>(That is the pressure due to the water alone — add atmospheric pressure for the total.)</em><br><b>(b)</b> The equation Δp = ρgΔh contains <strong>no area term</strong>. A larger area has a correspondingly larger weight of water above it, so the force and the area grow in the <strong>same proportion</strong> and force per unit area is unchanged. Pressure at a point in a liquid depends only on depth, density and g.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 12 · EQUATION BANK ── -->
+  <div class="section">
+    <div class="sec-label">12 / 12 · Reference</div>
     <h2>The Topic 1 equation bank</h2>
     <p>IGCSE Physics gives you <strong>no formula sheet</strong> — every equation here must be recalled from memory. Tap any tile for symbols, units, rearrangements, a worked example, and the exam trap:</p>
 
@@ -1259,6 +1618,37 @@
       <span class="eq-inline" style="color:var(--rose)">W = Fd</span>
       <span class="eq-inline" style="color:var(--rose)">P = W/t</span>
       <span class="eq-inline" style="color:var(--rose)">p = F/A</span>
+    </div>
+  </div>
+
+  <!-- ── PAPERS FOR THIS TOPIC ── -->
+  <div class="section">
+    <div class="sec-label">Now go and use it</div>
+    <h2>Topic 1 papers</h2>
+    <p>Notes get you to <em>recognise</em> the physics; papers get you to <em>produce</em> it under time pressure. Start with the practice paper (it reveals the full mark scheme when you submit), then sit the graded one.</p>
+
+    <div class="paperlinks">
+      <a class="plink" href="../practice-papers/Physics%20Topic%201%20Practice%20Paper%20-%20Motion,%20Forces%20and%20Energy.html">
+        <span class="pl-ico" aria-hidden="true">📝</span>
+        <span>
+          <span class="pl-name">Physics Topic 1 Practice Paper — Motion, Forces and Energy</span>
+          <span class="pl-sub">Self-study · marks itself · shows the mark scheme</span>
+        </span>
+      </a>
+      <a class="plink" href="../exam-papers/Physics%20Topic%201%20Graded%20Paper%20-%20Motion,%20Forces%20and%20Energy.html">
+        <span class="pl-ico" aria-hidden="true">🎓</span>
+        <span>
+          <span class="pl-name">Physics Topic 1 Graded Paper — Motion, Forces and Energy</span>
+          <span class="pl-sub">Teacher-marked · no answers shown · sit it timed</span>
+        </span>
+      </a>
+      <a class="plink" href="../practice-papers/Physics%20Mixed%20Chapters%201-18%20Practice%20Paper.html">
+        <span class="pl-ico" aria-hidden="true">🔀</span>
+        <span>
+          <span class="pl-name">Physics Mixed Chapters 1–18 Practice Paper</span>
+          <span class="pl-sub">Wider mix · Topic 1 appears alongside later topics</span>
+        </span>
+      </a>
     </div>
   </div>
 
