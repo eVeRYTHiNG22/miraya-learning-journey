@@ -340,6 +340,18 @@
     color: var(--accent);
     border-color: color-mix(in srgb, var(--accent) 45%, transparent);
   }
+  /* Duration chip inside a paper button — value comes from data-min (injected by
+     tools/inject_paper_durations.py from each paper's own PAPER.duration). */
+  .btn .tmin {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 999px;
+    letter-spacing: .01em;
+    background: color-mix(in srgb, currentColor 16%, transparent);
+    opacity: .9;
+  }
 
   /* ── STICKY NAV: subject filters + search ── */
   .hubnav {
@@ -437,6 +449,56 @@
   .pp-text { margin-top: 10px; font-size: 12.5px; color: var(--muted); }
   .pp-text b { color: var(--bright); font-weight: 700; }
 
+  /* ── RESULTS PANEL (teacher-published graded scores) ── */
+  .results-panel {
+    margin-top: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+  .rp-sum {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted);
+  }
+  .rp-sum b { color: var(--bright); }
+  .rp-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+  .rp-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent, var(--muted));
+    border-radius: 10px;
+  }
+  .rp-dot { display: none; }
+  .rp-name { font-size: 13px; color: var(--text); font-weight: 600; min-width: 0; }
+  .rp-name small { display: block; font-weight: 400; color: var(--muted); font-size: 11px; margin-top: 1px; }
+  .rp-score {
+    margin-left: auto; white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--bright); font-weight: 700;
+  }
+  .rp-pct {
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+    padding: 2px 9px; border-radius: 20px;
+    background: color-mix(in srgb, var(--band, var(--muted)) 20%, transparent);
+    color: var(--band, var(--muted));
+  }
+  .rp-report {
+    white-space: nowrap; text-decoration: none;
+    font-size: 12px; color: var(--muted);
+    padding: 4px 11px; border: 1px solid var(--border); border-radius: 20px;
+    transition: border-color .2s, color .2s;
+  }
+  .rp-report:hover { border-color: var(--accent, var(--power)); color: var(--bright); }
+  @media (max-width: 560px) {
+    .rp-row { flex-wrap: wrap; }
+    .rp-score, .rp-pct, .rp-report { margin-left: 0; }
+    .rp-name { flex: 1 1 100%; }
+  }
+
   /* ── PER-CARD DONE TOGGLES ── */
   .track {
     display: flex; gap: 8px; flex-wrap: wrap;
@@ -531,6 +593,24 @@
   .resume .r-txt small { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
   .resume .r-txt b { font-size: 14px; color: var(--bright); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .resume .r-go { margin-left: auto; color: var(--physics); font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+  .resume .r-dismiss {
+    flex-shrink: 0; margin-left: 4px;
+    width: 24px; height: 24px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 16px; line-height: 1;
+    border: 1px solid transparent; cursor: pointer;
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .resume .r-dismiss:hover { color: var(--rose); border-color: color-mix(in srgb, var(--rose) 40%, var(--border)); background: var(--surface); }
+
+  /* progress-panel action buttons (Just-checking toggle + Reset) */
+  .pp-actions { margin-left: auto; display: inline-flex; gap: 8px; align-items: center; }
+  .pp-actions .pp-reset { margin-left: 0; }
+  .pp-toggle.on {
+    color: var(--rose);
+    border-color: color-mix(in srgb, var(--rose) 55%, transparent);
+    background: color-mix(in srgb, var(--rose) 12%, transparent);
+  }
 
   .revise-shelf {
     display: flex; align-items: flex-start; gap: 11px; flex-wrap: wrap;
@@ -672,7 +752,7 @@
 </style>
 </head>
 <body data-theme="dark">
-<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
 
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
 
@@ -691,10 +771,20 @@
     <div class="progress-panel">
       <div class="pp-top">
         <span class="pp-label">Your progress</span>
-        <button id="resetProg" class="pp-reset" type="button">Reset</button>
+        <span class="pp-actions">
+          <button id="previewToggle" class="pp-reset pp-toggle" type="button" title="Turn on while you’re only checking a page. Opens won’t update “Continue where you left off”.">👁 Just checking</button>
+          <button id="resetProg" class="pp-reset" type="button">Reset</button>
+        </span>
       </div>
       <div class="bar"><i id="progFill"></i></div>
       <div class="pp-text" id="progText">Tick “Notes” or “Paper” on a chapter as you finish it.</div>
+    </div>
+    <div class="results-panel" id="resultsPanel" style="display:none;">
+      <div class="pp-top">
+        <span class="pp-label">Your results</span>
+        <span class="rp-sum" id="rpSum"></span>
+      </div>
+      <div class="rp-list" id="rpList"></div>
     </div>
     <div class="examband" id="examBand" style="display:none;">
       <span class="exam-lead">🎯&nbsp;<b>SA-1</b></span>
@@ -723,6 +813,7 @@
       <span class="r-ico">▶</span>
       <span class="r-txt"><small>Continue where you left off</small><b id="resumeLabel">—</b></span>
       <span class="r-go">Open →</span>
+      <span class="r-dismiss" id="resumeDismiss" role="button" tabindex="0" title="Clear this" aria-label="Clear continue">×</span>
     </a>
     <div class="revise-shelf" id="reviseShelf" style="display:none;">
       <span class="rs-label">⭐ To revise</span>
@@ -746,8 +837,8 @@
         <div class="card-title">Motion, Forces and Energy</div>
         <div class="btns">
           <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%201%20-%20Motion,%20Forces%20and%20Energy.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper" href="subjects/physics/practice-papers/Physics%20Topic%201%20Practice%20Paper%20-%20Motion,%20Forces%20and%20Energy.html"><span class="ico">📝</span>Practice Paper</a>
-          <a class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%201%20Graded%20Paper%20-%20Motion,%20Forces%20and%20Energy.html"><span class="ico">📑</span>Graded Paper</a>
+          <a data-min="35" class="btn paper" href="subjects/physics/practice-papers/Physics%20Topic%201%20Practice%20Paper%20-%20Motion,%20Forces%20and%20Energy.html"><span class="ico">📝</span>Practice Paper</a>
+          <a data-min="50" class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%201%20Graded%20Paper%20-%20Motion,%20Forces%20and%20Energy.html"><span class="ico">📑</span>Graded Paper</a>
         </div>
       </div>
       <div class="card" data-num="2">
@@ -755,7 +846,7 @@
         <div class="card-title">Thermal Physics</div>
         <div class="btns">
           <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%202%20-%20Thermal%20Physics.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%202%20Graded%20Paper%20-%20Thermal%20Physics.html"><span class="ico">📑</span>Graded Paper</a>
+          <a data-min="45" class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%202%20Graded%20Paper%20-%20Thermal%20Physics.html"><span class="ico">📑</span>Graded Paper</a>
         </div>
       </div>
       <div class="card" data-num="3">
@@ -763,9 +854,9 @@
         <div class="card-title">Waves</div>
         <div class="btns">
           <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%203%20-%20Waves.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%203%20Graded%20Paper%201%20-%20Waves.html"><span class="ico">📑</span>Graded Paper 1</a>
-          <a class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%203%20Graded%20Paper%202%20-%20Waves.html"><span class="ico">📑</span>Graded Paper 2</a>
-          <a class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%203%20Graded%20Paper%203%20-%20Waves.html"><span class="ico">📑</span>Graded Paper 3</a>
+          <a data-min="45" class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%203%20Graded%20Paper%201%20-%20Waves.html"><span class="ico">📑</span>Graded Paper 1</a>
+          <a data-min="45" class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%203%20Graded%20Paper%202%20-%20Waves.html"><span class="ico">📑</span>Graded Paper 2</a>
+          <a data-min="50" class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%203%20Graded%20Paper%203%20-%20Waves.html"><span class="ico">📑</span>Graded Paper 3</a>
         </div>
       </div>
       <div class="card" data-num="4">
@@ -773,7 +864,7 @@
         <div class="card-title">Electricity and Magnetism</div>
         <div class="btns">
           <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%204%20-%20Electricity%20and%20Magnetism.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%204%20Graded%20Paper%20-%20Electricity%20and%20Magnetism.html"><span class="ico">📑</span>Graded Paper</a>
+          <a data-min="40" class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%204%20Graded%20Paper%20-%20Electricity%20and%20Magnetism.html"><span class="ico">📑</span>Graded Paper</a>
         </div>
       </div>
       <div class="card" data-num="5" data-sa1="out">
@@ -781,7 +872,7 @@
         <div class="card-title">Nuclear Physics</div>
         <div class="btns">
           <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%205%20-%20Nuclear%20Physics.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%205%20Graded%20Paper%20-%20Nuclear%20Physics.html"><span class="ico">📑</span>Graded Paper</a>
+          <a data-min="40" class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%205%20Graded%20Paper%20-%20Nuclear%20Physics.html"><span class="ico">📑</span>Graded Paper</a>
         </div>
       </div>
       <div class="card" data-num="6" data-sa1="out">
@@ -789,14 +880,14 @@
         <div class="card-title">Space Physics</div>
         <div class="btns">
           <a class="btn notes" href="subjects/physics/notes/Physics%20Topic%206%20-%20Space%20Physics.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%206%20Graded%20Paper%20-%20Space%20Physics.html"><span class="ico">📑</span>Graded Paper</a>
+          <a data-min="40" class="btn paper graded" href="subjects/physics/exam-papers/Physics%20Topic%206%20Graded%20Paper%20-%20Space%20Physics.html"><span class="ico">📑</span>Graded Paper</a>
         </div>
       </div>
       <div class="card" data-num="mix">
         <div class="card-topic">Mixed Ch 1–18</div>
         <div class="card-title">Full Syllabus Mixed Papers</div>
         <div class="btns">
-          <a class="btn paper graded" data-exid="ex:phys:mix:3" href="subjects/physics/exam-papers/Physics%20Mixed%20Chapters%201-18%20Graded%20Paper%203.html"><span class="ico">📑</span>Graded Paper 1</a>
+          <a data-min="75" class="btn paper graded" data-exid="ex:phys:mix:3" href="subjects/physics/exam-papers/Physics%20Mixed%20Chapters%201-18%20Graded%20Paper%203.html"><span class="ico">📑</span>Graded Paper 1</a>
         </div>
       </div>
     </div>
@@ -817,7 +908,7 @@
         <div class="card-topic">SA-1 Mock · Ch 1–22</div>
         <div class="card-title">Summative Assessment 1 — Practice Paper</div>
         <div class="btns">
-          <a class="btn paper" href="subjects/chemistry/practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html" data-added="2026-07-23"><span class="ico">📝</span>Practice Paper</a>
+          <a data-min="35" class="btn paper" href="subjects/chemistry/practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html" data-added="2026-07-23"><span class="ico">📝</span>Practice Paper</a>
         </div>
       </div>
       <div class="card" data-num="1">
@@ -825,7 +916,7 @@
         <div class="card-title">The States of Matter</div>
         <div class="btns">
           <a class="btn notes" href="subjects/chemistry/notes/Chemistry%20Topic%201%20-%20The%20States%20of%20Matter.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper" href="subjects/chemistry/practice-papers/Chemistry%20Topic%201%20Practice%20Paper%20-%20The%20States%20of%20Matter.html"><span class="ico">📝</span>Practice Paper</a>
+          <a data-min="35" class="btn paper" href="subjects/chemistry/practice-papers/Chemistry%20Topic%201%20Practice%20Paper%20-%20The%20States%20of%20Matter.html"><span class="ico">📝</span>Practice Paper</a>
         </div>
       </div>
       <div class="card" data-num="2">
@@ -840,11 +931,11 @@
         <div class="card-title">Stoichiometry</div>
         <div class="btns">
           <a class="btn notes" href="subjects/chemistry/notes/Chemistry%20Topic%203%20-%20Stoichiometry.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper" href="subjects/chemistry/practice-papers/Chemistry%20Topic%203%20Practice%20Paper%20-%20Stoichiometry.html"><span class="ico">📝</span>Practice Paper</a>
-          <a class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Graded%20Paper%201%20-%20Stoichiometry.html"><span class="ico">📑</span>Graded Paper 1</a>
-          <a class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Graded%20Paper%202%20-%20Stoichiometry.html"><span class="ico">📑</span>Graded Paper 2</a>
-          <a class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Graded%20Paper%203%20-%20Stoichiometry.html"><span class="ico">📑</span>Graded Paper 3</a>
-          <a class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Graded%20Paper%204%20-%20Stoichiometry.html"><span class="ico">📑</span>Graded Paper 4</a>
+          <a data-min="45" class="btn paper" href="subjects/chemistry/practice-papers/Chemistry%20Topic%203%20Practice%20Paper%20-%20Stoichiometry.html"><span class="ico">📝</span>Practice Paper</a>
+          <a data-min="35" class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Graded%20Paper%201%20-%20Stoichiometry.html"><span class="ico">📑</span>Graded Paper 1</a>
+          <a data-min="40" class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Graded%20Paper%202%20-%20Stoichiometry.html"><span class="ico">📑</span>Graded Paper 2</a>
+          <a data-min="45" class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Graded%20Paper%203%20-%20Stoichiometry.html"><span class="ico">📑</span>Graded Paper 3</a>
+          <a data-min="50" class="btn paper graded" href="subjects/chemistry/exam-papers/Chemistry%20Topic%203%20Graded%20Paper%204%20-%20Stoichiometry.html"><span class="ico">📑</span>Graded Paper 4</a>
         </div>
       </div>
       <div class="card" data-num="4" data-sa1="out">
@@ -930,8 +1021,8 @@
         <div class="card-title">Number</div>
         <div class="btns">
           <a class="btn notes" href="subjects/mathematics/notes/Mathematics%20Topic%201%20-%20Number.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%201%20Practice%20Paper%20-%20Number.html"><span class="ico">📝</span>Practice Paper</a>
-          <a class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%201%20Graded%20Paper%20-%20Number.html" data-added="2026-07-24"><span class="ico">📑</span>Graded Paper</a>
+          <a data-min="45" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%201%20Practice%20Paper%20-%20Number.html"><span class="ico">📝</span>Practice Paper</a>
+          <a data-min="120" class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%201%20Graded%20Paper%20-%20Number.html" data-added="2026-07-24"><span class="ico">📑</span>Graded Paper</a>
         </div>
       </div>
       <div class="card" data-num="2">
@@ -939,7 +1030,7 @@
         <div class="card-title">Algebra and Graphs</div>
         <div class="btns">
           <a class="btn notes" href="subjects/mathematics/notes/Mathematics%20Topic%202%20-%20Algebra%20and%20Graphs.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%202%20Graded%20Paper%20-%20Algebra%20and%20Graphs.html" data-added="2026-07-26"><span class="ico">📑</span>Graded Paper</a>
+          <a data-min="120" class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%202%20Graded%20Paper%20-%20Algebra%20and%20Graphs.html" data-added="2026-07-26"><span class="ico">📑</span>Graded Paper</a>
         </div>
       </div>
       <div class="card" data-num="4">
@@ -954,8 +1045,8 @@
         <div class="card-title">Mensuration</div>
         <div class="btns">
           <a class="btn notes" href="subjects/mathematics/notes/Mathematics%20Topic%205%20-%20Mensuration.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%205%20Graded%20Paper%201%20-%20Mensuration.html"><span class="ico">📑</span>Graded Paper 1</a>
-          <a class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%205%20Graded%20Paper%202%20-%20Mensuration.html"><span class="ico">📑</span>Graded Paper 2</a>
+          <a data-min="65" class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%205%20Graded%20Paper%201%20-%20Mensuration.html"><span class="ico">📑</span>Graded Paper 1</a>
+          <a data-min="65" class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%205%20Graded%20Paper%202%20-%20Mensuration.html"><span class="ico">📑</span>Graded Paper 2</a>
         </div>
       </div>
       <div class="card" data-num="6">
@@ -964,8 +1055,8 @@
         <div class="btns">
           <a class="btn notes" href="subjects/mathematics/notes/Mathematics%20Topic%206%20-%20Trigonometry.html"><span class="ico">📘</span>Notes</a>
           <a class="btn sheet" href="subjects/mathematics/notes/Mathematics%20Topic%206%20Cheat%20Sheet%20-%20Trigonometry.html"><span class="ico">📄</span>Cheat Sheet</a>
-          <a class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%206%20Graded%20Paper%20-%20Trigonometry.html"><span class="ico">📑</span>Graded Paper 1</a>
-          <a class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%206%20Graded%20Paper%202%20-%20Trigonometry%20Graphs%20and%20Equations.html"><span class="ico">📑</span>Graded Paper 2</a>
+          <a data-min="60" class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%206%20Graded%20Paper%20-%20Trigonometry.html"><span class="ico">📑</span>Graded Paper 1</a>
+          <a data-min="60" class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Topic%206%20Graded%20Paper%202%20-%20Trigonometry%20Graphs%20and%20Equations.html"><span class="ico">📑</span>Graded Paper 2</a>
         </div>
       </div>
       <div class="card" data-num="7">
@@ -973,31 +1064,31 @@
         <div class="card-title">Transformations and Vectors</div>
         <div class="btns">
           <a class="btn notes" href="subjects/mathematics/notes/Mathematics%20Topic%207%20-%20Transformations%20and%20Vectors.html"><span class="ico">📘</span>Notes</a>
-          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Transformations%20and%20Vectors.html" data-plabel="Paper (all)"><span class="ico">📝</span>Practice Paper</a>
-          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Vectors%20and%20Magnitude.html" data-ppid="pp:maths:7v" data-plabel="Paper (7.2–7.3)"><span class="ico">📝</span>Practice Paper · 7.2–7.3</a>
-          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Transformations%20on%20the%20Grid.html" data-added="2026-07-25" data-ppid="pp:maths:7g" data-plabel="Grid worksheet"><span class="ico">📝</span>Practice Paper · Grid Worksheet</a>
+          <a data-min="45" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Transformations%20and%20Vectors.html" data-plabel="Paper (all)"><span class="ico">📝</span>Practice Paper</a>
+          <a data-min="35" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Vectors%20and%20Magnitude.html" data-ppid="pp:maths:7v" data-plabel="Paper (7.2–7.3)"><span class="ico">📝</span>Practice Paper · 7.2–7.3</a>
+          <a data-min="50" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Topic%207%20Practice%20Paper%20-%20Transformations%20on%20the%20Grid.html" data-added="2026-07-25" data-ppid="pp:maths:7g" data-plabel="Grid worksheet"><span class="ico">📝</span>Practice Paper · Grid Worksheet</a>
         </div>
       </div>
       <div class="card" data-num="sa1">
         <div class="card-topic">SA-1 · Ch 1–32</div>
         <div class="card-title">Chapters 1–32 Graded Paper</div>
         <div class="btns">
-          <a class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Chapters%201-32%20Graded%20Paper%20-%20Non-Calculator.html" data-added="2026-07-23"><span class="ico">📑</span>Graded · Non-calc</a>
-          <a class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Chapters%201-32%20Graded%20Paper%20-%20Calculator.html" data-added="2026-07-23"><span class="ico">📑</span>Graded · Calc</a>
+          <a data-min="120" class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Chapters%201-32%20Graded%20Paper%20-%20Non-Calculator.html" data-added="2026-07-23"><span class="ico">📑</span>Graded · Non-calc</a>
+          <a data-min="120" class="btn paper graded" href="subjects/mathematics/exam-papers/Mathematics%20Chapters%201-32%20Graded%20Paper%20-%20Calculator.html" data-added="2026-07-23"><span class="ico">📑</span>Graded · Calc</a>
         </div>
       </div>
       <div class="card" data-num="fa1">
         <div class="card-topic">Mixed · Non-Calc</div>
         <div class="card-title">Non-Calculator Practice 1</div>
         <div class="btns">
-          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Non-Calculator%20Practice%20Paper%201%20-%20Mixed%20Topics.html"><span class="ico">📝</span>Practice Paper</a>
+          <a data-min="35" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Non-Calculator%20Practice%20Paper%201%20-%20Mixed%20Topics.html"><span class="ico">📝</span>Practice Paper</a>
         </div>
       </div>
       <div class="card" data-num="fa2">
         <div class="card-topic">Mixed · Non-Calc</div>
         <div class="card-title">Non-Calculator Practice 2</div>
         <div class="btns">
-          <a class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Non-Calculator%20Practice%20Paper%202%20-%20Mixed%20Topics.html"><span class="ico">📝</span>Practice Paper</a>
+          <a data-min="35" class="btn paper" href="subjects/mathematics/practice-papers/Mathematics%20Non-Calculator%20Practice%20Paper%202%20-%20Mixed%20Topics.html"><span class="ico">📝</span>Practice Paper</a>
         </div>
       </div>
     </div>
@@ -1127,6 +1218,151 @@
     window.addEventListener('miraya-progress-synced', function () { prog = load(); refresh(); });
 
     refresh();
+  })();
+
+  /* ── PAPER DURATION CHIP ──
+     Each practice/graded paper button carries data-min (minutes), injected from the
+     paper's own PAPER.duration by tools/inject_paper_durations.py — never hand-typed,
+     so it can't drift from the paper. Render a small "~N min" chip inside the button. */
+  (function () {
+    function fmt(m) {
+      if (m < 60) return '~' + m + ' min';
+      var h = Math.floor(m / 60), r = m % 60;
+      return '~' + h + 'h' + (r ? ' ' + r + 'm' : '');
+    }
+    document.querySelectorAll('.btn.paper[data-min]').forEach(function (btn) {
+      var m = parseInt(btn.getAttribute('data-min'), 10);
+      if (!m || btn.querySelector('.tmin')) return;
+      var chip = document.createElement('span');
+      chip.className = 'tmin';
+      chip.textContent = fmt(m);
+      chip.title = 'Approximate time to complete';
+      btn.appendChild(chip);
+    });
+  })();
+
+  /* ── YOUR RESULTS (teacher-published graded scores) ──
+     The teacher grades each graded paper offline, then POSTs a score record to the
+     Apps Script endpoint ({type:'score', id:'ex:<subj>:<n>:<i>', score, total, pct,
+     reportUrl}). Here we GET ?scores=1 and render one row per record under the
+     progress panel — score/total, %, and a "View report" link when one was published.
+     The panel stays hidden until the endpoint returns a non-empty scores map, so older
+     deployments (no ?scores support) simply show nothing. */
+  (function () {
+    var panel = document.getElementById('resultsPanel');
+    if (!panel) return;
+    var listEl = document.getElementById('rpList');
+    var sumEl  = document.getElementById('rpSum');
+    var SUBJ = { phys: 'Physics', chem: 'Chemistry', maths: 'Mathematics' };
+
+    // Map every graded paper's hub id → { name, sub, href, accent } from the cards,
+    // matching the same id logic the progress tracker uses (data-exid or positional).
+    function buildMeta() {
+      var meta = {};
+      document.querySelectorAll('.subject').forEach(function (sec) {
+        var subj = sec.getAttribute('data-subj');
+        var accent = sec.style.getPropertyValue('--accent') || 'var(--muted)';
+        sec.querySelectorAll('.card').forEach(function (card) {
+          var num = card.getAttribute('data-num');
+          var topic = (card.querySelector('.card-topic') || {}).textContent || '';
+          var title = (card.querySelector('.card-title') || {}).textContent || '';
+          var gradedBtns = card.querySelectorAll('.btn.paper.graded');
+          gradedBtns.forEach(function (g, i) {
+            var id = g.getAttribute('data-exid') || ('ex:' + subj + ':' + num + ':' + (i + 1));
+            var btnLabel = (g.textContent || '').replace(/^[^A-Za-z0-9]+/, '').trim();
+            var sub = (SUBJ[subj] || subj) + ' · ' + (topic ? topic + ' — ' : '') + title
+                      + (gradedBtns.length > 1 && btnLabel ? ' · ' + btnLabel : '');
+            meta[id] = { name: title || btnLabel || id, sub: sub, href: g.getAttribute('href'), accent: accent };
+          });
+        });
+      });
+      return meta;
+    }
+
+    function band(pct) {
+      if (pct == null) return 'var(--muted)';
+      if (pct >= 80) return '#46b17b';
+      if (pct >= 65) return '#d99a2b';
+      return 'var(--rose)';
+    }
+
+    function render(scores) {
+      var meta = buildMeta();
+      var ids = Object.keys(scores || {});
+      if (!ids.length) { panel.style.display = 'none'; return; }
+      // stable order: subject, then topic number, then paper index
+      var order = { phys: 0, chem: 1, maths: 2 };
+      ids.sort(function (a, b) {
+        var pa = a.split(':'), pb = b.split(':');
+        var sa = order[pa[1]] != null ? order[pa[1]] : 9, sb = order[pb[1]] != null ? order[pb[1]] : 9;
+        if (sa !== sb) return sa - sb;
+        var na = parseInt(pa[2], 10), nb = parseInt(pb[2], 10);
+        if (!isNaN(na) && !isNaN(nb) && na !== nb) return na - nb;
+        return (parseInt(pa[3], 10) || 0) - (parseInt(pb[3], 10) || 0);
+      });
+
+      listEl.innerHTML = '';
+      var pctSum = 0, pctN = 0;
+      ids.forEach(function (id) {
+        var s = scores[id] || {};
+        var m = meta[id] || { name: id, sub: 'Graded paper', href: null, accent: 'var(--muted)' };
+        var pct = (s.pct != null) ? Math.round(s.pct)
+                  : (s.score != null && s.total) ? Math.round(s.score / s.total * 100) : null;
+        if (pct != null) { pctSum += pct; pctN++; }
+
+        var row = document.createElement('div');
+        row.className = 'rp-row';
+        row.style.setProperty('--accent', m.accent);
+        row.style.setProperty('--band', band(pct));
+
+        var name = document.createElement('div');
+        name.className = 'rp-name';
+        name.appendChild(document.createTextNode(m.name));
+        var sm = document.createElement('small'); sm.textContent = m.sub; name.appendChild(sm);
+        row.appendChild(name);
+
+        if (s.score != null && s.total != null) {
+          var sc = document.createElement('span');
+          sc.className = 'rp-score';
+          sc.textContent = s.score + ' / ' + s.total;
+          row.appendChild(sc);
+        }
+        if (pct != null) {
+          var pc = document.createElement('span');
+          pc.className = 'rp-pct'; pc.textContent = pct + '%';
+          row.appendChild(pc);
+        }
+        if (s.reportUrl) {
+          var a = document.createElement('a');
+          a.className = 'rp-report'; a.href = s.reportUrl;
+          a.target = '_blank'; a.rel = 'noopener';
+          a.textContent = 'View report ↗';
+          row.appendChild(a);
+        }
+        listEl.appendChild(row);
+      });
+
+      sumEl.innerHTML = ids.length + (ids.length === 1 ? ' paper' : ' papers')
+        + (pctN ? ' · avg <b>' + Math.round(pctSum / pctN) + '%</b>' : '');
+      panel.style.display = '';
+    }
+
+    function fetchScores() {
+      var ep = (window.MirayaSync && window.MirayaSync.ep) || '';
+      if (!ep) return;
+      fetch(ep + '?scores=1&t=' + Date.now())
+        .then(function (r) { return r.text(); })
+        .then(function (t) {
+          var c; try { c = JSON.parse(t); } catch (e) { return; }
+          if (!c || typeof c !== 'object' || c.error) return;
+          render(c);
+        })
+        .catch(function () {});
+    }
+
+    fetchScores();
+    window.addEventListener('focus', fetchScores);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) fetchScores(); });
   })();
 
   /* ── HUB FILTER + SEARCH ──
@@ -1278,10 +1514,13 @@
       if (anyFuture) { wrap.innerHTML = html; band.style.display = ''; }
     })();
 
-    /* (3) Continue where you left off — records the last hub link opened */
+    /* (3) Continue where you left off — records the last hub link opened, UNLESS
+       "Just checking" mode is on (device-local flag hubPreview), so reviewing a
+       page doesn't overwrite the student's real resume point. */
     document.addEventListener('click', function (e) {
       var a = e.target.closest ? e.target.closest('a.btn') : null;
       if (!a) return;
+      if (lsGet('hubPreview')) return;                 // just checking — don't record
       var card = a.closest('.card'), sec = a.closest('.subject');
       lsSet('hubLast', {
         href: a.getAttribute('href'),
@@ -1290,7 +1529,7 @@
         subj: sec ? sec.getAttribute('data-subj') : ''
       });
     });
-    (function renderResume(){
+    function renderResume(){
       var rec = lsGet('hubLast'), strip = document.getElementById('resumeStrip');
       if (!strip) return;
       if (!rec || !rec.href) { strip.style.display = 'none'; return; }
@@ -1298,6 +1537,27 @@
       var lbl = document.getElementById('resumeLabel');
       if (lbl) lbl.textContent = rec.title + (rec.kind ? ' · ' + rec.kind : '');
       strip.style.display = '';
+    }
+    renderResume();
+    (function () {                                      // × clears the current item
+      var d = document.getElementById('resumeDismiss');
+      if (!d) return;
+      d.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        try { localStorage.removeItem('hubLast'); } catch (err) {}
+        renderResume();
+      });
+    })();
+    (function () {                                      // "👁 Just checking" toggle
+      var pv = document.getElementById('previewToggle');
+      if (!pv) return;
+      function paint(){ pv.classList.toggle('on', !!lsGet('hubPreview')); }
+      pv.addEventListener('click', function () {
+        if (lsGet('hubPreview')) { try { localStorage.removeItem('hubPreview'); } catch (e) {} }
+        else lsSet('hubPreview', 1);
+        paint();
+      });
+      paint();
     })();
 
     /* (4) ⭐ Revise shelf — star a chapter to pin it to the top */
