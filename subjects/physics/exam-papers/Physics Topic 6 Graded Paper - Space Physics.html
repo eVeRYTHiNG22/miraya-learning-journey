@@ -16,11 +16,7 @@
     --muted:    #7b8aa8;
     --bright:   #f0f4ff;
 
-    /* ── chemistry accents (energy / state axis) — same identity as the notes ──
-       --motion = SOLID (blue) · --cyan = LIQUID (teal) · --force = GAS (coral)
-       --energy = HEAT/ENERGY (amber) · --momentum = DIFFUSION (violet)
-       --power = correct / marks earned (green, fixed role)
-       --rose  = alerts / must-memorise (magenta, fixed role) */
+    /* physics accents (motion / energy axis) — same identity as the notes */
     --motion:   #46a8ff;
     --cyan:     #3ad9d4;
     --force:    #ff5263;
@@ -63,7 +59,7 @@
     transition: background-color .35s ease, color .35s ease;
   }
 
-  /* ambient field — cool (solid) up top, warm (gas) below: the energy axis */
+  /* ambient field — cool (motion) up top, warm (energy) below */
   body::before {
     content:'';
     position:fixed; inset:0;
@@ -124,7 +120,7 @@
   h1 .a { color: var(--motion); }
   h1 .b { color: var(--cyan); }
   h1 .c { color: var(--force); }
-  .header-sub { color: var(--muted); font-size: 14px; max-width: 620px; }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 640px; }
 
   /* ── FRONT SHEET (exam meta + controls) ── */
   .front {
@@ -357,7 +353,7 @@
   .ms-point.read { cursor:default; padding:9px 12px 9px 14px; }
   .ms.solution .ms-head .self-note { display:none; }
 
-  /* graded-mode "submitted" message (shown instead of a score on teacher-marked papers) */
+  /* graded-mode "submitted" message */
   .submitted-msg { display:none; }
   body.graded .submitted-msg { display:block; margin:4px 0 6px; color:var(--text); font-size:15px; line-height:1.7; }
   body.graded .submitted-msg b { color:var(--bright); }
@@ -396,53 +392,63 @@
   body[data-theme="light"] .eq-inline { background:#eef1f8; border-color:#d4dcec; }
 
   sub { font-size:.74em; }
+  sup { font-size:.74em; }
 
   @media (prefers-reduced-motion: reduce) {
     *, body { transition:none !important; animation:none !important; }
     .btn:hover, .theme-toggle:hover { transform:none; }
   }
 
-  /* ── PRINT: render as a clean blank exam paper ── */
+  /* ── PRINT: dense, paper-saving blank exam paper ── */
   @media print {
-    @page { margin:16mm; }
-    body { background:#fff; color:#000; font-size:12pt; }
+    @page { margin:10mm 12mm; }
+    body { background:#fff; color:#000; font-size:10.5pt; line-height:1.38; }
     body::before { display:none; }
     #questions { opacity:1 !important; }
     .theme-toggle, .exam-bar, .controls, .results, .front .controls,
-    .opt input, .ms, textarea.ans, input.num, .num-verdict { display:none !important; }
+    .opt input, .ms, textarea.ans, input.num, .num-verdict,
+    .symbar, .hub-home, #markDoneBtn, .pdf-btn { display:none !important; }
     .page { max-width:none; padding:0; }
-    .front { border:none; padding:0; background:none; }
-    .q, .front { box-shadow:none; border:1px solid #999; break-inside:avoid; }
-    .q { background:#fff; }
+    .header { margin-bottom:12px; padding-bottom:10px; }
+    h1 { font-size:1.45rem; margin-bottom:5px; line-height:1.1; }
+    .header-sub { font-size:9.5pt; }
+    .front { border:none; padding:0; background:none; margin-bottom:14px; }
+    .front h2 { font-size:1.05rem; margin-bottom:7px; }
+    .meta-grid { gap:3px 20px; margin-bottom:7px; }
+    .meta-item .v { font-size:10pt; }
+    .instructions li { margin-bottom:2px; font-size:9pt; padding-left:16px; }
+    .q, .front { box-shadow:none; break-inside:auto; }
+    .q { background:#fff; border:1px solid #999; border-radius:7px; padding:8px 12px; margin:8px 0; }
+    .q-head { margin-bottom:4px; }
+    .part { margin:6px 0; break-inside:avoid; }
+    .sec-head { margin:14px 0 3px; break-after:avoid; }
     .opt { background:#fff; border:1px solid #999; }
     .opt::before { content:''; display:inline-block; width:13px; height:13px; border:1.4px solid #000; border-radius:50%; margin-top:3px; }
-    .print-lines { display:block; margin-top:8px; }
-    .print-lines .ln { border-bottom:1px dotted #444; height:26px; }
-    .ctx { background:#f4f4f4; border-left:3px solid #444; }
-    /* figures print in black & white; hide the upload UI, show a blank box to draw in */
+    .print-lines { display:block; margin-top:3px; }
+    .print-lines .ln { border-bottom:1px dotted #555; height:20px; }
+    .ctx { background:#f4f4f4; border-left:3px solid #444; padding:6px 12px; margin:6px 0; }
     .fig { background:#fff; border:1px solid #999; }
     .fig svg { color:#000; }
     .fig svg text { fill:#000; }
     .draw-row, .draw-preview { display:none !important; }
-    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:180px; margin-top:8px; }
+    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:150px; margin-top:6px; }
     h1 .a, h1 .b, h1 .c, .q-no, .marks, .chip { color:#000 !important; }
   }
 </style>
 </head>
 <body data-theme="dark">
-<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
-
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
 
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
 
 <!-- sticky exam bar -->
 <div class="exam-bar" id="examBar">
-  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">35:00</span></div>
+  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">120:00</span></div>
   <div class="prog">Answered <b id="progDone">0</b> / <span id="progTot">0</span></div>
   <span class="mode-tag" id="modeTag">TIMED</span>
   <div class="spacer"></div>
-  <button class="btn primary" id="btnSubmit">Submit &amp; mark</button>
+  <button class="btn primary" id="btnSubmit">Submit</button>
 </div>
 
 <div class="page">
@@ -450,27 +456,28 @@
   <header class="header">
     <span class="chip">IGCSE Physics · 0625 · Extended · Graded exam</span>
     <h1>Topic 6 Graded Paper<br><span class="a">Space </span><span class="b">Phy</span><span class="c">sics</span></h1>
-    <p class="header-sub">The Earth, the Moon &amp; the Solar System · orbits and gravity · the Sun and the life cycle of stars · galaxies, light-years, redshift and the expanding Universe. A graded exam — saved automatically when you submit.</p>
+    <p class="header-sub">A full 100-mark Topic&nbsp;6 mock in two sections — <b>Section A multiple choice</b> (30 marks, Paper-2 style) and <b>Section B structured &amp; calculation</b> (70 marks, Paper-4 style). Pitched at the top of the Extended range. This is a <b>teacher-marked</b> paper: your answers are submitted for grading and no marks are shown here.</p>
   </header>
 
   <!-- FRONT SHEET -->
   <section class="front" id="front">
     <h2>Before you begin</h2>
     <div class="meta-grid">
-      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">35 minutes</div></div>
-      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">31 marks</div></div>
-      <div class="meta-item"><div class="k">Syllabus scope</div><div class="v">0625 · 6.1 The Earth and the Solar System · 6.2 Stars and the Universe</div></div>
+      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">120 minutes</div></div>
+      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">100 marks</div></div>
+      <div class="meta-item"><div class="k">Syllabus scope</div><div class="v">0625 · 6.1–6.2 The Earth, Moon &amp; day/night/seasons · The Solar System &amp; accretion model · Orbital speed, gravity &amp; light-travel time · The Sun &amp; fusion · Life cycle of stars · Galaxies, light-years, redshift, CMBR &amp; the Hubble constant</div></div>
       <div class="meta-item"><div class="k">Level</div><div class="v">Extended (Core + Supplement)</div></div>
     </div>
     <ul class="instructions">
-      <li>Answer <b>all</b> questions. Section A is multiple choice; Section B is structured and calculation.</li>
-      <li>Show your <b>working</b> in all calculations — your teacher awards method marks for correct working.</li>
-      <li>This is a <b>graded exam</b>: your answers are <b>not</b> marked in this file and no answers are shown. In <b>Timed exam</b> mode a countdown runs; the paper locks when you submit or time runs out.</li>
-      <li>When you submit (or the time runs out) your answers are saved automatically — you don't need to download or send anything.</li>
-      <li>Useful data: speed of light c = 3.0 × 10⁸ m/s; 1 year ≈ 3.15 × 10⁷ s; a light-year is the distance light travels in one year. For a circular orbit, orbital speed v = (2πr)/T.</li>
+      <li>Answer <b>all</b> questions. <b>Section A (Q1–Q30)</b> is multiple choice — one mark each. <b>Section B (Q31–Q39)</b> is structured and calculation.</li>
+      <li>Show <b>all</b> your working and use appropriate units — your teacher awards method marks for correct working, not just the final answer.</li>
+      <li>A calculator may be used throughout. Give non-exact answers to a sensible number of significant figures (usually 2 or 3).</li>
+      <li>This is a <b>graded exam</b>: it is marked by your teacher. When you submit, your answers are sent for grading — <b>no score or correct answers are shown here</b>.</li>
+      <li>In timed mode a <b>2-hour countdown</b> runs. The paper is submitted when you press <b>Submit</b> or when time runs out.</li>
+      <li>Useful data: speed of light c = 3.0 × 10⁸ m/s; 1 light-year = 9.5 × 10¹⁵ m; Hubble constant H₀ = 2.2 × 10⁻¹⁸ per second; T(in K) = θ(in °C) + 273. Orbital speed v = 2πr/T. Any other data are given in the questions. Recall your own equations — no formula sheet is provided.</li>
     </ul>
     <div class="controls">
-      <button class="btn primary" id="startTimed">▶ Start timed exam</button>
+      <button class="btn primary" id="startTimed">▶ Start exam</button>
       <button class="btn ghost" id="startPractice">Practice (no timer)</button>
       <button class="btn ghost" id="printBtn">🖨 Print blank paper</button>
       <span class="hint">Tip: use the ☀ / ☾ button (top-right) to switch between dark and light (paper) themes.</span>
@@ -486,7 +493,7 @@
     <div class="result-card">
       <p class="submitted-msg" id="submittedMsg">✅ <b>Paper submitted.</b> Your answers have been submitted.</p>
       <div id="scoreWrap">
-        <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">31</span></span></div>
+        <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">100</span></span></div>
         <div class="score-pct" id="scorePct">0%</div>
         <div class="band" id="scoreBand">—</div>
         <div class="result-meta">
@@ -510,265 +517,238 @@
 <script>
 /* ===========================================================================
    PRACTICE-PAPER ENGINE  — generic; drives everything from the PAPER object.
-   To build a new paper, edit PAPER only (and the header markup above).
-   Question kinds:
-     'mcq'    — options[], answer (0-based index). Auto-marked.
-     'parts'  — parts[]; each part is 'text' (self-marked) or 'numeric'
-                (final answer auto-checked; method points self-marked).
-   Each markable unit lists ms[] marking points: {p:'text', m:marks, auto?:bool}
+   GRADED, two named sections (Section A multiple choice / Section B structured)
+   via each question's `section` key + PAPER.sections.
    =========================================================================== */
 const PAPER = {
-  "graded": true,
-  "duration": 40,
-  "questions": [
-    {
-      "n": 1,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "Which list places the planets in order of increasing distance from the Sun?",
-      "options": [
-        "Mercury, Venus, Earth, Mars",
-        "Mercury, Earth, Venus, Mars",
-        "Venus, Mercury, Earth, Mars",
-        "Mars, Earth, Venus, Mercury"
-      ]
-    },
-    {
-      "n": 2,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "Approximately how long does the Earth take to rotate once on its axis?",
-      "options": [
-        "1 hour",
-        "24 hours",
-        "1 month",
-        "365 days"
-      ]
-    },
-    {
-      "n": 3,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "What provides the force that keeps a planet moving in its orbit around the Sun?",
-      "options": [
-        "the light from the Sun",
-        "the planet's own spin",
-        "the gravitational attraction of the Sun",
-        "a magnetic force"
-      ]
-    },
-    {
-      "n": 4,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "A light-year is a unit of:",
-      "options": [
-        "time",
-        "speed",
-        "distance",
-        "mass"
-      ]
-    },
-    {
-      "n": 5,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "The energy radiated by the Sun is produced by:",
-      "options": [
-        "the burning of fuel",
-        "nuclear fusion of hydrogen",
-        "nuclear fission of uranium",
-        "chemical reactions"
-      ]
-    },
-    {
-      "n": 6,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "Light from distant galaxies is redshifted. This is evidence that:",
-      "options": [
-        "the galaxies are cooling down",
-        "the Universe is expanding",
-        "all stars are blue",
-        "light slows down over long distances"
-      ]
-    },
-    {
-      "n": 7,
-      "kind": "parts",
-      "stem": "The eight planets orbit the Sun in approximately circular paths. Neptune is much further from the Sun than the Earth.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Explain why planets that are further from the Sun take longer to complete one orbit."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "Name the force that keeps a planet in orbit around the Sun."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "State two ways in which the orbit of a comet differs from the orbit of a planet."
-        }
-      ]
-    },
-    {
-      "n": 8,
-      "kind": "parts",
-      "stem": "A satellite orbits the Earth in a circular orbit of radius 7.0 × 10⁶ m, taking 5800 s to complete one orbit.",
-      "fig": "<svg viewBox='0 0 220 200' width='220' role='img' aria-label='satellite in a circular orbit around the Earth'><circle cx='110' cy='100' r='70' fill='none' stroke='currentColor' stroke-width='1' stroke-dasharray='4 4'/><circle cx='110' cy='100' r='26' fill='var(--surface)' stroke='currentColor' stroke-width='1.6'/><text x='110' y='104' text-anchor='middle' font-size='11'>Earth</text><circle cx='110' cy='30' r='6' fill='currentColor'/><g stroke='currentColor' stroke-width='2'><line x1='116' y1='30' x2='168' y2='30'/><line x1='110' y1='36' x2='110' y2='68'/></g><path d='M164 25 L174 30 L164 35 Z' fill='currentColor'/><path d='M105 64 L110 74 L115 64 Z' fill='currentColor'/><text x='150' y='24' font-size='11'>v</text><text x='116' y='58' font-size='11'>F</text></svg>",
-      "figCap": "Fig. 8.1",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "numeric",
-          "marks": 3,
-          "unit": "m/s",
-          "prompt": "Calculate the orbital speed of the satellite."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "A force acts on the satellite throughout its orbit, yet its speed stays constant. Explain how this is possible."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "State one practical use of an artificial satellite."
-        }
-      ]
-    },
-    {
-      "n": 9,
-      "kind": "parts",
-      "stem": "The Sun is currently a stable star.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Explain, in terms of the forces acting, how the Sun stays the same size."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Describe what will eventually happen to the Sun when it runs out of hydrogen in its core."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "State the element that the Sun produces by fusing hydrogen."
-        }
-      ]
-    },
-    {
-      "n": 10,
-      "kind": "parts",
-      "stem": "Light from the nearest star to the Sun, Proxima Centauri, takes 4.2 years to reach the Earth. (c = 3.0 × 10⁸ m/s; 1 year ≈ 3.15 × 10⁷ s)",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "Explain what is meant by a <b>light-year</b>."
-        },
-        {
-          "label": "(b)",
-          "kind": "numeric",
-          "marks": 3,
-          "unit": "m",
-          "prompt": "Calculate the distance to Proxima Centauri in metres."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "Suggest why astronomers measure such distances in light-years rather than in metres."
-        }
-      ]
-    },
-    {
-      "n": 11,
-      "kind": "parts",
-      "stem": "Light from distant galaxies is found to be redshifted, and more distant galaxies show greater redshift.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Explain what redshift is and what it tells us about these galaxies."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Explain how the fact that more distant galaxies have greater redshift supports the idea of an expanding Universe (the Big Bang)."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "State what is meant by the term <b>galaxy</b>."
-        }
-      ]
-    },
-    {
-      "n": 12,
-      "kind": "parts",
-      "stem": "Stars form from giant clouds of gas and dust in space.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "Describe how a star like the Sun forms from such a cloud."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "State the name given to a cloud of gas and dust in space from which stars form."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "A star much more massive than the Sun ends its life differently. State its final two stages."
-        }
-      ]
-    }
+  graded: true,
+  duration: 120,                 // minutes (2 hours)
+  sections: {
+    A: { label:'Section A', title:'Multiple choice', sub:'Questions 1–30 · 30 marks · choose the one correct answer (A, B, C or D). 1 mark each.' },
+    B: { label:'Section B', title:'Structured & calculation', sub:'Questions 31–39 · 70 marks · answer in the spaces. Show all working and give units.' }
+  },
+  questions: [
+
+    /* ═══════════ SECTION A — MULTIPLE CHOICE (30) ═══════════ */
+
+    { n:1, section:'A', kind:'mcq', marks:1,
+      stem:'The Earth spins once on its tilted axis in about 24 hours. This is the main cause of:',
+      options:['the seasons of the year','the cycle of day and night','the phases of the Moon','the Earth’s orbit around the Sun'] },
+
+    { n:2, section:'A', kind:'mcq', marks:1,
+      stem:'The periodic cycle of the seasons is caused by:',
+      options:['the Moon orbiting the Earth once a month','the Earth spinning once every 24 hours','the Sun orbiting the Earth once a year','the Earth orbiting the Sun once a year with its axis tilted'] },
+
+    { n:3, section:'A', kind:'mcq', marks:1,
+      stem:'The cycle of the Moon’s phases is caused by:',
+      options:['the Moon orbiting the Earth in about one month','the Moon spinning very rapidly','the Earth’s shadow falling on the Moon each night','the Sun orbiting the Moon'] },
+
+    { n:4, section:'A', kind:'mcq', marks:1,
+      stem:'A satellite moves in a circular orbit of average radius 8.0 × 10⁶ m with an orbital period of 6.0 × 10³ s. Its average orbital speed (v = 2πr/T) is:',
+      options:['1300 m/s','2.7 × 10⁴ m/s','8400 m/s','4200 m/s'] },
+
+    { n:5, section:'A', kind:'mcq', marks:1,
+      stem:'Which list gives four planets in the correct order, starting from the Sun and moving outwards?',
+      options:['Venus, Earth, Mars, Mercury','Mercury, Venus, Earth, Mars','Earth, Venus, Mars, Mercury','Mars, Earth, Venus, Mercury'] },
+
+    { n:6, section:'A', kind:'mcq', marks:1,
+      stem:'Compared with the four planets nearest the Sun, the four planets furthest from the Sun are:',
+      options:['smaller and rocky','smaller and gaseous','larger and rocky','larger and gaseous'] },
+
+    { n:7, section:'A', kind:'mcq', marks:1,
+      stem:'Pluto, which orbits the Sun beyond Neptune, is classified as:',
+      options:['a comet','a moon','a dwarf (minor) planet','a star'] },
+
+    { n:8, section:'A', kind:'mcq', marks:1,
+      stem:'The asteroid belt in the Solar System lies mainly:',
+      options:['between the orbits of Mars and Jupiter','beyond the orbit of Neptune','inside the orbit of Mercury','between the Earth and the Sun'] },
+
+    { n:9, section:'A', kind:'mcq', marks:1,
+      stem:'The strength of the gravitational field at the surface of a planet depends mainly on:',
+      options:['the colour of the planet','the mass of the planet','the length of the planet’s day','the number of moons the planet has'] },
+
+    { n:10, section:'A', kind:'mcq', marks:1,
+      stem:'As the distance from a planet increases, the strength of its gravitational field:',
+      options:['increases','stays exactly constant','becomes zero at once','decreases'] },
+
+    { n:11, section:'A', kind:'mcq', marks:1,
+      stem:'Light from the Sun travels 1.5 × 10¹¹ m to reach the Earth. Taking the speed of light as 3.0 × 10⁸ m/s, the time taken is:',
+      options:['500 s','50 s','0.002 s','4.5 × 10¹⁹ s'] },
+
+    { n:12, section:'A', kind:'mcq', marks:1,
+      stem:'The planets orbit the Sun because:',
+      options:['the Sun is the hottest object in the Solar System','the planets are pushed outwards by radiation','the Sun contains most of the mass, and its gravity attracts the planets','the Sun spins very quickly'] },
+
+    { n:13, section:'A', kind:'mcq', marks:1,
+      stem:'The Sun is a star of medium size that consists mostly of:',
+      options:['iron and nickel','carbon and oxygen','rock and ice','hydrogen and helium'] },
+
+    { n:14, section:'A', kind:'mcq', marks:1,
+      stem:'In a stable star such as the Sun, energy is released mainly by:',
+      options:['the fission of heavy nuclei such as uranium','the fusion of hydrogen nuclei into helium','the chemical burning of hydrogen gas','the radioactive decay of the core'] },
+
+    { n:15, section:'A', kind:'mcq', marks:1,
+      stem:'The Sun is one star in the Milky Way. A galaxy is:',
+      options:['a collection of many billions of stars','another name for the Solar System','a single very large star','a small group of about a hundred stars'] },
+
+    { n:16, section:'A', kind:'mcq', marks:1,
+      stem:'A light-year is a unit of:',
+      options:['time','speed','distance','mass'] },
+
+    { n:17, section:'A', kind:'mcq', marks:1,
+      stem:'A star is 4.0 light-years from the Earth. Taking 1 light-year = 9.5 × 10¹⁵ m, its distance from the Earth in metres is:',
+      options:['2.4 × 10¹⁵ m','3.8 × 10¹⁶ m','9.5 × 10¹⁵ m','3.8 × 10¹⁵ m'] },
+
+    { n:18, section:'A', kind:'mcq', marks:1,
+      stem:'Which sequence shows the correct early stages in the life cycle of a star?',
+      options:['red giant → protostar → stable star','supernova → protostar → stable star','stable star → protostar → nebula','interstellar cloud of gas and dust → protostar → stable star'] },
+
+    { n:19, section:'A', kind:'mcq', marks:1,
+      stem:'As an interstellar cloud collapses to form a protostar, its temperature rises because:',
+      options:['it absorbs light from nearby stars','nuclear fusion has already begun in it','gravitational attraction pulls its material together, heating it up','it is heated by a nearby supernova'] },
+
+    { n:20, section:'A', kind:'mcq', marks:1,
+      stem:'A star remains stable (constant in size) while:',
+      options:['the inward force of gravity is balanced by an outward force due to its high central temperature','there is no gravitational force acting on it','it continually expands outwards','the outward force is always much greater than gravity'] },
+
+    { n:21, section:'A', kind:'mcq', marks:1,
+      stem:'A star much more massive than the Sun ends its life by:',
+      options:['cooling quietly into a white dwarf','exploding as a supernova, leaving behind a neutron star or a black hole','turning gradually into a planet','simply disappearing without a trace'] },
+
+    { n:22, section:'A', kind:'mcq', marks:1,
+      stem:'A star with about the same mass as the Sun will eventually become a red giant and then form:',
+      options:['a supernova followed by a black hole','a neutron star','a brand-new main-sequence star','a planetary nebula with a white dwarf at its centre'] },
+
+    { n:23, section:'A', kind:'mcq', marks:1,
+      stem:'Redshift in the light from a distant galaxy is:',
+      options:['an increase in the observed wavelength because the galaxy is moving away','a decrease in the observed wavelength as the galaxy approaches','a change of colour caused by the ageing of its stars','caused only by the galaxy spinning on its axis'] },
+
+    { n:24, section:'A', kind:'mcq', marks:1,
+      stem:'The observation that light from almost all distant galaxies is redshifted is evidence that:',
+      options:['the galaxies are all cooling down','the Earth is at the centre of the Universe','the Universe is expanding, which supports the Big Bang theory','the galaxies are made of unusual elements'] },
+
+    { n:25, section:'A', kind:'mcq', marks:1,
+      stem:'Cosmic microwave background radiation (CMBR) is:',
+      options:['microwave radiation given out by ovens on the Earth','microwave radiation received from all directions in space, left over from the early Universe','the visible light from the nearest galaxy','radio signals broadcast from distant stars'] },
+
+    { n:26, section:'A', kind:'mcq', marks:1,
+      stem:'The approximate diameter of the Milky Way galaxy is:',
+      options:['100 light-years','1 light-year','9.5 × 10¹⁵ light-years','100 000 light-years'] },
+
+    { n:27, section:'A', kind:'mcq', marks:1,
+      stem:'The Hubble constant H₀ is defined as:',
+      options:['the ratio of a galaxy’s recession speed to its distance from the Earth (v ÷ d)','the distance to a galaxy multiplied by its recession speed','the age of the Universe','the speed of light divided by the distance to a galaxy'] },
+
+    { n:28, section:'A', kind:'mcq', marks:1,
+      stem:'A galaxy is 5.0 × 10²⁴ m from the Earth. Using H₀ = 2.2 × 10⁻¹⁸ per second, the speed at which it is moving away (v = H₀d) is:',
+      options:['4.4 × 10⁴¹ m/s','2.3 × 10⁶ m/s','1.1 × 10⁷ m/s','1.1 × 10⁶ m/s'] },
+
+    { n:29, section:'A', kind:'mcq', marks:1,
+      stem:'An estimate of the age of the Universe is given by 1 ÷ H₀. Using H₀ = 2.2 × 10⁻¹⁸ per second, this estimate is:',
+      options:['2.2 × 10⁻¹⁸ s','4.5 × 10¹⁷ s','9.5 × 10¹⁵ s','4.5 × 10⁻¹⁸ s'] },
+
+    { n:30, section:'A', kind:'mcq', marks:1,
+      stem:'A galaxy is moving away from the Earth at 6.6 × 10⁶ m/s. Using H₀ = 2.2 × 10⁻¹⁸ per second, its distance from the Earth (d = v ÷ H₀) is:',
+      options:['1.5 × 10⁻¹¹ m','3.0 × 10²³ m','1.45 × 10²⁵ m','3.0 × 10²⁴ m'] },
+
+    /* ═══════════ SECTION B — STRUCTURED & CALCULATION (70) ═══════════ */
+
+    { n:31, section:'B', kind:'parts',
+      stem:'This question is about the motion of the Earth and the Moon.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Use the daily spin of the Earth on its tilted axis, and its yearly orbit of the Sun, to explain (i) the cycle of day and night and (ii) the cycle of the seasons.' },
+        { label:'(b)', kind:'text', marks:5, lines:8,
+          prompt:'The Moon takes about one month to orbit the Earth. (i) State what this monthly orbit causes that we observe from Earth. (ii) The Moon orbits at an average radius of 3.8 × 10⁸ m with an orbital period of 27 days. Calculate the average orbital speed of the Moon, in m/s. (v = 2πr/T; 1 day = 86 400 s.)' }
+      ]},
+
+    { n:32, section:'B', kind:'parts',
+      stem:'This question is about the Solar System and how it formed.',
+      parts:[
+        { label:'(a)', kind:'text', marks:4, lines:6,
+          prompt:'Describe the contents of the Solar System — name the types of object it contains — and state the main difference in size and composition between the four planets nearest the Sun and the four furthest from the Sun.' },
+        { label:'(b)', kind:'text', marks:4, lines:7,
+          prompt:'Explain how the accretion model accounts for the formation of the Solar System, referring to gravity, the interstellar cloud of gas and dust, and its rotation. Then explain why all the planets orbit the Sun.' }
+      ]},
+
+    { n:33, section:'B', kind:'parts',
+      stem:'The table gives data for four planets, W, X, Y and Z.  W: orbital radius 5.8 × 10¹⁰ m, orbital period 88 days, surface temperature 440 K, surface gravity 3.7 N/kg · X: 1.1 × 10¹¹ m, 225 days, 738 K, 8.9 N/kg · Y: 1.5 × 10¹¹ m, 365 days, 288 K, 9.8 N/kg · Z: 2.3 × 10¹¹ m, 687 days, 218 K, 3.7 N/kg.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'(i) State and explain which planet is closest to the Sun. (ii) Calculate the surface temperature of planet X in degrees Celsius (°C).' },
+        { label:'(b)', kind:'text', marks:5, lines:8,
+          prompt:'(i) State and explain on which planet a small object, released from rest just above the surface, would reach the ground in the shortest time. (ii) State how the orbital speed of a planet changes as its distance from the Sun increases, and use the data in the table to support your answer.' }
+      ]},
+
+    { n:34, section:'B', kind:'parts',
+      stem:'This question is about gravity and orbits in the Solar System.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'State how the strength of the gravitational field around a planet depends on (i) the mass of the planet and (ii) the distance from the planet. Then state what provides the force that keeps a planet in orbit around the Sun.' },
+        { label:'(b)', kind:'text', marks:4, lines:7,
+          prompt:'A comet travels around the Sun in a long elliptical orbit. Using the idea of the conservation of energy, explain why the comet moves fastest when it is closest to the Sun and slowest when it is furthest away.' }
+      ]},
+
+    { n:35, section:'B', kind:'parts',
+      stem:'This question is about the Sun and the time light takes to travel across the Solar System.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'State what the Sun is mostly made of and the three regions of the electromagnetic spectrum in which it radiates most of its energy. Then explain how a stable star such as the Sun stays approximately the same size, even though gravity pulls its material inwards.' },
+        { label:'(b)', kind:'text', marks:5, lines:8,
+          prompt:'Light takes 8.3 minutes to travel from the Sun to the Earth. Taking the speed of light as 3.0 × 10⁸ m/s: (i) calculate the distance from the Sun to the Earth, in metres; (ii) calculate the time, in seconds, for light to travel from the Sun to Jupiter, which is 7.8 × 10¹¹ m away.' }
+      ]},
+
+    { n:36, section:'B', kind:'parts',
+      stem:'This question is about the life cycle of stars.',
+      parts:[
+        { label:'(a)', kind:'text', marks:4, lines:6,
+          prompt:'The life cycle of a star like the Sun can be written as:  interstellar cloud → protostar → (i) → (ii) → (iii) → (iv).  Name the four missing stages (i)–(iv) in the correct order.' },
+        { label:'(b)', kind:'text', marks:4, lines:7,
+          prompt:'Explain how a protostar forms from an interstellar cloud and why it becomes hotter as it forms. Then describe how the final stages in the life of a star much more massive than the Sun differ from those of the Sun.' }
+      ]},
+
+    { n:37, section:'B', kind:'parts',
+      stem:'This question is about measuring distances and speeds in the Universe.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'State what is meant by a <b>light-year</b>, give its value in metres, and explain why astronomical distances are measured in light-years rather than in metres.' },
+        { label:'(b)', kind:'text', marks:5, lines:8,
+          prompt:'A distant galaxy is 150 million (1.5 × 10⁸) light-years from the Earth. Taking 1 light-year = 9.5 × 10¹⁵ m: (i) calculate its distance from the Earth in metres; (ii) using the Hubble constant H₀ = 2.2 × 10⁻¹⁸ per second, calculate the speed at which this galaxy is moving away from the Earth (H₀ = v/d).' }
+      ]},
+
+    { n:38, section:'B', kind:'parts',
+      stem:'This question is about evidence for the expanding Universe.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Describe what is meant by <b>redshift</b> and explain what the redshift of distant galaxies tells us about the Universe. Then state what cosmic microwave background radiation (CMBR) is and how it supports the Big Bang theory.' },
+        { label:'(b)', kind:'text', marks:4, lines:7,
+          prompt:'An estimate of the age of the Universe is given by 1/H₀. Using H₀ = 2.2 × 10⁻¹⁸ per second, calculate this estimate first in seconds and then in years. (1 year ≈ 3.15 × 10⁷ s.)' }
+      ]},
+
+    { n:39, section:'B', kind:'parts',
+      stem:'A planet orbits the Sun in an approximately circular orbit of average radius 1.4 × 10¹² m. Its average orbital speed is 9.6 × 10³ m/s.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Calculate the orbital period of this planet, in seconds. (v = 2πr/T.)' },
+        { label:'(b)', kind:'text', marks:3, lines:5,
+          prompt:'<b>Show that</b> this orbital period is approximately 29 Earth years. (1 Earth year ≈ 3.15 × 10⁷ s.)' },
+        { label:'(c)', kind:'text', marks:2, lines:4,
+          prompt:'The Earth orbits the Sun at about 3.0 × 10⁴ m/s. Use this and your results to state and explain how the orbital speed of a planet depends on its distance from the Sun.' }
+      ]}
+
   ]
 };
 
-/* ---- where graded submissions are sent ----
-   Google Apps Script web-app /exec URL. Empty string = no endpoint configured, so a
-   graded paper falls back to the student downloading the answer packet. When set, a
-   graded paper auto-sends the student's answers to the teacher's Drive on submit and
-   hides the download button (revealing it only if the send fails, e.g. offline). */
+/* ---- where graded submissions are sent (Google Apps Script /exec) ---- */
 const SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec';
 
-/* ---- derive section labels & totals ---- */
+/* ---- derive totals ---- */
 const TOTAL = PAPER.questions.reduce((s,q)=> s + (q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0)), 0);
-/* GRADED = teacher-marked exam: no answer key in this file, nothing revealed to the student.
-   On submit the student only downloads their answers to send to the teacher. Set PAPER.graded = true. */
 const GRADED = !!PAPER.graded;
-/* A paper is fully auto-markable when it has NO subjective (text) answers — every part is MCQ or numeric.
-   A GRADED paper is never auto-marked here (it has no key), so it is treated as not-fully-auto. */
 const FULLY_AUTO = !GRADED && !PAPER.questions.some(q => q.kind==='parts' && q.parts.some(p => p.kind==='text'));
 
 /* ---- DOM helpers ---- */
 const $ = id => document.getElementById(id);
-function esc(){}
 function lines(n){ let h='<div class="print-lines">'; for(let i=0;i<n;i++) h+='<div class="ln"></div>'; return h+'</div>'; }
 
 /* ---- render questions ---- */
@@ -795,19 +775,19 @@ function figMarkup(svg, cap){
   return '<div class="fig">'+svg+(cap?'<div class="fig-cap">'+cap+'</div>':'')+'</div>';
 }
 
-/* uploaded diagram photos, keyed by part id (pid) -> {dataUrl, name} */
 var DRAW_IMAGES = {};
 
 function render(){
   const wrap = $('questions');
   let html = '';
-  let inA=false, inB=false;
+  let curSec = null;
   PAPER.questions.forEach(q=>{
-    // section dividers
-    if(q.kind==='mcq' && !inA){ inA=true;
-      html += '<div class="sec-head"><div class="sec-label">Section A</div><h2>Multiple choice</h2><div class="sec-sub">Select one answer per question. 1 mark each.</div></div>'; }
-    if(q.kind!=='mcq' && !inB){ inB=true;
-      html += '<div class="sec-head"><div class="sec-label">Section B</div><h2>Structured &amp; calculation</h2><div class="sec-sub">Answer in the spaces. Show working in calculations.</div></div>'; }
+    // named-section dividers
+    if(q.section !== curSec){
+      curSec = q.section;
+      const s = PAPER.sections[curSec];
+      html += '<div class="sec-head"><div class="sec-label">'+s.label+'</div><h2>'+s.title+'</h2><div class="sec-sub">'+s.sub+'</div></div>';
+    }
 
     const qMarks = q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0);
     html += '<div class="q" id="q'+q.n+'">';
@@ -828,7 +808,7 @@ function render(){
       q.parts.forEach((p,pi)=>{
         const pid = 'q'+q.n+'p'+pi;
         html += '<div class="part" id="'+pid+'">';
-        html += '<div><span class="part-label">'+p.label+'</span><span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
+        html += '<div>'+(p.label?'<span class="part-label">'+p.label+'</span>':'')+'<span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
         if(p.fig) html += figMarkup(p.fig, p.figCap);
         if(p.kind==='numeric'){
           html += '<div class="num-row"><input class="num" type="text" inputmode="decimal" data-ans="'+p.ans+'" data-tol="'+(p.tol||0)+'" placeholder="answer">'
@@ -843,7 +823,7 @@ function render(){
                 + '<div class="draw-preview" id="'+pid+'-prev"></div></div>';
           html += '<div class="draw-box"></div>';
         } else {
-          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your answer…"></textarea>';
+          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your working and answer…"></textarea>';
           html += lines(p.lines||3);
         }
         if(!GRADED) html += msMarkup(p.ms, pid);
@@ -915,7 +895,6 @@ function autoCheckNumeric(){
     const v=inp.parentElement.querySelector('.num-verdict');
     v.textContent = ok ? '✓ correct' : ((inp.value.trim()==='')?'✗ no answer (ans: '+ans+')':'✗ (ans: '+ans+')');
     v.style.color = ok ? 'var(--power)' : 'var(--force)';
-    // auto-tick the linked auto mark-scheme point
     const part = inp.closest('.part');
     const autoCb = part && part.querySelector('.ms-point.auto input[data-auto]');
     if(autoCb){ autoCb.checked = ok; }
@@ -932,7 +911,6 @@ function gradeMCQ(){
       if(i===q.answer){ opt.classList.add('correct'); opt.querySelector('.verdict').textContent='✓ correct'; }
       if(i===ci && ci!==q.answer){ opt.classList.add('wrong'); opt.querySelector('.verdict').textContent='✗ your answer'; }
     });
-    // auto-tick the auto mark-scheme point
     const cb = document.querySelector('#q'+q.n+'-ms .ms-point.auto input[data-auto]');
     if(cb) cb.checked = (ci===q.answer);
   });
@@ -992,20 +970,19 @@ function submit(auto){
   graded=true;
   if(timerId){ clearInterval(timerId); timerId=null; }
 
-  // time taken
   const elapsed = (performance.now()-startedAt)/1000;
   $('timeTaken').textContent = mode==='timed'
     ? fmt(Math.max(0, Math.round(PAPER.duration*60 - secs)))
     : fmt(Math.round(elapsed));
 
-  // lock inputs
   document.querySelectorAll('textarea.ans, input.num, .draw-in').forEach(f=>f.disabled=true);
   document.querySelectorAll('.draw-clear').forEach(b=>b.style.display='none');
 
   // GRADED (teacher-marked): no key in this file — reveal nothing, show only the "submitted" card.
   if(GRADED){
-    try { var _p = JSON.parse(localStorage.getItem('studyProgress')||'{}'); _p['ex:phys:6:1'] = new Date().toISOString(); localStorage.setItem('studyProgress', JSON.stringify(_p)); } catch(e){}
     document.querySelectorAll('.opts input[type="radio"]').forEach(r=>r.disabled=true);
+    // auto-complete this paper's hub tile
+    try { var _p = JSON.parse(localStorage.getItem('studyProgress')||'{}'); _p['ex:phys:6:1'] = new Date().toISOString(); localStorage.setItem('studyProgress', JSON.stringify(_p)); } catch(e){}
     $('results').classList.add('show');
     $('btnSubmit').textContent='✓ Submitted';
     $('btnSubmit').disabled=true;
@@ -1017,30 +994,24 @@ function submit(auto){
 
   gradeMCQ();
   autoCheckNumeric();
-
-  // reveal all mark schemes
   document.querySelectorAll('.ms').forEach(ms=>ms.classList.add('show'));
-
-  // enable self-mark recompute
   document.querySelectorAll('.ms-point input:not([disabled])').forEach(cb=>{
     cb.addEventListener('change', computeScore);
   });
-
   $('scoreDen').textContent=TOTAL;
   computeScore();
-
   $('results').classList.add('show');
   $('btnSubmit').textContent='✓ Submitted';
   $('btnSubmit').disabled=true;
   $('examBar').classList.remove('warn','danger');
-  $('results').scrollIntoView({behavior:'smooth'});
+  setTimeout(function(){ $('results').scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
 }
 
-/* ---- export answers for teacher AI-marking ---- */
+/* ---- export answers ---- */
 function stripTags(s){
   return (s||'').replace(/<[^>]+>/g,'')
     .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
-    .replace(/&deg;/g,'°').replace(/\s+/g,' ').trim();
+    .replace(/&deg;/g,'°').replace(/&frasl;/g,'/').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 }
 function buildMarkingExport(){
   let out=(GRADED?'EXAM PAPER — STUDENT ANSWERS (for the teacher to grade)':'PRACTICE PAPER — ANSWERS FOR MARKING')+'\n';
@@ -1057,7 +1028,7 @@ function buildMarkingExport(){
       if(!GRADED) out+='   CORRECT: '+String.fromCharCode(65+q.answer)+'\n';
       out+='\n';
     } else {
-      out+='Q'+q.n+'  '+stripTags(q.stem||'')+'\n';
+      out+='Q'+q.n+'  ['+(PAPER.sections[q.section]?PAPER.sections[q.section].title:'')+']  '+stripTags(q.stem||'')+'\n';
       if(q.ctx) out+='   ['+stripTags(q.ctx)+']\n';
       q.parts.forEach((p,pi)=>{
         const pid='q'+q.n+'p'+pi;
@@ -1069,7 +1040,7 @@ function buildMarkingExport(){
           const f=root?root.querySelector('textarea.ans, input.num'):null;
           val=f?f.value.trim():'';
         }
-        out+='  '+p.label+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
+        out+='  '+(p.label||('('+String.fromCharCode(97+pi)+')'))+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
         out+='     STUDENT ANSWER: '+(val||'(blank)')+'\n';
         if(!GRADED) out+='     MARK SCHEME: '+p.ms.map(m=>stripTags(m.p)+' ['+m.m+']').join('  |  ')+'\n';
         out+='\n';
@@ -1087,28 +1058,26 @@ function buildMarkingExport(){
   }
   return out;
 }
-/* ---- auto-send a graded submission to the teacher's Drive endpoint ---- */
+
+/* ---- auto-send a graded submission ---- */
 function sendSubmission(){
-  if(!SUBMIT_ENDPOINT) return;                 // not configured → student uses the download button
+  if(!SUBMIT_ENDPOINT) return;
   var images = Object.keys(DRAW_IMAGES).map(function(pid){ return { part:pid, name:DRAW_IMAGES[pid].name, dataUrl:DRAW_IMAGES[pid].dataUrl }; });
   var payload = JSON.stringify({ title:document.title, submittedAt:new Date().toISOString(), packet:buildMarkingExport(), images:images });
-  try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}   // local backup
+  try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}
   var st=$('sendStatus');
-  // CORS mode (NOT no-cors) so we can READ the server's reply and show success ONLY when the
-  // file was actually saved. Apps Script returns Access-Control-Allow-Origin:* on /exec and its
-  // redirect, and a text/plain body is a CORS-safelisted request (no preflight is triggered).
   fetch(SUBMIT_ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload})
     .then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.text(); })
     .then(function(t){
       var ok=false;
-      try{ ok = (JSON.parse(t).ok===true); }catch(e){ ok = /(^|[^a-z])ok([^a-z]|$)/i.test(t||''); }  // accept {"ok":true} or legacy "ok"
+      try{ ok = (JSON.parse(t).ok===true); }catch(e){ ok = /(^|[^a-z])ok([^a-z]|$)/i.test(t||''); }
       if(!ok) throw new Error('server did not confirm');
       if(st) st.textContent='✅ Confirmed — your answers have been received by your teacher.';
     })
     .catch(function(){
-      try{ downloadAnswers(); }catch(e){}                          // bonus: auto-save a copy to the student's device so answers are never lost if the send failed
+      try{ downloadAnswers(); }catch(e){}
       if(st) st.innerHTML='⚠ <b>Not confirmed.</b> We could not confirm your answers were received, so a backup copy has been <b>downloaded to this device automatically</b> — please send that file to your teacher. (If it didn’t download, tap “⬇ Download a backup copy” below.)';
-      var d=$('downloadBtn'); if(d) d.style.display='';            // keep the manual fallback button visible too
+      var d=$('downloadBtn'); if(d) d.style.display='';
     });
 }
 function downloadAnswers(){
@@ -1120,7 +1089,7 @@ function downloadAnswers(){
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
-/* ---- diagram photo upload (downscale in-browser, keep payload small) ---- */
+/* ---- diagram photo upload ---- */
 function handleDrawFile(input){
   var pid = input.dataset.pid;
   var file = input.files && input.files[0];
@@ -1170,19 +1139,19 @@ if(FULLY_AUTO){
 }
 if(GRADED){
   document.body.classList.add('graded');
-  var _sp=$('startPractice'); if(_sp) _sp.style.display='none';    // graded: timed exam only, no practice mode
+  var _sp=$('startPractice'); if(_sp) _sp.style.display='none';
   var _stt=$('startTimed'); if(_stt) _stt.textContent='▶ Start exam';
-  var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';        // hide score / breakdown
+  var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';
   var _rt=$('resultsTitle'); if(_rt) _rt.textContent='Paper submitted';
-  var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';        // nothing to review
+  var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';
   var _dc2=document.querySelector('.disclaimer'); if(_dc2) _dc2.style.display='none';
   var _gd=$('downloadBtn');
   if(SUBMIT_ENDPOINT){
-    if(_gd){ _gd.style.display=''; _gd.textContent='⬇ Download a backup copy'; }   // ALWAYS offer a manual backup: mode:'no-cors' can't confirm the save, so "submitted" is never proof
+    if(_gd){ _gd.style.display=''; _gd.textContent='⬇ Download a backup copy'; }
     var _sm=$('submittedMsg');
     if(_sm) _sm.innerHTML='✅ <b>Paper submitted.</b> <span id="sendStatus">Submitting your answers…</span>';
   } else {
-    if(_gd) _gd.textContent='⬇ Download your answers';            // fallback → manual download + send
+    if(_gd) _gd.textContent='⬇ Download your answers';
   }
 }
 $('metaTime').textContent = PAPER.duration+' minutes';
@@ -1224,7 +1193,6 @@ $('downloadBtn').addEventListener('click', downloadAnswers);
   btn.addEventListener('click', ()=>{ const n=body.getAttribute('data-theme')==='dark'?'light':'dark'; apply(n); safeSet(n); });
 })();
 </script>
-
 
 <style id="symbar-css">.symbar{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 2px;align-items:center}.symbar .symlbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#7b8aa8);margin-right:2px}.symbtn{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1;cursor:pointer;border:1px solid var(--border,#263247);background:var(--surface2,#19202f);color:var(--text,#d6deec);border-radius:6px;padding:5px 8px;min-width:30px}.symbtn:hover{border-color:var(--motion,var(--accent,#5b8dee))}@media print{.symbar{display:none}}</style><script>/*symbar-init*//*symbar-v3*/(function(){var SUBJ="phys";var S={chem:[['→','→'],['⇌','⇌'],['(s)','(s)'],['(l)','(l)'],['(g)','(g)'],['(aq)','(aq)'],['x₂','₂'],['x₃','₃'],['x₄','₄'],['x⁺','⁺'],['x⁻','⁻'],['x²⁺','²⁺'],['x²⁻','²⁻'],['x³⁺','³⁺']],phys:[['×','×'],['÷','÷'],['→','→'],['Δ','Δ'],['°','°'],['Ω','Ω'],['µ','µ'],['λ','λ'],['θ','θ'],['±','±'],['≈','≈'],['√','√'],['sin','sin'],['cos','cos'],['tan','tan'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['⁻²','⁻²']],maths:[['×','×'],['÷','÷'],['±','±'],['√','√'],['π','π'],['°','°'],['θ','θ'],['≤','≤'],['≥','≥'],['≠','≠'],['≈','≈'],['sin','sin'],['cos','cos'],['tan','tan'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['½','½'],['$','$'],['₹','₹']]};var set=S[SUBJ]||[];if(!set.length)return;var boxes=document.querySelectorAll('textarea.ans');if(!boxes.length)return;function ins(ta,t){if(ta.disabled)return;var s=ta.selectionStart||0,e=ta.selectionEnd||0,v=ta.value;ta.value=v.slice(0,s)+t+v.slice(e);var p=s+t.length;ta.selectionStart=ta.selectionEnd=p;ta.focus();ta.dispatchEvent(new Event('input',{bubbles:true}));}boxes.forEach(function(ta){if(ta.previousElementSibling&&ta.previousElementSibling.className==='symbar')return;var bar=document.createElement('div');bar.className='symbar';var lb=document.createElement('span');lb.className='symlbl';lb.textContent='insert';bar.appendChild(lb);set.forEach(function(p){var b=document.createElement('button');b.type='button';b.className='symbtn';b.textContent=p[0];b.tabIndex=-1;b.addEventListener('mousedown',function(ev){ev.preventDefault();});b.addEventListener('click',function(){ins(ta,p[1]);});bar.appendChild(b);});ta.parentNode.insertBefore(bar,ta);});})();</script>
 </body>

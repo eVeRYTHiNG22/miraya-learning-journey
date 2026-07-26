@@ -16,11 +16,7 @@
     --muted:    #7b8aa8;
     --bright:   #f0f4ff;
 
-    /* ── chemistry accents (energy / state axis) — same identity as the notes ──
-       --motion = SOLID (blue) · --cyan = LIQUID (teal) · --force = GAS (coral)
-       --energy = HEAT/ENERGY (amber) · --momentum = DIFFUSION (violet)
-       --power = correct / marks earned (green, fixed role)
-       --rose  = alerts / must-memorise (magenta, fixed role) */
+    /* physics accents (motion / energy axis) — same identity as the notes */
     --motion:   #46a8ff;
     --cyan:     #3ad9d4;
     --force:    #ff5263;
@@ -63,7 +59,7 @@
     transition: background-color .35s ease, color .35s ease;
   }
 
-  /* ambient field — cool (solid) up top, warm (gas) below: the energy axis */
+  /* ambient field — cool (motion) up top, warm (energy) below */
   body::before {
     content:'';
     position:fixed; inset:0;
@@ -124,7 +120,7 @@
   h1 .a { color: var(--motion); }
   h1 .b { color: var(--cyan); }
   h1 .c { color: var(--force); }
-  .header-sub { color: var(--muted); font-size: 14px; max-width: 620px; }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 640px; }
 
   /* ── FRONT SHEET (exam meta + controls) ── */
   .front {
@@ -357,7 +353,7 @@
   .ms-point.read { cursor:default; padding:9px 12px 9px 14px; }
   .ms.solution .ms-head .self-note { display:none; }
 
-  /* graded-mode "submitted" message (shown instead of a score on teacher-marked papers) */
+  /* graded-mode "submitted" message */
   .submitted-msg { display:none; }
   body.graded .submitted-msg { display:block; margin:4px 0 6px; color:var(--text); font-size:15px; line-height:1.7; }
   body.graded .submitted-msg b { color:var(--bright); }
@@ -396,81 +392,92 @@
   body[data-theme="light"] .eq-inline { background:#eef1f8; border-color:#d4dcec; }
 
   sub { font-size:.74em; }
+  sup { font-size:.74em; }
 
   @media (prefers-reduced-motion: reduce) {
     *, body { transition:none !important; animation:none !important; }
     .btn:hover, .theme-toggle:hover { transform:none; }
   }
 
-  /* ── PRINT: render as a clean blank exam paper ── */
+  /* ── PRINT: dense, paper-saving blank exam paper ── */
   @media print {
-    @page { margin:16mm; }
-    body { background:#fff; color:#000; font-size:12pt; }
+    @page { margin:10mm 12mm; }
+    body { background:#fff; color:#000; font-size:10.5pt; line-height:1.38; }
     body::before { display:none; }
     #questions { opacity:1 !important; }
     .theme-toggle, .exam-bar, .controls, .results, .front .controls,
-    .opt input, .ms, textarea.ans, input.num, .num-verdict { display:none !important; }
+    .opt input, .ms, textarea.ans, input.num, .num-verdict,
+    .symbar, .hub-home, #markDoneBtn, .pdf-btn { display:none !important; }
     .page { max-width:none; padding:0; }
-    .front { border:none; padding:0; background:none; }
-    .q, .front { box-shadow:none; border:1px solid #999; break-inside:avoid; }
-    .q { background:#fff; }
+    .header { margin-bottom:12px; padding-bottom:10px; }
+    h1 { font-size:1.45rem; margin-bottom:5px; line-height:1.1; }
+    .header-sub { font-size:9.5pt; }
+    .front { border:none; padding:0; background:none; margin-bottom:14px; }
+    .front h2 { font-size:1.05rem; margin-bottom:7px; }
+    .meta-grid { gap:3px 20px; margin-bottom:7px; }
+    .meta-item .v { font-size:10pt; }
+    .instructions li { margin-bottom:2px; font-size:9pt; padding-left:16px; }
+    .q, .front { box-shadow:none; break-inside:auto; }
+    .q { background:#fff; border:1px solid #999; border-radius:7px; padding:8px 12px; margin:8px 0; }
+    .q-head { margin-bottom:4px; }
+    .part { margin:6px 0; break-inside:avoid; }
+    .sec-head { margin:14px 0 3px; break-after:avoid; }
     .opt { background:#fff; border:1px solid #999; }
     .opt::before { content:''; display:inline-block; width:13px; height:13px; border:1.4px solid #000; border-radius:50%; margin-top:3px; }
-    .print-lines { display:block; margin-top:8px; }
-    .print-lines .ln { border-bottom:1px dotted #444; height:26px; }
-    .ctx { background:#f4f4f4; border-left:3px solid #444; }
-    /* figures print in black & white; hide the upload UI, show a blank box to draw in */
+    .print-lines { display:block; margin-top:3px; }
+    .print-lines .ln { border-bottom:1px dotted #555; height:20px; }
+    .ctx { background:#f4f4f4; border-left:3px solid #444; padding:6px 12px; margin:6px 0; }
     .fig { background:#fff; border:1px solid #999; }
     .fig svg { color:#000; }
     .fig svg text { fill:#000; }
     .draw-row, .draw-preview { display:none !important; }
-    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:180px; margin-top:8px; }
+    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:150px; margin-top:6px; }
     h1 .a, h1 .b, h1 .c, .q-no, .marks, .chip { color:#000 !important; }
   }
 </style>
 </head>
 <body data-theme="dark">
-<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
-
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
 
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
 
 <!-- sticky exam bar -->
 <div class="exam-bar" id="examBar">
-  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">35:00</span></div>
+  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">120:00</span></div>
   <div class="prog">Answered <b id="progDone">0</b> / <span id="progTot">0</span></div>
   <span class="mode-tag" id="modeTag">TIMED</span>
   <div class="spacer"></div>
-  <button class="btn primary" id="btnSubmit">Submit &amp; mark</button>
+  <button class="btn primary" id="btnSubmit">Submit</button>
 </div>
 
 <div class="page">
 
   <header class="header">
     <span class="chip">IGCSE Physics · 0625 · Extended · Graded exam</span>
-    <h1>Topic 4 Graded Paper<br><span class="a">Electricity </span><span class="b">& </span><span class="c">Magnetism</span></h1>
-    <p class="header-sub">Charge &amp; current · e.m.f., p.d. &amp; resistance · series and parallel circuits · electrical power, energy &amp; safety · magnetism, the motor effect, induction &amp; transformers. A graded exam — saved automatically when you submit.</p>
+    <h1>Topic 4 Graded Paper<br><span class="a">Electricity </span><span class="b">&amp; </span><span class="c">Magnetism</span></h1>
+    <p class="header-sub">A full 100-mark Topic&nbsp;4 mock in two sections — <b>Section A multiple choice</b> (30 marks, Paper-2 style) and <b>Section B structured &amp; calculation</b> (70 marks, Paper-4 style). Pitched at the top of the Extended range. This is a <b>teacher-marked</b> paper: your answers are submitted for grading and no marks are shown here.</p>
   </header>
 
   <!-- FRONT SHEET -->
   <section class="front" id="front">
     <h2>Before you begin</h2>
     <div class="meta-grid">
-      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">40 minutes</div></div>
-      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">37 marks</div></div>
-      <div class="meta-item"><div class="k">Syllabus scope</div><div class="v">0625 · 4.1 Magnetism · 4.2 Electrical quantities · 4.3 Electric circuits · 4.4 Electrical safety · 4.5 Electromagnetic effects</div></div>
+      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">120 minutes</div></div>
+      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">100 marks</div></div>
+      <div class="meta-item"><div class="k">Syllabus scope</div><div class="v">0625 · 4.1–4.5 Magnetism &amp; induced magnetism · Electric charge, current, e.m.f. &amp; p.d. · Resistance &amp; I–V characteristics · Series &amp; parallel circuits · Electrical energy, power &amp; safety · Electromagnetic effects — motor, a.c. generator &amp; transformer</div></div>
       <div class="meta-item"><div class="k">Level</div><div class="v">Extended (Core + Supplement)</div></div>
     </div>
     <ul class="instructions">
-      <li>Answer <b>all</b> questions. Section A is multiple choice; Section B is structured and calculation.</li>
-      <li>Show your <b>working</b> in all calculations — your teacher awards method marks for correct working.</li>
-      <li>This is a <b>graded exam</b>: your answers are <b>not</b> marked in this file and no answers are shown. In <b>Timed exam</b> mode a countdown runs; the paper locks when you submit or time runs out.</li>
-      <li>When you submit (or the time runs out) your answers are saved automatically — you don't need to download or send anything.</li>
-      <li>Useful data / equations: Q = It ; V = IR ; P = IV ; E = IVt ; series R = R₁ + R₂ ; parallel 1/R = 1/R₁ + 1/R₂ ; transformer V<sub>p</sub>/V<sub>s</sub> = N<sub>p</sub>/N<sub>s</sub> ; energy in kWh = power(kW) × time(h).</li>
+      <li>Answer <b>all</b> questions. <b>Section A (Q1–Q30)</b> is multiple choice — one mark each. <b>Section B (Q31–Q39)</b> is structured and calculation.</li>
+      <li>Show <b>all</b> your working and use appropriate units — your teacher awards method marks for correct working, not just the final answer.</li>
+      <li>A calculator may be used throughout. Give non-exact answers to a sensible number of significant figures (usually 2 or 3).</li>
+      <li>This is a <b>graded exam</b>: it is marked by your teacher. When you submit, your answers are sent for grading — <b>no score or correct answers are shown here</b>.</li>
+      <li>In timed mode a <b>2-hour countdown</b> runs. The paper is submitted when you press <b>Submit</b> or when time runs out.</li>
+      <li>Useful data: the a.c. mains supply is 230 V. Recall your own equations (Q = It, V = IR, P = VI = I²R, E = Pt, combined-resistance and transformer relationships) — no formula sheet is provided.</li>
     </ul>
     <div class="controls">
-      <button class="btn primary" id="startTimed">▶ Start timed exam</button>
+      <button class="btn primary" id="startTimed">▶ Start exam</button>
       <button class="btn ghost" id="startPractice">Practice (no timer)</button>
       <button class="btn ghost" id="printBtn">🖨 Print blank paper</button>
       <span class="hint">Tip: use the ☀ / ☾ button (top-right) to switch between dark and light (paper) themes.</span>
@@ -486,7 +493,7 @@
     <div class="result-card">
       <p class="submitted-msg" id="submittedMsg">✅ <b>Paper submitted.</b> Your answers have been submitted.</p>
       <div id="scoreWrap">
-        <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">37</span></span></div>
+        <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">100</span></span></div>
         <div class="score-pct" id="scorePct">0%</div>
         <div class="band" id="scoreBand">—</div>
         <div class="result-meta">
@@ -510,272 +517,246 @@
 <script>
 /* ===========================================================================
    PRACTICE-PAPER ENGINE  — generic; drives everything from the PAPER object.
-   To build a new paper, edit PAPER only (and the header markup above).
-   Question kinds:
-     'mcq'    — options[], answer (0-based index). Auto-marked.
-     'parts'  — parts[]; each part is 'text' (self-marked) or 'numeric'
-                (final answer auto-checked; method points self-marked).
-   Each markable unit lists ms[] marking points: {p:'text', m:marks, auto?:bool}
+   GRADED, two named sections (Section A multiple choice / Section B structured)
+   via each question's `section` key + PAPER.sections.
    =========================================================================== */
 const PAPER = {
-  "graded": true,
-  "duration": 40,
-  "questions": [
-    {
-      "n": 1,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "A current of 2.0 A flows in a wire for 30 s. The charge that passes is:",
-      "options": [
-        "15 C",
-        "60 C",
-        "0.067 C",
-        "32 C"
-      ]
-    },
-    {
-      "n": 2,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "Two 6.0 Ω resistors are connected in parallel. Their combined resistance is:",
-      "options": [
-        "3.0 Ω",
-        "6.0 Ω",
-        "12 Ω",
-        "0.33 Ω"
-      ]
-    },
-    {
-      "n": 3,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "The SI unit of electromotive force (e.m.f.) is the:",
-      "options": [
-        "ampere",
-        "volt",
-        "ohm",
-        "watt"
-      ]
-    },
-    {
-      "n": 4,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "Which component has a resistance that <b>decreases</b> when the light shining on it gets brighter?",
-      "options": [
-        "thermistor",
-        "light-dependent resistor (LDR)",
-        "diode",
-        "fuse"
-      ]
-    },
-    {
-      "n": 5,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "In a correctly wired mains plug, the fuse is connected in the:",
-      "options": [
-        "neutral wire",
-        "earth wire",
-        "live wire",
-        "metal case"
-      ]
-    },
-    {
-      "n": 6,
-      "kind": "mcq",
-      "marks": 1,
-      "stem": "A straight wire carrying a current is placed in a magnetic field. The force on the wire is greatest when the wire is:",
-      "options": [
-        "parallel to the field",
-        "at 45° to the field",
-        "at 90° to the field",
-        "along the field lines"
-      ]
-    },
-    {
-      "n": 7,
-      "kind": "parts",
-      "stem": "The circuit in Fig. 7.1 shows a 12 V battery connected to a 4.0 Ω resistor in series with a parallel combination of a 6.0 Ω resistor and a 3.0 Ω resistor.",
-      "fig": "<svg viewBox='0 0 340 195' width='340' role='img' aria-label='series-parallel circuit: 12 V battery, 4.0 ohm resistor in series with 6.0 ohm and 3.0 ohm in parallel'><g fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M30 40 H90 M140 40 H200 V110 M200 70 H230 M290 70 H300 M200 110 H230 M290 110 H300 M300 70 V160 H30 V108 M30 92 V40'/><rect x='90' y='31' width='50' height='18' rx='2' fill='var(--surface)'/><rect x='230' y='61' width='60' height='18' rx='2' fill='var(--surface)'/><rect x='230' y='101' width='60' height='18' rx='2' fill='var(--surface)'/><path d='M12 95 H48 M22 104 H38' stroke-width='2.6'/></g><text x='115' y='25' text-anchor='middle' font-size='12'>4.0 Ω</text><text x='260' y='55' text-anchor='middle' font-size='12'>6.0 Ω</text><text x='260' y='135' text-anchor='middle' font-size='12'>3.0 Ω</text><text x='58' y='103' font-size='12'>12 V</text></svg>",
-      "figCap": "Fig. 7.1",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "numeric",
-          "marks": 2,
-          "unit": "Ω",
-          "prompt": "Calculate the combined resistance of the parallel pair (6.0 Ω and 3.0 Ω)."
-        },
-        {
-          "label": "(b)",
-          "kind": "numeric",
-          "marks": 1,
-          "unit": "Ω",
-          "prompt": "Calculate the total resistance of the whole circuit."
-        },
-        {
-          "label": "(c)",
-          "kind": "numeric",
-          "marks": 2,
-          "unit": "A",
-          "prompt": "Calculate the current drawn from the battery."
-        },
-        {
-          "label": "(d)",
-          "kind": "numeric",
-          "marks": 2,
-          "unit": "V",
-          "prompt": "Calculate the potential difference across the 4.0 Ω resistor."
-        }
-      ]
-    },
-    {
-      "n": 8,
-      "kind": "parts",
-      "stem": "An electric geyser (water heater) in a Hyderabad home is rated 230 V, 2000 W.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "numeric",
-          "marks": 2,
-          "unit": "A",
-          "prompt": "Calculate the current the geyser draws at its normal operating power."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "Fuses of 5 A and 13 A are available. State which should be fitted, and why."
-        },
-        {
-          "label": "(c)",
-          "kind": "numeric",
-          "marks": 2,
-          "unit": "kWh",
-          "prompt": "The geyser is switched on for 30 minutes each day. Calculate the energy it uses in one day, in kWh."
-        },
-        {
-          "label": "(d)",
-          "kind": "numeric",
-          "marks": 2,
-          "unit": "₹",
-          "prompt": "Electricity costs ₹8 per kWh. Calculate the cost of running the geyser for 30 days."
-        }
-      ]
-    },
-    {
-      "n": 9,
-      "kind": "parts",
-      "stem": "A student makes an electromagnet by winding insulated wire around an iron nail and connecting it to a battery.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "State two ways the student could make the electromagnet stronger."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "Explain why soft iron, rather than steel, is used for the core."
-        },
-        {
-          "label": "(c)",
-          "kind": "draw",
-          "marks": 2,
-          "prompt": "Draw the pattern of the magnetic field around a long straight wire carrying a current. Mark the direction of the current and the direction of the field lines.",
-          "drawNote": "Draw your diagram on paper, then take a clear photo and upload it here. (You can also describe it in the photo if you wish.)"
-        }
-      ]
-    },
-    {
-      "n": 10,
-      "kind": "parts",
-      "stem": "A bar magnet is pushed into a coil of wire that is connected to a sensitive voltmeter.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "State what is observed on the voltmeter and name the effect responsible."
-        },
-        {
-          "label": "(b)",
-          "kind": "text",
-          "marks": 2,
-          "prompt": "State two ways of increasing the size of the induced e.m.f."
-        },
-        {
-          "label": "(c)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "State what happens to the voltmeter reading when the magnet is held still inside the coil."
-        },
-        {
-          "label": "(d)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "Name one device whose operation depends on electromagnetic induction."
-        }
-      ]
-    },
-    {
-      "n": 11,
-      "kind": "parts",
-      "stem": "A transformer is used to step the 230 V mains supply down to 12 V to run a lamp. The primary coil has 1150 turns.",
-      "parts": [
-        {
-          "label": "(a)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "State whether this is a step-up or a step-down transformer."
-        },
-        {
-          "label": "(b)",
-          "kind": "numeric",
-          "marks": 2,
-          "unit": "turns",
-          "prompt": "Calculate the number of turns on the secondary coil."
-        },
-        {
-          "label": "(c)",
-          "kind": "numeric",
-          "marks": 2,
-          "unit": "A",
-          "prompt": "Assume the transformer is 100 % efficient. The lamp draws 2.0 A. Calculate the current in the primary coil."
-        },
-        {
-          "label": "(d)",
-          "kind": "text",
-          "marks": 1,
-          "prompt": "Explain why a transformer only works with an alternating (a.c.) supply."
-        }
-      ]
-    }
+  graded: true,
+  duration: 120,                 // minutes (2 hours)
+  sections: {
+    A: { label:'Section A', title:'Multiple choice', sub:'Questions 1–30 · 30 marks · choose the one correct answer (A, B, C or D). 1 mark each.' },
+    B: { label:'Section B', title:'Structured & calculation', sub:'Questions 31–39 · 70 marks · answer in the spaces. Show all working and give units.' }
+  },
+  questions: [
+
+    /* ═══════════ SECTION A — MULTIPLE CHOICE (30) ═══════════ */
+
+    { n:1, section:'A', kind:'mcq', marks:1,
+      stem:'Which material is most suitable for the core of an electromagnet that must switch on and off rapidly?',
+      options:['steel','soft iron','copper','aluminium'] },
+
+    { n:2, section:'A', kind:'mcq', marks:1,
+      stem:'A bar of unmagnetised soft iron is placed near, but not touching, the north (N) pole of a strong permanent magnet. The bar:',
+      options:['is unaffected because it is not touching the magnet','has its near end become a N pole and is repelled','has its near end become a S pole and is attracted','is attracted, its near end becoming a N pole'] },
+
+    { n:3, section:'A', kind:'mcq', marks:1,
+      stem:'At a neutral point in a combined magnetic field:',
+      options:['the resultant magnetic field strength is zero','the magnetic field is at its strongest','a plotting compass spins around continuously','the field acts only vertically'] },
+
+    { n:4, section:'A', kind:'mcq', marks:1,
+      stem:'A charge of 90 C passes a point in a circuit in 2.0 minutes. The average current is:',
+      options:['45 A','180 A','1.5 A','0.75 A'] },
+
+    { n:5, section:'A', kind:'mcq', marks:1,
+      stem:'A current of 0.50 A flows in a wire for 4.0 minutes. The charge that passes a point in the wire is:',
+      options:['2.0 C','120 C','480 C','12 C'] },
+
+    { n:6, section:'A', kind:'mcq', marks:1,
+      stem:'The electromotive force (e.m.f.) of a source is:',
+      options:['the current the source can drive','the total resistance of the source','the energy delivered to the external components per coulomb','the electrical energy given to each coulomb of charge by the source'] },
+
+    { n:7, section:'A', kind:'mcq', marks:1,
+      stem:'A resistor carries a current of 20 mA when the potential difference across it is 5.0 V. Its resistance is:',
+      options:['250 Ω','0.25 Ω','100 Ω','2500 Ω'] },
+
+    { n:8, section:'A', kind:'mcq', marks:1,
+      stem:'A uniform wire has resistance R. A second wire of the same metal has twice the length and twice the diameter of the first. The resistance of the second wire is:',
+      options:['2R','4R','R/2','R'] },
+
+    { n:9, section:'A', kind:'mcq', marks:1,
+      stem:'Two 4.0 Ω resistors connected in parallel are joined in series with a 3.0 Ω resistor. The total resistance of this arrangement is:',
+      options:['11 Ω','5.0 Ω','3.5 Ω','1.2 Ω'] },
+
+    { n:10, section:'A', kind:'mcq', marks:1,
+      stem:'Two resistors, of resistance R and 2R, are connected in series with each other. The ratio (power dissipated in R) : (power dissipated in 2R) is:',
+      options:['1 : 1','2 : 1','1 : 4','1 : 2'] },
+
+    { n:11, section:'A', kind:'mcq', marks:1,
+      stem:'As the current in a filament lamp increases, the resistance of its filament:',
+      options:['increases because the filament gets hotter','stays constant','decreases because the filament gets hotter','falls to zero'] },
+
+    { n:12, section:'A', kind:'mcq', marks:1,
+      stem:'A 2.0 kΩ resistor and a 6.0 kΩ resistor are connected in series across an 8.0 V supply of negligible internal resistance. The potential difference across the 2.0 kΩ resistor is:',
+      options:['6.0 V','4.0 V','2.0 V','8.0 V'] },
+
+    { n:13, section:'A', kind:'mcq', marks:1,
+      stem:'A thermistor and a fixed resistor form a potential divider. As the thermistor gets hotter, the potential difference across the thermistor:',
+      options:['rises','stays constant','equals the full supply voltage','falls'] },
+
+    { n:14, section:'A', kind:'mcq', marks:1,
+      stem:'An electric heater of power 3.0 kW operates from the 230 V mains. The current it draws is:',
+      options:['13 A','0.077 A','130 A','6.9 A'] },
+
+    { n:15, section:'A', kind:'mcq', marks:1,
+      stem:'An appliance of power 2.0 kW is used for 30 minutes. The electrical energy it transfers is:',
+      options:['60 kW h','3600 kW h','1.0 kW h','2.0 kW h'] },
+
+    { n:16, section:'A', kind:'mcq', marks:1,
+      stem:'Which quantity is the same at every point in a single series circuit?',
+      options:['the potential difference across each component','the power dissipated in each component','the resistance of each component','the current'] },
+
+    { n:17, section:'A', kind:'mcq', marks:1,
+      stem:'A second identical lamp is added in parallel with a lamp already lit by a battery. Compared with one lamp alone, the total current drawn from the battery:',
+      options:['is unchanged','is halved','increases, because the total resistance falls','becomes zero'] },
+
+    { n:18, section:'A', kind:'mcq', marks:1,
+      stem:'Which circuit component has a very high resistance in one direction and a very low resistance in the other?',
+      options:['a fuse','a diode','a thermistor','a light-dependent resistor'] },
+
+    { n:19, section:'A', kind:'mcq', marks:1,
+      stem:'To measure the current in a lamp correctly, an ammeter should have:',
+      options:['a high resistance and be connected in parallel with the lamp','a high resistance and be connected in series with the lamp','a low resistance and be connected in parallel with the lamp','a very low resistance and be connected in series with the lamp'] },
+
+    { n:20, section:'A', kind:'mcq', marks:1,
+      stem:'In a circuit designed to switch a lamp on automatically when it gets dark, the component used to detect the change in light is:',
+      options:['a light-dependent resistor (LDR)','a relay','a diode','a thermistor'] },
+
+    { n:21, section:'A', kind:'mcq', marks:1,
+      stem:'In a correctly wired three-pin mains plug, the fuse is connected in the:',
+      options:['live wire','neutral wire','earth wire','metal case'] },
+
+    { n:22, section:'A', kind:'mcq', marks:1,
+      stem:'An appliance operates normally from the 230 V mains with a power of 2.3 kW. The most suitable fuse for its plug is:',
+      options:['3 A','5 A','13 A','1 A'] },
+
+    { n:23, section:'A', kind:'mcq', marks:1,
+      stem:'A metal-cased appliance is earthed. If a fault connects the live wire to the metal case, the earth wire and fuse protect the user because:',
+      options:['the earth wire safely stores the extra charge','a large current flows to earth and blows the fuse, isolating the supply','the case becomes live but the current is too small to be dangerous','the neutral wire carries all the fault current away'] },
+
+    { n:24, section:'A', kind:'mcq', marks:1,
+      stem:'The magnetic field lines produced by a long straight wire carrying a current are:',
+      options:['straight lines parallel to the wire','radial lines pointing away from the wire','loops that resemble those of a bar magnet','concentric circles centred on the wire'] },
+
+    { n:25, section:'A', kind:'mcq', marks:1,
+      stem:'The direction of the magnetic field inside a current-carrying solenoid is reversed by:',
+      options:['adding more turns to the coil','increasing the current','reversing the direction of the current','using a longer soft-iron core'] },
+
+    { n:26, section:'A', kind:'mcq', marks:1,
+      stem:'A straight wire carrying a current is placed at right angles to a magnetic field. The force on the wire acts:',
+      options:['at right angles to both the current and the field','along the direction of the current','along the direction of the field','in the direction opposite to the field'] },
+
+    { n:27, section:'A', kind:'mcq', marks:1,
+      stem:'Which change would <b>not</b> increase the turning effect (and so the speed) of a simple d.c. motor?',
+      options:['increasing the current in the coil','using a weaker magnet','adding more turns to the coil','using a stronger magnet'] },
+
+    { n:28, section:'A', kind:'mcq', marks:1,
+      stem:'A transformer has 100 turns on its primary coil and 500 turns on its secondary coil. When 12 V a.c. is applied to the primary, the secondary voltage is:',
+      options:['2.4 V','48 V','60 V','600 V'] },
+
+    { n:29, section:'A', kind:'mcq', marks:1,
+      stem:'An ideal (100 % efficient) transformer steps 230 V down to 23 V. The secondary coil supplies a current of 2.0 A. The current in the primary coil is:',
+      options:['20 A','0.20 A','2.0 A','0.020 A'] },
+
+    { n:30, section:'A', kind:'mcq', marks:1,
+      stem:'A magnet is pushed into a coil connected to a sensitive voltmeter. The induced e.m.f. would be larger if instead the experimenter:',
+      options:['pushed the magnet in more slowly','used a coil with fewer turns','held the magnet still inside the coil','pushed a stronger magnet in faster'] },
+
+    /* ═══════════ SECTION B — STRUCTURED & CALCULATION (70) ═══════════ */
+
+    { n:31, section:'B', kind:'parts',
+      stem:'This question is about electric charge, current and power.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'A polythene rod is rubbed with a dry cloth and becomes negatively charged. Explain, in terms of the movement of electrons, why the rod becomes negatively charged, and explain what will be observed when this rod is then held close to a light, positively charged metal-coated ball hanging on an insulating thread.' },
+        { label:'(b)', kind:'text', marks:5, lines:8,
+          prompt:'A charged capacitor discharges through a lamp, transferring a charge of 6.0 mC in a time of 3.0 ms and delivering 0.90 J of energy. (i) Calculate the average current during the discharge. (ii) Calculate the average power delivered to the lamp. (iii) Hence calculate the average potential difference across the lamp during the discharge.' }
+      ]},
+
+    { n:32, section:'B', kind:'parts',
+      stem:'This question is about the resistance of a filament lamp.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Explain, in terms of the ions in the metal filament and the electrons that carry the current, why the resistance of a filament lamp increases as the current through it increases.' },
+        { label:'(b)', kind:'text', marks:5, lines:8,
+          prompt:'A filament lamp is marked “12 V, 24 W”. (i) Calculate the resistance of the filament when the lamp is operating normally at 12 V. (ii) When the lamp is first switched on, the filament is cold and its resistance is only 1.2 Ω. Calculate the current at the instant of switch-on when it is connected to the 12 V supply, and explain why this switch-on current is so much larger than the normal operating current.' }
+      ]},
+
+    { n:33, section:'B', kind:'parts',
+      stem:'Fig. 33.1 shows a circuit. The battery has an e.m.f. of 12 V and negligible internal resistance. A 12 Ω resistor and a 6.0 Ω resistor are connected in parallel, and this combination is in series with a 4.0 Ω resistor.',
+      fig:"<svg viewBox='0 0 320 176' width='320' role='img' aria-label='circuit: 12 V battery in series with a 4.0 ohm resistor and a parallel combination of a 12 ohm and a 6.0 ohm resistor'><g fill='none' stroke='currentColor' stroke-width='1.6'><rect x='24' y='30' width='272' height='116'/><line x1='150' y1='30' x2='158' y2='30'/><line x1='150' y1='22' x2='150' y2='38'/><line x1='158' y1='18' x2='158' y2='42'/></g><text x='150' y='14' text-anchor='middle' font-size='10'>12 V</text><rect x='60' y='22' width='40' height='16' fill='var(--surface)' stroke='currentColor' stroke-width='1.4'/><text x='80' y='16' text-anchor='middle' font-size='9'>4.0 Ω</text><rect x='196' y='58' width='44' height='16' fill='var(--surface)' stroke='currentColor' stroke-width='1.4'/><text x='262' y='70' font-size='9'>12 Ω</text><rect x='196' y='104' width='44' height='16' fill='var(--surface)' stroke='currentColor' stroke-width='1.4'/><text x='262' y='116' font-size='9'>6.0 Ω</text><g fill='none' stroke='currentColor' stroke-width='1.4'><line x1='190' y1='66' x2='170' y2='66'/><line x1='170' y1='66' x2='170' y2='112'/><line x1='170' y1='112' x2='190' y2='112'/><line x1='246' y1='66' x2='266' y2='66'/><line x1='266' y1='66' x2='266' y2='112'/><line x1='266' y1='112' x2='246' y2='112'/><line x1='170' y1='89' x2='24' y2='89'/></g></svg>",
+      figCap:'Fig. 33.1  (not to scale)',
+      parts:[
+        { label:'(a)', kind:'text', marks:5, lines:8,
+          prompt:'Calculate the current in the <b>12 Ω</b> resistor. Show every step of your working.' },
+        { label:'(b)', kind:'text', marks:3, lines:6,
+          prompt:'Calculate the total power delivered by the battery. Then state and explain what happens to this total power if the 6.0 Ω resistor is disconnected (so that branch is broken).' }
+      ]},
+
+    { n:34, section:'B', kind:'parts',
+      stem:'An electric shower is rated 8.5 kW and is designed to run from the 230 V mains.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Calculate the current in the shower when it is operating normally, and hence choose the most suitable fuse for it from the following: 13 A, 30 A, 45 A. Justify your choice.' },
+        { label:'(b)', kind:'text', marks:5, lines:8,
+          prompt:'The shower is used for a total of 35 minutes each day, and electrical energy costs 8.0 cents per kW&nbsp;h. (i) Calculate the electrical energy, in kW&nbsp;h, transferred by the shower in one day. (ii) Calculate the total cost of using the shower over a 30-day month.' }
+      ]},
+
+    { n:35, section:'B', kind:'parts',
+      stem:'This question is about the safe use of mains electricity.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'A metal-cased heater is connected to the mains with a three-core cable. Explain how the earth wire and the fuse work <b>together</b> to protect the user if a fault causes the live wire to touch the metal case.' },
+        { label:'(b)', kind:'text', marks:4, lines:7,
+          prompt:'The heater is rated 230 V, 920 W. (i) Show that its normal operating current is 4.0 A. (ii) The heater is fitted with a 13 A fuse. Explain why a 5 A fuse would give the user better protection than the 13 A fuse.' }
+      ]},
+
+    { n:36, section:'B', kind:'parts',
+      stem:'Fig. 36.1 shows a straight wire carrying a current, placed at right angles to the magnetic field between the poles of a magnet.',
+      fig:"<svg viewBox='0 0 300 150' width='300' role='img' aria-label='a current-carrying wire between the N and S poles of a magnet, at right angles to the field'><rect x='24' y='40' width='36' height='70' fill='var(--surface)' stroke='currentColor' stroke-width='1.4'/><rect x='240' y='40' width='36' height='70' fill='var(--surface)' stroke='currentColor' stroke-width='1.4'/><text x='42' y='80' text-anchor='middle' font-size='13'>N</text><text x='258' y='80' text-anchor='middle' font-size='13'>S</text><g stroke='currentColor' stroke-width='1.2' fill='none'><line x1='70' y1='75' x2='230' y2='75'/><line x1='214' y1='69' x2='230' y2='75'/><line x1='214' y1='81' x2='230' y2='75'/></g><circle cx='150' cy='75' r='6' fill='var(--surface)' stroke='currentColor' stroke-width='1.4'/><text x='150' y='104' text-anchor='middle' font-size='9'>wire (current →)</text></svg>",
+      figCap:'Fig. 36.1  current-carrying wire in a magnetic field',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Explain the difference between a permanent magnet and an electromagnet, and describe how you could build an electromagnet, using a d.c. supply, whose strength can be changed. State <b>two</b> ways of increasing its strength.' },
+        { label:'(b)', kind:'text', marks:4, lines:7,
+          prompt:'For the wire in Fig. 36.1, state the direction of the force on the wire and the rule you use to find it. Then explain how the motor effect is used in a simple d.c. motor to produce <b>continuous</b> rotation in one direction, making clear the job done by the split-ring commutator.' }
+      ]},
+
+    { n:37, section:'B', kind:'parts',
+      stem:'Fig. 37.1 shows a simple a.c. generator: a rectangular coil is rotated in a magnetic field and connected to an external circuit through the components P and Q.',
+      fig:"<svg viewBox='0 0 300 150' width='300' role='img' aria-label='an a.c. generator: a coil rotating between magnet poles connected through slip rings P and Q'><rect x='20' y='34' width='30' height='74' fill='var(--surface)' stroke='currentColor' stroke-width='1.4'/><rect x='250' y='34' width='30' height='74' fill='var(--surface)' stroke='currentColor' stroke-width='1.4'/><text x='35' y='76' text-anchor='middle' font-size='12'>N</text><text x='265' y='76' text-anchor='middle' font-size='12'>S</text><rect x='108' y='46' width='84' height='50' fill='none' stroke='currentColor' stroke-width='1.8'/><circle cx='138' cy='120' r='7' fill='none' stroke='currentColor' stroke-width='1.4'/><circle cx='162' cy='120' r='7' fill='none' stroke='currentColor' stroke-width='1.4'/><text x='128' y='138' font-size='9'>P</text><text x='168' y='138' font-size='9'>Q</text></svg>",
+      figCap:'Fig. 37.1  a.c. generator',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'State what is meant by <b>electromagnetic induction</b>, and describe a simple experiment, using a magnet and a coil connected to a sensitive voltmeter, that demonstrates it. State one way, shown by your experiment, of increasing the induced e.m.f.' },
+        { label:'(b)', kind:'text', marks:5, lines:8,
+          prompt:'For the generator in Fig. 37.1: (i) name the components P and Q; (ii) describe how the induced e.m.f. changes during <b>one complete rotation</b> of the coil, and explain why the e.m.f. is momentarily <b>zero</b> when the coil is horizontal (its plane perpendicular to the field) but a <b>maximum</b> when the coil is vertical (its plane parallel to the field).' }
+      ]},
+
+    { n:38, section:'B', kind:'parts',
+      stem:'This question is about transformers and the transmission of electrical power.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'A transformer has 11 500 turns on its primary coil and 500 turns on its secondary coil. The primary is connected to a 230 V a.c. supply. Calculate the secondary voltage, and state whether this is a step-up or step-down transformer.' },
+        { label:'(b)', kind:'text', marks:2, lines:4,
+          prompt:'The transformer is 100 % efficient and its secondary coil delivers a power of 40 W. Calculate the current in the primary coil.' },
+        { label:'(c)', kind:'text', marks:3, lines:6,
+          prompt:'A power station sends 10 kW of power along a cable of total resistance 5.0 Ω. Calculate the power wasted as heat in the cable when the power is transmitted at (i) 250 V and (ii) 25 000 V. Use your two answers to explain why electrical energy is transmitted at high voltage.' }
+      ]},
+
+    { n:39, section:'B', kind:'parts',
+      stem:'An electric water heater contains two identical heating elements, each of resistance 53 Ω. A switch connects the two elements either in series or in parallel across the 230 V mains.',
+      parts:[
+        { label:'(a)', kind:'text', marks:3, lines:5,
+          prompt:'Calculate the total power dissipated by the heater when the two elements are connected in <b>series</b>.' },
+        { label:'(b)', kind:'text', marks:3, lines:5,
+          prompt:'Calculate the total power dissipated when the two elements are connected in <b>parallel</b>, and state by what factor this is greater than the power in the series arrangement.' },
+        { label:'(c)', kind:'text', marks:2, lines:4,
+          prompt:'Calculate the current drawn from the mains in the parallel arrangement, and state whether a 13 A or a 3 A fuse should be fitted.' }
+      ]}
+
   ]
 };
 
-/* ---- where graded submissions are sent ----
-   Google Apps Script web-app /exec URL. Empty string = no endpoint configured, so a
-   graded paper falls back to the student downloading the answer packet. When set, a
-   graded paper auto-sends the student's answers to the teacher's Drive on submit and
-   hides the download button (revealing it only if the send fails, e.g. offline). */
+/* ---- where graded submissions are sent (Google Apps Script /exec) ---- */
 const SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec';
 
-/* ---- derive section labels & totals ---- */
+/* ---- derive totals ---- */
 const TOTAL = PAPER.questions.reduce((s,q)=> s + (q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0)), 0);
-/* GRADED = teacher-marked exam: no answer key in this file, nothing revealed to the student.
-   On submit the student only downloads their answers to send to the teacher. Set PAPER.graded = true. */
 const GRADED = !!PAPER.graded;
-/* A paper is fully auto-markable when it has NO subjective (text) answers — every part is MCQ or numeric.
-   A GRADED paper is never auto-marked here (it has no key), so it is treated as not-fully-auto. */
 const FULLY_AUTO = !GRADED && !PAPER.questions.some(q => q.kind==='parts' && q.parts.some(p => p.kind==='text'));
 
 /* ---- DOM helpers ---- */
 const $ = id => document.getElementById(id);
-function esc(){}
 function lines(n){ let h='<div class="print-lines">'; for(let i=0;i<n;i++) h+='<div class="ln"></div>'; return h+'</div>'; }
 
 /* ---- render questions ---- */
@@ -802,19 +783,19 @@ function figMarkup(svg, cap){
   return '<div class="fig">'+svg+(cap?'<div class="fig-cap">'+cap+'</div>':'')+'</div>';
 }
 
-/* uploaded diagram photos, keyed by part id (pid) -> {dataUrl, name} */
 var DRAW_IMAGES = {};
 
 function render(){
   const wrap = $('questions');
   let html = '';
-  let inA=false, inB=false;
+  let curSec = null;
   PAPER.questions.forEach(q=>{
-    // section dividers
-    if(q.kind==='mcq' && !inA){ inA=true;
-      html += '<div class="sec-head"><div class="sec-label">Section A</div><h2>Multiple choice</h2><div class="sec-sub">Select one answer per question. 1 mark each.</div></div>'; }
-    if(q.kind!=='mcq' && !inB){ inB=true;
-      html += '<div class="sec-head"><div class="sec-label">Section B</div><h2>Structured &amp; calculation</h2><div class="sec-sub">Answer in the spaces. Show working in calculations.</div></div>'; }
+    // named-section dividers
+    if(q.section !== curSec){
+      curSec = q.section;
+      const s = PAPER.sections[curSec];
+      html += '<div class="sec-head"><div class="sec-label">'+s.label+'</div><h2>'+s.title+'</h2><div class="sec-sub">'+s.sub+'</div></div>';
+    }
 
     const qMarks = q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0);
     html += '<div class="q" id="q'+q.n+'">';
@@ -835,7 +816,7 @@ function render(){
       q.parts.forEach((p,pi)=>{
         const pid = 'q'+q.n+'p'+pi;
         html += '<div class="part" id="'+pid+'">';
-        html += '<div><span class="part-label">'+p.label+'</span><span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
+        html += '<div>'+(p.label?'<span class="part-label">'+p.label+'</span>':'')+'<span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
         if(p.fig) html += figMarkup(p.fig, p.figCap);
         if(p.kind==='numeric'){
           html += '<div class="num-row"><input class="num" type="text" inputmode="decimal" data-ans="'+p.ans+'" data-tol="'+(p.tol||0)+'" placeholder="answer">'
@@ -850,7 +831,7 @@ function render(){
                 + '<div class="draw-preview" id="'+pid+'-prev"></div></div>';
           html += '<div class="draw-box"></div>';
         } else {
-          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your answer…"></textarea>';
+          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your working and answer…"></textarea>';
           html += lines(p.lines||3);
         }
         if(!GRADED) html += msMarkup(p.ms, pid);
@@ -922,7 +903,6 @@ function autoCheckNumeric(){
     const v=inp.parentElement.querySelector('.num-verdict');
     v.textContent = ok ? '✓ correct' : ((inp.value.trim()==='')?'✗ no answer (ans: '+ans+')':'✗ (ans: '+ans+')');
     v.style.color = ok ? 'var(--power)' : 'var(--force)';
-    // auto-tick the linked auto mark-scheme point
     const part = inp.closest('.part');
     const autoCb = part && part.querySelector('.ms-point.auto input[data-auto]');
     if(autoCb){ autoCb.checked = ok; }
@@ -939,7 +919,6 @@ function gradeMCQ(){
       if(i===q.answer){ opt.classList.add('correct'); opt.querySelector('.verdict').textContent='✓ correct'; }
       if(i===ci && ci!==q.answer){ opt.classList.add('wrong'); opt.querySelector('.verdict').textContent='✗ your answer'; }
     });
-    // auto-tick the auto mark-scheme point
     const cb = document.querySelector('#q'+q.n+'-ms .ms-point.auto input[data-auto]');
     if(cb) cb.checked = (ci===q.answer);
   });
@@ -999,20 +978,19 @@ function submit(auto){
   graded=true;
   if(timerId){ clearInterval(timerId); timerId=null; }
 
-  // time taken
   const elapsed = (performance.now()-startedAt)/1000;
   $('timeTaken').textContent = mode==='timed'
     ? fmt(Math.max(0, Math.round(PAPER.duration*60 - secs)))
     : fmt(Math.round(elapsed));
 
-  // lock inputs
   document.querySelectorAll('textarea.ans, input.num, .draw-in').forEach(f=>f.disabled=true);
   document.querySelectorAll('.draw-clear').forEach(b=>b.style.display='none');
 
   // GRADED (teacher-marked): no key in this file — reveal nothing, show only the "submitted" card.
   if(GRADED){
-    try { var _p = JSON.parse(localStorage.getItem('studyProgress')||'{}'); _p['ex:phys:4:1'] = new Date().toISOString(); localStorage.setItem('studyProgress', JSON.stringify(_p)); } catch(e){}
     document.querySelectorAll('.opts input[type="radio"]').forEach(r=>r.disabled=true);
+    // auto-complete this paper's hub tile
+    try { var _p = JSON.parse(localStorage.getItem('studyProgress')||'{}'); _p['ex:phys:4:1'] = new Date().toISOString(); localStorage.setItem('studyProgress', JSON.stringify(_p)); } catch(e){}
     $('results').classList.add('show');
     $('btnSubmit').textContent='✓ Submitted';
     $('btnSubmit').disabled=true;
@@ -1024,30 +1002,24 @@ function submit(auto){
 
   gradeMCQ();
   autoCheckNumeric();
-
-  // reveal all mark schemes
   document.querySelectorAll('.ms').forEach(ms=>ms.classList.add('show'));
-
-  // enable self-mark recompute
   document.querySelectorAll('.ms-point input:not([disabled])').forEach(cb=>{
     cb.addEventListener('change', computeScore);
   });
-
   $('scoreDen').textContent=TOTAL;
   computeScore();
-
   $('results').classList.add('show');
   $('btnSubmit').textContent='✓ Submitted';
   $('btnSubmit').disabled=true;
   $('examBar').classList.remove('warn','danger');
-  $('results').scrollIntoView({behavior:'smooth'});
+  setTimeout(function(){ $('results').scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
 }
 
-/* ---- export answers for teacher AI-marking ---- */
+/* ---- export answers ---- */
 function stripTags(s){
   return (s||'').replace(/<[^>]+>/g,'')
     .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
-    .replace(/&deg;/g,'°').replace(/\s+/g,' ').trim();
+    .replace(/&deg;/g,'°').replace(/&frasl;/g,'/').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 }
 function buildMarkingExport(){
   let out=(GRADED?'EXAM PAPER — STUDENT ANSWERS (for the teacher to grade)':'PRACTICE PAPER — ANSWERS FOR MARKING')+'\n';
@@ -1064,7 +1036,7 @@ function buildMarkingExport(){
       if(!GRADED) out+='   CORRECT: '+String.fromCharCode(65+q.answer)+'\n';
       out+='\n';
     } else {
-      out+='Q'+q.n+'  '+stripTags(q.stem||'')+'\n';
+      out+='Q'+q.n+'  ['+(PAPER.sections[q.section]?PAPER.sections[q.section].title:'')+']  '+stripTags(q.stem||'')+'\n';
       if(q.ctx) out+='   ['+stripTags(q.ctx)+']\n';
       q.parts.forEach((p,pi)=>{
         const pid='q'+q.n+'p'+pi;
@@ -1076,7 +1048,7 @@ function buildMarkingExport(){
           const f=root?root.querySelector('textarea.ans, input.num'):null;
           val=f?f.value.trim():'';
         }
-        out+='  '+p.label+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
+        out+='  '+(p.label||('('+String.fromCharCode(97+pi)+')'))+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
         out+='     STUDENT ANSWER: '+(val||'(blank)')+'\n';
         if(!GRADED) out+='     MARK SCHEME: '+p.ms.map(m=>stripTags(m.p)+' ['+m.m+']').join('  |  ')+'\n';
         out+='\n';
@@ -1094,28 +1066,26 @@ function buildMarkingExport(){
   }
   return out;
 }
-/* ---- auto-send a graded submission to the teacher's Drive endpoint ---- */
+
+/* ---- auto-send a graded submission ---- */
 function sendSubmission(){
-  if(!SUBMIT_ENDPOINT) return;                 // not configured → student uses the download button
+  if(!SUBMIT_ENDPOINT) return;
   var images = Object.keys(DRAW_IMAGES).map(function(pid){ return { part:pid, name:DRAW_IMAGES[pid].name, dataUrl:DRAW_IMAGES[pid].dataUrl }; });
   var payload = JSON.stringify({ title:document.title, submittedAt:new Date().toISOString(), packet:buildMarkingExport(), images:images });
-  try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}   // local backup
+  try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}
   var st=$('sendStatus');
-  // CORS mode (NOT no-cors) so we can READ the server's reply and show success ONLY when the
-  // file was actually saved. Apps Script returns Access-Control-Allow-Origin:* on /exec and its
-  // redirect, and a text/plain body is a CORS-safelisted request (no preflight is triggered).
   fetch(SUBMIT_ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload})
     .then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.text(); })
     .then(function(t){
       var ok=false;
-      try{ ok = (JSON.parse(t).ok===true); }catch(e){ ok = /(^|[^a-z])ok([^a-z]|$)/i.test(t||''); }  // accept {"ok":true} or legacy "ok"
+      try{ ok = (JSON.parse(t).ok===true); }catch(e){ ok = /(^|[^a-z])ok([^a-z]|$)/i.test(t||''); }
       if(!ok) throw new Error('server did not confirm');
       if(st) st.textContent='✅ Confirmed — your answers have been received by your teacher.';
     })
     .catch(function(){
-      try{ downloadAnswers(); }catch(e){}                          // bonus: auto-save a copy to the student's device so answers are never lost if the send failed
+      try{ downloadAnswers(); }catch(e){}
       if(st) st.innerHTML='⚠ <b>Not confirmed.</b> We could not confirm your answers were received, so a backup copy has been <b>downloaded to this device automatically</b> — please send that file to your teacher. (If it didn’t download, tap “⬇ Download a backup copy” below.)';
-      var d=$('downloadBtn'); if(d) d.style.display='';            // keep the manual fallback button visible too
+      var d=$('downloadBtn'); if(d) d.style.display='';
     });
 }
 function downloadAnswers(){
@@ -1127,7 +1097,7 @@ function downloadAnswers(){
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
-/* ---- diagram photo upload (downscale in-browser, keep payload small) ---- */
+/* ---- diagram photo upload ---- */
 function handleDrawFile(input){
   var pid = input.dataset.pid;
   var file = input.files && input.files[0];
@@ -1177,19 +1147,19 @@ if(FULLY_AUTO){
 }
 if(GRADED){
   document.body.classList.add('graded');
-  var _sp=$('startPractice'); if(_sp) _sp.style.display='none';    // graded: timed exam only, no practice mode
+  var _sp=$('startPractice'); if(_sp) _sp.style.display='none';
   var _stt=$('startTimed'); if(_stt) _stt.textContent='▶ Start exam';
-  var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';        // hide score / breakdown
+  var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';
   var _rt=$('resultsTitle'); if(_rt) _rt.textContent='Paper submitted';
-  var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';        // nothing to review
+  var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';
   var _dc2=document.querySelector('.disclaimer'); if(_dc2) _dc2.style.display='none';
   var _gd=$('downloadBtn');
   if(SUBMIT_ENDPOINT){
-    if(_gd){ _gd.style.display=''; _gd.textContent='⬇ Download a backup copy'; }   // ALWAYS offer a manual backup: mode:'no-cors' can't confirm the save, so "submitted" is never proof
+    if(_gd){ _gd.style.display=''; _gd.textContent='⬇ Download a backup copy'; }
     var _sm=$('submittedMsg');
     if(_sm) _sm.innerHTML='✅ <b>Paper submitted.</b> <span id="sendStatus">Submitting your answers…</span>';
   } else {
-    if(_gd) _gd.textContent='⬇ Download your answers';            // fallback → manual download + send
+    if(_gd) _gd.textContent='⬇ Download your answers';
   }
 }
 $('metaTime').textContent = PAPER.duration+' minutes';
@@ -1231,7 +1201,6 @@ $('downloadBtn').addEventListener('click', downloadAnswers);
   btn.addEventListener('click', ()=>{ const n=body.getAttribute('data-theme')==='dark'?'light':'dark'; apply(n); safeSet(n); });
 })();
 </script>
-
 
 <style id="symbar-css">.symbar{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 2px;align-items:center}.symbar .symlbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#7b8aa8);margin-right:2px}.symbtn{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1;cursor:pointer;border:1px solid var(--border,#263247);background:var(--surface2,#19202f);color:var(--text,#d6deec);border-radius:6px;padding:5px 8px;min-width:30px}.symbtn:hover{border-color:var(--motion,var(--accent,#5b8dee))}@media print{.symbar{display:none}}</style><script>/*symbar-init*//*symbar-v3*/(function(){var SUBJ="phys";var S={chem:[['→','→'],['⇌','⇌'],['(s)','(s)'],['(l)','(l)'],['(g)','(g)'],['(aq)','(aq)'],['x₂','₂'],['x₃','₃'],['x₄','₄'],['x⁺','⁺'],['x⁻','⁻'],['x²⁺','²⁺'],['x²⁻','²⁻'],['x³⁺','³⁺']],phys:[['×','×'],['÷','÷'],['→','→'],['Δ','Δ'],['°','°'],['Ω','Ω'],['µ','µ'],['λ','λ'],['θ','θ'],['±','±'],['≈','≈'],['√','√'],['sin','sin'],['cos','cos'],['tan','tan'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['⁻²','⁻²']],maths:[['×','×'],['÷','÷'],['±','±'],['√','√'],['π','π'],['°','°'],['θ','θ'],['≤','≤'],['≥','≥'],['≠','≠'],['≈','≈'],['sin','sin'],['cos','cos'],['tan','tan'],['x²','²'],['x³','³'],['⁻¹','⁻¹'],['½','½'],['$','$'],['₹','₹']]};var set=S[SUBJ]||[];if(!set.length)return;var boxes=document.querySelectorAll('textarea.ans');if(!boxes.length)return;function ins(ta,t){if(ta.disabled)return;var s=ta.selectionStart||0,e=ta.selectionEnd||0,v=ta.value;ta.value=v.slice(0,s)+t+v.slice(e);var p=s+t.length;ta.selectionStart=ta.selectionEnd=p;ta.focus();ta.dispatchEvent(new Event('input',{bubbles:true}));}boxes.forEach(function(ta){if(ta.previousElementSibling&&ta.previousElementSibling.className==='symbar')return;var bar=document.createElement('div');bar.className='symbar';var lb=document.createElement('span');lb.className='symlbl';lb.textContent='insert';bar.appendChild(lb);set.forEach(function(p){var b=document.createElement('button');b.type='button';b.className='symbtn';b.textContent=p[0];b.tabIndex=-1;b.addEventListener('mousedown',function(ev){ev.preventDefault();});b.addEventListener('click',function(){ins(ta,p[1]);});bar.appendChild(b);});ta.parentNode.insertBefore(bar,ta);});})();</script>
 </body>
