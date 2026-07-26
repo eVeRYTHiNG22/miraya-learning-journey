@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathematics Topic 3: Coordinate Geometry</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    /* MATHS palette — abstraction → shapes.
+       blue = lines/graphs · indigo = algebra/equations ·
+       amber = length & distance · cyan = gradient ·
+       green = exam tips (locked) · magenta = alerts (locked) */
+    --motion:   #4db8ff;   /* blue — lines & graphs (primary) */
+    --force:    #ff5263;   /* red — contrast accent (perpendicular, warnings) */
+    --energy:   #f5b13c;   /* amber — length, distance, midpoint */
+    --energy2:  #f5b13c;
+    --momentum: #7c8cff;   /* indigo — algebra & equations */
+    --power:    #48d39a;   /* green — exam tips / success (locked role) */
+    --cyan:     #3ad9d4;   /* cyan — gradient */
+    --rose:     #f25cc1;   /* alert magenta — ≥30° from warm accents (CVD-safe, locked) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ambient field — the locked shared neutral two-tone glow */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #4a3a1826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 110px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 54px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #122c44, #241a44);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--momentum); }
+  h1 .b { color: var(--motion); }
+
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 620px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: rise 0.55s ease forwards;
+  }
+  @keyframes rise {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+  .section:nth-of-type(12){animation-delay:.48s}
+  .section:nth-of-type(13){animation-delay:.52s}
+  .section:nth-of-type(14){animation-delay:.56s}
+  .section:nth-of-type(15){animation-delay:.60s}
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--bright);
+    margin-bottom: 14px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: var(--bright);
+    margin: 26px 0 10px;
+  }
+
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+  ul { margin: 6px 0 14px 22px; }
+  li { margin-bottom: 5px; }
+
+  .eq-inline {
+    font-family: 'JetBrains Mono', monospace;
+    background: #0d1828;
+    border: 1px solid #22324a;
+    border-radius: 5px;
+    padding: 1px 7px;
+    font-size: 13px;
+    color: var(--motion);
+    white-space: nowrap;
+  }
+  body[data-theme="light"] .eq-inline {
+    background: #eef1f8;
+    border-color: #d4dcec;
+  }
+  /* block-level worked-line, for multi-step working */
+  .work {
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text);
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:8px; padding:11px 14px; margin:12px 0; line-height:1.9;
+    overflow-x:auto;
+  }
+  .work .step { color:var(--muted); }
+
+  /* ── BOXES ── */
+  .box {
+    border-radius: 11px;
+    padding: 17px 20px;
+    margin: 18px 0;
+    font-size: 14.2px;
+    border: 1px solid;
+  }
+  .box-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color: var(--motion); }
+
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define {
+    border-left: 3px solid var(--motion);
+    background: linear-gradient(90deg, #0c1c2880, transparent);
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .define .term {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--bright);
+    font-size: 1.02rem;
+  }
+  .define.force-c   { border-color: var(--force); background:linear-gradient(90deg,#23120b80,transparent); }
+  .define.energy-c  { border-color: var(--energy2); background:linear-gradient(90deg,#23180680,transparent); }
+  .define.mom-c     { border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+  .define.calc-c    { border-color: var(--cyan); background:linear-gradient(90deg,#08231f80,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:20px 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 16px 18px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { transform: translateY(-3px); border-color:#3a557c; }
+  .card-title {
+    font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px;
+  }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th {
+    background: var(--surface2); color: var(--motion);
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase;
+    padding:10px 14px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+
+  mark {
+    background: linear-gradient(120deg,#1c3a5a88,#243f6a88);
+    color: var(--bright); padding:1px 4px; border-radius:3px;
+  }
+
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY NOTE (read before cloning)
+     · BASE IS LOCKED ACROSS ALL SUBJECTS: --bg, --surface*, --text,
+       --muted, --border, the paper light theme, and the neutral ambient
+       glow NEVER change per subject. Only the accent block changes.
+     · SHARED components (reused by any topic — never delete):
+       .explorer .scn-tabs .scn-tab .scn-read .rk .replay svg.graph
+       .axis .axis-lbl .curve .tracer .chart-cap .tool .tool-grid
+       .slider-row .vec-out .eqbank .eqcell .box .define .card table
+       svg.diagram .dg-* .cy .pdf-btn .paperlinks
+     · MATHS widgets in this file: y = mx + c line explorer (svg.graph)
+       and the two-point / perpendicular-bisector explorer.
+  ═════════════════════════════════════════════ */
+
+  /* ─────────────────────────────────────────────
+     EXPLORER / TOOL SHELL (signature)
+  ───────────────────────────────────────────── */
+  .explorer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 22px 0;
+  }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab {
+    font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    padding:8px 14px; border-radius:8px; cursor:pointer;
+    background:#0e1626; border:1px solid var(--border); color:var(--muted);
+    transition:all .18s; user-select:none;
+  }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+
+  .chart-cap {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    margin-bottom:6px;
+  }
+  svg.graph { width:100%; height:auto; display:block;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  .axis { stroke:#2a3a55; stroke-width:1.2; }
+  .grid { stroke:#1a2740; stroke-width:1; }
+  .axis-lbl { fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:9px; }
+  .curve { fill:none; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+  .tracer { fill:#fff; }
+  #lxLine  { stroke: var(--motion); }
+  #tpSeg   { stroke: var(--motion); }
+  #tpBis   { stroke: var(--force); }
+  .pt-point { fill: var(--force); }
+  .pt-mid   { fill: var(--energy2); }
+  .steptri  { fill:none; stroke: var(--cyan); stroke-width:1.6; stroke-dasharray:4 3; }
+
+  /* ─────────────────────────────────────────────
+     STATIC DIAGRAMS (house style)
+  ───────────────────────────────────────────── */
+  svg.diagram{width:100%;height:auto;display:block;background:#0c1322;border:1px solid var(--border);border-radius:9px;margin:14px auto;}
+  body[data-theme="light"] svg.diagram{background:#fbfaf4;}
+  .dg-line { fill:none; stroke:currentColor; stroke-width:2.4; stroke-linecap:round; }
+  .dg-thin { fill:none; stroke:currentColor; stroke-width:1.6; }
+  .dg-dash { fill:none; stroke:currentColor; stroke-width:1.5; stroke-dasharray:5 4; }
+  .dg-pt   { fill:currentColor; }
+  .dg-lbl  { font-family:'JetBrains Mono',monospace; font-size:10.5px; fill:var(--text); }
+  .dg-lbl.sm { font-size:9px; fill:var(--muted); }
+  .dg-lbl.acc { fill:currentColor; }
+  .dg-quad { font-family:'Fraunces',serif; font-size:13px; fill:var(--muted); opacity:.7; }
+  .diag-cap {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted); text-align:center;
+    margin:-4px 0 20px; line-height:1.7;
+  }
+
+  /* ─────────────────────────────────────────────
+     TOOL (sliders + read-out)
+  ───────────────────────────────────────────── */
+  .tool {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:20px; margin:22px 0;
+  }
+  .tool-grid { display:grid; grid-template-columns:1fr 250px; gap:20px; align-items:start; }
+  .slider-row { margin:14px 0; }
+  .slider-row label {
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] {
+    width:100%; -webkit-appearance:none; height:5px; border-radius:3px;
+    background:#22304a; outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--momentum); cursor:pointer; box-shadow:0 0 10px #7c8cff88;
+  }
+  input[type=range]::-moz-range-thumb {
+    width:17px; height:17px; border:none; border-radius:50%;
+    background:var(--momentum); cursor:pointer;
+  }
+  .vec-out {
+    background:#171229; border:1px solid #2e2350; border-radius:9px;
+    padding:14px 16px;
+  }
+  .vec-out .ro {
+    font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:#8a7ab8; margin:8px 0 2px;
+  }
+  .vec-out .ro:first-child { margin-top:0; }
+  .vec-out .rv {
+    font-family:'JetBrains Mono',monospace; font-size:13.5px;
+    color:var(--bright); line-height:1.45;
+  }
+  .vec-out .rv.big {
+    font-family:'Fraunces',serif; font-size:1.45rem; font-weight:700; color:var(--momentum);
+  }
+  .scn-read {
+    margin-top:16px; background:#0c1c28; border:1px solid #1f4258;
+    border-radius:9px; padding:13px 16px; font-size:13.6px;
+  }
+  .scn-read .rk {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--motion);
+    margin-bottom:6px;
+  }
+
+  /* ─────────────────────────────────────────────
+     EQUATION / SKILL BANK
+  ───────────────────────────────────────────── */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqcell {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 12px; cursor:pointer; text-align:center;
+    transition:transform .16s, border-color .16s, box-shadow .16s;
+  }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion);
+    box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym {
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600;
+    color:var(--bright); margin-bottom:4px;
+  }
+  .eqcell .eq-name {
+    font-size:10.5px; color:var(--muted); letter-spacing:.04em;
+  }
+  .eqcell[data-c="motion"]:hover   { border-color:var(--motion); }
+  .eqcell[data-c="force"]:hover    { border-color:var(--force); box-shadow:0 8px 22px #0008; }
+  .eqcell[data-c="energy"]:hover   { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover      { border-color:var(--momentum); }
+  .eqcell[data-c="power"]:hover    { border-color:var(--power); }
+  .eqcell[data-c="calc"]:hover     { border-color:var(--cyan); }
+
+  /* floating detail card — fully themed (vars, with a light override below) */
+  #eq-card {
+    display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px;
+    width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow);
+    overflow:hidden; transition:opacity .25s;
+  }
+  #eqc-top {
+    padding:18px 18px 14px; display:flex; gap:14px; align-items:center;
+    border-bottom:1px solid var(--card-divider); position:relative;
+  }
+  #eqc-badge {
+    flex-shrink:0; width:62px; height:62px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:600;
+    background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd);
+  }
+  #eqc-head h4 {
+    font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px;
+  }
+  #eqc-formula {
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--motion);
+  }
+  #eqc-close {
+    position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted);
+    cursor:pointer; user-select:none;
+  }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--card-label); margin:10px 0 6px;
+  }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill {
+    background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px;
+    padding:5px 9px; font-size:11.5px; color:var(--card-text);
+  }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr {
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text);
+    background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em;
+  }
+  #eqc-example {
+    background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55;
+  }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip {
+    background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px;
+  }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ─────────────────────────────────────────────
+     CHECK-YOURSELF RETRIEVAL BLOCK
+  ───────────────────────────────────────────── */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ─────────────────────────────────────────────
+     PAPER LINKS PANEL
+  ───────────────────────────────────────────── */
+  .paperlinks {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:18px 20px; margin:26px 0 0;
+  }
+  .paperlinks .pl-head {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--motion); margin-bottom:10px;
+  }
+  .paperlinks p { font-size:13.6px; color:var(--muted); margin-bottom:12px; }
+  .pl-grid { display:grid; gap:9px; }
+  .plink {
+    display:flex; align-items:center; gap:10px; text-decoration:none;
+    background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+    padding:11px 14px; color:var(--text); font-size:13.6px;
+    transition:border-color .2s, transform .16s;
+  }
+  .plink:hover { border-color:var(--motion); transform:translateX(3px); }
+  .plink .pl-ico { font-size:15px; flex:none; }
+  .plink .pl-tag {
+    margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted); flex:none;
+  }
+
+  /* ── SAVE AS PDF BUTTON ── */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+
+  /* ── FOOTER ── */
+  .footer {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    text-align:center; padding-top:28px; border-top:1px solid var(--border);
+    letter-spacing:.07em; line-height:1.8;
+  }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .grid3, .eqbank { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+    .tool-grid { grid-template-columns:1fr; }
+  }
+  /* ─────────────────────────────────────────────
+     THEME TOGGLE BUTTON
+  ───────────────────────────────────────────── */
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 10000;
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-size: 17px; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    transition: transform .25s, border-color .2s, background-color .35s;
+    line-height: 1;
+  }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  /* smooth cross-fade between themes */
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.graph, svg.diagram,
+  .scn-read, .scn-tab, .vec-out, .chip, .work, .cy-item, .plink, .paperlinks,
+  table th, table td, .eqcell, mark {
+    transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+  }
+
+  /* ═════════════════════════════════════════════
+     LIGHT THEME ("study paper")
+     Accents are deepened so coloured text stays
+     legible on a pale background.
+  ═════════════════════════════════════════════ */
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;   /* warm notebook paper */
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;   /* ink */
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;   /* deep blue (AA 4.5+) */
+    --force:    #cb2531;   /* deep red (AA 4.5+) */
+    --energy:   #8f5d00;   /* deep amber (AA 4.5+) */
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;   /* deep indigo (AA 4.5+) */
+    --power:    #107a50;   /* deep green (AA 4.5+) */
+    --cyan:     #0b7a67;   /* deep teal (AA 4.5+) */
+    --rose:     #ad1a7d;   /* deep alert magenta (AA 4.5+) */
+    /* floating detail-card — light theme */
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #f3d29a22 0%, transparent 60%);
+  }
+
+  /* boxes */
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+
+  /* define callouts */
+  body[data-theme="light"] .define           { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.force-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.energy-c  { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.mom-c     { background:linear-gradient(90deg,#ece8fb99,transparent); }
+  body[data-theme="light"] .define.calc-c    { background:linear-gradient(90deg,#dff3ef99,transparent); }
+
+  /* cards & misc */
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip {
+    background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion);
+  }
+  body[data-theme="light"] .work { background:#efeadd; }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+
+  /* graphs & diagrams (SVG) — CSS overrides inline presentation attributes */
+  body[data-theme="light"] svg.graph { background:#fbfaf4; }
+  body[data-theme="light"] .axis      { stroke:#bcb4a2; }
+  body[data-theme="light"] .grid      { stroke:#e4ddca; }
+  body[data-theme="light"] .axis-lbl  { fill:#8c8674; }
+  body[data-theme="light"] .tracer    { fill:#14181f; }
+
+  /* explorer chrome */
+  body[data-theme="light"] .scn-read   { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab    { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover  { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+
+  /* tool read-out */
+  body[data-theme="light"] .vec-out { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .vec-out .ro { color:#6a559a; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    body, .theme-toggle, .box, .card, .define, .explorer, .tool,
+    svg.graph, svg.diagram, .scn-read, .scn-tab, .vec-out, .work,
+    .cy-item, .plink, .chip, table th, table td, .eqcell, mark { transition:none; }
+  }
+
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint, #eq-card { display:none !important; }
+    .cy-a { display:block !important; }
+    /* the fade-in animation must never hide content on paper */
+    .section { break-inside:avoid; opacity:1 !important; animation:none !important; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
+
+<a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Mathematics 0580 · Extended · Topic 3</div>
+    <h1><span class="a">Coordinate</span> <span class="b">Geometry</span></h1>
+    <p class="header-sub">Intuition-first notes for the whole of Topic 3 (E3.1–E3.7). Coordinate geometry is where <em>algebra</em> and <em>shape</em> finally meet: a pair of numbers pins a point, and one small equation carries a whole infinite line. Learn four formulas properly — gradient, length, midpoint, <span class="eq-inline" style="white-space:normal">y = mx + c</span> — and every exam question in this topic is a rearrangement of them.</p>
+  </div>
+
+
+  <!-- ── 01 · COORDINATES ── -->
+  <div class="section">
+    <div class="sec-label">01 / 12 · E3.1 · Coordinates</div>
+    <h2>The plane, and reading a point</h2>
+
+    <p>Two number lines crossed at right angles turn a flat surface into an <strong>address system</strong>. Every point gets exactly one address <span class="eq-inline">(x, y)</span>: how far <em>across</em> first, then how far <em>up</em>. The crossing point is the <strong>origin</strong>, <span class="eq-inline">(0, 0)</span>.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      A coordinate pair is an <strong>ordered</strong> pair — the order carries the meaning. <span class="eq-inline">(4, 3)</span> and <span class="eq-inline">(3, 4)</span> are two different points. If you remember nothing else, remember <strong>"along the corridor, then up the stairs"</strong>: the x-coordinate always comes first.
+    </div>
+
+    <svg class="diagram" viewBox="0 0 340 300" role="img" aria-label="Cartesian plane with x and y axes, the four quadrants labelled one to four anticlockwise from the top right, the point P at (4, 3) reached by going 4 across then 3 up, and the point Q at (−3, −2) in the third quadrant.">
+      <!-- grid -->
+      <line class="grid" x1="14"  y1="20"  x2="14"  y2="280"/>
+      <line class="grid" x1="40"  y1="20"  x2="40"  y2="280"/>
+      <line class="grid" x1="66"  y1="20"  x2="66"  y2="280"/>
+      <line class="grid" x1="92"  y1="20"  x2="92"  y2="280"/>
+      <line class="grid" x1="118" y1="20"  x2="118" y2="280"/>
+      <line class="grid" x1="144" y1="20"  x2="144" y2="280"/>
+      <line class="grid" x1="196" y1="20"  x2="196" y2="280"/>
+      <line class="grid" x1="222" y1="20"  x2="222" y2="280"/>
+      <line class="grid" x1="248" y1="20"  x2="248" y2="280"/>
+      <line class="grid" x1="274" y1="20"  x2="274" y2="280"/>
+      <line class="grid" x1="300" y1="20"  x2="300" y2="280"/>
+      <line class="grid" x1="326" y1="20"  x2="326" y2="280"/>
+      <line class="grid" x1="14" y1="20"  x2="326" y2="20"/>
+      <line class="grid" x1="14" y1="46"  x2="326" y2="46"/>
+      <line class="grid" x1="14" y1="72"  x2="326" y2="72"/>
+      <line class="grid" x1="14" y1="98"  x2="326" y2="98"/>
+      <line class="grid" x1="14" y1="124" x2="326" y2="124"/>
+      <line class="grid" x1="14" y1="176" x2="326" y2="176"/>
+      <line class="grid" x1="14" y1="202" x2="326" y2="202"/>
+      <line class="grid" x1="14" y1="228" x2="326" y2="228"/>
+      <line class="grid" x1="14" y1="254" x2="326" y2="254"/>
+      <line class="grid" x1="14" y1="280" x2="326" y2="280"/>
+      <!-- axes -->
+      <line class="axis" x1="14" y1="150" x2="326" y2="150"/>
+      <line class="axis" x1="170" y1="20" x2="170" y2="280"/>
+      <text x="332" y="154" class="dg-lbl sm" text-anchor="end">x</text>
+      <text x="176" y="28"  class="dg-lbl sm">y</text>
+      <!-- tick labels -->
+      <text x="66"  y="163" class="dg-lbl sm" text-anchor="middle">−4</text>
+      <text x="118" y="163" class="dg-lbl sm" text-anchor="middle">−2</text>
+      <text x="222" y="163" class="dg-lbl sm" text-anchor="middle">2</text>
+      <text x="274" y="163" class="dg-lbl sm" text-anchor="middle">4</text>
+      <text x="176" y="257" class="dg-lbl sm">−4</text>
+      <text x="176" y="205" class="dg-lbl sm">−2</text>
+      <text x="176" y="101" class="dg-lbl sm">2</text>
+      <text x="176" y="49"  class="dg-lbl sm">4</text>
+      <text x="162" y="163" class="dg-lbl sm" text-anchor="end">O</text>
+      <!-- quadrants -->
+      <text x="300" y="42"  class="dg-quad" text-anchor="middle">1st</text>
+      <text x="40"  y="42"  class="dg-quad" text-anchor="middle">2nd</text>
+      <text x="40"  y="270" class="dg-quad" text-anchor="middle">3rd</text>
+      <text x="300" y="270" class="dg-quad" text-anchor="middle">4th</text>
+      <!-- route to P(4,3): across then up -->
+      <g style="color:var(--cyan)">
+        <path class="dg-dash" d="M170 150 L274 150"/>
+        <path class="dg-dash" d="M274 150 L274 72"/>
+        <text x="222" y="143" class="dg-lbl acc sm" text-anchor="middle">4 across</text>
+        <text x="280" y="115" class="dg-lbl acc sm">3 up</text>
+      </g>
+      <!-- points -->
+      <g style="color:var(--motion)">
+        <circle class="dg-pt" cx="274" cy="72" r="4.5"/>
+        <text x="268" y="62" class="dg-lbl acc" text-anchor="end">P(4, 3)</text>
+      </g>
+      <g style="color:var(--force)">
+        <circle class="dg-pt" cx="92" cy="202" r="4.5"/>
+        <text x="86" y="220" class="dg-lbl acc" text-anchor="middle">Q(−3, −2)</text>
+      </g>
+    </svg>
+    <div class="diag-cap">Fig 1 · x first, then y. The quadrants are numbered 1st to 4th anticlockwise, starting top-right.</div>
+
+    <table>
+      <tr><th>Quadrant</th><th>x</th><th>y</th><th>Example</th></tr>
+      <tr><td><strong>1st</strong> (top right)</td><td>positive</td><td>positive</td><td>(4, 3)</td></tr>
+      <tr><td><strong>2nd</strong> (top left)</td><td>negative</td><td>positive</td><td>(−5, 2)</td></tr>
+      <tr><td><strong>3rd</strong> (bottom left)</td><td>negative</td><td>negative</td><td>(−3, −2)</td></tr>
+      <tr><td><strong>4th</strong> (bottom right)</td><td>positive</td><td>negative</td><td>(6, −1)</td></tr>
+    </table>
+
+    <h3>A coordinate grid is just a map</h3>
+    <p>A map of Anand Nagar is printed on a grid where <strong>1 unit = 100 m</strong>, with the bus stand at the origin. The temple is at <span class="eq-inline">T(4, 3)</span> and Meera's house at <span class="eq-inline">H(−3, −2)</span>. "4 across, 3 up" from the bus stand means 400 m east and 300 m north — the coordinates carry real distances the moment you know the scale.</p>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Three ways students lose this free mark</div>
+      <ul>
+        <li>Writing the pair backwards — <span class="eq-inline">(3, 4)</span> when the point is <span class="eq-inline">(4, 3)</span>.</li>
+        <li>Losing a minus sign on the way to the left or downwards.</li>
+        <li><strong>Miscounting the scale</strong>: on many exam grids one square is 2 units, not 1. Always read the numbers on the axis, never count squares.</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- ── 02 · DRAWING LINEAR GRAPHS ── -->
+  <div class="section">
+    <div class="sec-label">02 / 12 · E3.2 · Drawing linear graphs</div>
+    <h2>Drawing a straight line from its equation</h2>
+
+    <p>A <strong>linear equation</strong> is one where x and y appear only to the power 1 — no <span class="eq-inline">x²</span>, no <span class="eq-inline">xy</span>, no <span class="eq-inline">1/x</span>. Its graph is <em>always</em> a perfectly straight line, so <strong>you only ever need two points</strong> to draw it. Sensible students plot three: the third one catches an arithmetic slip, because if the three don't line up, one of them is wrong.</p>
+
+    <div class="define">
+      <span class="term">Linear graph</span> — the set of <em>all</em> the points <span class="eq-inline">(x, y)</span> whose coordinates satisfy the equation. A point lies on the line exactly when substituting its coordinates makes the equation true.
+    </div>
+
+    <h3>Method 1 — a table of values</h3>
+    <p>Best when the equation is already in the form <span class="eq-inline">y = …</span>. Choose three x-values, work out each y, plot, join with a ruled line, and label the line with its equation.</p>
+    <div class="work">
+      <span class="step">draw</span> y = −2x + 5<br>
+      x = −1 → y = −2(−1) + 5 = <strong>7</strong><br>
+      x =  0 → y = 0 + 5 = <strong>5</strong><br>
+      x =  3 → y = −6 + 5 = <strong>−1</strong><br>
+      <span class="step">plot</span> (−1, 7), (0, 5), (3, −1) → join with a ruler
+    </div>
+
+    <h3>Method 2 — the cover-up (intercept) method</h3>
+    <p>Much faster when the equation is in the form <span class="eq-inline">ax + by = c</span>, e.g. <span class="eq-inline">3x + 2y = 12</span>. <strong>Cover up</strong> one term at a time:</p>
+    <ul>
+      <li>Put <span class="eq-inline">x = 0</span> → <span class="eq-inline">2y = 12</span> → <span class="eq-inline">y = 6</span>, so the line cuts the y-axis at <strong>(0, 6)</strong>.</li>
+      <li>Put <span class="eq-inline">y = 0</span> → <span class="eq-inline">3x = 12</span> → <span class="eq-inline">x = 4</span>, so it cuts the x-axis at <strong>(4, 0)</strong>.</li>
+    </ul>
+    <p>Two points, ruler, done. This is the fastest method for <span class="eq-inline">3x + 2y = 5</span>-style equations — a table of values is equally acceptable, just slower.</p>
+
+    <svg class="diagram" viewBox="0 0 300 250" role="img" aria-label="The line 3x plus 2y equals 12 drawn on a grid using its intercepts: it cuts the y-axis at (0, 6) and the x-axis at (4, 0).">
+      <line class="grid" x1="34"  y1="18" x2="34"  y2="226"/>
+      <line class="grid" x1="86"  y1="18" x2="86"  y2="226"/>
+      <line class="grid" x1="112" y1="18" x2="112" y2="226"/>
+      <line class="grid" x1="138" y1="18" x2="138" y2="226"/>
+      <line class="grid" x1="164" y1="18" x2="164" y2="226"/>
+      <line class="grid" x1="190" y1="18" x2="190" y2="226"/>
+      <line class="grid" x1="216" y1="18" x2="216" y2="226"/>
+      <line class="grid" x1="242" y1="18" x2="242" y2="226"/>
+      <line class="grid" x1="268" y1="18" x2="268" y2="226"/>
+      <line class="grid" x1="34" y1="226" x2="268" y2="226"/>
+      <line class="grid" x1="34" y1="174" x2="268" y2="174"/>
+      <line class="grid" x1="34" y1="148" x2="268" y2="148"/>
+      <line class="grid" x1="34" y1="122" x2="268" y2="122"/>
+      <line class="grid" x1="34" y1="96"  x2="268" y2="96"/>
+      <line class="grid" x1="34" y1="70"  x2="268" y2="70"/>
+      <line class="grid" x1="34" y1="44"  x2="268" y2="44"/>
+      <line class="grid" x1="34" y1="18"  x2="268" y2="18"/>
+      <!-- axes -->
+      <line class="axis" x1="34" y1="200" x2="268" y2="200"/>
+      <line class="axis" x1="60" y1="18"  x2="60"  y2="226"/>
+      <text x="274" y="204" class="dg-lbl sm" text-anchor="end">x</text>
+      <text x="66"  y="26"  class="dg-lbl sm">y</text>
+      <text x="112" y="213" class="dg-lbl sm" text-anchor="middle">2</text>
+      <text x="164" y="213" class="dg-lbl sm" text-anchor="middle">4</text>
+      <text x="216" y="213" class="dg-lbl sm" text-anchor="middle">6</text>
+      <text x="54"  y="152" class="dg-lbl sm" text-anchor="end">2</text>
+      <text x="54"  y="100" class="dg-lbl sm" text-anchor="end">4</text>
+      <text x="54"  y="48"  class="dg-lbl sm" text-anchor="end">6</text>
+      <!-- the line 3x + 2y = 12 -->
+      <g style="color:var(--motion)">
+        <path class="dg-line" d="M47 24.5 L179.6 223.4"/>
+        <text x="196" y="70" class="dg-lbl acc">3x + 2y = 12</text>
+      </g>
+      <!-- intercepts -->
+      <g style="color:var(--energy2)">
+        <circle class="dg-pt" cx="60" cy="44" r="4.5"/>
+        <text x="68" y="38" class="dg-lbl acc">(0, 6)  ← put x = 0</text>
+        <circle class="dg-pt" cx="164" cy="200" r="4.5"/>
+        <text x="172" y="194" class="dg-lbl acc">(4, 0)  ← put y = 0</text>
+      </g>
+    </svg>
+    <div class="diag-cap">Fig 2 · The cover-up method: set x = 0 for the y-intercept, y = 0 for the x-intercept, then rule the line through them.</div>
+
+    <h3>The two special lines</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">x = k — vertical</div>
+        <div class="card-body">Every point has x-coordinate k, whatever y is. <strong>x = 3</strong> is the vertical line 3 to the right of the origin. Its gradient is <strong>undefined</strong>. The y-axis itself is <span class="eq-inline">x = 0</span>.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">y = k — horizontal</div>
+        <div class="card-body">Every point has y-coordinate k, whatever x is. <strong>y = −2</strong> is the horizontal line 2 below the origin. Its gradient is <strong>0</strong>. The x-axis itself is <span class="eq-inline">y = 0</span>.</div>
+      </div>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ x = 3 is the vertical one</div>
+      Nearly everyone mixes these up at least once. Say it out loud: "<strong>x = 3</strong> means <em>x is stuck at 3</em> — I can only move up and down, so the line is vertical." Same logic for <span class="eq-inline">y = −2</span>: y is stuck, so you can only move sideways.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Marks for the drawing itself</div>
+      Use a <strong>sharp pencil and a ruler</strong>, draw the line right <strong>across the given grid</strong> (not just between your two plotted points), and <strong>label it with its equation</strong>. A short, freehand or unlabelled line loses marks even when the points are correct.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · GRADIENT ── -->
+  <div class="section">
+    <div class="sec-label">03 / 12 · E3.3 · Gradient</div>
+    <h2>Gradient — steepness turned into a number</h2>
+
+    <div class="define calc-c">
+      <span class="term">Gradient (m)</span> — how many units the line rises for every <strong>1 unit</strong> you move to the right. <span class="eq-inline">m = rise / run = (y₂ − y₁) / (x₂ − x₁)</span>
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🧩 A ramp at the Metro station</div>
+      A wheelchair ramp that climbs 1 m for every 12 m along has gradient <span class="eq-inline">1/12</span> — gentle. One that climbs 1 m for every 2 m along has gradient <span class="eq-inline">1/2</span> — steep and probably illegal. Gradient is nothing more exotic than <strong>"up per across"</strong>, and the bigger the number, the steeper the climb.
+    </div>
+
+    <h3>From a grid: draw the staircase</h3>
+    <p>Pick <strong>two points where the line passes exactly through grid corners</strong> — reading half-squares is how gradient marks get lost. Draw the right-angled triangle underneath, count the run and the rise, and divide.</p>
+
+    <svg class="diagram" viewBox="0 0 340 260" role="img" aria-label="A straight line through A(−4, −1) and B(2, 3) on a grid, with a right-angled triangle underneath showing a run of 6 and a rise of 4, giving gradient 4 over 6 which simplifies to two thirds.">
+      <line class="grid" x1="14"  y1="36" x2="14"  y2="244"/>
+      <line class="grid" x1="40"  y1="36" x2="40"  y2="244"/>
+      <line class="grid" x1="66"  y1="36" x2="66"  y2="244"/>
+      <line class="grid" x1="92"  y1="36" x2="92"  y2="244"/>
+      <line class="grid" x1="118" y1="36" x2="118" y2="244"/>
+      <line class="grid" x1="144" y1="36" x2="144" y2="244"/>
+      <line class="grid" x1="196" y1="36" x2="196" y2="244"/>
+      <line class="grid" x1="222" y1="36" x2="222" y2="244"/>
+      <line class="grid" x1="248" y1="36" x2="248" y2="244"/>
+      <line class="grid" x1="274" y1="36" x2="274" y2="244"/>
+      <line class="grid" x1="300" y1="36" x2="300" y2="244"/>
+      <line class="grid" x1="326" y1="36" x2="326" y2="244"/>
+      <line class="grid" x1="14" y1="36"  x2="326" y2="36"/>
+      <line class="grid" x1="14" y1="62"  x2="326" y2="62"/>
+      <line class="grid" x1="14" y1="88"  x2="326" y2="88"/>
+      <line class="grid" x1="14" y1="114" x2="326" y2="114"/>
+      <line class="grid" x1="14" y1="166" x2="326" y2="166"/>
+      <line class="grid" x1="14" y1="192" x2="326" y2="192"/>
+      <line class="grid" x1="14" y1="218" x2="326" y2="218"/>
+      <line class="grid" x1="14" y1="244" x2="326" y2="244"/>
+      <line class="axis" x1="14" y1="140" x2="326" y2="140"/>
+      <line class="axis" x1="170" y1="36" x2="170" y2="244"/>
+      <text x="332" y="144" class="dg-lbl sm" text-anchor="end">x</text>
+      <text x="176" y="44"  class="dg-lbl sm">y</text>
+      <text x="66"  y="153" class="dg-lbl sm" text-anchor="middle">−4</text>
+      <text x="118" y="153" class="dg-lbl sm" text-anchor="middle">−2</text>
+      <text x="222" y="153" class="dg-lbl sm" text-anchor="middle">2</text>
+      <text x="274" y="153" class="dg-lbl sm" text-anchor="middle">4</text>
+      <text x="176" y="91"  class="dg-lbl sm">2</text>
+      <text x="176" y="195" class="dg-lbl sm">−2</text>
+      <!-- the line -->
+      <g style="color:var(--motion)">
+        <path class="dg-line" d="M14 200.7 L261 36"/>
+      </g>
+      <!-- gradient triangle -->
+      <g style="color:var(--cyan)">
+        <path class="dg-thin" d="M66 166 L222 166 L222 62"/>
+        <text x="144" y="182" class="dg-lbl acc" text-anchor="middle">run = 6</text>
+        <text x="230" y="118" class="dg-lbl acc">rise = 4</text>
+      </g>
+      <!-- points -->
+      <g style="color:var(--force)">
+        <circle class="dg-pt" cx="66" cy="166" r="4.5"/>
+        <text x="60" y="160" class="dg-lbl acc" text-anchor="end">A(−4, −1)</text>
+        <circle class="dg-pt" cx="222" cy="62" r="4.5"/>
+        <text x="230" y="56" class="dg-lbl acc">B(2, 3)</text>
+      </g>
+      <text x="20" y="234" class="dg-lbl">m = rise ÷ run = 4/6 = 2/3</text>
+    </svg>
+    <div class="diag-cap">Fig 3 · Choose two grid-corner points, box in the right-angled triangle, then divide rise by run — and always simplify.</div>
+
+    <h3>From coordinates: subtract, subtract, divide</h3>
+    <div class="work">
+      <span class="step">gradient of the line through</span> A(−4, −1) and B(2, 3)<br>
+      m = (y₂ − y₁) / (x₂ − x₁) = (3 − (−1)) / (2 − (−4))<br>
+      = 4 / 6 = <strong>2/3</strong>
+    </div>
+    <p>It doesn't matter which point you call "1" and which "2" — <span class="eq-inline">(−1 − 3)/(−4 − 2) = −4/−6 = 2/3</span> as well. What <em>does</em> matter is that <strong>both subtractions run the same way round</strong>. Flipping one and not the other is the single commonest error in this topic.</p>
+
+    <h3>The four kinds of gradient</h3>
+    <svg class="diagram" viewBox="0 0 360 130" role="img" aria-label="Four small sketches: a line sloping up to the right with positive gradient, a line sloping down to the right with negative gradient, a horizontal line with gradient zero, and a vertical line whose gradient is undefined.">
+      <g style="color:var(--power)">
+        <line class="axis" x1="15" y1="55" x2="75" y2="55"/>
+        <line class="axis" x1="45" y1="25" x2="45" y2="85"/>
+        <path class="dg-line" d="M20 80 L70 30"/>
+      </g>
+      <text x="45" y="106" class="dg-lbl" text-anchor="middle">positive</text>
+      <text x="45" y="120" class="dg-lbl sm" text-anchor="middle">m &gt; 0 · uphill →</text>
+
+      <g style="color:var(--force)">
+        <line class="axis" x1="105" y1="55" x2="165" y2="55"/>
+        <line class="axis" x1="135" y1="25" x2="135" y2="85"/>
+        <path class="dg-line" d="M110 30 L160 80"/>
+      </g>
+      <text x="135" y="106" class="dg-lbl" text-anchor="middle">negative</text>
+      <text x="135" y="120" class="dg-lbl sm" text-anchor="middle">m &lt; 0 · downhill →</text>
+
+      <g style="color:var(--motion)">
+        <line class="axis" x1="195" y1="55" x2="255" y2="55"/>
+        <line class="axis" x1="225" y1="25" x2="225" y2="85"/>
+        <path class="dg-line" d="M200 40 L250 40"/>
+      </g>
+      <text x="225" y="106" class="dg-lbl" text-anchor="middle">zero</text>
+      <text x="225" y="120" class="dg-lbl sm" text-anchor="middle">m = 0 · y = k</text>
+
+      <g style="color:var(--energy2)">
+        <line class="axis" x1="285" y1="55" x2="345" y2="55"/>
+        <line class="axis" x1="315" y1="25" x2="315" y2="85"/>
+        <path class="dg-line" d="M330 25 L330 85"/>
+      </g>
+      <text x="315" y="106" class="dg-lbl" text-anchor="middle">undefined</text>
+      <text x="315" y="120" class="dg-lbl sm" text-anchor="middle">x = k · run is 0</text>
+    </svg>
+    <div class="diag-cap">Fig 4 · A vertical line has no gradient at all — dividing by a run of zero is undefined, not "infinity" and not zero.</div>
+
+    <h3>Play with it — move m and c</h3>
+    <p>Drag the sliders and watch which part of the picture each letter controls. <strong>m tilts the line; c slides it up and down.</strong></p>
+
+    <div class="tool">
+      <div class="tool-grid">
+        <div>
+          <svg class="graph" viewBox="0 0 320 250" id="lxPlot" aria-label="Interactive graph of y equals m x plus c">
+            <g id="lxGrid"></g>
+            <line class="axis" x1="34" y1="115" x2="306" y2="115"/>
+            <line class="axis" x1="170" y1="17" x2="170" y2="213"/>
+            <text x="300" y="128" class="axis-lbl">x</text>
+            <text x="176" y="27" class="axis-lbl">y</text>
+            <path class="steptri" id="lxTri" d=""/>
+            <path class="curve" id="lxLine" d=""/>
+            <circle class="pt-point" id="lxYint" r="4.5" cx="0" cy="0"/>
+          </svg>
+        </div>
+        <div>
+          <div class="slider-row">
+            <label>gradient m <b><span id="lxmv">1</span></b></label>
+            <input type="range" id="lxm" min="-3" max="3" step="0.5" value="1">
+          </div>
+          <div class="slider-row">
+            <label>intercept c <b><span id="lxcv">0</span></b></label>
+            <input type="range" id="lxc" min="-4" max="4" step="1" value="0">
+          </div>
+          <div class="vec-out">
+            <div class="ro">Equation</div>
+            <div class="rv big" id="lxEq">y = x</div>
+            <div class="ro">Gradient</div>
+            <div class="rv" id="lxGrad">1</div>
+            <div class="ro">Cuts the y-axis at</div>
+            <div class="rv" id="lxYi">(0, 0)</div>
+            <div class="ro">Cuts the x-axis at</div>
+            <div class="rv" id="lxXi">(0, 0)</div>
+            <div class="ro">Perpendicular gradient</div>
+            <div class="rv" id="lxPerp">−1</div>
+          </div>
+        </div>
+      </div>
+      <div class="scn-read">
+        <div class="rk">What you should notice</div>
+        <div id="lxRead">Positive m tilts the line uphill; negative m tilts it downhill. Changing c never changes the tilt — it just slides the whole line vertically. The dashed step triangle always has a run of 1, so its height <em>is</em> m.</div>
+      </div>
+    </div>
+
+    <h3>What gradient means in a real graph</h3>
+    <p>When the axes carry units, the gradient carries units too — it is a <strong>rate</strong>. An auto-rickshaw in Pune charges a fixed ₹30 flag-down plus ₹15 per kilometre, so the cost graph is <span class="eq-inline">C = 15d + 30</span>:</p>
+    <ul>
+      <li>the <strong>gradient 15</strong> is the rate — ₹15 for every extra kilometre;</li>
+      <li>the <strong>intercept 30</strong> is the cost before you have travelled at all.</li>
+    </ul>
+    <p>At <span class="eq-inline">d = 6</span> km the fare is <span class="eq-inline">15(6) + 30 = ₹120</span>; checking with the gradient, <span class="eq-inline">(120 − 30)/6 = 15</span> ✓.</p>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Sign errors and upside-down fractions</div>
+      Two traps, both worth a mark every time: writing <span class="eq-inline">run/rise</span> instead of <span class="eq-inline">rise/run</span>, and dropping the minus sign on a downhill line. <strong>Look at the picture before you write the answer</strong> — if the line goes down as you read left to right, your m must be negative.
+    </div>
+  </div>
+
+
+  <!-- ── 04 · LENGTH ── -->
+  <div class="section">
+    <div class="sec-label">04 / 12 · E3.4 · Length (Extended)</div>
+    <h2>Length of a line segment</h2>
+
+    <p>This is <strong>Pythagoras in disguise</strong>. The horizontal gap and the vertical gap between two points are the two short sides of a right-angled triangle; the segment joining the points is the hypotenuse.</p>
+
+    <div class="define energy-c">
+      <span class="term">Length formula</span> — <span class="eq-inline">AB = √((x₂ − x₁)² + (y₂ − y₁)²)</span>. Both differences are squared, so their signs stop mattering — a length is never negative.
+    </div>
+
+    <svg class="diagram" viewBox="0 0 320 300" role="img" aria-label="Points A(2, 1) and B(8, 9) joined by a straight segment, with the horizontal side of 6 and the vertical side of 8 forming a right-angled triangle, giving a length of 10 units; the midpoint (5, 5) is marked halfway along.">
+      <line class="grid" x1="40"  y1="10" x2="40"  y2="270"/>
+      <line class="grid" x1="66"  y1="10" x2="66"  y2="270"/>
+      <line class="grid" x1="92"  y1="10" x2="92"  y2="270"/>
+      <line class="grid" x1="118" y1="10" x2="118" y2="270"/>
+      <line class="grid" x1="144" y1="10" x2="144" y2="270"/>
+      <line class="grid" x1="170" y1="10" x2="170" y2="270"/>
+      <line class="grid" x1="196" y1="10" x2="196" y2="270"/>
+      <line class="grid" x1="222" y1="10" x2="222" y2="270"/>
+      <line class="grid" x1="248" y1="10" x2="248" y2="270"/>
+      <line class="grid" x1="274" y1="10" x2="274" y2="270"/>
+      <line class="grid" x1="300" y1="10" x2="300" y2="270"/>
+      <line class="grid" x1="40" y1="244" x2="300" y2="244"/>
+      <line class="grid" x1="40" y1="218" x2="300" y2="218"/>
+      <line class="grid" x1="40" y1="192" x2="300" y2="192"/>
+      <line class="grid" x1="40" y1="166" x2="300" y2="166"/>
+      <line class="grid" x1="40" y1="140" x2="300" y2="140"/>
+      <line class="grid" x1="40" y1="114" x2="300" y2="114"/>
+      <line class="grid" x1="40" y1="88"  x2="300" y2="88"/>
+      <line class="grid" x1="40" y1="62"  x2="300" y2="62"/>
+      <line class="grid" x1="40" y1="36"  x2="300" y2="36"/>
+      <line class="grid" x1="40" y1="10"  x2="300" y2="10"/>
+      <line class="axis" x1="40" y1="270" x2="300" y2="270"/>
+      <line class="axis" x1="40" y1="10"  x2="40"  y2="270"/>
+      <text x="306" y="274" class="dg-lbl sm" text-anchor="end">x</text>
+      <text x="46"  y="20"  class="dg-lbl sm">y</text>
+      <text x="92"  y="284" class="dg-lbl sm" text-anchor="middle">2</text>
+      <text x="144" y="284" class="dg-lbl sm" text-anchor="middle">4</text>
+      <text x="196" y="284" class="dg-lbl sm" text-anchor="middle">6</text>
+      <text x="248" y="284" class="dg-lbl sm" text-anchor="middle">8</text>
+      <text x="34" y="222" class="dg-lbl sm" text-anchor="end">2</text>
+      <text x="34" y="170" class="dg-lbl sm" text-anchor="end">4</text>
+      <text x="34" y="118" class="dg-lbl sm" text-anchor="end">6</text>
+      <text x="34" y="66"  class="dg-lbl sm" text-anchor="end">8</text>
+      <!-- right-angle legs -->
+      <g style="color:var(--cyan)">
+        <path class="dg-thin" d="M92 244 L248 244 L248 36"/>
+        <path class="dg-thin" d="M234 244 L234 230 L248 230"/>
+        <text x="170" y="262" class="dg-lbl acc" text-anchor="middle">x₂ − x₁ = 6</text>
+        <text x="244" y="162" class="dg-lbl acc" text-anchor="end">y₂ − y₁ = 8</text>
+      </g>
+      <!-- segment -->
+      <g style="color:var(--motion)">
+        <path class="dg-line" d="M92 244 L248 36"/>
+        <text x="48" y="100" class="dg-lbl acc">AB = √(6²+8²) = 10</text>
+      </g>
+      <!-- points -->
+      <g style="color:var(--force)">
+        <circle class="dg-pt" cx="92" cy="244" r="4.5"/>
+        <text x="84" y="238" class="dg-lbl acc" text-anchor="end">A(2, 1)</text>
+        <circle class="dg-pt" cx="248" cy="36" r="4.5"/>
+        <text x="256" y="30" class="dg-lbl acc">B(8, 9)</text>
+      </g>
+      <g style="color:var(--energy2)">
+        <circle class="dg-pt" cx="170" cy="140" r="4.5"/>
+        <text x="120" y="146" class="dg-lbl acc" text-anchor="end">M(5, 5)</text>
+      </g>
+    </svg>
+    <div class="diag-cap">Fig 5 · The gap across and the gap up are the two short sides; the segment is the hypotenuse. M is the midpoint (next section).</div>
+
+    <h3>Worked example — two mobile towers</h3>
+    <p>On a survey map of Nashik (1 unit = 1 km) two towers stand at <span class="eq-inline">A(2, 1)</span> and <span class="eq-inline">B(8, 9)</span>. Find the straight-line distance between them.</p>
+    <div class="work">
+      <span class="step">differences</span> x₂ − x₁ = 8 − 2 = 6  ·  y₂ − y₁ = 9 − 1 = 8<br>
+      <span class="step">square and add</span> 6² + 8² = 36 + 64 = 100<br>
+      <span class="step">square root</span> AB = √100 = <strong>10 km</strong>
+    </div>
+
+    <h3>When the answer isn't a whole number</h3>
+    <p>Most exam answers are not as tidy as 10. Find the length of PQ where <span class="eq-inline">P(−1, 2)</span> and <span class="eq-inline">Q(4, 6)</span>:</p>
+    <div class="work">
+      <span class="step">differences</span> 4 − (−1) = 5  ·  6 − 2 = 4<br>
+      PQ = √(5² + 4²) = √(25 + 16) = √41<br>
+      = 6.403124… = <strong>6.40</strong> (3 s.f.)
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Rounding, and when not to round</div>
+      Unless the question says otherwise, give a non-exact answer to <strong>3 significant figures</strong>. If the question says "give your answer in exact form" or "in the form <span class="eq-inline">k√n</span>", leave the surd: <span class="eq-inline">√80 = 4√5</span>. Never round in the middle of a longer question — keep the full value in your calculator.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Square-root the total, not the pieces</div>
+      <span class="eq-inline">√(6² + 8²)</span> is <strong>10</strong>, not <span class="eq-inline">6 + 8 = 14</span>. Add the two squares <em>first</em>, then take one square root of the total.
+    </div>
+  </div>
+
+
+  <!-- ── 05 · MIDPOINT ── -->
+  <div class="section">
+    <div class="sec-label">05 / 12 · E3.4 · Midpoint (Extended)</div>
+    <h2>Midpoint of a line segment</h2>
+
+    <div class="define energy-c">
+      <span class="term">Midpoint</span> — <span class="eq-inline">M = ((x₁ + x₂)/2 , (y₁ + y₂)/2)</span>. It is simply the <strong>average of the x's and the average of the y's</strong>.
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">💡 Why an average?</div>
+      Halfway between two numbers <em>is</em> their mean: halfway between 2 and 8 is 5. Do that separately in each direction and you land exactly halfway along the segment. Notice in Fig 5 that <span class="eq-inline">M(5, 5)</span> sits at the centre of A(2, 1) and B(8, 9) — and that the two halves AM and MB are each 5 units, half of 10.
+    </div>
+
+    <h3>Worked example — where to build the water tank</h3>
+    <p>A village committee wants an overhead tank built exactly halfway between the school <span class="eq-inline">S(−4, 2)</span> and the clinic <span class="eq-inline">C(6, 8)</span> on the panchayat's grid map.</p>
+    <div class="work">
+      <span class="step">x of M</span> (−4 + 6) / 2 = 2/2 = 1<br>
+      <span class="step">y of M</span> (2 + 8) / 2 = 10/2 = 5<br>
+      <span class="step">so</span> M = <strong>(1, 5)</strong>
+    </div>
+
+    <h3>Working backwards — the classic twist</h3>
+    <p>You are given the midpoint and <em>one</em> endpoint, and asked for the other. Don't guess: use the fact that <strong>M is the average</strong>, so <span class="eq-inline">x₂ = 2·(x of M) − x₁</span>.</p>
+    <div class="work">
+      <span class="step">given</span> M(2, −1) is the midpoint of AB, with A(−3, 4). Find B.<br>
+      x of B = 2(2) − (−3) = 4 + 3 = 7<br>
+      y of B = 2(−1) − 4 = −2 − 4 = −6<br>
+      <span class="step">so</span> B = <strong>(7, −6)</strong><br>
+      <span class="step">check</span> midpoint of (−3, 4) and (7, −6) = ((−3+7)/2, (4−6)/2) = (2, −1) ✓
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Midpoint ≠ subtract</div>
+      The gradient and length formulas <strong>subtract</strong>; the midpoint formula <strong>adds</strong>. Under exam pressure students blur them and compute <span class="eq-inline">(x₂ − x₁)/2</span>. Say it deliberately: <em>"gradient and length subtract, midpoint averages."</em>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Always write M as a coordinate pair</div>
+      The answer is a <strong>point</strong>: write <span class="eq-inline">(1, 5)</span>, with the brackets and the comma — not "1 and 5", and not "x = 1, y = 5" as your final line. Half a mark's worth of presentation, given away for free every year.
+    </div>
+  </div>
+
+
+  <!-- ── 06 · EQUATION OF A LINE ── -->
+  <div class="section">
+    <div class="sec-label">06 / 12 · E3.5 · Equation of a line</div>
+    <h2>Finding the equation <span class="eq-inline">y = mx + c</span></h2>
+
+    <p>Every non-vertical straight line can be written as <span class="eq-inline">y = mx + c</span>, where <strong>m is the gradient</strong> and <strong>c is the y-intercept</strong> — the y-value where the line crosses the y-axis. Finding the equation of a line is therefore always the same two-part job: <mark>get m, then get c</mark>.</p>
+
+    <div class="define mom-c">
+      <span class="term">Point–gradient form</span> — if you know the gradient m and any one point <span class="eq-inline">(x₁, y₁)</span> on the line, then <span class="eq-inline">y − y₁ = m(x − x₁)</span>. Expand it and you are back at <span class="eq-inline">y = mx + c</span>.
+    </div>
+
+    <h3>Case 1 — read it off a graph</h3>
+    <p>Find where the line crosses the y-axis (that's c), then build a gradient triangle on the drawn line (that's m). A line crossing at <span class="eq-inline">(0, −2)</span> that rises 3 for every 4 across has equation <span class="eq-inline">y = (3/4)x − 2</span>.</p>
+
+    <h3>Case 2 — a gradient and one point</h3>
+    <div class="work">
+      <span class="step">find</span> the line with gradient 2/3 through (3, −4)<br>
+      <span class="step">method A — substitute into y = mx + c</span><br>
+      −4 = (2/3)(3) + c → −4 = 2 + c → c = −6<br>
+      <span class="step">method B — point–gradient</span><br>
+      y − (−4) = (2/3)(x − 3) → y + 4 = (2/3)x − 2<br>
+      <span class="step">either way</span> y = <strong>(2/3)x − 6</strong>
+    </div>
+
+    <h3>Case 3 — two points (the most common exam version)</h3>
+    <div class="work">
+      <span class="step">find</span> the equation of the line through A(−2, 5) and B(4, −7)<br>
+      <span class="step">1 · gradient</span> m = (−7 − 5) / (4 − (−2)) = −12/6 = −2<br>
+      <span class="step">2 · substitute A</span> 5 = −2(−2) + c → 5 = 4 + c → c = 1<br>
+      <span class="step">3 · write it</span> y = <strong>−2x + 1</strong><br>
+      <span class="step">4 · check with B</span> −2(4) + 1 = −8 + 1 = −7 ✓
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Always check with the other point</div>
+      Step 4 costs five seconds and catches almost every sign slip. Substitute the point you <em>didn't</em> use into your finished equation; if it doesn't give the right y, your m or your c is wrong.
+    </div>
+
+    <h3>Is this point on the line?</h3>
+    <p>To test whether <span class="eq-inline">(5, −9)</span> lies on <span class="eq-inline">y = −2x + 1</span>, substitute: <span class="eq-inline">−2(5) + 1 = −9</span> ✓, so yes. A point is on a line exactly when its coordinates <strong>satisfy the equation</strong> — nothing to draw, nothing to measure.</p>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ "Fully simplified" is part of the answer</div>
+      The syllabus says candidates are expected to give equations <strong>in a fully simplified form</strong>. So <span class="eq-inline">y = 4x + 0</span> should be <span class="eq-inline">y = 4x</span>; <span class="eq-inline">y = (6/9)x + 2</span> should be <span class="eq-inline">y = (2/3)x + 2</span>; and <span class="eq-inline">y = 1x − 3</span> is just <span class="eq-inline">y = x − 3</span>. Leaving an unsimplified fraction can cost the accuracy mark.
+    </div>
+  </div>
+
+
+  <!-- ── 07 · OTHER FORMS ── -->
+  <div class="section">
+    <div class="sec-label">07 / 12 · E3.5 · Forms of a line</div>
+    <h2>Other forms: <span class="eq-inline">ax + by = c</span> and <span class="eq-inline">x = k</span></h2>
+
+    <p>Exam questions deliberately hand you lines in a form that <em>hides</em> the gradient. <strong>You cannot read m off <span class="eq-inline">5x + 4y = 8</span></strong> — you must rearrange into <span class="eq-inline">y = mx + c</span> first. Make this a reflex.</p>
+
+    <div class="work">
+      <span class="step">find the gradient and y-intercept of</span> 5x + 4y = 8<br>
+      4y = −5x + 8<br>
+      y = (−5/4)x + 2<br>
+      <span class="step">so</span> gradient = <strong>−5/4</strong>, y-intercept = <strong>(0, 2)</strong>
+    </div>
+
+    <h3>Going the other way — clearing fractions</h3>
+    <p>If a question asks for the answer "in the form <span class="eq-inline">ax + by = c</span> where a, b and c are integers", multiply through by the denominator and tidy up.</p>
+    <div class="work">
+      <span class="step">start</span> y = (2/3)x − 6<br>
+      <span class="step">× 3</span> 3y = 2x − 18<br>
+      <span class="step">rearrange</span> <strong>2x − 3y = 18</strong>
+    </div>
+
+    <table>
+      <tr><th>Form</th><th>Looks like</th><th>What you can read off</th></tr>
+      <tr><td><strong>Gradient–intercept</strong></td><td>y = mx + c</td><td>gradient m and y-intercept c, directly</td></tr>
+      <tr><td><strong>Standard / implicit</strong></td><td>ax + by = c</td><td>nothing until you rearrange; but the intercepts come out fast by the cover-up method</td></tr>
+      <tr><td><strong>Point–gradient</strong></td><td>y − y₁ = m(x − x₁)</td><td>gradient m and one point on the line</td></tr>
+      <tr><td><strong>Vertical</strong></td><td>x = k</td><td>gradient undefined; can never be written as y = mx + c</td></tr>
+      <tr><td><strong>Horizontal</strong></td><td>y = k</td><td>gradient 0; it is y = mx + c with m = 0</td></tr>
+    </table>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Dividing by a negative flips every sign</div>
+      From <span class="eq-inline">3x − 6y = 12</span>: <span class="eq-inline">−6y = −3x + 12</span>, and dividing by <strong>−6</strong> gives <span class="eq-inline">y = (1/2)x − 2</span>. Every term changes sign, including the one you're least watching. Gradient <strong>+1/2</strong>, not <span class="eq-inline">−1/2</span> and certainly not 3.
+    </div>
+  </div>
+
+
+  <!-- ── 08 · PARALLEL LINES ── -->
+  <div class="section">
+    <div class="sec-label">08 / 12 · E3.6 · Parallel lines</div>
+    <h2>Parallel lines — same tilt, different height</h2>
+
+    <div class="define">
+      <span class="term">Parallel ⇔ equal gradients</span> — two distinct <strong>non-vertical</strong> lines are parallel exactly when <span class="eq-inline">m₁ = m₂</span>. Their c values must differ (if c matched too, they would be the same line). Two <em>vertical</em> lines such as <span class="eq-inline">x = 1</span> and <span class="eq-inline">x = 3</span> are parallel too — they just have no gradient to compare.
+    </div>
+
+    <svg class="diagram" viewBox="0 0 300 200" role="img" aria-label="Two parallel lines, y equals 2x plus 1 and y equals 2x minus 3, drawn on the same axes: they have the same gradient of 2 and never meet.">
+      <line class="grid" x1="30"  y1="20" x2="30"  y2="180"/>
+      <line class="grid" x1="50"  y1="20" x2="50"  y2="180"/>
+      <line class="grid" x1="70"  y1="20" x2="70"  y2="180"/>
+      <line class="grid" x1="90"  y1="20" x2="90"  y2="180"/>
+      <line class="grid" x1="110" y1="20" x2="110" y2="180"/>
+      <line class="grid" x1="130" y1="20" x2="130" y2="180"/>
+      <line class="grid" x1="170" y1="20" x2="170" y2="180"/>
+      <line class="grid" x1="190" y1="20" x2="190" y2="180"/>
+      <line class="grid" x1="210" y1="20" x2="210" y2="180"/>
+      <line class="grid" x1="230" y1="20" x2="230" y2="180"/>
+      <line class="grid" x1="250" y1="20" x2="250" y2="180"/>
+      <line class="grid" x1="270" y1="20" x2="270" y2="180"/>
+      <line class="grid" x1="30" y1="20"  x2="270" y2="20"/>
+      <line class="grid" x1="30" y1="40"  x2="270" y2="40"/>
+      <line class="grid" x1="30" y1="60"  x2="270" y2="60"/>
+      <line class="grid" x1="30" y1="80"  x2="270" y2="80"/>
+      <line class="grid" x1="30" y1="120" x2="270" y2="120"/>
+      <line class="grid" x1="30" y1="140" x2="270" y2="140"/>
+      <line class="grid" x1="30" y1="160" x2="270" y2="160"/>
+      <line class="grid" x1="30" y1="180" x2="270" y2="180"/>
+      <line class="axis" x1="30" y1="100" x2="270" y2="100"/>
+      <line class="axis" x1="150" y1="20" x2="150" y2="180"/>
+      <text x="276" y="104" class="dg-lbl sm" text-anchor="end">x</text>
+      <text x="156" y="30"  class="dg-lbl sm">y</text>
+      <g style="color:var(--motion)">
+        <path class="dg-line" d="M100 180 L180 20"/>
+        <text x="118" y="60" class="dg-lbl acc" text-anchor="end">y = 2x + 1</text>
+      </g>
+      <g style="color:var(--momentum)">
+        <path class="dg-line" d="M140 180 L220 20"/>
+        <text x="228" y="60" class="dg-lbl acc">y = 2x − 3</text>
+      </g>
+      <text x="36" y="36" class="dg-lbl">m₁ = m₂ = 2</text>
+    </svg>
+    <div class="diag-cap">Fig 6 · Same gradient, different intercept: the lines stay a fixed distance apart and never meet.</div>
+
+    <h3>Worked example — the syllabus's own question</h3>
+    <p>Find the equation of the line parallel to <span class="eq-inline">y = 4x − 1</span> that passes through <span class="eq-inline">(1, −3)</span>.</p>
+    <div class="work">
+      <span class="step">1 · copy the gradient</span> parallel → m = 4<br>
+      <span class="step">2 · substitute the point</span> −3 = 4(1) + c → c = −7<br>
+      <span class="step">3 · answer</span> y = <strong>4x − 7</strong>
+    </div>
+
+    <h3>When the given line is disguised</h3>
+    <p>Find the line parallel to <span class="eq-inline">2x + 5y = 10</span> through <span class="eq-inline">(5, −1)</span>, in the form <span class="eq-inline">ax + by = c</span>.</p>
+    <div class="work">
+      <span class="step">1 · rearrange first</span> 5y = −2x + 10 → y = (−2/5)x + 2, so m = −2/5<br>
+      <span class="step">2 · substitute</span> −1 = (−2/5)(5) + c → −1 = −2 + c → c = 1<br>
+      <span class="step">3 · y = (−2/5)x + 1, then × 5</span> 5y = −2x + 5<br>
+      <span class="step">4 · answer</span> <strong>2x + 5y = 5</strong>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ The word "parallel" is worth one instant mark</div>
+      As soon as you read it, write <span class="eq-inline">m = …</span> (the same gradient). That's usually M1 in the mark scheme before you have done any real work. Then it's just "substitute the point to find c".
+    </div>
+  </div>
+
+
+  <!-- ── 09 · PERPENDICULAR LINES ── -->
+  <div class="section">
+    <div class="sec-label">09 / 12 · E3.7 · Perpendicular lines (Extended)</div>
+    <h2>Perpendicular lines — flip it and change the sign</h2>
+
+    <div class="define force-c">
+      <span class="term">Perpendicular ⇔ m₁ × m₂ = −1</span> — so the second gradient is the <strong>negative reciprocal</strong> of the first: <span class="eq-inline">m₂ = −1/m₁</span>.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🧩 Why "flip and negate"?</div>
+      Turning a direction through 90° swaps "across" and "up": a run of 2 with a rise of 1 becomes a run of 1 with a <em>drop</em> of 2. So <span class="eq-inline">1/2</span> turns into <span class="eq-inline">−2/1</span> — the fraction turns upside down and the sign flips. Check it: <span class="eq-inline">(1/2) × (−2) = −1</span> ✓.
+    </div>
+
+    <svg class="diagram" viewBox="0 0 300 200" role="img" aria-label="Two perpendicular lines, y equals 2x minus 1 with gradient 2 and y equals minus a half x plus 2 with gradient minus one half, crossing at right angles; a small square marks the right angle at their intersection.">
+      <line class="grid" x1="30"  y1="20" x2="30"  y2="180"/>
+      <line class="grid" x1="50"  y1="20" x2="50"  y2="180"/>
+      <line class="grid" x1="70"  y1="20" x2="70"  y2="180"/>
+      <line class="grid" x1="90"  y1="20" x2="90"  y2="180"/>
+      <line class="grid" x1="110" y1="20" x2="110" y2="180"/>
+      <line class="grid" x1="130" y1="20" x2="130" y2="180"/>
+      <line class="grid" x1="170" y1="20" x2="170" y2="180"/>
+      <line class="grid" x1="190" y1="20" x2="190" y2="180"/>
+      <line class="grid" x1="210" y1="20" x2="210" y2="180"/>
+      <line class="grid" x1="230" y1="20" x2="230" y2="180"/>
+      <line class="grid" x1="250" y1="20" x2="250" y2="180"/>
+      <line class="grid" x1="270" y1="20" x2="270" y2="180"/>
+      <line class="grid" x1="30" y1="20"  x2="270" y2="20"/>
+      <line class="grid" x1="30" y1="40"  x2="270" y2="40"/>
+      <line class="grid" x1="30" y1="60"  x2="270" y2="60"/>
+      <line class="grid" x1="30" y1="80"  x2="270" y2="80"/>
+      <line class="grid" x1="30" y1="120" x2="270" y2="120"/>
+      <line class="grid" x1="30" y1="140" x2="270" y2="140"/>
+      <line class="grid" x1="30" y1="160" x2="270" y2="160"/>
+      <line class="grid" x1="30" y1="180" x2="270" y2="180"/>
+      <line class="axis" x1="30" y1="100" x2="270" y2="100"/>
+      <line class="axis" x1="150" y1="20" x2="150" y2="180"/>
+      <text x="276" y="104" class="dg-lbl sm" text-anchor="end">x</text>
+      <text x="156" y="30"  class="dg-lbl sm">y</text>
+      <g style="color:var(--motion)">
+        <path class="dg-line" d="M120 180 L200 20"/>
+        <text x="204" y="32" class="dg-lbl acc">y = 2x − 1</text>
+        <text x="204" y="46" class="dg-lbl acc sm">m = 2</text>
+      </g>
+      <g style="color:var(--force)">
+        <path class="dg-line" d="M70 20 L270 120"/>
+        <text x="268" y="142" class="dg-lbl acc" text-anchor="end">y = −½x + 2</text>
+        <text x="268" y="156" class="dg-lbl acc sm" text-anchor="end">m = −½</text>
+      </g>
+      <g style="color:var(--power)">
+        <path class="dg-thin" d="M178.9 62.2 L188.7 67.1 L183.8 76.9"/>
+      </g>
+      <text x="34" y="172" class="dg-lbl">2 × (−½) = −1</text>
+    </svg>
+    <div class="diag-cap">Fig 7 · Negative reciprocal gradients meet at exactly 90°. The little square marks the right angle.</div>
+
+    <table>
+      <tr><th>Line's gradient m₁</th><th>Perpendicular gradient m₂</th><th>Check</th></tr>
+      <tr><td>3</td><td>−1/3</td><td>3 × (−1/3) = −1 ✓</td></tr>
+      <tr><td>−4</td><td>1/4</td><td>−4 × 1/4 = −1 ✓</td></tr>
+      <tr><td>2/5</td><td>−5/2</td><td>(2/5) × (−5/2) = −1 ✓</td></tr>
+      <tr><td>−3/7</td><td>7/3</td><td>(−3/7) × (7/3) = −1 ✓</td></tr>
+      <tr><td>0 (horizontal)</td><td>undefined (vertical)</td><td>the special pair — the rule can't be used</td></tr>
+    </table>
+
+    <h3>Worked example — the syllabus's own question</h3>
+    <p>Find the gradient of a line perpendicular to <span class="eq-inline">2y = 3x + 1</span>.</p>
+    <div class="work">
+      <span class="step">1 · rearrange to y = mx + c</span> y = (3/2)x + 1/2, so m₁ = 3/2<br>
+      <span class="step">2 · negative reciprocal</span> m₂ = −1 ÷ (3/2) = <strong>−2/3</strong>
+    </div>
+
+    <h3>And with a point attached</h3>
+    <p>Find the equation of the line perpendicular to <span class="eq-inline">y = −4x + 3</span> that passes through <span class="eq-inline">(8, 1)</span>.</p>
+    <div class="work">
+      <span class="step">1 · perpendicular gradient</span> m₁ = −4 → m₂ = 1/4<br>
+      <span class="step">2 · substitute (8, 1)</span> 1 = (1/4)(8) + c → 1 = 2 + c → c = −1<br>
+      <span class="step">3 · answer</span> y = <strong>(1/4)x − 1</strong>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Flip AND negate — students do only one</div>
+      For <span class="eq-inline">m₁ = 3/2</span>, the perpendicular gradient is <strong>not</strong> <span class="eq-inline">2/3</span> (flipped only) and <strong>not</strong> <span class="eq-inline">−3/2</span> (negated only). It is <span class="eq-inline">−2/3</span>. Do both, then multiply the two gradients as a check — you must get exactly <span class="eq-inline">−1</span>.
+    </div>
+  </div>
+
+
+  <!-- ── 10 · PERPENDICULAR BISECTOR ── -->
+  <div class="section">
+    <div class="sec-label">10 / 12 · E3.4 + E3.7 · The set-piece</div>
+    <h2>The perpendicular bisector — everything at once</h2>
+
+    <p>This is the question the examiners use to test the whole topic in one go, and the syllabus names it explicitly. It needs <strong>three</strong> of your formulas in sequence, so do them in a fixed order and label each step.</p>
+
+    <div class="define force-c">
+      <span class="term">Perpendicular bisector of AB</span> — the line that cuts AB <strong>in half</strong> (so it passes through the midpoint) and <strong>at right angles</strong> (so its gradient is the negative reciprocal of the gradient of AB). Every point on it is the same distance from A as from B.
+    </div>
+
+    <h3>The four steps, in order</h3>
+    <div class="work">
+      <span class="step">find</span> the perpendicular bisector of the line joining A(−3, 8) and B(9, −2)<br><br>
+      <span class="step">1 · midpoint of AB</span> M = ((−3 + 9)/2, (8 + (−2))/2) = (6/2, 6/2) = <strong>(3, 3)</strong><br>
+      <span class="step">2 · gradient of AB</span> m = (−2 − 8) / (9 − (−3)) = −10/12 = <strong>−5/6</strong><br>
+      <span class="step">3 · perpendicular gradient</span> m⊥ = −1 ÷ (−5/6) = <strong>6/5</strong><br>
+      <span class="step">4 · line through M with gradient 6/5</span><br>
+      3 = (6/5)(3) + c → 3 = 18/5 + c → c = 3 − 18/5 = −3/5<br>
+      <span class="step">answer</span> y = <strong>(6/5)x − 3/5</strong>, or <strong>6x − 5y = 3</strong>
+    </div>
+
+    <svg class="diagram" viewBox="0 0 345 300" role="img" aria-label="The segment from A(−3, 8) to B(9, −2) with its midpoint M(3, 3) marked, and the perpendicular bisector drawn through M at right angles to AB.">
+      <line class="grid" x1="15"  y1="20" x2="15"  y2="280"/>
+      <line class="grid" x1="35"  y1="20" x2="35"  y2="280"/>
+      <line class="grid" x1="55"  y1="20" x2="55"  y2="280"/>
+      <line class="grid" x1="75"  y1="20" x2="75"  y2="280"/>
+      <line class="grid" x1="95"  y1="20" x2="95"  y2="280"/>
+      <line class="grid" x1="135" y1="20" x2="135" y2="280"/>
+      <line class="grid" x1="155" y1="20" x2="155" y2="280"/>
+      <line class="grid" x1="175" y1="20" x2="175" y2="280"/>
+      <line class="grid" x1="195" y1="20" x2="195" y2="280"/>
+      <line class="grid" x1="215" y1="20" x2="215" y2="280"/>
+      <line class="grid" x1="235" y1="20" x2="235" y2="280"/>
+      <line class="grid" x1="255" y1="20" x2="255" y2="280"/>
+      <line class="grid" x1="275" y1="20" x2="275" y2="280"/>
+      <line class="grid" x1="295" y1="20" x2="295" y2="280"/>
+      <line class="grid" x1="315" y1="20" x2="315" y2="280"/>
+      <line class="grid" x1="335" y1="20" x2="335" y2="280"/>
+      <line class="grid" x1="15" y1="20"  x2="335" y2="20"/>
+      <line class="grid" x1="15" y1="40"  x2="335" y2="40"/>
+      <line class="grid" x1="15" y1="60"  x2="335" y2="60"/>
+      <line class="grid" x1="15" y1="80"  x2="335" y2="80"/>
+      <line class="grid" x1="15" y1="100" x2="335" y2="100"/>
+      <line class="grid" x1="15" y1="120" x2="335" y2="120"/>
+      <line class="grid" x1="15" y1="140" x2="335" y2="140"/>
+      <line class="grid" x1="15" y1="160" x2="335" y2="160"/>
+      <line class="grid" x1="15" y1="180" x2="335" y2="180"/>
+      <line class="grid" x1="15" y1="220" x2="335" y2="220"/>
+      <line class="grid" x1="15" y1="240" x2="335" y2="240"/>
+      <line class="grid" x1="15" y1="260" x2="335" y2="260"/>
+      <line class="grid" x1="15" y1="280" x2="335" y2="280"/>
+      <line class="axis" x1="15" y1="200" x2="335" y2="200"/>
+      <line class="axis" x1="115" y1="20" x2="115" y2="280"/>
+      <text x="340" y="212" class="dg-lbl sm" text-anchor="end">x</text>
+      <text x="121" y="30"  class="dg-lbl sm">y</text>
+      <text x="75"  y="213" class="dg-lbl sm" text-anchor="middle">−2</text>
+      <text x="155" y="213" class="dg-lbl sm" text-anchor="middle">2</text>
+      <text x="215" y="213" class="dg-lbl sm" text-anchor="middle">5</text>
+      <text x="295" y="213" class="dg-lbl sm" text-anchor="middle">9</text>
+      <text x="121" y="145" class="dg-lbl sm">3</text>
+      <text x="121" y="45"  class="dg-lbl sm">8</text>
+      <!-- AB -->
+      <g style="color:var(--motion)">
+        <path class="dg-line" d="M55 40 L295 240"/>
+        <text x="120" y="86" class="dg-lbl acc">AB: m = −5/6</text>
+      </g>
+      <!-- perpendicular bisector -->
+      <g style="color:var(--force)">
+        <path class="dg-line" d="M75 260 L265 32"/>
+        <text x="200" y="60" class="dg-lbl acc" text-anchor="end">6x − 5y = 3</text>
+      </g>
+      <g style="color:var(--power)">
+        <path class="dg-thin" d="M183.4 147 L190.5 138.6 L182 131.5"/>
+      </g>
+      <!-- points -->
+      <g style="color:var(--momentum)">
+        <circle class="dg-pt" cx="55"  cy="40"  r="4.5"/>
+        <text x="63" y="34" class="dg-lbl acc">A(−3, 8)</text>
+        <circle class="dg-pt" cx="295" cy="240" r="4.5"/>
+        <text x="289" y="256" class="dg-lbl acc" text-anchor="end">B(9, −2)</text>
+      </g>
+      <g style="color:var(--energy2)">
+        <circle class="dg-pt" cx="175" cy="140" r="5"/>
+        <text x="192" y="150" class="dg-lbl acc">M(3, 3)</text>
+      </g>
+    </svg>
+    <div class="diag-cap">Fig 8 · Midpoint first, then gradient, then flip-and-negate, then substitute M. The bisector is the mirror line of A and B.</div>
+
+    <h3>Try four of them</h3>
+    <p>Each tab is a complete worked set-piece for a different pair of points. Cover the read-out, do it yourself on paper, then check.</p>
+
+    <div class="explorer">
+      <div class="scn-tabs" id="tpTabs">
+        <div class="scn-tab active" data-i="0">A(−3, 8) · B(9, −2)</div>
+        <div class="scn-tab" data-i="1">A(1, 2) · B(5, 10)</div>
+        <div class="scn-tab" data-i="2">A(−4, −1) · B(2, 7)</div>
+        <div class="scn-tab" data-i="3">A(2, 7) · B(6, −1)</div>
+      </div>
+      <svg class="graph" viewBox="0 0 330 320" id="tpPlot" aria-label="Two-point explorer showing a segment, its midpoint and its perpendicular bisector">
+        <g id="tpGrid"></g>
+        <line class="axis" id="tpXax" x1="20" y1="230" x2="308" y2="230"/>
+        <line class="axis" id="tpYax" x1="110" y1="26" x2="110" y2="308"/>
+        <text x="302" y="244" class="axis-lbl">x</text>
+        <text x="116" y="36" class="axis-lbl">y</text>
+        <path class="curve" id="tpBis" d="" stroke-dasharray="6 4"/>
+        <path class="curve" id="tpSeg" d=""/>
+        <circle class="pt-point" id="tpA" r="5" cx="0" cy="0"/>
+        <circle class="pt-point" id="tpB" r="5" cx="0" cy="0"/>
+        <circle class="pt-mid"   id="tpM" r="5.5" cx="0" cy="0"/>
+      </svg>
+      <div class="scn-read">
+        <div class="rk" id="tpTitle">A(−3, 8) · B(9, −2)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-family:'JetBrains Mono',monospace;font-size:12.5px">
+          <div>gradient of AB</div><div style="color:var(--motion)" id="tpGrad">—</div>
+          <div>length AB</div><div style="color:var(--energy2)" id="tpLen">—</div>
+          <div>midpoint M</div><div style="color:var(--energy2)" id="tpMid">—</div>
+          <div>equation of AB</div><div style="color:var(--motion)" id="tpEq">—</div>
+          <div>perpendicular gradient</div><div style="color:var(--force)" id="tpPg">—</div>
+          <div>perpendicular bisector</div><div style="color:var(--force)" id="tpBisEq">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Show every step — the method marks are the marks</div>
+      A perpendicular-bisector question is typically <strong>4–5 marks</strong>, and only the last one is for the final equation. Write "M = …", "m<sub>AB</sub> = …", "m<sub>⊥</sub> = …" on separate lines. Even with an arithmetic slip at the end you keep the method marks — and an unlabelled page of numbers earns none of them.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">🔁 The order never changes</div>
+      <strong>Midpoint → gradient of AB → negative reciprocal → substitute the midpoint.</strong> Students who find the gradient first and then forget the midpoint produce a line that is perpendicular but doesn't bisect — a line through the wrong place, and no accuracy marks.
+    </div>
+  </div>
+
+
+  <!-- ── 11 · CHECK YOURSELF ── -->
+  <div class="section">
+    <div class="sec-label">11 / 12 · Check Yourself</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+
+    <p>Paper and pen, no peeking. Tap a card to reveal the mark-scheme answer.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>Work out the gradient of the line joining A(−2, 7) and B(4, −5).</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">m = (−5 − 7) ÷ (4 − (−2)) = −12 ÷ 6 = <strong>−2</strong>. (Negative, because the line falls as x increases.)</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>A is (1, −3) and B is (6, 5). Calculate the length of AB, giving your answer correct to 1 decimal place.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Differences 6 − 1 = 5 and 5 − (−3) = 8. AB = √(5² + 8²) = √(25 + 64) = √89 = 9.4339… = <strong>9.4</strong> (1 d.p.).</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span>M(3, −1) is the midpoint of PQ. P is the point (−2, 4). Find the coordinates of Q.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">x of Q = 2(3) − (−2) = 8; y of Q = 2(−1) − 4 = −6. So Q = <strong>(8, −6)</strong>. Check: midpoint of (−2, 4) and (8, −6) is (3, −1) ✓.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>Find the gradient and the y-intercept of the graph with equation 5x + 4y = 8.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">4y = −5x + 8 → y = (−5/4)x + 2. Gradient = <strong>−5/4</strong> (= −1.25); y-intercept = <strong>(0, 2)</strong>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>Find the equation of the line parallel to y = 4x − 1 that passes through (1, −3). Give your answer in the form y = mx + c.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Parallel → m = 4. Substituting (1, −3): −3 = 4(1) + c → c = −7. So <strong>y = 4x − 7</strong>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>Find the gradient of a line perpendicular to 2y = 3x + 1.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Rearranging: y = (3/2)x + 1/2, so m₁ = 3/2. Perpendicular gradient = −1 ÷ (3/2) = <strong>−2/3</strong>. Check: (3/2) × (−2/3) = −1 ✓.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>Find the equation of the perpendicular bisector of the line joining A(−3, 8) and B(9, −2).</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">M = (3, 3). m<sub>AB</sub> = (−2 − 8)/(9 + 3) = −10/12 = −5/6, so m<sub>⊥</sub> = 6/5. Through M: 3 = (6/5)(3) + c → c = 3 − 18/5 = −3/5. So <strong>y = (6/5)x − 3/5</strong>, i.e. <strong>6x − 5y = 3</strong>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>The line L has equation 3x − 6y = 12. Sasha says "the gradient of L is 3". Explain why she is wrong, and state the correct gradient.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">She has read the coefficient of x <em>without rearranging</em> into the form y = mx + c — the gradient can only be read off once y is the subject. Rearranging: −6y = −3x + 12 → y = (1/2)x − 2. The correct gradient is <strong>1/2</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 12 · REFERENCE ── -->
+  <div class="section">
+    <div class="sec-label">12 / 12 · Reference</div>
+    <h2>Topic 3 formula &amp; skill bank</h2>
+    <p><strong>None of these are given in the exam's List of formulas</strong> — coordinate geometry is a "know it cold" topic. Tap any tile for the form, a worked example, and the exam trap:</p>
+
+    <div class="eqbank" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ Know these cold</div>
+      <span class="eq-inline" style="color:var(--rose)">m = (y₂−y₁)/(x₂−x₁)</span>
+      <span class="eq-inline" style="color:var(--rose)">AB = √(Δx² + Δy²)</span>
+      <span class="eq-inline" style="color:var(--rose)">M = ((x₁+x₂)/2, (y₁+y₂)/2)</span>
+      <span class="eq-inline" style="color:var(--rose)">y = mx + c</span>
+      <span class="eq-inline" style="color:var(--rose)">parallel: m₁ = m₂</span>
+      <span class="eq-inline" style="color:var(--rose)">perpendicular: m₁m₂ = −1</span>
+    </div>
+
+    <div class="paperlinks">
+      <div class="pl-head">📝 Practise this topic</div>
+      <p>There is <strong>no Topic-3-only paper yet</strong>. Until there is, coordinate geometry appears inside these mixed papers — the questions on gradient, midpoint, parallel and perpendicular lines are the ones to hunt for:</p>
+      <div class="pl-grid">
+        <a class="plink" href="../exam-papers/Mathematics%20Chapters%201-32%20Graded%20Paper%20-%20Non-Calculator.html"><span class="pl-ico">📑</span>Chapters 1–32 Graded Paper — Non-Calculator<span class="pl-tag">graded</span></a>
+        <a class="plink" href="../exam-papers/Mathematics%20Chapters%201-32%20Graded%20Paper%20-%20Calculator.html"><span class="pl-ico">📑</span>Chapters 1–32 Graded Paper — Calculator<span class="pl-tag">graded</span></a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE MATHEMATICS · 0580 EXTENDED · TOPIC 3 — COORDINATE GEOMETRY<br>
+    Built for understanding — four formulas, one picture, and every question in the topic falls out.
+  </div>
+
+</div>
+
+<!-- ── FLOATING DETAIL CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Symbols &amp; meaning</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Key form / rearrangement</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
+
+<script>
+/* ════════════════════════════════════════════════
+   0 · SHARED NUMBER HELPERS (exact integer arithmetic)
+════════════════════════════════════════════════ */
+const MINUS = '−';                       /* proper minus sign */
+function neg(s){ return String(s).replace(/-/g, MINUS); }
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a; }
+
+/* n/d as a fully simplified string, e.g. 4/6 -> "2/3", -12/6 -> "−2" */
+function frac(n,d){
+  if(d<0){ n=-n; d=-d; }
+  const g=gcd(n,d)||1; n/=g; d/=g;
+  return d===1 ? neg(n) : neg(n)+'/'+d;
+}
+/* coefficient in front of x, e.g. (2,3) -> "(2/3)x", (1,1) -> "x", (-1,1) -> "−x" */
+function xTerm(n,d){
+  if(d<0){ n=-n; d=-d; }
+  const g=gcd(n,d)||1; n/=g; d/=g;
+  if(d===1){
+    if(n===1) return 'x';
+    if(n===-1) return MINUS+'x';
+    return neg(n)+'x';
+  }
+  return '('+neg(n)+'/'+d+')x';
+}
+/* "+ c" / "− |c|" / "" for the constant n/d */
+function constTerm(n,d){
+  if(d<0){ n=-n; d=-d; }
+  const g=gcd(n,d)||1; n/=g; d/=g;
+  if(n===0) return '';
+  const body = d===1 ? String(Math.abs(n)) : Math.abs(n)+'/'+d;
+  return (n>0 ? ' + ' : ' '+MINUS+' ') + body;
+}
+/* √N simplified to k√r; returns a display string */
+function surd(N){
+  let k=1, r=N;
+  for(let f=2; f*f<=r; f++){ while(r%(f*f)===0){ r/=f*f; k*=f; } }
+  if(r===1) return String(k);
+  return (k===1?'':k)+'√'+r;
+}
+
+/* ════════════════════════════════════════════════
+   1 · y = mx + c LINE EXPLORER  (viewBox 320×250)
+════════════════════════════════════════════════ */
+(function(){
+  const OX=170, OY=115, S=24;
+  const X0=34, X1=306, Y0=17, Y1=213;
+  const xmin=(X0-OX)/S, xmax=(X1-OX)/S;      /* ≈ ±5.67 */
+  const ymin=(OY-Y1)/S, ymax=(OY-Y0)/S;      /* ≈ ±4.08 */
+  const px=x=>OX+S*x, py=y=>OY-S*y;
+
+  /* grid */
+  (function(){
+    const g=document.getElementById('lxGrid'); let s='';
+    for(let i=-5;i<=5;i++){ if(i===0) continue;
+      s+='<line class="grid" x1="'+px(i)+'" y1="'+Y0+'" x2="'+px(i)+'" y2="'+Y1+'"/>'; }
+    for(let j=-4;j<=4;j++){ if(j===0) continue;
+      s+='<line class="grid" x1="'+X0+'" y1="'+py(j)+'" x2="'+X1+'" y2="'+py(j)+'"/>'; }
+    g.innerHTML=s;
+  })();
+
+  const mS=document.getElementById('lxm'), cS=document.getElementById('lxc');
+
+  function clip(m,c){
+    const cand=[[xmin, m*xmin+c],[xmax, m*xmax+c]];
+    if(m!==0){ cand.push([(ymin-c)/m, ymin], [(ymax-c)/m, ymax]); }
+    const keep=[];
+    cand.forEach(p=>{
+      if(p[0]>=xmin-1e-9 && p[0]<=xmax+1e-9 && p[1]>=ymin-1e-9 && p[1]<=ymax+1e-9){
+        if(!keep.some(q=>Math.abs(q[0]-p[0])<1e-6 && Math.abs(q[1]-p[1])<1e-6)) keep.push(p);
+      }
+    });
+    keep.sort((a,b)=>a[0]-b[0]);
+    return keep.length>=2 ? [keep[0], keep[keep.length-1]] : null;
+  }
+
+  function draw(){
+    const m=parseFloat(mS.value), c=parseFloat(cS.value);
+    document.getElementById('lxmv').textContent=neg(m);
+    document.getElementById('lxcv').textContent=neg(c);
+
+    /* the line */
+    const seg=clip(m,c);
+    const line=document.getElementById('lxLine');
+    if(seg){ line.setAttribute('d','M'+px(seg[0][0])+' '+py(seg[0][1])+' L'+px(seg[1][0])+' '+py(seg[1][1])); }
+    else { line.setAttribute('d',''); }
+
+    /* step triangle: run of 1 in the middle of the visible part */
+    const tri=document.getElementById('lxTri');
+    if(seg && (seg[1][0]-seg[0][0])>1.4){
+      const xm=(seg[0][0]+seg[1][0])/2, xL=xm-0.5, xR=xm+0.5;
+      const yL=m*xL+c, yR=m*xR+c;
+      tri.setAttribute('d','M'+px(xL)+' '+py(yL)+' L'+px(xR)+' '+py(yL)+' L'+px(xR)+' '+py(yR));
+    } else { tri.setAttribute('d',''); }
+
+    /* y-intercept dot */
+    const dot=document.getElementById('lxYint');
+    if(c>=ymin && c<=ymax){ dot.setAttribute('cx',px(0)); dot.setAttribute('cy',py(c)); dot.style.display=''; }
+    else { dot.style.display='none'; }
+
+    /* read-out — m is always a multiple of 0.5, so 2m is an integer */
+    const n2=Math.round(m*2);                          /* m = n2/2 */
+    const eq = (n2===0) ? 'y = '+neg(c)
+             : 'y = '+xTerm(n2,2)+constTerm(c,1);
+    document.getElementById('lxEq').textContent=eq;
+    document.getElementById('lxGrad').textContent = (n2===0) ? '0' : frac(n2,2);
+    document.getElementById('lxYi').textContent='(0, '+neg(c)+')';
+
+    if(n2===0){
+      document.getElementById('lxXi').textContent = (c===0) ? 'every point (it is the x-axis)' : 'none — never crosses';
+      document.getElementById('lxPerp').textContent='undefined (vertical)';
+    } else {
+      /* x-intercept: y = 0 → x = −c/m = −2c/n2 */
+      document.getElementById('lxXi').textContent='('+frac(-2*c, n2)+', 0)';
+      document.getElementById('lxPerp').textContent=frac(-2, n2);
+    }
+  }
+  mS.addEventListener('input',draw);
+  cS.addEventListener('input',draw);
+  draw();
+})();
+
+/* ════════════════════════════════════════════════
+   2 · TWO-POINT / PERPENDICULAR-BISECTOR EXPLORER
+       (viewBox 330×320 · x from −5 to 11, y from −4 to 11)
+════════════════════════════════════════════════ */
+(function(){
+  const OX=110, OY=230, S=18;
+  const X0=20, X1=308, Y0=26, Y1=308;
+  const xmin=(X0-OX)/S, xmax=(X1-OX)/S;
+  const ymin=(OY-Y1)/S, ymax=(OY-Y0)/S;
+  const px=x=>OX+S*x, py=y=>OY-S*y;
+
+  (function(){
+    const g=document.getElementById('tpGrid'); let s='';
+    for(let i=-4;i<=10;i++){ if(i===0) continue;
+      s+='<line class="grid" x1="'+px(i)+'" y1="'+Y0+'" x2="'+px(i)+'" y2="'+Y1+'"/>'; }
+    for(let j=-3;j<=10;j++){ if(j===0) continue;
+      s+='<line class="grid" x1="'+X0+'" y1="'+py(j)+'" x2="'+X1+'" y2="'+py(j)+'"/>'; }
+    g.innerHTML=s;
+  })();
+
+  const CASES=[
+    {a:[-3,8],  b:[9,-2]},
+    {a:[1,2],   b:[5,10]},
+    {a:[-4,-1], b:[2,7]},
+    {a:[2,7],   b:[6,-1]}
+  ];
+
+  /* clip the line y = (n/d)x + (p/q) to the plotting box */
+  function clipLine(m,c){
+    const cand=[[xmin, m*xmin+c],[xmax, m*xmax+c]];
+    if(m!==0){ cand.push([(ymin-c)/m, ymin], [(ymax-c)/m, ymax]); }
+    const keep=[];
+    cand.forEach(p=>{
+      if(p[0]>=xmin-1e-9 && p[0]<=xmax+1e-9 && p[1]>=ymin-1e-9 && p[1]<=ymax+1e-9){
+        if(!keep.some(q=>Math.abs(q[0]-p[0])<1e-6 && Math.abs(q[1]-p[1])<1e-6)) keep.push(p);
+      }
+    });
+    keep.sort((a,b)=>a[0]-b[0]);
+    return keep.length>=2 ? [keep[0], keep[keep.length-1]] : null;
+  }
+
+  function show(i){
+    const A=CASES[i].a, B=CASES[i].b;
+    const dx=B[0]-A[0], dy=B[1]-A[1];
+
+    document.getElementById('tpTitle').textContent =
+      'A('+neg(A[0])+', '+neg(A[1])+')  ·  B('+neg(B[0])+', '+neg(B[1])+')';
+
+    /* segment + points */
+    document.getElementById('tpSeg').setAttribute('d','M'+px(A[0])+' '+py(A[1])+' L'+px(B[0])+' '+py(B[1]));
+    document.getElementById('tpA').setAttribute('cx',px(A[0]));
+    document.getElementById('tpA').setAttribute('cy',py(A[1]));
+    document.getElementById('tpB').setAttribute('cx',px(B[0]));
+    document.getElementById('tpB').setAttribute('cy',py(B[1]));
+
+    /* midpoint */
+    const mx=(A[0]+B[0])/2, my=(A[1]+B[1])/2;
+    document.getElementById('tpM').setAttribute('cx',px(mx));
+    document.getElementById('tpM').setAttribute('cy',py(my));
+    document.getElementById('tpMid').textContent='('+neg(mx)+', '+neg(my)+')';
+
+    /* length */
+    const sq=dx*dx+dy*dy, L=Math.sqrt(sq);
+    const exact=surd(sq);
+    document.getElementById('tpLen').textContent =
+      (Math.abs(L-Math.round(L))<1e-9) ? String(Math.round(L))
+      : exact+' = '+L.toPrecision(3)+' (3 s.f.)';
+
+    /* gradient & equation of AB */
+    const gEl=document.getElementById('tpGrad'), eEl=document.getElementById('tpEq');
+    const pEl=document.getElementById('tpPg'),  bEl=document.getElementById('tpBisEq');
+    if(dx===0){
+      gEl.textContent='undefined (vertical)';
+      eEl.textContent='x = '+neg(A[0]);
+      pEl.textContent='0 (horizontal)';
+      bEl.textContent='y = '+neg(my);
+      document.getElementById('tpBis').setAttribute('d','M'+px(xmin)+' '+py(my)+' L'+px(xmax)+' '+py(my));
+      return;
+    }
+    let n=dy, d=dx; if(d<0){ n=-n; d=-d; }
+    const g0=gcd(n,d)||1; n/=g0; d/=g0;             /* gradient of AB = n/d */
+    gEl.textContent=frac(n,d);
+    /* c = y1 − (n/d)x1 = (y1·d − n·x1)/d */
+    eEl.textContent='y = '+xTerm(n,d)+constTerm(A[1]*d - n*A[0], d);
+
+    if(n===0){                                       /* AB horizontal → bisector vertical */
+      pEl.textContent='undefined (vertical)';
+      bEl.textContent='x = '+neg(mx);
+      document.getElementById('tpBis').setAttribute('d','M'+px(mx)+' '+py(ymin)+' L'+px(mx)+' '+py(ymax));
+      return;
+    }
+    pEl.textContent=frac(-d,n);
+
+    /* perpendicular bisector: d·x + n·y = d·mx + n·my, cleared of halves */
+    let a2=2*d, b2=2*n, c2=d*(A[0]+B[0]) + n*(A[1]+B[1]);
+    let g2=gcd(gcd(a2,b2),c2)||1; a2/=g2; b2/=g2; c2/=g2;
+    if(a2<0 || (a2===0 && b2<0)){ a2=-a2; b2=-b2; c2=-c2; }
+    const bTerm = b2===0 ? '' : (b2>0 ? ' + ' : ' '+MINUS+' ') + (Math.abs(b2)===1?'':Math.abs(b2)) + 'y';
+    const aTerm = (a2===1?'':a2===-1?MINUS:neg(a2)) + 'x';
+    bEl.textContent = aTerm + bTerm + ' = ' + neg(c2);
+
+    /* draw the bisector */
+    const mPerp=-d/n, cPerp=my-mPerp*mx;
+    const seg=clipLine(mPerp,cPerp);
+    document.getElementById('tpBis').setAttribute('d',
+      seg ? 'M'+px(seg[0][0])+' '+py(seg[0][1])+' L'+px(seg[1][0])+' '+py(seg[1][1]) : '');
+  }
+
+  document.querySelectorAll('#tpTabs .scn-tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      document.querySelectorAll('#tpTabs .scn-tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      show(parseInt(t.dataset.i,10));
+    });
+  });
+  show(0);
+})();
+
+/* ════════════════════════════════════════════════
+   3 · FORMULA / SKILL BANK + FLOATING CARD
+════════════════════════════════════════════════ */
+const EQ = {
+  grad:   { c:'calc', name:'Gradient from two points', formula:'m = (y₂−y₁)/(x₂−x₁)',
+    syms:[['rise','y₂ − y₁','—'],['run','x₂ − x₁','—']],
+    rearr:'Both subtractions must run the same way round.',
+    ex:'A(−4, −1), B(2, 3) → m = (3 − (−1))/(2 − (−4)) = 4/6 = <b>2/3</b>.',
+    tip:'Rise ÷ run, never run ÷ rise — and a falling line has a <b>negative</b> m.' },
+  ymxc:   { c:'motion', name:'Gradient–intercept form', formula:'y = mx + c',
+    syms:[['m','gradient','—'],['c','y-intercept','—']],
+    rearr:'Get y on its own before reading m or c.',
+    ex:'5x + 4y = 8 → y = (−5/4)x + 2 → m = <b>−5/4</b>, y-intercept <b>(0, 2)</b>.',
+    tip:'You cannot read the gradient off ax + by = c. Rearrange first, every time.' },
+  ptgrad: { c:'mom', name:'Point–gradient form', formula:'y − y₁ = m(x − x₁)',
+    syms:[['(x₁, y₁)','any point on the line','—'],['m','gradient','—']],
+    rearr:'Expand and tidy to get back to y = mx + c.',
+    ex:'m = 2/3 through (3, −4) → y + 4 = (2/3)(x − 3) → <b>y = (2/3)x − 6</b>.',
+    tip:'Substituting into y = mx + c works just as well — use whichever you make fewer slips with.' },
+  len:    { c:'energy', name:'Length of a segment', formula:'AB = √((x₂−x₁)² + (y₂−y₁)²)',
+    syms:[['Δx','x₂ − x₁','—'],['Δy','y₂ − y₁','—']],
+    rearr:'Pythagoras on the right-angled triangle under the segment.',
+    ex:'A(2, 1), B(8, 9) → √(6² + 8²) = √100 = <b>10</b>.',
+    tip:'Add the squares first, then take ONE square root of the total — √(6²+8²) ≠ 6 + 8.' },
+  mid:    { c:'energy', name:'Midpoint', formula:'M = ((x₁+x₂)/2, (y₁+y₂)/2)',
+    syms:[['M','halfway point','—'],['÷2','the average','—']],
+    rearr:'Backwards: x₂ = 2·(x of M) − x₁.',
+    ex:'S(−4, 2), C(6, 8) → M = ((−4+6)/2, (2+8)/2) = <b>(1, 5)</b>.',
+    tip:'Midpoint <b>adds</b>; gradient and length <b>subtract</b>. Don’t blur them.' },
+  par:    { c:'power', name:'Parallel lines', formula:'m₁ = m₂',
+    syms:[['m₁, m₂','the two gradients','—'],['c','must differ','—']],
+    rearr:'Copy the gradient, then substitute the point to find the new c.',
+    ex:'Parallel to y = 4x − 1 through (1, −3): −3 = 4 + c → <b>y = 4x − 7</b>.',
+    tip:'If the given line is in ax + by = c form, rearrange BEFORE copying the gradient.' },
+  perp:   { c:'force', name:'Perpendicular lines', formula:'m₁ × m₂ = −1',
+    syms:[['m₂','−1/m₁ (negative reciprocal)','—'],['90°','the angle between them','—']],
+    rearr:'Flip the fraction AND change the sign.',
+    ex:'2y = 3x + 1 → m₁ = 3/2 → m₂ = <b>−2/3</b>  (since (3/2)(−2/3) = −1).',
+    tip:'Doing only one of "flip" and "negate" is the commonest error in Topic 3.' },
+  pbis:   { c:'force', name:'Perpendicular bisector', formula:'through M, gradient −1/m',
+    syms:[['M','midpoint of AB','—'],['−1/m','perpendicular to AB','—']],
+    rearr:'Midpoint → gradient of AB → negative reciprocal → substitute M.',
+    ex:'A(−3, 8), B(9, −2): M(3, 3), m = −5/6, m⊥ = 6/5 → <b>6x − 5y = 3</b>.',
+    tip:'Perpendicular but not through M scores no accuracy marks — never skip the midpoint.' },
+  stdform:{ c:'mom', name:'Standard form of a line', formula:'ax + by = c',
+    syms:[['a, b, c','integers when asked','—']],
+    rearr:'Multiply through by the denominator, then move terms.',
+    ex:'y = (2/3)x − 6 → 3y = 2x − 18 → <b>2x − 3y = 18</b>.',
+    tip:'"a, b and c are integers" means clear every fraction before you write the answer.' },
+  icept:  { c:'motion', name:'Intercepts (cover-up)', formula:'x = 0 → y-int · y = 0 → x-int',
+    syms:[['x = 0','gives the y-intercept','—'],['y = 0','gives the x-intercept','—']],
+    rearr:'Two points is all a straight line needs.',
+    ex:'3x + 2y = 12 → (0, 6) and (4, 0) → rule the line through them.',
+    tip:'Fastest way to draw an ax + by = c line — no table of values needed.' },
+  vert:   { c:'calc', name:'Vertical & horizontal lines', formula:'x = k  ·  y = k',
+    syms:[['x = k','vertical, gradient undefined','—'],['y = k','horizontal, gradient 0','—']],
+    rearr:'x = k can never be written as y = mx + c.',
+    ex:'x = 3 is vertical; y = −2 is horizontal; the axes are x = 0 and y = 0.',
+    tip:'x = 3 is the VERTICAL one — "x is stuck at 3, so I can only move up and down".' },
+  onLine: { c:'power', name:'Does the point lie on the line?', formula:'substitute and test',
+    syms:[['✓','both sides equal','—'],['✗','they differ','—']],
+    rearr:'A point is on a line exactly when its coordinates satisfy the equation.',
+    ex:'Is (5, −9) on y = −2x + 1? −2(5) + 1 = −9 ✓ <b>yes</b>.',
+    tip:'Use this to check every equation you write — substitute the point you didn’t use.' },
+};
+
+const ORDER=['grad','ymxc','ptgrad','len','mid','par','perp','pbis','stdform','icept','vert','onLine'];
+
+const CMETA = {
+  motion:{col:'#4db8ff', bg:'#0c2536', bd:'#1f4258'},
+  force: {col:'#ff5263', bg:'#2a0f15', bd:'#4a1d26'},
+  energy:{col:'#f5b13c', bg:'#1f1606', bd:'#3a2c10'},
+  mom:   {col:'#7c8cff', bg:'#120c22', bd:'#2e2350'},
+  power: {col:'#48d39a', bg:'#0f2018', bd:'#1f4a30'},
+  calc:  {col:'#3ad9d4', bg:'#08231f', bd:'#15453f'},
+};
+
+(function buildBank(){
+  const bank=document.getElementById('eqbank');
+  ORDER.forEach(key=>{
+    const e=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=e.c; cell.dataset.key=key;
+    cell.innerHTML='<div class="eq-sym">'+e.formula+'</div><div class="eq-name">'+e.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+
+function openEqCard(key){
+  const e=EQ[key], m=CMETA[e.c]||CMETA.motion;
+  const card=document.getElementById('eq-card');
+  const badge=document.getElementById('eqc-badge');
+  badge.textContent=e.name.split(' ')[0].charAt(0).toUpperCase();
+  badge.style.color=m.col; badge.style.background=m.bg; badge.style.borderColor=m.bd;
+  document.getElementById('eqc-name').textContent=e.name;
+  const f=document.getElementById('eqc-formula');
+  f.textContent=e.formula; f.style.color=m.col;
+  const sr=document.getElementById('eqc-syms'); sr.innerHTML='';
+  e.syms.forEach(s=>{
+    const pill=document.createElement('div'); pill.className='sym-pill';
+    pill.innerHTML='<b style="color:'+m.col+'">'+s[0]+'</b> '+s[1]+(s[2]&&s[2]!=='—'?' <span>['+s[2]+']</span>':'');
+    sr.appendChild(pill);
+  });
+  document.getElementById('eqc-rearr').textContent=e.rearr;
+  document.getElementById('eqc-example').innerHTML=e.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Exam trap:</b> '+e.tip;
+  card.style.display='block';
+  requestAnimationFrame(()=>card.style.opacity='1');
+}
+function closeEqCard(){
+  const card=document.getElementById('eq-card');
+  card.style.opacity='0';
+  setTimeout(()=>card.style.display='none',250);
+}
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) &&
+     !e.target.closest('.eqcell')) closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   4 · THEME TOGGLE (light / dark)
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){ try{ return localStorage.getItem('math-theme'); }catch(e){ return null; } }
+  function safeSet(v){ try{ localStorage.setItem('math-theme',v); }catch(e){} }
+  function apply(theme){
+    body.setAttribute('data-theme', theme);
+    btn.textContent = (theme==='dark') ? SUN : MOON;
+    btn.setAttribute('aria-label',
+      (theme==='dark') ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  let start = safeGet();
+  if(!start){
+    start = (window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+  apply(start);
+  btn.addEventListener('click',()=>{
+    const next = body.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    apply(next); safeSet(next);
+  });
+})();
+</script>
+
+
+<button id="markDoneBtn" data-mv="3" data-id="note:maths:3" type="button" aria-pressed="false" style="position:fixed;bottom:18px;right:18px;z-index:10000;font-family:Inter,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;border-radius:22px;padding:10px 18px;border:1px solid var(--border,#263247);background:var(--surface,#121826);color:var(--text,#d6deec);box-shadow:0 6px 20px rgba(0,0,0,.35);">○ Mark as complete</button>
+<script>(function(){var b=document.getElementById('markDoneBtn'),ID=b.getAttribute('data-id'),KEY="studyProgress";function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function r(){var d=!!load()[ID];b.textContent=d?'✓ Completed':'○ Mark as complete';b.setAttribute('aria-pressed',d?'true':'false');b.style.borderColor=d?'var(--power,#4ec994)':'var(--border,#263247)';b.style.color=d?'var(--power,#4ec994)':'var(--text,#d6deec)';}b.addEventListener('click',function(){var p=load();if(p[ID])delete p[ID];else p[ID]=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}r();});window.addEventListener('miraya-progress-synced',r);r();})();</script>
+</body>
+</html>
