@@ -375,6 +375,8 @@
     flex-wrap: wrap;
     padding-right: 50px;         /* clear the fixed theme toggle (top-right) */
   }
+  /* wide enough that the fixed toggle sits outside the 980px page — reclaim the gap */
+  @media (min-width: 1113px) { .hubnav-inner { padding-right: 0; } }
   .filters { display: flex; gap: 8px; flex-wrap: wrap; }
   .chip {
     font-family: 'Inter', sans-serif;
@@ -394,26 +396,63 @@
     background: color-mix(in srgb, var(--accent, var(--text)) 13%, transparent);
   }
   .chip:focus-visible { outline: 2px solid var(--accent, var(--physics)); outline-offset: 2px; }
+  /* The search fills whatever is left of the chip row — and if the chips are wide
+     enough to push it onto its own line, it spans that line instead of stranding
+     itself against the right edge. Both states look deliberate. */
   .search {
-    margin-left: auto;
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; gap: 9px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 6px 15px;
-    flex: 0 1 260px;
-    min-width: 170px;
-    transition: border-color .18s ease;
+    padding: 6px 12px 6px 14px;
+    flex: 1 1 220px;
+    min-width: 150px;
+    transition: border-color .18s ease, box-shadow .18s ease;
   }
-  .search:focus-within { border-color: color-mix(in srgb, var(--physics) 55%, var(--border)); }
-  .search .ico { font-size: 13px; opacity: .65; }
+  .search:focus-within {
+    border-color: color-mix(in srgb, var(--physics) 60%, var(--border));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--physics) 14%, transparent);
+  }
+  .search .ico {
+    flex: none; width: 14px; height: 14px;
+    color: var(--muted);
+    transition: color .18s ease;
+  }
+  .search:focus-within .ico { color: color-mix(in srgb, var(--physics) 75%, var(--text)); }
   #hubSearch {
     background: none; border: none; outline: none;
     color: var(--text);
-    font-family: 'Inter', sans-serif; font-size: 13.5px;
-    width: 100%;
+    font-family: 'Inter', sans-serif; font-size: 13.5px; line-height: 1.35;
+    flex: 1 1 auto; min-width: 0;
+    -webkit-appearance: none; appearance: none;
   }
   #hubSearch::placeholder { color: var(--muted); }
+  /* the native WebKit "clear" glyph doesn't theme — use our own */
+  #hubSearch::-webkit-search-cancel-button,
+  #hubSearch::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
+  .s-clear {
+    flex: none; display: grid; place-items: center;
+    width: 19px; height: 19px; padding: 0;
+    border: none; border-radius: 50%;
+    background: color-mix(in srgb, var(--muted) 24%, transparent);
+    color: var(--text);
+    font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1;
+    cursor: pointer;
+    transition: background .15s ease;
+  }
+  .s-clear:hover { background: color-mix(in srgb, var(--muted) 42%, transparent); }
+  .s-clear:focus-visible { outline: 2px solid var(--physics); outline-offset: 1px; }
+  .s-clear[hidden] { display: none; }
+  /* surfaces the existing "/" shortcut, and gives the empty field a right-hand anchor */
+  .s-kbd {
+    flex: none;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600;
+    color: var(--muted);
+    padding: 1px 6px 2px; margin-right: 4px;
+    border: 1px solid var(--border); border-radius: 5px;
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+  }
+  .search:focus-within .s-kbd, .s-kbd[hidden] { display: none; }
   .no-results {
     text-align: center;
     color: var(--muted);
@@ -885,7 +924,8 @@
     .cards { grid-template-columns: 1fr; }
     .stat { flex: 1 1 100%; }
     .hubnav { margin: -4px -20px 26px; padding: 11px 20px; }
-    .search { flex: 1 1 100%; margin-left: 0; }
+    .search { flex-basis: 100%; }
+    .s-kbd { display: none; }        /* no physical keyboard on a phone */
   }
 </style>
 </head>
@@ -959,8 +999,10 @@
         <button class="chip" type="button" data-filter="mock" style="--accent: var(--power);" title="Show only mock / mixed-topic papers (not chapter topics)">📑 Mocks &amp; mixed</button>
       </div>
       <label class="search">
-        <span class="ico">🔍</span>
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4 20 20"/></svg>
         <input id="hubSearch" type="search" placeholder="Search chapters…" autocomplete="off" aria-label="Search chapters">
+        <kbd class="s-kbd" id="hubSearchKbd" aria-hidden="true">/</kbd>
+        <button class="s-clear" id="hubSearchClear" type="button" aria-label="Clear search" hidden>×</button>
       </label>
     </div>
   </nav>
@@ -1558,6 +1600,8 @@
     var sections = Array.prototype.slice.call(document.querySelectorAll('.subject'));
     var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
     var search = document.getElementById('hubSearch');
+    var clearBtn = document.getElementById('hubSearchClear');
+    var kbdHint = document.getElementById('hubSearchKbd');
     var noRes = document.getElementById('noResults');
     var filter = 'all';
 
@@ -1568,6 +1612,8 @@
 
     function apply() {
       var q = (search.value || '').trim().toLowerCase();
+      if (clearBtn) clearBtn.hidden = !search.value;
+      if (kbdHint) kbdHint.hidden = !!search.value;
       document.body.classList.toggle('searching', !!q);
       document.body.classList.toggle('subjfilter', filter !== 'all');
       var anyShown = false;
@@ -1611,6 +1657,14 @@
         chips.forEach(function (x) { x.classList.toggle('is-active', x.getAttribute('data-filter') === 'all'); });
       }
       apply();
+    });
+
+    search.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && search.value) { e.stopPropagation(); search.value = ''; apply(); }
+    });
+
+    if (clearBtn) clearBtn.addEventListener('click', function () {
+      search.value = ''; apply(); search.focus();
     });
 
     apply();
