@@ -19,7 +19,8 @@
     --motion:   #5b8dee;   /* blue   — ENDOthermic / energy in / cold */
     --cyan:     #36c9b0;   /* teal   — bonds / bond energy */
     --force:    #f06070;   /* coral  — EXOthermic / energy out / hot */
-    --momentum: #a57ef5;   /* violet — enthalpy ΔH / pathway diagrams */
+    --momentum: #a57ef5;   /* violet — ΔH in PROSE / callouts only. Inside figures ΔH
+                              takes the sign's colour: coral if negative, blue if positive */
     --energy:   #f0b144;   /* amber  — activation energy Ea */
     --energy2:  #f0b144;
     --power:    #4ec994;   /* green  — exam tips / success (fixed role) */
@@ -89,6 +90,8 @@
   .section:nth-of-type(8){animation-delay:.32s}
   .section:nth-of-type(9){animation-delay:.36s}
   .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+  .section:nth-of-type(12){animation-delay:.48s}
 
   .sec-label {
     font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em;
@@ -168,7 +171,21 @@
   .scn-read .rk { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--motion); margin-bottom:6px; }
 
   /* shared SVG diagram frame */
-  svg.diagram { width:100%; height:auto; display:block; background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  svg.diagram { width:100%; height:auto; display:block; max-width:560px; max-height:400px;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; margin:14px auto; }
+  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+
+  /* ── STATIC DIAGRAM HELPERS ── */
+  .dg-lbl  { fill:var(--muted);  font-family:'JetBrains Mono',monospace; font-size:9.5px; }
+  .dg-lbl2 { fill:var(--text);   font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600; }
+  .dg-ttl  { fill:var(--bright); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.12em; }
+  .dg-atom { fill:var(--bright); font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; text-anchor:middle; }
+  .dg-bond { stroke:var(--muted); stroke-width:1.8; }
+  .dg-rule { stroke:var(--border); stroke-width:1.2; }
+  .dg-box  { fill:none; stroke:#3a4a66; stroke-width:1.6; }
+  body[data-theme="light"] .dg-box { stroke:#c7bfaa; }
+  .dg-cap { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted);
+    text-align:center; letter-spacing:.03em; margin:-4px auto 20px; max-width:560px; line-height:1.6; }
 
   /* ── ENERGY-PROFILE EXPLORER ── */
   .ep-curve  { fill:none; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
@@ -189,8 +206,10 @@
   .tool { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; margin:22px 0; }
   .rx-eq { font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--bright); text-align:center; background:var(--surface2); border:1px solid var(--border); border-radius:9px; padding:11px 14px; margin-bottom:16px; }
   .bc-col-h { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
-  .bc-broken .bc-col-h { color:var(--force); }
-  .bc-made   .bc-col-h { color:var(--motion); }
+  /* colour follows the note's legend: breaking = energy IN = endothermic (blue),
+     making = energy OUT = exothermic (coral) — same coding as the static figures */
+  .bc-broken .bc-col-h { color:var(--motion); }
+  .bc-made   .bc-col-h { color:var(--force); }
   .bc-line { display:flex; justify-content:space-between; gap:10px; font-family:'JetBrains Mono',monospace; font-size:12.5px; padding:5px 0; border-bottom:1px solid var(--border); }
   .bc-line:last-of-type { border-bottom:none; }
   .bc-line span { color:var(--muted); }
@@ -318,6 +337,43 @@
   body[data-theme="light"] .vec-out { background:#dff3ef; border-color:#a9ddd2; }
   body[data-theme="light"] .estore { background:#efeadd; }
 
+  /* ── CHECK-YOURSELF RETRIEVAL BLOCK ── */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ── PAPERS PANEL ── */
+  .paper-links { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:26px 0 0; }
+  .paper-links .pl-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--power); margin-bottom:10px; }
+  .paper-links a { display:block; color:var(--text); text-decoration:none; font-size:14px;
+    padding:9px 12px; margin-top:8px; border:1px solid var(--border); border-radius:9px;
+    background:var(--surface2); transition:border-color .2s, color .2s; }
+  .paper-links a:hover { border-color:var(--power); color:var(--power); }
+  .paper-links .pl-note { font-size:12.5px; color:var(--muted); margin-top:10px; }
+
+  /* ── SAVE AS PDF ── */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint, #eq-card { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; animation:none !important; opacity:1 !important; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .section { animation:none; opacity:1; }
     body, .theme-toggle, .box, .card, .define, .explorer, .tool, svg.diagram,
@@ -350,6 +406,7 @@
 
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
 <div class="page">
 
   <!-- HEADER -->
@@ -362,7 +419,7 @@
 
   <!-- ── 01 · THE BIG IDEA ── -->
   <div class="section">
-    <div class="sec-label">01 / 09 · 5.1 Energy &amp; reactions</div>
+    <div class="sec-label">01 / 10 · 5.1 Energy &amp; reactions</div>
     <h2>Energy is stored in bonds — reactions just move it</h2>
 
     <div class="box intuition">
@@ -389,6 +446,52 @@
       </div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 300" role="img" aria-label="Two beakers with thermometers. On the left an exothermic reaction transfers thermal energy out of the system to the surroundings and the thermometer reading rises; on the right an endothermic reaction takes thermal energy in from the surroundings and the reading falls.">
+      <!-- ═══ PANEL A · EXOTHERMIC ═══ -->
+      <text class="dg-ttl" style="fill:var(--force)" x="140" y="28" text-anchor="middle">EXOTHERMIC</text>
+      <text class="dg-lbl" style="fill:var(--force)" x="140" y="76" text-anchor="middle">energy transferred OUT</text>
+      <text class="dg-lbl" style="fill:var(--force)" x="140" y="90" text-anchor="middle">to the surroundings</text>
+      <!-- energy arrows pointing away from the beaker -->
+      <g style="stroke:var(--force);fill:var(--force)" stroke-width="1.8">
+        <line x1="89" y1="190" x2="62" y2="190"/><polygon points="56,190 66,185.5 66,194.5" stroke="none"/>
+        <line x1="191" y1="190" x2="218" y2="190"/><polygon points="224,190 214,185.5 214,194.5" stroke="none"/>
+        <line x1="115" y1="136" x2="115" y2="112"/><polygon points="115,106 110.5,116 119.5,116" stroke="none"/>
+      </g>
+      <!-- beaker + liquid -->
+      <path d="M93,178 L93,235 Q93,247 105,247 L175,247 Q187,247 187,235 L187,178 Z" style="fill:var(--force)" fill-opacity="0.17"/>
+      <path class="dg-bond" fill="none" d="M92,140 L92,235 Q92,248 105,248 L175,248 Q188,248 188,235 L188,140"/>
+      <!-- thermometer: outline, then a TALL liquid column -->
+      <rect class="dg-bond" fill="none" x="158" y="104" width="11" height="100" rx="5.5"/>
+      <rect x="161" y="124" width="5" height="82" style="fill:var(--force)"/>
+      <circle cx="163.5" cy="209" r="9" class="dg-bond" fill="none"/>
+      <circle cx="163.5" cy="209" r="6.5" style="fill:var(--force)"/>
+      <text class="dg-lbl" x="140" y="268" text-anchor="middle">the system loses energy</text>
+      <text class="dg-lbl2" style="fill:var(--force)" x="140" y="285" text-anchor="middle">SURROUNDINGS WARM · READING RISES</text>
+
+      <line class="dg-rule" x1="270" y1="46" x2="270" y2="282"/>
+
+      <!-- ═══ PANEL B · ENDOTHERMIC ═══ -->
+      <text class="dg-ttl" style="fill:var(--motion)" x="400" y="28" text-anchor="middle">ENDOTHERMIC</text>
+      <text class="dg-lbl" style="fill:var(--motion)" x="400" y="76" text-anchor="middle">energy transferred IN</text>
+      <text class="dg-lbl" style="fill:var(--motion)" x="400" y="90" text-anchor="middle">from the surroundings</text>
+      <!-- energy arrows pointing into the beaker -->
+      <g style="stroke:var(--motion);fill:var(--motion)" stroke-width="1.8">
+        <line x1="322" y1="190" x2="346" y2="190"/><polygon points="352,190 342,185.5 342,194.5" stroke="none"/>
+        <line x1="478" y1="190" x2="454" y2="190"/><polygon points="448,190 458,185.5 458,194.5" stroke="none"/>
+        <line x1="375" y1="106" x2="375" y2="130"/><polygon points="375,136 370.5,126 379.5,126" stroke="none"/>
+      </g>
+      <path d="M353,178 L353,235 Q353,247 365,247 L435,247 Q447,247 447,235 L447,178 Z" style="fill:var(--motion)" fill-opacity="0.17"/>
+      <path class="dg-bond" fill="none" d="M352,140 L352,235 Q352,248 365,248 L435,248 Q448,248 448,235 L448,140"/>
+      <!-- thermometer: same scale, but a SHORT liquid column -->
+      <rect class="dg-bond" fill="none" x="418" y="104" width="11" height="100" rx="5.5"/>
+      <rect x="421" y="172" width="5" height="34" style="fill:var(--motion)"/>
+      <circle cx="423.5" cy="209" r="9" class="dg-bond" fill="none"/>
+      <circle cx="423.5" cy="209" r="6.5" style="fill:var(--motion)"/>
+      <text class="dg-lbl" x="400" y="268" text-anchor="middle">the system gains energy</text>
+      <text class="dg-lbl2" style="fill:var(--motion)" x="400" y="285" text-anchor="middle">SURROUNDINGS COOL · READING FALLS</text>
+    </svg>
+    <div class="dg-cap">The thermometer never measures the reaction — it measures the <strong>surroundings</strong>. Energy leaving the system warms them (exothermic); energy pulled into the system cools them (endothermic).</div>
+
     <div class="box exam">
       <div class="box-label">✅ The temperature test — how you tell them apart in the lab</div>
       Put a thermometer in the mixture. <strong>Temperature up = exothermic. Temperature down = endothermic.</strong> Always answer in terms of the <em>surroundings'</em> temperature — that is exactly what the Core objectives ask you to state.
@@ -398,7 +501,7 @@
 
   <!-- ── 02 · EXOTHERMIC ── -->
   <div class="section">
-    <div class="sec-label">02 / 09 · 5.1 Exothermic reactions</div>
+    <div class="sec-label">02 / 10 · 5.1 Exothermic reactions</div>
     <h2>Exothermic — heat flows out, surroundings warm up</h2>
 
     <div class="define exo-c">
@@ -420,7 +523,7 @@
 
     <div class="box analogy">
       <div class="box-label">🍳 From the Indian kitchen</div>
-      The <strong>LPG cylinder</strong> on a home stove burns methane/butane in air — combustion, strongly exothermic — which is the whole point: the heat released cooks the food. A <strong>chemical hand-warmer</strong> a trekker carries to Shimla works the same way: a slow exothermic reaction (iron rusting) releases heat into cold fingers.
+      The <strong>LPG cylinder</strong> on a home stove burns <strong>propane and butane</strong> in air (a piped-gas — PNG — connection burns <strong>methane</strong> instead) — combustion, strongly exothermic — which is the whole point: the heat released cooks the food. A <strong>chemical hand-warmer</strong> a trekker carries to Shimla works the same way: a slow exothermic reaction (iron rusting) releases heat into cold fingers.
     </div>
 
     <div class="box exam">
@@ -432,7 +535,7 @@
 
   <!-- ── 03 · ENDOTHERMIC ── -->
   <div class="section">
-    <div class="sec-label">03 / 09 · 5.1 Endothermic reactions</div>
+    <div class="sec-label">03 / 10 · 5.1 Endothermic reactions</div>
     <h2>Endothermic — heat flows in, surroundings cool down</h2>
 
     <div class="define endo-c">
@@ -472,7 +575,7 @@
 
   <!-- ── 04 · REACTION PATHWAY DIAGRAMS ── -->
   <div class="section">
-    <div class="sec-label">04 / 09 · 5.1 Reaction pathway diagrams</div>
+    <div class="sec-label">04 / 10 · 5.1 Reaction pathway diagrams</div>
     <h2>Reaction pathway diagrams — energy as a journey</h2>
 
     <p>A <strong>reaction pathway diagram</strong> (energy level diagram) plots <strong>energy</strong> up the side against the <strong>progress of the reaction</strong> along the bottom. It tells the whole energy story at a glance: where the reactants and products sit, the size of the energy barrier, and whether energy is released or absorbed.</p>
@@ -481,6 +584,59 @@
       <div class="box-label">⛰️ Reading the hill</div>
       Picture pushing a boulder over a hill. You must shove it <strong>up to the top</strong> first (that climb is the <span style="color:var(--energy)">activation energy</span>) before it can roll down the far side. Where it finally settles — <em>lower</em> than the start (exothermic) or <em>higher</em> (endothermic) — is decided by the products' energy level, and the height difference is the <span style="color:var(--momentum)">enthalpy change, ΔH</span>.
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="Two fully labelled reaction pathway diagrams. Left, exothermic: the products level lies below the reactants level, the activation energy is the climb from reactants to the peak, and the delta H arrow points down and is negative. Right, endothermic: the products level lies above the reactants level and the delta H arrow points up and is positive.">
+      <!-- ═══ PANEL A · EXOTHERMIC ═══ -->
+      <text class="dg-ttl" style="fill:var(--force)" x="137" y="28" text-anchor="middle">EXOTHERMIC</text>
+      <line class="ep-axis" x1="32" y1="42" x2="32" y2="240"/>
+      <line class="ep-axis" x1="32" y1="240" x2="242" y2="240"/>
+      <text class="ep-txt" x="18" y="141" transform="rotate(-90 18 141)" text-anchor="middle">Energy</text>
+      <text class="ep-txt" x="137" y="262" text-anchor="middle">progress of reaction →</text>
+      <!-- level guides -->
+      <line class="ep-level" x1="58" y1="64" x2="128" y2="64"/>
+      <line class="ep-level" x1="88" y1="112" x2="215" y2="112"/>
+      <!-- the energy curve -->
+      <path class="ep-curve" style="stroke:var(--force)" d="M42,112 L88,112 C108,112 116,64 128,64 C140,64 150,192 175,192 L232,192"/>
+      <!-- activation energy: reactant level → peak -->
+      <g class="ep-ea">
+        <line x1="70" y1="70" x2="70" y2="106"/>
+        <polygon points="66.5,70 73.5,70 70,64"/><polygon points="66.5,106 73.5,106 70,112"/>
+      </g>
+      <text class="ep-ea-t" x="77" y="93">Eₐ</text>
+      <!-- enthalpy change: reactants → products -->
+      <g class="ep-dhx">
+        <line x1="205" y1="118" x2="205" y2="186"/>
+        <polygon points="201.5,118 208.5,118 205,112"/><polygon points="201.5,186 208.5,186 205,192"/>
+      </g>
+      <text class="ep-dhx-t" x="212" y="157">ΔH (−)</text>
+      <text class="ep-lbl" x="44" y="130">Reactants</text>
+      <text class="ep-lbl" x="178" y="211">Products</text>
+
+      <line class="dg-rule" x1="282" y1="40" x2="282" y2="270"/>
+
+      <!-- ═══ PANEL B · ENDOTHERMIC ═══ -->
+      <text class="dg-ttl" style="fill:var(--motion)" x="427" y="28" text-anchor="middle">ENDOTHERMIC</text>
+      <line class="ep-axis" x1="322" y1="42" x2="322" y2="240"/>
+      <line class="ep-axis" x1="322" y1="240" x2="532" y2="240"/>
+      <text class="ep-txt" x="308" y="141" transform="rotate(-90 308 141)" text-anchor="middle">Energy</text>
+      <text class="ep-txt" x="427" y="262" text-anchor="middle">progress of reaction →</text>
+      <line class="ep-level" x1="348" y1="64" x2="418" y2="64"/>
+      <line class="ep-level" x1="378" y1="178" x2="505" y2="178"/>
+      <path class="ep-curve" style="stroke:var(--motion)" d="M332,178 L378,178 C398,178 406,64 418,64 C430,64 438,118 465,118 L522,118"/>
+      <g class="ep-ea">
+        <line x1="360" y1="70" x2="360" y2="172"/>
+        <polygon points="356.5,70 363.5,70 360,64"/><polygon points="356.5,172 363.5,172 360,178"/>
+      </g>
+      <text class="ep-ea-t" x="367" y="126">Eₐ</text>
+      <g class="ep-dhn">
+        <line x1="495" y1="124" x2="495" y2="172"/>
+        <polygon points="491.5,124 498.5,124 495,118"/><polygon points="491.5,172 498.5,172 495,178"/>
+      </g>
+      <text class="ep-dhn-t" x="487" y="153" text-anchor="end">ΔH (+)</text>
+      <text class="ep-lbl" x="334" y="196">Reactants</text>
+      <text class="ep-lbl" x="468" y="110">Products</text>
+    </svg>
+    <div class="dg-cap">The five labels a full-mark answer needs: both axes, the <strong>reactants</strong> level, the <strong>products</strong> level, <strong>Eₐ</strong> measured from the reactants up to the peak, and <strong>ΔH</strong> measured from reactants to products. Note Eₐ is drawn the same way in both — only ΔH flips.</div>
 
     <p>Flip between an exothermic and an endothermic reaction. Watch where the products land, and how the <span style="color:var(--momentum)">ΔH</span> arrow flips direction:</p>
 
@@ -512,7 +668,7 @@
 
   <!-- ── 05 · ENTHALPY CHANGE ── -->
   <div class="section">
-    <div class="sec-label">05 / 09 · 5.1 Enthalpy change, ΔH (Supplement)</div>
+    <div class="sec-label">05 / 10 · 5.1 Enthalpy change, ΔH (Supplement)</div>
     <h2>Enthalpy change, ΔH — putting a number and a sign on it</h2>
 
     <div class="define ent-c">
@@ -539,7 +695,7 @@
 
   <!-- ── 06 · ACTIVATION ENERGY ── -->
   <div class="section">
-    <div class="sec-label">06 / 09 · 5.1 Activation energy, Eₐ (Supplement)</div>
+    <div class="sec-label">06 / 10 · 5.1 Activation energy, Eₐ (Supplement)</div>
     <h2>Activation energy, Eₐ — the barrier every reaction must clear</h2>
 
     <div class="define act-c">
@@ -565,7 +721,7 @@
 
   <!-- ── 07 · BOND BREAKING & MAKING ── -->
   <div class="section">
-    <div class="sec-label">07 / 09 · 5.1 Bonds &amp; energy (Supplement)</div>
+    <div class="sec-label">07 / 10 · 5.1 Bonds &amp; energy (Supplement)</div>
     <h2>Bond breaking vs bond making — where ΔH actually comes from</h2>
 
     <div class="box remember">
@@ -578,6 +734,41 @@
       <div class="box-label">🧲 Why breaking costs and making pays</div>
       Atoms in a bond are held together by attraction — pulling them apart is like stretching a magnet off a fridge: you must <strong>put energy in</strong>. Letting atoms snap together into a new bond is the magnet slamming back — energy is <strong>released</strong>. So every reaction first spends energy breaking, then earns energy making.
     </div>
+
+    <svg class="diagram" viewBox="0 0 520 270" role="img" aria-label="Left: an H–H molecule separating into two H atoms, labelled bond breaking, energy put in, endothermic, 436 kilojoules per mole. Right: separate H and Cl atoms joining into an H–Cl molecule, labelled bond making, energy given out, exothermic, 431 kilojoules per mole.">
+      <!-- ═══ BREAKING ═══ -->
+      <text class="dg-ttl" style="fill:var(--motion)" x="133" y="28" text-anchor="middle">BOND BREAKING</text>
+      <text class="dg-lbl" style="fill:var(--motion)" x="133" y="72" text-anchor="middle">energy is put IN to pull the atoms apart</text>
+      <line class="dg-bond" x1="63" y1="130" x2="77" y2="130"/>
+      <text class="dg-atom" x="52" y="135">H</text>
+      <text class="dg-atom" x="88" y="135">H</text>
+      <g style="stroke:var(--motion);fill:var(--motion)" stroke-width="1.8">
+        <line x1="110" y1="130" x2="138" y2="130"/><polygon points="144,130 134,125.5 134,134.5" stroke="none"/>
+      </g>
+      <text class="dg-atom" x="170" y="135">H</text>
+      <text class="dg-atom" x="214" y="135">H</text>
+      <text class="dg-lbl2" x="133" y="176" text-anchor="middle">breaking 1 mol H–H needs 436 kJ</text>
+      <text class="dg-ttl" style="fill:var(--motion)" x="133" y="206" text-anchor="middle">ENDOTHERMIC</text>
+      <text class="dg-lbl" x="133" y="238" text-anchor="middle">enters the ΔH sum as Σ(bonds broken)</text>
+
+      <line class="dg-rule" x1="262" y1="44" x2="262" y2="250"/>
+
+      <!-- ═══ MAKING ═══ -->
+      <text class="dg-ttl" style="fill:var(--force)" x="393" y="28" text-anchor="middle">BOND MAKING</text>
+      <text class="dg-lbl" style="fill:var(--force)" x="393" y="72" text-anchor="middle">energy is given OUT as the bond forms</text>
+      <text class="dg-atom" x="312" y="135">H</text>
+      <text class="dg-atom" x="358" y="135">Cl</text>
+      <g style="stroke:var(--force);fill:var(--force)" stroke-width="1.8">
+        <line x1="386" y1="130" x2="414" y2="130"/><polygon points="420,130 410,125.5 410,134.5" stroke="none"/>
+      </g>
+      <line class="dg-bond" x1="462" y1="130" x2="478" y2="130"/>
+      <text class="dg-atom" x="452" y="135">H</text>
+      <text class="dg-atom" x="490" y="135">Cl</text>
+      <text class="dg-lbl2" x="393" y="176" text-anchor="middle">making 1 mol H–Cl releases 431 kJ</text>
+      <text class="dg-ttl" style="fill:var(--force)" x="393" y="206" text-anchor="middle">EXOTHERMIC</text>
+      <text class="dg-lbl" x="393" y="238" text-anchor="middle">enters the ΔH sum as Σ(bonds made)</text>
+    </svg>
+    <div class="dg-cap">The same number, read two ways. It costs 436 kJ to break a mole of H–H bonds and you get 436 kJ back when a mole of them forms — so a bond energy is a single value, and only the <em>direction</em> changes sign.</div>
 
     <div class="grid2">
       <div class="card">
@@ -616,7 +807,7 @@
 
   <!-- ── 08 · CALCULATING ΔH FROM BOND ENERGIES ── -->
   <div class="section">
-    <div class="sec-label">08 / 09 · 5.1 ΔH from bond energies (Supplement)</div>
+    <div class="sec-label">08 / 10 · 5.1 ΔH from bond energies (Supplement)</div>
     <h2>Calculating ΔH from bond energies</h2>
 
     <p>A <strong>bond energy</strong> is the energy needed to break one mole of a particular bond (and, equally, the energy released when that bond forms). Add up every bond broken in the reactants (energy in), subtract every bond made in the products (energy out), and you get ΔH:</p>
@@ -625,7 +816,7 @@
       <span class="term">Method</span> — <span class="eq-inline" style="color:var(--cyan)">ΔH = Σ(bond energies broken) − Σ(bond energies made)</span>. A <strong>negative</strong> answer means exothermic; a <strong>positive</strong> answer means endothermic.
     </div>
 
-    <p>The calculator below uses these example bond energies (kJ/mol, of the kind given on the exam data sheet). Switch reactions and follow the running total:</p>
+    <p>The calculator below uses these example bond energies (kJ/mol). In 0620 there is no bond-energy data sheet — the values you need are always <strong>printed inside the question</strong>, so never try to memorise them. Switch reactions and follow the running total:</p>
 
     <div class="estores">
       <div class="estore"><span class="dot" style="background:#36c9b0"></span>H–H = 436</div>
@@ -665,16 +856,175 @@
       ΔH = 678 − 862 = <strong style="color:var(--force)">−184 kJ/mol</strong>. Negative → <strong>exothermic</strong> (more energy released forming the H–Cl bonds than was needed to break the H–H and Cl–Cl bonds).
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="An energy staircase for hydrogen plus chlorine forming hydrogen chloride. From the reactant level, 678 kilojoules is put in to break the bonds, raising the chemicals to a level of separate atoms; 862 kilojoules is then released as two H–Cl bonds form, dropping to the product level, which is 184 kilojoules below the reactants.">
+      <line class="ep-axis" x1="40" y1="40" x2="40" y2="265"/>
+      <line class="ep-axis" x1="40" y1="265" x2="545" y2="265"/>
+      <text class="ep-txt" x="24" y="150" transform="rotate(-90 24 150)" text-anchor="middle">Energy</text>
+      <text class="ep-txt" x="292" y="288" text-anchor="middle">progress of reaction →</text>
+
+      <!-- the three energy levels -->
+      <g style="stroke:var(--text)" stroke-width="2.2">
+        <line x1="60"  y1="180" x2="180" y2="180"/>
+        <line x1="180" y1="70"  x2="345" y2="70"/>
+        <line x1="345" y1="210" x2="465" y2="210"/>
+      </g>
+      <!-- step 1 · break every bond in the reactants (energy IN) -->
+      <g style="stroke:var(--motion);fill:var(--motion)" stroke-width="1.9">
+        <line x1="180" y1="180" x2="180" y2="78"/><polygon points="180,70 175,81 185,81" stroke="none"/>
+      </g>
+      <text class="dg-lbl2" style="fill:var(--motion)" x="189" y="127">+678 kJ IN</text>
+      <text class="dg-lbl" style="fill:var(--motion)" x="189" y="142">break 1 H–H + 1 Cl–Cl</text>
+      <!-- step 2 · make every bond in the products (energy OUT) -->
+      <g style="stroke:var(--force);fill:var(--force)" stroke-width="1.9">
+        <line x1="345" y1="70" x2="345" y2="202"/><polygon points="345,210 340,199 350,199" stroke="none"/>
+      </g>
+      <text class="dg-lbl2" style="fill:var(--force)" x="354" y="151">−862 kJ OUT</text>
+      <text class="dg-lbl" style="fill:var(--force)" x="354" y="166">make 2 × H–Cl</text>
+      <!-- the net change (levels are drawn to scale: 110 px = 678 kJ) -->
+      <line class="ep-level" x1="180" y1="180" x2="532" y2="180"/>
+      <line class="ep-level" x1="465" y1="210" x2="532" y2="210"/>
+      <g class="ep-dhx">
+        <line x1="520" y1="186" x2="520" y2="204"/>
+        <polygon points="516.5,186 523.5,186 520,180"/><polygon points="516.5,204 523.5,204 520,210"/>
+      </g>
+      <text class="ep-dhx-t" x="532" y="230" text-anchor="end">ΔH = −184 kJ/mol</text>
+      <!-- level labels -->
+      <text class="dg-lbl2" x="62"  y="172">H₂ + Cl₂</text>
+      <text class="dg-lbl2" x="185" y="62">2H + 2Cl · separate atoms</text>
+      <text class="dg-lbl2" x="350" y="231">2HCl</text>
+    </svg>
+    <div class="dg-cap">Why ΔH = Σ(broken) − Σ(made): you climb by everything you break, then fall by everything you make. Drawn to scale — the fall (862) beats the climb (678), so the products end up <strong>184 kJ lower</strong> than the reactants — exothermic.</div>
+
     <div class="box pitfall">
       <div class="box-label">⚠️ Count every bond, and mind the coefficients</div>
       In CH₄ there are <strong>four</strong> C–H bonds, and "2O₂" means <strong>two</strong> O=O bonds. Multiply each bond energy by how many of that bond there are, on <em>both</em> sides. Dropping a bond or ignoring a "2" in front is the usual way these calculations go wrong.
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="Displayed formulae for the combustion of methane. Top band, bonds broken in the reactants: methane drawn with four C–H bonds plus two O=O molecules, giving 4 times 412 equals 1648 plus 2 times 498 equals 996, a total of 2644. Bottom band, bonds made in the products: carbon dioxide drawn as O double bond C double bond O plus two bent water molecules, giving 2 times 805 equals 1610 plus 4 times 463 equals 1852, a total of 3462. Delta H equals 2644 minus 3462 equals minus 818 kilojoules per mole.">
+      <!-- ═══ BAND 1 · BONDS BROKEN ═══ -->
+      <text class="dg-ttl" style="fill:var(--motion)" x="20" y="30">BONDS BROKEN · reactants CH₄ + 2O₂</text>
+      <!-- methane, displayed -->
+      <g class="dg-bond">
+        <line x1="75" y1="83" x2="75" y2="69"/><line x1="75" y1="107" x2="75" y2="121"/>
+        <line x1="63" y1="90" x2="51" y2="90"/><line x1="87" y1="90" x2="99" y2="90"/>
+      </g>
+      <text class="dg-atom" x="75" y="95">C</text>
+      <text class="dg-atom" x="75" y="61">H</text>
+      <text class="dg-atom" x="75" y="129">H</text>
+      <text class="dg-atom" x="39" y="95">H</text>
+      <text class="dg-atom" x="111" y="95">H</text>
+      <text class="dg-atom" x="150" y="95">+</text>
+      <!-- two oxygen molecules, double bonds -->
+      <g class="dg-bond">
+        <line x1="204" y1="86" x2="228" y2="86"/><line x1="204" y1="94" x2="228" y2="94"/>
+        <line x1="324" y1="86" x2="348" y2="86"/><line x1="324" y1="94" x2="348" y2="94"/>
+      </g>
+      <text class="dg-atom" x="192" y="95">O</text>
+      <text class="dg-atom" x="240" y="95">O</text>
+      <text class="dg-atom" x="276" y="95">+</text>
+      <text class="dg-atom" x="312" y="95">O</text>
+      <text class="dg-atom" x="360" y="95">O</text>
+      <text class="dg-lbl" x="400" y="74">4 × C–H = 4 × 412 = 1648</text>
+      <text class="dg-lbl" x="400" y="92">2 × O=O = 2 × 498 = 996</text>
+      <text class="dg-lbl2" style="fill:var(--motion)" x="400" y="115">Σ broken = 2644</text>
+
+      <line class="dg-rule" x1="20" y1="155" x2="540" y2="155"/>
+
+      <!-- ═══ BAND 2 · BONDS MADE ═══ -->
+      <text class="dg-ttl" style="fill:var(--force)" x="20" y="177">BONDS MADE · products CO₂ + 2H₂O</text>
+      <!-- carbon dioxide, two double bonds -->
+      <g class="dg-bond">
+        <line x1="60" y1="228" x2="84" y2="228"/><line x1="60" y1="236" x2="84" y2="236"/>
+        <line x1="108" y1="228" x2="132" y2="228"/><line x1="108" y1="236" x2="132" y2="236"/>
+      </g>
+      <text class="dg-atom" x="48" y="237">O</text>
+      <text class="dg-atom" x="96" y="237">C</text>
+      <text class="dg-atom" x="144" y="237">O</text>
+      <text class="dg-atom" x="180" y="237">+</text>
+      <!-- two water molecules, drawn bent -->
+      <g class="dg-bond">
+        <line x1="214.7" y1="233.3" x2="207.3" y2="241.7"/><line x1="229.3" y1="233.3" x2="236.7" y2="241.7"/>
+        <line x1="304.7" y1="233.3" x2="297.3" y2="241.7"/><line x1="319.3" y1="233.3" x2="326.7" y2="241.7"/>
+      </g>
+      <text class="dg-atom" x="222" y="230">O</text>
+      <text class="dg-atom" x="200" y="255">H</text>
+      <text class="dg-atom" x="244" y="255">H</text>
+      <text class="dg-atom" x="267" y="237">+</text>
+      <text class="dg-atom" x="312" y="230">O</text>
+      <text class="dg-atom" x="290" y="255">H</text>
+      <text class="dg-atom" x="334" y="255">H</text>
+      <text class="dg-lbl" x="400" y="216">2 × C=O = 2 × 805 = 1610</text>
+      <text class="dg-lbl" x="400" y="234">4 × O–H = 4 × 463 = 1852</text>
+      <text class="dg-lbl2" style="fill:var(--force)" x="400" y="257">Σ made = 3462</text>
+
+      <text class="dg-lbl2" style="fill:var(--force)" x="280" y="288" text-anchor="middle">ΔH = 2644 − 3462 = −818 kJ/mol → exothermic</text>
+    </svg>
+    <div class="dg-cap">Draw the <strong>displayed</strong> formulae and the counting does itself: one CH₄ shows four C–H bonds, "2O₂" is two O=O molecules, and "2H₂O" is <strong>four</strong> O–H bonds, not two. Every line in the picture is one bond in the sum.</div>
   </div>
 
 
-  <!-- ── 09 · KEY-TERMS BANK ── -->
+  <!-- ── 09 · CHECK YOURSELF ── -->
   <div class="section">
-    <div class="sec-label">09 / 09 · Reference</div>
+    <div class="sec-label">09 / 10 · Check Yourself</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+
+    <p>Work each one on paper first, <em>then</em> tap to reveal. Bond energies you'll need (kJ/mol): H–H 436, N≡N 945, N–H 391, F–F 158.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span><strong>State</strong> what is meant by an <strong>exothermic</strong> reaction. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">A reaction that transfers thermal energy <strong>to the surroundings</strong> <em>[1]</em>, leading to an <strong>increase in the temperature of the surroundings</strong> <em>[1]</em>. <span style="color:var(--rose)">Trap:</span> "gives out heat" alone is one mark — you must name the surroundings and say the temperature rises.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>A student mixes two solutions in a polystyrene cup. The temperature falls from 21.0 °C to 15.4 °C. <strong>Deduce</strong> the type of reaction and the sign of ΔH, giving a reason. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>Endothermic</strong>, ΔH is <strong>positive</strong> <em>[1]</em>. The temperature of the surroundings <strong>fell</strong> (by 5.6 °C), so thermal energy was taken <strong>in</strong> from the surroundings by the reacting chemicals <em>[1]</em>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span><strong>Define</strong> activation energy, Eₐ. <em>[1]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The <strong>minimum energy that colliding particles must have in order to react</strong> <em>[1]</em>. <span style="color:var(--rose)">Trap:</span> not "the energy needed to start the reaction" in general terms — the mark scheme wants <em>minimum</em> and <em>colliding particles</em>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>You are asked to draw a reaction pathway diagram for an <strong>endothermic</strong> reaction. <strong>Describe</strong> where the products level goes, and exactly where you would draw the Eₐ and ΔH arrows. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The <strong>products level is drawn above the reactants level</strong> <em>[1]</em>. <strong>Eₐ</strong> is a vertical arrow from the <strong>reactants level up to the top of the peak</strong> <em>[1]</em>. <strong>ΔH</strong> is a vertical arrow from the <strong>reactants level to the products level</strong>, pointing <strong>upwards</strong> and labelled positive <em>[1]</em>. Axes: energy (vertical), progress of reaction (horizontal).</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span><strong>Explain</strong>, in terms of bond breaking and bond making, why a reaction is <strong>exothermic</strong>. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Bond <strong>breaking</strong> is endothermic (takes energy in) and bond <strong>making</strong> is exothermic (gives energy out) <em>[1]</em>. In an exothermic reaction the energy <strong>released</strong> making the bonds in the products is <strong>greater than</strong> the energy <strong>absorbed</strong> breaking the bonds in the reactants, so there is a net release of energy and ΔH is negative <em>[1]</em>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span><strong>Calculate</strong> the enthalpy change for <span class="eq-inline">N₂ + 3H₂ → 2NH₃</span> using the bond energies above. Include the sign and units. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Broken: 1 × N≡N + 3 × H–H = 945 + 3 × 436 = 945 + 1308 = <strong>2253</strong> <em>[1]</em>.<br>Made: 2NH₃ contains <strong>6</strong> N–H bonds = 6 × 391 = <strong>2346</strong> <em>[1]</em>.<br>ΔH = 2253 − 2346 = <strong style="color:var(--force)">−93 kJ/mol</strong> (exothermic) <em>[1]</em>. <span style="color:var(--rose)">Trap:</span> each NH₃ has three N–H bonds, so "2NH₃" is six — not two.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>For <span class="eq-inline">H₂ + F₂ → 2HF</span>, ΔH = −542 kJ/mol. Using H–H = 436 and F–F = 158, <strong>calculate</strong> the bond energy of H–F. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Σ broken = 436 + 158 = 594. Let the H–F bond energy be <em>x</em>, so Σ made = 2<em>x</em> <em>[1]</em>.<br>ΔH = Σ broken − Σ made → −542 = 594 − 2<em>x</em> → 2<em>x</em> = 1136 → <em>x</em> = <strong>568 kJ/mol</strong> <em>[1]</em>. <span style="color:var(--rose)">Trap:</span> run the same equation <em>backwards</em> — don't try to add the −542 to the broken total.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>Burning methane is strongly exothermic. <strong>Explain</strong> why a spark is still needed to light a gas stove. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The reaction has an <strong>activation energy</strong> — colliding particles must have a minimum energy before they can react <em>[1]</em>. The spark supplies that energy so bonds in the reactants can start to break; once started, the energy released keeps the reaction going <em>[1]</em>. Being exothermic tells you the <em>overall</em> energy change, not how easily the reaction starts.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 10 · KEY-TERMS BANK ── -->
+  <div class="section">
+    <div class="sec-label">10 / 10 · Reference</div>
     <h2>The Topic 5 key-terms bank</h2>
     <p>These are the definitions and rules examiners want back precisely. Tap any tile for the exact statement, key features, an example, and the exam trap:</p>
 
@@ -688,6 +1038,12 @@
       <span class="eq-inline" style="color:var(--rose)">ΔH = Σ(broken) − Σ(made)</span>
       <span class="eq-inline" style="color:var(--rose)">Eₐ = minimum energy to react</span>
     </div>
+  </div>
+
+  <div class="paper-links">
+    <div class="pl-label">📝 Now go and use it — papers with Topic 5 questions</div>
+    <a href="../practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html">Chemistry SA-1 Practice Paper — Grade X <span style="color:var(--muted);font-size:12.5px">· mixed topics, includes exothermic / endothermic questions</span></a>
+    <div class="pl-note">There is no Topic 5-only paper yet — Chemical Energetics is examined inside the SA-1 paper above, and it turns up as part of longer questions in Topic 6 (rates) too, because activation energy is what catalysts and temperature act on.</div>
   </div>
 
   <hr class="divider">
@@ -753,16 +1109,19 @@
     s+='<line class="ep-axis" x1="46" y1="218" x2="344" y2="218"/>';
     s+='<text class="ep-txt" x="14" y="128" transform="rotate(-90 14 128)" text-anchor="middle">Energy</text>';
     s+='<text class="ep-txt" x="195" y="236" text-anchor="middle">Progress of reaction →</text>';
-    // dashed level guides
-    s+='<line class="ep-level" x1="46" y1="'+yr+'" x2="135" y2="'+yr+'"/>';
+    // dashed level guides — the reactant guide must run PAST the ΔH arrow (x=305),
+    // else that arrow's upper end floats with nothing to measure it from.
+    s+='<line class="ep-level" x1="46"  y1="'+yr+'" x2="315" y2="'+yr+'"/>';
+    s+='<line class="ep-level" x1="95"  y1="'+yp+'" x2="200" y2="'+yp+'"/>';
     s+='<line class="ep-level" x1="265" y1="'+ypr+'" x2="335" y2="'+ypr+'"/>';
     // the energy curve
     s+='<path class="ep-curve" d="M60,'+yr+' L135,'+yr+
        ' C168,'+yr+' 182,'+yp+' 200,'+yp+
        ' C218,'+yp+' 232,'+ypr+' 265,'+ypr+' L322,'+ypr+'"/>';
-    // activation energy arrow (reactant level up to peak)
-    s+=vArrow(150, yr, yp, 'ep-ea');
-    s+='<text class="ep-ea-t" x="156" y="'+((yr+yp)/2+4)+'">Eₐ</text>';
+    // activation energy arrow (reactant level up to peak) — placed at x=105, on the
+    // FLAT part of the reactant level, so the rising curve doesn't run through it
+    s+=vArrow(105, yr, yp, 'ep-ea');
+    s+='<text class="ep-ea-t" x="111" y="'+((yr+yp)/2+4)+'">Eₐ</text>';
     // ΔH arrow (reactant level to product level)
     const dhCls = (key==='exo') ? 'ep-dhx' : 'ep-dhn';
     const dhTxtCls = (key==='exo') ? 'ep-dhx-t' : 'ep-dhn-t';
@@ -831,7 +1190,8 @@
     const exo=dh<0;
     const col=exo?'var(--force)':'var(--motion)';
     const res=document.getElementById('bcResult');
-    res.textContent='ΔH = '+(dh>0?'+':'')+dh+' kJ/mol';
+    // use the true minus sign U+2212, matching every other ΔH in the note
+    res.textContent='ΔH = '+(dh<0?'−':'+')+Math.abs(dh)+' kJ/mol';
     res.style.color=col;
     const v=document.getElementById('bcVerdict');
     v.innerHTML=exo
