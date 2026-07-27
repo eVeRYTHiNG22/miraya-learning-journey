@@ -126,6 +126,8 @@
   .section:nth-of-type(9){animation-delay:.36s}
   .section:nth-of-type(10){animation-delay:.40s}
   .section:nth-of-type(11){animation-delay:.44s}
+  .section:nth-of-type(12){animation-delay:.48s}
+  .section:nth-of-type(13){animation-delay:.52s}
 
   .sec-label {
     font-family: 'JetBrains Mono', monospace;
@@ -622,7 +624,52 @@
     font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:600; letter-spacing:.16em;
     color:var(--live); background:var(--bg); padding:0 9px; border-radius:3px;
     pointer-events:none; white-space:nowrap; }
+  /* a static figure is a picture: neutral frame, no badge. Captions in this
+     note already self-label ("Fig · …"), so no generic FIGURE prefix is added. */
   svg.diagram { max-height:400px; }
+
+  /* ═════════════════════════════════════════════
+     CHECK-YOURSELF RETRIEVAL BLOCK
+  ═════════════════════════════════════════════ */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ── paper links panel ── */
+  .paperlinks { display:grid; gap:10px; margin:16px 0 4px; }
+  .plink { display:flex; align-items:center; gap:11px; text-decoration:none;
+    background:var(--surface); border:1px solid var(--border); border-radius:11px;
+    padding:13px 16px; color:var(--text); transition:border-color .2s, transform .2s; }
+  .plink:hover { border-color:var(--motion); transform:translateX(3px); }
+  .plink .pl-ico { font-size:17px; flex:none; }
+  .plink .pl-name { font-weight:600; font-size:14.5px; }
+  .plink .pl-sub { font-family:'JetBrains Mono',monospace; font-size:10.5px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:2px; }
+
+  /* ── save as PDF ── */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn,
+    .cy-hint, .replay, #eq-card { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; }
+    svg.diagram, .fig-cap, .cy-item, .plink, table { break-inside:avoid; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
 </style>
 </head>
 <body data-theme="dark">
@@ -630,6 +677,7 @@
 
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
 <div class="page">
 
   <!-- HEADER -->
@@ -642,7 +690,7 @@
 
   <!-- ── 01 · STATES & PARTICLE MODEL (signature) ── -->
   <div class="section">
-    <div class="sec-label">01 / 10 · 2.1.1–2.1.2 Kinetic Particle Model</div>
+    <div class="sec-label">01 / 12 · 2.1.1–2.1.2 Kinetic Particle Model</div>
     <h2>The one idea behind everything: matter is particles</h2>
 
     <p>Every solid, liquid and gas is made of enormous numbers of tiny particles in constant motion. You can't see them, but their behaviour explains the <em>entire</em> topic. The difference between ice, water and steam is not the particles — they're the same H₂O — it's <strong>how much energy those particles have and how freely they can move.</strong></p>
@@ -673,6 +721,89 @@
       <button class="replay" id="stateReplay">↻ Re-shuffle particles</button>
     </div>
 
+    <p>The animation shows the particles <em>moving</em>. The exam, though, gives you a still picture and asks you to draw or label one — so learn this version too, and copy the three boxes exactly:</p>
+
+    <div class="fig">
+      <svg class="diagram" viewBox="0 0 560 320" role="img" aria-label="Three labelled boxes showing particle diagrams. Solid: particles in a regular close-packed grid, touching, vibrating about fixed positions, giving fixed shape and volume. Liquid: particles still touching but irregularly arranged, sliding past one another, giving fixed volume but no fixed shape. Gas: a few particles far apart in random positions moving fast in random directions, filling the container.">
+        <defs>
+          <!-- markers must carry their own fill: a marker does NOT inherit currentColor
+               from the path that references it, so one shared marker comes out grey -->
+          <marker id="pmArrowF" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--force)"/></marker>
+          <marker id="pmArrowE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--energy)"/></marker>
+        </defs>
+
+        <!-- ── SOLID ── -->
+        <text class="dg-lbl" x="100" y="34" text-anchor="middle" style="fill:var(--motion);font-size:13px">SOLID</text>
+        <rect x="20" y="48" width="160" height="150" rx="4" fill="currentColor" style="color:var(--motion)" opacity="0.07"/>
+        <rect x="20" y="48" width="160" height="150" rx="4" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="2"/>
+        <!-- close-packed and TOUCHING (centres 19 apart, r=9): mark schemes want solid
+             and liquid particles drawn in contact, so the spacing here is deliberate -->
+        <g fill="currentColor" style="color:var(--motion)">
+          <circle cx="52" cy="85" r="9"/><circle cx="71" cy="85" r="9"/><circle cx="90" cy="85" r="9"/><circle cx="109" cy="85" r="9"/><circle cx="128" cy="85" r="9"/><circle cx="147" cy="85" r="9"/>
+          <circle cx="52" cy="104" r="9"/><circle cx="71" cy="104" r="9"/><circle cx="90" cy="104" r="9"/><circle cx="109" cy="104" r="9"/><circle cx="128" cy="104" r="9"/><circle cx="147" cy="104" r="9"/>
+          <circle cx="52" cy="123" r="9"/><circle cx="71" cy="123" r="9"/><circle cx="90" cy="123" r="9"/><circle cx="109" cy="123" r="9"/><circle cx="128" cy="123" r="9"/><circle cx="147" cy="123" r="9"/>
+          <circle cx="52" cy="142" r="9"/><circle cx="71" cy="142" r="9"/><circle cx="90" cy="142" r="9"/><circle cx="109" cy="142" r="9"/><circle cx="128" cy="142" r="9"/><circle cx="147" cy="142" r="9"/>
+          <circle cx="52" cy="161" r="9"/><circle cx="71" cy="161" r="9"/><circle cx="90" cy="161" r="9"/><circle cx="109" cy="161" r="9"/><circle cx="128" cy="161" r="9"/><circle cx="147" cy="161" r="9"/>
+        </g>
+        <!-- vibration: a to-and-fro about a FIXED point, drawn over the lattice -->
+        <g stroke="currentColor" style="color:var(--force)" stroke-width="1.8" fill="none">
+          <path d="M90 104 L104 104" marker-end="url(#pmArrowF)"/><path d="M90 104 L76 104" marker-end="url(#pmArrowF)"/>
+          <path d="M109 142 L123 142" marker-end="url(#pmArrowF)"/><path d="M109 142 L95 142" marker-end="url(#pmArrowF)"/>
+          <path d="M71 85 L71 71" marker-end="url(#pmArrowF)"/><path d="M71 85 L71 99" marker-end="url(#pmArrowF)"/>
+        </g>
+        <text class="dg-lbl" x="100" y="222" text-anchor="middle" style="fill:var(--text);font-size:10px">regular · touching</text>
+        <text class="dg-lbl" x="100" y="240" text-anchor="middle" style="fill:var(--muted);font-size:10px">vibrate about fixed</text>
+        <text class="dg-lbl" x="100" y="256" text-anchor="middle" style="fill:var(--muted);font-size:10px">positions</text>
+        <text class="dg-lbl" x="100" y="278" text-anchor="middle" style="fill:var(--motion);font-size:10px">fixed shape + volume</text>
+
+        <!-- ── LIQUID ── -->
+        <text class="dg-lbl" x="280" y="34" text-anchor="middle" style="fill:var(--energy);font-size:13px">LIQUID</text>
+        <rect x="200" y="48" width="160" height="150" rx="4" fill="currentColor" style="color:var(--energy)" opacity="0.07"/>
+        <rect x="200" y="48" width="160" height="150" rx="4" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="2"/>
+        <!-- also touching, but the rows are jittered: close-packed yet IRREGULAR -->
+        <g fill="currentColor" style="color:var(--energy)">
+          <circle cx="230" cy="82" r="9"/><circle cx="249" cy="82" r="9"/><circle cx="269" cy="82" r="9"/><circle cx="288" cy="82" r="9"/><circle cx="308" cy="82" r="9"/><circle cx="329" cy="82" r="9"/>
+          <circle cx="221" cy="101" r="9"/><circle cx="240" cy="101" r="9"/><circle cx="259" cy="101" r="9"/><circle cx="279" cy="101" r="9"/><circle cx="300" cy="101" r="9"/><circle cx="320" cy="101" r="9"/><circle cx="340" cy="101" r="9"/>
+          <circle cx="231" cy="122" r="9"/><circle cx="250" cy="122" r="9"/><circle cx="271" cy="122" r="9"/><circle cx="291" cy="122" r="9"/><circle cx="310" cy="122" r="9"/><circle cx="330" cy="122" r="9"/>
+          <circle cx="222" cy="143" r="9"/><circle cx="243" cy="143" r="9"/><circle cx="262" cy="143" r="9"/><circle cx="282" cy="143" r="9"/><circle cx="302" cy="143" r="9"/><circle cx="322" cy="143" r="9"/><circle cx="341" cy="143" r="9"/>
+          <circle cx="232" cy="163" r="9"/><circle cx="251" cy="163" r="9"/><circle cx="270" cy="163" r="9"/><circle cx="290" cy="163" r="9"/><circle cx="311" cy="163" r="9"/><circle cx="331" cy="163" r="9"/>
+        </g>
+        <!-- sliding arrows -->
+        <g stroke="currentColor" style="color:var(--force)" stroke-width="2" fill="none">
+          <path d="M240 111 L282 111" marker-end="url(#pmArrowF)"/>
+          <path d="M322 153 L280 153" marker-end="url(#pmArrowF)"/>
+        </g>
+        <text class="dg-lbl" x="280" y="222" text-anchor="middle" style="fill:var(--text);font-size:10px">irregular · touching</text>
+        <text class="dg-lbl" x="280" y="240" text-anchor="middle" style="fill:var(--muted);font-size:10px">slide past each other</text>
+        <text class="dg-lbl" x="280" y="256" text-anchor="middle" style="fill:var(--muted);font-size:10px">&#160;</text>
+        <text class="dg-lbl" x="280" y="278" text-anchor="middle" style="fill:var(--energy);font-size:10px">fixed volume, flows</text>
+
+        <!-- ── GAS ── -->
+        <text class="dg-lbl" x="460" y="34" text-anchor="middle" style="fill:var(--force);font-size:13px">GAS</text>
+        <rect x="380" y="48" width="160" height="150" rx="4" fill="currentColor" style="color:var(--force)" opacity="0.07"/>
+        <rect x="380" y="48" width="160" height="150" rx="4" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="2"/>
+        <g fill="currentColor" style="color:var(--force)">
+          <circle cx="412" cy="84" r="8"/><circle cx="470" cy="68" r="8"/><circle cx="514" cy="102" r="8"/>
+          <circle cx="432" cy="132" r="8"/><circle cx="498" cy="156" r="8"/><circle cx="400" cy="172" r="8"/>
+          <circle cx="458" cy="180" r="8"/>
+        </g>
+        <g stroke="currentColor" style="color:var(--energy)" stroke-width="1.7" fill="none" opacity="0.95">
+          <path d="M422 78 L444 62" marker-end="url(#pmArrowE)"/>
+          <path d="M470 78 L466 100" marker-end="url(#pmArrowE)"/>
+          <path d="M508 112 L490 132" marker-end="url(#pmArrowE)"/>
+          <path d="M424 142 L406 158" marker-end="url(#pmArrowE)"/>
+          <path d="M466 174 L490 162" marker-end="url(#pmArrowE)"/>
+        </g>
+        <text class="dg-lbl" x="460" y="222" text-anchor="middle" style="fill:var(--text);font-size:10px">random · far apart</text>
+        <text class="dg-lbl" x="460" y="240" text-anchor="middle" style="fill:var(--muted);font-size:10px">fast, random, free</text>
+        <text class="dg-lbl" x="460" y="256" text-anchor="middle" style="fill:var(--muted);font-size:10px">&#160;</text>
+        <text class="dg-lbl" x="460" y="278" text-anchor="middle" style="fill:var(--force);font-size:10px">no fixed shape/volume</text>
+
+        <text class="dg-lbl" x="280" y="306" text-anchor="middle" style="fill:var(--muted);font-size:10px">arrows = motion · same particles in all three, only their energy differs</text>
+      </svg>
+      <div class="fig-cap">Fig · The three states as the exam wants them drawn — arrangement, separation and motion. Same particles throughout; only how much energy they have changes.</div>
+    </div>
+
     <div class="estores">
       <div class="estore"><span class="dot" style="background:#46a8ff"></span><strong>Solid</strong> — fixed shape &amp; volume</div>
       <div class="estore"><span class="dot" style="background:#ffae3b"></span><strong>Liquid</strong> — fixed volume, takes container's shape</div>
@@ -696,12 +827,89 @@
       <div class="box-label">⚠️ Common wrong intuition</div>
       "Gas particles repel each other, that's why they spread out." No — in the IGCSE model, gas particles barely interact at all; they spread out simply because <em>nothing holds them back</em> and they're moving fast in random directions. Forces between gas particles are treated as negligible.
     </div>
+
+    <h3>Brownian motion — the evidence that particles are really there</h3>
+    <p>All of this would be a nice story if we couldn't see any sign of it. We can. Shine a bright light into a small glass cell of <strong>smoke</strong> and look down a microscope: the smoke specks show up as tiny points of light, and they never sit still. They jiggle about in a <strong>random, jerky, zig-zag path</strong>. That is <mark>Brownian motion</mark>, and it is the direct experimental evidence for the kinetic particle model.</p>
+
+    <div class="fig">
+      <svg class="diagram" viewBox="0 0 560 320" role="img" aria-label="Left: the smoke cell apparatus — a lamp shines through a lens into a small glass smoke cell, and a microscope above looks down into it. Right: the view through the microscope — bright smoke particles, one of which is traced along a jerky random zig-zag path, being knocked about by much smaller unseen air molecules.">
+        <defs>
+          <marker id="bnArrowE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--energy)"/></marker>
+          <marker id="bnArrowF" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--force)"/></marker>
+        </defs>
+
+        <!-- ── LEFT: apparatus ── -->
+        <!-- microscope -->
+        <circle cx="150" cy="30" r="10" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="2"/>
+        <rect x="140" y="34" width="20" height="46" fill="currentColor" style="color:var(--muted)" opacity="0.28"/>
+        <rect x="140" y="34" width="20" height="46" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.6"/>
+        <path d="M141 80 L159 80 L154 98 L146 98 z" fill="currentColor" style="color:var(--muted)" opacity="0.45"/>
+        <text class="dg-lbl" x="176" y="46" style="fill:var(--text);font-size:10px">microscope</text>
+        <text class="dg-lbl" x="176" y="62" style="fill:var(--muted);font-size:10px">(looks down)</text>
+
+        <!-- smoke cell -->
+        <rect x="112" y="112" width="76" height="48" rx="2" fill="currentColor" style="color:var(--motion)" opacity="0.12"/>
+        <rect x="112" y="112" width="76" height="48" rx="2" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="2"/>
+        <circle cx="132" cy="130" r="2.6" fill="currentColor" style="color:var(--bright)"/>
+        <circle cx="156" cy="142" r="2.6" fill="currentColor" style="color:var(--bright)"/>
+        <circle cx="172" cy="124" r="2.6" fill="currentColor" style="color:var(--bright)"/>
+        <circle cx="144" cy="150" r="2.6" fill="currentColor" style="color:var(--bright)"/>
+        <text class="dg-lbl" x="150" y="200" text-anchor="middle" style="fill:var(--motion);font-size:10px">glass smoke cell</text>
+
+        <!-- lamp + lens + light -->
+        <circle cx="44" cy="136" r="14" fill="currentColor" style="color:var(--energy)" opacity="0.85"/>
+        <ellipse cx="84" cy="136" rx="6" ry="18" fill="currentColor" style="color:var(--cyan)" opacity="0.30"/>
+        <ellipse cx="84" cy="136" rx="6" ry="18" fill="none" stroke="currentColor" style="color:var(--cyan)" stroke-width="1.6"/>
+        <path d="M60 130 L76 130" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="1.8"/>
+        <path d="M60 142 L76 142" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="1.8"/>
+        <path d="M90 126 L108 134" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="1.8" marker-end="url(#bnArrowE)"/>
+        <path d="M90 146 L108 138" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="1.8" marker-end="url(#bnArrowE)"/>
+        <text class="dg-lbl" x="44" y="172" text-anchor="middle" style="fill:var(--energy);font-size:10px">lamp</text>
+        <text class="dg-lbl" x="88" y="172" text-anchor="middle" style="fill:var(--cyan);font-size:10px">lens</text>
+
+        <!-- ── RIGHT: field of view ── -->
+        <text class="dg-lbl" x="424" y="26" text-anchor="middle" style="fill:var(--text);font-size:10px">view down the microscope</text>
+        <circle cx="424" cy="140" r="92" fill="currentColor" style="color:var(--momentum)" opacity="0.06"/>
+        <circle cx="424" cy="140" r="92" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <!-- other smoke specks -->
+        <circle cx="372" cy="88" r="4" fill="currentColor" style="color:var(--bright)"/>
+        <circle cx="474" cy="84" r="4" fill="currentColor" style="color:var(--bright)"/>
+        <circle cx="486" cy="176" r="4" fill="currentColor" style="color:var(--bright)"/>
+        <!-- unseen air molecules -->
+        <g fill="currentColor" style="color:var(--momentum)">
+          <circle cx="392" cy="112" r="2"/><circle cx="440" cy="98" r="2"/><circle cx="404" cy="160" r="2"/>
+          <circle cx="462" cy="132" r="2"/><circle cx="424" cy="196" r="2"/><circle cx="490" cy="122" r="2"/>
+          <circle cx="358" cy="150" r="2"/><circle cx="452" cy="176" r="2"/>
+        </g>
+        <!-- the traced particle's jerky path -->
+        <path d="M386 122 L420 104 L402 140 L444 148 L428 180 L468 192" fill="none"
+              stroke="currentColor" style="color:var(--force)" stroke-width="2.2"
+              stroke-linejoin="round" stroke-linecap="round" marker-end="url(#bnArrowF)"/>
+        <circle cx="386" cy="122" r="5" fill="currentColor" style="color:var(--bright)"/>
+        <circle cx="468" cy="192" r="5" fill="currentColor" style="color:var(--bright)"/>
+        <text class="dg-lbl" x="424" y="256" text-anchor="middle" style="fill:var(--bright);font-size:10px">&#9679; smoke particle (visible)</text>
+        <text class="dg-lbl" x="424" y="274" text-anchor="middle" style="fill:var(--momentum);font-size:10px">&#183; air molecules (unseen) hit it</text>
+
+        <text class="dg-lbl" x="280" y="308" text-anchor="middle" style="fill:var(--muted);font-size:10px">the jerky path is evidence that invisible molecules are moving randomly</text>
+      </svg>
+      <div class="fig-cap">Fig · The smoke-cell experiment — light scattered off smoke particles makes them visible, and their random zig-zag path is caused by uneven bombardment from the much smaller, much faster air molecules you cannot see.</div>
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ The exact wording that scores</div>
+      The smoke particles are <strong>hit unevenly and randomly by fast-moving air molecules</strong>. Because the molecules are so small and so numerous, at any instant slightly more of them strike one side than the other, so the smoke particle is knocked in a random direction — and a moment later in a different one. Say <strong>random</strong> and say <strong>collisions with molecules</strong>, or the mark doesn't come.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Two words the examiner separates</div>
+      A <strong>microscopic particle</strong> is the thing you can see (the smoke speck, a pollen grain). The things doing the hitting are <strong>molecules</strong> (or atoms) of the surrounding gas or liquid — far smaller and far faster. Never write "the smoke particles collide with each other"; write "the light, fast-moving <em>air molecules</em> collide with the smoke particles". The molecules are light but fast, so each impact gives a visible kick to the much heavier speck.
+    </div>
   </div>
 
 
   <!-- ── 02 · TEMPERATURE & INTERNAL ENERGY ── -->
   <div class="section">
-    <div class="sec-label">02 / 10 · 2.1.2 Temperature &amp; Particle Energy</div>
+    <div class="sec-label">02 / 12 · 2.1.2 · 2.2.2 Temperature &amp; Internal Energy</div>
     <h2>What temperature actually <em>is</em></h2>
 
     <p>Temperature is not "amount of heat". <strong>Temperature is a measure of the average kinetic energy of the particles.</strong> Hotter means the particles are jiggling, sliding or flying around <em>faster</em>, on average.</p>
@@ -724,7 +932,7 @@
 
   <!-- ── 03 · GAS PRESSURE & THE KELVIN SCALE ── -->
   <div class="section">
-    <div class="sec-label">03 / 10 · 2.1.3 Gases &amp; the Absolute Scale</div>
+    <div class="sec-label">03 / 12 · 2.1.3 Gases &amp; the Absolute Scale</div>
     <h2>Gas pressure, and why physicists count from −273 °C</h2>
 
     <p>A gas pushes outward on its container. <strong>Why?</strong> Its particles are constantly colliding with the walls, and every collision is a tiny push. Billions per second add up to a steady <strong>pressure</strong>.</p>
@@ -750,6 +958,55 @@
       <span class="term">Boyle's Law (Extended)</span> — at constant temperature, <span class="eq-inline" style="color:var(--momentum)">pV = constant</span>, so <span class="eq-inline" style="color:var(--momentum)">p₁V₁ = p₂V₂</span>. Halve the volume and you double the pressure. The graph of p against V is a curve; p against 1/V is a straight line.
     </div>
 
+    <p>You are expected to know <strong>both</strong> graph shapes and what each proves:</p>
+
+    <div class="fig">
+      <svg class="diagram" viewBox="0 0 560 290" role="img" aria-label="Two graphs for a fixed mass of gas at constant temperature. Left: pressure against volume is a smooth curve falling steeply then levelling off, never touching either axis; two dashed rectangles under different points of the curve have equal areas, showing p times V is constant. Right: pressure against one-over-volume is a straight line passing through the origin.">
+        <defs>
+          <marker id="blArrowU" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--muted)"/></marker>
+        </defs>
+
+        <!-- ── LEFT: p against V ── -->
+        <text class="dg-lbl" x="155" y="26" text-anchor="middle" style="fill:var(--momentum);font-size:11px">p against V — a curve</text>
+        <line x1="60" y1="220" x2="262" y2="220" stroke="currentColor" style="color:var(--muted)" stroke-width="1.6" marker-end="url(#blArrowU)"/>
+        <line x1="60" y1="220" x2="60" y2="40"  stroke="currentColor" style="color:var(--muted)" stroke-width="1.6" marker-end="url(#blArrowU)"/>
+        <text class="dg-lbl" x="264" y="238" text-anchor="end" style="fill:var(--muted);font-size:10px">volume V</text>
+        <text class="dg-lbl" x="52" y="44" text-anchor="end" style="fill:var(--muted);font-size:10px">p</text>
+        <!-- equal-area rectangles: 55x120 = 110x60 = 6600 -->
+        <rect x="60" y="100" width="55" height="120" fill="none" stroke="currentColor" style="color:var(--force)" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <rect x="60" y="160" width="110" height="60" fill="none" stroke="currentColor" style="color:var(--cyan)" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text class="dg-lbl" x="87" y="132" text-anchor="middle" style="fill:var(--force);font-size:10px">p₁V₁</text>
+        <text class="dg-lbl" x="145" y="196" text-anchor="middle" style="fill:var(--cyan);font-size:10px">p₂V₂</text>
+        <!-- the curve p = k/V -->
+        <path d="M99,49 L110,87 L115,100 L126,120 L137,134 L148,145 L159,153 L170,160 L187,168 L203,174 L220,179 L247,185"
+              fill="none" stroke="currentColor" style="color:var(--momentum)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="115" cy="100" r="4" fill="currentColor" style="color:var(--force)"/>
+        <circle cx="170" cy="160" r="4" fill="currentColor" style="color:var(--cyan)"/>
+        <text class="dg-lbl" x="155" y="258" text-anchor="middle" style="fill:var(--muted);font-size:10px">equal areas → pV is constant</text>
+        <text class="dg-lbl" x="155" y="276" text-anchor="middle" style="fill:var(--muted);font-size:10px">curve never touches either axis</text>
+
+        <!-- ── RIGHT: p against 1/V ── -->
+        <text class="dg-lbl" x="435" y="26" text-anchor="middle" style="fill:var(--momentum);font-size:11px">p against 1/V — a straight line</text>
+        <line x1="340" y1="220" x2="542" y2="220" stroke="currentColor" style="color:var(--muted)" stroke-width="1.6" marker-end="url(#blArrowU)"/>
+        <line x1="340" y1="220" x2="340" y2="40"  stroke="currentColor" style="color:var(--muted)" stroke-width="1.6" marker-end="url(#blArrowU)"/>
+        <text class="dg-lbl" x="544" y="238" text-anchor="end" style="fill:var(--muted);font-size:10px">1 / V</text>
+        <text class="dg-lbl" x="332" y="44" text-anchor="end" style="fill:var(--muted);font-size:10px">p</text>
+        <line x1="340" y1="220" x2="520" y2="50" stroke="currentColor" style="color:var(--momentum)" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="340" cy="220" r="4" fill="currentColor" style="color:var(--momentum)"/>
+        <text class="dg-lbl" x="398" y="204" style="fill:var(--muted);font-size:10px">through the origin</text>
+        <text class="dg-lbl" x="435" y="258" text-anchor="middle" style="fill:var(--muted);font-size:10px">gradient = the constant pV</text>
+        <text class="dg-lbl" x="435" y="276" text-anchor="middle" style="fill:var(--muted);font-size:10px">this straight line proves p ∝ 1/V</text>
+      </svg>
+      <div class="fig-cap">Fig · Boyle's law for a fixed mass of gas at constant temperature. The p–V curve tells you pressure and volume are inversely related; plotting p against 1/V turns it into a straight line through the origin, which is how you <em>prove</em> the relationship from data.</div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Working a Boyle's law question</div>
+      A sealed syringe holds 60 cm³ of air at 1.0 × 10⁵ Pa. The plunger is pushed in until the volume is 25 cm³ at the same temperature. Find the new pressure.<br>
+      <span class="eq-inline" style="color:var(--momentum)">p₁V₁ = p₂V₂</span> → p₂ = p₁V₁ / V₂ = (1.0 × 10⁵ × 60) / 25 = <strong>2.4 × 10⁵ Pa</strong>.<br>
+      Because it's a <em>ratio</em>, the volumes can stay in cm³ — they cancel. But the temperature must be unchanged for this to be valid, and you should say so.
+    </div>
+
     <h3>The Kelvin (absolute) temperature scale</h3>
     <p>Cool a gas and its particles slow down. Keep cooling and there must be a point where motion is at its <em>absolute minimum</em>. That point is <mark>−273 °C = absolute zero = 0 K</mark>. You cannot get colder, because particles can't have less than zero motion.</p>
 
@@ -766,7 +1023,7 @@
 
   <!-- ── 04 · THERMAL EXPANSION ── -->
   <div class="section">
-    <div class="sec-label">04 / 10 · 2.2.1 Thermal Expansion</div>
+    <div class="sec-label">04 / 12 · 2.2.1 Thermal Expansion</div>
     <h2>Why things grow when you heat them</h2>
 
     <p>Heat almost anything and it expands; cool it and it contracts. The particle model explains it instantly: <strong>hotter particles vibrate (or move) more vigorously, so on average they push each other slightly further apart</strong> — the object takes up more space.</p>
@@ -806,7 +1063,7 @@
 
   <!-- ── 05 · SPECIFIC HEAT CAPACITY (tool) ── -->
   <div class="section">
-    <div class="sec-label">05 / 10 · 2.2.2 Specific Heat Capacity</div>
+    <div class="sec-label">05 / 12 · 2.2.2 Specific Heat Capacity</div>
     <h2>Specific heat capacity — why some things heat up slowly</h2>
 
     <p>Pour the same energy into a kilogram of water and a kilogram of iron, and the iron gets far hotter. Water needs a <em>lot</em> of energy to change its temperature. That "stubbornness" is measured by the <strong>specific heat capacity</strong>.</p>
@@ -858,15 +1115,103 @@
 
     <div class="box exam">
       <div class="box-label">✅ Why this matters in the real world</div>
-      Water's enormous c is why it's used in central-heating radiators and car coolant (it carries lots of energy), and why coastal towns have milder weather than inland ones — the sea soaks up summer heat and releases it slowly in winter. <strong>Method note:</strong> measure c by heating a known mass with an electrical heater, timing it, and using energy = power × time.
+      Water's enormous c is why it's used in central-heating radiators and car coolant (it carries lots of energy), and why coastal towns like Chennai and Mumbai have milder weather than inland ones such as Nagpur — the sea soaks up summer heat and releases it slowly in winter.
+    </div>
+
+    <h3>Measuring c — the experiment you must be able to describe</h3>
+    <p>The method is the same for a solid and a liquid, and both versions are examinable. You supply a <strong>measured</strong> amount of electrical energy and see how much the temperature rises:</p>
+
+    <div class="fig">
+      <svg class="diagram" viewBox="0 0 560 330" role="img" aria-label="Two apparatus diagrams for measuring specific heat capacity. Left, a solid: a lagged metal block of known mass with an electrical immersion heater in one drilled hole and a thermometer in a second hole, the heater connected to a 12 volt supply and a timer. Right, a liquid: a lagged beaker of liquid of known mass with the same immersion heater and thermometer plus a stirrer. In both, the energy supplied is power multiplied by time and c equals that energy divided by mass times temperature rise.">
+
+        <!-- ══ (a) SOLID ══ -->
+        <text class="dg-lbl" x="146" y="24" text-anchor="middle" style="fill:var(--energy);font-size:11px">(a) SOLID — metal block</text>
+        <rect x="56" y="40" width="110" height="28" rx="4" fill="currentColor" style="color:var(--energy)" opacity="0.13"/>
+        <rect x="56" y="40" width="110" height="28" rx="4" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.6"/>
+        <text class="dg-lbl" x="111" y="59" text-anchor="middle" style="fill:var(--text);font-size:10px">12 V supply</text>
+        <text class="dg-lbl" x="176" y="59" style="fill:var(--muted);font-size:10px">+ timer</text>
+        <!-- leads -->
+        <line x1="98" y1="68" x2="98" y2="118" stroke="currentColor" style="color:var(--muted)" stroke-width="1.5"/>
+        <line x1="112" y1="68" x2="112" y2="118" stroke="currentColor" style="color:var(--muted)" stroke-width="1.5"/>
+        <!-- lagging -->
+        <rect x="60" y="140" width="150" height="132" rx="5" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <!-- block -->
+        <rect x="70" y="150" width="130" height="112" rx="3" fill="currentColor" style="color:var(--motion)" opacity="0.16"/>
+        <rect x="70" y="150" width="130" height="112" rx="3" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="2"/>
+        <!-- heater in drilled hole -->
+        <rect x="94" y="118" width="22" height="104" rx="3" fill="currentColor" style="color:var(--force)" opacity="0.40"/>
+        <rect x="94" y="118" width="22" height="104" rx="3" fill="none" stroke="currentColor" style="color:var(--force)" stroke-width="1.6"/>
+        <!-- thermometer in second hole -->
+        <rect x="152" y="100" width="10" height="128" rx="5" fill="currentColor" style="color:var(--cyan)" opacity="0.45"/>
+        <rect x="152" y="100" width="10" height="128" rx="5" fill="none" stroke="currentColor" style="color:var(--cyan)" stroke-width="1.5"/>
+        <circle cx="157" cy="232" r="7" fill="currentColor" style="color:var(--cyan)"/>
+        <text class="dg-lbl" x="90" y="112" text-anchor="end" style="fill:var(--force);font-size:10px">heater</text>
+        <text class="dg-lbl" x="170" y="94" style="fill:var(--cyan);font-size:10px">thermometer</text>
+        <text class="dg-lbl" x="218" y="204" style="fill:var(--muted);font-size:10px">lagging</text>
+        <text class="dg-lbl" x="135" y="292" text-anchor="middle" style="fill:var(--text);font-size:10px">block, mass m</text>
+
+        <!-- ══ (b) LIQUID ══ -->
+        <text class="dg-lbl" x="424" y="24" text-anchor="middle" style="fill:var(--energy);font-size:11px">(b) LIQUID — in a beaker</text>
+        <rect x="334" y="40" width="110" height="28" rx="4" fill="currentColor" style="color:var(--energy)" opacity="0.13"/>
+        <rect x="334" y="40" width="110" height="28" rx="4" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.6"/>
+        <text class="dg-lbl" x="389" y="59" text-anchor="middle" style="fill:var(--text);font-size:10px">12 V supply</text>
+        <text class="dg-lbl" x="454" y="59" style="fill:var(--muted);font-size:10px">+ timer</text>
+        <line x1="376" y1="68" x2="376" y2="118" stroke="currentColor" style="color:var(--muted)" stroke-width="1.5"/>
+        <line x1="390" y1="68" x2="390" y2="118" stroke="currentColor" style="color:var(--muted)" stroke-width="1.5"/>
+        <!-- lagging -->
+        <rect x="346" y="140" width="158" height="132" rx="5" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <!-- beaker + liquid -->
+        <rect x="358" y="170" width="134" height="90" fill="currentColor" style="color:var(--motion)" opacity="0.18"/>
+        <path d="M356 148 L356 262 L494 262 L494 148" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="2.4" stroke-linejoin="round"/>
+        <!-- heater -->
+        <rect x="372" y="118" width="22" height="110" rx="3" fill="currentColor" style="color:var(--force)" opacity="0.40"/>
+        <rect x="372" y="118" width="22" height="110" rx="3" fill="none" stroke="currentColor" style="color:var(--force)" stroke-width="1.6"/>
+        <!-- thermometer -->
+        <rect x="424" y="100" width="10" height="132" rx="5" fill="currentColor" style="color:var(--cyan)" opacity="0.45"/>
+        <rect x="424" y="100" width="10" height="132" rx="5" fill="none" stroke="currentColor" style="color:var(--cyan)" stroke-width="1.5"/>
+        <circle cx="429" cy="236" r="7" fill="currentColor" style="color:var(--cyan)"/>
+        <!-- stirrer -->
+        <line x1="466" y1="112" x2="466" y2="238" stroke="currentColor" style="color:var(--power)" stroke-width="2"/>
+        <path d="M456 238 q10 12 20 0" fill="none" stroke="currentColor" style="color:var(--power)" stroke-width="2"/>
+        <text class="dg-lbl" x="368" y="112" text-anchor="end" style="fill:var(--force);font-size:10px">heater</text>
+        <text class="dg-lbl" x="429" y="92" text-anchor="middle" style="fill:var(--cyan);font-size:10px">thermometer</text>
+        <text class="dg-lbl" x="478" y="108" style="fill:var(--power);font-size:10px">stirrer</text>
+        <text class="dg-lbl" x="424" y="292" text-anchor="middle" style="fill:var(--text);font-size:10px">liquid, mass m</text>
+
+        <text class="dg-lbl" x="280" y="318" text-anchor="middle" style="fill:var(--energy);font-size:11px">ΔE = P × t   →   c = ΔE / (m Δθ)</text>
+      </svg>
+      <div class="fig-cap">Fig · Measuring specific heat capacity. Both set-ups are the same idea: a known mass, a heater of known power, a timer and a thermometer. The lagging matters — it is the main way energy escapes and spoils the result.</div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ The method, in the order the mark scheme wants it</div>
+      <strong>1</strong> Find the mass <em>m</em> of the block (or liquid) on a balance. <strong>2</strong> Put the heater in one hole and the thermometer in the other, with a drop of oil in the thermometer hole for good thermal contact; lag the block. <strong>3</strong> Record the starting temperature θ₁. <strong>4</strong> Switch on the heater and the timer together for a measured time <em>t</em>; use the power <em>P</em> marked on the heater (if instead you are given the current and voltage, add an ammeter in series and a voltmeter across the heater and use P = VI). <strong>5</strong> Switch off, wait for the temperature to peak, and record θ₂. <strong>6</strong> Energy supplied ΔE = P × t, temperature rise Δθ = θ₂ − θ₁, so <span class="eq-inline" style="color:var(--energy2)">c = ΔE / (m Δθ)</span>. For the liquid, <strong>stir continuously</strong> so the whole liquid is at the same temperature when you read it.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Why your answer always comes out too big</div>
+      Some of the energy escapes to the surroundings instead of heating the block, so the measured Δθ is <em>smaller</em> than it should be — and since c = ΔE/(mΔθ), a too-small Δθ makes the calculated <strong>c too large</strong>. Reduce it by <strong>lagging</strong> the block, starting a little below room temperature and finishing a little above, and reading the <em>highest</em> temperature reached after switching off (energy is still spreading through the block). This is the standard 2–3 mark "suggest an improvement" answer.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Worked example — the numbers examiners like</div>
+      A 2.0 kg aluminium block is heated by a 50 W heater for 4.0 minutes and its temperature rises from 19.0 °C to 25.0 °C.<br>
+      ΔE = P × t = 50 × (4.0 × 60) = <strong>12 000 J</strong> · Δθ = 25.0 − 19.0 = <strong>6.0 °C</strong><br>
+      c = ΔE / (m Δθ) = 12 000 / (2.0 × 6.0) = <strong>1000 J/(kg·°C)</strong><br>
+      The accepted value for aluminium is 900 J/(kg·°C), so the experiment has come out about 11% <em>high</em> — exactly what energy loss to the surroundings does, as the box above explains. Note the two traps: convert <strong>minutes to seconds</strong>, and use the temperature <em>rise</em>, never the final temperature.
     </div>
   </div>
 
 
   <!-- ── 06 · CHANGES OF STATE & LATENT HEAT (heating curve) ── -->
   <div class="section">
-    <div class="sec-label">06 / 10 · 2.2.3 Changes of State &amp; Latent Heat</div>
+    <div class="sec-label">06 / 12 · 2.2.3 Melting, Boiling &amp; Evaporation</div>
     <h2>Melting, boiling, and the energy that hides</h2>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Two numbers you are expected to know</div>
+      At <strong>standard atmospheric pressure</strong>, water <strong>melts at 0 °C</strong> and <strong>boils at 100 °C</strong>. These are the melting point and the boiling point of water, and they are the two temperatures the heating curve below levels off at. Learn them as figures, not as "cold" and "hot".
+    </div>
 
     <p>Keep heating a block of ice and something strange happens: while it melts, the thermometer <strong>stops rising</strong> even though you're still adding energy. Where does the energy go? Into <em>breaking the bonds</em> between particles, not speeding them up. That hidden energy is <strong>latent heat</strong>.</p>
 
@@ -881,8 +1226,8 @@
         <text x="16" y="92" text-anchor="middle" class="axis-lbl" transform="rotate(-90 16 92)">temperature</text>
         <line id="dashMelt" x1="34" y1="132" x2="350" y2="132" stroke="#2a3a55" stroke-width="1" stroke-dasharray="4 3"/>
         <line id="dashBoil" x1="34" y1="58"  x2="350" y2="58"  stroke="#2a3a55" stroke-width="1" stroke-dasharray="4 3"/>
-        <text x="338" y="129" text-anchor="end" class="axis-lbl">melting point</text>
-        <text x="338" y="55"  text-anchor="end" class="axis-lbl">boiling point</text>
+        <text x="338" y="129" text-anchor="end" class="axis-lbl">melting point — 0 °C</text>
+        <text x="338" y="55"  text-anchor="end" class="axis-lbl">boiling point — 100 °C</text>
         <path class="curve" id="heatCurve" stroke="#ff5263" d=""/>
         <circle class="tracer" id="heatDot" r="4.5" cx="34" cy="170"/>
       </svg>
@@ -899,7 +1244,26 @@
     </div>
 
     <div class="define energy-c">
-      <span class="term">Specific latent heat, L</span> — the energy needed to change the state of <strong>1 kg</strong> without any temperature change: <span class="eq-inline" style="color:var(--energy2)">E = m·L</span>. Fusion (solid↔liquid) and vaporisation (liquid↔gas) have different L values; vaporisation needs far more.
+      <span class="term">Specific latent heat, L <em>(background — removed from 0625 for 2026–28)</em></span> — the energy needed to change the state of <strong>1 kg</strong> without any temperature change: <span class="eq-inline" style="color:var(--energy2)">E = m·L</span>. You will <strong>not</strong> be asked to calculate with this in your exam, but you will meet it in pre-2026 past papers, and the idea behind it — energy in, no temperature rise — <em>is</em> examinable.
+    </div>
+
+    <h3>Run it backwards: condensation and solidification</h3>
+    <p>Cool something and every step reverses. The exam asks for these in <strong>particle</strong> terms, so learn the two sentences:</p>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Condensation (gas → liquid)</div>
+        <div class="card-body">The gas particles <strong>slow down</strong> and lose kinetic energy. When they are slow enough, the forces between them can hold them together, so they move <strong>close together and start to touch</strong> — a liquid. Energy is <strong>given out</strong> to the surroundings.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Solidification / freezing (liquid → solid)</div>
+        <div class="card-body">The liquid particles slow further until they can <strong>no longer slide past one another</strong>. The forces lock them into <strong>fixed positions in a regular pattern</strong>, where they only vibrate — a solid. Energy is again <strong>given out</strong>.</div>
+      </div>
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Name all four, in both directions</div>
+      solid <span style="color:var(--muted)">—melting→</span> liquid <span style="color:var(--muted)">—boiling / evaporating→</span> gas, and back again gas <span style="color:var(--muted)">—condensing→</span> liquid <span style="color:var(--muted)">—solidifying (freezing)→</span> solid. Note the symmetry that earns marks: the changes <em>going up</em> (melting, boiling) <strong>take energy in</strong>; the changes <em>coming back down</em> (condensing, solidifying) <strong>give energy out</strong> — and, just like melting and boiling, they happen at a <strong>constant temperature</strong>.
     </div>
 
     <h3>Boiling vs. evaporation — not the same thing</h3>
@@ -916,7 +1280,7 @@
 
     <div class="box analogy">
       <div class="box-label">💧 Why evaporation cools — the marathon effect</div>
-      Only the <em>fastest</em> particles have enough energy to escape from the surface. When they leave, the ones left behind are the slower ones — so the average kinetic energy of what remains <strong>drops</strong>, and the liquid cools. It's like the fastest runners leaving a group: the average speed of those left falls. This is exactly why sweating cools you down.
+      Only the <em>fastest</em> particles have enough energy to escape from the surface. When they leave, the ones left behind are the slower ones — so the average kinetic energy of what remains <strong>drops</strong>, and the liquid cools. It's like the fastest runners leaving a group: the average speed of those left falls.<br><br><strong>And that is how it cools <em>you</em>:</strong> the sweat on your skin is now colder than you are, so thermal energy is conducted from your skin into the sweat to replace what the escaping particles carried away. Your skin loses internal energy, so <strong>your temperature falls</strong>. The same argument answers any "explain why the object cools" question — a wet cloth on a fever, water in an earthen <em>matka</em> seeping through and evaporating, spirit dabbed on the back of your hand.
     </div>
 
     <div class="box exam">
@@ -928,7 +1292,7 @@
 
   <!-- ── 07 · CONDUCTION ── -->
   <div class="section">
-    <div class="sec-label">07 / 10 · 2.3.1 Thermal Energy Transfer — Conduction</div>
+    <div class="sec-label">07 / 12 · 2.3.1 Thermal Energy Transfer — Conduction</div>
     <h2>Conduction — heat passed particle to particle</h2>
 
     <p>Hold a metal spoon in hot soup and the handle soon warms, even though you never dipped it. That's <strong>conduction</strong>: thermal energy passing along a material without the material itself flowing. It's the main way heat moves through <strong>solids</strong>.</p>
@@ -941,7 +1305,8 @@
     <div class="fig">
       <svg class="diagram" viewBox="0 0 480 236" role="img" aria-label="A metal rod heated by a flame at its left end. Particles fixed in the lattice vibrate — with a large amplitude near the hot end and a small amplitude near the cool end — passing energy along by collision. Free electrons drift through the lattice from hot to cool, carrying energy quickly, and an arrow shows thermal energy flowing from the hot end to the cool end.">
         <defs>
-          <marker id="cdArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker>
+          <marker id="cdArrowE" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--energy)"/></marker>
+          <marker id="cdArrowP" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--power)"/></marker>
         </defs>
         <!-- rod -->
         <rect x="74" y="96" width="356" height="64" rx="6" fill="currentColor" style="color:var(--motion)" opacity="0.10"/>
@@ -970,10 +1335,10 @@
         <circle cx="206" cy="146" r="3" fill="currentColor" style="color:var(--power)"/>
         <circle cx="272" cy="110" r="3" fill="currentColor" style="color:var(--power)"/>
         <circle cx="336" cy="146" r="3" fill="currentColor" style="color:var(--power)"/>
-        <path d="M150 112 L196 112" fill="none" stroke="currentColor" style="color:var(--power)" stroke-width="1.6" stroke-dasharray="2 4" marker-end="url(#cdArrow)"/>
-        <path d="M282 110 L328 110" fill="none" stroke="currentColor" style="color:var(--power)" stroke-width="1.6" stroke-dasharray="2 4" marker-end="url(#cdArrow)"/>
+        <path d="M150 112 L196 112" fill="none" stroke="currentColor" style="color:var(--power)" stroke-width="1.6" stroke-dasharray="2 4" marker-end="url(#cdArrowP)"/>
+        <path d="M282 110 L328 110" fill="none" stroke="currentColor" style="color:var(--power)" stroke-width="1.6" stroke-dasharray="2 4" marker-end="url(#cdArrowP)"/>
         <!-- energy flow arrow (hot to cool) -->
-        <path d="M96 74 L410 74" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="3" marker-end="url(#cdArrow)"/>
+        <path d="M96 74 L410 74" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="3" marker-end="url(#cdArrowE)"/>
         <text class="dg-lbl" x="252" y="66" text-anchor="middle" style="fill:var(--energy)">thermal energy →</text>
         <!-- end labels -->
         <text class="dg-lbl" x="112" y="196" text-anchor="middle" style="fill:var(--force)">HOT end</text>
@@ -996,6 +1361,68 @@
       </div>
     </div>
 
+    <h3>The experiment that ranks conductors</h3>
+    <p>You are expected to be able to <strong>describe an experiment</strong> that shows which materials conduct well. The classic one uses rods of different materials, all heated at one end, each with a pin stuck on the far end with a blob of wax:</p>
+
+    <div class="fig">
+      <svg class="diagram" viewBox="0 34 560 280" role="img" aria-label="Three rods of copper, iron and glass all have one end in the same trough of hot water. At the far end of each rod a pin is stuck on with a blob of wax. The copper rod's wax has already melted and its pin has fallen, the iron rod's pin is beginning to droop, and the glass rod's pin is still firmly attached. The rod whose pin falls first is the best conductor.">
+        <defs>
+          <marker id="ceArrowU" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--muted)"/></marker>
+        </defs>
+
+        <!-- hot-water trough -->
+        <text class="dg-lbl" x="76" y="80" text-anchor="middle" style="fill:var(--force);font-size:10px">hot water</text>
+        <rect x="42" y="96" width="68" height="146" fill="currentColor" style="color:var(--force)" opacity="0.16"/>
+        <path d="M40 88 L40 242 L112 242 L112 88" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="2.4" stroke-linejoin="round"/>
+        <!-- flame -->
+        <path d="M60 244 q6 24 16 32 q12 -8 16 -32 z" fill="currentColor" style="color:var(--force)" opacity="0.9"/>
+        <path d="M66 250 q4 16 10 21 q8 -5 10 -21 z" fill="currentColor" style="color:var(--energy)"/>
+        <text class="dg-lbl" x="52" y="268" text-anchor="end" style="fill:var(--energy);font-size:10px">HEAT</text>
+
+        <!-- rod 1 · copper (best) -->
+        <text class="dg-lbl" x="210" y="98" text-anchor="middle" style="fill:var(--force);font-size:10px">copper rod</text>
+        <rect x="60" y="104" width="340" height="13" rx="3" fill="currentColor" style="color:var(--force)" opacity="0.30"/>
+        <rect x="60" y="104" width="340" height="13" rx="3" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.4"/>
+        <ellipse cx="406" cy="121" rx="9" ry="5" fill="currentColor" style="color:var(--energy)" opacity="0.35"/>
+        <path d="M404 132 q6 12 14 16" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#ceArrowU)"/>
+        <line x1="410" y1="146" x2="428" y2="154" stroke="currentColor" style="color:var(--text)" stroke-width="2"/>
+        <circle cx="430" cy="155" r="4" fill="currentColor" style="color:var(--text)"/>
+        <text class="dg-lbl" x="446" y="114" style="fill:var(--power);font-size:10px">pin falls FIRST</text>
+
+        <!-- rod 2 · iron -->
+        <text class="dg-lbl" x="210" y="146" text-anchor="middle" style="fill:var(--muted);font-size:10px">iron rod</text>
+        <rect x="60" y="152" width="340" height="13" rx="3" fill="currentColor" style="color:var(--muted)" opacity="0.30"/>
+        <rect x="60" y="152" width="340" height="13" rx="3" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.4"/>
+        <ellipse cx="406" cy="169" rx="9" ry="5" fill="currentColor" style="color:var(--energy)" opacity="0.55"/>
+        <line x1="408" y1="174" x2="418" y2="194" stroke="currentColor" style="color:var(--text)" stroke-width="2"/>
+        <circle cx="419" cy="197" r="4" fill="currentColor" style="color:var(--text)"/>
+        <text class="dg-lbl" x="446" y="162" style="fill:var(--energy);font-size:10px">pin falls later</text>
+
+        <!-- rod 3 · glass -->
+        <text class="dg-lbl" x="210" y="194" text-anchor="middle" style="fill:var(--motion);font-size:10px">glass rod</text>
+        <rect x="60" y="200" width="340" height="13" rx="3" fill="currentColor" style="color:var(--motion)" opacity="0.24"/>
+        <rect x="60" y="200" width="340" height="13" rx="3" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.4"/>
+        <ellipse cx="406" cy="217" rx="9" ry="5" fill="currentColor" style="color:var(--energy)" opacity="0.85"/>
+        <line x1="406" y1="222" x2="406" y2="244" stroke="currentColor" style="color:var(--text)" stroke-width="2"/>
+        <circle cx="406" cy="247" r="4" fill="currentColor" style="color:var(--text)"/>
+        <text class="dg-lbl" x="446" y="210" style="fill:var(--motion);font-size:10px">pin stays on</text>
+
+        <text class="dg-lbl" x="312" y="300" text-anchor="middle" style="fill:var(--muted);font-size:10px">wax blob + pin at each far end · best conductor melts its wax soonest</text>
+      </svg>
+      <div class="fig-cap">Fig · Comparing thermal conductors. Identical rods of different materials share one heat source, so the only thing that differs is the material — the rod that drops its pin first conducted energy along fastest.</div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Describing it in the exam, and the fair-test marks</div>
+      <strong>Method:</strong> take rods of copper, iron and glass that are the <em>same length and same thickness</em>; stick a pin to the far end of each with a blob of wax; put all their other ends into the <em>same</em> trough of hot water at the same time; record which pin falls first. <strong>Result:</strong> copper's pin falls first, then iron's; glass's may never fall — so copper is the best conductor and glass the worst.<br>
+      The marks live in the <strong>controls</strong>: same rod dimensions, same size of wax blob, same starting temperature, all started together. Change any of those and the comparison proves nothing.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Why liquids and gases conduct so badly</div>
+      In a liquid or gas the particles are <strong>much further apart</strong> and are not locked into a lattice, so vibrations don't get handed on efficiently, and there are <strong>no free electrons</strong> to carry energy. That's why, if you heat the <em>top</em> of a test tube of water, it can boil there while a lump of ice held down at the bottom by a metal gauze stays unmelted — the heat simply cannot conduct down, and convection can't help because the hot water is already on top. (Note there's a middle group too: solids like glass, brick and concrete conduct better than wool or air, but far worse than metals.)
+    </div>
+
     <div class="box exam">
       <div class="box-label">✅ Why trapped air is the secret</div>
       Most insulators work by <strong>trapping air</strong> (a poor conductor) in small pockets so it can't move: wool, foam, double glazing, fibreglass loft lagging. Liquids and gases are generally poor conductors because their particles are far apart.
@@ -1005,7 +1432,7 @@
 
   <!-- ── 08 · CONVECTION ── -->
   <div class="section">
-    <div class="sec-label">08 / 10 · 2.3.2 Thermal Energy Transfer — Convection</div>
+    <div class="sec-label">08 / 12 · 2.3.2 Thermal Energy Transfer — Convection</div>
     <h2>Convection — hot fluid floats, cool fluid sinks</h2>
 
     <p><strong>Convection</strong> moves heat through <em>fluids</em> (liquids and gases) by the fluid itself flowing. It cannot happen in solids — the particles can't travel.</p>
@@ -1015,9 +1442,11 @@
     </div>
 
     <div class="fig">
-      <svg class="diagram" viewBox="0 0 460 320" role="img" aria-label="A beaker of water heated by a flame under one bottom corner. A purple potassium-manganate(VII) trail traces a circulating loop: warm, less-dense water rises above the flame, cools and moves across the top, then the denser cool water sinks on the far side and returns along the base to be heated again.">
+      <svg class="diagram" viewBox="0 0 480 320" role="img" aria-label="A beaker of water heated by a flame under one bottom corner. A purple potassium-manganate(VII) trail traces a circulating loop: warm, less-dense water rises above the flame, cools and moves across the top, then the denser cool water sinks on the far side and returns along the base to be heated again.">
         <defs>
-          <marker id="cvArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker>
+          <marker id="cvArrowE" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--energy)"/></marker>
+          <marker id="cvArrowF" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--force)"/></marker>
+          <marker id="cvArrowM" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--motion)"/></marker>
         </defs>
         <!-- water -->
         <rect x="92" y="94" width="276" height="166" rx="3" fill="currentColor" style="color:var(--motion)" opacity="0.11"/>
@@ -1030,10 +1459,10 @@
               fill="none" stroke="currentColor" style="color:var(--momentum)" stroke-width="2.4" stroke-dasharray="2 5" opacity="0.9" stroke-linecap="round"/>
         <circle cx="132" cy="250" r="6" fill="currentColor" style="color:var(--momentum)"/>
         <!-- flow arrows -->
-        <path d="M126 240 L122 122" fill="none" stroke="currentColor" style="color:var(--force)" stroke-width="3.2" marker-end="url(#cvArrow)"/>
-        <path d="M142 106 L316 106" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="3.2" marker-end="url(#cvArrow)"/>
-        <path d="M336 122 L336 242" fill="none" stroke="currentColor" style="color:var(--motion)" stroke-width="3.2" marker-end="url(#cvArrow)"/>
-        <path d="M322 254 L148 254" fill="none" stroke="currentColor" style="color:var(--motion)" stroke-width="3.2" marker-end="url(#cvArrow)"/>
+        <path d="M126 240 L122 122" fill="none" stroke="currentColor" style="color:var(--force)" stroke-width="3.2" marker-end="url(#cvArrowF)"/>
+        <path d="M142 106 L316 106" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="3.2" marker-end="url(#cvArrowE)"/>
+        <path d="M336 122 L336 242" fill="none" stroke="currentColor" style="color:var(--motion)" stroke-width="3.2" marker-end="url(#cvArrowM)"/>
+        <path d="M322 254 L148 254" fill="none" stroke="currentColor" style="color:var(--motion)" stroke-width="3.2" marker-end="url(#cvArrowM)"/>
         <!-- flame under the left corner -->
         <path d="M112 262 q6 24 20 32 q14 -8 20 -32 z" fill="currentColor" style="color:var(--force)" opacity="0.9"/>
         <path d="M120 268 q4 15 12 20 q8 -5 12 -20 z" fill="currentColor" style="color:var(--energy)"/>
@@ -1046,6 +1475,13 @@
         <text class="dg-lbl" x="132" y="308" text-anchor="middle" style="fill:var(--muted)">HEAT · purple KMnO₄ shows the loop</text>
       </svg>
       <div class="fig-cap">Fig · Convection current — coloured water heated at one corner rises (less dense), cools and spreads across the top, then sinks on the far side and returns to the flame, circulating heat through the whole beaker.</div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Describing the experiment — the version they mark</div>
+      <strong>In a liquid:</strong> fill a beaker with water and drop a single crystal of <strong>potassium manganate(VII)</strong> down a tube so it settles in <em>one bottom corner</em>. Heat gently under that corner. The purple colour rises above the flame, spreads across the top, sinks down the far side and returns along the base — tracing the convection current for you.<br>
+      <strong>In a gas:</strong> hold a <strong>paper spiral</strong> on a pin above a candle and it spins, because the warm air rising past it is moving. (Or use a smoke box with two chimneys: smoke from a smouldering taper is drawn <em>down</em> the cool chimney and out of the one above the candle.)<br>
+      The marks are for <strong>naming what you see</strong> and linking it to <strong>density</strong>: warm fluid expands → less dense → rises; cool fluid is denser → sinks.
     </div>
 
     <div class="box intuition">
@@ -1062,7 +1498,7 @@
 
   <!-- ── 09 · RADIATION ── -->
   <div class="section">
-    <div class="sec-label">09 / 10 · 2.3.3 Thermal Energy Transfer — Radiation</div>
+    <div class="sec-label">09 / 12 · 2.3.3 Thermal Energy Transfer — Radiation</div>
     <h2>Radiation — heat that needs nothing to travel through</h2>
 
     <p>The Sun's warmth reaches us across empty space, where there are no particles to conduct or convect. It arrives as <strong>infrared radiation</strong> — a type of electromagnetic wave. Every object emits it; the hotter the object, the more it pours out.</p>
@@ -1079,7 +1515,7 @@
     <div class="fig">
       <svg class="diagram" viewBox="0 0 480 300" role="img" aria-label="A Leslie cube filled with hot water. Its matt-black face on the left emits infrared strongly — large arrows reach a detector that reads high. Its polished-silver face on the right emits weakly — small arrows reach an identical detector that reads low. Same temperature, so the surface finish alone changes how much radiation is emitted.">
         <defs>
-          <marker id="rdArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker>
+          <marker id="rdArrowE" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--energy)"/></marker>
         </defs>
         <!-- hot cube -->
         <rect x="188" y="98" width="104" height="104" rx="4" fill="currentColor" style="color:var(--force)" opacity="0.13"/>
@@ -1092,12 +1528,12 @@
         <!-- polished-silver face (right edge) -->
         <rect x="290" y="98" width="8" height="104" fill="currentColor" style="color:var(--cyan)" opacity="0.55"/>
         <!-- strong radiation to the left -->
-        <path d="M178 122 L92 122" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="3.6" marker-end="url(#rdArrow)"/>
-        <path d="M178 150 L92 150" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="3.6" marker-end="url(#rdArrow)"/>
-        <path d="M178 178 L92 178" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="3.6" marker-end="url(#rdArrow)"/>
+        <path d="M178 122 L92 122" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="3.6" marker-end="url(#rdArrowE)"/>
+        <path d="M178 150 L92 150" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="3.6" marker-end="url(#rdArrowE)"/>
+        <path d="M178 178 L92 178" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="3.6" marker-end="url(#rdArrowE)"/>
         <!-- weak radiation to the right -->
-        <path d="M300 136 L354 136" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="2" opacity="0.75" marker-end="url(#rdArrow)"/>
-        <path d="M300 164 L354 164" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="2" opacity="0.75" marker-end="url(#rdArrow)"/>
+        <path d="M300 136 L354 136" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="2" opacity="0.75" marker-end="url(#rdArrowE)"/>
+        <path d="M300 164 L354 164" fill="none" stroke="currentColor" style="color:var(--energy)" stroke-width="2" opacity="0.75" marker-end="url(#rdArrowE)"/>
         <!-- left detector (reads high) -->
         <rect x="44" y="132" width="40" height="36" rx="5" fill="currentColor" style="color:var(--power)" opacity="0.2"/>
         <rect x="44" y="132" width="40" height="36" rx="5" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.6"/>
@@ -1120,7 +1556,7 @@
     <div class="grid2">
       <div class="card">
         <div class="card-title" style="color:var(--force)">Higher temperature</div>
-        <div class="card-body">A hotter surface emits more infrared per second — and emits it faster than a cooler one.</div>
+        <div class="card-body">A hotter surface emits infrared at a greater <strong>rate</strong>, and the rate climbs steeply as the surface temperature rises.</div>
       </div>
       <div class="card">
         <div class="card-title" style="color:var(--force)">Larger / darker surface</div>
@@ -1129,8 +1565,36 @@
     </div>
 
     <div class="box exam">
+      <div class="box-label">✅ Testing <em>absorbers</em> — the other experiment</div>
+      The Leslie cube above compares <strong>emitters</strong>. To compare <strong>absorbers</strong>, take two identical metal plates, one painted <strong>matt black</strong> and one <strong>polished silver</strong>, and stand them the <em>same distance</em> either side of a radiant heater. Stick a coin to the back of each with a blob of wax. The coin on the matt-black plate falls first, because that surface absorbed infrared faster. (Same result with a thermometer on the back of each: the black plate's temperature rises faster.) The controls are what earn the marks — same plates, same distance, same heater, started together.
+    </div>
+
+    <h3>Energy in, energy out — the balance that fixes temperature</h3>
+    <p>Every object is doing two things at once: <strong>emitting</strong> infrared and <strong>absorbing</strong> the infrared arriving from its surroundings. Which one wins decides what happens to its temperature:</p>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title" style="color:var(--power)">in = out</div>
+        <div class="card-body">The object absorbs energy at exactly the rate it emits it, so its <strong>temperature stays constant</strong>. That is what "constant temperature" actually means — not "nothing is happening".</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">in &gt; out</div>
+        <div class="card-body">It receives faster than it loses, so its internal energy rises and it <strong>gets hotter</strong> — like a black car left in the Delhi sun.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">in &lt; out</div>
+        <div class="card-body">It loses faster than it receives, so it <strong>cools down</strong> — like a cup of chai left out overnight, or the desert at night.</div>
+      </div>
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">🌍 The same balance sets the temperature of the Earth</div>
+      The Earth absorbs radiation from the Sun and emits infrared back out into space. Averaged over a long time these two rates match, and the Earth sits at a steady temperature. Anything that changes the balance changes that temperature: more <strong>greenhouse gases</strong> (carbon dioxide, methane) absorb some of the outgoing infrared and re-emit part of it back down, so <em>less</em> escapes — energy out falls below energy in and the Earth warms until a new balance is reached. Changing how much sunlight is <strong>reflected</strong> (ice and clouds reflect; dark ocean and bare soil absorb) shifts the same balance the other way.
+    </div>
+
+    <div class="box exam">
       <div class="box-label">✅ Applications that test all three</div>
-      <strong>Houses painted white</strong> in hot countries reflect radiation and stay cool. <strong>Shiny emergency "space" blankets</strong> (used in disaster relief) reflect body radiation back in. A <strong>vacuum flask</strong> beats all three transfers at once: a vacuum stops conduction &amp; convection, and silvered walls stop radiation — so your drink stays hot for hours.
+      <strong>Houses painted white</strong> in hot Indian summers reflect radiation and stay cooler inside. <strong>Shiny emergency "space" blankets</strong> (used in disaster relief) reflect body radiation back in. A <strong>vacuum flask</strong> beats all three transfers at once — see the next section.
     </div>
 
     <div class="box pitfall">
@@ -1140,9 +1604,158 @@
   </div>
 
 
-  <!-- ── 10 · EQUATION BANK ── -->
+  <!-- ── 10 · CONSEQUENCES OF THERMAL ENERGY TRANSFER ── -->
   <div class="section">
-    <div class="sec-label">10 / 10 · Reference</div>
+    <div class="sec-label">10 / 12 · 2.3.4 Consequences of Thermal Energy Transfer</div>
+    <h2>Putting the three together</h2>
+
+    <p>In the exam the three transfers rarely arrive one at a time. Real objects are designed either to <strong>help</strong> heat move or to <strong>stop</strong> it, and the good answers name <em>which transfer</em> is doing what — and which one is being blocked.</p>
+
+    <h3>The simple ones</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">A kitchen pan</div>
+        <div class="card-body">The <strong>base is metal</strong> so energy <strong>conducts</strong> quickly from the flame into the food; it is often thick and dark so it also absorbs radiation well. Inside, the food or water is stirred by <strong>convection currents</strong>. The <strong>handle is plastic or wood</strong> — a poor conductor, so little energy reaches your hand.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--energy2)">Heating a room</div>
+        <div class="card-body">A heater is placed <strong>low down</strong>. It warms the air beside it, which expands, becomes <strong>less dense</strong> and <strong>rises</strong>; cooler denser air sinks to take its place and is warmed in turn. That <strong>convection current</strong> circulates warm air through the whole room — which is why putting a heater on a high shelf warms only the ceiling.</div>
+      </div>
+    </div>
+
+    <h3>The two that need <em>more than one</em> transfer (Extended)</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--rose)">A fire burning wood or coal</div>
+        <div class="card-body"><strong>Radiation</strong> is what you feel across the room — infrared travels straight to you through the air without warming it much (air is a poor absorber). <strong>Convection</strong> carries hot gases and smoke <em>up the chimney</em>, and draws fresh cool air in at the bottom to keep it burning. <strong>Conduction</strong> matters least: it warms the fireplace bricks and grate, and air itself is such a poor conductor that almost nothing reaches you that way.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--rose)">A car radiator</div>
+        <div class="card-body">Hot water is pumped from the engine, so the water carries energy by <strong>forced convection</strong> (a pump, not just floating). Energy <strong>conducts</strong> from the water through the thin metal walls and fins — thin metal, large surface area. Then the fins, painted <strong>matt black</strong>, lose it to the air by <strong>radiation</strong> and to the air stream by <strong>convection</strong>. Radiators are put at the <em>front</em> of the car so moving air sweeps the warm air away continuously.</div>
+      </div>
+    </div>
+
+    <h3>The vacuum flask — the classic "block all three" question</h3>
+    <p>A vacuum (Thermos) flask keeps a drink hot for hours by attacking every route at once. Learn the labels; the question is nearly always "explain how each feature reduces energy transfer".</p>
+
+    <div class="fig">
+      <svg class="diagram" viewBox="0 0 560 340" role="img" aria-label="Cut-away of a vacuum flask. An outer plastic case surrounds a double-walled glass vessel holding a hot drink. Between the two glass walls is a vacuum, and both glass surfaces facing that gap are silvered. The inner vessel rests on small insulating supports, and an insulating stopper closes the top. Labels: the stopper stops warm air escaping, the silvered walls reflect radiation back, the vacuum has no particles so there is no conduction or convection, and the insulating supports minimise conduction.">
+        <!-- insulating stopper -->
+        <rect x="214" y="40" width="132" height="28" rx="5" fill="currentColor" style="color:var(--muted)" opacity="0.40"/>
+        <rect x="214" y="40" width="132" height="28" rx="5" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="1.8"/>
+        <!-- outer plastic case -->
+        <rect x="196" y="60" width="168" height="244" rx="12" fill="none" stroke="currentColor" style="color:var(--muted)" stroke-width="2.6"/>
+        <!-- outer glass wall (silvered) — the region inside it down to the inner wall is the vacuum -->
+        <rect x="208" y="72" width="144" height="220" rx="8" fill="currentColor" style="color:var(--momentum)" opacity="0.14"/>
+        <rect x="208" y="72" width="144" height="220" rx="8" fill="none" stroke="currentColor" style="color:var(--cyan)" stroke-width="2.6"/>
+        <!-- inner glass wall (silvered) + hot drink -->
+        <rect x="224" y="88" width="112" height="188" rx="6" fill="currentColor" style="color:var(--force)" opacity="0.20"/>
+        <rect x="224" y="88" width="112" height="188" rx="6" fill="none" stroke="currentColor" style="color:var(--cyan)" stroke-width="2.6"/>
+        <text class="dg-lbl" x="280" y="186" text-anchor="middle" style="fill:var(--force);font-size:11px">hot drink</text>
+        <!-- insulating supports in the bottom of the vacuum gap -->
+        <rect x="240" y="278" width="16" height="12" rx="2" fill="currentColor" style="color:var(--power)" opacity="0.6"/>
+        <rect x="304" y="278" width="16" height="12" rx="2" fill="currentColor" style="color:var(--power)" opacity="0.6"/>
+
+        <!-- LEFT labels -->
+        <line x1="188" y1="50" x2="212" y2="50" stroke="currentColor" style="color:var(--muted)" stroke-width="1.2"/>
+        <text class="dg-lbl" x="184" y="54" text-anchor="end" style="fill:var(--text);font-size:10px">insulating stopper</text>
+        <line x1="188" y1="136" x2="210" y2="136" stroke="currentColor" style="color:var(--cyan)" stroke-width="1.2"/>
+        <text class="dg-lbl" x="184" y="140" text-anchor="end" style="fill:var(--cyan);font-size:10px">silvered walls</text>
+        <line x1="188" y1="200" x2="218" y2="200" stroke="currentColor" style="color:var(--momentum)" stroke-width="1.2"/>
+        <text class="dg-lbl" x="184" y="204" text-anchor="end" style="fill:var(--momentum);font-size:10px">vacuum</text>
+        <line x1="188" y1="286" x2="238" y2="286" stroke="currentColor" style="color:var(--power)" stroke-width="1.2"/>
+        <text class="dg-lbl" x="184" y="290" text-anchor="end" style="fill:var(--power);font-size:10px">insulating supports</text>
+
+        <!-- RIGHT labels -->
+        <line x1="348" y1="50" x2="372" y2="50" stroke="currentColor" style="color:var(--muted)" stroke-width="1.2"/>
+        <text class="dg-lbl" x="376" y="54" style="fill:var(--muted);font-size:10px">stops warm air escaping</text>
+        <line x1="352" y1="136" x2="372" y2="136" stroke="currentColor" style="color:var(--cyan)" stroke-width="1.2"/>
+        <text class="dg-lbl" x="376" y="140" style="fill:var(--muted);font-size:10px">reflect radiation back</text>
+        <line x1="344" y1="200" x2="372" y2="200" stroke="currentColor" style="color:var(--momentum)" stroke-width="1.2"/>
+        <text class="dg-lbl" x="376" y="196" style="fill:var(--muted);font-size:10px">no particles, so no</text>
+        <text class="dg-lbl" x="376" y="212" style="fill:var(--muted);font-size:10px">conduction or convection</text>
+        <line x1="322" y1="286" x2="372" y2="286" stroke="currentColor" style="color:var(--power)" stroke-width="1.2"/>
+        <text class="dg-lbl" x="376" y="290" style="fill:var(--muted);font-size:10px">minimise conduction</text>
+
+        <text class="dg-lbl" x="280" y="328" text-anchor="middle" style="fill:var(--muted);font-size:10px">every feature blocks one named transfer — say which, and you get the mark</text>
+      </svg>
+      <div class="fig-cap">Fig · Vacuum flask, cut away. Vacuum kills conduction and convection through the walls, silvering reflects the radiation back, the stopper closes the convection route out of the top, and small supports leave almost no solid path for conduction.</div>
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ The transfer-spotting rule</div>
+      Ask <strong>what is between the hot thing and the cold thing?</strong> A <em>solid</em> → conduction. A <em>fluid that can flow</em> → convection. <em>Nothing (a vacuum), or a gap you can see across</em> → radiation. Then say which one the design is trying to stop and how. That single question answers almost every "explain how this reduces energy transfer" part.
+    </div>
+  </div>
+
+
+  <!-- ── 11 · CHECK YOURSELF ── -->
+  <div class="section">
+    <div class="sec-label">11 / 12 · Check Yourself</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+    <p>Reading these notes again feels productive and isn't. Answering from memory is. Cover the page, answer out loud or on paper, <em>then</em> tap to reveal.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>Describe the motion of the particles in a solid, and explain why a solid has a fixed shape. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The particles <strong>vibrate about fixed positions</strong> in a regular close-packed arrangement (1). The forces between them are <strong>strong</strong>, so the particles cannot move past one another and the shape cannot change (1).</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>Smoke particles in a smoke cell are seen through a microscope to move along a random, jerky path. Explain this motion. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The smoke particles are struck by <strong>air molecules</strong>, which are much smaller, lighter and faster (1). The molecules collide with the smoke particle from <strong>random directions</strong>, and at any instant slightly more hit one side than the other (1), so the smoke particle is knocked in a random direction — and a moment later in a different one, producing the zig-zag path (1). <em>Not</em> "the smoke particles hit each other".</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span>A sealed cylinder contains gas at 2.4 × 10⁵ Pa when its volume is 350 cm³. The piston is pulled out until the volume is 800 cm³ at constant temperature. Calculate the new pressure. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">p₁V₁ = p₂V₂ (1) → p₂ = (2.4 × 10⁵ × 350) / 800 (1) = <strong>1.05 × 10⁵ Pa</strong> (1). The volumes may stay in cm³ because they cancel in the ratio. Sanity check: the volume more than doubled, so the pressure must fall to less than half.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>Explain, in terms of particles, why the pressure of a fixed mass of gas rises when it is heated at constant volume. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Heating increases the <strong>average kinetic energy</strong> of the particles, so they move faster (1). They therefore hit the walls <strong>more often</strong> (1) and each collision exerts a <strong>greater force</strong> (1). Pressure is force per unit area and the area is unchanged, so the pressure rises.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>A 0.45 kg copper block is heated by a 60 W heater for 3.0 minutes. Its temperature rises by 55 °C. Calculate the specific heat capacity obtained from this experiment, and state whether it is likely to be above or below the true value. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">ΔE = P × t = 60 × (3.0 × 60) = <strong>10 800 J</strong> (1). c = ΔE / (m Δθ) = 10 800 / (0.45 × 55) (1) = 10 800 / 24.75 = <strong>436 J/(kg·°C)</strong> (1). It is <strong>above</strong> the true value (385 J/(kg·°C) for copper), because some of the supplied energy is lost to the surroundings, so the measured Δθ is smaller than it should be — and dividing by a too-small Δθ gives a too-large c (1).</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>State two differences between boiling and evaporation, and explain why evaporation cools the remaining liquid. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Differences (any two, 1 each): boiling happens at <strong>one fixed temperature</strong>, evaporation at <strong>any temperature</strong>; boiling happens <strong>throughout</strong> the liquid, evaporation only at the <strong>surface</strong>; boiling produces bubbles, evaporation does not.<br>Cooling: only the <strong>most energetic</strong> particles have enough energy to escape from the surface (1), so the <strong>average kinetic energy of the particles left behind falls</strong>, and lower average kinetic energy means a lower temperature (1).</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>Describe an experiment to show that copper is a better thermal conductor than glass, including two controls that make it a fair test. <em>[5]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Take a copper rod and a glass rod and stick a pin to the far end of each with a blob of wax (1). Put the other ends into the <strong>same</strong> trough of hot water at the same time and see which pin falls first (1) — the copper pin falls first, so copper conducts better (1). Controls — 1 mark each, any two of: rods of the same length and thickness · same size of wax blob · same starting temperature · both started at the same moment.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>A vacuum flask keeps a hot drink hot. Explain how the vacuum and the silvered surfaces each reduce energy transfer, naming the transfer involved. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The <strong>vacuum</strong> contains (almost) no particles (1), so energy cannot be transferred across it by <strong>conduction or convection</strong> — both need matter (1). The <strong>silvered surfaces</strong> are poor emitters and good reflectors of infrared (1), so <strong>radiation</strong> from the hot drink is reflected back in instead of escaping (1).</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q9</span><span>An object is at a constant temperature. State what this tells you about the rates at which it receives and transfers energy, and describe what happens if the rate it receives energy then increases. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">At constant temperature it is <strong>transferring energy away at the same rate as it is receiving it</strong> (1) — the two are balanced, not zero. If the rate of receiving rises above the rate of transferring away (1), its internal energy increases and its <strong>temperature rises</strong> — until it emits fast enough for the rates to balance again at a new, higher temperature (1).</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 12 · EQUATION BANK ── -->
+  <div class="section">
+    <div class="sec-label">12 / 12 · Reference</div>
     <h2>The Thermal Physics equation bank</h2>
     <p>IGCSE Physics gives you <strong>no formula sheet</strong> — these must be recalled from memory. Tap any tile for symbols, units, rearrangements, a worked example, and the exam trap:</p>
 
@@ -1151,15 +1764,38 @@
     <div class="box remember" style="margin-top:22px">
       <div class="box-label">⚠️ The non-negotiables to memorise</div>
       <span class="eq-inline" style="color:var(--rose)">E = mcΔθ</span>
-      <span class="eq-inline" style="color:var(--rose)">E = mL</span>
       <span class="eq-inline" style="color:var(--rose)">T/K = θ/°C + 273</span>
       <span class="eq-inline" style="color:var(--rose)">pV = constant</span>
-      <div style="margin-top:10px;font-size:13px;color:var(--muted)">The pressure–temperature relation <span class="eq-inline" style="color:var(--momentum)">p₁/T₁ = p₂/T₂</span> is shown above for understanding — in 0625 the temperature effect on gas pressure is only examined <em>qualitatively</em>, so <strong>pV = constant</strong> is the one gas equation you must be able to calculate with.</div>
+      <div style="margin-top:10px;font-size:13px;color:var(--muted)">That is the whole list — <strong>three</strong> equations. Two more appear in the bank above but are <strong>not examinable in the 2026–28 cycle</strong>: <span class="eq-inline" style="color:var(--momentum)">E = mL</span> (specific latent heat was removed from 0625 for 2026–28) and <span class="eq-inline" style="color:var(--momentum)">p₁/T₁ = p₂/T₂</span> (the temperature effect on gas pressure is examined <em>qualitatively</em> only). Both are worth understanding — they turn up in pre-2026 past papers — but don't spend memorising time on them.</div>
     </div>
 
     <div class="box exam" style="margin-top:14px">
       <div class="box-label">✅ The model that answers half the paper</div>
       Almost every Topic 2 question is really one idea in disguise: <strong>"add energy → particles move faster / push apart."</strong> Faster particles = higher temperature, harder wall-hits = more pressure, wider spacing = expansion, broken bonds = change of state. Name the particles and you've started the answer.
+    </div>
+  </div>
+
+  <!-- ── PAPERS FOR THIS TOPIC ── -->
+  <div class="section">
+    <div class="sec-label">Now go and use it</div>
+    <h2>Topic 2 papers</h2>
+    <p>Notes get you to <em>recognise</em> thermal physics; papers get you to <em>produce</em> it under time pressure. There is no Topic 2-only practice paper yet — so sit the graded paper below, and use the mixed paper (which includes the thermal chapters) for self-marked practice.</p>
+
+    <div class="paperlinks">
+      <a class="plink" href="../exam-papers/Physics%20Topic%202%20Graded%20Paper%20-%20Thermal%20Physics.html">
+        <span class="pl-ico" aria-hidden="true">🎓</span>
+        <span>
+          <span class="pl-name">Physics Topic 2 Graded Paper — Thermal Physics</span>
+          <span class="pl-sub">Teacher-marked · no answers shown · sit it timed</span>
+        </span>
+      </a>
+      <a class="plink" href="../practice-papers/Physics%20Mixed%20Chapters%201-18%20Practice%20Paper.html">
+        <span class="pl-ico" aria-hidden="true">🔀</span>
+        <span>
+          <span class="pl-name">Physics Mixed Chapters 1–18 Practice Paper</span>
+          <span class="pl-sub">Wider mix · thermal chapters 9–11 appear alongside other topics</span>
+        </span>
+      </a>
     </div>
   </div>
 
@@ -1411,11 +2047,11 @@ const EQ = {
     rearr:'c = E /(mΔθ)   ·   Δθ = E /(mc)   ·   m = E /(cΔθ)',
     ex:'Heat 2 kg of water (c = 4200) by 30 °C: E = 2 × 4200 × 30 = <b>252 000 J</b>.',
     tip:'The large c of water (4200) is why it heats and cools slowly — coasts stay milder than inland.' },
-  slh:    { c:'energy', name:'Specific latent heat', formula:'E = mL',
+  slh:    { c:'energy', name:'Specific latent heat (NOT in the 2026–28 syllabus)', formula:'E = mL',
     syms:[['E','energy','J'],['m','mass','kg'],['L','specific latent heat','J/kg']],
     rearr:'L = E / m   ·   m = E / L',
     ex:'Melt 0.5 kg of ice (L = 3.3 × 10⁵): E = 0.5 × 330000 = <b>165 000 J</b>.',
-    tip:'Temperature does NOT change during melting or boiling — energy goes into breaking bonds.' },
+    tip:'<b>Removed from 0625 for 2026–28</b> — you will not be asked to calculate with it. Kept here because it appears in pre-2026 past papers, and because it explains the flat parts of the heating curve: temperature does NOT change during melting or boiling, as the energy goes into separating the particles.' },
   kelvin: { c:'motion', name:'Kelvin conversion', formula:'T/K = θ/°C + 273',
     syms:[['T','absolute temp','K'],['θ','Celsius temp','°C']],
     rearr:'θ/°C = T/K − 273',
@@ -1426,11 +2062,11 @@ const EQ = {
     rearr:'p₁V₁ = p₂V₂',
     ex:'Halve a gas’s volume at constant temperature → pressure <b>doubles</b>.',
     tip:'Only at <b>constant temperature</b>. Squeeze gas → more wall-collisions per second → higher p.' },
-  presT:  { c:'mom', name:'Pressure–temperature (Extended)', formula:'p₁/T₁ = p₂/T₂',
+  presT:  { c:'mom', name:'Pressure–temperature (background — not examined numerically)', formula:'p₁/T₁ = p₂/T₂',
     syms:[['p','pressure','Pa'],['T','temperature','K']],
     rearr:'p₂ = p₁ × T₂/T₁',
     ex:'Gas at 300 K, 100 kPa, fixed volume, heated to 600 K → <b>200 kPa</b>.',
-    tip:'T must be in <b>kelvin</b>, never °C. Hotter gas → faster particles → harder, more frequent hits.' },
+    tip:'In 0625 the effect of temperature on gas pressure is examined <b>qualitatively only</b> — this equation is here for understanding, not for calculation. If you ever do use it, T must be in <b>kelvin</b>, never °C.' },
 };
 
 const ORDER=['shc','slh','kelvin','boyle','presT'];
