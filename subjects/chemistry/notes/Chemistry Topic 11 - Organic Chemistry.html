@@ -90,6 +90,8 @@
   .section:nth-of-type(8){animation-delay:.32s}
   .section:nth-of-type(9){animation-delay:.36s}
   .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+  .section:nth-of-type(12){animation-delay:.48s}
 
   .sec-label {
     font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em;
@@ -345,7 +347,64 @@
     pointer-events:none; white-space:nowrap; }
   .dg-cap::before, .diag-cap::before, .fig-cap::before { content:'FIGURE · '; font-family:'JetBrains Mono',monospace;
     font-size:10px; font-weight:600; letter-spacing:.14em; color:var(--muted); }
-  svg.diagram { max-width:560px; max-height:400px; }
+  /* the fraction-column widget is a bare grid — give the badge room to sit in */
+  .frac-wrap.interactive { padding:22px 16px 16px; border-radius:12px; }
+
+  /* ── STATIC FIGURES (inline SVG) ── */
+  svg.diagram { width:100%; height:auto; display:block; max-width:560px; max-height:400px; padding:0;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; margin:14px auto; }
+  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+  .dg-cap  { font-family:'Inter',sans-serif; font-size:12.5px; color:var(--muted);
+    text-align:center; max-width:560px; margin:0 auto 20px; line-height:1.55; }
+  .dg-ttl  { font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600;
+    letter-spacing:.11em; fill:var(--bright); }
+  .dg-lbl  { font-family:'JetBrains Mono',monospace; font-size:9px; fill:var(--muted); }
+  .dg-lblb { font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600; fill:var(--text); }
+  .dg-ln   { stroke:var(--muted); stroke-width:1.15; fill:none; }
+  .dg-thin { stroke:var(--border); stroke-width:1; fill:none; }
+  .dg-dash { stroke:var(--muted); stroke-width:1; fill:none; stroke-dasharray:4 3; opacity:.75; }
+  .dg-glass{ fill:none; stroke:var(--muted); stroke-width:1.5; stroke-linejoin:round; }
+  .dg-panel{ fill:var(--surface2); stroke:var(--border); stroke-width:1; }
+  /* organic-specific: displayed-formula bonds and atom letters */
+  .dg-bond { stroke:var(--text); stroke-width:1.5; fill:none; stroke-linecap:round; }
+  .dg-atom { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600;
+    fill:var(--bright); text-anchor:middle; dominant-baseline:middle; }
+  .dg-sub  { font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:600;
+    fill:var(--bright); text-anchor:middle; dominant-baseline:middle; }
+
+  /* ── CHECK-YOURSELF RETRIEVAL BLOCK ── */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ── PAPER LINKS PANEL ── */
+  .paperlinks { display:grid; gap:10px; margin:16px 0 4px; }
+  .paperlinks a { display:flex; align-items:center; gap:11px; text-decoration:none;
+    background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:13px 16px;
+    color:var(--text); font-size:14px; transition:border-color .2s, color .2s; }
+  .paperlinks a:hover { border-color:var(--cyan); color:var(--cyan); }
+
+  /* ── SAVE AS PDF ── */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
 </style>
 </head>
 <body data-theme="dark">
@@ -353,6 +412,7 @@
 
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
 <div class="page">
 
   <!-- HEADER -->
@@ -365,7 +425,7 @@
 
   <!-- ── 01 · THE BIG IDEA ── -->
   <div class="section">
-    <div class="sec-label">01 / 10 · The thread</div>
+    <div class="sec-label">01 / 12 · The thread</div>
     <h2>Carbon builds families — learn the family, not every member</h2>
 
     <div class="box intuition">
@@ -387,7 +447,7 @@
 
   <!-- ── 02 · FORMULAE & FUNCTIONAL GROUPS ── -->
   <div class="section">
-    <div class="sec-label">02 / 10 · 11.1 Formulae, functional groups &amp; terminology</div>
+    <div class="sec-label">02 / 12 · 11.1 Formulae, functional groups &amp; terminology</div>
     <h2>Four families, four general formulae, four functional groups</h2>
 
     <div class="box intuition">
@@ -435,6 +495,51 @@
       </div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 212" role="img" aria-label="Ethanol written three ways: the molecular formula C2H6O, the structural formula CH3CH2OH, and the displayed formula showing every atom and every bond.">
+      <text class="dg-ttl" x="270" y="22" text-anchor="middle">ONE MOLECULE — ETHANOL — WRITTEN THREE WAYS</text>
+
+      <!-- panel A · molecular -->
+      <rect class="dg-panel" x="12" y="38" width="120" height="152" rx="7"/>
+      <text class="dg-lbl" x="72" y="58" text-anchor="middle" style="fill:var(--muted)">MOLECULAR</text>
+      <text class="dg-atom" x="72" y="118" style="font-size:19px">C₂H₆O</text>
+      <text class="dg-lbl" x="72" y="164" text-anchor="middle">how many of</text>
+      <text class="dg-lbl" x="72" y="176" text-anchor="middle">each atom</text>
+
+      <!-- arrow A→B -->
+      <path class="dg-ln" d="M136 118 h6"/>
+      <path d="M142 113 l8 5 l-8 5 z" style="fill:var(--muted)"/>
+
+      <!-- panel B · structural -->
+      <rect class="dg-panel" x="154" y="38" width="140" height="152" rx="7"/>
+      <text class="dg-lbl" x="224" y="58" text-anchor="middle" style="fill:var(--cyan)">STRUCTURAL</text>
+      <text class="dg-atom" x="224" y="118" style="font-size:17px">CH₃CH₂OH</text>
+      <text class="dg-lbl" x="224" y="164" text-anchor="middle">the order the</text>
+      <text class="dg-lbl" x="224" y="176" text-anchor="middle">atoms are joined</text>
+
+      <!-- arrow B→C -->
+      <path class="dg-ln" d="M298 118 h6"/>
+      <path d="M304 113 l8 5 l-8 5 z" style="fill:var(--muted)"/>
+
+      <!-- panel C · displayed -->
+      <rect class="dg-panel" x="316" y="38" width="212" height="152" rx="7"/>
+      <text class="dg-lbl" x="422" y="58" text-anchor="middle" style="fill:var(--motion)">DISPLAYED</text>
+      <!-- backbone H–C–C–O–H at y=112 -->
+      <text class="dg-atom" x="344" y="112">H</text>
+      <text class="dg-atom" x="384" y="112">C</text>
+      <text class="dg-atom" x="424" y="112">C</text>
+      <text class="dg-atom" x="464" y="112" style="fill:var(--cyan)">O</text>
+      <text class="dg-atom" x="504" y="112" style="fill:var(--cyan)">H</text>
+      <path class="dg-bond" d="M354 112 h20 M394 112 h20 M434 112 h20 M474 112 h20"/>
+      <!-- hydrogens above and below both carbons -->
+      <text class="dg-atom" x="384" y="74">H</text>
+      <text class="dg-atom" x="384" y="150">H</text>
+      <text class="dg-atom" x="424" y="74">H</text>
+      <text class="dg-atom" x="424" y="150">H</text>
+      <path class="dg-bond" d="M384 84 v18 M384 122 v18 M424 84 v18 M424 122 v18"/>
+      <text class="dg-lbl" x="422" y="176" text-anchor="middle">every atom AND every bond</text>
+    </svg>
+    <p class="dg-cap">The same molecule at three levels of detail. The <strong>molecular</strong> formula counts atoms only; the <strong>structural</strong> formula shows unambiguously how they are joined; the <strong>displayed</strong> formula draws every atom and every bond as a line. Note the –OH group written last in CH₃CH₂OH — writing "C₂H₆O" would hide the fact that it is an alcohol.</p>
+
     <h3>Saturated vs unsaturated</h3>
     <div class="grid2">
       <div class="define alkane-c" style="margin:0">
@@ -455,6 +560,64 @@
       <tr><td class="hs-mol">C₄H₈</td><td class="hs-mol">CH₃CH₂CH=CH₂<br><span style="color:var(--muted)">but-1-ene</span></td><td class="hs-mol">CH₃CH=CHCH₃<br><span style="color:var(--muted)">but-2-ene</span></td></tr>
     </table>
 
+    <svg class="diagram" viewBox="0 0 540 288" role="img" aria-label="The two structural isomers of C4H10 drawn as displayed formulae: butane, an unbranched chain of four carbons, and methylpropane, a central carbon carrying three methyl groups and one hydrogen. Both contain four carbon atoms and ten hydrogen atoms.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">TWO ISOMERS OF C₄H₁₀ — SAME ATOMS, DIFFERENT SKELETON</text>
+
+      <!-- ── panel A · butane (unbranched) ── -->
+      <rect class="dg-panel" x="12" y="30" width="250" height="240" rx="7"/>
+      <text class="dg-lbl" x="137" y="52" text-anchor="middle" style="fill:var(--motion)">BUTANE — UNBRANCHED</text>
+      <!-- backbone H–C–C–C–C–H at y=158 -->
+      <text class="dg-atom" x="37"  y="158">H</text>
+      <text class="dg-atom" x="77"  y="158">C</text>
+      <text class="dg-atom" x="117" y="158">C</text>
+      <text class="dg-atom" x="157" y="158">C</text>
+      <text class="dg-atom" x="197" y="158">C</text>
+      <text class="dg-atom" x="237" y="158">H</text>
+      <path class="dg-bond" d="M47 158 h20 M87 158 h20 M127 158 h20 M167 158 h20 M207 158 h20"/>
+      <!-- 8 hydrogens above and below -->
+      <text class="dg-atom" x="77"  y="118">H</text>
+      <text class="dg-atom" x="117" y="118">H</text>
+      <text class="dg-atom" x="157" y="118">H</text>
+      <text class="dg-atom" x="197" y="118">H</text>
+      <text class="dg-atom" x="77"  y="198">H</text>
+      <text class="dg-atom" x="117" y="198">H</text>
+      <text class="dg-atom" x="157" y="198">H</text>
+      <text class="dg-atom" x="197" y="198">H</text>
+      <path class="dg-bond" d="M77 128 v20 M117 128 v20 M157 128 v20 M197 128 v20"/>
+      <path class="dg-bond" d="M77 168 v20 M117 168 v20 M157 168 v20 M197 168 v20"/>
+      <text class="dg-lblb" x="137" y="234" text-anchor="middle">CH₃CH₂CH₂CH₃</text>
+      <text class="dg-lbl"  x="137" y="252" text-anchor="middle">4 carbons in one straight chain</text>
+
+      <!-- ── panel B · methylpropane (branched) ── -->
+      <rect class="dg-panel" x="278" y="30" width="250" height="240" rx="7"/>
+      <text class="dg-lbl" x="403" y="52" text-anchor="middle" style="fill:var(--momentum)">METHYLPROPANE — BRANCHED</text>
+      <!-- central carbon -->
+      <text class="dg-atom" x="403" y="158">C</text>
+      <text class="dg-atom" x="403" y="198">H</text>
+      <path class="dg-bond" d="M403 168 v20"/>
+      <!-- left methyl -->
+      <text class="dg-atom" x="343" y="158">C</text>
+      <text class="dg-atom" x="303" y="158">H</text>
+      <text class="dg-atom" x="343" y="118">H</text>
+      <text class="dg-atom" x="343" y="198">H</text>
+      <path class="dg-bond" d="M313 158 h20 M353 158 h40 M343 128 v20 M343 168 v20"/>
+      <!-- right methyl -->
+      <text class="dg-atom" x="463" y="158">C</text>
+      <text class="dg-atom" x="503" y="158">H</text>
+      <text class="dg-atom" x="463" y="118">H</text>
+      <text class="dg-atom" x="463" y="198">H</text>
+      <path class="dg-bond" d="M413 158 h40 M473 158 h20 M463 128 v20 M463 168 v20"/>
+      <!-- top methyl (the branch) -->
+      <text class="dg-atom" x="403" y="118">C</text>
+      <text class="dg-atom" x="403" y="78">H</text>
+      <text class="dg-atom" x="371" y="96">H</text>
+      <text class="dg-atom" x="435" y="96">H</text>
+      <path class="dg-bond" d="M403 128 v20 M403 88 v20 M379 101 l16 9 M427 101 l-16 9"/>
+      <text class="dg-lblb" x="403" y="234" text-anchor="middle">CH₃CH(CH₃)CH₃</text>
+      <text class="dg-lbl"  x="403" y="252" text-anchor="middle">3 carbons in the chain + 1 branching off</text>
+    </svg>
+    <p class="dg-cap">Count them: both drawings contain <strong>4 C and 10 H</strong>, so both are C₄H₁₀ — but the atoms are joined in a different order, which is exactly what makes them <strong>structural isomers</strong>. The branched one boils lower, because its more compact molecules cannot pack together as closely.</p>
+
     <div class="box remember">
       <div class="box-label">⚠️ The five features of a homologous series (Supplement)</div>
       <span class="eq-inline" style="color:var(--rose)">same functional group</span>
@@ -468,7 +631,7 @@
 
   <!-- ── 03 · NAMING ── -->
   <div class="section">
-    <div class="sec-label">03 / 10 · 11.2 Naming organic compounds</div>
+    <div class="sec-label">03 / 12 · 11.2 Naming organic compounds</div>
     <h2>Read the ending, know the family</h2>
 
     <div class="box intuition">
@@ -502,8 +665,84 @@
       <div class="card"><div class="card-title" style="color:var(--force)">Ethanoic acid</div><div class="card-body"><span class="eq-inline">CH₃COOH</span> — the acid in vinegar.</div></div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 340" role="img" aria-label="Displayed formulae of the five molecules named in the syllabus: methane, ethane, ethene with its carbon–carbon double bond, ethanol with its hydroxyl group, and ethanoic acid with its carboxyl group. Every atom and every bond is drawn.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">THE FIVE DISPLAYED FORMULAE YOU MUST BE ABLE TO DRAW</text>
+
+      <!-- ── methane ── -->
+      <rect class="dg-panel" x="12" y="30" width="160" height="140" rx="7"/>
+      <text class="dg-lbl" x="92" y="50" text-anchor="middle" style="fill:var(--motion)">METHANE · CH₄</text>
+      <text class="dg-atom" x="92"  y="118">C</text>
+      <text class="dg-atom" x="52"  y="118">H</text>
+      <text class="dg-atom" x="132" y="118">H</text>
+      <text class="dg-atom" x="92"  y="82">H</text>
+      <text class="dg-atom" x="92"  y="154">H</text>
+      <path class="dg-bond" d="M62 118 h20 M102 118 h20 M92 92 v16 M92 128 v16"/>
+
+      <!-- ── ethane ── -->
+      <rect class="dg-panel" x="190" y="30" width="160" height="140" rx="7"/>
+      <text class="dg-lbl" x="270" y="50" text-anchor="middle" style="fill:var(--motion)">ETHANE · C₂H₆</text>
+      <text class="dg-atom" x="250" y="118">C</text>
+      <text class="dg-atom" x="290" y="118">C</text>
+      <text class="dg-atom" x="210" y="118">H</text>
+      <text class="dg-atom" x="330" y="118">H</text>
+      <text class="dg-atom" x="250" y="82">H</text>
+      <text class="dg-atom" x="250" y="154">H</text>
+      <text class="dg-atom" x="290" y="82">H</text>
+      <text class="dg-atom" x="290" y="154">H</text>
+      <path class="dg-bond" d="M220 118 h20 M260 118 h20 M300 118 h20
+                               M250 92 v16 M250 128 v16 M290 92 v16 M290 128 v16"/>
+
+      <!-- ── ethene ── -->
+      <rect class="dg-panel" x="368" y="30" width="160" height="140" rx="7"/>
+      <text class="dg-lbl" x="448" y="50" text-anchor="middle" style="fill:var(--momentum)">ETHENE · C₂H₄</text>
+      <text class="dg-atom" x="430" y="118">C</text>
+      <text class="dg-atom" x="466" y="118">C</text>
+      <text class="dg-atom" x="398" y="92">H</text>
+      <text class="dg-atom" x="398" y="144">H</text>
+      <text class="dg-atom" x="498" y="92">H</text>
+      <text class="dg-atom" x="498" y="144">H</text>
+      <path class="dg-bond" d="M422 112 L406 98 M422 124 L406 138 M474 112 L490 98 M474 124 L490 138"/>
+      <!-- the C=C double bond -->
+      <path class="dg-bond" style="stroke:var(--momentum)" d="M441 114 h14 M441 122 h14"/>
+      <text class="dg-lbl" x="448" y="162" text-anchor="middle" style="fill:var(--momentum)">C=C double bond</text>
+
+      <!-- ── ethanol ── -->
+      <rect class="dg-panel" x="12" y="180" width="249" height="150" rx="7"/>
+      <text class="dg-lbl" x="136" y="200" text-anchor="middle" style="fill:var(--cyan)">ETHANOL · C₂H₅OH</text>
+      <text class="dg-atom" x="56"  y="262">H</text>
+      <text class="dg-atom" x="96"  y="262">C</text>
+      <text class="dg-atom" x="136" y="262">C</text>
+      <text class="dg-atom" x="176" y="262" style="fill:var(--cyan)">O</text>
+      <text class="dg-atom" x="216" y="262" style="fill:var(--cyan)">H</text>
+      <text class="dg-atom" x="96"  y="226">H</text>
+      <text class="dg-atom" x="96"  y="298">H</text>
+      <text class="dg-atom" x="136" y="226">H</text>
+      <text class="dg-atom" x="136" y="298">H</text>
+      <path class="dg-bond" d="M66 262 h20 M106 262 h20 M146 262 h20 M186 262 h20
+                               M96 236 v16 M96 272 v16 M136 236 v16 M136 272 v16"/>
+      <text class="dg-lbl" x="196" y="316" text-anchor="middle" style="fill:var(--cyan)">–OH hydroxyl</text>
+
+      <!-- ── ethanoic acid ── -->
+      <rect class="dg-panel" x="279" y="180" width="249" height="150" rx="7"/>
+      <text class="dg-lbl" x="403" y="200" text-anchor="middle" style="fill:var(--force)">ETHANOIC ACID · CH₃COOH</text>
+      <text class="dg-atom" x="323" y="262">H</text>
+      <text class="dg-atom" x="363" y="262">C</text>
+      <text class="dg-atom" x="403" y="262">C</text>
+      <text class="dg-atom" x="443" y="262" style="fill:var(--force)">O</text>
+      <text class="dg-atom" x="483" y="262" style="fill:var(--force)">H</text>
+      <text class="dg-atom" x="403" y="226" style="fill:var(--force)">O</text>
+      <text class="dg-atom" x="363" y="226">H</text>
+      <text class="dg-atom" x="363" y="298">H</text>
+      <path class="dg-bond" d="M333 262 h20 M373 262 h20 M413 262 h20 M453 262 h20
+                               M363 236 v16 M363 272 v16"/>
+      <!-- the C=O double bond -->
+      <path class="dg-bond" style="stroke:var(--force)" d="M399 236 v16 M407 236 v16"/>
+      <text class="dg-lbl" x="463" y="316" text-anchor="middle" style="fill:var(--force)">–COOH carboxyl</text>
+    </svg>
+    <p class="dg-cap">A <strong>displayed</strong> formula must show every bond as a line — including the <strong>two</strong> lines of the C=C in ethene and of the C=O in ethanoic acid. Check every carbon has exactly <strong>four</strong> bonds, every oxygen <strong>two</strong> and every hydrogen <strong>one</strong>; that single check catches most drawing mistakes.</p>
+
     <h3>Where does the number go? <span style="font-size:.85rem;color:var(--muted)">(Supplement)</span></h3>
-    <p>From <strong>four carbons up</strong>, the functional group can sit in different places, so we number the carbon it's on — counting from the end that gives the <em>lowest</em> number:</p>
+    <p>Once the chain is long enough for the group to sit in more than one place — <strong>three</strong> carbons for an alcohol, <strong>four</strong> for an alkene — we number the carbon it's on, counting from the end that gives the <em>lowest</em> number:</p>
     <div class="estores">
       <div class="estore"><span class="dot" style="background:#a57ef5"></span>but-1-ene: CH₂=CHCH₂CH₃</div>
       <div class="estore"><span class="dot" style="background:#a57ef5"></span>but-2-ene: CH₃CH=CHCH₃</div>
@@ -511,6 +750,109 @@
       <div class="estore"><span class="dot" style="background:#36c9b0"></span>propan-2-ol: CH₃CH(OH)CH₃</div>
       <div class="estore"><span class="dot" style="background:#36c9b0"></span>butan-1-ol &amp; butan-2-ol</div>
     </div>
+
+    <svg class="diagram" viewBox="0 0 540 350" role="img" aria-label="Displayed formulae showing what the number in a name means: propan-1-ol has its hydroxyl group on the end carbon, propan-2-ol on the middle carbon; but-1-ene has its carbon–carbon double bond between carbons 1 and 2, but-2-ene between carbons 2 and 3.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">THE NUMBER TELLS YOU WHICH CARBON CARRIES THE GROUP</text>
+
+      <!-- ── propan-1-ol ── -->
+      <rect class="dg-panel" x="12" y="28" width="250" height="162" rx="7"/>
+      <text class="dg-lbl" x="137" y="46" text-anchor="middle" style="fill:var(--cyan)">PROPAN-1-OL · CH₃CH₂CH₂OH</text>
+      <text class="dg-atom" x="37"  y="142">H</text>
+      <text class="dg-atom" x="77"  y="142">C</text>
+      <text class="dg-atom" x="117" y="142">C</text>
+      <text class="dg-atom" x="157" y="142">C</text>
+      <text class="dg-atom" x="197" y="142" style="fill:var(--cyan)">O</text>
+      <text class="dg-atom" x="237" y="142" style="fill:var(--cyan)">H</text>
+      <path class="dg-bond" d="M47 142 h20 M87 142 h20 M127 142 h20 M167 142 h20 M207 142 h20"/>
+      <text class="dg-atom" x="77"  y="110">H</text>
+      <text class="dg-atom" x="117" y="110">H</text>
+      <text class="dg-atom" x="157" y="110">H</text>
+      <text class="dg-atom" x="77"  y="174">H</text>
+      <text class="dg-atom" x="117" y="174">H</text>
+      <text class="dg-atom" x="157" y="174">H</text>
+      <path class="dg-bond" d="M77 119 v14 M117 119 v14 M157 119 v14
+                               M77 151 v14 M117 151 v14 M157 151 v14"/>
+      <text class="dg-lbl" x="142" y="130" text-anchor="middle" style="fill:var(--cyan)">1</text>
+      <text class="dg-lbl" x="102" y="130" text-anchor="middle" style="fill:var(--muted)">2</text>
+      <text class="dg-lbl" x="62"  y="130" text-anchor="middle" style="fill:var(--muted)">3</text>
+
+      <!-- ── propan-2-ol ── -->
+      <rect class="dg-panel" x="278" y="28" width="250" height="162" rx="7"/>
+      <text class="dg-lbl" x="403" y="46" text-anchor="middle" style="fill:var(--cyan)">PROPAN-2-OL · CH₃CH(OH)CH₃</text>
+      <text class="dg-atom" x="323" y="142">H</text>
+      <text class="dg-atom" x="363" y="142">C</text>
+      <text class="dg-atom" x="403" y="142">C</text>
+      <text class="dg-atom" x="443" y="142">C</text>
+      <text class="dg-atom" x="483" y="142">H</text>
+      <path class="dg-bond" d="M333 142 h20 M373 142 h20 M413 142 h20 M453 142 h20"/>
+      <!-- the hydroxyl, on the MIDDLE carbon -->
+      <text class="dg-atom" x="403" y="110" style="fill:var(--cyan)">O</text>
+      <text class="dg-atom" x="403" y="78"  style="fill:var(--cyan)">H</text>
+      <path class="dg-bond" style="stroke:var(--cyan)" d="M403 119 v14 M403 87 v14"/>
+      <text class="dg-atom" x="363" y="110">H</text>
+      <text class="dg-atom" x="443" y="110">H</text>
+      <text class="dg-atom" x="363" y="174">H</text>
+      <text class="dg-atom" x="403" y="174">H</text>
+      <text class="dg-atom" x="443" y="174">H</text>
+      <path class="dg-bond" d="M363 119 v14 M443 119 v14
+                               M363 151 v14 M403 151 v14 M443 151 v14"/>
+      <text class="dg-lbl" x="348" y="130" text-anchor="middle" style="fill:var(--muted)">1</text>
+      <text class="dg-lbl" x="388" y="130" text-anchor="middle" style="fill:var(--cyan)">2</text>
+      <text class="dg-lbl" x="428" y="130" text-anchor="middle" style="fill:var(--muted)">3</text>
+
+      <!-- ── but-1-ene ── -->
+      <rect class="dg-panel" x="12" y="200" width="250" height="138" rx="7"/>
+      <text class="dg-lbl" x="137" y="218" text-anchor="middle" style="fill:var(--momentum)">BUT-1-ENE · CH₂=CHCH₂CH₃</text>
+      <text class="dg-atom" x="74"  y="282">C</text>
+      <text class="dg-atom" x="110" y="282">C</text>
+      <text class="dg-atom" x="150" y="282">C</text>
+      <text class="dg-atom" x="190" y="282">C</text>
+      <text class="dg-atom" x="230" y="282">H</text>
+      <!-- C1=C2 double bond -->
+      <path class="dg-bond" style="stroke:var(--momentum)" d="M85 278 h14 M85 286 h14"/>
+      <path class="dg-bond" d="M120 282 h20 M160 282 h20 M200 282 h20"/>
+      <!-- C1 carries two hydrogens on diagonals -->
+      <text class="dg-atom" x="44" y="250">H</text>
+      <text class="dg-atom" x="44" y="314">H</text>
+      <path class="dg-bond" d="M66 274 L52 258 M66 290 L52 306"/>
+      <text class="dg-atom" x="110" y="250">H</text>
+      <text class="dg-atom" x="150" y="250">H</text>
+      <text class="dg-atom" x="190" y="250">H</text>
+      <text class="dg-atom" x="150" y="314">H</text>
+      <text class="dg-atom" x="190" y="314">H</text>
+      <path class="dg-bond" d="M110 259 v14 M150 259 v14 M190 259 v14
+                               M150 291 v14 M190 291 v14"/>
+      <text class="dg-lbl" x="74"  y="270" text-anchor="middle" style="fill:var(--momentum)">1</text>
+      <text class="dg-lbl" x="95"  y="270" text-anchor="middle" style="fill:var(--momentum)">2</text>
+      <text class="dg-lbl" x="135" y="270" text-anchor="middle" style="fill:var(--muted)">3</text>
+      <text class="dg-lbl" x="175" y="270" text-anchor="middle" style="fill:var(--muted)">4</text>
+
+      <!-- ── but-2-ene ── -->
+      <rect class="dg-panel" x="278" y="200" width="250" height="138" rx="7"/>
+      <text class="dg-lbl" x="403" y="218" text-anchor="middle" style="fill:var(--momentum)">BUT-2-ENE · CH₃CH=CHCH₃</text>
+      <text class="dg-atom" x="305" y="282">H</text>
+      <text class="dg-atom" x="345" y="282">C</text>
+      <text class="dg-atom" x="385" y="282">C</text>
+      <text class="dg-atom" x="421" y="282">C</text>
+      <text class="dg-atom" x="461" y="282">C</text>
+      <text class="dg-atom" x="501" y="282">H</text>
+      <path class="dg-bond" d="M315 282 h20 M355 282 h20 M431 282 h20 M471 282 h20"/>
+      <!-- C2=C3 double bond -->
+      <path class="dg-bond" style="stroke:var(--momentum)" d="M396 278 h14 M396 286 h14"/>
+      <text class="dg-atom" x="345" y="250">H</text>
+      <text class="dg-atom" x="385" y="250">H</text>
+      <text class="dg-atom" x="461" y="250">H</text>
+      <text class="dg-atom" x="345" y="314">H</text>
+      <text class="dg-atom" x="421" y="314">H</text>
+      <text class="dg-atom" x="461" y="314">H</text>
+      <path class="dg-bond" d="M345 259 v14 M385 259 v14 M461 259 v14
+                               M345 291 v14 M421 291 v14 M461 291 v14"/>
+      <text class="dg-lbl" x="330" y="270" text-anchor="middle" style="fill:var(--muted)">1</text>
+      <text class="dg-lbl" x="370" y="270" text-anchor="middle" style="fill:var(--momentum)">2</text>
+      <text class="dg-lbl" x="406" y="270" text-anchor="middle" style="fill:var(--momentum)">3</text>
+      <text class="dg-lbl" x="446" y="270" text-anchor="middle" style="fill:var(--muted)">4</text>
+    </svg>
+    <p class="dg-cap">The small grey digits number the carbon chain. Always count from the end that gives the functional group the <strong>lowest</strong> number — so the alcohol on an end carbon is propan-<strong>1</strong>-ol, and the one on the middle carbon is propan-<strong>2</strong>-ol. For an alkene the number is the <strong>first</strong> of the two carbons the C=C joins: but-<strong>1</strong>-ene has it between C1 and C2, but-<strong>2</strong>-ene between C2 and C3. Both butenes are C₄H₈, so they are also structural isomers of each other.</p>
 
     <div class="box exam">
       <div class="box-label">✅ "State the type of compound"</div>
@@ -526,7 +868,7 @@
 
   <!-- ── 04 · FUELS & PETROLEUM ── -->
   <div class="section">
-    <div class="sec-label">04 / 10 · 11.3 Fuels</div>
+    <div class="sec-label">04 / 12 · 11.3 Fuels</div>
     <h2>Petroleum — one mixture, split into useful fractions</h2>
 
     <div class="box intuition">
@@ -534,10 +876,63 @@
       The <strong>fossil fuels</strong> are <strong>coal, natural gas and petroleum</strong> (crude oil). <strong>Natural gas is mostly methane.</strong> <strong>Petroleum is a mixture of hydrocarbons</strong> — compounds of <strong>hydrogen and carbon only</strong> — with chains of many different lengths. Because a mixture of chain lengths is useless as-is, we split it by boiling point using <strong>fractional distillation</strong>: short chains boil off easily and rise high; long chains barely evaporate and stay low.
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 352" role="img" aria-label="A labelled fractionating column. Heated crude oil enters near the bottom at about 350 degrees Celsius. Eight fractions are drawn as bands, from refinery gas at the cool top through gasoline, naphtha, kerosene, diesel oil, fuel oil and lubricating oil, down to bitumen at the hot bottom, each with an outlet arrow to its named use.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">FRACTIONAL DISTILLATION OF PETROLEUM</text>
+
+      <!-- the column -->
+      <rect x="96" y="40" width="116" height="248" rx="4" class="dg-glass" style="stroke:var(--energy);stroke-width:1.6"/>
+      <path class="dg-thin" d="M96 71 h116 M96 102 h116 M96 133 h116 M96 164 h116 M96 195 h116 M96 226 h116 M96 257 h116"/>
+
+      <!-- temperatures + crude oil inlet -->
+      <text class="dg-lbl" x="90" y="52"  text-anchor="end" style="fill:var(--motion)">≈ 25 °C</text>
+      <text class="dg-lbl" x="90" y="286" text-anchor="end" style="fill:var(--force)">≈ 350 °C</text>
+      <text class="dg-lbl" x="26" y="258" style="fill:var(--energy)">CRUDE OIL</text>
+      <path class="dg-ln" d="M26 272 h60" style="stroke:var(--energy)"/>
+      <path d="M86 268 l9 4 l-9 4 z" style="fill:var(--energy)"/>
+
+      <!-- band 1 · refinery gas -->
+      <text class="dg-lblb" x="154" y="59" text-anchor="middle">refinery gas</text>
+      <path class="dg-ln" d="M212 55 h24"/><path d="M236 51 l8 4 l-8 4 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="252" y="59">gas for heating and cooking</text>
+      <!-- band 2 · gasoline -->
+      <text class="dg-lblb" x="154" y="90" text-anchor="middle">gasoline / petrol</text>
+      <path class="dg-ln" d="M212 86 h24"/><path d="M236 82 l8 4 l-8 4 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="252" y="90">fuel for cars</text>
+      <!-- band 3 · naphtha -->
+      <text class="dg-lblb" x="154" y="121" text-anchor="middle">naphtha</text>
+      <path class="dg-ln" d="M212 117 h24"/><path d="M236 113 l8 4 l-8 4 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="252" y="121">chemical feedstock</text>
+      <!-- band 4 · kerosene -->
+      <text class="dg-lblb" x="154" y="152" text-anchor="middle">kerosene</text>
+      <path class="dg-ln" d="M212 148 h24"/><path d="M236 144 l8 4 l-8 4 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="252" y="152">jet fuel</text>
+      <!-- band 5 · diesel -->
+      <text class="dg-lblb" x="154" y="183" text-anchor="middle">diesel oil</text>
+      <path class="dg-ln" d="M212 179 h24"/><path d="M236 175 l8 4 l-8 4 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="252" y="183">fuel for diesel engines</text>
+      <!-- band 6 · fuel oil -->
+      <text class="dg-lblb" x="154" y="214" text-anchor="middle">fuel oil</text>
+      <path class="dg-ln" d="M212 210 h24"/><path d="M236 206 l8 4 l-8 4 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="252" y="214">fuel for ships and home heating</text>
+      <!-- band 7 · lubricating oil -->
+      <text class="dg-lblb" x="154" y="245" text-anchor="middle">lubricating oil</text>
+      <path class="dg-ln" d="M212 241 h24"/><path d="M236 237 l8 4 l-8 4 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="252" y="245">lubricants, waxes and polishes</text>
+      <!-- band 8 · bitumen -->
+      <text class="dg-lblb" x="154" y="276" text-anchor="middle">bitumen</text>
+      <path class="dg-ln" d="M212 272 h24"/><path d="M236 268 l8 4 l-8 4 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="252" y="276">making roads</text>
+
+      <!-- trend legend -->
+      <text class="dg-lbl" x="270" y="316" text-anchor="middle" style="fill:var(--bright)">GOING UP THE COLUMN (bottom → top):</text>
+      <text class="dg-lbl" x="270" y="334" text-anchor="middle">chain length ▼ · boiling point ▼ · viscosity ▼ · volatility ▲</text>
+    </svg>
+    <p class="dg-cap">One separation, driven entirely by boiling point. The column is <strong>hottest at the bottom</strong>, so long chains — which have the highest boiling points — condense almost at once and are tapped off low down; short chains stay as vapour and rise until it is cool enough for them to condense. Learn the four trends together: only <strong>volatility</strong> goes the opposite way to the other three.</p>
+
     <h3>The fractionating column — tap a fraction</h3>
     <p>The column is hot at the bottom, cool at the top. Vapours rise until they cool enough to condense, so each <strong>fraction</strong> (a group of similar chain lengths) collects at its own level. Tap a fraction to see its <strong>use</strong> and where it sits on every trend:</p>
 
-    <div class="frac-wrap">
+    <div class="frac-wrap interactive">
       <div>
         <div class="frac-top">▲ cooler · short chains</div>
         <div class="frac-col" id="fracCol"></div>
@@ -576,7 +971,7 @@
 
   <!-- ── 05 · ALKANES ── -->
   <div class="section">
-    <div class="sec-label">05 / 10 · 11.4 Alkanes</div>
+    <div class="sec-label">05 / 12 · 11.4 Alkanes</div>
     <h2>Alkanes — the unreactive workhorses</h2>
 
     <div class="box intuition">
@@ -597,6 +992,53 @@
     <div class="rx-eq">CH₄ + Cl₂ → CH₃Cl + HCl</div>
     <p class="rx-cond">UV light · methane → chloromethane + hydrogen chloride</p>
 
+    <svg class="diagram" viewBox="0 0 540 232" role="img" aria-label="Substitution of methane by chlorine in displayed formulae. Methane plus a chlorine molecule, in ultraviolet light, give chloromethane plus hydrogen chloride. One hydrogen of methane, ringed, is replaced by one chlorine atom.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">SUBSTITUTION — ONE H SWAPPED FOR ONE Cl</text>
+
+      <!-- methane -->
+      <text class="dg-atom" x="75"  y="120">C</text>
+      <text class="dg-atom" x="35"  y="120">H</text>
+      <text class="dg-atom" x="115" y="120" style="fill:var(--rose)">H</text>
+      <text class="dg-atom" x="75"  y="84">H</text>
+      <text class="dg-atom" x="75"  y="156">H</text>
+      <path class="dg-bond" d="M45 120 h20 M85 120 h20 M75 94 v16 M75 130 v16"/>
+      <circle cx="115" cy="120" r="14" fill="none" style="stroke:var(--rose)" stroke-width="1.2" stroke-dasharray="3 2.5"/>
+      <text class="dg-lbl" x="115" y="180" text-anchor="middle" style="fill:var(--rose)">this H leaves</text>
+
+      <text class="dg-atom" x="140" y="120" style="fill:var(--muted)">+</text>
+
+      <!-- chlorine molecule -->
+      <text class="dg-atom" x="178" y="120" style="fill:var(--power)">Cl</text>
+      <text class="dg-atom" x="222" y="120" style="fill:var(--power)">Cl</text>
+      <path class="dg-bond" style="stroke:var(--power)" d="M191 120 h18"/>
+
+      <!-- arrow + conditions -->
+      <text class="dg-lbl" x="265" y="104" text-anchor="middle" style="fill:var(--energy)">UV light</text>
+      <path class="dg-ln" d="M244 120 h34"/>
+      <path d="M278 115 l9 5 l-9 5 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="265" y="142" text-anchor="middle">substitution</text>
+
+      <!-- chloromethane -->
+      <text class="dg-atom" x="350" y="120">C</text>
+      <text class="dg-atom" x="310" y="120">H</text>
+      <text class="dg-atom" x="394" y="120" style="fill:var(--power)">Cl</text>
+      <text class="dg-atom" x="350" y="84">H</text>
+      <text class="dg-atom" x="350" y="156">H</text>
+      <path class="dg-bond" d="M320 120 h20 M360 120 h21 M350 94 v16 M350 130 v16"/>
+      <circle cx="394" cy="120" r="15" fill="none" style="stroke:var(--power)" stroke-width="1.2" stroke-dasharray="3 2.5"/>
+      <text class="dg-lbl" x="394" y="180" text-anchor="middle" style="fill:var(--power)">Cl takes its place</text>
+
+      <text class="dg-atom" x="440" y="120" style="fill:var(--muted)">+</text>
+
+      <!-- hydrogen chloride -->
+      <text class="dg-atom" x="466" y="120">H</text>
+      <text class="dg-atom" x="504" y="120" style="fill:var(--power)">Cl</text>
+      <path class="dg-bond" d="M476 120 h15"/>
+
+      <text class="dg-lbl" x="270" y="212" text-anchor="middle">monosubstitution: exactly ONE hydrogen is replaced — and HCl is always the second product</text>
+    </svg>
+    <p class="dg-cap">The giveaway that this is <strong>substitution</strong>, not addition, is the <strong>second product</strong>: the displaced hydrogen leaves with a chlorine as HCl. Because methane has four identical hydrogens, any one of them can be the one replaced — the product is the same either way. Without UV light there is no reaction at all.</p>
+
     <div class="box pitfall">
       <div class="box-label">⚠️ No UV, no reaction — and it's substitution, not addition</div>
       Methane and chlorine can sit together in the dark forever. The reaction only starts with <strong>UV light</strong> (that's the "photochemical" part). And because a hydrogen is <em>swapped out</em> for a chlorine (releasing HCl), it is <strong>substitution</strong> — don't confuse it with the <em>addition</em> reactions of alkenes.
@@ -606,7 +1048,7 @@
 
   <!-- ── 06 · ALKENES ── -->
   <div class="section">
-    <div class="sec-label">06 / 10 · 11.5 Alkenes</div>
+    <div class="sec-label">06 / 12 · 11.5 Alkenes</div>
     <h2>Alkenes — the reactive ones, thanks to C=C</h2>
 
     <div class="box intuition">
@@ -633,6 +1075,49 @@
       Shake the hydrocarbon with <strong>aqueous bromine (bromine water)</strong>. An <strong>alkene (unsaturated)</strong> decolourises it: <strong>orange → colourless</strong>. An <strong>alkane (saturated)</strong> leaves it <strong>orange</strong> (no reaction). This is a guaranteed exam favourite.
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 252" role="img" aria-label="The bromine water test. Two pairs of test tubes. With a saturated alkane the orange bromine water stays orange, so there is no change. With an unsaturated alkene the orange bromine water turns colourless, so it is decolourised.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">THE BROMINE WATER TEST FOR UNSATURATION</text>
+
+      <!-- ── panel A · alkane ── -->
+      <rect class="dg-panel" x="12" y="30" width="250" height="212" rx="7"/>
+      <text class="dg-lbl" x="137" y="50" text-anchor="middle" style="fill:var(--motion)">ALKANE — SATURATED</text>
+      <!-- tube 1 -->
+      <path d="M45 118 V169 A17 17 0 0 0 79 169 V118 Z" style="fill:var(--poly);opacity:.85"/>
+      <path class="dg-glass" d="M45 78 V169 A17 17 0 0 0 79 169 V78"/>
+      <text class="dg-lbl" x="62" y="70" text-anchor="middle">+ alkane</text>
+      <!-- shake arrow -->
+      <text class="dg-lbl" x="137" y="128" text-anchor="middle">shake</text>
+      <path class="dg-ln" d="M108 142 h44"/>
+      <path d="M152 137 l9 5 l-9 5 z" style="fill:var(--muted)"/>
+      <!-- tube 2 -->
+      <path d="M195 118 V169 A17 17 0 0 0 229 169 V118 Z" style="fill:var(--poly);opacity:.85"/>
+      <path class="dg-glass" d="M195 78 V169 A17 17 0 0 0 229 169 V78"/>
+      <text class="dg-lbl" x="212" y="70" text-anchor="middle">no reaction</text>
+      <text class="dg-lblb" x="137" y="212" text-anchor="middle" style="fill:var(--poly)">stays ORANGE</text>
+      <text class="dg-lbl"  x="137" y="228" text-anchor="middle">no change</text>
+
+      <!-- ── panel B · alkene ── -->
+      <rect class="dg-panel" x="278" y="30" width="250" height="212" rx="7"/>
+      <text class="dg-lbl" x="403" y="50" text-anchor="middle" style="fill:var(--momentum)">ALKENE — UNSATURATED</text>
+      <!-- tube 1 -->
+      <path d="M311 118 V169 A17 17 0 0 0 345 169 V118 Z" style="fill:var(--poly);opacity:.85"/>
+      <path class="dg-glass" d="M311 78 V169 A17 17 0 0 0 345 169 V78"/>
+      <text class="dg-lbl" x="328" y="70" text-anchor="middle">+ alkene</text>
+      <!-- shake arrow -->
+      <text class="dg-lbl" x="403" y="128" text-anchor="middle">shake</text>
+      <path class="dg-ln" d="M374 142 h44"/>
+      <path d="M418 137 l9 5 l-9 5 z" style="fill:var(--muted)"/>
+      <!-- tube 2 · decolourised (still full of liquid — just no colour, so it needs a
+           visible wash + a meniscus line, or it reads as an EMPTY tube) -->
+      <path d="M461 118 V169 A17 17 0 0 0 495 169 V118 Z" style="fill:var(--text);opacity:.12"/>
+      <path class="dg-ln" d="M461 118 h34"/>
+      <path class="dg-glass" d="M461 78 V169 A17 17 0 0 0 495 169 V78"/>
+      <text class="dg-lbl" x="478" y="70" text-anchor="middle">addition</text>
+      <text class="dg-lblb" x="403" y="212" text-anchor="middle" style="fill:var(--momentum)">turns COLOURLESS</text>
+      <text class="dg-lbl"  x="403" y="228" text-anchor="middle">decolourised</text>
+    </svg>
+    <p class="dg-cap">Say <strong>"colourless"</strong>, never "clear" or "white" — a mark scheme will not accept them. The alkene decolourises the bromine water because its C=C <strong>adds</strong> the bromine across the double bond; the alkane has no double bond to open, so nothing happens and the orange colour remains.</p>
+
     <h3>Addition reactions <span style="font-size:.85rem;color:var(--muted)">(Supplement)</span></h3>
     <p>In an <strong>addition</strong> reaction the C=C opens and <strong>only one product</strong> is formed:</p>
     <div class="grid3">
@@ -650,6 +1135,96 @@
       </div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 360" role="img" aria-label="The three addition reactions of ethene shown in displayed formulae. Ethene plus bromine gives 1,2-dibromoethane; ethene plus hydrogen over a nickel catalyst gives ethane; ethene plus steam over an acid catalyst gives ethanol. In each case the carbon–carbon double bond opens and becomes a single bond.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">ADDITION — THE C=C OPENS AND TAKES THE WHOLE REACTANT ON BOARD</text>
+
+      <!-- ══ ROW 1 · + bromine ══ -->
+      <text class="dg-atom" x="70"  y="90">C</text>
+      <text class="dg-atom" x="106" y="90">C</text>
+      <text class="dg-atom" x="40"  y="66">H</text>
+      <text class="dg-atom" x="40"  y="114">H</text>
+      <text class="dg-atom" x="136" y="66">H</text>
+      <text class="dg-atom" x="136" y="114">H</text>
+      <path class="dg-bond" d="M62 84 L48 72 M62 96 L48 108 M114 84 L128 72 M114 96 L128 108"/>
+      <path class="dg-bond" style="stroke:var(--momentum)" d="M81 86 h14 M81 94 h14"/>
+      <text class="dg-atom" x="160" y="90" style="fill:var(--muted)">+</text>
+      <text class="dg-atom" x="182" y="90" style="fill:var(--poly)">Br</text>
+      <text class="dg-atom" x="224" y="90" style="fill:var(--poly)">Br</text>
+      <path class="dg-bond" style="stroke:var(--poly)" d="M195 90 h16"/>
+      <text class="dg-lbl" x="281" y="76" text-anchor="middle">room temp</text>
+      <path class="dg-ln" d="M262 90 h34"/><path d="M296 85 l9 5 l-9 5 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="391" y="44" text-anchor="middle" style="fill:var(--poly)">1,2-dibromoethane</text>
+      <text class="dg-atom" x="330" y="90" style="fill:var(--poly)">Br</text>
+      <text class="dg-atom" x="370" y="90">C</text>
+      <text class="dg-atom" x="410" y="90">C</text>
+      <text class="dg-atom" x="452" y="90" style="fill:var(--poly)">Br</text>
+      <text class="dg-atom" x="370" y="56">H</text>
+      <text class="dg-atom" x="370" y="124">H</text>
+      <text class="dg-atom" x="410" y="56">H</text>
+      <text class="dg-atom" x="410" y="124">H</text>
+      <path class="dg-bond" d="M343 90 h17 M380 90 h20 M420 90 h19
+                               M370 66 v14 M370 100 v14 M410 66 v14 M410 100 v14"/>
+
+      <!-- ══ ROW 2 · + hydrogen ══ -->
+      <text class="dg-atom" x="70"  y="190">C</text>
+      <text class="dg-atom" x="106" y="190">C</text>
+      <text class="dg-atom" x="40"  y="166">H</text>
+      <text class="dg-atom" x="40"  y="214">H</text>
+      <text class="dg-atom" x="136" y="166">H</text>
+      <text class="dg-atom" x="136" y="214">H</text>
+      <path class="dg-bond" d="M62 184 L48 172 M62 196 L48 208 M114 184 L128 172 M114 196 L128 208"/>
+      <path class="dg-bond" style="stroke:var(--momentum)" d="M81 186 h14 M81 194 h14"/>
+      <text class="dg-atom" x="160" y="190" style="fill:var(--muted)">+</text>
+      <text class="dg-atom" x="186" y="190">H</text>
+      <text class="dg-atom" x="222" y="190">H</text>
+      <path class="dg-bond" d="M196 190 h16"/>
+      <text class="dg-lbl" x="281" y="176" text-anchor="middle" style="fill:var(--energy)">Ni catalyst</text>
+      <path class="dg-ln" d="M262 190 h34"/><path d="M296 185 l9 5 l-9 5 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="380" y="144" text-anchor="middle" style="fill:var(--motion)">ethane</text>
+      <text class="dg-atom" x="320" y="190">H</text>
+      <text class="dg-atom" x="360" y="190">C</text>
+      <text class="dg-atom" x="400" y="190">C</text>
+      <text class="dg-atom" x="440" y="190">H</text>
+      <text class="dg-atom" x="360" y="156">H</text>
+      <text class="dg-atom" x="360" y="224">H</text>
+      <text class="dg-atom" x="400" y="156">H</text>
+      <text class="dg-atom" x="400" y="224">H</text>
+      <path class="dg-bond" d="M330 190 h20 M370 190 h20 M410 190 h20
+                               M360 166 v14 M360 200 v14 M400 166 v14 M400 200 v14"/>
+
+      <!-- ══ ROW 3 · + steam ══ -->
+      <text class="dg-atom" x="70"  y="290">C</text>
+      <text class="dg-atom" x="106" y="290">C</text>
+      <text class="dg-atom" x="40"  y="266">H</text>
+      <text class="dg-atom" x="40"  y="314">H</text>
+      <text class="dg-atom" x="136" y="266">H</text>
+      <text class="dg-atom" x="136" y="314">H</text>
+      <path class="dg-bond" d="M62 284 L48 272 M62 296 L48 308 M114 284 L128 272 M114 296 L128 308"/>
+      <path class="dg-bond" style="stroke:var(--momentum)" d="M81 286 h14 M81 294 h14"/>
+      <text class="dg-atom" x="160" y="290" style="fill:var(--muted)">+</text>
+      <text class="dg-atom" x="182" y="290">H</text>
+      <text class="dg-atom" x="212" y="290" style="fill:var(--cyan)">O</text>
+      <text class="dg-atom" x="242" y="290">H</text>
+      <path class="dg-bond" d="M191 290 h12 M221 290 h12"/>
+      <text class="dg-lbl" x="281" y="276" text-anchor="middle" style="fill:var(--energy)">acid catalyst</text>
+      <path class="dg-ln" d="M262 290 h34"/><path d="M296 285 l9 5 l-9 5 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="396" y="244" text-anchor="middle" style="fill:var(--cyan)">ethanol</text>
+      <text class="dg-atom" x="316" y="290">H</text>
+      <text class="dg-atom" x="356" y="290">C</text>
+      <text class="dg-atom" x="396" y="290">C</text>
+      <text class="dg-atom" x="436" y="290" style="fill:var(--cyan)">O</text>
+      <text class="dg-atom" x="476" y="290" style="fill:var(--cyan)">H</text>
+      <text class="dg-atom" x="356" y="256">H</text>
+      <text class="dg-atom" x="356" y="324">H</text>
+      <text class="dg-atom" x="396" y="256">H</text>
+      <text class="dg-atom" x="396" y="324">H</text>
+      <path class="dg-bond" d="M326 290 h20 M366 290 h20 M406 290 h20 M446 290 h20
+                               M356 266 v14 M356 300 v14 M396 266 v14 M396 300 v14"/>
+
+      <text class="dg-lbl" x="270" y="348" text-anchor="middle">in every case: ONE product, and the C=C has become a single C–C</text>
+    </svg>
+    <p class="dg-cap">Read each row left to right and watch the <strong>violet double bond disappear</strong> — the two carbons each gain one new atom, and the C=C becomes a plain C–C. That is what makes these <strong>addition</strong> reactions: nothing is thrown off, so there is exactly <strong>one</strong> product. The third row is also how ethanol is made industrially from ethene.</p>
+
     <div class="box pitfall">
       <div class="box-label">⚠️ Addition = ONE product; substitution = TWO</div>
       Because the double bond simply opens and takes the whole reactant on board, addition makes a <strong>single product</strong> with nothing thrown off. Contrast the alkane's substitution, which always spits out a second molecule (like HCl). "One product ⇒ addition ⇒ alkene."
@@ -659,7 +1234,7 @@
 
   <!-- ── 07 · ALCOHOLS ── -->
   <div class="section">
-    <div class="sec-label">07 / 10 · 11.6 Alcohols</div>
+    <div class="sec-label">07 / 12 · 11.6 Alcohols</div>
     <h2>Ethanol — two ways to make it, two ways to use it</h2>
 
     <div class="box intuition">
@@ -701,7 +1276,7 @@
 
   <!-- ── 08 · CARBOXYLIC ACIDS ── -->
   <div class="section">
-    <div class="sec-label">08 / 10 · 11.7 Carboxylic acids</div>
+    <div class="sec-label">08 / 12 · 11.7 Carboxylic acids</div>
     <h2>Ethanoic acid — a real acid that makes salts called -oates</h2>
 
     <div class="box intuition">
@@ -711,7 +1286,7 @@
 
     <table>
       <tr><th>Reacts with</th><th>Products</th><th>Equation</th></tr>
-      <tr><td><strong>Metal</strong> (e.g. magnesium)</td><td>salt + <strong>hydrogen</strong></td><td class="hs-mol">2CH₃COOH + Mg → (CH₃COO)₂Mg + H₂</td></tr>
+      <tr><td><strong>Metal</strong> (e.g. magnesium)</td><td>salt + <strong>hydrogen</strong></td><td class="hs-mol">2CH₃COOH + Mg → Mg(CH₃COO)₂ + H₂</td></tr>
       <tr><td><strong>Base</strong> (e.g. NaOH)</td><td>salt + <strong>water</strong></td><td class="hs-mol">CH₃COOH + NaOH → CH₃COONa + H₂O</td></tr>
       <tr><td><strong>Carbonate</strong> (e.g. Na₂CO₃)</td><td>salt + water + <strong>CO₂</strong></td><td class="hs-mol">2CH₃COOH + Na₂CO₃ → 2CH₃COONa + H₂O + CO₂</td></tr>
     </table>
@@ -736,6 +1311,86 @@
     <div class="rx-eq">CH₃COOH + C₂H₅OH → CH₃COOC₂H₅ + H₂O</div>
     <p class="rx-cond">ethanoic acid + ethanol → ethyl ethanoate + water</p>
 
+    <svg class="diagram" viewBox="0 0 540 352" role="img" aria-label="Esterification in displayed formulae. Ethanoic acid and ethanol react with an acid catalyst. The hydroxyl group of the acid and the hydrogen of the alcohol's hydroxyl group, both ringed with dashes, leave together as water, and the remaining fragments join through an ester linkage to give ethyl ethanoate.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">ESTERIFICATION — ACID + ALCOHOL → ESTER + WATER</text>
+
+      <!-- ══ ethanoic acid ══ -->
+      <text class="dg-lbl" x="112" y="44" text-anchor="middle" style="fill:var(--force)">ETHANOIC ACID</text>
+      <text class="dg-atom" x="40"  y="110">H</text>
+      <text class="dg-atom" x="76"  y="110">C</text>
+      <text class="dg-atom" x="112" y="110">C</text>
+      <text class="dg-atom" x="148" y="110" style="fill:var(--rose)">O</text>
+      <text class="dg-atom" x="184" y="110" style="fill:var(--rose)">H</text>
+      <text class="dg-atom" x="112" y="74" style="fill:var(--force)">O</text>
+      <text class="dg-atom" x="76"  y="74">H</text>
+      <text class="dg-atom" x="76"  y="146">H</text>
+      <path class="dg-bond" d="M50 110 h16 M86 110 h16 M122 110 h16 M158 110 h16
+                               M76 84 v16 M76 120 v16"/>
+      <path class="dg-bond" style="stroke:var(--force)" d="M108 84 v16 M116 84 v16"/>
+      <rect x="134" y="96" width="62" height="28" rx="12" fill="none"
+            style="stroke:var(--rose)" stroke-width="1.2" stroke-dasharray="3 2.5"/>
+
+      <text class="dg-atom" x="214" y="110" style="fill:var(--muted)">+</text>
+
+      <!-- ══ ethanol ══ -->
+      <text class="dg-lbl" x="316" y="44" text-anchor="middle" style="fill:var(--cyan)">ETHANOL</text>
+      <text class="dg-atom" x="244" y="110">H</text>
+      <text class="dg-atom" x="280" y="110">C</text>
+      <text class="dg-atom" x="316" y="110">C</text>
+      <text class="dg-atom" x="352" y="110" style="fill:var(--cyan)">O</text>
+      <text class="dg-atom" x="388" y="110" style="fill:var(--rose)">H</text>
+      <text class="dg-atom" x="280" y="74">H</text>
+      <text class="dg-atom" x="280" y="146">H</text>
+      <text class="dg-atom" x="316" y="74">H</text>
+      <text class="dg-atom" x="316" y="146">H</text>
+      <path class="dg-bond" d="M254 110 h16 M290 110 h16 M326 110 h16 M362 110 h16
+                               M280 84 v16 M280 120 v16 M316 84 v16 M316 120 v16"/>
+      <circle cx="388" cy="110" r="13" fill="none"
+              style="stroke:var(--rose)" stroke-width="1.2" stroke-dasharray="3 2.5"/>
+      <text class="dg-lbl" x="446" y="106" style="fill:var(--rose)">the dashed</text>
+      <text class="dg-lbl" x="446" y="119" style="fill:var(--rose)">bits make</text>
+      <text class="dg-lbl" x="446" y="132" style="fill:var(--rose)">the water</text>
+
+      <!-- ══ arrow ══ -->
+      <path class="dg-ln" d="M270 164 v28"/>
+      <path d="M265 192 l5 9 l5 -9 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="284" y="174" style="fill:var(--energy)">acid catalyst,</text>
+      <text class="dg-lbl" x="284" y="190" style="fill:var(--energy)">warm</text>
+
+      <!-- ══ ethyl ethanoate ══ -->
+      <text class="dg-lbl" x="168" y="214" text-anchor="middle" style="fill:var(--force)">ETHYL ETHANOATE</text>
+      <text class="dg-atom" x="60"  y="276">H</text>
+      <text class="dg-atom" x="96"  y="276">C</text>
+      <text class="dg-atom" x="132" y="276">C</text>
+      <text class="dg-atom" x="168" y="276" style="fill:var(--force)">O</text>
+      <text class="dg-atom" x="204" y="276">C</text>
+      <text class="dg-atom" x="240" y="276">C</text>
+      <text class="dg-atom" x="276" y="276">H</text>
+      <text class="dg-atom" x="132" y="240" style="fill:var(--force)">O</text>
+      <text class="dg-atom" x="96"  y="240">H</text>
+      <text class="dg-atom" x="96"  y="312">H</text>
+      <text class="dg-atom" x="204" y="240">H</text>
+      <text class="dg-atom" x="204" y="312">H</text>
+      <text class="dg-atom" x="240" y="240">H</text>
+      <text class="dg-atom" x="240" y="312">H</text>
+      <path class="dg-bond" d="M70 276 h16 M106 276 h16 M142 276 h16 M178 276 h16 M214 276 h16 M250 276 h16
+                               M96 250 v16 M96 286 v16 M204 250 v16 M204 286 v16 M240 250 v16 M240 286 v16"/>
+      <path class="dg-bond" style="stroke:var(--force)" d="M128 250 v16 M136 250 v16"/>
+      <rect x="114" y="228" width="72" height="66" rx="10" fill="none"
+            style="stroke:var(--force)" stroke-width="1.2" stroke-dasharray="3 2.5"/>
+      <text class="dg-lbl" x="150" y="336" text-anchor="middle" style="fill:var(--force)">ester linkage –COO–</text>
+
+      <text class="dg-atom" x="318" y="276" style="fill:var(--muted)">+</text>
+
+      <!-- ══ water ══ -->
+      <text class="dg-lbl" x="382" y="214" text-anchor="middle" style="fill:var(--rose)">WATER</text>
+      <text class="dg-atom" x="350" y="276">H</text>
+      <text class="dg-atom" x="382" y="276" style="fill:var(--rose)">O</text>
+      <text class="dg-atom" x="414" y="276">H</text>
+      <path class="dg-bond" d="M360 276 h12 M392 276 h12"/>
+    </svg>
+    <p class="dg-cap">Follow the dashed pieces: the acid gives up its whole <strong>–OH</strong> and the alcohol gives up only the <strong>H</strong> of its –OH, so together they make <strong>H₂O</strong>. What is left of each molecule joins through the <strong>ester linkage –COO–</strong>. Naming follows the same split — the <em>ethyl</em> comes from the alcohol, the <em>ethanoate</em> from the acid.</p>
+
     <div class="box pitfall">
       <div class="box-label">⚠️ Name the ester: alcohol part first, acid part second</div>
       An ester from <strong>ethanol</strong> + <strong>ethanoic acid</strong> is <strong>ethyl ethanoate</strong> — the "<strong>ethyl</strong>" comes from the alcohol, the "<strong>ethanoate</strong>" from the acid. The alkyl group from the alcohol is written first.
@@ -745,7 +1400,7 @@
 
   <!-- ── 09 · POLYMERS ── -->
   <div class="section">
-    <div class="sec-label">09 / 10 · 11.8 Polymers</div>
+    <div class="sec-label">09 / 12 · 11.8 Polymers</div>
     <h2>Polymers — small molecules joined into giants</h2>
 
     <div class="box intuition">
@@ -757,6 +1412,59 @@
     <p>Many <strong>ethene</strong> monomers open their C=C bonds and add together to make <strong>poly(ethene)</strong> — no other product is formed:</p>
     <div class="rx-eq">n CH₂=CH₂ → –(CH₂–CH₂)–ₙ</div>
     <p class="rx-cond">the bit in brackets is the repeat unit</p>
+
+    <svg class="diagram" viewBox="0 0 540 332" role="img" aria-label="Addition polymerisation of ethene. Three ethene monomers, each with a carbon–carbon double bond, join into a poly(ethene) chain in which every carbon–carbon bond is single. The repeat unit, two CH2 groups, is shown inside brackets with a subscript n.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">ADDITION POLYMERISATION — MANY ETHENE → POLY(ETHENE)</text>
+      <text class="dg-lbl" x="270" y="42" text-anchor="middle" style="fill:var(--momentum)">n ethene monomers — every one has a C=C</text>
+
+      <!-- three ethene monomers -->
+      <text class="dg-atom" x="70"  y="100">C</text><text class="dg-atom" x="106" y="100">C</text>
+      <text class="dg-atom" x="40"  y="76">H</text><text class="dg-atom" x="40"  y="124">H</text>
+      <text class="dg-atom" x="136" y="76">H</text><text class="dg-atom" x="136" y="124">H</text>
+      <path class="dg-bond" d="M62 94 L48 82 M62 106 L48 118 M114 94 L128 82 M114 106 L128 118"/>
+      <path class="dg-bond" style="stroke:var(--momentum)" d="M81 96 h14 M81 104 h14"/>
+
+      <text class="dg-atom" x="250" y="100">C</text><text class="dg-atom" x="286" y="100">C</text>
+      <text class="dg-atom" x="220" y="76">H</text><text class="dg-atom" x="220" y="124">H</text>
+      <text class="dg-atom" x="316" y="76">H</text><text class="dg-atom" x="316" y="124">H</text>
+      <path class="dg-bond" d="M242 94 L228 82 M242 106 L228 118 M294 94 L308 82 M294 106 L308 118"/>
+      <path class="dg-bond" style="stroke:var(--momentum)" d="M261 96 h14 M261 104 h14"/>
+
+      <text class="dg-atom" x="430" y="100">C</text><text class="dg-atom" x="466" y="100">C</text>
+      <text class="dg-atom" x="400" y="76">H</text><text class="dg-atom" x="400" y="124">H</text>
+      <text class="dg-atom" x="496" y="76">H</text><text class="dg-atom" x="496" y="124">H</text>
+      <path class="dg-bond" d="M422 94 L408 82 M422 106 L408 118 M474 94 L488 82 M474 106 L488 118"/>
+      <path class="dg-bond" style="stroke:var(--momentum)" d="M441 96 h14 M441 104 h14"/>
+
+      <!-- arrow -->
+      <path class="dg-ln" d="M270 148 v28"/>
+      <path d="M265 176 l5 9 l5 -9 z" style="fill:var(--muted)"/>
+      <text class="dg-lbl" x="284" y="166" style="fill:var(--energy)">polymerisation</text>
+
+      <!-- the poly(ethene) chain -->
+      <text class="dg-lbl" x="270" y="196" text-anchor="middle" style="fill:var(--poly)">poly(ethene) — every C–C bond is now SINGLE</text>
+      <text class="dg-atom" x="130" y="258">C</text>
+      <text class="dg-atom" x="166" y="258">C</text>
+      <text class="dg-atom" x="202" y="258">C</text>
+      <text class="dg-atom" x="238" y="258">C</text>
+      <text class="dg-atom" x="274" y="258">C</text>
+      <text class="dg-atom" x="310" y="258">C</text>
+      <path class="dg-bond" d="M140 258 h16 M176 258 h16 M212 258 h16 M248 258 h16 M284 258 h16"/>
+      <text class="dg-atom" x="130" y="224">H</text><text class="dg-atom" x="130" y="292">H</text>
+      <text class="dg-atom" x="166" y="224">H</text><text class="dg-atom" x="166" y="292">H</text>
+      <text class="dg-atom" x="202" y="224">H</text><text class="dg-atom" x="202" y="292">H</text>
+      <text class="dg-atom" x="238" y="224">H</text><text class="dg-atom" x="238" y="292">H</text>
+      <text class="dg-atom" x="274" y="224">H</text><text class="dg-atom" x="274" y="292">H</text>
+      <text class="dg-atom" x="310" y="224">H</text><text class="dg-atom" x="310" y="292">H</text>
+      <path class="dg-bond" d="M130 234 v14 M166 234 v14 M202 234 v14 M238 234 v14 M274 234 v14 M310 234 v14
+                               M130 268 v14 M166 268 v14 M202 268 v14 M238 268 v14 M274 268 v14 M310 268 v14"/>
+      <path class="dg-dash" d="M96 258 h24 M320 258 h24"/>
+      <!-- repeat-unit brackets -->
+      <path class="dg-ln" style="stroke:var(--poly);stroke-width:1.6" d="M190 214 h-8 v88 h8 M250 214 h8 v88 h-8"/>
+      <text class="dg-lbl" x="266" y="308" style="fill:var(--poly)">n</text>
+      <text class="dg-lbl" x="404" y="262" style="fill:var(--poly)">the repeat unit</text>
+    </svg>
+    <p class="dg-cap">Nothing is lost and nothing else is made — every atom of every monomer ends up in the chain, which is why <strong>addition</strong> polymerisation has only <strong>one</strong> product. The <strong>repeat unit</strong> is what sits inside the brackets, drawn with a bond stub poking out of each side to show the chain continues. Reverse the arrow to go from repeat unit back to monomer: close the brackets' open bonds into a C=C.</p>
 
     <div class="box exam">
       <div class="box-label">✅ Deduce the repeat unit (Supplement)</div>
@@ -776,6 +1484,55 @@
       </div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 300" role="img" aria-label="The structures of nylon and PET. Nylon is a polyamide: repeating carbonyl groups joined to nitrogen-hydrogen groups through amide linkages, with blocks standing for the rest of each monomer. PET is a polyester: the same repeating carbonyl groups joined to oxygen atoms through ester linkages.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">THE TWO CONDENSATION POLYMERS YOU MUST BE ABLE TO DRAW</text>
+
+      <!-- ══════ NYLON ══════ -->
+      <text class="dg-lbl" x="177" y="44" text-anchor="middle" style="fill:var(--poly)">NYLON · A POLYAMIDE</text>
+      <path class="dg-dash" d="M20 110 h24"/>
+      <text class="dg-atom" x="56" y="110">C</text>
+      <text class="dg-atom" x="56" y="74" style="fill:var(--force)">O</text>
+      <path class="dg-bond" style="stroke:var(--force)" d="M52 84 v16 M60 84 v16"/>
+      <rect class="dg-panel" x="82" y="96" width="50" height="28" rx="5"/>
+      <text class="dg-atom" x="158" y="110">C</text>
+      <text class="dg-atom" x="158" y="74" style="fill:var(--force)">O</text>
+      <path class="dg-bond" style="stroke:var(--force)" d="M154 84 v16 M162 84 v16"/>
+      <text class="dg-atom" x="196" y="110" style="fill:var(--cyan)">N</text>
+      <text class="dg-atom" x="196" y="146">H</text>
+      <rect class="dg-panel" x="222" y="96" width="50" height="28" rx="5"/>
+      <text class="dg-atom" x="298" y="110" style="fill:var(--cyan)">N</text>
+      <text class="dg-atom" x="298" y="146">H</text>
+      <path class="dg-bond" d="M66 110 h16 M132 110 h16 M168 110 h18 M206 110 h16 M272 110 h16 M196 120 v16 M298 120 v16"/>
+      <path class="dg-dash" d="M308 110 h26"/>
+      <rect x="140" y="60" width="76" height="98" rx="9" fill="none"
+            style="stroke:var(--poly)" stroke-width="1.3" stroke-dasharray="3 2.5"/>
+      <text class="dg-lbl" x="360" y="102" style="fill:var(--poly)">AMIDE LINKAGE</text>
+      <text class="dg-lblb" x="360" y="120" style="fill:var(--poly)">–CO–NH–</text>
+
+      <!-- ══════ PET ══════ -->
+      <text class="dg-lbl" x="177" y="180" text-anchor="middle" style="fill:var(--poly)">PET · A POLYESTER</text>
+      <path class="dg-dash" d="M20 240 h24"/>
+      <text class="dg-atom" x="56" y="240">C</text>
+      <text class="dg-atom" x="56" y="204" style="fill:var(--force)">O</text>
+      <path class="dg-bond" style="stroke:var(--force)" d="M52 214 v16 M60 214 v16"/>
+      <rect class="dg-panel" x="82" y="226" width="50" height="28" rx="5"/>
+      <text class="dg-atom" x="158" y="240">C</text>
+      <text class="dg-atom" x="158" y="204" style="fill:var(--force)">O</text>
+      <path class="dg-bond" style="stroke:var(--force)" d="M154 214 v16 M162 214 v16"/>
+      <text class="dg-atom" x="196" y="240" style="fill:var(--cyan)">O</text>
+      <rect class="dg-panel" x="222" y="226" width="50" height="28" rx="5"/>
+      <text class="dg-atom" x="298" y="240" style="fill:var(--cyan)">O</text>
+      <path class="dg-bond" d="M66 240 h16 M132 240 h16 M168 240 h18 M206 240 h16 M272 240 h16"/>
+      <path class="dg-dash" d="M308 240 h26"/>
+      <rect x="140" y="190" width="76" height="66" rx="9" fill="none"
+            style="stroke:var(--poly)" stroke-width="1.3" stroke-dasharray="3 2.5"/>
+      <text class="dg-lbl" x="360" y="232" style="fill:var(--poly)">ESTER LINKAGE</text>
+      <text class="dg-lblb" x="360" y="250" style="fill:var(--poly)">–CO–O–</text>
+
+      <text class="dg-lbl" x="270" y="288" text-anchor="middle">each grey box = the rest of that monomer · the dashes mean the chain carries on both ways</text>
+    </svg>
+    <p class="dg-cap">The two structures differ in <strong>one place only</strong>: swap the polyester's <strong>–O–</strong> for the polyamide's <strong>–N(H)–</strong> at each link and PET becomes nylon. Both are built from <strong>two different monomers</strong>, each carrying two functional groups, and each new link throws out one molecule of <strong>water</strong> — that is what makes them <em>condensation</em> polymers. PET can be broken back into its monomers and re-polymerised, which is why it is widely recycled.</p>
+
     <div class="box remember">
       <div class="box-label">⚠️ Addition vs condensation</div>
       <span class="eq-inline" style="color:var(--rose)">Addition: one monomer (an alkene), C=C opens, NO small molecule lost</span>
@@ -786,6 +1543,61 @@
     <div class="define polymer-c">
       <span class="term">Proteins</span> are <strong>natural polyamides</strong> — condensation polymers built from <strong>amino acid</strong> monomers, which have the general structure <span class="hs-mol">H₂N–CH(R)–COOH</span> (an amine group and an acid group on the same carbon).
     </div>
+
+    <svg class="diagram" viewBox="0 0 540 300" role="img" aria-label="The general structure of an amino acid, with an amine group and a carboxyl group on the same carbon and a variable side-chain R, and the structure of a protein, in which those monomers are joined by repeating peptide amide linkages.">
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle">PROTEINS — NATURE'S OWN POLYAMIDE</text>
+
+      <!-- ══════ the amino acid monomer ══════ -->
+      <text class="dg-lbl" x="140" y="42" text-anchor="middle" style="fill:var(--cyan)">AMINO ACID · THE MONOMER</text>
+      <text class="dg-atom" x="50"  y="100">H</text>
+      <text class="dg-atom" x="86"  y="100" style="fill:var(--cyan)">N</text>
+      <text class="dg-atom" x="122" y="100">C</text>
+      <text class="dg-atom" x="158" y="100">C</text>
+      <text class="dg-atom" x="194" y="100" style="fill:var(--force)">O</text>
+      <text class="dg-atom" x="230" y="100" style="fill:var(--force)">H</text>
+      <text class="dg-atom" x="86"  y="64">H</text>
+      <text class="dg-atom" x="122" y="64">H</text>
+      <text class="dg-atom" x="158" y="64" style="fill:var(--force)">O</text>
+      <text class="dg-atom" x="122" y="136" style="fill:var(--momentum)">R</text>
+      <path class="dg-bond" d="M60 100 h16 M96 100 h16 M132 100 h16 M168 100 h16 M204 100 h16
+                               M86 74 v16 M122 74 v16 M122 110 v16"/>
+      <path class="dg-bond" style="stroke:var(--force)" d="M154 74 v16 M162 74 v16"/>
+      <rect x="34" y="50" width="70" height="64" rx="9" fill="none"
+            style="stroke:var(--cyan)" stroke-width="1.2" stroke-dasharray="3 2.5"/>
+      <rect x="142" y="50" width="104" height="64" rx="9" fill="none"
+            style="stroke:var(--force)" stroke-width="1.2" stroke-dasharray="3 2.5"/>
+      <text class="dg-lbl" x="69"  y="130" text-anchor="middle" style="fill:var(--cyan)">amine –NH₂</text>
+      <text class="dg-lbl" x="194" y="130" text-anchor="middle" style="fill:var(--force)">carboxyl –COOH</text>
+      <text class="dg-lbl" x="278" y="94"  style="fill:var(--momentum)">R = the side-chain —</text>
+      <text class="dg-lbl" x="278" y="110" style="fill:var(--momentum)">different in every amino acid</text>
+
+      <!-- ══════ the protein chain ══════ -->
+      <text class="dg-lbl" x="177" y="162" text-anchor="middle" style="fill:var(--poly)">PROTEIN · A NATURAL POLYAMIDE</text>
+      <path class="dg-dash" d="M20 222 h24"/>
+      <text class="dg-atom" x="56" y="222" style="fill:var(--cyan)">N</text>
+      <text class="dg-atom" x="56" y="258">H</text>
+      <rect class="dg-panel" x="82" y="208" width="50" height="28" rx="5"/>
+      <text class="dg-lblb" x="107" y="226" text-anchor="middle">CHR</text>
+      <text class="dg-atom" x="158" y="222">C</text>
+      <text class="dg-atom" x="158" y="186" style="fill:var(--force)">O</text>
+      <text class="dg-atom" x="196" y="222" style="fill:var(--cyan)">N</text>
+      <text class="dg-atom" x="196" y="258">H</text>
+      <rect class="dg-panel" x="222" y="208" width="50" height="28" rx="5"/>
+      <text class="dg-lblb" x="247" y="226" text-anchor="middle">CHR</text>
+      <text class="dg-atom" x="298" y="222">C</text>
+      <text class="dg-atom" x="298" y="186" style="fill:var(--force)">O</text>
+      <path class="dg-bond" d="M66 222 h16 M132 222 h16 M168 222 h18 M206 222 h16 M272 222 h16
+                               M56 232 v16 M196 232 v16"/>
+      <path class="dg-bond" style="stroke:var(--force)" d="M154 196 v16 M162 196 v16 M294 196 v16 M302 196 v16"/>
+      <path class="dg-dash" d="M308 222 h26"/>
+      <rect x="140" y="172" width="76" height="98" rx="9" fill="none"
+            style="stroke:var(--poly)" stroke-width="1.3" stroke-dasharray="3 2.5"/>
+      <text class="dg-lbl"  x="360" y="214" style="fill:var(--poly)">PEPTIDE LINKAGE</text>
+      <text class="dg-lblb" x="360" y="232" style="fill:var(--poly)">–CO–NH–</text>
+
+      <text class="dg-lbl" x="270" y="290" text-anchor="middle">each CHR box = that amino acid's own carbon, hydrogen and side-chain</text>
+    </svg>
+    <p class="dg-cap">An amino acid carries <strong>both</strong> functional groups needed for condensation on the same molecule — an <strong>amine</strong> at one end and a <strong>carboxyl</strong> at the other — so amino acids can join to each other end-to-end, losing water at every link. The join is the same <strong>–CO–NH–</strong> amide linkage found in nylon, which is exactly why a protein counts as a natural polyamide.</p>
 
     <h3>Plastics &amp; the environment</h3>
     <div class="box analogy">
@@ -800,9 +1612,67 @@
   </div>
 
 
-  <!-- ── 10 · KEY-TERMS BANK ── -->
+  <!-- ── 10 · CHECK YOURSELF ── -->
   <div class="section">
-    <div class="sec-label">10 / 10 · Reference</div>
+    <div class="sec-label">10 / 12 · Check yourself</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+    <p>Cover the answers. Say or write your answer <em>first</em>, then tap to compare with the mark scheme.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>State the general formula of the alkenes, and give the molecular formula of the alkene containing <strong>five</strong> carbon atoms. <strong>[2]</strong></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">C<sub>n</sub>H<sub>2n</sub> <strong>[1]</strong>; C₅H₁₀ <strong>[1]</strong>. <em>(Substitute n = 5 into the general formula — don't try to recall pentene separately.)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>A hydrocarbon is shaken with aqueous bromine and the orange colour disappears. State what this tells you about the <strong>structure</strong> of the hydrocarbon, and name the <strong>type of reaction</strong> that has occurred. <strong>[2]</strong></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">It is <strong>unsaturated</strong> — it contains a carbon–carbon <strong>double bond (C=C)</strong> <strong>[1]</strong>. The reaction is <strong>addition</strong> <strong>[1]</strong>. <em>(Write "colourless", never "clear" or "white".)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span><strong>Explain</strong> why bitumen is collected at the <strong>bottom</strong> of a fractionating column. <strong>[3]</strong></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Bitumen molecules have the <strong>longest carbon chains</strong> <strong>[1]</strong>, so they have the <strong>highest boiling points</strong> <strong>[1]</strong>, and therefore condense first — in the <strong>hottest part</strong> of the column, which is at the bottom <strong>[1]</strong>. <em>(An "explain" mark needs the chain-length → boiling-point → position chain of reasoning, not just "it is heavy".)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>Decane, C₁₀H₂₂, is cracked to give <strong>one</strong> molecule of propene, C₃H₆, and one other product. <strong>Deduce</strong> the molecular formula of the other product and state which homologous series it belongs to. <strong>[2]</strong></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>C₇H₁₆</strong> <strong>[1]</strong> — carbons 10 − 3 = 7, hydrogens 22 − 6 = 16. It is an <strong>alkane</strong> <strong>[1]</strong> (it fits C<sub>n</sub>H<sub>2n+2</sub> with n = 7). <em>(Cracking equations must balance on both elements — check C and H separately.)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>Ethanol is made by fermentation: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂. Calculate the maximum mass of ethanol obtainable from <strong>75.0 g</strong> of glucose. Give your answer to <strong>3 significant figures</strong>. <em>(A<sub>r</sub>: H = 1, C = 12, O = 16)</em> <strong>[3]</strong></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">M<sub>r</sub>(glucose) = 180; n(glucose) = 75.0 ÷ 180 = 0.4167 mol <strong>[1]</strong>. From the 1 : 2 ratio, n(ethanol) = 0.8333 mol <strong>[1]</strong>. M<sub>r</sub>(C₂H₅OH) = 46, so mass = 0.8333 × 46 = <strong>38.3 g</strong> <strong>[1]</strong>. <em>(The mole ratio is 1 : 2, not 1 : 1 — forgetting to double is the standard slip here.)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>Ethanoic acid reacts with sodium carbonate. <strong>Name</strong> the three products. <strong>[3]</strong></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>Sodium ethanoate [1] · water [1] · carbon dioxide [1]</strong>. The equation is 2CH₃COOH + Na₂CO₃ → 2CH₃COONa + H₂O + CO₂. <em>(A carboxylic acid does everything a normal acid does — the only new thing to learn is that its salt ends in <strong>-oate</strong>.)</em></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>State <strong>two</strong> differences between addition polymerisation and condensation polymerisation. <strong>[2]</strong></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Any two of: addition uses <strong>one</strong> type of monomer (an alkene, with a C=C) whereas condensation uses <strong>two</strong> monomers, each with two functional groups <strong>[1]</strong>; addition loses <strong>nothing</strong> (one product only) whereas condensation loses a <strong>small molecule — water —</strong> at every link <strong>[1]</strong>; the addition monomer must be unsaturated, the condensation monomers need not be.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>Propene, CH₃CH=CH₂, undergoes addition polymerisation. <strong>Deduce</strong> the repeat unit of poly(propene). <strong>[2]</strong></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">–(CH(CH₃)–CH₂)–<sub>n</sub> — open the C=C into a single C–C <strong>[1]</strong> and leave a bond sticking out of each end of the brackets <strong>[1]</strong>. The CH₃ side group stays exactly where it was; nothing is added and nothing is lost.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 11 · KEY-TERMS BANK ── -->
+  <div class="section">
+    <div class="sec-label">11 / 12 · Reference</div>
     <h2>The Topic 11 key-terms bank</h2>
     <p>These are the statements, equations and conditions examiners want back precisely. Tap any tile for the exact definition, key points, an example, and the exam trap:</p>
 
@@ -817,6 +1687,16 @@
       <span class="eq-inline" style="color:var(--rose)">Ethene + steam → ethanol (300 °C, 60 atm, acid catalyst)</span>
       <span class="eq-inline" style="color:var(--rose)">Ethanoic acid + alcohol → ester + water (acid catalyst)</span>
       <span class="eq-inline" style="color:var(--rose)">Addition polymer = 1 alkene monomer · Condensation = 2 monomers − water</span>
+    </div>
+  </div>
+
+  <!-- ── 12 · PRACTISE THIS TOPIC ── -->
+  <div class="section">
+    <div class="sec-label">12 / 12 · Practise this topic</div>
+    <h2>Papers that test Topic 11</h2>
+    <p>There is no Topic 11-only paper yet. The paper below is the one on disk that carries organic-chemistry questions — its Q7 tests the alkene general formula and its Q12 is a full ethene / bromine-water structured question.</p>
+    <div class="paperlinks">
+      <a href="../practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html">📝 <span>Chemistry SA-1 Practice Paper — Grade X Summative Assessment 1</span></a>
     </div>
   </div>
 
