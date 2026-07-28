@@ -280,10 +280,33 @@
 
   .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
 
-  /* diagram frame (static SVG triangles / solids) */
-  svg.diagram { width:100%; height:auto; max-width:360px; display:block; margin:14px auto;
-    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  /* ─────────────────────────────────────────────
+     STATIC FIGURES (svg.diagram) — both size caps
+     are mandatory: without them a near-square
+     viewBox renders as tall as the column is wide.
+     Author every viewBox LANDSCAPE (~3:2 to 2:1).
+  ───────────────────────────────────────────── */
+  svg.diagram{width:100%;height:auto;display:block;max-width:560px;max-height:400px;background:#0c1322;border:1px solid var(--border);border-radius:9px;margin:14px auto;}
   body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+  /* currentColor figure primitives — colour by style="color:var(--token)" */
+  .f-line  { fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+  .f-thick { fill:none; stroke:currentColor; stroke-width:3.4; stroke-linecap:round; stroke-linejoin:round; }
+  .f-thin  { fill:none; stroke:currentColor; stroke-width:1.4; }
+  .f-dash  { fill:none; stroke:currentColor; stroke-width:1.5; stroke-dasharray:5 4; }
+  .f-arc   { fill:none; stroke:currentColor; stroke-width:1.8; }
+  .f-pt    { fill:currentColor; }
+  .f-hollow{ fill:var(--bg); stroke:currentColor; stroke-width:1.6; }
+  .f-fill  { fill:currentColor; opacity:.13; stroke:currentColor; stroke-width:1.8; }
+  .f-lbl   { font-family:'JetBrains Mono',monospace; font-size:9.5px; fill:var(--text); }
+  .f-lbl.sm{ font-size:8.5px; fill:var(--muted); }
+  .f-lbl.acc { fill:currentColor; }
+  .f-ttl   { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.12em;
+             text-transform:uppercase; fill:var(--muted); }
+  .diag-cap {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted); text-align:center;
+    margin:-4px 0 20px; line-height:1.7; max-width:560px; margin-left:auto; margin-right:auto;
+  }
   .dg-side  { stroke:var(--motion); stroke-width:2.4; fill:none; }
   .dg-side2 { stroke:var(--force);  stroke-width:2.4; fill:none; }
   .dg-hyp   { stroke:var(--power);  stroke-width:2.4; fill:none; }
@@ -604,7 +627,65 @@
     pointer-events:none; white-space:nowrap; }
   .dg-cap::before, .diag-cap::before, .fig-cap::before { content:'FIGURE · '; font-family:'JetBrains Mono',monospace;
     font-size:10px; font-weight:600; letter-spacing:.14em; color:var(--muted); }
-  svg.diagram { max-height:400px; }
+
+  /* ─────────────────────────────────────────────
+     CHECK-YOURSELF RETRIEVAL BLOCK
+  ───────────────────────────────────────────── */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ─────────────────────────────────────────────
+     PAPER LINKS PANEL
+  ───────────────────────────────────────────── */
+  .paperlinks {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:18px 20px; margin:26px 0 0;
+  }
+  .paperlinks .pl-head {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--motion); margin-bottom:10px;
+  }
+  .paperlinks p { font-size:13.6px; color:var(--muted); margin-bottom:12px; }
+  .pl-grid { display:grid; gap:9px; }
+  .plink {
+    display:flex; align-items:center; gap:10px; text-decoration:none;
+    background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+    padding:11px 14px; color:var(--text); font-size:13.6px;
+    transition:border-color .2s, transform .16s;
+  }
+  .plink:hover { border-color:var(--motion); transform:translateX(3px); }
+  .plink .pl-ico { font-size:15px; flex:none; }
+  .plink .pl-tag {
+    margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted); flex:none;
+  }
+
+  /* ─────────────────────────────────────────────
+     SAVE AS PDF BUTTON + PRINT
+  ───────────────────────────────────────────── */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint, #eq-card { display:none !important; }
+    .cy-a { display:block !important; }
+    /* the fade-in animation must never hide content on paper */
+    .section { break-inside:avoid; opacity:1 !important; animation:none !important; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
 </style>
 </head>
 <body data-theme="dark">
@@ -612,6 +693,7 @@
 
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
 <div class="page">
 
   <!-- HEADER -->
@@ -630,14 +712,15 @@
       <a href="#s8">8 · Cosine rule</a>
       <a href="#s9">9 · Triangle area</a>
       <a href="#s10">10 · 3D trig</a>
-      <a href="#s11">11 · Skill bank</a>
+      <a href="#s11">11 · Check yourself</a>
+      <a href="#s12">12 · Skill bank</a>
     </div>
   </div>
 
 
   <!-- ── 01 · PYTHAGORAS ── -->
   <div class="section" id="s1">
-    <div class="sec-label">01 / 11 · E6.1 · Right-angled triangles</div>
+    <div class="sec-label">01 / 12 · E6.1 · Right-angled triangles</div>
     <h2>Pythagoras' theorem</h2>
 
     <p>In <strong>any right-angled triangle</strong>, the square drawn on the longest side (the <strong>hypotenuse</strong>, always opposite the right angle) has exactly the same area as the two smaller squares added together.</p>
@@ -647,13 +730,32 @@
       <span class="eq-inline">a² + b² = c²</span>, where <span class="eq-inline">c</span> is the <strong>hypotenuse</strong>. To find the hypotenuse you <strong>add and square-root</strong>; to find a shorter side you <strong>subtract and square-root</strong> (<span class="eq-inline">b = √(c² − a²)</span>). Only ever works when there's a <mark>right angle</mark>.
     </div>
 
-    <svg class="diagram" viewBox="0 0 300 200" role="img" aria-label="Right-angled triangle with legs a and b and hypotenuse c">
-      <polygon class="dg-fill" points="60,160 240,160 60,50"/>
-      <rect x="60" y="145" width="15" height="15" fill="none" stroke="#7b8aa8" stroke-width="1.4"/>
-      <text class="dg-lbl m" x="150" y="178">b (adjacent leg)</text>
-      <text class="dg-lbl m" x="30" y="108">a</text>
-      <text class="dg-lbl" x="158" y="98" fill="#48d39a">c (hyp)</text>
+    <svg class="diagram" viewBox="0 0 520 300" role="img" aria-label="A 3-4-5 right-angled triangle with a square drawn on each of its three sides; the squares on the two shorter sides have areas 9 and 16, which add to the area 25 of the square on the hypotenuse">
+      <text class="f-ttl" x="215" y="32" text-anchor="middle">the square on the hypotenuse</text>
+      <!-- square on the short leg a = 3 -->
+      <g style="color:var(--motion)">
+        <polygon class="f-fill" points="170,210 170,150 110,150 110,210"/>
+        <text class="f-lbl acc" x="140" y="184" text-anchor="middle">a² = 9</text>
+        <!-- square on leg b = 4 -->
+        <polygon class="f-fill" points="170,210 250,210 250,290 170,290"/>
+        <text class="f-lbl acc" x="210" y="254" text-anchor="middle">b² = 16</text>
+      </g>
+      <!-- square on the hypotenuse c = 5 -->
+      <g style="color:var(--power)">
+        <polygon class="f-fill" points="170,150 250,210 310,130 230,70"/>
+        <text class="f-lbl acc" x="240" y="144" text-anchor="middle">c² = 25</text>
+      </g>
+      <!-- the triangle itself -->
+      <polygon class="f-line" style="color:var(--text)" points="170,210 250,210 170,150"/>
+      <path class="f-thin" style="color:var(--muted)" d="M170,198 L182,198 L182,210"/>
+      <text class="f-lbl" x="176" y="186">3</text>
+      <text class="f-lbl" x="206" y="204">4</text>
+      <text class="f-lbl" x="216" y="172">5</text>
+      <text class="f-lbl acc" style="color:var(--motion)" x="340" y="148">a² + b² = c²</text>
+      <text class="f-lbl sm" x="340" y="170">3² + 4² = 5²</text>
+      <text class="f-lbl sm" x="340" y="188">9 + 16 = 25 ✓</text>
     </svg>
+    <div class="diag-cap">The two small squares hold exactly as much area as the big one — that <em>is</em> Pythagoras' theorem</div>
 
     <h3>Worked example — a leaning ladder</h3>
     <p>A 5&nbsp;m ladder rests against a wall with its foot 1.5&nbsp;m from the base of the wall. How far up the wall does it reach?</p>
@@ -672,7 +774,7 @@
 
   <!-- ── 02 · SOHCAHTOA (widget) ── -->
   <div class="section" id="s2">
-    <div class="sec-label">02 / 11 · E6.2 · Sides &amp; angles</div>
+    <div class="sec-label">02 / 12 · E6.2 · Sides &amp; angles</div>
     <h2>The three ratios — SOH-CAH-TOA</h2>
 
     <p>Pythagoras links the three <em>sides</em>. Trigonometry brings in the <strong>angle</strong>. In a right-angled triangle the three sides get names <em>relative to the angle</em> <span class="eq-inline">θ</span> you're looking at: the <strong>hypotenuse</strong> (opposite the right angle), the <strong>opposite</strong> (facing θ), and the <strong>adjacent</strong> (the remaining side, next to θ).</p>
@@ -683,6 +785,38 @@
       <span class="eq-inline" style="color:var(--motion)">cos θ = A / H</span> &nbsp;
       <span class="eq-inline" style="color:var(--momentum)">tan θ = O / A</span>
     </div>
+
+    <svg class="diagram" viewBox="0 0 540 270" role="img" aria-label="The same right-angled triangle drawn twice. With the angle theta at the lower-left vertex the horizontal side is adjacent and the vertical side is opposite; with theta at the top vertex those two names swap, while the hypotenuse stays the side opposite the right angle.">
+      <text class="f-ttl" x="135" y="32" text-anchor="middle">θ at the bottom-left</text>
+      <text class="f-ttl" x="405" y="32" text-anchor="middle">same triangle, θ at the top</text>
+      <line class="f-dash" style="color:var(--border)" x1="270" y1="25" x2="270" y2="248"/>
+
+      <!-- PANEL A · theta at P -->
+      <polygon class="f-fill" style="color:var(--motion)" points="50,200 200,200 200,90"/>
+      <line class="f-thick" style="color:var(--motion)" x1="50" y1="200" x2="200" y2="200"/>
+      <line class="f-thick" style="color:var(--force)"  x1="200" y1="200" x2="200" y2="90"/>
+      <line class="f-thick" style="color:var(--power)"  x1="50" y1="200" x2="200" y2="90"/>
+      <path class="f-thin" style="color:var(--muted)" d="M188,200 L188,188 L200,188"/>
+      <path class="f-arc" style="color:var(--energy2)" d="M80,200 A30 30 0 0 0 74.2,182.3"/>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="88" y="190">θ</text>
+      <text class="f-lbl acc" style="color:var(--motion)" x="125" y="218" text-anchor="middle">adjacent</text>
+      <text class="f-lbl acc" style="color:var(--force)"  x="207" y="148">opposite</text>
+      <text class="f-lbl acc" style="color:var(--power)"  x="112" y="124" text-anchor="middle">hypotenuse</text>
+
+      <!-- PANEL B · theta at R -->
+      <polygon class="f-fill" style="color:var(--motion)" points="320,200 470,200 470,90"/>
+      <line class="f-thick" style="color:var(--force)"  x1="320" y1="200" x2="470" y2="200"/>
+      <line class="f-thick" style="color:var(--motion)" x1="470" y1="200" x2="470" y2="90"/>
+      <line class="f-thick" style="color:var(--power)"  x1="320" y1="200" x2="470" y2="90"/>
+      <path class="f-thin" style="color:var(--muted)" d="M458,200 L458,188 L470,188"/>
+      <path class="f-arc" style="color:var(--energy2)" d="M470,120 A30 30 0 0 1 445.8,107.7"/>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="448" y="131" text-anchor="middle">θ</text>
+      <text class="f-lbl acc" style="color:var(--force)"  x="395" y="218" text-anchor="middle">opposite</text>
+      <text class="f-lbl acc" style="color:var(--motion)" x="477" y="148">adjacent</text>
+      <text class="f-lbl acc" style="color:var(--power)"  x="382" y="124" text-anchor="middle">hypotenuse</text>
+      <text class="f-lbl sm" x="270" y="262" text-anchor="middle">O and A swap · H never moves</text>
+    </svg>
+    <div class="diag-cap">Opposite and adjacent are named <em>relative to θ</em> — move θ and they trade places; only the hypotenuse (facing the right angle) is fixed</div>
 
     <div class="box analogy">
       <div class="box-label">🪜 A picture you know</div>
@@ -727,7 +861,7 @@
 
   <!-- ── 03 · ELEVATION, DEPRESSION, BEARINGS ── -->
   <div class="section" id="s3">
-    <div class="sec-label">03 / 11 · E6.2 · Applications</div>
+    <div class="sec-label">03 / 12 · E6.2 · Applications</div>
     <h2>Elevation, depression &amp; bearings</h2>
 
     <p>These are just right-angled-triangle problems dressed in words. The skill is drawing the triangle correctly from the description.</p>
@@ -743,6 +877,46 @@
       </div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 300" role="img" aria-label="Meera stands 30 metres from a 21 metre tree. Her line of sight to the top makes an angle of elevation of 35 degrees with the ground. A dashed horizontal at the top of the tree makes an angle of depression of 35 degrees with the same line of sight, because the two horizontals are parallel.">
+      <text class="f-ttl" x="270" y="32" text-anchor="middle">elevation up = depression down</text>
+      <!-- ground -->
+      <line class="f-thin" style="color:var(--muted)" x1="45" y1="250" x2="505" y2="250"/>
+      <!-- tree -->
+      <rect class="f-fill" style="color:var(--power)" x="338" y="82" width="24" height="168"/>
+      <!-- line of sight -->
+      <line class="f-line" style="color:var(--motion)" x1="110" y1="250" x2="350" y2="82"/>
+      <circle class="f-pt" style="color:var(--motion)" cx="110" cy="250" r="3.2"/>
+      <circle class="f-pt" style="color:var(--motion)" cx="350" cy="82" r="3.2"/>
+      <!-- horizontal at the top, parallel to the ground -->
+      <line class="f-dash" style="color:var(--muted)" x1="350" y1="82" x2="180" y2="82"/>
+      <text class="f-lbl sm" x="186" y="74">horizontal (parallel to the ground)</text>
+      <!-- the two equal angles -->
+      <path class="f-arc" style="color:var(--energy2)" d="M162,250 A52 52 0 0 0 152.6,220.2"/>
+      <text class="f-lbl sm acc" style="color:var(--energy2)" x="172" y="228">35° = angle of ELEVATION</text>
+      <path class="f-arc" style="color:var(--energy2)" d="M298,82 A52 52 0 0 0 307.4,111.8"/>
+      <text class="f-lbl sm acc" style="color:var(--energy2)" x="292" y="104" text-anchor="end">35° = angle of DEPRESSION</text>
+      <!-- Meera -->
+      <g class="f-thin" style="color:var(--muted)" transform="translate(25,0)">
+        <circle cx="85" cy="224" r="6"/>
+        <line x1="85" y1="230" x2="85" y2="242"/>
+        <line x1="78" y1="234" x2="92" y2="234"/>
+        <line x1="85" y1="242" x2="79" y2="250"/>
+        <line x1="85" y1="242" x2="91" y2="250"/>
+      </g>
+      <!-- dimensions -->
+      <g class="f-thin" style="color:var(--muted)">
+        <line x1="110" y1="264" x2="350" y2="264"/>
+        <line x1="110" y1="259" x2="110" y2="269"/>
+        <line x1="350" y1="259" x2="350" y2="269"/>
+        <line x1="390" y1="82" x2="390" y2="250"/>
+        <line x1="385" y1="82" x2="395" y2="82"/>
+        <line x1="385" y1="250" x2="395" y2="250"/>
+      </g>
+      <text class="f-lbl sm" x="230" y="280" text-anchor="middle">30 m</text>
+      <text class="f-lbl" x="398" y="170">h = 21.0 m</text>
+    </svg>
+    <div class="diag-cap">The two horizontals are parallel, so the depression angle from the top down to Meera equals the elevation angle from Meera up to the top — alternate angles</div>
+
     <h3>Worked example — height of a tree</h3>
     <p>Standing 30&nbsp;m from the foot of a tree, Meera measures the angle of elevation of the top as 35°. How tall is the tree (eye level ≈ ground)?</p>
     <div class="work">
@@ -755,6 +929,42 @@
       A bearing is a direction measured <strong>clockwise from North</strong>, always written with <strong>three figures</strong> — e.g. due East is <span class="eq-inline">090°</span>, South-West is <span class="eq-inline">225°</span>, and a small angle like 7° is written <span class="eq-inline">007°</span>.
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 280" role="img" aria-label="Two panels. On the left, a north line drawn at A and the angle measured clockwise from it round to the line AB is 070 degrees, the bearing of B from A. On the right, a north line drawn at B and the angle measured clockwise from it round to the line BA is 250 degrees, the back bearing of A from B.">
+      <text class="f-ttl" x="177" y="26" text-anchor="middle">bearing of B from A</text>
+      <text class="f-ttl" x="400" y="26" text-anchor="middle">back bearing of A from B</text>
+      <line class="f-dash" style="color:var(--border)" x1="282" y1="20" x2="282" y2="258"/>
+
+      <!-- PANEL A · bearing 070 -->
+      <g style="color:var(--motion)">
+        <line class="f-thin" x1="130" y1="180" x2="130" y2="55"/>
+        <path class="f-pt" d="M126,60 L130,50 L134,60 Z"/>
+        <line class="f-line" x1="130" y1="180" x2="224" y2="146"/>
+        <circle class="f-pt" cx="130" cy="180" r="3.4"/>
+        <circle class="f-pt" cx="224" cy="146" r="3.4"/>
+      </g>
+      <text class="f-lbl" x="130" y="44" text-anchor="middle">N</text>
+      <text class="f-lbl" x="120" y="192" text-anchor="end">A</text>
+      <text class="f-lbl" x="232" y="142">B</text>
+      <path class="f-arc" style="color:var(--energy2)" d="M130,136 A44 44 0 0 1 171.3,165"/>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="166" y="133" text-anchor="middle">070°</text>
+
+      <!-- PANEL B · back bearing 250 -->
+      <g style="color:var(--motion)">
+        <line class="f-thin" x1="424" y1="146" x2="424" y2="58"/>
+        <path class="f-pt" d="M420,63 L424,53 L428,63 Z"/>
+        <line class="f-line" x1="424" y1="146" x2="330" y2="180"/>
+        <circle class="f-pt" cx="424" cy="146" r="3.4"/>
+        <circle class="f-pt" cx="330" cy="180" r="3.4"/>
+      </g>
+      <text class="f-lbl" x="424" y="47" text-anchor="middle">N</text>
+      <text class="f-lbl" x="322" y="192" text-anchor="end">A</text>
+      <text class="f-lbl" x="432" y="140">B</text>
+      <path class="f-arc" style="color:var(--energy2)" d="M424,112 A34 34 0 1 1 392.05,157.63"/>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="468" y="182">250°</text>
+      <text class="f-lbl sm" x="400" y="250" text-anchor="middle">250 = 070 + 180</text>
+    </svg>
+    <div class="diag-cap">Always start at North and sweep <em>clockwise</em>, and always write three figures — the back bearing differs by 180°</div>
+
     <div class="box pitfall">
       <div class="box-label">⚠️ Two classic slips</div>
       <strong>(1)</strong> Bearings need <strong>3 digits</strong> — write 040°, not 40°. <strong>(2)</strong> "Perpendicular distance from a point to a line is the <strong>shortest</strong> distance" — it's the perpendicular (right-angle) drop, not a slanted one, so these often hide a right-angled triangle you must spot.
@@ -764,7 +974,7 @@
 
   <!-- ── 04 · EXACT VALUES ── -->
   <div class="section" id="s4">
-    <div class="sec-label">04 / 11 · E6.3 · Know these cold</div>
+    <div class="sec-label">04 / 12 · E6.3 · Know these cold</div>
     <h2>Exact trig values</h2>
 
     <p>For special angles you're expected to write the value <strong>exactly</strong> (surd or fraction) with no calculator. This is a "recall" mark.</p>
@@ -775,6 +985,47 @@
       <tr><td><strong>cos x</strong></td><td class="c">1</td><td class="c">√3⁄2</td><td class="c">√2⁄2</td><td class="c">½</td><td class="c">0</td></tr>
       <tr><td><strong>tan x</strong></td><td class="c">0</td><td class="c">1⁄√3</td><td class="c">1</td><td class="c">√3</td><td class="c">undefined</td></tr>
     </table>
+
+    <svg class="diagram" viewBox="0 0 540 270" role="img" aria-label="Two panels. On the left, half of a unit square gives a right-angled triangle with legs 1 and 1 and hypotenuse root 2, with 45 degree angles. On the right, half of an equilateral triangle of side 2 gives a right-angled triangle with sides 1, root 3 and 2, with angles 30 and 60 degrees.">
+      <text class="f-ttl" x="110" y="32" text-anchor="middle">half a unit square</text>
+      <text class="f-ttl" x="400" y="32" text-anchor="middle">half an equilateral triangle</text>
+      <line class="f-dash" style="color:var(--border)" x1="272" y1="24" x2="272" y2="250"/>
+
+      <!-- PANEL A · the 45-45-90 triangle -->
+      <polygon class="f-fill" style="color:var(--motion)" points="60,160 160,160 160,60"/>
+      <path class="f-dash" style="color:var(--muted)" d="M60,160 L60,60 L160,60"/>
+      <polygon class="f-line" style="color:var(--motion)" points="60,160 160,160 160,60"/>
+      <path class="f-thin" style="color:var(--muted)" d="M148,160 L148,148 L160,148"/>
+      <path class="f-arc" style="color:var(--energy2)" d="M86,160 A26 26 0 0 0 78.4,141.6"/>
+      <path class="f-arc" style="color:var(--energy2)" d="M160,86 A26 26 0 0 1 141.6,78.4"/>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="92" y="148">45°</text>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="152" y="112" text-anchor="end">45°</text>
+      <text class="f-lbl" x="110" y="176" text-anchor="middle">1</text>
+      <text class="f-lbl" x="170" y="112">1</text>
+      <text class="f-lbl acc" style="color:var(--power)" x="94" y="98" text-anchor="middle">√2</text>
+      <text class="f-lbl sm" x="110" y="204" text-anchor="middle">sin 45 = 1/√2 = √2⁄2</text>
+      <text class="f-lbl sm" x="110" y="220" text-anchor="middle">cos 45 = √2⁄2</text>
+      <text class="f-lbl sm" x="110" y="236" text-anchor="middle">tan 45 = 1/1 = 1</text>
+
+      <!-- PANEL B · the 30-60-90 triangle -->
+      <polygon class="f-fill" style="color:var(--motion)" points="400,155 455,155 400,60"/>
+      <path class="f-dash" style="color:var(--muted)" d="M400,60 L345,155 L400,155"/>
+      <polygon class="f-line" style="color:var(--motion)" points="400,155 455,155 400,60"/>
+      <line class="f-dash" style="color:var(--power)" x1="400" y1="60" x2="400" y2="155"/>
+      <path class="f-thin" style="color:var(--muted)" d="M400,143 L412,143 L412,155"/>
+      <path class="f-arc" style="color:var(--energy2)" d="M400,90 A30 30 0 0 0 415,86"/>
+      <path class="f-arc" style="color:var(--energy2)" d="M429,155 A26 26 0 0 1 442,132.5"/>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="418" y="80">30°</text>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="426" y="134" text-anchor="end">60°</text>
+      <text class="f-lbl" x="442" y="102">2</text>
+      <text class="f-lbl" x="427" y="171" text-anchor="middle">1</text>
+      <text class="f-lbl sm" x="372" y="171" text-anchor="middle">1</text>
+      <text class="f-lbl acc" style="color:var(--power)" x="406" y="110">√3</text>
+      <text class="f-lbl sm" x="400" y="204" text-anchor="middle">sin 30 = ½ · cos 30 = √3⁄2</text>
+      <text class="f-lbl sm" x="400" y="220" text-anchor="middle">sin 60 = √3⁄2 · cos 60 = ½</text>
+      <text class="f-lbl sm" x="400" y="236" text-anchor="middle">tan 30 = 1⁄√3 · tan 60 = √3</text>
+    </svg>
+    <div class="diag-cap">Every exact value in the table above comes from one of these two triangles — sketch them in the margin and read the ratios straight off</div>
 
     <div class="box remember">
       <div class="box-label">🧠 The "0 1 2 3 4" hand trick</div>
@@ -790,7 +1041,7 @@
 
   <!-- ── 05 · THE THREE GRAPHS (widget) ── -->
   <div class="section" id="s5">
-    <div class="sec-label">05 / 11 · E6.4 · Recognise &amp; sketch</div>
+    <div class="sec-label">05 / 12 · E6.4 · Recognise &amp; sketch</div>
     <h2>The three graphs, 0° to 360°</h2>
 
     <p>You must <strong>recognise, sketch and read</strong> each graph over <span class="eq-inline">0° ≤ x ≤ 360°</span>. Switch between them — key points (max ●, min ●, zeros ●) are marked and the read-out lists the features examiners ask for.</p>
@@ -813,6 +1064,90 @@
       </div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 280" role="img" aria-label="The graph of y = sin x from 0 to 360 degrees beside the graph of y = cos x over the same interval. Sine starts at 0, peaks at 1 when x is 90 degrees, and has its minimum of minus 1 at 270 degrees. Cosine starts at its maximum of 1, has its minimum of minus 1 at 180 degrees, and returns to 1 at 360 degrees.">
+      <text class="f-ttl" x="155" y="34" text-anchor="middle">y = sin x</text>
+      <text class="f-ttl" x="425" y="34" text-anchor="middle">y = cos x</text>
+      <line class="f-dash" style="color:var(--border)" x1="286" y1="22" x2="286" y2="262"/>
+      <g transform="translate(0,10)">
+        <line class="f-thin" style="color:var(--muted)" x1="40" y1="125" x2="272" y2="125"/>
+        <line class="f-thin" style="color:var(--muted)" x1="45" y1="72" x2="45" y2="190"/>
+        <line class="f-dash" style="color:var(--border)" x1="100" y1="72" x2="100" y2="190"/>
+        <text class="f-lbl sm" x="100" y="214" text-anchor="middle">90°</text>
+        <line class="f-dash" style="color:var(--border)" x1="155" y1="72" x2="155" y2="190"/>
+        <text class="f-lbl sm" x="155" y="214" text-anchor="middle">180°</text>
+        <line class="f-dash" style="color:var(--border)" x1="210" y1="72" x2="210" y2="190"/>
+        <text class="f-lbl sm" x="210" y="214" text-anchor="middle">270°</text>
+        <line class="f-dash" style="color:var(--border)" x1="265" y1="72" x2="265" y2="190"/>
+        <text class="f-lbl sm" x="265" y="214" text-anchor="middle">360°</text>
+        <text class="f-lbl sm" x="38" y="83"  text-anchor="end">1</text>
+        <text class="f-lbl sm" x="38" y="129" text-anchor="end">0</text>
+        <text class="f-lbl sm" x="38" y="175" text-anchor="end">−1</text>
+        <path class="f-line" style="color:var(--motion)" d="M45.0,125.0 L46.8,122.6 L48.7,120.2 L50.5,117.8 L52.3,115.4 L54.2,113.1 L56.0,110.8 L57.8,108.5 L59.7,106.3 L61.5,104.1 L63.3,102.0 L65.2,99.9 L67.0,98.0 L68.8,96.1 L70.7,94.2 L72.5,92.5 L74.3,90.8 L76.2,89.3 L78.0,87.8 L79.8,86.4 L81.7,85.2 L83.5,84.0 L85.3,83.0 L87.2,82.1 L89.0,81.3 L90.8,80.6 L92.7,80.0 L94.5,79.6 L96.3,79.3 L98.2,79.1 L100.0,79.0 L101.8,79.1 L103.7,79.3 L105.5,79.6 L107.3,80.0 L109.2,80.6 L111.0,81.3 L112.8,82.1 L114.7,83.0 L116.5,84.0 L118.3,85.2 L120.2,86.4 L122.0,87.8 L123.8,89.3 L125.7,90.8 L127.5,92.5 L129.3,94.2 L131.2,96.1 L133.0,98.0 L134.8,99.9 L136.7,102.0 L138.5,104.1 L140.3,106.3 L142.2,108.5 L144.0,110.8 L145.8,113.1 L147.7,115.4 L149.5,117.8 L151.3,120.2 L153.2,122.6 L155.0,125.0 L156.8,127.4 L158.7,129.8 L160.5,132.2 L162.3,134.6 L164.2,136.9 L166.0,139.2 L167.8,141.5 L169.7,143.7 L171.5,145.9 L173.3,148.0 L175.2,150.1 L177.0,152.0 L178.8,153.9 L180.7,155.8 L182.5,157.5 L184.3,159.2 L186.2,160.7 L188.0,162.2 L189.8,163.6 L191.7,164.8 L193.5,166.0 L195.3,167.0 L197.2,167.9 L199.0,168.7 L200.8,169.4 L202.7,170.0 L204.5,170.4 L206.3,170.7 L208.2,170.9 L210.0,171.0 L211.8,170.9 L213.7,170.7 L215.5,170.4 L217.3,170.0 L219.2,169.4 L221.0,168.7 L222.8,167.9 L224.7,167.0 L226.5,166.0 L228.3,164.8 L230.2,163.6 L232.0,162.2 L233.8,160.7 L235.7,159.2 L237.5,157.5 L239.3,155.8 L241.2,153.9 L243.0,152.0 L244.8,150.1 L246.7,148.0 L248.5,145.9 L250.3,143.7 L252.2,141.5 L254.0,139.2 L255.8,136.9 L257.7,134.6 L259.5,132.2 L261.3,129.8 L263.2,127.4 L265.0,125.0"/>
+        <circle class="f-pt" style="color:var(--power)" cx="100" cy="79" r="3.8"/>
+        <circle class="f-pt" style="color:var(--force)" cx="210" cy="171" r="3.8"/>
+        <circle class="f-pt" style="color:var(--motion)" cx="45" cy="125" r="3"/>
+        <circle class="f-pt" style="color:var(--motion)" cx="155" cy="125" r="3"/>
+        <circle class="f-pt" style="color:var(--motion)" cx="265" cy="125" r="3"/>
+        <text class="f-lbl sm acc" style="color:var(--power)" x="106" y="66">max 1 at 90°</text>
+        <text class="f-lbl sm acc" style="color:var(--force)" x="210" y="196" text-anchor="middle">min −1 at 270°</text>
+        <line class="f-thin" style="color:var(--muted)" x1="310" y1="125" x2="542" y2="125"/>
+        <line class="f-thin" style="color:var(--muted)" x1="315" y1="72" x2="315" y2="190"/>
+        <line class="f-dash" style="color:var(--border)" x1="370" y1="72" x2="370" y2="190"/>
+        <text class="f-lbl sm" x="370" y="214" text-anchor="middle">90°</text>
+        <line class="f-dash" style="color:var(--border)" x1="425" y1="72" x2="425" y2="190"/>
+        <text class="f-lbl sm" x="425" y="214" text-anchor="middle">180°</text>
+        <line class="f-dash" style="color:var(--border)" x1="480" y1="72" x2="480" y2="190"/>
+        <text class="f-lbl sm" x="480" y="214" text-anchor="middle">270°</text>
+        <line class="f-dash" style="color:var(--border)" x1="535" y1="72" x2="535" y2="190"/>
+        <text class="f-lbl sm" x="535" y="214" text-anchor="middle">360°</text>
+        <text class="f-lbl sm" x="308" y="83"  text-anchor="end">1</text>
+        <text class="f-lbl sm" x="308" y="129" text-anchor="end">0</text>
+        <text class="f-lbl sm" x="308" y="175" text-anchor="end">−1</text>
+        <path class="f-line" style="color:var(--motion)" d="M315.0,79.0 L316.8,79.1 L318.7,79.3 L320.5,79.6 L322.3,80.0 L324.2,80.6 L326.0,81.3 L327.8,82.1 L329.7,83.0 L331.5,84.0 L333.3,85.2 L335.2,86.4 L337.0,87.8 L338.8,89.3 L340.7,90.8 L342.5,92.5 L344.3,94.2 L346.2,96.1 L348.0,98.0 L349.8,99.9 L351.7,102.0 L353.5,104.1 L355.3,106.3 L357.2,108.5 L359.0,110.8 L360.8,113.1 L362.7,115.4 L364.5,117.8 L366.3,120.2 L368.2,122.6 L370.0,125.0 L371.8,127.4 L373.7,129.8 L375.5,132.2 L377.3,134.6 L379.2,136.9 L381.0,139.2 L382.8,141.5 L384.7,143.7 L386.5,145.9 L388.3,148.0 L390.2,150.1 L392.0,152.0 L393.8,153.9 L395.7,155.8 L397.5,157.5 L399.3,159.2 L401.2,160.7 L403.0,162.2 L404.8,163.6 L406.7,164.8 L408.5,166.0 L410.3,167.0 L412.2,167.9 L414.0,168.7 L415.8,169.4 L417.7,170.0 L419.5,170.4 L421.3,170.7 L423.2,170.9 L425.0,171.0 L426.8,170.9 L428.7,170.7 L430.5,170.4 L432.3,170.0 L434.2,169.4 L436.0,168.7 L437.8,167.9 L439.7,167.0 L441.5,166.0 L443.3,164.8 L445.2,163.6 L447.0,162.2 L448.8,160.7 L450.7,159.2 L452.5,157.5 L454.3,155.8 L456.2,153.9 L458.0,152.0 L459.8,150.1 L461.7,148.0 L463.5,145.9 L465.3,143.7 L467.2,141.5 L469.0,139.2 L470.8,136.9 L472.7,134.6 L474.5,132.2 L476.3,129.8 L478.2,127.4 L480.0,125.0 L481.8,122.6 L483.7,120.2 L485.5,117.8 L487.3,115.4 L489.2,113.1 L491.0,110.8 L492.8,108.5 L494.7,106.3 L496.5,104.1 L498.3,102.0 L500.2,99.9 L502.0,98.0 L503.8,96.1 L505.7,94.2 L507.5,92.5 L509.3,90.8 L511.2,89.3 L513.0,87.8 L514.8,86.4 L516.7,85.2 L518.5,84.0 L520.3,83.0 L522.2,82.1 L524.0,81.3 L525.8,80.6 L527.7,80.0 L529.5,79.6 L531.3,79.3 L533.2,79.1 L535.0,79.0"/>
+        <circle class="f-pt" style="color:var(--power)" cx="315" cy="79" r="3.8"/>
+        <circle class="f-pt" style="color:var(--power)" cx="535" cy="79" r="3.8"/>
+        <circle class="f-pt" style="color:var(--force)" cx="425" cy="171" r="3.8"/>
+        <circle class="f-pt" style="color:var(--motion)" cx="370" cy="125" r="3"/>
+        <circle class="f-pt" style="color:var(--motion)" cx="480" cy="125" r="3"/>
+        <text class="f-lbl sm acc" style="color:var(--power)" x="322" y="66">max 1 at 0° and 360°</text>
+        <text class="f-lbl sm acc" style="color:var(--force)" x="425" y="196" text-anchor="middle">min −1 at 180°</text>
+      </g>
+    </svg>
+    <div class="diag-cap">Both waves run between −1 and 1 with period 360° — y = cos x is y = sin x shifted 90° to the left</div>
+
+    <svg class="diagram" viewBox="0 0 540 280" role="img" aria-label="The graph of y = tan x from 0 to 360 degrees. It is zero at 0, 180 and 360 degrees, rises without limit towards vertical asymptotes at 90 and 270 degrees, and reappears from below. The line y = 1 meets it at 45 degrees and again at 225 degrees, which is 180 degrees later.">
+      <text class="f-ttl" x="280" y="26" text-anchor="middle">y = tan x</text>
+      <line class="f-thin" style="color:var(--muted)" x1="52" y1="135" x2="508" y2="135"/>
+      <line class="f-thin" style="color:var(--muted)" x1="60" y1="40" x2="60" y2="230"/>
+      <line class="f-dash" style="color:var(--force)" x1="170" y1="45" x2="170" y2="225"/>
+      <text class="f-lbl sm acc" style="color:var(--force)" x="170" y="246" text-anchor="middle">x = 90°</text>
+      <line class="f-dash" style="color:var(--force)" x1="390" y1="45" x2="390" y2="225"/>
+      <text class="f-lbl sm acc" style="color:var(--force)" x="390" y="246" text-anchor="middle">x = 270°</text>
+      <text class="f-lbl sm" x="60" y="246" text-anchor="middle">0°</text>
+      <text class="f-lbl sm" x="280" y="246" text-anchor="middle">180°</text>
+      <text class="f-lbl sm" x="500" y="246" text-anchor="middle">360°</text>
+      <text class="f-lbl sm" x="52" y="51"  text-anchor="end">4</text>
+      <text class="f-lbl sm" x="52" y="139" text-anchor="end">0</text>
+      <text class="f-lbl sm" x="52" y="227" text-anchor="end">−4</text>
+      <line class="f-dash" style="color:var(--force)" x1="60" y1="113" x2="500" y2="113"/>
+      <text class="f-lbl sm acc" style="color:var(--force)" x="500" y="105" text-anchor="end">tan x = 1</text>
+      <path class="f-line" style="color:var(--momentum)" d="M60.0,135.0 L62.4,134.2 L64.9,133.5 L67.3,132.7 L69.8,131.9 L72.2,131.1 L74.7,130.3 L77.1,129.5 L79.6,128.7 L82.0,127.9 L84.4,127.0 L86.9,126.1 L89.3,125.2 L91.8,124.3 L94.2,123.3 L96.7,122.3 L99.1,121.3 L101.6,120.2 L104.0,119.0 L106.4,117.8 L108.9,116.5 L111.3,115.2 L113.8,113.8 L116.2,112.2 L118.7,110.6 L121.1,108.8 L123.6,106.8 L126.0,104.7 L128.4,102.4 L130.9,99.8 L133.3,96.9 L135.8,93.6 L138.2,89.9 L140.7,85.6 L143.1,80.5 L145.6,74.6 L148.0,67.3 L150.4,58.3 M189.6,211.7 L192.0,202.7 L194.4,195.4 L196.9,189.5 L199.3,184.4 L201.8,180.1 L204.2,176.4 L206.7,173.1 L209.1,170.2 L211.6,167.6 L214.0,165.3 L216.4,163.2 L218.9,161.2 L221.3,159.4 L223.8,157.8 L226.2,156.2 L228.7,154.8 L231.1,153.5 L233.6,152.2 L236.0,151.0 L238.4,149.8 L240.9,148.7 L243.3,147.7 L245.8,146.7 L248.2,145.7 L250.7,144.8 L253.1,143.9 L255.6,143.0 L258.0,142.1 L260.4,141.3 L262.9,140.5 L265.3,139.7 L267.8,138.9 L270.2,138.1 L272.7,137.3 L275.1,136.5 L277.6,135.8 L280.0,135.0 L282.4,134.2 L284.9,133.5 L287.3,132.7 L289.8,131.9 L292.2,131.1 L294.7,130.3 L297.1,129.5 L299.6,128.7 L302.0,127.9 L304.4,127.0 L306.9,126.1 L309.3,125.2 L311.8,124.3 L314.2,123.3 L316.7,122.3 L319.1,121.3 L321.6,120.2 L324.0,119.0 L326.4,117.8 L328.9,116.5 L331.3,115.2 L333.8,113.8 L336.2,112.2 L338.7,110.6 L341.1,108.8 L343.6,106.8 L346.0,104.7 L348.4,102.4 L350.9,99.8 L353.3,96.9 L355.8,93.6 L358.2,89.9 L360.7,85.6 L363.1,80.5 L365.6,74.6 L368.0,67.3 L370.4,58.3 M409.6,211.7 L412.0,202.7 L414.4,195.4 L416.9,189.5 L419.3,184.4 L421.8,180.1 L424.2,176.4 L426.7,173.1 L429.1,170.2 L431.6,167.6 L434.0,165.3 L436.4,163.2 L438.9,161.2 L441.3,159.4 L443.8,157.8 L446.2,156.2 L448.7,154.8 L451.1,153.5 L453.6,152.2 L456.0,151.0 L458.4,149.8 L460.9,148.7 L463.3,147.7 L465.8,146.7 L468.2,145.7 L470.7,144.8 L473.1,143.9 L475.6,143.0 L478.0,142.1 L480.4,141.3 L482.9,140.5 L485.3,139.7 L487.8,138.9 L490.2,138.1 L492.7,137.3 L495.1,136.5 L497.6,135.8 L500.0,135.0"/>
+      <circle class="f-pt" style="color:var(--momentum)" cx="60" cy="135" r="3"/>
+      <circle class="f-pt" style="color:var(--momentum)" cx="280" cy="135" r="3"/>
+      <circle class="f-pt" style="color:var(--momentum)" cx="500" cy="135" r="3"/>
+      <circle class="f-pt" style="color:var(--force)" cx="115" cy="113" r="4"/>
+      <circle class="f-pt" style="color:var(--force)" cx="335" cy="113" r="4"/>
+      <text class="f-lbl sm" x="115" y="158" text-anchor="middle">45°</text>
+      <text class="f-lbl sm" x="335" y="158" text-anchor="middle">225° = 45° + 180°</text>
+      <g style="color:var(--energy2)">
+        <line class="f-thin" x1="115" y1="192" x2="335" y2="192"/>
+        <line class="f-thin" x1="115" y1="187" x2="115" y2="197"/>
+        <line class="f-thin" x1="335" y1="187" x2="335" y2="197"/>
+        <text class="f-lbl sm acc" x="225" y="182" text-anchor="middle">180° apart</text>
+      </g>
+    </svg>
+    <div class="diag-cap">tan x has period 180°, breaks at its asymptotes and takes <em>every</em> value — so tan x = k has two solutions in 0°–360°, exactly 180° apart (the exception is k = 0: 0°, 180° and 360°)</div>
+
     <table>
       <tr><th>Feature</th><th class="c">y = sin x</th><th class="c">y = cos x</th><th class="c">y = tan x</th></tr>
       <tr><td><strong>Starts at (0°)</strong></td><td class="c">0</td><td class="c">1</td><td class="c">0</td></tr>
@@ -833,7 +1168,7 @@
 
   <!-- ── 06 · SOLVING EQUATIONS (widget) ── -->
   <div class="section" id="s6">
-    <div class="sec-label">06 / 11 · E6.4 · The key skill</div>
+    <div class="sec-label">06 / 12 · E6.4 · The key skill</div>
     <h2>Solving trig equations</h2>
 
     <p>Your calculator's <span class="eq-inline">sin⁻¹</span>, <span class="eq-inline">cos⁻¹</span>, <span class="eq-inline">tan⁻¹</span> give only <strong>one</strong> angle, but a line <span class="eq-inline">y = k</span> usually cuts the wave <strong>twice</strong> in 0°–360°. Find the calculator angle, then use symmetry for its partner.</p>
@@ -848,6 +1183,45 @@
       </ul>
       Then <strong>add 360°</strong> to any negative answer and keep only those in 0°–360°.
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 280" role="img" aria-label="Two panels showing why each trig equation has a second solution. On the left the line y = 0.5 cuts the sine curve at 30 degrees and at 150 degrees, which are mirror images in the vertical line x = 90 degrees. On the right the same line cuts the cosine curve at 60 degrees and at 300 degrees, which are mirror images in the vertical line x = 180 degrees.">
+      <text class="f-ttl" x="155" y="30" text-anchor="middle">sin x = 0.5</text>
+      <text class="f-ttl" x="425" y="30" text-anchor="middle">cos x = 0.5</text>
+      <text class="f-lbl sm" x="155" y="48" text-anchor="middle">150 = 180 − 30</text>
+      <text class="f-lbl sm" x="425" y="48" text-anchor="middle">300 = 360 − 60</text>
+      <line class="f-dash" style="color:var(--border)" x1="286" y1="22" x2="286" y2="262"/>
+      <g transform="translate(0,10)">
+        <line class="f-thin" style="color:var(--muted)" x1="40" y1="125" x2="272" y2="125"/>
+        <line class="f-thin" style="color:var(--muted)" x1="45" y1="60" x2="45" y2="190"/>
+        <text class="f-lbl sm" x="155" y="204" text-anchor="middle">180°</text>
+        <text class="f-lbl sm" x="265" y="204" text-anchor="middle">360°</text>
+        <text class="f-lbl sm" x="40" y="106" text-anchor="end">0.5</text>
+        <text class="f-lbl sm" x="40" y="129" text-anchor="end">0</text>
+        <line class="f-dash" style="color:var(--energy2)" x1="100" y1="60" x2="100" y2="190"/>
+        <text class="f-lbl sm acc" style="color:var(--energy2)" x="104" y="56">mirror x = 90°</text>
+        <line class="f-dash" style="color:var(--force)" x1="45" y1="102" x2="268" y2="102"/>
+        <path class="f-line" style="color:var(--motion)" d="M45.0,125.0 L46.8,122.6 L48.7,120.2 L50.5,117.8 L52.3,115.4 L54.2,113.1 L56.0,110.8 L57.8,108.5 L59.7,106.3 L61.5,104.1 L63.3,102.0 L65.2,99.9 L67.0,98.0 L68.8,96.1 L70.7,94.2 L72.5,92.5 L74.3,90.8 L76.2,89.3 L78.0,87.8 L79.8,86.4 L81.7,85.2 L83.5,84.0 L85.3,83.0 L87.2,82.1 L89.0,81.3 L90.8,80.6 L92.7,80.0 L94.5,79.6 L96.3,79.3 L98.2,79.1 L100.0,79.0 L101.8,79.1 L103.7,79.3 L105.5,79.6 L107.3,80.0 L109.2,80.6 L111.0,81.3 L112.8,82.1 L114.7,83.0 L116.5,84.0 L118.3,85.2 L120.2,86.4 L122.0,87.8 L123.8,89.3 L125.7,90.8 L127.5,92.5 L129.3,94.2 L131.2,96.1 L133.0,98.0 L134.8,99.9 L136.7,102.0 L138.5,104.1 L140.3,106.3 L142.2,108.5 L144.0,110.8 L145.8,113.1 L147.7,115.4 L149.5,117.8 L151.3,120.2 L153.2,122.6 L155.0,125.0 L156.8,127.4 L158.7,129.8 L160.5,132.2 L162.3,134.6 L164.2,136.9 L166.0,139.2 L167.8,141.5 L169.7,143.7 L171.5,145.9 L173.3,148.0 L175.2,150.1 L177.0,152.0 L178.8,153.9 L180.7,155.8 L182.5,157.5 L184.3,159.2 L186.2,160.7 L188.0,162.2 L189.8,163.6 L191.7,164.8 L193.5,166.0 L195.3,167.0 L197.2,167.9 L199.0,168.7 L200.8,169.4 L202.7,170.0 L204.5,170.4 L206.3,170.7 L208.2,170.9 L210.0,171.0 L211.8,170.9 L213.7,170.7 L215.5,170.4 L217.3,170.0 L219.2,169.4 L221.0,168.7 L222.8,167.9 L224.7,167.0 L226.5,166.0 L228.3,164.8 L230.2,163.6 L232.0,162.2 L233.8,160.7 L235.7,159.2 L237.5,157.5 L239.3,155.8 L241.2,153.9 L243.0,152.0 L244.8,150.1 L246.7,148.0 L248.5,145.9 L250.3,143.7 L252.2,141.5 L254.0,139.2 L255.8,136.9 L257.7,134.6 L259.5,132.2 L261.3,129.8 L263.2,127.4 L265.0,125.0"/>
+        <circle class="f-pt" style="color:var(--force)" cx="63.3" cy="102" r="4.2"/>
+        <circle class="f-pt" style="color:var(--force)" cx="136.7" cy="102" r="4.2"/>
+        <text class="f-lbl acc" style="color:var(--force)" x="63" y="146" text-anchor="middle">30°</text>
+        <text class="f-lbl acc" style="color:var(--force)" x="137" y="146" text-anchor="middle">150°</text>
+        <line class="f-thin" style="color:var(--muted)" x1="310" y1="125" x2="542" y2="125"/>
+        <line class="f-thin" style="color:var(--muted)" x1="315" y1="60" x2="315" y2="190"/>
+        <text class="f-lbl sm" x="425" y="204" text-anchor="middle">180°</text>
+        <text class="f-lbl sm" x="535" y="204" text-anchor="middle">360°</text>
+        <text class="f-lbl sm" x="310" y="106" text-anchor="end">0.5</text>
+        <text class="f-lbl sm" x="310" y="129" text-anchor="end">0</text>
+        <line class="f-dash" style="color:var(--energy2)" x1="425" y1="60" x2="425" y2="190"/>
+        <text class="f-lbl sm acc" style="color:var(--energy2)" x="429" y="56">mirror x = 180°</text>
+        <line class="f-dash" style="color:var(--force)" x1="315" y1="102" x2="538" y2="102"/>
+        <path class="f-line" style="color:var(--motion)" d="M315.0,79.0 L316.8,79.1 L318.7,79.3 L320.5,79.6 L322.3,80.0 L324.2,80.6 L326.0,81.3 L327.8,82.1 L329.7,83.0 L331.5,84.0 L333.3,85.2 L335.2,86.4 L337.0,87.8 L338.8,89.3 L340.7,90.8 L342.5,92.5 L344.3,94.2 L346.2,96.1 L348.0,98.0 L349.8,99.9 L351.7,102.0 L353.5,104.1 L355.3,106.3 L357.2,108.5 L359.0,110.8 L360.8,113.1 L362.7,115.4 L364.5,117.8 L366.3,120.2 L368.2,122.6 L370.0,125.0 L371.8,127.4 L373.7,129.8 L375.5,132.2 L377.3,134.6 L379.2,136.9 L381.0,139.2 L382.8,141.5 L384.7,143.7 L386.5,145.9 L388.3,148.0 L390.2,150.1 L392.0,152.0 L393.8,153.9 L395.7,155.8 L397.5,157.5 L399.3,159.2 L401.2,160.7 L403.0,162.2 L404.8,163.6 L406.7,164.8 L408.5,166.0 L410.3,167.0 L412.2,167.9 L414.0,168.7 L415.8,169.4 L417.7,170.0 L419.5,170.4 L421.3,170.7 L423.2,170.9 L425.0,171.0 L426.8,170.9 L428.7,170.7 L430.5,170.4 L432.3,170.0 L434.2,169.4 L436.0,168.7 L437.8,167.9 L439.7,167.0 L441.5,166.0 L443.3,164.8 L445.2,163.6 L447.0,162.2 L448.8,160.7 L450.7,159.2 L452.5,157.5 L454.3,155.8 L456.2,153.9 L458.0,152.0 L459.8,150.1 L461.7,148.0 L463.5,145.9 L465.3,143.7 L467.2,141.5 L469.0,139.2 L470.8,136.9 L472.7,134.6 L474.5,132.2 L476.3,129.8 L478.2,127.4 L480.0,125.0 L481.8,122.6 L483.7,120.2 L485.5,117.8 L487.3,115.4 L489.2,113.1 L491.0,110.8 L492.8,108.5 L494.7,106.3 L496.5,104.1 L498.3,102.0 L500.2,99.9 L502.0,98.0 L503.8,96.1 L505.7,94.2 L507.5,92.5 L509.3,90.8 L511.2,89.3 L513.0,87.8 L514.8,86.4 L516.7,85.2 L518.5,84.0 L520.3,83.0 L522.2,82.1 L524.0,81.3 L525.8,80.6 L527.7,80.0 L529.5,79.6 L531.3,79.3 L533.2,79.1 L535.0,79.0"/>
+        <circle class="f-pt" style="color:var(--force)" cx="351.7" cy="102" r="4.2"/>
+        <circle class="f-pt" style="color:var(--force)" cx="498.3" cy="102" r="4.2"/>
+        <text class="f-lbl acc" style="color:var(--force)" x="352" y="146" text-anchor="middle">60°</text>
+        <text class="f-lbl acc" style="color:var(--force)" x="498" y="146" text-anchor="middle">300°</text>
+      </g>
+    </svg>
+    <div class="diag-cap">The second solution is the <em>mirror image</em> of the first — sine mirrors in x = 90° (so 180 − x₁) and cosine mirrors in x = 180° (so 360 − x₁)</div>
 
     <p>Pick a function and drag <span class="eq-inline">k</span>. The dashed red line is <span class="eq-inline">y = k</span>; the red dots are the solutions.</p>
 
@@ -880,21 +1254,21 @@
     <h3>Worked example — 2 cos x + 1 = 0, for 0° ≤ x ≤ 360°</h3>
     <div class="work">
       <span class="step">rearrange</span> cos x = −½<br>
-      <span class="step">calculator angle from +½</span> cos⁻¹(½) = 60°<br>
-      <span class="step">cos negative → answers left &amp; right of 180°</span> 180 − 60 = 120°, 180 + 60 = 240°<br>
+      <span class="step">calculator angle — type in the <em>negative</em> value</span> cos⁻¹(−½) = 120°<br>
+      <span class="step">partner rule for cos: 360 − x₁</span> 360 − 120 = 240°<br>
       <span class="step">answer</span> x = <strong>120°, 240°</strong>
     </div>
 
     <div class="box pitfall">
       <div class="box-label">⚠️ No solution</div>
-      A line above <span class="eq-inline">y = 1</span> or below <span class="eq-inline">y = −1</span> never meets the sine/cosine wave, so <span class="eq-inline">sin x = 2</span> has <strong>no solution</strong>. Tangent reaches every value, so <span class="eq-inline">tan x = k</span> always has two answers in 0°–360°.
+      A line above <span class="eq-inline">y = 1</span> or below <span class="eq-inline">y = −1</span> never meets the sine/cosine wave, so <span class="eq-inline">sin x = 2</span> has <strong>no solution</strong>. Tangent reaches every value, so <span class="eq-inline">tan x = k</span> always has two answers in 0°–360°, exactly 180° apart — the one exception is <span class="eq-inline">tan x = 0</span>, where <strong>0°, 180° and 360°</strong> all count.
     </div>
   </div>
 
 
   <!-- ── 07 · SINE RULE ── -->
   <div class="section" id="s7">
-    <div class="sec-label">07 / 11 · E6.5 · Any triangle</div>
+    <div class="sec-label">07 / 12 · E6.5 · Any triangle</div>
     <h2>The sine rule</h2>
 
     <p>Real triangles aren't always right-angled. The <strong>sine rule</strong> links each side to the sine of the angle <em>opposite</em> it, so it works on any triangle. It's <strong>given</strong> in the exam's List of formulas — the skill is knowing <em>when</em> to use it.</p>
@@ -910,15 +1284,26 @@
       Use the sine rule when you have a <strong>matching side–angle pair</strong> (a side and the angle facing it) plus one more piece. That "opposite pair" is the signature — if you don't have one, use the cosine rule instead.
     </div>
 
-    <svg class="diagram" viewBox="0 0 300 190" role="img" aria-label="General triangle ABC">
-      <polygon class="dg-fill" points="40,160 260,160 110,40"/>
-      <text class="dg-lbl" x="30" y="172">A</text>
-      <text class="dg-lbl" x="262" y="172">B</text>
-      <text class="dg-lbl" x="104" y="34">C</text>
-      <text class="dg-lbl m" x="180" y="110">a</text>
-      <text class="dg-lbl m" x="60" y="105">b</text>
-      <text class="dg-lbl m" x="150" y="175">c</text>
+    <svg class="diagram" viewBox="0 0 480 270" role="img" aria-label="A general non-right-angled triangle ABC. Each lower-case side letter is placed on the side facing the matching capital angle letter: side a faces angle A, side b faces angle B and side c faces angle C.">
+      <text class="f-ttl" x="230" y="30" text-anchor="middle">labelling any triangle</text>
+      <polygon class="f-fill" style="color:var(--motion)" points="60,210 400,210 180,70"/>
+      <line class="f-thick" style="color:var(--force)"  x1="400" y1="210" x2="180" y2="70"/>
+      <line class="f-thick" style="color:var(--motion)" x1="60" y1="210" x2="180" y2="70"/>
+      <line class="f-thick" style="color:var(--power)"  x1="60" y1="210" x2="400" y2="210"/>
+      <g style="color:var(--energy2)">
+        <path class="f-arc" d="M94,210 A34 34 0 0 0 82.1,184.2"/>
+        <path class="f-arc" d="M366,210 A34 34 0 0 1 371.3,191.7"/>
+        <path class="f-arc" d="M160.5,92.8 A30 30 0 0 0 205.3,86.1"/>
+      </g>
+      <text class="f-lbl" x="50" y="222" text-anchor="end">A</text>
+      <text class="f-lbl" x="410" y="222">B</text>
+      <text class="f-lbl" x="180" y="58" text-anchor="middle">C</text>
+      <text class="f-lbl acc" style="color:var(--force)"  x="302" y="124">a</text>
+      <text class="f-lbl acc" style="color:var(--motion)" x="104" y="128" text-anchor="end">b</text>
+      <text class="f-lbl acc" style="color:var(--power)"  x="230" y="228" text-anchor="middle">c</text>
+      <text class="f-lbl sm" x="240" y="252" text-anchor="middle">a faces A · b faces B · c faces C</text>
     </svg>
+    <div class="diag-cap">Every small letter sits on the side <em>facing</em> its capital — that pairing is what makes a / sin A a matched pair</div>
 
     <h3>Worked example</h3>
     <p>In triangle ABC, angle A = 40°, angle C = 65° and side c = 12&nbsp;cm. Find side a.</p>
@@ -927,6 +1312,52 @@
       <span class="step">rearrange</span> a = 12 × sin 40° ÷ sin 65°<br>
       <span class="step">evaluate</span> a = 12 × 0.6428 ÷ 0.9063 = <strong>8.51 cm</strong> (3 s.f.)
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 285" role="img" aria-label="Two triangles built from exactly the same data: angle A is 30 degrees, side a is 5 and side b is 8. In the left one angle B is the acute 53.1 degrees; in the right one angle B is the obtuse 126.9 degrees. In each, a dashed circular arc of radius a centred on C crosses the base line at two points, and each crossing is a valid position for B.">
+      <text class="f-ttl" x="145" y="30" text-anchor="middle">B acute — 53.1°</text>
+      <text class="f-ttl" x="425" y="30" text-anchor="middle">B obtuse — 126.9°</text>
+      <line class="f-dash" style="color:var(--border)" x1="284" y1="22" x2="284" y2="272"/>
+
+      <!-- PANEL A · B acute -->
+      <path class="f-dash" style="color:var(--muted)" d="M124.3,200 A120 120 0 0 0 268.3,200"/>
+      <circle class="f-hollow" style="color:var(--muted)" cx="124.3" cy="200" r="4.4"/>
+      <line class="f-thick" style="color:var(--motion)" x1="30" y1="200" x2="196.3" y2="104"/>
+      <line class="f-thick" style="color:var(--force)"  x1="268.3" y1="200" x2="196.3" y2="104"/>
+      <line class="f-line"  style="color:var(--muted)"  x1="30" y1="200" x2="268.3" y2="200"/>
+      <g style="color:var(--energy2)">
+        <path class="f-arc" d="M64,200 A34 34 0 0 0 59.4,183"/>
+        <path class="f-arc" d="M238.3,200 A30 30 0 0 1 250.3,176"/>
+      </g>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="70" y="188">30°</text>
+      <text class="f-lbl" x="23" y="212" text-anchor="end">A</text>
+      <text class="f-lbl" x="266" y="216" text-anchor="end">B</text>
+      <text class="f-lbl" x="200" y="97">C</text>
+      <text class="f-lbl acc" style="color:var(--motion)" x="100" y="136" text-anchor="middle">b = 8</text>
+      <text class="f-lbl acc" style="color:var(--force)"  x="250" y="141">a = 5</text>
+      <text class="f-lbl sm" x="234" y="172" text-anchor="end">B = 53.1°</text>
+      <text class="f-lbl sm" x="145" y="262" text-anchor="middle">C = 96.9° · angles sum to 180</text>
+
+      <!-- PANEL B · B obtuse -->
+      <path class="f-dash" style="color:var(--muted)" d="M394.3,200 A120 120 0 0 0 538.3,200"/>
+      <circle class="f-hollow" style="color:var(--muted)" cx="538.3" cy="200" r="4.4"/>
+      <line class="f-thick" style="color:var(--motion)" x1="300" y1="200" x2="466.3" y2="104"/>
+      <line class="f-thick" style="color:var(--force)"  x1="394.3" y1="200" x2="466.3" y2="104"/>
+      <line class="f-line"  style="color:var(--muted)"  x1="300" y1="200" x2="394.3" y2="200"/>
+      <line class="f-dash" style="color:var(--muted)" x1="394.3" y1="200" x2="538.3" y2="200"/>
+      <g style="color:var(--energy2)">
+        <path class="f-arc" d="M334,200 A34 34 0 0 0 329.4,183"/>
+        <path class="f-arc" d="M368.3,200 A26 26 0 0 1 409.9,179.2"/>
+      </g>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="340" y="188">30°</text>
+      <text class="f-lbl" x="298" y="216">A</text>
+      <text class="f-lbl" x="386" y="214" text-anchor="end">B</text>
+      <text class="f-lbl" x="470" y="97">C</text>
+      <text class="f-lbl acc" style="color:var(--motion)" x="370" y="136" text-anchor="middle">b = 8</text>
+      <text class="f-lbl acc" style="color:var(--force)"  x="450" y="164">a = 5</text>
+      <text class="f-lbl sm" x="394" y="240" text-anchor="middle">B = 126.9°</text>
+      <text class="f-lbl sm" x="425" y="262" text-anchor="middle">C = 23.1° · angles sum to 180</text>
+    </svg>
+    <div class="diag-cap">Same A = 30°, a = 5, b = 8 — two different triangles. The dashed arc is the circle of radius <em>a</em> centred on C: it crosses the base twice, and each crossing is a valid B</div>
 
     <div class="box pitfall">
       <div class="box-label">⚠️ The ambiguous case (SSA)</div>
@@ -937,7 +1368,7 @@
 
   <!-- ── 08 · COSINE RULE ── -->
   <div class="section" id="s8">
-    <div class="sec-label">08 / 11 · E6.5 · Any triangle</div>
+    <div class="sec-label">08 / 12 · E6.5 · Any triangle</div>
     <h2>The cosine rule</h2>
 
     <p>When the sine rule can't start — because you have <strong>no opposite side–angle pair</strong> — the cosine rule steps in. It's Pythagoras with a correction term for the angle, and it's also <strong>given</strong> in the exam.</p>
@@ -972,7 +1403,7 @@
 
   <!-- ── 09 · TRIANGLE AREA ── -->
   <div class="section" id="s9">
-    <div class="sec-label">09 / 11 · E6.5 · Area</div>
+    <div class="sec-label">09 / 12 · E6.5 · Area</div>
     <h2>Area of a triangle = ½ ab sin C</h2>
 
     <p>The familiar <span class="eq-inline">½ × base × height</span> needs a perpendicular height. When you instead know <strong>two sides and the angle between them</strong>, this formula (also <strong>given</strong> in the exam) gets the area directly.</p>
@@ -987,6 +1418,30 @@
       <div class="box-label">💡 Why it works</div>
       The height of the triangle is <span class="eq-inline">a·sin C</span> (drop a perpendicular from the tip — it's the opposite side of a little right-angled triangle). Put that into <span class="eq-inline">½ × base × height</span> with base <span class="eq-inline">b</span> and you get <span class="eq-inline">½ ab sin C</span>.
     </div>
+
+    <svg class="diagram" viewBox="0 0 500 250" role="img" aria-label="A triangle with sides a = 9 and b = 12 meeting at angle C = 43 degrees. A dashed perpendicular is dropped from the far end of side a onto side b; its length is a sin C, which put into half base times height gives the formula half a b sin C.">
+      <text class="f-ttl" x="250" y="28" text-anchor="middle">the height is hiding inside a sin C</text>
+      <polygon class="f-fill" style="color:var(--motion)" points="80,205 272,205 185.3,106.8"/>
+      <line class="f-thick" style="color:var(--motion)" x1="80" y1="205" x2="272" y2="205"/>
+      <line class="f-thick" style="color:var(--force)"  x1="80" y1="205" x2="185.3" y2="106.8"/>
+      <line class="f-line"  style="color:var(--muted)"  x1="272" y1="205" x2="185.3" y2="106.8"/>
+      <line class="f-dash" style="color:var(--power)" x1="185.3" y1="106.8" x2="185.3" y2="205"/>
+      <path class="f-thin" style="color:var(--muted)" d="M173.3,205 L173.3,193 L185.3,193"/>
+      <path class="f-arc" style="color:var(--energy2)" d="M114,205 A34 34 0 0 0 104.9,181.8"/>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="122" y="190">C = 43°</text>
+      <text class="f-lbl" x="72" y="216" text-anchor="end">C</text>
+      <text class="f-lbl" x="280" y="216">A</text>
+      <text class="f-lbl" x="188" y="98">B</text>
+      <text class="f-lbl acc" style="color:var(--motion)" x="176" y="222" text-anchor="middle">b = 12</text>
+      <text class="f-lbl acc" style="color:var(--force)"  x="116" y="144" text-anchor="middle">a = 9</text>
+      <text class="f-lbl acc" style="color:var(--power)"  x="192" y="194">h = a sin C</text>
+      <text class="f-lbl acc" style="color:var(--motion)" x="300" y="92">Area = ½ × base × height</text>
+      <text class="f-lbl" x="300" y="114">&#160;&#160;&#160;&#160;&#160;= ½ × b × (a sin C)</text>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="300" y="136">&#160;&#160;&#160;&#160;&#160;= ½ ab sin C</text>
+      <text class="f-lbl sm" x="300" y="168">= ½ × 12 × 9 × sin 43°</text>
+      <text class="f-lbl sm" x="300" y="186">= 36.8 m² (3 s.f.)</text>
+    </svg>
+    <div class="diag-cap">Drop the perpendicular and the missing height turns out to be a sin C — the formula <em>is</em> ½ × base × height in disguise</div>
 
     <h3>Worked example</h3>
     <p>A triangular plot has two sides of 9&nbsp;m and 12&nbsp;m meeting at 43°. Find its area.</p>
@@ -1004,7 +1459,7 @@
 
   <!-- ── 10 · 3D TRIG ── -->
   <div class="section" id="s10">
-    <div class="sec-label">10 / 11 · E6.6 · Three dimensions</div>
+    <div class="sec-label">10 / 12 · E6.6 · Three dimensions</div>
     <h2>Pythagoras &amp; trig in 3D</h2>
 
     <p>3D problems are solved by finding a <strong>right-angled triangle inside the solid</strong> and working in that flat plane. The trick is to sketch the triangle on its own before touching the calculator.</p>
@@ -1014,17 +1469,48 @@
       <span class="eq-inline" style="color:var(--cyan)">d = √(l² + w² + h²)</span> — Pythagoras used twice: first across the base (<span class="eq-inline">√(l²+w²)</span>), then up to the far corner.
     </div>
 
-    <svg class="diagram" viewBox="0 0 300 200" role="img" aria-label="Cuboid with space diagonal">
-      <polygon class="dg-hidden" points="70,150 210,150 250,110 110,110"/>
-      <path class="dg-side" d="M70,150 L70,60 L210,60 L210,150"/>
-      <path class="dg-side" d="M70,60 L110,20 L250,20 L210,60"/>
-      <path class="dg-side" d="M250,20 L250,110 L210,150"/>
-      <line class="dg-hyp" x1="70" y1="150" x2="250" y2="20"/>
-      <text class="dg-lbl" x="150" y="95" fill="#48d39a">d</text>
+    <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="On the left, a 6 by 4 by 3 cuboid with the base diagonal drawn dashed across the bottom face and the space diagonal d drawn from the same bottom corner to the opposite top corner. The angle theta between them sits at the bottom corner, and the vertical edge meets the base at a right angle. On the right, that same right-angled triangle is redrawn flat, with base the base diagonal 7.211, height 3 and hypotenuse d equal to 7.81.">
+      <text class="f-ttl" x="150" y="32" text-anchor="middle">6 × 4 × 3 cuboid</text>
+      <text class="f-ttl" x="420" y="32" text-anchor="middle">the flat right triangle inside it</text>
+      <line class="f-dash" style="color:var(--border)" x1="290" y1="24" x2="290" y2="272"/>
+
+      <!-- PANEL A · the cuboid -->
+      <g style="color:var(--muted)">
+        <path class="f-dash" d="M60,230 L104,197 M104,197 L236,197 M104,197 L104,131"/>
+      </g>
+      <g class="f-line" style="color:var(--text)">
+        <path d="M60,230 L192,230 L192,164 L60,164 Z"/>
+        <path d="M60,164 L104,131 L236,131 L192,164"/>
+        <path d="M236,131 L236,197 L192,230"/>
+      </g>
+      <line class="f-dash" style="color:var(--motion)" x1="60" y1="230" x2="236" y2="197"/>
+      <line class="f-thick" style="color:var(--power)" x1="60" y1="230" x2="236" y2="131"/>
+      <path class="f-arc" style="color:var(--energy2)" d="M99.3,222.6 A40 40 0 0 0 94.8,210.4"/>
+      <path class="f-thin" style="color:var(--muted)" d="M224.2,199.2 L224.2,187.2 L236,185"/>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="108" y="215">θ</text>
+      <text class="f-lbl" x="126" y="246" text-anchor="middle">6</text>
+      <text class="f-lbl" x="198" y="192">3</text>
+      <text class="f-lbl" x="222" y="218">4</text>
+      <text class="f-lbl sm acc" style="color:var(--motion)" x="150" y="225" text-anchor="middle">√52</text>
+      <text class="f-lbl acc" style="color:var(--power)" x="244" y="126">d</text>
+
+      <!-- PANEL B · the extracted triangle -->
+      <polygon class="f-fill" style="color:var(--motion)" points="320,240 500,240 500,165"/>
+      <line class="f-thick" style="color:var(--motion)" x1="320" y1="240" x2="500" y2="240"/>
+      <line class="f-thick" style="color:var(--force)"  x1="500" y1="240" x2="500" y2="165"/>
+      <line class="f-thick" style="color:var(--power)"  x1="320" y1="240" x2="500" y2="165"/>
+      <path class="f-thin" style="color:var(--muted)" d="M488,240 L488,228 L500,228"/>
+      <path class="f-arc" style="color:var(--energy2)" d="M364,240 A44 44 0 0 0 360.6,223.1"/>
+      <text class="f-lbl acc" style="color:var(--energy2)" x="368" y="228">θ = 22.6°</text>
+      <text class="f-lbl acc" style="color:var(--force)" x="508" y="205">h = 3</text>
+      <text class="f-lbl acc" style="color:var(--power)" x="400" y="186" text-anchor="middle">d = 7.81</text>
+      <text class="f-lbl sm acc" style="color:var(--motion)" x="410" y="256" text-anchor="middle">base diagonal = 7.211</text>
+      <text class="f-lbl sm" x="410" y="276" text-anchor="middle">tan θ = 3 ÷ 7.211 = 0.4160</text>
     </svg>
+    <div class="diag-cap">Find the flat right-angled triangle first: its base is the <em>base diagonal</em> √(6²+4²), its height is the cuboid's height, and θ is the angle between the space diagonal and the base</div>
 
     <h3>Worked example — angle between a line and a plane</h3>
-    <p>A box measures 6&nbsp;cm × 4&nbsp;cm × 3&nbsp;cm. Find the angle the space diagonal makes with the base.</p>
+    <p>A box has a rectangular base 6&nbsp;cm × 4&nbsp;cm and a height of 3&nbsp;cm. Find the angle the space diagonal makes with the base.</p>
     <div class="work">
       <span class="step">base diagonal first (Pythagoras on the base)</span> √(6² + 4²) = √52 = 7.211 cm<br>
       <span class="step">angle θ between diagonal and base: opposite = height 3, adjacent = base diagonal</span> tan θ = 3 / 7.211<br>
@@ -1038,9 +1524,67 @@
   </div>
 
 
-  <!-- ── 11 · SKILL BANK ── -->
+  <!-- ── 11 · CHECK YOURSELF ── -->
   <div class="section" id="s11">
-    <div class="sec-label">11 / 11 · Reference</div>
+    <div class="sec-label">11 / 12 · Check Yourself</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+    <p>Cover the answers. Write each one out properly, with the working, exactly as you would in the exam — angles to <strong>1 d.p.</strong> and lengths to <strong>3 s.f.</strong> unless told otherwise.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>Write down the exact values of <span class="eq-inline">cos 30°</span>, <span class="eq-inline">sin 45°</span> and <span class="eq-inline">tan 60°</span>, and state which triangle each one comes from.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>cos 30° = √3⁄2</strong> and <strong>tan 60° = √3</strong> — both from <strong>half an equilateral triangle</strong> of side 2 (sides 1, √3, 2). <strong>sin 45° = √2⁄2</strong> (= 1/√2) — from <strong>half a unit square</strong> (sides 1, 1, √2).</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>A ladder 4.2&nbsp;m long leans against a vertical wall and reaches 3.7&nbsp;m up it. Calculate the distance of the foot of the ladder from the wall.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The ladder is the hypotenuse, so <em>subtract</em>: <span class="eq-inline">d² = 4.2² − 3.7² = 17.64 − 13.69 = 3.95</span>, so <span class="eq-inline">d = √3.95 = 1.9874…</span> = <strong>1.99 m</strong> (3 s.f.). Adding instead of subtracting gives 5.60 m — longer than the ladder, which is impossible.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span>From the top of a vertical cliff 46&nbsp;m high, the angle of depression of a boat is 27°. Calculate the distance of the boat from the foot of the cliff.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The angle of <em>elevation</em> of the cliff top from the boat is also <strong>27°</strong> (alternate angles between the two parallel horizontals). In that right-angled triangle the 46 m is opposite and the distance <span class="eq-inline">d</span> is adjacent, so <span class="eq-inline">tan 27° = 46 / d</span> → <span class="eq-inline">d = 46 ÷ tan 27° = 46 ÷ 0.50953</span> = <strong>90.3 m</strong> (3 s.f.). Using <span class="eq-inline">46 × tan 27°</span> = 23.4 m is the classic slip.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>B is on a bearing of 118° from A. Work out the bearing of A from B.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><span class="eq-inline">118 + 180 = </span><strong>298°</strong>. (Add 180° when the first bearing is under 180°, subtract 180° when it is over — and always write three figures.)</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>Solve <span class="eq-inline">sin x = 0.35</span> for <span class="eq-inline">0° ≤ x ≤ 360°</span>, giving your answers correct to 1 decimal place.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><span class="eq-inline">sin⁻¹(0.35) = 20.487…° </span>→ <strong>20.5°</strong>. Partner: <span class="eq-inline">180 − 20.487 = 159.513…°</span> → <strong>159.5°</strong>. So <strong>x = 20.5° or 159.5°</strong>. Subtract from 180 <em>before</em> rounding, or you lose accuracy.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>In triangle PQR, PQ = 9.4&nbsp;cm, PR = 7.1&nbsp;cm and angle QPR = 112°. Calculate (a) QR and (b) the area of the triangle.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>(a)</strong> Two sides and the included angle → cosine rule. <span class="eq-inline">QR² = 9.4² + 7.1² − 2(9.4)(7.1)cos 112°</span> <span class="eq-inline">= 88.36 + 50.41 − 133.48 × (−0.37461) = 188.77</span>, so QR = <strong>13.7 cm</strong> (3 s.f.). The angle is obtuse, so <span class="eq-inline">cos 112°</span> is <em>negative</em> and the last term <em>adds</em>.<br><strong>(b)</strong> <span class="eq-inline">Area = ½ × 9.4 × 7.1 × sin 112° = 33.37 × 0.92718</span> = <strong>30.9 cm²</strong> (3 s.f.).</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>A cuboid has a rectangular base 8&nbsp;cm by 6&nbsp;cm and a height of 5&nbsp;cm. Calculate the angle between a space diagonal and the base.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Base diagonal first: <span class="eq-inline">√(8² + 6²) = √100 = 10 cm</span>. That is the adjacent side; the height 5 cm is opposite. <span class="eq-inline">tan θ = 5 / 10 = 0.5</span>, so <span class="eq-inline">θ = tan⁻¹(0.5)</span> = <strong>26.6°</strong> (1 d.p.). Using the space diagonal √125 as the adjacent side is the usual error.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>Explain why using the sine rule to find an <em>angle</em> can give two possible triangles, and state the check that decides whether both are valid.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Because <span class="eq-inline">sin θ = sin(180° − θ)</span>: the calculator's <span class="eq-inline">sin⁻¹</span> returns only the acute angle, but its obtuse partner <span class="eq-inline">180° − θ</span> has exactly the same sine, so both fit the same side–angle data. <strong>Check:</strong> add the obtuse option to the angle you were already given — if the total is 180° or more there is no room for a third angle, so only the acute triangle exists; if it is less than 180°, both triangles are valid and you must give both answers.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 12 · SKILL BANK ── -->
+  <div class="section" id="s12">
+    <div class="sec-label">12 / 12 · Reference</div>
     <h2>Topic 6 formula &amp; skill bank</h2>
     <p>The sine rule, cosine rule and area formula are <strong>given</strong> in the exam; the rest you should know on sight. Tap any tile for the form, a worked line, and the exam trap:</p>
 
@@ -1054,6 +1598,18 @@
       <span class="eq-inline" style="color:var(--rose)">sin: 180 − x</span>
       <span class="eq-inline" style="color:var(--rose)">cos: 360 − x</span>
       <span class="eq-inline" style="color:var(--rose)">tan: 180 + x</span>
+    </div>
+
+    <div class="paperlinks">
+      <div class="pl-head">📝 Practise this topic</div>
+      <p>Topic 6 has <strong>no practice paper of its own yet</strong>, so the two Topic 6 papers below are <em>graded</em> — teacher-marked, with no answers shown on submit. The two mixed non-calculator practice papers <em>do</em> reveal their mark schemes, so use those for self-study of the parts listed:</p>
+      <div class="pl-grid">
+        <a class="plink" href="../exam-papers/Mathematics%20Topic%206%20Graded%20Paper%20-%20Trigonometry.html"><span class="pl-ico">📑</span>Topic 6 Graded Paper — Trigonometry<span class="pl-tag">graded</span></a>
+        <a class="plink" href="../exam-papers/Mathematics%20Topic%206%20Graded%20Paper%202%20-%20Trigonometry%20Graphs%20and%20Equations.html"><span class="pl-ico">📑</span>Topic 6 Graded Paper 2 — Trigonometry Graphs &amp; Equations<span class="pl-tag">graded</span></a>
+        <a class="plink" href="../practice-papers/Mathematics%20Non-Calculator%20Practice%20Paper%201%20-%20Mixed%20Topics.html"><span class="pl-ico">📝</span>Non-Calculator Practice Paper 1 — mixed (exact-value trigonometry, Pythagoras)<span class="pl-tag">practice · mixed</span></a>
+        <a class="plink" href="../practice-papers/Mathematics%20Non-Calculator%20Practice%20Paper%202%20-%20Mixed%20Topics.html"><span class="pl-ico">📝</span>Non-Calculator Practice Paper 2 — mixed (bearings)<span class="pl-tag">practice · mixed</span></a>
+        <a class="plink" href="Mathematics%20Topic%206%20Cheat%20Sheet%20-%20Trigonometry.html"><span class="pl-ico">📄</span>Topic 6 Cheat Sheet — one-page revision reference<span class="pl-tag">cheat sheet</span></a>
+      </div>
     </div>
   </div>
 
