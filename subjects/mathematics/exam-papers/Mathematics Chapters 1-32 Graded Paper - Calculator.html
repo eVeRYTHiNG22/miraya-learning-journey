@@ -155,6 +155,13 @@
   .formulas li { font-size:13px; margin-bottom:6px; break-inside:avoid; color:var(--text); }
   @media (max-width:700px){ .formulas ul { columns:1; } }
 
+  /* During the exam the front sheet collapses to its REFERENCE matter only (data,
+     rubric, List of formulas) — the real board keeps its data/formula page in front
+     of the candidate for the whole paper, so ours must not vanish on start. */
+  #front.started > h2, #front.started .meta-grid, #front.started .controls,
+  #front.started .instructions li.admin { display:none; }
+  #front.started { margin-bottom:16px; padding-bottom:4px; }
+
   /* mode + start controls */
   .controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px;
     padding-top:20px; border-top:1px solid var(--border); }
@@ -469,8 +476,8 @@
       <li>Answer <b>all</b> questions. Every question is structured — write your answers in the spaces provided.</li>
       <li>Show your <b>working</b> in all calculations — your teacher awards method marks for correct working.</li>
       <li>You <b>may use a calculator</b> throughout this paper.</li>
-      <li>This is a <b>graded exam</b>: your answers are <b>not</b> marked in this file and no answers are shown. In <b>Timed exam</b> mode a countdown runs; the paper locks when you submit or time runs out.</li>
-      <li>When you submit (or the time runs out) your answers are saved automatically — you don't need to download or send anything.</li>
+      <li class="admin">This is a <b>graded exam</b>: your answers are <b>not</b> marked in this file and no answers are shown. In <b>Timed exam</b> mode a countdown runs; the paper locks when you submit or time runs out.</li>
+      <li class="admin">When you submit (or the time runs out) your answers are saved automatically — you don't need to download or send anything.</li>
       <li>Give non-exact answers correct to <b>3 significant figures</b>, or <b>1 decimal place for angles in degrees</b>, unless a different level of accuracy is specified; take the value of π from your calculator.</li>
     </ul>
     <div class="formulas">
@@ -487,7 +494,7 @@
         <li>Volume, <i>V</i>, of cylinder of radius <i>r</i>, height <i>h</i>. &nbsp; <b>V = πr²h</b></li>
         <li>Volume, <i>V</i>, of cone of radius <i>r</i>, height <i>h</i>. &nbsp; <b>V = ⅓πr²h</b></li>
         <li>Volume, <i>V</i>, of sphere of radius <i>r</i>. &nbsp; <b>V = 4/3 πr³</b></li>
-        <li>For the equation <i>ax</i>² + <i>bx</i> + <i>c</i> = 0, where <i>a</i> ≠ 0. &nbsp; <b>x = [ −b ± √(b² − 4ac) ] / 2a</b></li>
+        <li>For the equation <i>ax</i>² + <i>bx</i> + <i>c</i> = 0, where <i>a</i> ≠ 0. &nbsp; <b>x = [ −b ± √(b² − 4ac) ] / (2a)</b></li>
         <li>For a triangle with sides <i>a</i>, <i>b</i>, <i>c</i> and opposite angles <i>A</i>, <i>B</i>, <i>C</i>:<br>
             <b>a / sin A = b / sin B = c / sin C</b> &nbsp;·&nbsp; <b>a² = b² + c² − 2bc cos A</b> &nbsp;·&nbsp; <b>Area = ½ab sin C</b></li>
       </ul>
@@ -1052,7 +1059,7 @@ function updateProgress(){
 function start(m){
   if(started) return;
   started=true; mode=m; graded=false;
-  $('front').style.display='none';
+  $('front').classList.add('started');   // keep data + formulas visible during the paper
   $('questions').classList.remove('locked');
   setInputsEnabled(true);
   $('examBar').classList.add('show');

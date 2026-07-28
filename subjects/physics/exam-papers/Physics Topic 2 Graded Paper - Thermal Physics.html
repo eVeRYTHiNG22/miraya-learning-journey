@@ -149,6 +149,13 @@
   }
 
   /* mode + start controls */
+  /* During the exam the front sheet collapses to its REFERENCE matter only (data,
+     rubric, List of formulas) — the real board keeps its data/formula page in front
+     of the candidate for the whole paper, so ours must not vanish on start. */
+  #front.started > h2, #front.started .meta-grid, #front.started .controls,
+  #front.started .instructions li.admin { display:none; }
+  #front.started { margin-bottom:16px; padding-bottom:4px; }
+
   .controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px;
     padding-top:20px; border-top:1px solid var(--border); }
   .btn {
@@ -472,9 +479,9 @@
       <li>Answer <b>all</b> questions. <b>Section A (Q1–Q30)</b> is multiple choice — one mark each. <b>Section B (Q31–Q39)</b> is structured and calculation.</li>
       <li>Show <b>all</b> your working and use appropriate units — your teacher awards method marks for correct working, not just the final answer.</li>
       <li>A calculator may be used throughout. Give non-exact answers to a sensible number of significant figures (usually 2 or 3).</li>
-      <li>This is a <b>graded exam</b>: it is marked by your teacher. When you submit, your answers are sent for grading — <b>no score or correct answers are shown here</b>.</li>
-      <li>In timed mode a <b>2-hour countdown</b> runs. The paper is submitted when you press <b>Submit</b> or when time runs out.</li>
-      <li>Useful data: specific heat capacity of water = 4200 J/(kg&nbsp;°C); T(in K) = θ(in °C) + 273. Any other specific heat capacities are given in the questions. Recall your own equations — no formula sheet is provided.</li>
+      <li class="admin">This is a <b>graded exam</b>: it is marked by your teacher. When you submit, your answers are sent for grading — <b>no score or correct answers are shown here</b>.</li>
+      <li class="admin">In timed mode a <b>2-hour countdown</b> runs. The paper is submitted when you press <b>Submit</b> or when time runs out.</li>
+      <li>Useful data: Take the weight of 1.0 kg to be 9.8 N (acceleration of free fall = 9.8 m/s²). Specific heat capacity of water = 4200 J/(kg&nbsp;°C); T(in K) = θ(in °C) + 273. Any other specific heat capacities are given in the questions. Recall your own equations — no formula sheet is provided.</li>
     </ul>
     <div class="controls">
       <button class="btn primary" id="startTimed">▶ Start exam</button>
@@ -902,7 +909,7 @@ function updateProgress(){
 function start(m){
   if(started) return;
   started=true; mode=m; graded=false;
-  $('front').style.display='none';
+  $('front').classList.add('started');   // keep data + formulas visible during the paper
   $('questions').classList.remove('locked');
   setInputsEnabled(true);
   $('examBar').classList.add('show');

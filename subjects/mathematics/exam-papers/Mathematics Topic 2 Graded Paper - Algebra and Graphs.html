@@ -148,6 +148,20 @@
     content:'▸'; position:absolute; left:2px; top:0; color:var(--motion); font-size:13px;
   }
 
+  /* List of formulas (the board prints this on page 2 of every 0580 paper) */
+  .formulas { margin:18px 0 4px; padding:14px 16px; border:1px solid var(--border); border-radius:10px; }
+  .formulas h3 { margin:0 0 8px; font-size:14px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+  .formulas ul { list-style:none; margin:0; padding:0; columns:2; column-gap:26px; }
+  .formulas li { font-size:13px; margin-bottom:6px; break-inside:avoid; color:var(--text); }
+  @media (max-width:700px){ .formulas ul { columns:1; } }
+
+  /* During the exam the front sheet collapses to its REFERENCE matter only (data,
+     rubric, List of formulas) — the real board keeps its data/formula page in front
+     of the candidate for the whole paper, so ours must not vanish on start. */
+  #front.started > h2, #front.started .meta-grid, #front.started .controls,
+  #front.started .instructions li.admin { display:none; }
+  #front.started { margin-bottom:16px; padding-bottom:4px; }
+
   /* mode + start controls */
   .controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px;
     padding-top:20px; border-top:1px solid var(--border); }
@@ -476,9 +490,28 @@
       <li>Give non-exact answers correct to <b>3 significant figures</b>, or <b>1 decimal place</b> for readings taken from a graph, unless the question says otherwise. Give money answers correct to <b>2 decimal places</b>.</li>
       <li>For Section&nbsp;A, give exact answers (fractions in their lowest terms, simplified surds) — a calculator must <b>not</b> be used.</li>
       <li>You will need graph paper (or squared paper) for the graph-drawing question in Section&nbsp;B.</li>
-      <li>This is a <b>graded paper</b>: it is marked by your teacher. When you submit, your answers are sent to your teacher — <b>no score or correct answers are shown here</b>.</li>
-      <li>In timed mode a <b>2-hour countdown</b> runs. The paper is submitted when you press <b>Submit</b> or when time runs out.</li>
+      <li class="admin">This is a <b>graded paper</b>: it is marked by your teacher. When you submit, your answers are sent to your teacher — <b>no score or correct answers are shown here</b>.</li>
+      <li class="admin">In timed mode a <b>2-hour countdown</b> runs. The paper is submitted when you press <b>Submit</b> or when time runs out.</li>
     </ul>
+    <div class="formulas">
+      <h3>List of formulas</h3>
+      <ul>
+        <li>Area, <i>A</i>, of triangle, base <i>b</i>, height <i>h</i>. &nbsp; <b>A = ½bh</b></li>
+        <li>Area, <i>A</i>, of circle of radius <i>r</i>. &nbsp; <b>A = πr²</b></li>
+        <li>Circumference, <i>C</i>, of circle of radius <i>r</i>. &nbsp; <b>C = 2πr</b></li>
+        <li>Curved surface area, <i>A</i>, of cylinder of radius <i>r</i>, height <i>h</i>. &nbsp; <b>A = 2πrh</b></li>
+        <li>Curved surface area, <i>A</i>, of cone of radius <i>r</i>, sloping edge <i>l</i>. &nbsp; <b>A = πrl</b></li>
+        <li>Surface area, <i>A</i>, of sphere of radius <i>r</i>. &nbsp; <b>A = 4πr²</b></li>
+        <li>Volume, <i>V</i>, of prism, cross-sectional area <i>A</i>, length <i>l</i>. &nbsp; <b>V = Al</b></li>
+        <li>Volume, <i>V</i>, of pyramid, base area <i>A</i>, height <i>h</i>. &nbsp; <b>V = ⅓Ah</b></li>
+        <li>Volume, <i>V</i>, of cylinder of radius <i>r</i>, height <i>h</i>. &nbsp; <b>V = πr²h</b></li>
+        <li>Volume, <i>V</i>, of cone of radius <i>r</i>, height <i>h</i>. &nbsp; <b>V = ⅓πr²h</b></li>
+        <li>Volume, <i>V</i>, of sphere of radius <i>r</i>. &nbsp; <b>V = 4/3 πr³</b></li>
+        <li>For the equation <i>ax</i>² + <i>bx</i> + <i>c</i> = 0, where <i>a</i> ≠ 0. &nbsp; <b>x = [ −b ± √(b² − 4ac) ] / (2a)</b></li>
+        <li>For a triangle with sides <i>a</i>, <i>b</i>, <i>c</i> and opposite angles <i>A</i>, <i>B</i>, <i>C</i>:<br>
+            <b>a / sin A = b / sin B = c / sin C</b> &nbsp;·&nbsp; <b>a² = b² + c² − 2bc cos A</b> &nbsp;·&nbsp; <b>Area = ½ab sin C</b></li>
+      </ul>
+    </div>
     <div class="controls">
       <button class="btn primary" id="startTimed">▶ Start exam</button>
       <button class="btn ghost" id="startPractice">Practice (no timer)</button>
@@ -813,7 +846,7 @@ function updateProgress(){
 function start(m){
   if(started) return;
   started=true; mode=m; graded=false;
-  $('front').style.display='none';
+  $('front').classList.add('started');   // keep data + formulas visible during the paper
   $('questions').classList.remove('locked');
   setInputsEnabled(true);
   $('examBar').classList.add('show');

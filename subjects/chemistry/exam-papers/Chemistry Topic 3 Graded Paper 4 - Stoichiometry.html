@@ -152,6 +152,13 @@
     content:'▸'; position:absolute; left:2px; top:0; color:var(--motion); font-size:13px;
   }
 
+  /* During the exam the front sheet collapses to its REFERENCE matter only (data,
+     rubric, List of formulas) — the real board keeps its data/formula page in front
+     of the candidate for the whole paper, so ours must not vanish on start. */
+  #front.started > h2, #front.started .meta-grid, #front.started .controls,
+  #front.started .instructions li.admin { display:none; }
+  #front.started { margin-bottom:16px; padding-bottom:4px; }
+
   /* mode + start controls */
   .controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px;
     padding-top:20px; border-top:1px solid var(--border); }
@@ -465,9 +472,9 @@
     <ul class="instructions">
       <li>Answer <b>all</b> questions. Section A is multiple choice (10 marks); Section B is structured and calculation (90 marks).</li>
       <li>This is a full <b>2-hour</b> graded mock worth <b>100 marks</b>, pitched at full Extended (real board) standard. Show your <b>working</b> in all calculations — your teacher awards method marks for correct working.</li>
-      <li>This is a <b>graded exam</b>: your answers are <b>not</b> marked in this file and no answers are shown. In <b>Timed exam</b> mode a countdown runs; the paper locks when you submit or time runs out.</li>
-      <li>When you submit (or the time runs out) your answers are saved automatically — you don't need to download or send anything.</li>
-      <li>A<sub>r</sub>: H = 1, C = 12, N = 14, O = 16, Mg = 24, S = 32, Cl = 35.5, Ca = 40, Cu = 64, Zn = 65, Ag = 108. Any other A<sub>r</sub> or M<sub>r</sub> values you need are given in the questions. Molar gas volume = 24 dm<sup>3</sup>/mol (= 24 000 cm<sup>3</sup>/mol) at r.t.p. Avogadro constant = 6.02 × 10<sup>23</sup> /mol.</li>
+      <li class="admin">This is a <b>graded exam</b>: your answers are <b>not</b> marked in this file and no answers are shown. In <b>Timed exam</b> mode a countdown runs; the paper locks when you submit or time runs out.</li>
+      <li class="admin">When you submit (or the time runs out) your answers are saved automatically — you don't need to download or send anything.</li>
+      <li>A<sub>r</sub>: H = 1, C = 12, N = 14, O = 16, Mg = 24, S = 32, Cl = 35.5, Ca = 40, Cu = 64, Zn = 65, Ag = 108. Any other A<sub>r</sub> or M<sub>r</sub> values you need are given in the questions. The volume of one mole of any gas is 24 dm<sup>3</sup> (24 000 cm<sup>3</sup>) at room temperature and pressure (r.t.p.). Avogadro constant = 6.02 × 10<sup>23</sup> /mol.</li>
     </ul>
     <div class="controls">
       <button class="btn primary" id="startTimed">▶ Start timed exam</button>
@@ -857,7 +864,7 @@ function updateProgress(){
 function start(m){
   if(started) return;
   started=true; mode=m; graded=false;
-  $('front').style.display='none';
+  $('front').classList.add('started');   // keep data + formulas visible during the paper
   $('questions').classList.remove('locked');
   setInputsEnabled(true);
   $('examBar').classList.add('show');
