@@ -91,6 +91,8 @@
   .section:nth-of-type(10){animation-delay:.40s}
   .section:nth-of-type(11){animation-delay:.44s}
   .section:nth-of-type(12){animation-delay:.48s}
+  .section:nth-of-type(13){animation-delay:.52s}
+  .section:nth-of-type(14){animation-delay:.56s}
 
   .sec-label {
     font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em;
@@ -353,7 +355,56 @@
     pointer-events:none; white-space:nowrap; }
   .dg-cap::before, .diag-cap::before, .fig-cap::before { content:'FIGURE · '; font-family:'JetBrains Mono',monospace;
     font-size:10px; font-weight:600; letter-spacing:.14em; color:var(--muted); }
-  svg.diagram { max-width:560px; max-height:400px; }
+  svg.diagram { max-width:560px; max-height:400px; margin:14px auto; }
+
+  /* ── STATIC FIGURE TYPOGRAPHY (shared by all inline SVG diagrams) ── */
+  .dg-cap { font-family:'Inter',sans-serif; font-size:12.5px; color:var(--muted);
+    text-align:center; max-width:560px; margin:0 auto 20px; line-height:1.55; }
+  .dg-ttl  { font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600;
+    letter-spacing:.11em; fill:var(--bright); }
+  .dg-lbl  { font-family:'JetBrains Mono',monospace; font-size:9px; fill:var(--muted); }
+  .dg-lblb { font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600; fill:var(--text); }
+  .dg-ln   { stroke:var(--muted); stroke-width:1.15; fill:none; }
+  .dg-thin { stroke:var(--border); stroke-width:1; fill:none; }
+  .dg-dash { stroke:var(--muted); stroke-width:1; fill:none; stroke-dasharray:4 3; opacity:.75; }
+  .dg-glass{ fill:none; stroke:var(--muted); stroke-width:1.5; stroke-linejoin:round; }
+  .dg-panel{ fill:var(--surface2); stroke:var(--border); stroke-width:1; }
+
+  /* ── CHECK-YOURSELF RETRIEVAL BLOCK ── */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ── PAPER LINKS PANEL ── */
+  .plinks { display:grid; gap:10px; margin:16px 0 4px; }
+  .plink { display:flex; align-items:center; gap:11px; background:var(--surface); border:1px solid var(--border);
+    border-radius:11px; padding:13px 16px; text-decoration:none; color:var(--text); font-size:14px; transition:border-color .2s, transform .2s; }
+  .plink:hover { border-color:var(--cyan); transform:translateY(-2px); }
+  .plink .pk { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--cyan); border:1px solid var(--border); border-radius:5px; padding:3px 8px; flex:none; }
+
+  /* ── SAVE AS PDF ── */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint, #eq-card { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; }
+    .section { animation:none !important; opacity:1 !important; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
 </style>
 </head>
 <body data-theme="dark">
@@ -361,6 +412,7 @@
 <script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
 
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
 <div class="page">
 
   <!-- HEADER -->
@@ -373,7 +425,7 @@
 
   <!-- ── 01 · PHYSICAL vs CHEMICAL ── -->
   <div class="section">
-    <div class="sec-label">01 / 12 · 6.1 Physical &amp; chemical changes</div>
+    <div class="sec-label">01 / 13 · 6.1 Physical &amp; chemical changes</div>
     <h2>Physical or chemical? Did a new substance appear?</h2>
 
     <div class="box intuition">
@@ -411,7 +463,7 @@
 
   <!-- ── 02 · WHAT RATE MEANS + MEASURING ── -->
   <div class="section">
-    <div class="sec-label">02 / 12 · 6.2 Rate of reaction — measuring it</div>
+    <div class="sec-label">02 / 13 · 6.2 Rate of reaction — measuring it</div>
     <h2>Rate = how much changes, per second</h2>
 
     <div class="define rate-c">
@@ -437,6 +489,57 @@
       </div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 280" role="img" aria-label="Two standard apparatus set-ups for following the rate of a reaction: a conical flask connected by a delivery tube to a gas syringe, and a conical flask plugged with cotton wool standing on an electronic balance.">
+      <defs>
+        <marker id="t6f1a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0,0 L8,4 L0,8 Z" style="fill:var(--muted)"/></marker>
+      </defs>
+      <line class="dg-dash" x1="270" y1="20" x2="270" y2="262"/>
+
+      <!-- PANEL A · gas syringe -->
+      <text class="dg-ttl" x="18" y="26">A · GAS SYRINGE — VOLUME</text>
+      <path class="dg-glass" d="M66,108 L66,126 L42,180 Q40,186 46,186 L106,186 Q112,186 110,180 L86,126 L86,108 Z"/>
+      <path d="M52,158 L100,158 L109,183 Q110,186 106,186 L46,186 Q42,186 43,183 Z" style="fill:var(--motion);opacity:.30"/>
+      <circle cx="60" cy="178" r="3"   style="fill:var(--muted)"/>
+      <circle cx="72" cy="181" r="3.5" style="fill:var(--muted)"/>
+      <circle cx="84" cy="177" r="3"   style="fill:var(--muted)"/>
+      <circle cx="92" cy="181" r="2.5" style="fill:var(--muted)"/>
+      <rect class="dg-panel" x="63" y="100" width="26" height="9" rx="2"/>
+      <path class="dg-ln" style="stroke-width:2" d="M76,100 L76,72 L170,72"/>
+      <rect class="dg-glass" x="170" y="58" width="68" height="28" rx="3"/>
+      <line class="dg-thin" x1="186" y1="58" x2="186" y2="64"/>
+      <line class="dg-thin" x1="202" y1="58" x2="202" y2="64"/>
+      <line class="dg-thin" x1="218" y1="58" x2="218" y2="64"/>
+      <rect x="196" y="59" width="5" height="26" style="fill:var(--energy)"/>
+      <line class="dg-ln" style="stroke-width:2" x1="201" y1="72" x2="250" y2="72"/>
+      <line class="dg-ln" style="stroke-width:2" x1="250" y1="64" x2="250" y2="80"/>
+      <text class="dg-lbl" x="123" y="66" text-anchor="middle">delivery tube</text>
+      <text class="dg-lbl" x="204" y="102" text-anchor="middle">gas syringe</text>
+      <text class="dg-lbl" x="95" y="96">bung</text>
+      <text class="dg-lbl" x="76" y="206" text-anchor="middle">marble chips (CaCO₃)</text>
+      <text class="dg-lbl" x="76" y="220" text-anchor="middle">in dilute HCl</text>
+
+      <!-- PANEL B · mass loss -->
+      <text class="dg-ttl" x="288" y="26">B · BALANCE — LOSS OF MASS</text>
+      <path class="dg-glass" d="M370,128 L370,146 L346,200 Q344,206 350,206 L410,206 Q416,206 414,200 L390,146 L390,128 Z"/>
+      <path d="M356,178 L404,178 L413,203 Q414,206 410,206 L350,206 Q346,206 347,203 Z" style="fill:var(--motion);opacity:.30"/>
+      <circle cx="364" cy="198" r="3"   style="fill:var(--muted)"/>
+      <circle cx="376" cy="201" r="3.5" style="fill:var(--muted)"/>
+      <circle cx="388" cy="197" r="3"   style="fill:var(--muted)"/>
+      <circle cx="396" cy="201" r="2.5" style="fill:var(--muted)"/>
+      <ellipse cx="380" cy="124" rx="15" ry="8" style="fill:var(--surface2);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:3 2"/>
+      <line class="dg-ln" marker-end="url(#t6f1a)" x1="368" y1="112" x2="368" y2="96"/>
+      <line class="dg-ln" marker-end="url(#t6f1a)" x1="380" y1="110" x2="380" y2="90"/>
+      <line class="dg-ln" marker-end="url(#t6f1a)" x1="392" y1="112" x2="392" y2="96"/>
+      <rect class="dg-panel" x="340" y="206" width="110" height="8" rx="2"/>
+      <rect class="dg-panel" x="320" y="214" width="150" height="26" rx="4"/>
+      <rect class="dg-panel" x="430" y="220" width="34" height="13" rx="2"/>
+      <text class="dg-lbl" x="447" y="230" text-anchor="middle" font-size="7.5">48.72 g</text>
+      <text class="dg-lbl" x="400" y="118">cotton wool</text>
+      <text class="dg-lbl" x="380" y="82" text-anchor="middle" style="fill:var(--energy)">CO₂ escapes</text>
+      <text class="dg-lbl" x="395" y="256" text-anchor="middle">electronic balance</text>
+    </svg>
+    <div class="dg-cap">The two methods the syllabus names. <strong>A</strong> — the gas is collected and its <em>volume</em> read at fixed times. <strong>B</strong> — the gas escapes through the cotton wool (which stops acid spray) so the <em>mass on the balance falls</em>. Plot either against time. Mass loss is useless for hydrogen — it is far too light to weigh.</div>
+
     <div class="box analogy">
       <div class="box-label">🧪 Marble chips and acid — the classic setup</div>
       Drop <strong>calcium carbonate</strong> (marble chips) into <strong>hydrochloric acid</strong>: <span class="eq-inline" style="color:var(--energy)">CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂</span>. The CO₂ bubbles away, so you can either watch the mass drop on a balance <em>or</em> catch the gas in a syringe. Both graphs tell the same story from opposite ends.
@@ -451,7 +554,7 @@
 
   <!-- ── 03 · FACTORS AFFECTING RATE ── -->
   <div class="section">
-    <div class="sec-label">03 / 12 · 6.2 What speeds a reaction up</div>
+    <div class="sec-label">03 / 13 · 6.2 What speeds a reaction up</div>
     <h2>Five dials that change the rate</h2>
 
     <p>You can make almost any reaction go faster by turning one of these dials. Learn the effect first (Core); the <em>why</em> comes from collision theory in the next section (Supplement).</p>
@@ -483,7 +586,7 @@
 
   <!-- ── 04 · COLLISION THEORY ── -->
   <div class="section">
-    <div class="sec-label">04 / 12 · 6.2 Collision theory (Supplement)</div>
+    <div class="sec-label">04 / 13 · 6.2 Collision theory (Supplement)</div>
     <h2>Why the dials work — particles must collide, hard enough</h2>
 
     <div class="box intuition">
@@ -494,6 +597,59 @@
     <div class="define rate-c">
       <span class="term">Collision theory</span> — reaction rate depends on: the <strong>number of particles per unit volume</strong>, the <strong>frequency of collisions</strong> between particles, the <strong>kinetic energy</strong> of the particles, and the <strong>activation energy, Eₐ</strong> (the minimum energy a collision needs to lead to a reaction).
     </div>
+
+    <svg class="diagram" viewBox="0 0 540 356" role="img" aria-label="Four particle diagrams. Top row: the same volume containing 6 particles and containing 14 particles. Bottom row: one solid lump and the same mass broken into sixteen small pieces, with acid particles around each.">
+      <!-- ROW 1 · concentration -->
+      <text class="dg-ttl" x="270" y="20" text-anchor="middle" style="fill:var(--energy)">CONCENTRATION — PARTICLES PER UNIT VOLUME</text>
+      <text class="dg-ttl" x="150" y="40" text-anchor="middle">LOW CONC.</text>
+      <text class="dg-ttl" x="390" y="40" text-anchor="middle">HIGH CONC.</text>
+      <rect class="dg-panel" x="80"  y="48" width="140" height="90" rx="4"/>
+      <rect class="dg-panel" x="320" y="48" width="140" height="90" rx="4"/>
+      <g style="fill:var(--motion)">
+        <circle cx="100" cy="66" r="4.5"/><circle cx="148" cy="60" r="4.5"/><circle cx="196" cy="80" r="4.5"/>
+        <circle cx="112" cy="110" r="4.5"/><circle cx="166" cy="124" r="4.5"/><circle cx="202" cy="112" r="4.5"/>
+        <circle cx="334" cy="64" r="4.5"/><circle cx="360" cy="58" r="4.5"/><circle cx="388" cy="68" r="4.5"/>
+        <circle cx="416" cy="60" r="4.5"/><circle cx="444" cy="72" r="4.5"/><circle cx="340" cy="90" r="4.5"/>
+        <circle cx="368" cy="84" r="4.5"/><circle cx="398" cy="96" r="4.5"/><circle cx="428" cy="88" r="4.5"/>
+        <circle cx="450" cy="100" r="4.5"/><circle cx="336" cy="118" r="4.5"/><circle cx="364" cy="112" r="4.5"/>
+        <circle cx="396" cy="124" r="4.5"/><circle cx="430" cy="116" r="4.5"/>
+      </g>
+      <text class="dg-lbl" x="150" y="156" text-anchor="middle">6 particles, same volume</text>
+      <text class="dg-lbl" x="150" y="170" text-anchor="middle">fewer collisions</text>
+      <text class="dg-lbl" x="390" y="156" text-anchor="middle">14 particles, same volume</text>
+      <text class="dg-lbl" x="390" y="170" text-anchor="middle" style="fill:var(--energy)">more frequent collisions</text>
+
+      <!-- ROW 2 · surface area -->
+      <text class="dg-ttl" x="270" y="196" text-anchor="middle" style="fill:var(--energy)">SURFACE AREA — EXPOSED PARTICLES</text>
+      <text class="dg-ttl" x="150" y="216" text-anchor="middle">ONE LUMP</text>
+      <text class="dg-ttl" x="390" y="216" text-anchor="middle">POWDERED</text>
+      <rect class="dg-panel" x="80"  y="224" width="140" height="90" rx="4"/>
+      <rect class="dg-panel" x="320" y="224" width="140" height="90" rx="4"/>
+      <rect x="123" y="242" width="54" height="54" style="fill:var(--surface2);stroke:var(--energy);stroke-width:2"/>
+      <g style="fill:var(--surface2);stroke:var(--energy);stroke-width:1.6">
+        <rect x="360"   y="239"   width="13.5" height="13.5"/><rect x="375.5" y="239"   width="13.5" height="13.5"/>
+        <rect x="391"   y="239"   width="13.5" height="13.5"/><rect x="406.5" y="239"   width="13.5" height="13.5"/>
+        <rect x="360"   y="254.5" width="13.5" height="13.5"/><rect x="375.5" y="254.5" width="13.5" height="13.5"/>
+        <rect x="391"   y="254.5" width="13.5" height="13.5"/><rect x="406.5" y="254.5" width="13.5" height="13.5"/>
+        <rect x="360"   y="270"   width="13.5" height="13.5"/><rect x="375.5" y="270"   width="13.5" height="13.5"/>
+        <rect x="391"   y="270"   width="13.5" height="13.5"/><rect x="406.5" y="270"   width="13.5" height="13.5"/>
+        <rect x="360"   y="285.5" width="13.5" height="13.5"/><rect x="375.5" y="285.5" width="13.5" height="13.5"/>
+        <rect x="391"   y="285.5" width="13.5" height="13.5"/><rect x="406.5" y="285.5" width="13.5" height="13.5"/>
+      </g>
+      <g style="fill:var(--motion)">
+        <circle cx="106" cy="246" r="3"/><circle cx="150" cy="230" r="3"/><circle cx="194" cy="252" r="3"/>
+        <circle cx="104" cy="286" r="3"/><circle cx="150" cy="308" r="3"/><circle cx="196" cy="290" r="3"/>
+        <circle cx="110" cy="266" r="3"/><circle cx="190" cy="270" r="3"/>
+        <circle cx="346" cy="246" r="3"/><circle cx="390" cy="230" r="3"/><circle cx="434" cy="252" r="3"/>
+        <circle cx="344" cy="286" r="3"/><circle cx="390" cy="308" r="3"/><circle cx="436" cy="290" r="3"/>
+        <circle cx="350" cy="266" r="3"/><circle cx="430" cy="270" r="3"/>
+      </g>
+      <text class="dg-lbl" x="150" y="330" text-anchor="middle">same mass, one piece</text>
+      <text class="dg-lbl" x="150" y="344" text-anchor="middle">small surface area</text>
+      <text class="dg-lbl" x="390" y="330" text-anchor="middle">same mass, powdered</text>
+      <text class="dg-lbl" x="390" y="344" text-anchor="middle" style="fill:var(--energy)">large surface area</text>
+    </svg>
+    <div class="dg-cap">Why two of the dials work. <strong>Top</strong> — the box is the same size, so squeezing more particles in raises the number <em>per unit volume</em>; collisions become more frequent. (Raising the pressure of a gas does exactly this.) <strong>Bottom</strong> — breaking the solid up does not change the amount, but the amber outline (the exposed surface the acid can reach) is far longer, so collisions are more frequent. Blue dots are the reacting particles in solution.</div>
 
     <h3>Every factor, explained the same way</h3>
     <table>
@@ -511,6 +667,45 @@
       It does <strong>not</strong> give particles more energy — it <em>lowers the bar</em> they must clear, so more of the collisions they already have are energetic enough to react.
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 300" role="img" aria-label="Two reaction pathway diagrams drawn to the same energy scale. Without a catalyst the energy barrier from the reactants level to the peak is tall; with a catalyst the peak is lower, so the activation energy is smaller. The reactant and product energy levels are identical in both.">
+        <defs>
+          <marker id="t6f4a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L8,4 L0,8 Z" style="fill:var(--muted)"/></marker>
+          <marker id="t6f4b" viewBox="0 0 8 8" refX="1" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M8,0 L0,4 L8,8 Z" style="fill:var(--muted)"/></marker>
+        </defs>
+        <line class="dg-dash" x1="278" y1="20" x2="278" y2="272"/>
+
+        <!-- PANEL A · no catalyst -->
+        <text class="dg-ttl" x="155" y="28" text-anchor="middle">WITHOUT A CATALYST</text>
+        <line class="dg-ln" x1="55" y1="40" x2="55" y2="250"/>
+        <line class="dg-ln" x1="55" y1="250" x2="258" y2="250"/>
+        <line x1="62" y1="110" x2="100" y2="110" style="stroke:var(--text);stroke-width:2"/>
+        <line x1="210" y1="190" x2="252" y2="190" style="stroke:var(--text);stroke-width:2"/>
+        <path d="M100,110 C130,110 135,58 155,58 C175,58 185,190 210,190" style="fill:none;stroke:var(--force);stroke-width:2.4;stroke-linecap:round"/>
+        <line class="dg-dash" x1="100" y1="110" x2="168" y2="110"/>
+        <line x1="155" y1="110" x2="155" y2="60" marker-end="url(#t6f4a)" marker-start="url(#t6f4b)" style="stroke:var(--muted);stroke-width:1.2"/>
+        <text class="dg-lbl" x="148" y="128" text-anchor="end" style="fill:var(--force)">Eₐ (large)</text>
+        <text class="dg-lbl" x="64" y="102">reactants</text>
+        <text class="dg-lbl" x="231" y="182" text-anchor="middle">products</text>
+        <text class="dg-lbl" x="32" y="145" text-anchor="middle" transform="rotate(-90 32 145)">Energy</text>
+        <text class="dg-lbl" x="155" y="272" text-anchor="middle">progress of reaction</text>
+
+        <!-- PANEL B · catalysed -->
+        <text class="dg-ttl" x="415" y="28" text-anchor="middle">WITH A CATALYST</text>
+        <line class="dg-ln" x1="315" y1="40" x2="315" y2="250"/>
+        <line class="dg-ln" x1="315" y1="250" x2="518" y2="250"/>
+        <line x1="322" y1="110" x2="360" y2="110" style="stroke:var(--text);stroke-width:2"/>
+        <line x1="470" y1="190" x2="512" y2="190" style="stroke:var(--text);stroke-width:2"/>
+        <path d="M360,110 C390,110 395,88 415,88 C435,88 445,190 470,190" style="fill:none;stroke:var(--power);stroke-width:2.4;stroke-linecap:round"/>
+        <line class="dg-dash" x1="360" y1="110" x2="428" y2="110"/>
+        <line x1="415" y1="110" x2="415" y2="90" marker-end="url(#t6f4a)" marker-start="url(#t6f4b)" style="stroke:var(--muted);stroke-width:1.2"/>
+        <text class="dg-lbl" x="408" y="128" text-anchor="end" style="fill:var(--power)">Eₐ (lowered)</text>
+        <text class="dg-lbl" x="324" y="102">reactants</text>
+        <text class="dg-lbl" x="491" y="182" text-anchor="middle">products</text>
+        <text class="dg-lbl" x="292" y="145" text-anchor="middle" transform="rotate(-90 292 145)">Energy</text>
+        <text class="dg-lbl" x="415" y="272" text-anchor="middle">progress of reaction</text>
+      </svg>
+      <div class="dg-cap">Both panels are drawn to the <strong>same energy scale</strong>. A catalyst gives the reaction an <strong>alternative pathway with a lower activation energy</strong>, so the peak drops — a greater proportion of collisions now have enough energy to react. Notice what has <em>not</em> moved: the reactants and products sit at exactly the same energies, so <strong>ΔH is unchanged</strong> and so is the final amount of product.</div>
+
     <div class="box pitfall">
       <div class="box-label">⚠️ Temperature isn't just "more collisions"</div>
       For full marks on temperature you must mention the <strong>energy</strong> effect, not only frequency: at higher temperature a <strong>greater proportion of particles have energy ≥ Eₐ</strong>. This energy effect is the main reason a small temperature rise speeds reactions up so much — "they collide more often" alone won't get all the marks.
@@ -520,13 +715,33 @@
 
   <!-- ── 05 · RATE GRAPHS (WIDGET) ── -->
   <div class="section">
-    <div class="sec-label">05 / 12 · 6.2 Reading rate graphs</div>
+    <div class="sec-label">05 / 13 · 6.2 Reading rate graphs</div>
     <h2>The shape of a rate graph tells the story</h2>
 
     <div class="box intuition">
       <div class="box-label">📈 Steep then flat</div>
       Plot <strong>gas volume against time</strong>. The line starts <strong>steepest</strong> (most reactant, fastest rate), gradually <strong>bends over</strong> as reactants run low, then goes <strong>flat</strong> when the reaction has finished (a reactant is used up). <em>Steepness of the line = rate.</em> The <strong>height where it levels off</strong> = total amount of product.
     </div>
+
+    <svg class="diagram" viewBox="0 0 540 310" role="img" aria-label="Volume of gas against time. Two curves start at the origin, rise steeply and flatten to the same final volume. The upper amber curve is steeper and levels off sooner; the lower dashed grey curve is the original, slower reaction. A dashed tangent is drawn at time zero.">
+      <line class="dg-ln" x1="70" y1="45" x2="70" y2="250"/>
+      <line class="dg-ln" x1="70" y1="250" x2="478" y2="250"/>
+      <line class="dg-dash" x1="70" y1="95" x2="466" y2="95"/>
+      <polyline points="70,250 89.5,215.5 109,188.6 128.5,167.7 148,151.5 167.5,138.9 187,129.1 206.5,121.5 226,115.6 245.5,111 265,107.4 284.5,104.7 304,102.5 323.5,100.8 343,99.5 362.5,98.5 382,97.7 401.5,97.1 421,96.7 440.5,96.3 460,96" style="fill:none;stroke:var(--muted);stroke-width:2;stroke-dasharray:5 4;opacity:.8;stroke-linejoin:round"/>
+      <polyline points="70,250 89.5,198.9 109,164.6 128.5,141.7 148,126.3 167.5,116 187,109.1 206.5,104.4 226,101.3 245.5,99.2 265,97.8 304,96.3 343,95.6 382,95.3 421,95.1 460,95.05" style="fill:none;stroke:var(--energy);stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round"/>
+      <line x1="70" y1="250" x2="116" y2="104" style="stroke:var(--power);stroke-width:1.4;stroke-dasharray:5 4"/>
+      <text class="dg-lbl" x="122" y="88" style="fill:var(--power)">tangent at t = 0 → initial rate</text>
+      <text class="dg-lbl" x="470" y="92">same final</text>
+      <text class="dg-lbl" x="470" y="104">volume</text>
+      <rect class="dg-panel" x="280" y="180" width="185" height="52" rx="6"/>
+      <line x1="292" y1="198" x2="320" y2="198" style="stroke:var(--energy);stroke-width:2.6"/>
+      <text class="dg-lbl" x="328" y="201">higher concentration</text>
+      <line x1="292" y1="218" x2="320" y2="218" style="stroke:var(--muted);stroke-width:2;stroke-dasharray:5 4"/>
+      <text class="dg-lbl" x="328" y="221">original</text>
+      <text class="dg-lbl" x="34" y="150" text-anchor="middle" transform="rotate(-90 34 150)">Volume of gas / cm³</text>
+      <text class="dg-lbl" x="270" y="278" text-anchor="middle">Time / s</text>
+    </svg>
+    <div class="dg-cap">Everything an examiner can ask about a rate graph is in this one picture. The <strong>gradient is the rate</strong>, so the reaction is <strong>fastest at t = 0</strong> where the tangent is steepest; the curve <strong>bends over</strong> as the reactants are used up and goes <strong>flat</strong> when a reactant has run out. Turning any rate dial up makes the curve <em>steeper and finish sooner</em> — but with the same amount of limiting reactant it stops at the <strong>same final volume</strong>.</div>
 
     <p>Turn each rate dial up and watch the amber curve change. Notice that speeding a reaction up makes it <strong>steeper and finish sooner</strong> — but if the amounts are the same, it reaches the <strong>same final height</strong>:</p>
 
@@ -559,7 +774,7 @@
 
   <!-- ── 06 · REVERSIBLE REACTIONS ── -->
   <div class="section">
-    <div class="sec-label">06 / 12 · 6.3 Reversible reactions</div>
+    <div class="sec-label">06 / 13 · 6.3 Reversible reactions</div>
     <h2>Some reactions run both ways — the ⇌ sign</h2>
 
     <div class="define equi-c">
@@ -570,6 +785,61 @@
       <div class="box-label">💧 Add water one way, take it out the other</div>
       The two Core examples are both about <strong>water joining or leaving a salt</strong>. Heat the hydrated (water-containing) salt and you <em>drive the water off</em>; add water back to the dry (anhydrous) salt and you <em>put it back</em>. Same reaction, run in reverse — and each direction has a tell-tale <strong>colour change</strong>.
     </div>
+
+    <svg class="diagram" viewBox="0 0 540 300" role="img" aria-label="Left: a test tube of blue hydrated crystals held at an angle and heated by a Bunsen burner, with water vapour condensing at the cooler mouth. Right: two colour pairs joined by reversible arrows — hydrated copper(II) sulfate blue to anhydrous white, and hydrated cobalt(II) chloride pink to anhydrous blue.">
+      <line class="dg-dash" x1="266" y1="20" x2="266" y2="282"/>
+
+      <!-- PANEL A · driving the water off -->
+      <text class="dg-ttl" x="130" y="30" text-anchor="middle">HEATING THE HYDRATED SALT</text>
+      <g transform="rotate(-30 130 145)">
+        <path class="dg-glass" d="M112,88 L112,172 A18,18 0 0 1 148,172 L148,88"/>
+        <g style="fill:var(--motion)">
+          <circle cx="122" cy="166" r="4"/><circle cx="132" cy="172" r="4.5"/>
+          <circle cx="141" cy="165" r="4"/><circle cx="128" cy="158" r="3.5"/>
+        </g>
+      </g>
+      <ellipse cx="106" cy="105" rx="3" ry="4" style="fill:none;stroke:var(--muted);stroke-width:1.2"/>
+      <ellipse cx="114" cy="118" rx="2.4" ry="3.2" style="fill:none;stroke:var(--muted);stroke-width:1.2"/>
+      <path d="M146,228 Q150,196 157,184 Q164,196 168,228 Z" style="fill:var(--energy);opacity:.75"/>
+      <path d="M153,228 Q156,208 157,198 Q159,208 161,228 Z" style="fill:var(--motion);opacity:.55"/>
+      <rect class="dg-panel" x="150" y="228" width="14" height="22"/>
+      <rect class="dg-panel" x="140" y="250" width="34" height="6" rx="2"/>
+      <line class="dg-thin" x1="98" y1="88" x2="107" y2="98"/>
+      <line class="dg-thin" x1="185" y1="163" x2="156" y2="168"/>
+      <text class="dg-lbl" x="18" y="80">water vapour</text>
+      <text class="dg-lbl" x="18" y="94">condenses here</text>
+      <text class="dg-lbl" x="188" y="166">blue hydrated</text>
+      <text class="dg-lbl" x="188" y="180">crystals</text>
+      <text class="dg-lbl" x="180" y="212" style="fill:var(--energy)">HEAT</text>
+
+      <!-- PANEL B · the two colour pairs -->
+      <text class="dg-ttl" x="354" y="74" text-anchor="middle">COPPER(II) SULFATE</text>
+      <text class="dg-lbl" x="302" y="88" text-anchor="middle">hydrated</text>
+      <text class="dg-lbl" x="406" y="88" text-anchor="middle">anhydrous</text>
+      <rect x="280" y="94" width="44" height="44" rx="6" style="fill:#3f7ad0;stroke:var(--muted);stroke-width:1"/>
+      <rect x="384" y="94" width="44" height="44" rx="6" style="fill:#f4f2ec;stroke:var(--muted);stroke-width:1"/>
+      <text class="dg-lbl" x="354" y="102" text-anchor="middle" style="fill:var(--force)">heat →</text>
+      <text x="354" y="124" text-anchor="middle" style="fill:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:17px">⇌</text>
+      <text class="dg-lbl" x="354" y="148" text-anchor="middle" style="fill:var(--motion)">← water</text>
+      <text class="dg-lbl" x="302" y="156" text-anchor="middle">CuSO₄·5H₂O</text>
+      <text class="dg-lbl" x="302" y="168" text-anchor="middle">BLUE</text>
+      <text class="dg-lbl" x="406" y="156" text-anchor="middle">CuSO₄</text>
+      <text class="dg-lbl" x="406" y="168" text-anchor="middle">WHITE</text>
+
+      <text class="dg-ttl" x="354" y="186" text-anchor="middle">COBALT(II) CHLORIDE</text>
+      <text class="dg-lbl" x="302" y="200" text-anchor="middle">hydrated</text>
+      <text class="dg-lbl" x="406" y="200" text-anchor="middle">anhydrous</text>
+      <rect x="280" y="206" width="44" height="44" rx="6" style="fill:#e87ea8;stroke:var(--muted);stroke-width:1"/>
+      <rect x="384" y="206" width="44" height="44" rx="6" style="fill:#3f7ad0;stroke:var(--muted);stroke-width:1"/>
+      <text class="dg-lbl" x="354" y="214" text-anchor="middle" style="fill:var(--force)">heat →</text>
+      <text x="354" y="236" text-anchor="middle" style="fill:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:17px">⇌</text>
+      <text class="dg-lbl" x="354" y="260" text-anchor="middle" style="fill:var(--motion)">← water</text>
+      <text class="dg-lbl" x="302" y="270" text-anchor="middle">CoCl₂·6H₂O</text>
+      <text class="dg-lbl" x="302" y="282" text-anchor="middle">PINK</text>
+      <text class="dg-lbl" x="406" y="270" text-anchor="middle">CoCl₂</text>
+      <text class="dg-lbl" x="406" y="282" text-anchor="middle">BLUE</text>
+    </svg>
+    <div class="dg-cap">The only two reversible reactions the Core syllabus names. <strong>Heating</strong> drives the water of crystallisation off (the vapour condenses on the cool upper part of the tube); <strong>adding water</strong> puts it back and the original colour returns. Learn the colours by the direction — hydrated copper(II) sulfate is <strong>blue</strong>, hydrated cobalt(II) chloride is <strong>pink</strong>; both anhydrous forms are the "dry" colour.</div>
 
     <h3>Copper(II) sulfate — blue ⇌ white</h3>
     <div class="define equi-c">
@@ -598,7 +868,7 @@
 
   <!-- ── 07 · EQUILIBRIUM ── -->
   <div class="section">
-    <div class="sec-label">07 / 12 · 6.3 Equilibrium (Supplement)</div>
+    <div class="sec-label">07 / 13 · 6.3 Equilibrium (Supplement)</div>
     <h2>Closed system: a busy standstill</h2>
 
     <div class="define equi-c">
@@ -609,6 +879,36 @@
       <div class="box-label">🔁 Nothing stops — it just balances</div>
       Equilibrium is not the reaction "stopping". Both directions are still going full tilt — the forward reaction is making products <em>exactly</em> as fast as the reverse reaction turns them back. Because they cancel, the <strong>amounts stay constant</strong>. It is a <em>dynamic</em> balance, a busy standstill.
     </div>
+
+    <svg class="diagram" viewBox="0 0 540 290" role="img" aria-label="Left graph: rate against time. The forward rate starts high and falls, the reverse rate starts at zero and rises, and from the dashed line onwards the two are equal and stay equal. Right graph: concentration against time. The reactant concentration falls and the product concentration rises, and both then stay constant at different values.">
+      <line class="dg-dash" x1="270" y1="20" x2="270" y2="272"/>
+
+      <!-- PANEL A · rates -->
+      <text class="dg-ttl" x="155" y="28" text-anchor="middle">RATE OF REACTION</text>
+      <line class="dg-ln" x1="62" y1="40" x2="62" y2="240"/>
+      <line class="dg-ln" x1="62" y1="240" x2="255" y2="240"/>
+      <line class="dg-dash" x1="195" y1="150" x2="195" y2="240"/>
+      <polyline points="62,70 74,94.6 86,111.6 98,123.4 110,131.6 122,137.3 134,141.2 146,143.9 158,145.8 170,147.1 190,148.4 210,149.1 230,149.5 248,149.7" style="fill:none;stroke:var(--force);stroke-width:2.4;stroke-linejoin:round"/>
+      <polyline points="62,240 74,212.4 86,193.2 98,179.9 110,170.7 122,164.3 134,159.9 146,156.9 158,154.8 170,153.3 190,151.8 210,151 230,150.5 248,150.3" style="fill:none;stroke:var(--motion);stroke-width:2.4;stroke-dasharray:6 4;stroke-linejoin:round"/>
+      <text class="dg-lbl" x="70" y="62" style="fill:var(--force)">forward</text>
+      <text class="dg-lbl" x="76" y="234" style="fill:var(--motion)">reverse</text>
+      <text class="dg-lbl" x="178" y="128" style="fill:var(--cyan)">equilibrium:</text>
+      <text class="dg-lbl" x="178" y="140" style="fill:var(--cyan)">rates equal</text>
+      <text class="dg-lbl" x="34" y="140" text-anchor="middle" transform="rotate(-90 34 140)">Rate</text>
+      <text class="dg-lbl" x="155" y="262" text-anchor="middle">Time →</text>
+
+      <!-- PANEL B · concentrations -->
+      <text class="dg-ttl" x="420" y="28" text-anchor="middle">CONCENTRATION</text>
+      <line class="dg-ln" x1="327" y1="40" x2="327" y2="240"/>
+      <line class="dg-ln" x1="327" y1="240" x2="518" y2="240"/>
+      <polyline points="327,80 339,106.1 351,124.2 363,136.8 375,145.4 387,151.5 399,155.6 411,158.5 423,160.5 435,161.9 455,163.3 475,164.1 495,164.5 513,164.7" style="fill:none;stroke:var(--force);stroke-width:2.4;stroke-linejoin:round"/>
+      <polyline points="327,240 339,204.7 351,180.2 363,163.2 375,151.5 387,143.3 399,137.7 411,133.8 423,131.1 435,129.2 455,127.3 475,126.3 495,125.7 513,125.4" style="fill:none;stroke:var(--motion);stroke-width:2.4;stroke-dasharray:6 4;stroke-linejoin:round"/>
+      <text class="dg-lbl" x="440" y="116" style="fill:var(--motion)">products</text>
+      <text class="dg-lbl" x="440" y="182" style="fill:var(--force)">reactants</text>
+      <text class="dg-lbl" x="299" y="140" text-anchor="middle" transform="rotate(-90 299 140)">Concentration</text>
+      <text class="dg-lbl" x="420" y="262" text-anchor="middle">Time →</text>
+    </svg>
+    <div class="dg-cap">The two graphs that define equilibrium. <strong>Left</strong> — the forward rate falls as reactants are used up while the reverse rate climbs from zero; where they meet, they stay equal, and that is equilibrium. <strong>Right</strong> — from that same moment the concentrations <strong>stop changing</strong>. They are <em>not</em> equal to each other: equal <strong>rates</strong>, not equal amounts. Neither curve ever reaches zero — both reactions keep going.</div>
 
     <div class="box analogy">
       <div class="box-label">🚶 The up escalator you walk down</div>
@@ -624,7 +924,7 @@
 
   <!-- ── 08 · LE CHATELIER (WIDGET) ── -->
   <div class="section">
-    <div class="sec-label">08 / 12 · 6.3 Shifting the position (Supplement)</div>
+    <div class="sec-label">08 / 13 · 6.3 Shifting the position (Supplement)</div>
     <h2>Change a condition, and equilibrium fights back</h2>
 
     <div class="box intuition">
@@ -666,7 +966,7 @@
 
   <!-- ── 09 · HABER & CONTACT ── -->
   <div class="section">
-    <div class="sec-label">09 / 12 · 6.3 Haber &amp; Contact (Supplement)</div>
+    <div class="sec-label">09 / 13 · 6.3 Haber &amp; Contact (Supplement)</div>
     <h2>Two industrial equilibria — the art of compromise</h2>
 
     <div class="box intuition">
@@ -681,6 +981,38 @@
       <strong>Conditions:</strong> <strong>450 °C</strong>, <strong>20 000 kPa / 200 atm</strong>, and an <strong>iron</strong> catalyst.
     </div>
 
+    <svg class="diagram" viewBox="0 0 540 280" role="img" aria-label="Flow diagram of the Haber process: air supplies nitrogen and natural gas supplies hydrogen; both enter a converter at 450 degrees Celsius and 200 atmospheres over an iron catalyst; the mixture is then cooled so ammonia condenses as a liquid, while the unreacted nitrogen and hydrogen are piped back to the converter.">
+      <defs>
+        <marker id="t6f7" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0,0 L8,4 L0,8 Z" style="fill:var(--muted)"/></marker>
+      </defs>
+      <rect class="dg-panel" x="24"  y="52"  width="92"  height="40" rx="6"/>
+      <rect class="dg-panel" x="24"  y="136" width="92"  height="40" rx="6"/>
+      <rect class="dg-panel" x="178" y="84"  width="126" height="64" rx="6" style="stroke:var(--cyan);stroke-width:1.6"/>
+      <rect class="dg-panel" x="340" y="84"  width="110" height="64" rx="6"/>
+      <rect class="dg-panel" x="452" y="190" width="76"  height="44" rx="6" style="stroke:var(--cyan);stroke-width:1.6"/>
+      <text class="dg-ttl" x="70"  y="70"  text-anchor="middle">AIR</text>
+      <text class="dg-lbl" x="70"  y="84"  text-anchor="middle">→ nitrogen</text>
+      <text class="dg-ttl" x="70"  y="154" text-anchor="middle">NATURAL GAS</text>
+      <text class="dg-lbl" x="70"  y="168" text-anchor="middle">→ hydrogen</text>
+      <text class="dg-ttl" x="241" y="106" text-anchor="middle">CONVERTER</text>
+      <text class="dg-lbl" x="241" y="122" text-anchor="middle">450 °C · 200 atm</text>
+      <text class="dg-lbl" x="241" y="136" text-anchor="middle">iron catalyst</text>
+      <text class="dg-ttl" x="395" y="112" text-anchor="middle">COOL AND</text>
+      <text class="dg-ttl" x="395" y="128" text-anchor="middle">CONDENSE</text>
+      <text class="dg-ttl" x="490" y="210" text-anchor="middle">LIQUID</text>
+      <text class="dg-ttl" x="490" y="226" text-anchor="middle">AMMONIA</text>
+      <polyline class="dg-ln" points="116,72 160,72 160,110 178,110" marker-end="url(#t6f7)"/>
+      <polyline class="dg-ln" points="116,156 160,156 160,124 178,124" marker-end="url(#t6f7)"/>
+      <line class="dg-ln" x1="304" y1="116" x2="340" y2="116" marker-end="url(#t6f7)"/>
+      <polyline class="dg-ln" points="450,116 490,116 490,190" marker-end="url(#t6f7)"/>
+      <polyline class="dg-ln" points="395,84 395,44 241,44 241,84" marker-end="url(#t6f7)"/>
+      <text class="dg-lbl" x="136" y="66"  text-anchor="middle">N₂</text>
+      <text class="dg-lbl" x="136" y="150" text-anchor="middle">H₂</text>
+      <text class="dg-lbl" x="318" y="36"  text-anchor="middle">unreacted N₂ + H₂ recycled</text>
+      <text x="170" y="252" text-anchor="middle" style="fill:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:12px">N₂(g) + 3H₂(g) ⇌ 2NH₃(g)</text>
+    </svg>
+    <div class="dg-cap">The Haber process end to end. Because the reaction is <strong>reversible</strong>, only a fraction of the gases convert on each pass — so the ammonia is removed by <strong>cooling it to a liquid</strong> (N₂ and H₂ stay gases) and the leftover gases are <strong>recycled</strong>. That is how a modest equilibrium yield still gives a high overall conversion.</div>
+
     <h3>The Contact process — making sulfur trioxide (for sulfuric acid)</h3>
     <div class="define equi-c">
       <span class="eq-inline" style="color:var(--cyan)">2SO₂(g) + O₂(g) ⇌ 2SO₃(g)</span> &nbsp;(forward reaction exothermic)<br>
@@ -691,7 +1023,7 @@
     <div class="box exam">
       <div class="box-label">✅ Why those conditions (the compromise argument)</div>
       <strong>Temperature (450 °C):</strong> the forward reaction is exothermic, so a <em>low</em> temperature would give a higher yield — but the reaction would be far too slow. 450 °C is a compromise: a <strong>reasonable yield at a workable rate</strong>.<br>
-      <strong>Pressure:</strong> the forward reaction makes <em>fewer</em> gas molecules, so <em>high</em> pressure raises the yield. Haber uses a <strong>high 200 atm</strong> (yield matters, worth the cost). Contact already gives ~98% yield near normal pressure, so only <strong>2 atm</strong> is used — high pressure isn't worth the expense.<br>
+      <strong>Pressure:</strong> the forward reaction makes <em>fewer</em> gas molecules, so <em>high</em> pressure raises the yield. Haber uses a <strong>high 200 atm</strong> (yield matters, worth the cost). Contact already gives ~98% yield near normal pressure, so only <strong>2 atm</strong> is used — high pressure isn't worth the expense. Very high pressure also needs thick, strong vessels and pipework, which is a <strong>safety</strong> consideration as well as a cost one.<br>
       <strong>Catalyst (iron / V₂O₅):</strong> speeds the reaction so equilibrium is reached faster; it <strong>does not change the yield</strong> but makes the process economic.
     </div>
 
@@ -706,7 +1038,7 @@
 
   <!-- ── 10 · REDOX (CORE) ── -->
   <div class="section">
-    <div class="sec-label">10 / 12 · 6.4 Redox — oxygen &amp; oxidation number</div>
+    <div class="sec-label">10 / 13 · 6.4 Redox — oxygen &amp; oxidation number</div>
     <h2>Redox: oxidation and reduction, always together</h2>
 
     <div class="define redox-c">
@@ -743,7 +1075,7 @@
 
   <!-- ── 11 · REDOX ELECTRONS + AGENTS (WIDGET) ── -->
   <div class="section">
-    <div class="sec-label">11 / 12 · 6.4 Electrons, ox. numbers &amp; agents (Supplement)</div>
+    <div class="sec-label">11 / 13 · 6.4 Electrons, ox. numbers &amp; agents (Supplement)</div>
     <h2>The deeper definition: it's about electrons</h2>
 
     <div class="box remember">
@@ -772,6 +1104,53 @@
       <tr><td>Sum in a compound</td><td>adds up to <strong>0</strong></td></tr>
       <tr><td>Sum in an ion</td><td>= the <strong>charge</strong> on the ion</td></tr>
     </table>
+
+    <svg class="diagram" viewBox="0 0 540 280" role="img" aria-label="Left: an oxidation-number scale from minus three to plus three, with an arrow to the right labelled oxidation, an increase, and an arrow to the left labelled reduction, a decrease. Right: magnesium transferring two electrons to a copper two plus ion, so magnesium is oxidised and acts as the reducing agent while the copper ion is reduced and acts as the oxidising agent.">
+      <defs>
+        <marker id="t6f8" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0,0 L8,4 L0,8 Z" style="fill:var(--muted)"/></marker>
+        <marker id="t6f8o" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0,0 L8,4 L0,8 Z" style="fill:var(--force)"/></marker>
+        <marker id="t6f8r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0,0 L8,4 L0,8 Z" style="fill:var(--motion)"/></marker>
+      </defs>
+      <line class="dg-dash" x1="270" y1="20" x2="270" y2="264"/>
+
+      <!-- PANEL A · the oxidation-number scale -->
+      <text class="dg-ttl" x="140" y="36" text-anchor="middle">OXIDATION NUMBER SCALE</text>
+      <line class="dg-ln" x1="40" y1="120" x2="245" y2="120"/>
+      <g class="dg-thin">
+        <line x1="40"  y1="114" x2="40"  y2="126"/><line x1="74"  y1="114" x2="74"  y2="126"/>
+        <line x1="108" y1="114" x2="108" y2="126"/><line x1="143" y1="112" x2="143" y2="128"/>
+        <line x1="177" y1="114" x2="177" y2="126"/><line x1="211" y1="114" x2="211" y2="126"/>
+        <line x1="245" y1="114" x2="245" y2="126"/>
+      </g>
+      <g class="dg-lbl" text-anchor="middle">
+        <text x="40" y="140">−3</text><text x="74" y="140">−2</text><text x="108" y="140">−1</text>
+        <text x="143" y="140">0</text><text x="177" y="140">+1</text><text x="211" y="140">+2</text><text x="245" y="140">+3</text>
+      </g>
+      <line x1="110" y1="88" x2="240" y2="88" marker-end="url(#t6f8o)" style="stroke:var(--force);stroke-width:1.6"/>
+      <text class="dg-lbl" x="175" y="80" text-anchor="middle" style="fill:var(--force)">OXIDATION — increase</text>
+      <line x1="175" y1="170" x2="45" y2="170" marker-end="url(#t6f8r)" style="stroke:var(--motion);stroke-width:1.6"/>
+      <text class="dg-lbl" x="110" y="190" text-anchor="middle" style="fill:var(--motion)">REDUCTION — decrease</text>
+      <text class="dg-lbl" x="140" y="220" text-anchor="middle">Mg: 0 → +2 oxidised</text>
+      <text class="dg-lbl" x="140" y="236" text-anchor="middle">Cu: +2 → 0 reduced</text>
+      <text class="dg-lbl" x="140" y="258" text-anchor="middle">uncombined element = 0</text>
+
+      <!-- PANEL B · electron transfer -->
+      <text class="dg-ttl" x="400" y="36" text-anchor="middle">ELECTRON TRANSFER</text>
+      <circle cx="330" cy="120" r="26" style="fill:var(--surface2);stroke:var(--force);stroke-width:2"/>
+      <circle cx="462" cy="120" r="26" style="fill:var(--surface2);stroke:var(--motion);stroke-width:2"/>
+      <text class="dg-lblb" x="330" y="125" text-anchor="middle" font-size="12">Mg</text>
+      <text class="dg-lblb" x="462" y="125" text-anchor="middle" font-size="12">Cu²⁺</text>
+      <path d="M354,104 Q396,70 438,104" marker-end="url(#t6f8o)" style="fill:none;stroke:var(--force);stroke-width:1.6"/>
+      <text class="dg-lbl" x="396" y="68" text-anchor="middle" style="fill:var(--force)">2e⁻</text>
+      <text class="dg-lbl" x="330" y="170" text-anchor="middle">Mg → Mg²⁺ + 2e⁻</text>
+      <text class="dg-lbl" x="462" y="170" text-anchor="middle">Cu²⁺ + 2e⁻ → Cu</text>
+      <text class="dg-lbl" x="330" y="188" text-anchor="middle" style="fill:var(--force)">OXIDISED (0 → +2)</text>
+      <text class="dg-lbl" x="462" y="188" text-anchor="middle" style="fill:var(--motion)">REDUCED (+2 → 0)</text>
+      <text class="dg-lbl" x="330" y="210" text-anchor="middle">reducing agent</text>
+      <text class="dg-lbl" x="462" y="210" text-anchor="middle">oxidising agent</text>
+      <text x="400" y="248" text-anchor="middle" style="fill:var(--momentum);font-family:'JetBrains Mono',monospace;font-size:12px">Mg + CuSO₄ → MgSO₄ + Cu</text>
+    </svg>
+    <div class="dg-cap">Redox with the electrons drawn in. Follow the <strong>2e⁻</strong>: magnesium <em>loses</em> them, so it is oxidised and its oxidation number moves <strong>right</strong> along the scale (0 → +2); the copper(II) ion <em>gains</em> them, so it is reduced and moves <strong>left</strong> (+2 → 0). Note the naming trap — magnesium is the <strong>reducing</strong> agent even though it is the thing being oxidised, because it is what reduces the copper.</div>
 
     <p>Pick a redox reaction and see what is oxidised, what is reduced, and which substance is the oxidising or reducing agent:</p>
 
@@ -812,9 +1191,67 @@
   </div>
 
 
-  <!-- ── 12 · KEY-TERMS BANK ── -->
+  <!-- ── 12 · CHECK YOURSELF ── -->
   <div class="section">
-    <div class="sec-label">12 / 12 · Reference</div>
+    <div class="sec-label">12 / 13 · Retrieval practice</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+    <p>Cover the page and answer out loud (or on paper) before you tap. These are the eight things Topic 6 questions actually turn on.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>Explain, <strong>in terms of collision theory</strong>, why increasing the temperature increases the rate of a reaction. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The particles gain kinetic energy and move faster <em>(1)</em>, so they collide <strong>more frequently</strong> <em>(1)</em>, <strong>and</strong> a <strong>greater proportion of the collisions have energy ≥ the activation energy Eₐ</strong> <em>(1)</em>. Both effects are needed — "more collisions" alone is only 1 mark.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>A student collects <strong>54 cm³</strong> of gas in the first <strong>25 s</strong>. The reaction finally stops at 140 s having produced 96 cm³ in total. Calculate the average rate over the first 25 s, and state how the rate at 100 s compares. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Rate = 54 ÷ 25 = <strong>2.16 cm³/s</strong> <em>(1)</em>. At 100 s the rate is <strong>much lower</strong> (the curve is far shallower) because the reactants have largely been used up, so collisions are less frequent <em>(1)</em>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span>State the effect a catalyst has on (a) the activation energy and (b) the <strong>yield</strong> of a reversible reaction at equilibrium. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">(a) It <strong>decreases</strong> Eₐ (it provides an alternative pathway of lower activation energy) <em>(1)</em>. (b) <strong>No effect</strong> on the yield / the position of equilibrium — it speeds up the forward and reverse reactions equally, so equilibrium is simply reached sooner <em>(1)</em>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>Hydrated cobalt(II) chloride is heated in a test tube, and then a few drops of water are added to the residue. State what you would <strong>observe</strong> at each stage. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">On heating: the solid changes from <strong>pink to blue</strong>, and drops of colourless liquid (water) condense near the mouth of the tube <em>(1)</em>. On adding water: it changes back from <strong>blue to pink</strong> <em>(1)</em>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>The forward reaction in the Haber process is exothermic. Explain why a temperature of <strong>450 °C</strong> is used rather than a much lower one. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">A lower temperature would shift the equilibrium towards the <strong>exothermic</strong> (forward) direction, giving a <strong>higher yield</strong> of ammonia <em>(1)</em>. But at a low temperature the <strong>rate would be far too slow</strong>, so the ammonia would be produced too slowly to be economic <em>(1)</em>. 450 °C is a <strong>compromise</strong> — an acceptable yield obtained at a workable rate <em>(1)</em>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>(a) Deduce the oxidation number of manganese in the <strong>MnO₄⁻</strong> ion. (b) State the colour change seen when acidified aqueous potassium manganate(VII) reacts with a reducing agent. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">(a) Oxygen is −2 and the sum must equal the charge on the ion, −1: <span class="eq-inline">x + 4(−2) = −1</span>, so x = <strong>+7</strong> <em>(1)</em>. (b) <strong>Purple → colourless</strong> <em>(1)</em>. (The manganese is reduced from +7 to +2.)</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>In <span class="eq-inline">Fe₂O₃ + 3CO → 2Fe + 3CO₂</span>, identify the <strong>reducing agent</strong> and explain your answer. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>Carbon monoxide, CO</strong> <em>(1)</em> — it removes oxygen from the iron(III) oxide (so the iron oxide is reduced), and CO is <strong>itself oxidised</strong> to CO₂ <em>(1)</em>. Watch the trap: the reducing agent is the substance that is oxidised.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>State the <strong>two</strong> conditions that are true when a reversible reaction in a closed system has reached equilibrium. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">(1) The <strong>rate of the forward reaction equals the rate of the reverse reaction</strong> <em>(1)</em>. (2) The <strong>concentrations of reactants and products are no longer changing</strong> <em>(1)</em>. Note that neither reaction has stopped, and the amounts are <em>not</em> necessarily equal.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 13 · KEY-TERMS BANK ── -->
+  <div class="section">
+    <div class="sec-label">13 / 13 · Reference</div>
     <h2>The Topic 6 key-terms bank</h2>
     <p>These are the statements examiners want back precisely. Tap any tile for the exact definition, key features, an example, and the exam trap:</p>
 
@@ -829,6 +1266,20 @@
       <span class="eq-inline" style="color:var(--rose)">equilibrium: forward rate = reverse rate, amounts constant</span>
       <span class="eq-inline" style="color:var(--rose)">Haber 450°C/200atm/Fe · Contact 450°C/2atm/V₂O₅</span>
       <span class="eq-inline" style="color:var(--rose)">OIL RIG · oxidation = loss of e⁻ = ox. number up</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── PAPERS FOR THIS TOPIC ── -->
+  <div class="section" style="margin-bottom:34px">
+    <div class="sec-label">Practise it</div>
+    <h2>Papers that test this topic</h2>
+    <p>There is <strong>no Topic 6-only paper</strong> yet. The paper below is the closest one on the shelf — it contains one <strong>redox</strong> item from this topic — redox is the only part of Topic 6 inside the SA-1 scope, rates and equilibria are outside it — alongside the other SA-1 topics.</p>
+    <div class="plinks">
+      <a class="plink" href="../practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html">
+        <span class="pk">Practice</span><span>Chemistry SA-1 Practice Paper — Grade X Summative Assessment 1</span>
+      </a>
     </div>
   </div>
 
@@ -876,13 +1327,13 @@
     return d;
   }
   const SC = {
-    conc:{ k:6.5, read:'A more concentrated solution has more particles per unit volume, so collisions are more frequent. The amber curve is steeper and levels off sooner — but at the SAME height, because the amount of limiting reactant is unchanged.' },
-    pres:{ k:6.5, read:'Higher pressure squeezes gas particles into a smaller volume — more particles per unit volume → more frequent collisions → steeper curve, same final volume.' },
-    surf:{ k:6.5, read:'Smaller pieces (more surface area) expose more particles to collide with, so the reaction is faster at the start and finishes sooner — same total gas produced.' },
-    temp:{ k:7.5, read:'Higher temperature makes particles move faster: they collide more frequently AND a greater proportion have energy ≥ Eₐ. The curve is the steepest of all, and finishes first — same final height.' },
-    cat:{ k:6.5, read:'A catalyst lowers the activation energy, so more collisions succeed. The reaction reaches completion faster, but the catalyst is not used up and the final amount of product is unchanged.' }
+    conc:{ k:9, read:'A more concentrated solution has more particles per unit volume, so collisions are more frequent. The amber curve is steeper and levels off sooner — but at the SAME height, because the amount of limiting reactant is unchanged.' },
+    pres:{ k:9, read:'Higher pressure squeezes gas particles into a smaller volume — more particles per unit volume → more frequent collisions → steeper curve, same final volume.' },
+    surf:{ k:9, read:'Smaller pieces (more surface area) expose more particles to collide with, so the reaction is faster at the start and finishes sooner — same total gas produced.' },
+    temp:{ k:11, read:'Higher temperature makes particles move faster: they collide more frequently AND a greater proportion have energy ≥ Eₐ. The curve is the steepest of all, and finishes first — same final height.' },
+    cat:{ k:9, read:'A catalyst lowers the activation energy, so more collisions succeed. The reaction reaches completion faster, but the catalyst is not used up and the final amount of product is unchanged.' }
   };
-  const baseK = 2.6;
+  const baseK = 4.5;
   const svg  = document.getElementById('rateSvg');
   const tabs = document.getElementById('rateTabs');
   const readT= document.getElementById('rateReadTxt');
@@ -901,9 +1352,12 @@
     // baseline (grey dashed) + faster (amber)
     s+='<path class="rc-base" d="'+curve(baseK)+'"/>';
     s+='<path class="rc-fast" d="'+curve(d.k)+'"/>';
-    // labels
-    s+='<text class="rc-lbl-fast" x="120" y="70">faster (dial up)</text>';
-    s+='<text class="rc-lbl-base" x="196" y="150">original</text>';
+    // legend (kept clear of both curves, which stay above y=100 for x>198)
+    s+='<rect x="198" y="150" width="140" height="48" rx="6" fill="var(--surface2)" stroke="var(--border)"/>';
+    s+='<line class="rc-fast" x1="206" y1="166" x2="230" y2="166"/>';
+    s+='<text class="rc-lbl-fast" x="236" y="169">dial turned up</text>';
+    s+='<line class="rc-base" x1="206" y1="186" x2="230" y2="186"/>';
+    s+='<text class="rc-lbl-base" x="236" y="189">original</text>';
     svg.innerHTML=s;
     readT.textContent=d.read;
     tabs.querySelectorAll('.scn-tab').forEach(t=>t.classList.toggle('active', t.dataset.rate===key));
@@ -962,11 +1416,11 @@
   const RX = {
     cuo:{ name:'2CuO + C → 2Cu + CO₂', label:'C + CuO',
       ox:[['Carbon, C','0 → +4 (gains oxygen)']],
-      red:[['Copper, Cu','+2 → 0 (loses oxygen)']],
+      red:[['Copper, Cu','+2 → 0 (its oxide loses oxygen)']],
       oxa:'copper(II) oxide, CuO', reda:'carbon, C' },
     fe:{ name:'Fe₂O₃ + 3CO → 2Fe + 3CO₂', label:'CO + Fe₂O₃',
       ox:[['Carbon in CO','+2 → +4 (gains oxygen)']],
-      red:[['Iron, Fe','+3 → 0 (loses oxygen)']],
+      red:[['Iron, Fe','+3 → 0 (its oxide loses oxygen)']],
       oxa:'iron(III) oxide, Fe₂O₃', reda:'carbon monoxide, CO' },
     mg:{ name:'Mg + CuSO₄ → MgSO₄ + Cu', label:'Mg + CuSO₄',
       ox:[['Magnesium, Mg','0 → +2 (loses electrons)']],
@@ -974,7 +1428,7 @@
       oxa:'copper(II) sulfate (Cu²⁺)', reda:'magnesium, Mg' },
     h2:{ name:'H₂ + CuO → Cu + H₂O', label:'H₂ + CuO',
       ox:[['Hydrogen, H','0 → +1 (gains oxygen)']],
-      red:[['Copper, Cu','+2 → 0 (loses oxygen)']],
+      red:[['Copper, Cu','+2 → 0 (its oxide loses oxygen)']],
       oxa:'copper(II) oxide, CuO', reda:'hydrogen, H₂' }
   };
   const ORDER=['cuo','fe','mg','h2'];
@@ -1040,7 +1494,7 @@ const EQ = {
     why:'It sets the yield of industrial processes like Haber and Contact.',
     eg:'N₂ + 3H₂ ⇌ 2NH₃ sealed in a reactor settles to constant amounts.',
     tip:'Equal <b>rates</b>, not equal amounts — the mixture can be mostly product.' },
-  lechatelier:{ c:'equi', badge:'↔', name:'Shifting equilibrium', def:'Changing conditions moves the position of equilibrium: it shifts to oppose the change you made.',
+  shifting:{ c:'equi', badge:'↔', name:'Shifting equilibrium', def:'Changing conditions moves the position of equilibrium: it shifts to oppose the change you made.',
     feats:['↑Temp → endothermic direction','↑Pressure → fewer gas molecules','↑Conc → away from it','Catalyst → no shift'],
     why:'It lets you predict how to raise the yield of a product.',
     eg:'In the exothermic Haber reaction, higher temperature lowers the ammonia yield.',
@@ -1068,7 +1522,7 @@ const EQ = {
 };
 
 const ORDER=['physical','chemical','rate','collision','catalyst','reversible',
-  'equilibrium','lechatelier','haber','oxidation','reduction','agents'];
+  'equilibrium','shifting','haber','oxidation','reduction','agents'];
 
 const CMETA = {
   phys: {col:'#5b8dee', bg:'#0c1a30', bd:'#1f3a66'},
