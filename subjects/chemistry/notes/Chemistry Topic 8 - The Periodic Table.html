@@ -334,7 +334,7 @@
      --live is declared on BODY (not :root) so the
      light-theme accent override is picked up.
   ═════════════════════════════════════════════ */
-  body { --live: var(--motion); }
+  body { --live: var(--cyan); }
   .tool, .explorer, .interactive { position:relative; border:1.5px solid var(--live); }
   .tool::before, .explorer::before, .interactive::before {
     content:'● INTERACTIVE — DRAG / TAP';
@@ -344,7 +344,59 @@
     pointer-events:none; white-space:nowrap; }
   .dg-cap::before, .diag-cap::before, .fig-cap::before { content:'FIGURE · '; font-family:'JetBrains Mono',monospace;
     font-size:10px; font-weight:600; letter-spacing:.14em; color:var(--muted); }
-  svg.diagram { max-width:560px; max-height:400px; }
+
+  /* ── STATIC FIGURES (inline SVG) ── */
+  svg.diagram { width:100%; height:auto; display:block; max-width:560px; max-height:400px;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; margin:14px auto; }
+  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+  .dg-cap { font-family:'Inter',sans-serif; font-size:12.5px; color:var(--muted);
+    text-align:center; max-width:560px; margin:0 auto 20px; line-height:1.55; }
+  .dg-ttl  { font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600;
+    letter-spacing:.11em; fill:var(--bright); }
+  .dg-lbl  { font-family:'JetBrains Mono',monospace; font-size:9px; fill:var(--muted); }
+  .dg-lblb { font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600; fill:var(--text); }
+  .dg-ln   { stroke:var(--muted); stroke-width:1.15; fill:none; }
+  .dg-thin { stroke:var(--border); stroke-width:1; fill:none; }
+  .dg-dash { stroke:var(--muted); stroke-width:1; fill:none; stroke-dasharray:4 3; opacity:.75; }
+  .dg-glass{ fill:none; stroke:var(--muted); stroke-width:1.5; stroke-linejoin:round; }
+  .dg-panel{ fill:var(--surface2); stroke:var(--border); stroke-width:1; }
+  .dg-shell{ fill:none; stroke:var(--muted); stroke-width:1; opacity:.85; }
+  .dg-nuc  { fill:var(--surface2); stroke:var(--muted); stroke-width:1.2; }
+
+  /* ── CHECK-YOURSELF RETRIEVAL BLOCK ── */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ── PAPER LINKS PANEL ── */
+  .plinks { display:grid; gap:10px; margin:16px 0 4px; }
+  .plink { display:flex; align-items:center; gap:11px; background:var(--surface); border:1px solid var(--border);
+    border-radius:11px; padding:13px 16px; text-decoration:none; color:var(--text); font-size:14px; transition:border-color .2s, transform .2s; }
+  .plink:hover { border-color:var(--cyan); transform:translateY(-2px); }
+  .plink .pk { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--cyan); border:1px solid var(--border); border-radius:5px; padding:3px 8px; flex:none; }
+
+  /* ── SAVE AS PDF ── */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint, #eq-card { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; animation:none !important; opacity:1 !important; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
 </style>
 </head>
 <body data-theme="dark">
@@ -352,6 +404,7 @@
 
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
 <div class="page">
 
   <!-- HEADER -->
@@ -364,7 +417,7 @@
 
   <!-- ── 01 · ARRANGEMENT ── -->
   <div class="section">
-    <div class="sec-label">01 / 09 · 8.1 Arrangement of elements</div>
+    <div class="sec-label">01 / 10 · 8.1 Arrangement of elements</div>
     <h2>The table is a seating plan for the elements</h2>
 
     <div class="box intuition">
@@ -386,6 +439,109 @@
         <div class="card-body">A <strong>vertical column</strong>. The group number tells you <strong>how many electrons are in the outer shell</strong> (Group VII → 7 outer electrons).</div>
       </div>
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="Outline map of the Periodic Table, Periods 1 to 4. Columns are labelled with Roman group numbers I, II, III, IV, V, VI, VII and VIII and with the number of outer-shell electrons 1 to 8. The Group I alkali metals, Group VII halogens, Group VIII noble gases and the central transition block are shaded. A bold stepped staircase line separates the metals on the left from the non-metals on the right, and an arrow across the bottom shows metallic character decreasing across a period.">
+      <defs>
+        <marker id="t8f1a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0,0 L8,4 L0,8 Z" style="fill:var(--muted)"/></marker>
+      </defs>
+      <text class="dg-ttl" x="46" y="16">THE ADDRESS OF AN ELEMENT — GROUP, PERIOD, CHARACTER</text>
+
+      <!-- group numerals + outer-electron counts -->
+      <text class="dg-lblb" x="59"  y="34" text-anchor="middle">I</text>
+      <text class="dg-lblb" x="85"  y="34" text-anchor="middle">II</text>
+      <text class="dg-lblb" x="371" y="34" text-anchor="middle">III</text>
+      <text class="dg-lblb" x="397" y="34" text-anchor="middle">IV</text>
+      <text class="dg-lblb" x="423" y="34" text-anchor="middle">V</text>
+      <text class="dg-lblb" x="449" y="34" text-anchor="middle">VI</text>
+      <text class="dg-lblb" x="475" y="34" text-anchor="middle">VII</text>
+      <text class="dg-lblb" x="501" y="34" text-anchor="middle">VIII</text>
+      <text class="dg-lbl" x="59"  y="47" text-anchor="middle">1</text>
+      <text class="dg-lbl" x="85"  y="47" text-anchor="middle">2</text>
+      <text class="dg-lbl" x="371" y="47" text-anchor="middle">3</text>
+      <text class="dg-lbl" x="397" y="47" text-anchor="middle">4</text>
+      <text class="dg-lbl" x="423" y="47" text-anchor="middle">5</text>
+      <text class="dg-lbl" x="449" y="47" text-anchor="middle">6</text>
+      <text class="dg-lbl" x="475" y="47" text-anchor="middle">7</text>
+      <text class="dg-lbl" x="501" y="47" text-anchor="middle">8*</text>
+
+      <!-- transition block callout -->
+      <text class="dg-lbl" x="228" y="40" text-anchor="middle" style="fill:var(--momentum)">TRANSITION ELEMENTS</text>
+      <line class="dg-dash" x1="228" y1="46" x2="228" y2="126"/>
+
+      <!-- period labels -->
+      <text class="dg-lbl" x="38" y="72"  text-anchor="end">1</text>
+      <text class="dg-lbl" x="38" y="96"  text-anchor="end">2</text>
+      <text class="dg-lbl" x="38" y="120" text-anchor="end">3</text>
+      <text class="dg-lbl" x="38" y="144" text-anchor="end">4</text>
+
+      <!-- PERIOD 1 -->
+      <rect x="254" y="56" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="267" y="72" text-anchor="middle">H</text>
+      <rect x="488" y="56" width="26" height="24" style="fill:var(--motion);fill-opacity:.28;stroke:var(--motion);stroke-width:1"/><text class="dg-lblb" x="501" y="72" text-anchor="middle">He</text>
+      <!-- PERIOD 2 -->
+      <rect x="46"  y="80" width="26" height="24" style="fill:var(--force);fill-opacity:.28;stroke:var(--force);stroke-width:1"/><text class="dg-lblb" x="59"  y="96" text-anchor="middle">Li</text>
+      <rect x="72"  y="80" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="85"  y="96" text-anchor="middle">Be</text>
+      <rect x="358" y="80" width="26" height="24" style="fill:var(--surface2);stroke:var(--bright);stroke-width:1.3;stroke-dasharray:3 2"/><text class="dg-lblb" x="371" y="96" text-anchor="middle">B</text>
+      <rect x="384" y="80" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="397" y="96" text-anchor="middle">C</text>
+      <rect x="410" y="80" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="423" y="96" text-anchor="middle">N</text>
+      <rect x="436" y="80" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="449" y="96" text-anchor="middle">O</text>
+      <rect x="462" y="80" width="26" height="24" style="fill:var(--energy);fill-opacity:.28;stroke:var(--energy);stroke-width:1"/><text class="dg-lblb" x="475" y="96" text-anchor="middle">F</text>
+      <rect x="488" y="80" width="26" height="24" style="fill:var(--motion);fill-opacity:.28;stroke:var(--motion);stroke-width:1"/><text class="dg-lblb" x="501" y="96" text-anchor="middle">Ne</text>
+      <!-- PERIOD 3 -->
+      <rect x="46"  y="104" width="26" height="24" style="fill:var(--force);fill-opacity:.28;stroke:var(--force);stroke-width:1"/><text class="dg-lblb" x="59"  y="120" text-anchor="middle">Na</text>
+      <rect x="72"  y="104" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="85"  y="120" text-anchor="middle">Mg</text>
+      <rect x="358" y="104" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="371" y="120" text-anchor="middle">Al</text>
+      <rect x="384" y="104" width="26" height="24" style="fill:var(--surface2);stroke:var(--bright);stroke-width:1.3;stroke-dasharray:3 2"/><text class="dg-lblb" x="397" y="120" text-anchor="middle">Si</text>
+      <rect x="410" y="104" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="423" y="120" text-anchor="middle">P</text>
+      <rect x="436" y="104" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="449" y="120" text-anchor="middle">S</text>
+      <rect x="462" y="104" width="26" height="24" style="fill:var(--energy);fill-opacity:.28;stroke:var(--energy);stroke-width:1"/><text class="dg-lblb" x="475" y="120" text-anchor="middle">Cl</text>
+      <rect x="488" y="104" width="26" height="24" style="fill:var(--motion);fill-opacity:.28;stroke:var(--motion);stroke-width:1"/><text class="dg-lblb" x="501" y="120" text-anchor="middle">Ar</text>
+      <!-- PERIOD 4 -->
+      <rect x="46"  y="128" width="26" height="24" style="fill:var(--force);fill-opacity:.28;stroke:var(--force);stroke-width:1"/><text class="dg-lblb" x="59"  y="144" text-anchor="middle">K</text>
+      <rect x="72"  y="128" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="85"  y="144" text-anchor="middle">Ca</text>
+      <rect x="98"  y="128" width="26" height="24" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/><text class="dg-lblb" x="111" y="144" text-anchor="middle">Sc</text>
+      <rect x="124" y="128" width="26" height="24" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/><text class="dg-lblb" x="137" y="144" text-anchor="middle">Ti</text>
+      <rect x="150" y="128" width="26" height="24" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/><text class="dg-lblb" x="163" y="144" text-anchor="middle">V</text>
+      <rect x="176" y="128" width="26" height="24" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/><text class="dg-lblb" x="189" y="144" text-anchor="middle">Cr</text>
+      <rect x="202" y="128" width="26" height="24" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/><text class="dg-lblb" x="215" y="144" text-anchor="middle">Mn</text>
+      <rect x="228" y="128" width="26" height="24" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/><text class="dg-lblb" x="241" y="144" text-anchor="middle">Fe</text>
+      <rect x="254" y="128" width="26" height="24" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/><text class="dg-lblb" x="267" y="144" text-anchor="middle">Co</text>
+      <rect x="280" y="128" width="26" height="24" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/><text class="dg-lblb" x="293" y="144" text-anchor="middle">Ni</text>
+      <rect x="306" y="128" width="26" height="24" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/><text class="dg-lblb" x="319" y="144" text-anchor="middle">Cu</text>
+      <rect x="332" y="128" width="26" height="24" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/><text class="dg-lblb" x="345" y="144" text-anchor="middle">Zn</text>
+      <rect x="358" y="128" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="371" y="144" text-anchor="middle">Ga</text>
+      <rect x="384" y="128" width="26" height="24" style="fill:var(--surface2);stroke:var(--bright);stroke-width:1.3;stroke-dasharray:3 2"/><text class="dg-lblb" x="397" y="144" text-anchor="middle">Ge</text>
+      <rect x="410" y="128" width="26" height="24" style="fill:var(--surface2);stroke:var(--bright);stroke-width:1.3;stroke-dasharray:3 2"/><text class="dg-lblb" x="423" y="144" text-anchor="middle">As</text>
+      <rect x="436" y="128" width="26" height="24" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/><text class="dg-lblb" x="449" y="144" text-anchor="middle">Se</text>
+      <rect x="462" y="128" width="26" height="24" style="fill:var(--energy);fill-opacity:.28;stroke:var(--energy);stroke-width:1"/><text class="dg-lblb" x="475" y="144" text-anchor="middle">Br</text>
+      <rect x="488" y="128" width="26" height="24" style="fill:var(--motion);fill-opacity:.28;stroke:var(--motion);stroke-width:1"/><text class="dg-lblb" x="501" y="144" text-anchor="middle">Kr</text>
+
+      <!-- metal / non-metal staircase -->
+      <path class="dg-dash" d="M384,62 L384,80"/>
+      <path d="M384,80 L384,104 L410,104 L410,128 L436,128 L436,152" style="fill:none;stroke:var(--bright);stroke-width:2.2;stroke-linejoin:miter"/>
+      <text class="dg-lbl" x="376" y="72" text-anchor="end" style="fill:var(--text)">METALS</text>
+      <text class="dg-lbl" x="392" y="72" style="fill:var(--text)">NON-METALS</text>
+
+      <!-- across-a-period arrow -->
+      <line class="dg-ln" marker-end="url(#t8f1a)" x1="52" y1="176" x2="508" y2="176"/>
+      <text class="dg-lbl" x="280" y="192" text-anchor="middle">ACROSS A PERIOD: METALLIC CHARACTER FALLS · NON-METALLIC CHARACTER RISES</text>
+
+      <!-- legend -->
+      <rect x="52"  y="209" width="10" height="10" style="fill:var(--force);fill-opacity:.28;stroke:var(--force);stroke-width:1"/>
+      <text class="dg-lbl" x="68" y="218">Group I · alkali metals</text>
+      <rect x="210" y="209" width="10" height="10" style="fill:var(--momentum);fill-opacity:.28;stroke:var(--momentum);stroke-width:1"/>
+      <text class="dg-lbl" x="226" y="218">Transition elements</text>
+      <rect x="340" y="209" width="10" height="10" style="fill:var(--energy);fill-opacity:.28;stroke:var(--energy);stroke-width:1"/>
+      <text class="dg-lbl" x="356" y="218">Group VII · halogens</text>
+      <rect x="52"  y="227" width="10" height="10" style="fill:var(--motion);fill-opacity:.28;stroke:var(--motion);stroke-width:1"/>
+      <text class="dg-lbl" x="68" y="236">Group VIII · noble gases</text>
+      <rect x="210" y="227" width="10" height="10" style="fill:var(--surface2);stroke:var(--bright);stroke-width:1.3;stroke-dasharray:3 2"/>
+      <text class="dg-lbl" x="226" y="236">B, Si, Ge, As — in between (say NON-METAL in the exam)</text>
+
+      <text class="dg-lblb" x="280" y="262" text-anchor="middle" font-size="8.5">group number = outer-shell electrons  ·  period number = number of occupied shells</text>
+      <text class="dg-lbl" x="280" y="278" text-anchor="middle" font-size="8">* helium's outer shell is full with just 2 electrons · hydrogen is placed apart — it fits no group</text>
+      <text class="dg-lbl" x="280" y="292" text-anchor="middle" font-size="8">Periods 1–4 shown; the real table continues below.</text>
+    </svg>
+    <div class="dg-cap">The structural map. Elements run in order of <strong>increasing proton number</strong>; the <strong>group</strong> (column) gives the number of outer-shell electrons and the <strong>period</strong> (row) gives the number of occupied shells. The bold staircase is the metal / non-metal divide, and the dashed cells just to its left are the in-between ones (often called <strong>metalloids</strong>) — note that 0620 never uses that word, so classify them as <strong>non-metals</strong> in an answer.</div>
 
     <p>Tap a family below to light it up on the table. Watch how each family occupies its own column, and how the metals (left) hand over to the non-metals (right):</p>
 
@@ -413,7 +569,7 @@
 
   <!-- ── 02 · READING POSITION ── -->
   <div class="section">
-    <div class="sec-label">02 / 09 · 8.1 Reading an element's position</div>
+    <div class="sec-label">02 / 10 · 8.1 Reading an element's position</div>
     <h2>What the address tells you — charge, family, character</h2>
 
     <div class="box intuition">
@@ -430,17 +586,155 @@
       <tr><td><strong>III</strong></td><td>3</td><td style="color:var(--force)">3+</td><td>Al³⁺</td></tr>
       <tr><td><strong>VI</strong></td><td>6</td><td style="color:var(--motion)">2−</td><td>O²⁻, S²⁻</td></tr>
       <tr><td><strong>VII</strong></td><td>7</td><td style="color:var(--motion)">1−</td><td>Cl⁻, Br⁻</td></tr>
-      <tr><td><strong>VIII / 0</strong></td><td>8 (full)</td><td>no ion</td><td>Ne, Ar (unreactive)</td></tr>
+      <tr><td><strong>VIII / 0</strong></td><td>8 (full — He has 2)</td><td>no ion</td><td>Ne, Ar (unreactive)</td></tr>
     </table>
     <div class="box exam">
       <div class="box-label">✅ The shortcut examiners reward</div>
       For a <strong>metal</strong>, ion charge = group number (Group II → 2+). For a <strong>non-metal</strong>, ion charge = group number − 8 (Group VI → 6−8 = 2−). Noble gases (Group VIII) already have full shells, so they form <strong>no ions</strong>.
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 240" role="img" aria-label="Two panels of electron shell diagrams. Panel A: a sodium atom with shells 2,8,1 loses its single outer electron to become a sodium ion with shells 2,8 and a 1 plus charge. Panel B: a chlorine atom with shells 2,8,7 and one vacancy gains one electron to become a chloride ion with shells 2,8,8 and a 1 minus charge.">
+      <defs>
+        <marker id="t8f2a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0,0 L8,4 L0,8 Z" style="fill:var(--muted)"/></marker>
+      </defs>
+      <line class="dg-dash" x1="280" y1="14" x2="280" y2="196"/>
+
+      <!-- ══ PANEL A · SODIUM (Group I metal) ══ -->
+      <text class="dg-ttl" x="14" y="22">A · METAL LOSES AN ELECTRON</text>
+      <circle class="dg-shell" cx="70" cy="100" r="18"/>
+      <circle class="dg-shell" cx="70" cy="100" r="30"/>
+      <circle class="dg-shell" cx="70" cy="100" r="42"/>
+      <circle class="dg-nuc" cx="70" cy="100" r="10"/>
+      <text class="dg-lblb" x="70" y="103" text-anchor="middle" font-size="8">11+</text>
+      <circle cx="70" cy="82"  r="2.8" style="fill:var(--cyan)"/><circle cx="70" cy="118" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="100" cy="100" r="2.8" style="fill:var(--cyan)"/><circle cx="91" cy="79" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="70" cy="70" r="2.8" style="fill:var(--cyan)"/><circle cx="49" cy="79" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="40" cy="100" r="2.8" style="fill:var(--cyan)"/><circle cx="49" cy="121" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="70" cy="130" r="2.8" style="fill:var(--cyan)"/><circle cx="91" cy="121" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="70" cy="58" r="3.4" style="fill:var(--force)"/>
+      <text class="dg-lblb" x="70" y="162" text-anchor="middle">Na atom</text>
+      <text class="dg-lbl"  x="70" y="176" text-anchor="middle">2,8,1 · 1 outer e⁻</text>
+
+      <text class="dg-lbl" x="139" y="88" text-anchor="middle" style="fill:var(--force)">– 1 e⁻</text>
+      <line class="dg-ln" marker-end="url(#t8f2a)" x1="118" y1="100" x2="160" y2="100"/>
+
+      <circle class="dg-shell" cx="196" cy="100" r="18"/>
+      <circle class="dg-shell" cx="196" cy="100" r="30"/>
+      <circle class="dg-nuc" cx="196" cy="100" r="10"/>
+      <text class="dg-lblb" x="196" y="103" text-anchor="middle" font-size="8">11+</text>
+      <circle cx="196" cy="82"  r="2.8" style="fill:var(--cyan)"/><circle cx="196" cy="118" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="226" cy="100" r="2.8" style="fill:var(--cyan)"/><circle cx="217" cy="79" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="196" cy="70" r="2.8" style="fill:var(--cyan)"/><circle cx="175" cy="79" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="166" cy="100" r="2.8" style="fill:var(--cyan)"/><circle cx="175" cy="121" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="196" cy="130" r="2.8" style="fill:var(--cyan)"/><circle cx="217" cy="121" r="2.8" style="fill:var(--cyan)"/>
+      <text class="dg-lblb" x="196" y="162" text-anchor="middle" style="fill:var(--force)">Na⁺ ion</text>
+      <text class="dg-lbl"  x="196" y="176" text-anchor="middle">2,8 · full shell</text>
+
+      <!-- ══ PANEL B · CHLORINE (Group VII non-metal) ══ -->
+      <text class="dg-ttl" x="294" y="22">B · NON-METAL GAINS AN ELECTRON</text>
+      <circle class="dg-shell" cx="356" cy="100" r="18"/>
+      <circle class="dg-shell" cx="356" cy="100" r="30"/>
+      <circle class="dg-shell" cx="356" cy="100" r="42"/>
+      <circle class="dg-nuc" cx="356" cy="100" r="10"/>
+      <text class="dg-lblb" x="356" y="103" text-anchor="middle" font-size="8">17+</text>
+      <circle cx="356" cy="82"  r="2.8" style="fill:var(--cyan)"/><circle cx="356" cy="118" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="386" cy="100" r="2.8" style="fill:var(--cyan)"/><circle cx="377" cy="79" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="356" cy="70" r="2.8" style="fill:var(--cyan)"/><circle cx="335" cy="79" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="326" cy="100" r="2.8" style="fill:var(--cyan)"/><circle cx="335" cy="121" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="356" cy="130" r="2.8" style="fill:var(--cyan)"/><circle cx="377" cy="121" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="398" cy="100" r="2.8" style="fill:var(--energy)"/><circle cx="386" cy="70" r="2.8" style="fill:var(--energy)"/>
+      <circle cx="356" cy="58" r="2.8" style="fill:var(--energy)"/><circle cx="326" cy="70" r="2.8" style="fill:var(--energy)"/>
+      <circle cx="314" cy="100" r="2.8" style="fill:var(--energy)"/><circle cx="326" cy="130" r="2.8" style="fill:var(--energy)"/>
+      <circle cx="356" cy="142" r="2.8" style="fill:var(--energy)"/>
+      <circle cx="386" cy="130" r="4" style="fill:none;stroke:var(--power);stroke-width:1.2;stroke-dasharray:2.5 2"/>
+      <text class="dg-lblb" x="356" y="162" text-anchor="middle">Cl atom</text>
+      <text class="dg-lbl"  x="356" y="176" text-anchor="middle">2,8,7 · one gap</text>
+
+      <text class="dg-lbl" x="422" y="88" text-anchor="middle" style="fill:var(--power)">+ 1 e⁻</text>
+      <line class="dg-ln" marker-end="url(#t8f2a)" x1="404" y1="100" x2="440" y2="100"/>
+
+      <circle class="dg-shell" cx="488" cy="100" r="18"/>
+      <circle class="dg-shell" cx="488" cy="100" r="30"/>
+      <circle class="dg-shell" cx="488" cy="100" r="42"/>
+      <circle class="dg-nuc" cx="488" cy="100" r="10"/>
+      <text class="dg-lblb" x="488" y="103" text-anchor="middle" font-size="8">17+</text>
+      <circle cx="488" cy="82"  r="2.8" style="fill:var(--cyan)"/><circle cx="488" cy="118" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="518" cy="100" r="2.8" style="fill:var(--cyan)"/><circle cx="509" cy="79" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="488" cy="70" r="2.8" style="fill:var(--cyan)"/><circle cx="467" cy="79" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="458" cy="100" r="2.8" style="fill:var(--cyan)"/><circle cx="467" cy="121" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="488" cy="130" r="2.8" style="fill:var(--cyan)"/><circle cx="509" cy="121" r="2.8" style="fill:var(--cyan)"/>
+      <circle cx="530" cy="100" r="2.8" style="fill:var(--energy)"/><circle cx="518" cy="70" r="2.8" style="fill:var(--energy)"/>
+      <circle cx="488" cy="58" r="2.8" style="fill:var(--energy)"/><circle cx="458" cy="70" r="2.8" style="fill:var(--energy)"/>
+      <circle cx="446" cy="100" r="2.8" style="fill:var(--energy)"/><circle cx="458" cy="130" r="2.8" style="fill:var(--energy)"/>
+      <circle cx="488" cy="142" r="2.8" style="fill:var(--energy)"/>
+      <circle cx="518" cy="130" r="3.6" style="fill:var(--power)"/>
+      <text class="dg-lblb" x="488" y="162" text-anchor="middle" style="fill:var(--motion)">Cl⁻ ion</text>
+      <text class="dg-lbl"  x="488" y="176" text-anchor="middle">2,8,8 · full shell</text>
+
+      <line class="dg-thin" x1="40" y1="196" x2="520" y2="196"/>
+      <text class="dg-lblb" x="280" y="216" text-anchor="middle" font-size="8.5">METAL: ion charge = group number   ·   NON-METAL: ion charge = group number − 8</text>
+      <text class="dg-lbl" x="280" y="231" text-anchor="middle" font-size="8">both reach a noble-gas arrangement — Na⁺ is 2,8 (neon), Cl⁻ is 2,8,8 (argon)</text>
+    </svg>
+    <div class="dg-cap">Why the group number predicts the charge. Sodium (Group I) has <strong>one</strong> outer electron and loses it — the coral dot — leaving a 1+ ion. Chlorine (Group VII) is <strong>one short</strong> of a full shell (the dashed space) and gains one — the green dot — giving a 1− ion.</div>
+
     <h3>2 · Same group → similar chemical properties</h3>
     <div class="define pt-c">
       <span class="term">Why a group is a family</span> — elements in the same group have the <strong>same number of outer-shell electrons (the same electronic configuration in the outer shell)</strong>, so they react in the same way and form ions of the same charge. This is <em>the</em> explanation to give for family behaviour.
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 250" role="img" aria-label="Electron shell diagrams of lithium 2,1, sodium 2,8,1 and potassium 2,8,8,1 side by side. Each has exactly one electron in its outermost shell, shown in coral, but that shell lies further from the nucleus going down the group.">
+      <text class="dg-ttl" x="14" y="22">SAME GROUP = SAME NUMBER OF OUTER ELECTRONS</text>
+
+      <!-- LITHIUM 2,1 -->
+      <circle class="dg-shell" cx="95" cy="105" r="16"/>
+      <circle class="dg-shell" cx="95" cy="105" r="27"/>
+      <circle class="dg-nuc" cx="95" cy="105" r="9"/>
+      <text class="dg-lblb" x="95" y="108" text-anchor="middle" font-size="7.5">3+</text>
+      <circle cx="95" cy="89" r="2.6" style="fill:var(--cyan)"/><circle cx="95" cy="121" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="95" cy="78" r="3.6" style="fill:var(--force)"/>
+      <text class="dg-lblb" x="95" y="175" text-anchor="middle">Lithium · Li</text>
+      <text class="dg-lbl"  x="95" y="189" text-anchor="middle">2,1 — 2 shells</text>
+
+      <!-- SODIUM 2,8,1 -->
+      <circle class="dg-shell" cx="280" cy="105" r="16"/>
+      <circle class="dg-shell" cx="280" cy="105" r="27"/>
+      <circle class="dg-shell" cx="280" cy="105" r="38"/>
+      <circle class="dg-nuc" cx="280" cy="105" r="9"/>
+      <text class="dg-lblb" x="280" y="108" text-anchor="middle" font-size="7.5">11+</text>
+      <circle cx="280" cy="89" r="2.6" style="fill:var(--cyan)"/><circle cx="280" cy="121" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="307" cy="105" r="2.6" style="fill:var(--cyan)"/><circle cx="299" cy="86" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="280" cy="78" r="2.6" style="fill:var(--cyan)"/><circle cx="261" cy="86" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="253" cy="105" r="2.6" style="fill:var(--cyan)"/><circle cx="261" cy="124" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="280" cy="132" r="2.6" style="fill:var(--cyan)"/><circle cx="299" cy="124" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="280" cy="67" r="3.6" style="fill:var(--force)"/>
+      <text class="dg-lblb" x="280" y="175" text-anchor="middle">Sodium · Na</text>
+      <text class="dg-lbl"  x="280" y="189" text-anchor="middle">2,8,1 — 3 shells</text>
+
+      <!-- POTASSIUM 2,8,8,1 -->
+      <circle class="dg-shell" cx="465" cy="105" r="16"/>
+      <circle class="dg-shell" cx="465" cy="105" r="27"/>
+      <circle class="dg-shell" cx="465" cy="105" r="38"/>
+      <circle class="dg-shell" cx="465" cy="105" r="49"/>
+      <circle class="dg-nuc" cx="465" cy="105" r="9"/>
+      <text class="dg-lblb" x="465" y="108" text-anchor="middle" font-size="7.5">19+</text>
+      <circle cx="465" cy="89" r="2.6" style="fill:var(--cyan)"/><circle cx="465" cy="121" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="492" cy="105" r="2.6" style="fill:var(--cyan)"/><circle cx="484" cy="86" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="465" cy="78" r="2.6" style="fill:var(--cyan)"/><circle cx="446" cy="86" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="438" cy="105" r="2.6" style="fill:var(--cyan)"/><circle cx="446" cy="124" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="465" cy="132" r="2.6" style="fill:var(--cyan)"/><circle cx="484" cy="124" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="503" cy="105" r="2.6" style="fill:var(--cyan)"/><circle cx="492" cy="78" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="465" cy="67" r="2.6" style="fill:var(--cyan)"/><circle cx="438" cy="78" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="427" cy="105" r="2.6" style="fill:var(--cyan)"/><circle cx="438" cy="132" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="465" cy="143" r="2.6" style="fill:var(--cyan)"/><circle cx="492" cy="132" r="2.6" style="fill:var(--cyan)"/>
+      <circle cx="465" cy="56" r="3.6" style="fill:var(--force)"/>
+      <text class="dg-lblb" x="465" y="175" text-anchor="middle">Potassium · K</text>
+      <text class="dg-lbl"  x="465" y="189" text-anchor="middle">2,8,8,1 — 4 shells</text>
+
+      <line class="dg-thin" x1="40" y1="203" x2="520" y2="203"/>
+      <text class="dg-lblb" x="280" y="221" text-anchor="middle" font-size="8.5">same outer electrons → same reactions → all form a 1+ ion (Li⁺, Na⁺, K⁺)</text>
+      <text class="dg-lbl" x="280" y="238" text-anchor="middle" font-size="8" style="fill:var(--force)">but that outer shell sits further from the nucleus going down → lost more easily → MORE reactive</text>
+    </svg>
+    <div class="dg-cap">The whole reason a group behaves as a family. All three alkali metals carry exactly <strong>one</strong> outer electron (coral), so all three react the same way and form 1+ ions — while the growing number of shells explains why reactivity <em>rises</em> down the group.</div>
 
     <h3>3 · Across a period → metal turns into non-metal</h3>
     <div class="box intuition">
@@ -467,7 +761,7 @@
 
   <!-- ── 03 · GROUP I ── -->
   <div class="section">
-    <div class="sec-label">03 / 09 · 8.2 Group I properties</div>
+    <div class="sec-label">03 / 10 · 8.2 Group I properties</div>
     <h2>Group I — the alkali metals</h2>
 
     <div class="define g1-c">
@@ -495,6 +789,85 @@
       <span class="eq-inline" style="color:var(--rose)">Reactivity INCREASES ↓</span>
     </div>
     <p style="font-size:12.5px;color:var(--muted)">(The density climb is the overall trend to Rb and Cs; potassium dips very slightly below sodium — but the direction examiners want is "density increases down the group".)</p>
+
+    <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="Two graphs and a reactivity strip for Group I. The left graph plots melting point against lithium, sodium, potassium, rubidium and caesium and falls steadily from 181 to 29 degrees Celsius. The right graph plots density and rises overall from 0.53 to 1.88 grams per cubic centimetre, with a small dip at potassium. Below, five shaded boxes show the reaction with water becoming more violent from lithium to caesium.">
+      <!-- ══ PANEL A · MELTING POINT ══ -->
+      <text class="dg-ttl" x="60" y="34">MELTING POINT / °C — FALLS</text>
+      <line class="dg-thin" x1="60" y1="50"  x2="262" y2="50"/>
+      <line class="dg-thin" x1="60" y1="80"  x2="262" y2="80"/>
+      <line class="dg-thin" x1="60" y1="110" x2="262" y2="110"/>
+      <line class="dg-thin" x1="60" y1="140" x2="262" y2="140"/>
+      <line class="dg-ln" x1="60" y1="44" x2="60" y2="176"/>
+      <line class="dg-ln" x1="60" y1="170" x2="262" y2="170"/>
+      <text class="dg-lbl" x="55" y="53"  text-anchor="end">200</text>
+      <text class="dg-lbl" x="55" y="83"  text-anchor="end">150</text>
+      <text class="dg-lbl" x="55" y="113" text-anchor="end">100</text>
+      <text class="dg-lbl" x="55" y="143" text-anchor="end">50</text>
+      <text class="dg-lbl" x="55" y="173" text-anchor="end">0</text>
+      <polyline points="70,61 115,111 160,132 205,147 250,153" style="fill:none;stroke:var(--force);stroke-width:2"/>
+      <circle cx="70"  cy="61"  r="3.5" style="fill:var(--force)"/>
+      <circle cx="115" cy="111" r="3.5" style="fill:var(--force)"/>
+      <circle cx="160" cy="132" r="3.5" style="fill:var(--force)"/>
+      <circle cx="205" cy="147" r="3.5" style="fill:var(--force)"/>
+      <circle cx="250" cy="153" r="3.5" style="fill:var(--force)"/>
+      <text class="dg-lbl" x="78"  y="56" font-size="8">181</text>
+      <text class="dg-lbl" x="250" y="145" text-anchor="middle" font-size="8">29</text>
+      <text class="dg-lblb" x="70"  y="188" text-anchor="middle">Li</text>
+      <text class="dg-lblb" x="115" y="188" text-anchor="middle">Na</text>
+      <text class="dg-lblb" x="160" y="188" text-anchor="middle">K</text>
+      <text class="dg-lblb" x="205" y="188" text-anchor="middle">Rb</text>
+      <text class="dg-lblb" x="250" y="188" text-anchor="middle">Cs</text>
+
+      <!-- ══ PANEL B · DENSITY ══ -->
+      <text class="dg-ttl" x="340" y="34">DENSITY / g/cm³ — RISES</text>
+      <line class="dg-thin" x1="340" y1="50"  x2="542" y2="50"/>
+      <line class="dg-thin" x1="340" y1="80"  x2="542" y2="80"/>
+      <line class="dg-thin" x1="340" y1="110" x2="542" y2="110"/>
+      <line class="dg-thin" x1="340" y1="140" x2="542" y2="140"/>
+      <line class="dg-ln" x1="340" y1="44" x2="340" y2="176"/>
+      <line class="dg-ln" x1="340" y1="170" x2="542" y2="170"/>
+      <text class="dg-lbl" x="335" y="53"  text-anchor="end">2.0</text>
+      <text class="dg-lbl" x="335" y="83"  text-anchor="end">1.5</text>
+      <text class="dg-lbl" x="335" y="113" text-anchor="end">1.0</text>
+      <text class="dg-lbl" x="335" y="143" text-anchor="end">0.5</text>
+      <text class="dg-lbl" x="335" y="173" text-anchor="end">0</text>
+      <polyline points="350,138 395,112 440,118 485,78 530,57" style="fill:none;stroke:var(--cyan);stroke-width:2"/>
+      <circle cx="350" cy="138" r="3.5" style="fill:var(--cyan)"/>
+      <circle cx="395" cy="112" r="3.5" style="fill:var(--cyan)"/>
+      <circle cx="440" cy="118" r="3.5" style="fill:var(--cyan)"/>
+      <circle cx="485" cy="78"  r="3.5" style="fill:var(--cyan)"/>
+      <circle cx="530" cy="57"  r="3.5" style="fill:var(--cyan)"/>
+      <text class="dg-lbl" x="358" y="142" font-size="8">0.53</text>
+      <text class="dg-lbl" x="530" y="49"  text-anchor="middle" font-size="8">1.88</text>
+      <text class="dg-lbl" x="440" y="152" text-anchor="middle" font-size="8">K dips</text>
+      <text class="dg-lblb" x="350" y="188" text-anchor="middle">Li</text>
+      <text class="dg-lblb" x="395" y="188" text-anchor="middle">Na</text>
+      <text class="dg-lblb" x="440" y="188" text-anchor="middle">K</text>
+      <text class="dg-lblb" x="485" y="188" text-anchor="middle">Rb</text>
+      <text class="dg-lblb" x="530" y="188" text-anchor="middle">Cs</text>
+
+      <!-- ══ REACTIVITY STRIP ══ -->
+      <text class="dg-ttl" x="14" y="212">REACTIVITY WITH WATER — Li (TOP OF GROUP) → Cs (BOTTOM)</text>
+      <rect x="70"  y="220" width="80" height="22" rx="3" style="fill:var(--force);fill-opacity:.12;stroke:var(--force);stroke-width:1"/>
+      <rect x="158" y="220" width="80" height="22" rx="3" style="fill:var(--force);fill-opacity:.24;stroke:var(--force);stroke-width:1"/>
+      <rect x="246" y="220" width="80" height="22" rx="3" style="fill:var(--force);fill-opacity:.38;stroke:var(--force);stroke-width:1"/>
+      <rect x="334" y="220" width="80" height="22" rx="3" style="fill:var(--force);fill-opacity:.52;stroke:var(--force);stroke-width:1"/>
+      <rect x="422" y="220" width="80" height="22" rx="3" style="fill:var(--force);fill-opacity:.68;stroke:var(--force);stroke-width:1"/>
+      <text class="dg-lblb" x="110" y="235" text-anchor="middle">Li</text>
+      <text class="dg-lblb" x="198" y="235" text-anchor="middle">Na</text>
+      <text class="dg-lblb" x="286" y="235" text-anchor="middle">K</text>
+      <text class="dg-lblb" x="374" y="235" text-anchor="middle">Rb</text>
+      <text class="dg-lblb" x="462" y="235" text-anchor="middle">Cs</text>
+      <text class="dg-lbl" x="110" y="256" text-anchor="middle" font-size="7.5">fizzes steadily</text>
+      <text class="dg-lbl" x="198" y="256" text-anchor="middle" font-size="7.5">melts, whizzes</text>
+      <text class="dg-lbl" x="286" y="256" text-anchor="middle" font-size="7.5">ignites, lilac</text>
+      <text class="dg-lbl" x="374" y="256" text-anchor="middle" font-size="7.5">violent</text>
+      <text class="dg-lbl" x="462" y="256" text-anchor="middle" font-size="7.5">explosive</text>
+
+      <line class="dg-thin" x1="40" y1="270" x2="520" y2="270"/>
+      <text class="dg-lblb" x="280" y="288" text-anchor="middle" font-size="8.5">DOWN GROUP I:  melting point FALLS  ·  density RISES  ·  reactivity RISES</text>
+    </svg>
+    <div class="dg-cap">The three Group I trends as a marker would see them. Melting point falls steadily; density rises overall (potassium dips a little below sodium — the <em>direction</em> is what is credited); and the reaction with water grows from a steady fizz to an explosion.</div>
 
     <h3>Reaction with water — the classic demo</h3>
     <p>Every alkali metal reacts with cold water to give a hydroxide (an alkali) and hydrogen gas. The reaction gets <strong>more violent down the group</strong>:</p>
@@ -536,7 +909,7 @@
 
   <!-- ── 04 · GROUP VII ── -->
   <div class="section">
-    <div class="sec-label">04 / 09 · 8.3 Group VII properties</div>
+    <div class="sec-label">04 / 10 · 8.3 Group VII properties</div>
     <h2>Group VII — the halogens</h2>
 
     <div class="define g7-c">
@@ -563,6 +936,49 @@
       <span class="eq-inline" style="color:var(--rose)">Cl₂ green gas · Br₂ red-brown liquid · I₂ grey-black solid</span>
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="Three test tubes at room temperature and pressure. Chlorine is a pale yellow-green gas filling the whole tube. Bromine is a red-brown liquid in the bottom of the tube with brown vapour above it. Iodine is a grey-black crystalline solid at the bottom with purple vapour above it.">
+      <text class="dg-ttl" x="14" y="26">THE HALOGENS AT r.t.p. — STATE AND COLOUR</text>
+
+      <!-- ══ CHLORINE — pale yellow-green GAS ══ -->
+      <rect class="dg-panel" x="79" y="52" width="62" height="6" rx="3"/>
+      <path d="M83,60 L83,173 A27,27 0 0 0 137,173 L137,60 Z" style="fill:#b5d94a;fill-opacity:.45;stroke:none"/>
+      <path class="dg-glass" d="M83,58 L83,173 A27,27 0 0 0 137,173 L137,58"/>
+      <text class="dg-lbl" x="77" y="110" text-anchor="end" font-size="7.5">fills the tube</text>
+      <text class="dg-lblb" x="110" y="222" text-anchor="middle">Chlorine · Cl₂</text>
+      <text class="dg-lblb" x="110" y="238" text-anchor="middle" style="fill:var(--energy)">GAS</text>
+      <text class="dg-lbl"  x="110" y="252" text-anchor="middle">pale yellow-green</text>
+
+      <!-- ══ BROMINE — red-brown LIQUID ══ -->
+      <rect class="dg-panel" x="249" y="52" width="62" height="6" rx="3"/>
+      <path d="M253,60 L253,140 L307,140 L307,60 Z" style="fill:#c0562a;fill-opacity:.30;stroke:none"/>
+      <path d="M253,140 L253,173 A27,27 0 0 0 307,173 L307,140 Z" style="fill:#a8431f;fill-opacity:.90;stroke:none"/>
+      <line class="dg-thin" x1="253" y1="140" x2="307" y2="140"/>
+      <path class="dg-glass" d="M253,58 L253,173 A27,27 0 0 0 307,173 L307,58"/>
+      <text class="dg-lbl" x="313" y="100" font-size="7.5">brown vapour</text>
+      <text class="dg-lbl" x="313" y="158" font-size="7.5">liquid</text>
+      <text class="dg-lblb" x="280" y="222" text-anchor="middle">Bromine · Br₂</text>
+      <text class="dg-lblb" x="280" y="238" text-anchor="middle" style="fill:var(--energy)">LIQUID</text>
+      <text class="dg-lbl"  x="280" y="252" text-anchor="middle">red-brown</text>
+
+      <!-- ══ IODINE — grey-black SOLID ══ -->
+      <rect class="dg-panel" x="419" y="52" width="62" height="6" rx="3"/>
+      <path d="M423,60 L423,152 L477,152 L477,60 Z" style="fill:#8a5fd0;fill-opacity:.28;stroke:none"/>
+      <path class="dg-glass" d="M423,58 L423,173 A27,27 0 0 0 477,173 L477,58"/>
+      <polygon points="430,184 439,167 450,177 443,190" style="fill:#4a4a58;stroke:var(--text);stroke-width:.8"/>
+      <polygon points="449,187 458,169 471,180 462,192" style="fill:#4a4a58;stroke:var(--text);stroke-width:.8"/>
+      <polygon points="436,192 449,194 445,182 433,188" style="fill:#4a4a58;stroke:var(--text);stroke-width:.8"/>
+      <polygon points="458,193 470,190 465,183 456,186" style="fill:#4a4a58;stroke:var(--text);stroke-width:.8"/>
+      <text class="dg-lbl" x="483" y="105" font-size="7.5">purple vapour</text>
+      <text class="dg-lbl" x="483" y="184" font-size="7.5">solid crystals</text>
+      <text class="dg-lblb" x="450" y="222" text-anchor="middle">Iodine · I₂</text>
+      <text class="dg-lblb" x="450" y="238" text-anchor="middle" style="fill:var(--energy)">SOLID</text>
+      <text class="dg-lbl"  x="450" y="252" text-anchor="middle">grey-black</text>
+
+      <line class="dg-thin" x1="40" y1="264" x2="520" y2="264"/>
+      <text class="dg-lblb" x="280" y="282" text-anchor="middle" font-size="8.5">DOWN GROUP VII:  darker  ·  denser  ·  gas → liquid → solid  ·  LESS reactive</text>
+    </svg>
+    <div class="dg-cap">All three are <strong>diatomic</strong> molecules — Cl₂, Br₂, I₂. The state march gas → liquid → solid going down the group is a stock recall mark, so learn the three colours exactly as the syllabus words them.</div>
+
     <div class="box analogy">
       <div class="box-label">🧴 Halogens you've actually met</div>
       <strong>Chlorine</strong> is what makes swimming-pool and tap water safe to drink — it kills microbes. <strong>Iodine</strong> is the brown <strong>tincture of iodine</strong> antiseptic dabbed on a cut, and the "iodised" part of <strong>iodised salt</strong> that prevents goitre. Same family, very different everyday jobs — but all reactive non-metals.
@@ -577,7 +993,7 @@
 
   <!-- ── 05 · DISPLACEMENT ── -->
   <div class="section">
-    <div class="sec-label">05 / 09 · 8.3 Halogen displacement</div>
+    <div class="sec-label">05 / 10 · 8.3 Halogen displacement</div>
     <h2>Displacement — the reactivity contest you can see</h2>
 
     <div class="box intuition">
@@ -598,8 +1014,56 @@
       "A reaction happened" (a colour appears) means the <strong>added halogen is more reactive</strong> than the one in the salt. So <strong>chlorine displaces both bromine and iodine</strong>; <strong>bromine displaces only iodine</strong>; <strong>iodine displaces neither</strong>. This proves the order <mark>Cl &gt; Br &gt; I</mark> — reactivity falling down the group.
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="A three by three results grid. Rows are the halogen added: chlorine, bromine, iodine. Columns are the halide solution: potassium chloride, potassium bromide, potassium iodide. Chlorine reacts with potassium bromide turning the solution orange and with potassium iodide turning it brown. Bromine reacts only with potassium iodide, turning it brown. Iodine reacts with neither. The conclusion is that reactivity falls in the order chlorine, bromine, iodine.">
+      <text class="dg-ttl" x="14" y="22">DISPLACEMENT — WHICH HALOGEN KICKS OUT WHICH</text>
+      <text class="dg-lbl" x="14"  y="44">HALOGEN ADDED ↓</text>
+      <text class="dg-lbl" x="140" y="44">HALIDE SOLUTION IN THE TUBE →</text>
+      <text class="dg-lblb" x="199" y="66" text-anchor="middle">KCl(aq)</text>
+      <text class="dg-lblb" x="317" y="66" text-anchor="middle">KBr(aq)</text>
+      <text class="dg-lblb" x="435" y="66" text-anchor="middle">KI(aq)</text>
+      <text class="dg-lblb" x="132" y="106" text-anchor="end">chlorine, Cl₂</text>
+      <text class="dg-lblb" x="132" y="158" text-anchor="end">bromine, Br₂</text>
+      <text class="dg-lblb" x="132" y="210" text-anchor="end">iodine, I₂</text>
+
+      <!-- ROW 1 · chlorine added -->
+      <rect x="140" y="76" width="118" height="52" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/>
+      <text class="dg-lbl" x="199" y="107" text-anchor="middle">same element</text>
+      <rect x="258" y="76" width="118" height="52" style="fill:#c0562a;fill-opacity:.38;stroke:var(--energy);stroke-width:1.3"/>
+      <text class="dg-lblb" x="317" y="94"  text-anchor="middle">REACTION</text>
+      <text class="dg-lbl"  x="317" y="108" text-anchor="middle" font-size="8">turns ORANGE</text>
+      <text class="dg-lbl"  x="317" y="120" text-anchor="middle" font-size="8">Br₂ displaced</text>
+      <rect x="376" y="76" width="118" height="52" style="fill:#7a4420;fill-opacity:.32;stroke:var(--energy);stroke-width:1.3"/>
+      <text class="dg-lblb" x="435" y="94"  text-anchor="middle">REACTION</text>
+      <text class="dg-lbl"  x="435" y="108" text-anchor="middle" font-size="8">turns BROWN</text>
+      <text class="dg-lbl"  x="435" y="120" text-anchor="middle" font-size="8">I₂ displaced</text>
+
+      <!-- ROW 2 · bromine added -->
+      <rect x="140" y="128" width="118" height="52" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/>
+      <text class="dg-lbl" x="199" y="159" text-anchor="middle">no reaction</text>
+      <rect x="258" y="128" width="118" height="52" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/>
+      <text class="dg-lbl" x="317" y="159" text-anchor="middle">same element</text>
+      <rect x="376" y="128" width="118" height="52" style="fill:#7a4420;fill-opacity:.32;stroke:var(--energy);stroke-width:1.3"/>
+      <text class="dg-lblb" x="435" y="146" text-anchor="middle">REACTION</text>
+      <text class="dg-lbl"  x="435" y="160" text-anchor="middle" font-size="8">turns BROWN</text>
+      <text class="dg-lbl"  x="435" y="172" text-anchor="middle" font-size="8">I₂ displaced</text>
+
+      <!-- ROW 3 · iodine added -->
+      <rect x="140" y="180" width="118" height="52" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/>
+      <text class="dg-lbl" x="199" y="211" text-anchor="middle">no reaction</text>
+      <rect x="258" y="180" width="118" height="52" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/>
+      <text class="dg-lbl" x="317" y="211" text-anchor="middle">no reaction</text>
+      <rect x="376" y="180" width="118" height="52" style="fill:var(--surface2);stroke:var(--border);stroke-width:1"/>
+      <text class="dg-lbl" x="435" y="211" text-anchor="middle">same element</text>
+
+      <line class="dg-thin" x1="40" y1="248" x2="520" y2="248"/>
+      <text class="dg-lbl" x="280" y="268" text-anchor="middle" font-size="8">Cl₂ displaces Br₂ and I₂  ·  Br₂ displaces only I₂  ·  I₂ displaces neither</text>
+      <text class="dg-lblb" x="280" y="288" text-anchor="middle" style="fill:var(--energy)">SO REACTIVITY RUNS  Cl &gt; Br &gt; I  — FALLING DOWN GROUP VII</text>
+    </svg>
+    <div class="dg-cap">The whole family ranked from one set of test tubes. A reaction happens only when the <strong>added</strong> halogen is more reactive than the halide already in solution — and the colour you see is the halogen that was <strong>set free</strong>, not the one you added.</div>
+
     <div class="estores">
       <div class="estore"><span class="dot" style="background:#f0b144"></span>Cl₂ + 2KBr → 2KCl + Br₂ (turns orange)</div>
+
       <div class="estore"><span class="dot" style="background:#f0b144"></span>Cl₂ + 2KI → 2KCl + I₂ (turns brown)</div>
       <div class="estore"><span class="dot" style="background:#f0b144"></span>Br₂ + 2KI → 2KBr + I₂ (turns brown)</div>
     </div>
@@ -613,11 +1077,11 @@
 
   <!-- ── 06 · TRANSITION ELEMENTS ── -->
   <div class="section">
-    <div class="sec-label">06 / 09 · 8.4 Transition elements</div>
+    <div class="sec-label">06 / 10 · 8.4 Transition elements</div>
     <h2>Transition elements — the "proper metals"</h2>
 
     <div class="define tm-c">
-      <span class="term">Transition elements</span> — the block of metals in the <strong>centre of the table</strong> (iron, copper, zinc, chromium, manganese, nickel…). They are <strong>hard, dense metals with high melting points</strong> that form <strong>coloured compounds</strong> and often act as <strong>catalysts</strong>.
+      <span class="term">Transition elements</span> — the block of metals in the <strong>centre of the table</strong> (iron, copper, chromium, manganese, nickel…). They are <strong>hard, dense metals with high melting points</strong> that form <strong>coloured compounds</strong> and often act as <strong>catalysts</strong>.
     </div>
 
     <div class="box intuition">
@@ -628,7 +1092,7 @@
     <div class="grid2">
       <div class="card">
         <div class="card-title" style="color:var(--momentum)">High density &amp; melting point</div>
-        <div class="card-body">Iron melts at <strong>1538 °C</strong> (density 7.9) and copper at <strong>1085 °C</strong> (density 8.9) — compare sodium: melts at just 98 °C, density 0.97.</div>
+        <div class="card-body">Iron melts at <strong>1538 °C</strong> (density 7.9) and copper at <strong>1085 °C</strong> (density 8.96) — compare sodium: melts at just 98 °C, density 0.97.</div>
       </div>
       <div class="card">
         <div class="card-title" style="color:var(--momentum)">Coloured compounds</div>
@@ -643,6 +1107,54 @@
         <div class="card-body">The same metal can form ions of <strong>different charges</strong>, shown by Roman numerals: <strong>iron(II) Fe²⁺</strong> and <strong>iron(III) Fe³⁺</strong>; copper(I) Cu⁺ and copper(II) Cu²⁺.</div>
       </div>
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="Top: four beakers of coloured solutions — copper two plus blue, iron two plus pale green, iron three plus orange-brown, and manganate seven purple — with a bracket showing that iron gives two of them because it has variable oxidation numbers. Bottom: a horizontal bar chart of melting points comparing sodium at 98 degrees Celsius with iron at 1538 and copper at 1085.">
+      <text class="dg-ttl" x="14" y="22">SIGNATURE 1 · TRANSITION METALS FORM COLOURED COMPOUNDS</text>
+      <text class="dg-lbl" x="14" y="40">Group I compounds are white solids giving colourless solutions — these are not.</text>
+
+      <!-- four beakers -->
+      <path d="M60,78 L60,116 Q60,122 66,122 L114,122 Q120,122 120,116 L120,78 Z" style="fill:#2f7ad6;fill-opacity:.85;stroke:none"/>
+      <path class="dg-glass" d="M60,54 L60,116 Q60,122 66,122 L114,122 Q120,122 120,116 L120,54"/>
+      <line class="dg-thin" x1="60" y1="78" x2="120" y2="78"/>
+      <text class="dg-lblb" x="90" y="140" text-anchor="middle">Cu²⁺(aq)</text>
+      <text class="dg-lbl"  x="90" y="154" text-anchor="middle">blue</text>
+
+      <path d="M180,78 L180,116 Q180,122 186,122 L234,122 Q240,122 240,116 L240,78 Z" style="fill:#7fc49a;fill-opacity:.85;stroke:none"/>
+      <path class="dg-glass" d="M180,54 L180,116 Q180,122 186,122 L234,122 Q240,122 240,116 L240,54"/>
+      <line class="dg-thin" x1="180" y1="78" x2="240" y2="78"/>
+      <text class="dg-lblb" x="210" y="140" text-anchor="middle">Fe²⁺ · iron(II)</text>
+      <text class="dg-lbl"  x="210" y="154" text-anchor="middle">pale green</text>
+
+      <path d="M300,78 L300,116 Q300,122 306,122 L354,122 Q360,122 360,116 L360,78 Z" style="fill:#c07a2a;fill-opacity:.85;stroke:none"/>
+      <path class="dg-glass" d="M300,54 L300,116 Q300,122 306,122 L354,122 Q360,122 360,116 L360,54"/>
+      <line class="dg-thin" x1="300" y1="78" x2="360" y2="78"/>
+      <text class="dg-lblb" x="330" y="140" text-anchor="middle">Fe³⁺ · iron(III)</text>
+      <text class="dg-lbl"  x="330" y="154" text-anchor="middle">orange-brown</text>
+
+      <path d="M420,78 L420,116 Q420,122 426,122 L474,122 Q480,122 480,116 L480,78 Z" style="fill:#7b3fa8;fill-opacity:.85;stroke:none"/>
+      <path class="dg-glass" d="M420,54 L420,116 Q420,122 426,122 L474,122 Q480,122 480,116 L480,54"/>
+      <line class="dg-thin" x1="420" y1="78" x2="480" y2="78"/>
+      <text class="dg-lblb" x="450" y="140" text-anchor="middle">MnO₄⁻(aq)</text>
+      <text class="dg-lbl"  x="450" y="154" text-anchor="middle">purple</text>
+
+      <!-- bracket over the two iron tubes -->
+      <path class="dg-ln" style="stroke:var(--momentum)" d="M180,164 L180,170 L360,170 L360,164"/>
+      <text class="dg-lbl" x="270" y="184" text-anchor="middle" style="fill:var(--momentum)">ONE METAL, TWO OXIDATION NUMBERS — iron(II) and iron(III)</text>
+
+      <!-- ══ SIGNATURE 2 · melting points ══ -->
+      <text class="dg-ttl" x="14" y="208">SIGNATURE 2 · MELTING POINT (BAR LENGTH) AND DENSITY</text>
+      <line class="dg-ln" x1="140" y1="216" x2="140" y2="288"/>
+      <rect x="140" y="222" width="21"  height="16" style="fill:var(--force);fill-opacity:.75;stroke:var(--force);stroke-width:1"/>
+      <rect x="140" y="246" width="327" height="16" style="fill:var(--momentum);fill-opacity:.75;stroke:var(--momentum);stroke-width:1"/>
+      <rect x="140" y="270" width="231" height="16" style="fill:var(--momentum);fill-opacity:.75;stroke:var(--momentum);stroke-width:1"/>
+      <text class="dg-lblb" x="132" y="234" text-anchor="end">sodium (Gp I)</text>
+      <text class="dg-lblb" x="132" y="258" text-anchor="end">iron</text>
+      <text class="dg-lblb" x="132" y="282" text-anchor="end">copper</text>
+      <text class="dg-lbl" x="167" y="234" font-size="8">98 °C · d 0.97 g/cm³</text>
+      <text class="dg-lbl" x="473" y="258" font-size="8">1538 °C · d 7.9</text>
+      <text class="dg-lbl" x="377" y="282" font-size="8">1085 °C · d 8.96</text>
+    </svg>
+    <div class="dg-cap">The two signatures a question leans on. Colour flags a transition metal — and iron supplying <strong>two</strong> different colours is the Supplement point about variable oxidation number. The bars show how far a transition metal sits from a Group I metal on melting point and density.</div>
 
     <div class="box analogy">
       <div class="box-label">🍳 A transition metal in your kitchen</div>
@@ -663,7 +1175,7 @@
 
   <!-- ── 07 · NOBLE GASES ── -->
   <div class="section">
-    <div class="sec-label">07 / 09 · 8.5 Noble gases</div>
+    <div class="sec-label">07 / 10 · 8.5 Noble gases</div>
     <h2>Group VIII — the noble gases</h2>
 
     <div class="define ng-c">
@@ -690,6 +1202,54 @@
       </div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 250" role="img" aria-label="Electron shell diagrams of helium with 2 electrons, neon with 2 and 8, and argon with 2, 8 and 8. Every outer shell is completely full, which is why the noble gases are unreactive and exist as single atoms.">
+      <text class="dg-ttl" x="14" y="22">GROUP VIII · EVERY OUTER SHELL IS ALREADY FULL</text>
+
+      <!-- HELIUM -->
+      <circle class="dg-shell" cx="95" cy="100" r="18"/>
+      <circle class="dg-nuc" cx="95" cy="100" r="9"/>
+      <text class="dg-lblb" x="95" y="103" text-anchor="middle" font-size="7.5">2+</text>
+      <circle cx="95" cy="82" r="3" style="fill:var(--motion)"/><circle cx="95" cy="118" r="3" style="fill:var(--motion)"/>
+      <text class="dg-lblb" x="95" y="170" text-anchor="middle">Helium · He</text>
+      <text class="dg-lbl"  x="95" y="184" text-anchor="middle">2 — first shell holds only 2</text>
+
+      <!-- NEON -->
+      <circle class="dg-shell" cx="280" cy="100" r="18"/>
+      <circle class="dg-shell" cx="280" cy="100" r="30"/>
+      <circle class="dg-nuc" cx="280" cy="100" r="9"/>
+      <text class="dg-lblb" x="280" y="103" text-anchor="middle" font-size="7.5">10+</text>
+      <circle cx="280" cy="82" r="3" style="fill:var(--motion)"/><circle cx="280" cy="118" r="3" style="fill:var(--motion)"/>
+      <circle cx="310" cy="100" r="3" style="fill:var(--motion)"/><circle cx="301" cy="79" r="3" style="fill:var(--motion)"/>
+      <circle cx="280" cy="70" r="3" style="fill:var(--motion)"/><circle cx="259" cy="79" r="3" style="fill:var(--motion)"/>
+      <circle cx="250" cy="100" r="3" style="fill:var(--motion)"/><circle cx="259" cy="121" r="3" style="fill:var(--motion)"/>
+      <circle cx="280" cy="130" r="3" style="fill:var(--motion)"/><circle cx="301" cy="121" r="3" style="fill:var(--motion)"/>
+      <text class="dg-lblb" x="280" y="170" text-anchor="middle">Neon · Ne</text>
+      <text class="dg-lbl"  x="280" y="184" text-anchor="middle">2,8</text>
+
+      <!-- ARGON -->
+      <circle class="dg-shell" cx="465" cy="100" r="18"/>
+      <circle class="dg-shell" cx="465" cy="100" r="30"/>
+      <circle class="dg-shell" cx="465" cy="100" r="42"/>
+      <circle class="dg-nuc" cx="465" cy="100" r="9"/>
+      <text class="dg-lblb" x="465" y="103" text-anchor="middle" font-size="7.5">18+</text>
+      <circle cx="465" cy="82" r="3" style="fill:var(--motion)"/><circle cx="465" cy="118" r="3" style="fill:var(--motion)"/>
+      <circle cx="495" cy="100" r="3" style="fill:var(--motion)"/><circle cx="486" cy="79" r="3" style="fill:var(--motion)"/>
+      <circle cx="465" cy="70" r="3" style="fill:var(--motion)"/><circle cx="444" cy="79" r="3" style="fill:var(--motion)"/>
+      <circle cx="435" cy="100" r="3" style="fill:var(--motion)"/><circle cx="444" cy="121" r="3" style="fill:var(--motion)"/>
+      <circle cx="465" cy="130" r="3" style="fill:var(--motion)"/><circle cx="486" cy="121" r="3" style="fill:var(--motion)"/>
+      <circle cx="507" cy="100" r="3" style="fill:var(--motion)"/><circle cx="495" cy="70" r="3" style="fill:var(--motion)"/>
+      <circle cx="465" cy="58" r="3" style="fill:var(--motion)"/><circle cx="435" cy="70" r="3" style="fill:var(--motion)"/>
+      <circle cx="423" cy="100" r="3" style="fill:var(--motion)"/><circle cx="435" cy="130" r="3" style="fill:var(--motion)"/>
+      <circle cx="465" cy="142" r="3" style="fill:var(--motion)"/><circle cx="495" cy="130" r="3" style="fill:var(--motion)"/>
+      <text class="dg-lblb" x="465" y="170" text-anchor="middle">Argon · Ar</text>
+      <text class="dg-lbl"  x="465" y="184" text-anchor="middle">2,8,8</text>
+
+      <line class="dg-thin" x1="40" y1="198" x2="520" y2="198"/>
+      <text class="dg-lblb" x="280" y="218" text-anchor="middle" font-size="8.5">FULL OUTER SHELL → nothing to lose, gain or share → UNREACTIVE</text>
+      <text class="dg-lbl" x="280" y="236" text-anchor="middle" font-size="8">and so MONATOMIC — they drift as single atoms, never as molecules like Cl₂ or O₂</text>
+    </svg>
+    <div class="dg-cap">Draw one of these and the explanation writes itself. Nothing here is missing an electron or carrying a spare, so there is no reason to react — and no reason even to bond to another atom of the same element.</div>
+
     <div class="box analogy">
       <div class="box-label">💡 Noble gases lighting up the bazaar</div>
       The glowing <strong>neon</strong> shop signs of a market, the <strong>argon</strong> filling an old tube-light (and shielding a welder's arc), and the <strong>helium</strong> in a birthday balloon all use noble gases precisely <em>because</em> they don't react — they glow or float or protect without catching fire or corroding.
@@ -704,7 +1264,7 @@
 
   <!-- ── 08 · PREDICTING ── -->
   <div class="section">
-    <div class="sec-label">08 / 09 · 8.1 Predicting properties from position</div>
+    <div class="sec-label">08 / 10 · 8.1 Predicting properties from position</div>
     <h2>Using the table to predict the unknown</h2>
 
     <div class="box intuition">
@@ -745,9 +1305,67 @@
   </div>
 
 
-  <!-- ── 09 · KEY-TERMS BANK ── -->
+  <!-- ── 09 · CHECK YOURSELF ── -->
   <div class="section">
-    <div class="sec-label">09 / 09 · Reference</div>
+    <div class="sec-label">09 / 10 · Check Yourself</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+    <p>Eight questions on the ideas Topic 8 questions actually turn on. Answer them out loud or on paper first, then tap to reveal the mark-scheme answer.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>An element <strong>Q</strong> has proton number 20. Write its electronic configuration, state its group and period, and deduce the formula of its chloride. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>2,8,8,2</strong> · <strong>Group II</strong> (2 outer electrons) · <strong>Period 4</strong> (4 occupied shells). It loses both outer electrons to form Q<sup>2+</sup>, and chloride is Cl<sup>−</sup>, so the formula is <strong>QCl₂</strong>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span><strong>Explain</strong>, in terms of electronic configuration, why lithium, sodium and potassium have similar chemical properties. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">They are all in Group I, so each atom has the <strong>same number of electrons in its outer shell — one</strong>. Chemical reactions involve the outer-shell electrons, so all three react in the same way and each forms a <strong>1+ ion</strong>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span><strong>State</strong> the appearance of chlorine, bromine and iodine at r.t.p. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Chlorine — a <strong>pale yellow-green gas</strong>. Bromine — a <strong>red-brown liquid</strong>. Iodine — a <strong>grey-black solid</strong>. (Both the state <em>and</em> the colour are needed; the syllabus wording is the safest wording.)</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>Reactivity <strong>increases</strong> down Group I but <strong>decreases</strong> down Group VII. <strong>Explain</strong> both trends. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">A Group I metal reacts by <strong>losing</strong> its single outer electron. Down the group that electron is in a shell <strong>further from the nucleus</strong> and shielded by more inner shells, so it is held less strongly and <strong>lost more easily</strong> → more reactive.<br>A Group VII non-metal reacts by <strong>gaining</strong> an electron. Down the group the outer shell is again further from the nucleus, so the attraction for an incoming electron is <strong>weaker</strong> and the electron is <strong>gained less easily</strong> → less reactive.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>Chlorine water is added to potassium iodide solution. <strong>Predict</strong> what you would see and write the balanced equation. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The colourless solution turns <strong>brown</strong>, because chlorine is more reactive than iodine and <strong>displaces</strong> it — the brown colour is the <strong>iodine set free</strong>, not the chlorine.<br><strong>Cl₂ + 2KI → 2KCl + I₂</strong></div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span><strong>Give</strong> four ways in which iron, as a metal, differs from sodium. <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Any four of: much <strong>higher melting point</strong> (1538 °C vs 98 °C) · much <strong>higher density</strong> (7.9 vs 0.97 g/cm³) · forms <strong>coloured compounds</strong> (sodium's are white / colourless) · acts as a <strong>catalyst</strong> (e.g. in the Haber process) · has <strong>variable oxidation numbers</strong>, iron(II) and iron(III) · is <strong>far less reactive</strong> (sodium reacts vigorously with cold water; iron does not).</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span><strong>Explain</strong> why argon is unreactive, and why it exists as single atoms rather than as Ar₂ molecules. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Argon's electronic configuration is <strong>2,8,8</strong> — a <strong>full (complete) outer shell</strong>. It therefore has <strong>no tendency to lose, gain or share electrons</strong>, so it does not react. For the same reason it has no need to bond even to another argon atom, so it stays <strong>monatomic</strong>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>The melting points of chlorine, bromine and iodine are <strong>−101 °C, −7 °C and 114 °C</strong>. Astatine lies below iodine in Group VII. <strong>Predict</strong> a value for astatine's melting point and justify it, then state whether iodine would displace astatine from potassium astatide solution. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Melting point <strong>increases</strong> down Group VII, and the steps are getting larger (94 °C then 121 °C), so any value <strong>well above 114 °C</strong> — around <strong>240–350 °C</strong> — is credited, provided the trend is quoted as the reason — the steps themselves are growing, so anything from about <strong>240&nbsp;°C to 350&nbsp;°C</strong> follows the pattern best. (Astatine is too radioactive to melt in bulk; the <em>estimated</em> value is about 302 °C.)<br><strong>Yes</strong> — iodine is <em>above</em> astatine, so it is the more reactive halogen and would displace astatine from its salt.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 10 · KEY-TERMS BANK ── -->
+  <div class="section">
+    <div class="sec-label">10 / 10 · Reference</div>
     <h2>The Topic 8 key-terms bank</h2>
     <p>These are the ideas examiners want back precisely. Tap any tile for the exact statement, its key features, an example, and the exam trap:</p>
 
@@ -761,6 +1379,20 @@
       <span class="eq-inline" style="color:var(--rose)">Group VII ↓: density up · MP up · reactivity DOWN</span>
       <span class="eq-inline" style="color:var(--rose)">Transition = dense · high MP · coloured · catalysts · variable valency</span>
       <span class="eq-inline" style="color:var(--rose)">Noble gases = unreactive, monatomic — full outer shell</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── PAPERS FOR THIS TOPIC ── -->
+  <div class="section" style="margin-bottom:34px">
+    <div class="sec-label">Practise it</div>
+    <h2>Papers that test this topic</h2>
+    <p>There is <strong>no Topic 8-only paper</strong> yet. The paper below is the one on the shelf that examines this material — it carries a <strong>Group VII trends</strong> item (with the reactivity trap) alongside the other SA-1 topics.</p>
+    <div class="plinks">
+      <a class="plink" href="../practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html">
+        <span class="pk">Practice</span><span>Chemistry SA-1 Practice Paper — Grade X Summative Assessment 1</span>
+      </a>
     </div>
   </div>
 
@@ -880,7 +1512,10 @@
   ];
   // outcome tube + equation when halogen H reacts with salt S
   function result(h, s){
-    if(h.rank <= s.rank){
+    if(h.rank === s.rank){
+      return { react:false, tube:'none', eq:'No reaction — same element: a halogen cannot displace itself from its own salt.' };
+    }
+    if(h.rank < s.rank){
       return { react:false, tube:'none', eq:'No reaction — '+h.name.toLowerCase()+' cannot displace '+s.ion+' (not more reactive).' };
     }
     // displaced halogen = the salt's halogen
