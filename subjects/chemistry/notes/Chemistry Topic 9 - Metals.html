@@ -209,8 +209,8 @@
   .al-btn { font-family:'JetBrains Mono',monospace; font-size:12px; padding:9px 16px; border-radius:8px; cursor:pointer; background:#0e1626; border:1px solid var(--force); color:var(--force); transition:all .16s; }
   .al-btn:hover { background:#241016; }
 
-  /* ── DIAGRAM (blast furnace + electrolysis cell) ── */
-  .diagram { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px; margin:22px 0; }
+  /* ── DIAGRAM PANEL (wrapper divs only — svg.diagram is styled further down) ── */
+  div.diagram { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px; margin:22px 0; }
   .dia-cap { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.05em; color:var(--muted); text-align:center; margin-top:10px; }
   .svg-t  { fill:var(--text); font-family:'JetBrains Mono',monospace; font-size:10px; }
   .svg-tb { fill:var(--bright); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; }
@@ -349,7 +349,7 @@
      --live is declared on BODY (not :root) so the
      light-theme accent override is picked up.
   ═════════════════════════════════════════════ */
-  body { --live: var(--motion); }
+  body { --live: var(--force); }
   .tool, .explorer, .interactive { position:relative; border:1.5px solid var(--live); }
   .tool::before, .explorer::before, .interactive::before {
     content:'● INTERACTIVE — DRAG / TAP';
@@ -359,13 +359,64 @@
     pointer-events:none; white-space:nowrap; }
   .dg-cap::before, .diag-cap::before, .fig-cap::before { content:'FIGURE · '; font-family:'JetBrains Mono',monospace;
     font-size:10px; font-weight:600; letter-spacing:.14em; color:var(--muted); }
-  svg.diagram { max-width:560px; max-height:400px; }
+
+  /* ── STATIC FIGURES (inline SVG) ── */
+  svg.diagram { width:100%; height:auto; display:block; max-width:560px; max-height:400px; padding:0;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; margin:14px auto; }
+  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+  .dg-cap { font-family:'Inter',sans-serif; font-size:12.5px; color:var(--muted);
+    text-align:center; max-width:560px; margin:0 auto 20px; line-height:1.55; }
+  .dg-ttl  { font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600;
+    letter-spacing:.11em; fill:var(--bright); }
+  .dg-lbl  { font-family:'JetBrains Mono',monospace; font-size:9px; fill:var(--muted); }
+  .dg-lblb { font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600; fill:var(--text); }
+  .dg-ln   { stroke:var(--muted); stroke-width:1.15; fill:none; }
+  .dg-thin { stroke:var(--border); stroke-width:1; fill:none; }
+  .dg-dash { stroke:var(--muted); stroke-width:1; fill:none; stroke-dasharray:4 3; opacity:.75; }
+  .dg-glass{ fill:none; stroke:var(--muted); stroke-width:1.5; stroke-linejoin:round; }
+  .dg-panel{ fill:var(--surface2); stroke:var(--border); stroke-width:1; }
+  .dg-ion  { fill:var(--surface2); stroke:var(--motion); stroke-width:1.2; }
+
+  /* ── CHECK-YOURSELF RETRIEVAL BLOCK ── */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ── PAPER LINKS PANEL ── */
+  .paperlinks { display:grid; gap:10px; margin:16px 0 4px; }
+  .paperlinks a { display:flex; align-items:center; gap:11px; text-decoration:none;
+    background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:13px 16px;
+    color:var(--text); font-size:14px; transition:border-color .2s, color .2s; }
+  .paperlinks a:hover { border-color:var(--cyan); color:var(--cyan); }
+
+  /* ── SAVE AS PDF ── */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
 </style>
 </head>
 <body data-theme="dark">
 <a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
 <script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
 <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
 <div class="page">
 
   <!-- HEADER -->
@@ -378,7 +429,7 @@
 
   <!-- ── 01 · THE BIG IDEA ── -->
   <div class="section">
-    <div class="sec-label">01 / 10 · The organising idea</div>
+    <div class="sec-label">01 / 11 · The organising idea</div>
     <h2>Everything hangs off one ladder: the reactivity series</h2>
 
     <div class="box intuition">
@@ -411,13 +462,67 @@
 
   <!-- ── 02 · PHYSICAL PROPERTIES ── -->
   <div class="section">
-    <div class="sec-label">02 / 10 · 9.1 Physical properties</div>
+    <div class="sec-label">02 / 11 · 9.1 Physical properties</div>
     <h2>What makes a metal a metal — the physical properties</h2>
 
     <div class="box intuition">
       <div class="box-label">🌊 One structure explains all of it</div>
       A metal is a lattice of positive ions sitting in a <strong>"sea" of delocalised electrons</strong> that can drift freely (this is metallic bonding from Topic 2). That free-electron sea is the secret behind almost every physical property: the electrons <em>carry charge</em> (electrical conductor), they <em>carry energy</em> (thermal conductor), and the layers of ions can <em>slide</em> without the bonding breaking (malleable and ductile).
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 250" role="img" aria-label="Two panels showing metallic structure. Panel A: a regular lattice of positive metal ions in three layers with small delocalised electrons drifting in the spaces between them. Panel B: the same lattice with a force applied to the top, so the upper layers have slid sideways out of the original dashed outline while the ions stay held together by the electron sea.">
+      <defs>
+        <marker id="m9a" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0 0 L8 3.2 L0 6.4 z" fill="var(--force)"/>
+        </marker>
+      </defs>
+      <text x="128" y="24" text-anchor="middle" class="dg-ttl">A · WHY METALS CONDUCT</text>
+      <text x="418" y="24" text-anchor="middle" class="dg-ttl">B · WHY METALS BEND</text>
+      <line x1="278" y1="36" x2="278" y2="214" class="dg-thin"/>
+
+      <!-- Panel A : lattice + electron sea -->
+      <rect x="32" y="52" width="196" height="124" rx="4" class="dg-panel"/>
+      <g class="dg-ion">
+        <circle cx="55" cy="70" r="13"/><circle cx="105" cy="70" r="13"/><circle cx="155" cy="70" r="13"/><circle cx="205" cy="70" r="13"/>
+        <circle cx="55" cy="114" r="13"/><circle cx="105" cy="114" r="13"/><circle cx="155" cy="114" r="13"/><circle cx="205" cy="114" r="13"/>
+        <circle cx="55" cy="158" r="13"/><circle cx="105" cy="158" r="13"/><circle cx="155" cy="158" r="13"/><circle cx="205" cy="158" r="13"/>
+      </g>
+      <g class="dg-lblb" text-anchor="middle">
+        <text x="55" y="74">+</text><text x="105" y="74">+</text><text x="155" y="74">+</text><text x="205" y="74">+</text>
+        <text x="55" y="118">+</text><text x="105" y="118">+</text><text x="155" y="118">+</text><text x="205" y="118">+</text>
+        <text x="55" y="162">+</text><text x="105" y="162">+</text><text x="155" y="162">+</text><text x="205" y="162">+</text>
+      </g>
+      <g fill="var(--energy)">
+        <circle cx="80" cy="92" r="3"/><circle cx="130" cy="92" r="3"/><circle cx="180" cy="92" r="3"/>
+        <circle cx="80" cy="136" r="3"/><circle cx="130" cy="136" r="3"/><circle cx="180" cy="136" r="3"/>
+        <circle cx="42" cy="92" r="3"/><circle cx="218" cy="136" r="3"/><circle cx="130" cy="60" r="3"/>
+      </g>
+      <text x="128" y="196" text-anchor="middle" class="dg-lbl">● = delocalised electron, free to drift</text>
+      <text x="128" y="210" text-anchor="middle" class="dg-lbl">+ = metal ion, fixed in a layer</text>
+
+      <!-- Panel B : layers slide -->
+      <rect x="312" y="52" width="200" height="124" rx="4" class="dg-dash"/>
+      <line x1="348" y1="42" x2="416" y2="42" class="dg-ln" style="stroke:var(--force)" marker-end="url(#m9a)"/>
+      <text x="424" y="46" class="dg-lbl" style="fill:var(--force)">force</text>
+      <g class="dg-ion">
+        <circle cx="357" cy="70" r="13"/><circle cx="407" cy="70" r="13"/><circle cx="457" cy="70" r="13"/><circle cx="507" cy="70" r="13"/>
+        <circle cx="347" cy="114" r="13"/><circle cx="397" cy="114" r="13"/><circle cx="447" cy="114" r="13"/><circle cx="497" cy="114" r="13"/>
+        <circle cx="337" cy="158" r="13"/><circle cx="387" cy="158" r="13"/><circle cx="437" cy="158" r="13"/><circle cx="487" cy="158" r="13"/>
+      </g>
+      <g class="dg-lblb" text-anchor="middle">
+        <text x="357" y="74">+</text><text x="407" y="74">+</text><text x="457" y="74">+</text><text x="507" y="74">+</text>
+        <text x="347" y="118">+</text><text x="397" y="118">+</text><text x="447" y="118">+</text><text x="497" y="118">+</text>
+        <text x="337" y="162">+</text><text x="387" y="162">+</text><text x="437" y="162">+</text><text x="487" y="162">+</text>
+      </g>
+      <g fill="var(--energy)">
+        <circle cx="382" cy="92" r="3"/><circle cx="432" cy="92" r="3"/><circle cx="482" cy="92" r="3"/>
+        <circle cx="372" cy="136" r="3"/><circle cx="422" cy="136" r="3"/><circle cx="472" cy="136" r="3"/>
+      </g>
+      <text x="418" y="196" text-anchor="middle" class="dg-lbl">layers slide — the electron sea still holds</text>
+      <text x="418" y="210" text-anchor="middle" class="dg-lbl">the ions together, so the metal does not snap</text>
+      <text x="280" y="238" text-anchor="middle" class="dg-lblb">one structure explains conduction, malleability and ductility</text>
+    </svg>
+    <div class="dg-cap">Metallic structure. The sea of delocalised electrons carries charge and energy through the metal (good electrical and thermal conductor), and lets whole layers of ions slip past one another without breaking the bonding (malleable and ductile). A non-metal has no such sea, so it shatters instead.</div>
 
     <p>Compare metals with non-metals side by side — this contrast is a favourite exam table:</p>
     <table>
@@ -447,7 +552,7 @@
 
   <!-- ── 03 · CHEMICAL REACTIONS ── -->
   <div class="section">
-    <div class="sec-label">03 / 10 · 9.1 Chemical reactions</div>
+    <div class="sec-label">03 / 11 · 9.1 Chemical reactions</div>
     <h2>The three reactions of metals — acid, water, oxygen</h2>
 
     <p>Metals attack three everyday things, and <strong>how vigorously</strong> depends entirely on their place on the ladder. Learn the pattern, not a list of isolated facts:</p>
@@ -484,6 +589,60 @@
       </div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 250" role="img" aria-label="Two apparatus panels. Panel A: a piece of sodium floating on cold water in a trough, melting into a ball that moves across the surface while hydrogen bubbles off, with universal indicator turning the water purple. Panel B: the magnesium and steam apparatus — a horizontal boiling tube with damp mineral wool at the closed end and a coil of magnesium ribbon further along, both heated, with the hydrogen produced burning at the mouth of the delivery tube.">
+      <defs>
+        <marker id="m9b" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0 0 L8 3.2 L0 6.4 z" fill="var(--muted)"/>
+        </marker>
+        <marker id="m9c" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0 0 L8 3.2 L0 6.4 z" fill="var(--force)"/>
+        </marker>
+      </defs>
+      <text x="125" y="24" text-anchor="middle" class="dg-ttl">A · COLD WATER (K, Na, Ca)</text>
+      <text x="400" y="24" text-anchor="middle" class="dg-ttl">B · STEAM (Mg, Zn, Fe)</text>
+      <line x1="243" y1="36" x2="243" y2="240" class="dg-thin"/>
+
+      <!-- Panel A : sodium on cold water -->
+      <path d="M45 92 L45 165 L205 165 L205 92" class="dg-glass"/>
+      <rect x="46" y="112" width="158" height="52" fill="var(--momentum)" opacity="0.22"/>
+      <line x1="46" y1="112" x2="204" y2="112" class="dg-thin"/>
+      <circle cx="85" cy="106" r="8" fill="var(--surface2)" stroke="var(--muted)" stroke-width="1.2"/>
+      <g fill="var(--muted)" opacity="0.8"><circle cx="85" cy="92" r="2.4"/><circle cx="92" cy="85" r="2"/><circle cx="78" cy="86" r="2"/></g>
+      <line x1="100" y1="104" x2="162" y2="104" class="dg-dash" marker-end="url(#m9b)"/>
+      <text x="60" y="76" class="dg-lbl">sodium</text>
+      <text x="196" y="152" text-anchor="end" class="dg-lbl">water + indicator</text>
+      <g class="dg-lbl" text-anchor="middle">
+        <text x="125" y="188">melts to a ball and whizzes across</text>
+        <text x="125" y="201">the surface, fizzing off hydrogen</text>
+        <text x="125" y="216">indicator turns purple — NaOH is alkaline</text>
+      </g>
+      <text x="125" y="236" text-anchor="middle" class="dg-lblb">2Na + 2H₂O → 2NaOH + H₂</text>
+
+      <!-- Panel B : magnesium + steam -->
+      <path d="M470 95 L303 95 A18.5 18.5 0 0 0 303 132 L470 132" class="dg-glass"/>
+      <rect x="306" y="105" width="27" height="18" rx="3" fill="var(--surface2)" stroke="var(--muted)" stroke-width="1"/>
+      <path d="M368 118 l7 -7 l7 7 l7 -7 l7 7 l7 -7" fill="none" stroke="var(--motion)" stroke-width="2"/>
+      <path d="M470 113 L520 113 L520 84" class="dg-glass"/>
+      <path d="M520 82 q-6 -8 0 -14 q6 6 0 14 z" fill="var(--energy)"/>
+      <g class="dg-ln" style="stroke:var(--force)">
+        <line x1="319" y1="158" x2="319" y2="140" marker-end="url(#m9c)"/>
+        <line x1="389" y1="158" x2="389" y2="140" marker-end="url(#m9c)"/>
+      </g>
+      <text x="319" y="172" text-anchor="middle" class="dg-lbl" style="fill:var(--force)">heat</text>
+      <text x="389" y="172" text-anchor="middle" class="dg-lbl" style="fill:var(--force)">heat</text>
+      <text x="296" y="82" class="dg-lbl">damp mineral wool</text>
+      <line x1="312" y1="86" x2="318" y2="102" class="dg-thin"/>
+      <text x="430" y="154" class="dg-lbl">magnesium ribbon</text>
+      <line x1="428" y1="150" x2="406" y2="126" class="dg-thin"/>
+      <text x="506" y="60" text-anchor="end" class="dg-lbl">hydrogen burns at the jet</text>
+      <g class="dg-lbl" text-anchor="middle">
+        <text x="400" y="196">steam from the wool passes over the</text>
+        <text x="400" y="209">hot magnesium; white MgO is left behind</text>
+      </g>
+      <text x="400" y="236" text-anchor="middle" class="dg-lblb">Mg + H₂O → MgO + H₂</text>
+    </svg>
+    <div class="dg-cap">The two apparatus diagrams Cambridge actually prints. Cold water gives the <strong>hydroxide</strong>; steam gives the <strong>oxide</strong>. Both give off hydrogen, and in the steam apparatus the mineral wool is the source of the steam — it must be damp, and the tube is heated at both ends.</div>
+
     <div class="box exam">
       <div class="box-label">✅ Watch the product: hydroxide vs oxide</div>
       With <strong>cold water</strong> you get a metal <strong>hydroxide</strong> (e.g. NaOH, Ca(OH)₂). With <strong>steam</strong> you get a metal <strong>oxide</strong> (e.g. MgO, Fe₃O₄). Both release <strong>hydrogen</strong>. Naming the correct product — and hydrogen — is where the marks are.
@@ -498,17 +657,61 @@
 
   <!-- ── 04 · REACTIVITY SERIES EXPLORER ── -->
   <div class="section">
-    <div class="sec-label">04 / 10 · 9.4 The reactivity series</div>
+    <div class="sec-label">04 / 11 · 9.4 The reactivity series</div>
     <h2>Read the ladder — the reactivity-series explorer</h2>
 
     <p>Here is the ladder in full, most reactive at the top. <strong>Click any metal</strong> to see how it behaves with water, dilute acid and oxygen, and how it's extracted. Notice how each column fades from "violent" to "no reaction" as you go down:</p>
 
-    <div class="rs-wrap">
+    <div class="rs-wrap interactive">
       <div class="rs-grid">
         <div class="rs-ladder" id="rsLadder"></div>
         <div class="rs-read" id="rsRead"></div>
       </div>
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 330" role="img" aria-label="The reactivity series drawn as a ladder from potassium at the top down to gold at the bottom, with carbon and hydrogen shown as bracketed non-metal reference markers. Dashed cut-off lines are drawn at carbon and at hydrogen. Annotations state that metals above carbon are extracted by electrolysis and those below by carbon reduction, and that metals above hydrogen react with dilute acid while those below do not.">
+      <defs>
+        <marker id="m9d" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0 0 L8 3.2 L0 6.4 z" fill="var(--muted)"/>
+        </marker>
+      </defs>
+      <text x="108" y="24" text-anchor="middle" class="dg-ttl">THE REACTIVITY SERIES</text>
+      <line x1="30" y1="40" x2="30" y2="292" class="dg-ln" marker-end="url(#m9d)"/>
+      <text transform="rotate(-90 16 166)" x="16" y="166" text-anchor="middle" class="dg-lbl">reactivity decreases</text>
+
+      <g class="dg-lblb" text-anchor="middle">
+        <rect x="48" y="37" width="120" height="18" rx="3" class="dg-panel"/><text x="108" y="50">potassium  K</text>
+        <rect x="48" y="59" width="120" height="18" rx="3" class="dg-panel"/><text x="108" y="72">sodium  Na</text>
+        <rect x="48" y="81" width="120" height="18" rx="3" class="dg-panel"/><text x="108" y="94">calcium  Ca</text>
+        <rect x="48" y="103" width="120" height="18" rx="3" class="dg-panel"/><text x="108" y="116">magnesium  Mg</text>
+        <rect x="48" y="125" width="120" height="18" rx="3" class="dg-panel"/><text x="108" y="138">aluminium  Al</text>
+        <rect x="48" y="147" width="120" height="18" rx="3" fill="none" stroke="var(--muted)" stroke-width="1" stroke-dasharray="4 3"/><text x="108" y="160" class="dg-lbl">( carbon  C )</text>
+        <rect x="48" y="169" width="120" height="18" rx="3" class="dg-panel"/><text x="108" y="182">zinc  Zn</text>
+        <rect x="48" y="191" width="120" height="18" rx="3" class="dg-panel"/><text x="108" y="204">iron  Fe</text>
+        <rect x="48" y="213" width="120" height="18" rx="3" fill="none" stroke="var(--muted)" stroke-width="1" stroke-dasharray="4 3"/><text x="108" y="226" class="dg-lbl">( hydrogen  H )</text>
+        <rect x="48" y="235" width="120" height="18" rx="3" class="dg-panel"/><text x="108" y="248">copper  Cu</text>
+        <rect x="48" y="257" width="120" height="18" rx="3" class="dg-panel"/><text x="108" y="270">silver  Ag</text>
+        <rect x="48" y="279" width="120" height="18" rx="3" class="dg-panel"/><text x="108" y="292">gold  Au</text>
+      </g>
+
+      <line x1="44" y1="146" x2="214" y2="146" class="dg-dash" style="stroke:var(--cyan)"/>
+      <line x1="44" y1="212" x2="214" y2="212" class="dg-dash" style="stroke:var(--force)"/>
+
+      <g class="dg-lbl">
+        <text x="222" y="58" class="dg-lblb">K, Na, Ca — react with COLD water</text>
+        <text x="222" y="71">→ metal hydroxide + hydrogen</text>
+        <text x="222" y="101" class="dg-lblb">Mg, Zn, Fe — react only with STEAM</text>
+        <text x="222" y="114">→ metal oxide + hydrogen</text>
+        <text x="222" y="142" class="dg-lblb" style="fill:var(--cyan)">CARBON LINE</text>
+        <text x="222" y="155">above → electrolysis · below → carbon reduction</text>
+        <text x="222" y="208" class="dg-lblb" style="fill:var(--force)">HYDROGEN LINE</text>
+        <text x="222" y="221">above → fizzes with dilute acid, giving H₂</text>
+        <text x="222" y="254" class="dg-lblb">Cu, Ag, Au — no reaction with dilute acid</text>
+        <text x="222" y="267">Ag and Au are unreactive enough to be found native</text>
+      </g>
+      <text x="290" y="318" text-anchor="middle" class="dg-lbl">carbon and hydrogen are not metals — they are the two reference markers</text>
+    </svg>
+    <div class="dg-cap">The ladder you should be able to write out from memory, with the two lines that do the work. Everything else in this topic — acid fizz, water fizz, displacement, corrosion, extraction — is read off it.</div>
 
     <div class="box exam">
       <div class="box-label">✅ You can be asked to deduce the order yourself</div>
@@ -526,7 +729,7 @@
 
   <!-- ── 05 · DISPLACEMENT (SUPPLEMENT) ── -->
   <div class="section">
-    <div class="sec-label">05 / 10 · 9.4 Displacement &amp; ions (Supplement)</div>
+    <div class="sec-label">05 / 11 · 9.4 Displacement &amp; ions (Supplement)</div>
     <h2>Displacement — a reactivity fight in a beaker</h2>
 
     <div class="box intuition">
@@ -540,7 +743,7 @@
 
     <p>Pick a <strong>metal</strong> to drop in, and a <strong>solution of metal ions</strong> to drop it into. The selector tells you whether a reaction happens, the equation, and what you'd see:</p>
 
-    <div class="dp-wrap">
+    <div class="dp-wrap interactive">
       <div class="dp-row">
         <span class="dp-lbl">Metal added</span>
         <div class="dp-chip active" data-m="Mg">Mg</div>
@@ -569,6 +772,40 @@
       Stand an iron nail in blue <strong>copper(II) sulfate</strong> solution. Iron is above copper, so it wins: the blue slowly fades to pale green (Fe²⁺) and the nail gets coated in <strong>pink-brown copper</strong>. You've watched reactivity decide the outcome in real time.
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 240" role="img" aria-label="Before and after beakers. At the start, a clean grey iron nail stands in blue copper two sulfate solution. After twenty minutes the solution has faded to pale green, the nail is coated in pink-brown copper and loose copper has fallen to the bottom. An arrow between the beakers is labelled iron is above copper, so iron displaces copper.">
+      <defs>
+        <marker id="m9e" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0 0 L8 3.2 L0 6.4 z" fill="var(--muted)"/>
+        </marker>
+      </defs>
+      <text x="120" y="24" text-anchor="middle" class="dg-ttl">AT THE START</text>
+      <text x="395" y="24" text-anchor="middle" class="dg-ttl">AFTER 20 MINUTES</text>
+
+      <path d="M55 62 L55 175 L185 175 L185 62" class="dg-glass"/>
+      <rect x="57" y="95" width="126" height="79" fill="var(--motion)" opacity="0.4"/>
+      <line x1="57" y1="95" x2="183" y2="95" class="dg-thin"/>
+      <rect x="106" y="70" width="20" height="6" rx="2" fill="var(--surface2)" stroke="var(--muted)" stroke-width="1"/>
+      <rect x="112" y="76" width="8" height="94" fill="var(--surface2)" stroke="var(--muted)" stroke-width="1"/>
+      <text x="120" y="196" text-anchor="middle" class="dg-lbl">clean grey iron nail in blue Cu²⁺(aq)</text>
+
+      <line x1="215" y1="118" x2="298" y2="118" class="dg-ln" marker-end="url(#m9e)"/>
+      <text x="256" y="110" text-anchor="middle" class="dg-lbl">Fe is above Cu</text>
+      <text x="256" y="134" text-anchor="middle" class="dg-lbl">so Fe displaces Cu</text>
+
+      <path d="M330 62 L330 175 L460 175 L460 62" class="dg-glass"/>
+      <rect x="332" y="95" width="126" height="79" fill="var(--power)" opacity="0.3"/>
+      <line x1="332" y1="95" x2="458" y2="95" class="dg-thin"/>
+      <rect x="381" y="70" width="20" height="6" rx="2" fill="#b5714a" stroke="var(--muted)" stroke-width="1"/>
+      <rect x="387" y="76" width="8" height="94" fill="#b5714a" stroke="var(--muted)" stroke-width="1"/>
+      <g fill="#b5714a"><circle cx="352" cy="169" r="3.2"/><circle cx="365" cy="171" r="2.8"/><circle cx="424" cy="170" r="3"/><circle cx="437" cy="168" r="2.6"/></g>
+      <g class="dg-lbl" text-anchor="middle">
+        <text x="395" y="196">blue fades to pale green (Fe²⁺) and the</text>
+        <text x="395" y="209">nail is coated pink-brown with copper</text>
+      </g>
+      <text x="280" y="232" text-anchor="middle" class="dg-lblb">Fe + CuSO₄ → FeSO₄ + Cu   ·   ionic: Fe + Cu²⁺ → Fe²⁺ + Cu</text>
+    </svg>
+    <div class="dg-cap">The displacement experiment you are most likely to be shown. Both observations earn marks — the <strong>colour change of the solution</strong> and the <strong>coating on the nail</strong> — and the reason is that iron has the greater tendency to form positive ions.</div>
+
     <h3>Aluminium's disappearing act</h3>
     <div class="define react-c">
       <span class="term">Why aluminium seems unreactive</span> — aluminium is high on the ladder, yet it doesn't fizz in water and resists corrosion. That's because a <strong>thin, tough, unreactive layer of aluminium oxide (Al₂O₃)</strong> forms instantly on its surface and seals the metal underneath, so it <em>appears</em> far less reactive than it truly is.
@@ -583,7 +820,7 @@
 
   <!-- ── 06 · USES OF METALS ── -->
   <div class="section">
-    <div class="sec-label">06 / 10 · 9.2 Uses of metals</div>
+    <div class="sec-label">06 / 11 · 9.2 Uses of metals</div>
     <h2>Property → use — why each metal earns its job</h2>
 
     <div class="box intuition">
@@ -624,7 +861,7 @@
 
   <!-- ── 07 · ALLOYS ── -->
   <div class="section">
-    <div class="sec-label">07 / 10 · 9.3 Alloys</div>
+    <div class="sec-label">07 / 11 · 9.3 Alloys</div>
     <h2>Alloys — why a mixture beats a pure metal</h2>
 
     <div class="define alloy-c">
@@ -638,7 +875,7 @@
 
     <p>Press <strong>"Push the top layers →"</strong> and watch what happens to a pure metal versus an alloy under the same force:</p>
 
-    <div class="al-wrap">
+    <div class="al-wrap interactive">
       <div class="al-grid">
         <div class="al-panel pure" id="alPure">
           <div class="al-cap pure">Pure metal — same-size atoms</div>
@@ -668,6 +905,55 @@
       <div style="text-align:center"><button class="al-btn" id="alBtn" type="button">Push the top layers →</button></div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 250" role="img" aria-label="Two structure diagrams of the kind printed in exam questions. Panel A, pure copper: identical circles of one size stacked in three tidy rows, with an arrow showing the layers sliding easily. Panel B, brass: the same rows but with larger zinc atoms wedged among the copper atoms so the rows are no longer regular, and the sliding arrow is blocked by a cross.">
+      <defs>
+        <marker id="m9f" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0 0 L8 3.2 L0 6.4 z" fill="var(--power)"/>
+        </marker>
+        <marker id="m9g" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0 0 L8 3.2 L0 6.4 z" fill="var(--force)"/>
+        </marker>
+      </defs>
+      <text x="130" y="24" text-anchor="middle" class="dg-ttl">A · PURE COPPER</text>
+      <text x="410" y="24" text-anchor="middle" class="dg-ttl">B · BRASS = COPPER + ZINC</text>
+      <line x1="272" y1="36" x2="272" y2="222" class="dg-thin"/>
+
+      <line x1="62" y1="46" x2="140" y2="46" class="dg-ln" style="stroke:var(--power)" marker-end="url(#m9f)"/>
+      <text x="150" y="50" class="dg-lbl" style="fill:var(--power)">layers slip</text>
+      <g class="dg-ion">
+        <circle cx="60" cy="72" r="13"/><circle cx="88" cy="72" r="13"/><circle cx="116" cy="72" r="13"/><circle cx="144" cy="72" r="13"/><circle cx="172" cy="72" r="13"/><circle cx="200" cy="72" r="13"/>
+        <circle cx="60" cy="106" r="13"/><circle cx="88" cy="106" r="13"/><circle cx="116" cy="106" r="13"/><circle cx="144" cy="106" r="13"/><circle cx="172" cy="106" r="13"/><circle cx="200" cy="106" r="13"/>
+        <circle cx="60" cy="140" r="13"/><circle cx="88" cy="140" r="13"/><circle cx="116" cy="140" r="13"/><circle cx="144" cy="140" r="13"/><circle cx="172" cy="140" r="13"/><circle cx="200" cy="140" r="13"/>
+      </g>
+      <g class="dg-lbl" text-anchor="middle">
+        <text x="130" y="186">every atom the same size, rows tidy</text>
+        <text x="130" y="199">→ layers slide over one another</text>
+        <text x="130" y="212">→ pure metal is softer, bends easily</text>
+      </g>
+
+      <line x1="330" y1="46" x2="408" y2="46" class="dg-ln" style="stroke:var(--force)" marker-end="url(#m9g)"/>
+      <path d="M362 38 L378 54 M378 38 L362 54" stroke="var(--force)" stroke-width="2.2" fill="none"/>
+      <text x="418" y="50" class="dg-lbl" style="fill:var(--force)">layers jam</text>
+      <g class="dg-ion">
+        <circle cx="325" cy="72" r="13"/><circle cx="389" cy="72" r="13"/><circle cx="417" cy="72" r="13"/><circle cx="481" cy="72" r="13"/>
+        <circle cx="325" cy="106" r="13"/><circle cx="353" cy="106" r="13"/><circle cx="417" cy="106" r="13"/><circle cx="445" cy="106" r="13"/>
+        <circle cx="361" cy="140" r="13"/><circle cx="389" cy="140" r="13"/><circle cx="453" cy="140" r="13"/><circle cx="481" cy="140" r="13"/>
+      </g>
+      <g fill="var(--momentum)" fill-opacity="0.35" stroke="var(--momentum)" stroke-width="1.3">
+        <circle cx="357" cy="70" r="17"/><circle cx="449" cy="70" r="17"/>
+        <circle cx="385" cy="104" r="17"/><circle cx="477" cy="104" r="17"/>
+        <circle cx="329" cy="138" r="17"/><circle cx="421" cy="138" r="17"/>
+      </g>
+      <g class="dg-lbl" text-anchor="middle">
+        <text x="410" y="186">larger zinc atoms wedge into the rows</text>
+        <text x="410" y="199">→ layers can no longer slide past</text>
+        <text x="410" y="212">→ alloy is harder and stronger</text>
+      </g>
+      <circle cx="196" cy="238" r="6" class="dg-ion"/><text x="208" y="242" class="dg-lbl">copper atom</text>
+      <circle cx="300" cy="238" r="8" fill="var(--momentum)" fill-opacity="0.35" stroke="var(--momentum)" stroke-width="1.3"/><text x="314" y="242" class="dg-lbl">zinc atom (bigger)</text>
+    </svg>
+    <div class="dg-cap">Exactly the pair of structure diagrams objective 9.3.4 asks you to tell apart. The test is simple: <strong>one size of atom = a pure metal; two or more sizes = an alloy</strong>. Say "the different-sized atoms stop the layers sliding", not just "alloys are stronger".</div>
+
     <div class="grid2">
       <div class="card">
         <div class="card-title" style="color:var(--momentum)">Brass</div>
@@ -688,7 +974,7 @@
 
   <!-- ── 08 · CORROSION ── -->
   <div class="section">
-    <div class="sec-label">08 / 10 · 9.5 Corrosion of metals</div>
+    <div class="sec-label">08 / 11 · 9.5 Corrosion of metals</div>
     <h2>Rusting — and how to stop it</h2>
 
     <div class="box intuition">
@@ -699,6 +985,48 @@
     <div class="define corr-c">
       <span class="term">Rusting</span> — the corrosion of iron and steel. It needs <strong>oxygen (from air) AND water</strong>, and the product is <strong>hydrated iron(III) oxide</strong>, Fe₂O₃·xH₂O — the flaky orange-brown solid we call rust.
     </div>
+
+    <svg class="diagram" viewBox="0 0 560 280" role="img" aria-label="The three-test-tube rusting experiment. Tube one holds an iron nail in ordinary tap water open to the air and the nail rusts. Tube two holds a nail in boiled water sealed under a layer of oil so no oxygen can reach it, and the nail does not rust. Tube three holds a nail in dry air above anhydrous calcium chloride under a bung, and the nail does not rust.">
+      <g class="dg-lbl" text-anchor="middle">
+        <text x="100" y="42">tap water,</text><text x="100" y="55">open to the air</text>
+        <text x="280" y="42">boiled water,</text><text x="280" y="55">sealed under oil</text>
+        <text x="460" y="42">dry air over a</text><text x="460" y="55">drying agent</text>
+      </g>
+
+      <!-- Tube 1 : water + air -->
+      <path d="M72 132 L72 190 A28 28 0 0 0 128 190 L128 132 Z" fill="var(--motion)" opacity="0.3"/>
+      <path d="M70 70 L70 190 A30 30 0 0 0 130 190 L130 70" class="dg-glass"/>
+      <line x1="72" y1="132" x2="128" y2="132" class="dg-thin"/>
+      <rect x="90" y="104" width="20" height="6" rx="2" fill="var(--surface2)" stroke="var(--muted)" stroke-width="1"/>
+      <rect x="96" y="110" width="8" height="94" fill="var(--surface2)" stroke="var(--muted)" stroke-width="1"/>
+      <text x="100" y="248" text-anchor="middle" class="dg-lblb" style="fill:var(--energy)">NAIL RUSTS</text>
+
+      <!-- Tube 2 : boiled water under oil -->
+      <path d="M252 132 L252 190 A28 28 0 0 0 308 190 L308 132 Z" fill="var(--motion)" opacity="0.3"/>
+      <rect x="252" y="122" width="56" height="10" fill="var(--energy)" opacity="0.55"/>
+      <path d="M250 70 L250 190 A30 30 0 0 0 310 190 L310 70" class="dg-glass"/>
+      <rect x="270" y="104" width="20" height="6" rx="2" fill="var(--surface2)" stroke="var(--muted)" stroke-width="1"/>
+      <rect x="276" y="110" width="8" height="94" fill="var(--surface2)" stroke="var(--muted)" stroke-width="1"/>
+      <text x="318" y="130" class="dg-lbl">oil layer</text>
+      <text x="318" y="160" class="dg-lbl">no oxygen</text>
+      <text x="280" y="248" text-anchor="middle" class="dg-lblb" style="fill:var(--power)">NO RUST</text>
+
+      <!-- Tube 3 : dry air over anhydrous calcium chloride -->
+      <path d="M430 70 L430 190 A30 30 0 0 0 490 190 L490 70" class="dg-glass"/>
+      <rect x="428" y="60" width="64" height="12" rx="3" fill="var(--muted)" opacity="0.5"/>
+      <g fill="var(--muted)" opacity="0.65">
+        <circle cx="442" cy="192" r="4"/><circle cx="454" cy="198" r="4"/><circle cx="466" cy="192" r="4"/><circle cx="478" cy="197" r="4"/><circle cx="448" cy="185" r="4"/><circle cx="472" cy="184" r="4"/>
+      </g>
+      <rect x="450" y="98" width="20" height="6" rx="2" fill="var(--surface2)" stroke="var(--muted)" stroke-width="1"/>
+      <rect x="456" y="104" width="8" height="82" fill="var(--surface2)" stroke="var(--muted)" stroke-width="1"/>
+      <text x="498" y="66" class="dg-lbl">bung</text>
+      <text x="498" y="196" class="dg-lbl">anhydrous</text>
+      <text x="498" y="208" class="dg-lbl">CaCl₂</text>
+      <text x="460" y="248" text-anchor="middle" class="dg-lblb" style="fill:var(--power)">NO RUST</text>
+
+      <text x="280" y="272" text-anchor="middle" class="dg-lbl">rusting needs BOTH oxygen and water — remove either one and it stops</text>
+    </svg>
+    <div class="dg-cap">The control experiment that proves the two conditions. Tube 2 removes the <strong>oxygen</strong> (boiling drives out dissolved air and the oil stops more dissolving); tube 3 removes the <strong>water</strong> (the drying agent keeps the air dry). Only the tube with both present rusts.</div>
 
     <h3>Barrier methods — seal the surface</h3>
     <div class="grid3">
@@ -735,6 +1063,51 @@
       <span class="term">Sacrificial protection</span> — attaching a <strong>more reactive metal</strong> (zinc or magnesium) to iron. Being more reactive, it <strong>loses electrons in preference</strong> to the iron and corrodes away, protecting the iron. Explained by the reactivity series (it sits above iron) <em>and</em> by electron loss (it is oxidised instead of the iron).
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 250" role="img" aria-label="Two cross-sections of galvanised iron. Panel A: an unbroken zinc coating over an iron bar blocks water and oxygen from reaching the iron, which is barrier protection. Panel B: the coating has been scratched through to the iron and water sits in the scratch, but electrons flow from the zinc into the iron as the zinc is oxidised to zinc ions, so the iron is still protected. This is sacrificial protection.">
+      <defs>
+        <marker id="m9h" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0 0 L8 3.2 L0 6.4 z" fill="var(--cyan)"/>
+        </marker>
+      </defs>
+      <text x="145" y="24" text-anchor="middle" class="dg-ttl">A · COATING INTACT</text>
+      <text x="415" y="24" text-anchor="middle" class="dg-ttl">B · COATING SCRATCHED</text>
+      <line x1="280" y1="36" x2="280" y2="222" class="dg-thin"/>
+
+      <!-- Panel A -->
+      <text x="145" y="50" text-anchor="middle" class="dg-lbl">water + oxygen</text>
+      <path d="M145 60 q-7 10 -7 14 a7 7 0 0 0 14 0 q0 -4 -7 -14 z" fill="var(--motion)" opacity="0.6"/>
+      <line x1="145" y1="80" x2="145" y2="92" class="dg-ln" style="stroke:var(--force)"/>
+      <path d="M139 84 L151 96 M151 84 L139 96" stroke="var(--force)" stroke-width="2" fill="none"/>
+      <rect x="45" y="96" width="200" height="14" fill="var(--momentum)" opacity="0.5"/>
+      <rect x="45" y="110" width="200" height="45" class="dg-panel"/>
+      <text x="145" y="137" text-anchor="middle" class="dg-lblb">iron / steel</text>
+      <text x="253" y="106" class="dg-lbl">zinc</text>
+      <g class="dg-lbl" text-anchor="middle">
+        <text x="145" y="182">the zinc layer keeps air and</text>
+        <text x="145" y="195">water away from the iron</text>
+      </g>
+      <text x="145" y="216" text-anchor="middle" class="dg-lblb" style="fill:var(--power)">= BARRIER protection</text>
+
+      <!-- Panel B -->
+      <text x="415" y="62" text-anchor="middle" class="dg-lbl">water in the scratch</text>
+      <path d="M415 74 q-8 12 -8 17 a8 8 0 0 0 16 0 q0 -5 -8 -17 z" fill="var(--motion)" opacity="0.6"/>
+      <rect x="315" y="96" width="82" height="14" fill="var(--momentum)" opacity="0.5"/>
+      <rect x="433" y="96" width="82" height="14" fill="var(--momentum)" opacity="0.5"/>
+      <rect x="315" y="110" width="200" height="45" class="dg-panel"/>
+      <line x1="397" y1="96" x2="397" y2="110" class="dg-thin"/>
+      <line x1="433" y1="96" x2="433" y2="110" class="dg-thin"/>
+      <text x="415" y="140" text-anchor="middle" class="dg-lblb">iron / steel</text>
+      <path d="M375 108 Q385 122 400 126" class="dg-ln" style="stroke:var(--cyan)" marker-end="url(#m9h)"/>
+      <path d="M455 108 Q445 122 430 126" class="dg-ln" style="stroke:var(--cyan)" marker-end="url(#m9h)"/>
+      <text x="352" y="122" class="dg-lbl" style="fill:var(--cyan)">e⁻</text>
+      <text x="470" y="122" class="dg-lbl" style="fill:var(--cyan)">e⁻</text>
+      <text x="415" y="182" text-anchor="middle" class="dg-lbl">the zinc is oxidised instead of the iron</text>
+      <text x="415" y="198" text-anchor="middle" class="dg-lblb" style="fill:var(--momentum)">Zn → Zn²⁺ + 2e⁻</text>
+      <text x="415" y="216" text-anchor="middle" class="dg-lblb" style="fill:var(--power)">= SACRIFICIAL protection</text>
+      <text x="280" y="240" text-anchor="middle" class="dg-lbl">galvanising does both jobs at once — that is why it is worth two marks</text>
+    </svg>
+    <div class="dg-cap">Why a scratch in galvanised iron still doesn't rust. Zinc is <strong>above</strong> iron in the reactivity series, so it has the greater tendency to lose electrons: it feeds electrons to the iron and corrodes away in its place. A <em>less</em> reactive coating such as tin would do the opposite once scratched.</div>
+
     <div class="box pitfall">
       <div class="box-label">⚠️ Galvanising is BOTH — don't give half the answer</div>
       Zinc galvanising is a barrier <strong>and</strong> sacrificial protection. If the question is worth two marks, give both. And note: the sacrificial metal must be <strong>more</strong> reactive than iron — a less reactive coating (like tin) protects only as a barrier, and a scratch then makes the iron rust faster.
@@ -744,7 +1117,7 @@
 
   <!-- ── 09 · EXTRACTION ── -->
   <div class="section">
-    <div class="sec-label">09 / 10 · 9.6 Extraction of metals</div>
+    <div class="sec-label">09 / 11 · 9.6 Extraction of metals</div>
     <h2>Extraction — the ladder decides the method</h2>
 
     <div class="box intuition">
@@ -779,8 +1152,8 @@
             <!-- zones -->
             <line x1="40" y1="70" x2="110" y2="70" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 3"/>
             <line x1="38" y1="110" x2="112" y2="110" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 3"/>
-            <text x="75" y="88" text-anchor="middle" class="svg-m">CO forms</text>
-            <text x="75" y="128" text-anchor="middle" class="svg-m">ore reduced</text>
+            <text x="75" y="88" text-anchor="middle" class="svg-m">ore reduced</text>
+            <text x="75" y="128" text-anchor="middle" class="svg-m">CO forms</text>
             <!-- hot air blast -->
             <text x="8" y="150" class="svg-m">hot</text><text x="8" y="160" class="svg-m">air →</text>
             <path d="M28 155 L40 155" stroke="var(--force)" stroke-width="2"/>
@@ -799,6 +1172,56 @@
       </div>
     </div>
 
+    <svg class="diagram" viewBox="0 0 560 340" role="img" aria-label="Labelled cross-section of a blast furnace beside the five processes it carries out. Iron ore, coke and limestone are charged at the top and waste gases leave there; hot air is blasted in through tuyeres near the base; temperatures rise from about 200 degrees Celsius at the top to about 1500 degrees Celsius at the tuyeres; molten slag floats on molten iron at the bottom and each is tapped off separately. The right-hand column lists coke burning, the reduction of carbon dioxide to carbon monoxide, the reduction of iron three oxide by carbon monoxide, the decomposition of limestone and the formation of slag.">
+      <defs>
+        <marker id="m9i" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0 0 L8 3.2 L0 6.4 z" fill="var(--muted)"/>
+        </marker>
+        <marker id="m9j" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0 0 L8 3.2 L0 6.4 z" fill="var(--force)"/>
+        </marker>
+      </defs>
+      <text x="120" y="20" text-anchor="middle" class="dg-lbl">iron ore + coke + limestone</text>
+      <line x1="120" y1="26" x2="120" y2="56" class="dg-ln" marker-end="url(#m9i)"/>
+      <path d="M62 62 L178 62 L170 168 L188 252 L52 252 L70 168 Z" class="dg-glass"/>
+      <line x1="68" y1="64" x2="40" y2="46" class="dg-ln" marker-end="url(#m9i)"/>
+      <text x="24" y="40" class="dg-lbl">waste gases</text>
+      <line x1="66" y1="104" x2="174" y2="104" class="dg-thin" stroke-dasharray="3 3"/>
+      <line x1="60" y1="180" x2="180" y2="180" class="dg-thin" stroke-dasharray="3 3"/>
+      <g class="dg-lbl" text-anchor="middle">
+        <text x="120" y="88">≈ 200 °C</text>
+        <text x="120" y="140">≈ 700 °C</text>
+        <text x="120" y="206">≈ 1500 °C</text>
+      </g>
+      <line x1="18" y1="224" x2="50" y2="224" class="dg-ln" style="stroke:var(--force)" marker-end="url(#m9j)"/>
+      <line x1="222" y1="224" x2="190" y2="224" class="dg-ln" style="stroke:var(--force)" marker-end="url(#m9j)"/>
+      <text x="18" y="214" class="dg-lbl" style="fill:var(--force)">hot air</text>
+      <text x="222" y="214" text-anchor="end" class="dg-lbl" style="fill:var(--force)">hot air</text>
+      <path d="M58 230 L182 230 L184 240 L56 240 Z" fill="var(--energy)" opacity="0.55"/>
+      <path d="M56 240 L184 240 L188 251 L52 251 Z" fill="#b5714a"/>
+      <line x1="60" y1="234" x2="72" y2="256" class="dg-thin"/>
+      <line x1="180" y1="245" x2="168" y2="256" class="dg-thin"/>
+      <text x="70" y="270" text-anchor="middle" class="dg-lbl">slag tapped off</text>
+      <text x="170" y="270" text-anchor="middle" class="dg-lbl">molten iron out</text>
+
+      <g class="dg-lbl">
+        <text x="225" y="52" class="dg-lblb">1 · coke burns in the hot air blast</text>
+        <text x="235" y="66">C + O₂ → CO₂   (this gives the heat)</text>
+        <text x="225" y="94" class="dg-lblb">2 · more coke reduces that CO₂</text>
+        <text x="235" y="108">C + CO₂ → 2CO   (the reducing gas)</text>
+        <text x="225" y="136" class="dg-lblb">3 · CO reduces the iron(III) oxide</text>
+        <text x="235" y="150">Fe₂O₃ + 3CO → 2Fe + 3CO₂</text>
+        <text x="225" y="178" class="dg-lblb">4 · limestone decomposes</text>
+        <text x="235" y="192">CaCO₃ → CaO + CO₂</text>
+        <text x="225" y="220" class="dg-lblb">5 · the CaO removes sandy impurities</text>
+        <text x="235" y="234">CaO + SiO₂ → CaSiO₃  (slag)</text>
+        <text x="225" y="262">slag is less dense, so it floats on the</text>
+        <text x="225" y="275">molten iron and is tapped off separately</text>
+      </g>
+      <text x="280" y="316" text-anchor="middle" class="dg-lbl">the five processes are Core (9.6.2); the symbol equations are Supplement (9.6.4)</text>
+    </svg>
+    <div class="dg-cap">The blast furnace as the exam draws it. Note the order: the coke <em>burns</em> first to make heat and CO₂, that CO₂ is then reduced to <strong>carbon monoxide</strong> — and it is the carbon monoxide, not the carbon, that reduces the iron ore.</div>
+
     <div class="box remember">
       <div class="box-label">⚠️ The four things happening (Core), + symbol equations (Supplement)</div>
       <span class="eq-inline" style="color:var(--rose)">C + O₂ → CO₂ &nbsp;(coke burns, gives heat)</span>
@@ -810,25 +1233,34 @@
     <h3>Aluminium from bauxite — electrolysis</h3>
     <p>Aluminium's main ore is <strong>bauxite</strong> (aluminium oxide, Al₂O₃). Because aluminium is above carbon, it's extracted by <strong>electrolysis</strong> of the purified, molten oxide:</p>
 
-    <div class="diagram">
-      <svg viewBox="0 0 300 170" width="100%" style="max-width:340px">
-        <!-- cell -->
-        <rect x="30" y="40" width="240" height="105" rx="6" fill="none" stroke="var(--border)" stroke-width="2"/>
-        <text x="150" y="34" text-anchor="middle" class="svg-m">carbon anodes (+) — burn away, replaced</text>
-        <!-- molten electrolyte -->
-        <rect x="34" y="70" width="232" height="71" rx="3" fill="#5b8dee" opacity="0.16"/>
-        <text x="150" y="92" text-anchor="middle" class="svg-t">molten Al₂O₃ dissolved in cryolite</text>
-        <!-- anodes -->
-        <rect x="70" y="44" width="26" height="48" fill="var(--force)" opacity="0.55"/>
-        <rect x="140" y="44" width="26" height="48" fill="var(--force)" opacity="0.55"/>
-        <rect x="210" y="44" width="26" height="48" fill="var(--force)" opacity="0.55"/>
-        <!-- molten aluminium at bottom -->
-        <rect x="34" y="126" width="232" height="15" rx="2" fill="#a87c2e" opacity="0.8"/>
-        <text x="150" y="137" text-anchor="middle" class="svg-tb">molten aluminium (runs off)</text>
-        <text x="150" y="160" text-anchor="middle" class="svg-m">carbon lining = cathode (−)</text>
-      </svg>
-      <div class="dia-cap">Al³⁺ ions move to the cathode (−); O²⁻ ions move to the anodes (+).</div>
-    </div>
+    <svg class="diagram" viewBox="0 0 560 290" role="img" aria-label="Cross-section of the aluminium electrolysis cell. Three carbon anodes hang from a bar above and dip into molten aluminium oxide dissolved in cryolite. The cell is lined with carbon, which acts as the cathode. Oxygen bubbles off the anodes and molten aluminium collects on the floor of the cell, where it is tapped off. The half equations are aluminium ion plus three electrons goes to aluminium at the cathode, and two oxide ions go to oxygen plus four electrons at the anode.">
+      <text x="280" y="22" text-anchor="middle" class="dg-ttl">ELECTROLYSIS OF PURIFIED BAUXITE</text>
+      <text x="280" y="42" text-anchor="middle" class="dg-lbl">carbon anodes (+) — they burn away and are replaced</text>
+      <line x1="150" y1="54" x2="420" y2="54" class="dg-ln"/>
+      <rect x="70" y="70" width="420" height="160" rx="6" class="dg-thin"/>
+      <path d="M84 84 L84 216 L476 216 L476 84" fill="none" stroke="var(--cyan)" stroke-width="7" stroke-linejoin="round" opacity="0.75"/>
+      <rect x="90" y="110" width="380" height="88" fill="var(--motion)" opacity="0.16"/>
+      <g fill="var(--force)" opacity="0.55">
+        <rect x="150" y="56" width="30" height="94"/>
+        <rect x="270" y="56" width="30" height="94"/>
+        <rect x="390" y="56" width="30" height="94"/>
+      </g>
+      <g fill="var(--muted)" opacity="0.85">
+        <circle cx="192" cy="140" r="3"/><circle cx="198" cy="126" r="2.6"/>
+        <circle cx="312" cy="140" r="3"/><circle cx="318" cy="126" r="2.6"/>
+        <circle cx="432" cy="140" r="3"/><circle cx="438" cy="126" r="2.6"/>
+      </g>
+      <text x="446" y="118" class="dg-lbl">O₂</text>
+      <text x="280" y="160" text-anchor="middle" class="dg-lbl">molten Al₂O₃ dissolved in cryolite</text>
+      <rect x="90" y="198" width="380" height="14" fill="#b5714a"/>
+      <line x1="476" y1="205" x2="512" y2="205" class="dg-ln"/>
+      <text x="516" y="208" class="dg-lbl">tapped</text>
+      <text x="280" y="181" text-anchor="middle" class="dg-lbl">molten aluminium collects on the floor</text>
+      <text x="280" y="242" text-anchor="middle" class="dg-lbl">carbon lining of the cell = cathode (−)</text>
+      <text x="150" y="270" text-anchor="middle" class="dg-lblb" style="fill:var(--cyan)">cathode (−): Al³⁺ + 3e⁻ → Al</text>
+      <text x="410" y="270" text-anchor="middle" class="dg-lblb" style="fill:var(--force)">anode (+): 2O²⁻ → O₂ + 4e⁻</text>
+    </svg>
+    <div class="dg-cap">The aluminium cell. Al³⁺ ions travel to the <strong>cathode</strong> (the carbon lining) and O²⁻ ions to the <strong>anodes</strong>. The cryolite lowers the melting point from about 2000 °C to about 950 °C, and the oxygen made at the hot carbon anodes burns them away, which is why they need replacing.</div>
 
     <div class="grid2">
       <div class="card">
@@ -853,9 +1285,67 @@
   </div>
 
 
-  <!-- ── 10 · KEY-TERMS BANK ── -->
+  <!-- ── 10 · CHECK YOURSELF ── -->
   <div class="section">
-    <div class="sec-label">10 / 10 · Reference</div>
+    <div class="sec-label">10 / 11 · Check Yourself</div>
+    <h2>Check yourself — scroll back up only after you've tried</h2>
+    <p>Answer out loud or on paper first, then tap to reveal the mark-scheme answer. These are the eight things Topic 9 questions actually turn on.</p>
+
+    <div class="cy">
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>State <strong>three</strong> physical properties, other than being shiny, in which metals generally differ from non-metals. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Any three of: metals are good <strong>thermal conductors</strong> (non-metals poor) · good <strong>electrical conductors</strong> (non-metals poor, except graphite) · <strong>malleable and ductile</strong> (non-metals brittle) · generally <strong>high melting and boiling points</strong> (non-metals generally low). Write "generally" — mercury and the Group I metals are the exceptions.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>Explain, <strong>in terms of structure</strong>, why a metal can be hammered into shape without shattering. <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The metal is made of <strong>layers of positive ions</strong> that can <strong>slide over one another</strong> (1); the <strong>delocalised electrons</strong> keep holding the ions together as they move, so the bonding is not broken (1).</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q3</span><span>Magnesium reacts with steam but not noticeably with cold water. Name <strong>both</strong> products of the steam reaction and write the equation. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>Magnesium oxide</strong> and <strong>hydrogen</strong> (1 + 1); <span class="eq-inline">Mg + H₂O → MgO + H₂</span> (1). Watch the trap: with <em>cold water</em> a reactive metal gives the <strong>hydroxide</strong> (2Na + 2H₂O → 2NaOH + H₂); with <em>steam</em> you get the <strong>oxide</strong>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>Calculate the percentage by mass of aluminium in aluminium oxide, Al₂O₃. Give your answer to 3 significant figures. <em>(A<sub>r</sub>: Al = 27, O = 16)</em> <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">M<sub>r</sub>(Al₂O₃) = (2 × 27) + (3 × 16) = 54 + 48 = <strong>102</strong> (1). % Al = 54 ÷ 102 × 100 = <strong>52.9 %</strong> (1). Note it is <em>2 × 27</em>, not 27 — forgetting the subscript is the commonest slip here.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>Aluminium is above zinc in the reactivity series, yet aluminium cooking foil does not corrode away. <strong>Explain.</strong> <em>[2]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">A thin layer of <strong>aluminium oxide</strong> forms on the surface (1); this layer is unreactive and <strong>seals the metal underneath</strong> from air and water, so the aluminium <em>appears</em> unreactive (1). It is not that aluminium is actually unreactive.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>An iron nail is left in blue copper(II) sulfate solution. State <strong>two</strong> observations and write the ionic equation. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">The solution's <strong>blue colour fades to pale green</strong> (1) and the nail becomes <strong>coated with pink-brown copper</strong> (1). Ionic: <span class="eq-inline">Fe + Cu²⁺ → Fe²⁺ + Cu</span> (1). Full equation: Fe + CuSO₄ → FeSO₄ + Cu. Iron displaces copper because iron has the <strong>greater tendency to form positive ions</strong>.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>A galvanised steel bucket is scratched down to the steel but still does not rust. Explain this in terms of the reactivity series <strong>and</strong> in terms of electrons. <em>[3]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a"><strong>Zinc is more reactive than iron</strong> / is above iron in the reactivity series (1), so the <strong>zinc is oxidised in preference</strong> — it corrodes instead (1) and <strong>loses electrons</strong> (Zn → Zn²⁺ + 2e⁻) which pass to the iron, so the iron is not oxidised (1). This is <strong>sacrificial protection</strong>; intact galvanising also acts as a barrier.</div>
+      </div>
+
+      <div class="cy-item" onclick="this.classList.toggle('open')">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>In the blast furnace, why is limestone added, and why can carbon <strong>not</strong> be used to extract aluminium? <em>[4]</em></span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Limestone <strong>decomposes</strong>: CaCO₃ → CaO + CO₂ (1); the calcium oxide then reacts with the <strong>sandy (silicon dioxide) impurities</strong> to form <strong>slag</strong>: CaO + SiO₂ → CaSiO₃ (1). Aluminium is <strong>above carbon</strong> in the reactivity series (1), so carbon cannot reduce its oxide — it must be extracted by <strong>electrolysis</strong> (1).</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 11 · KEY-TERMS BANK ── -->
+  <div class="section">
+    <div class="sec-label">11 / 11 · Reference</div>
     <h2>The Topic 9 key-terms bank</h2>
     <p>These are the definitions and rules examiners want back precisely. Tap any tile for the exact statement, key features, an example, and the exam trap:</p>
 
@@ -868,6 +1358,15 @@
       <span class="eq-inline" style="color:var(--rose)">cold water: hydroxide+H₂ · steam: oxide+H₂</span>
       <span class="eq-inline" style="color:var(--rose)">rust = Fe + O₂ + water → hydrated iron(III) oxide</span>
       <span class="eq-inline" style="color:var(--rose)">below C → carbon reduction · above C → electrolysis</span>
+    </div>
+  </div>
+
+  <!-- ── PRACTISE THIS TOPIC ── -->
+  <div class="section">
+    <h2>Practise this topic</h2>
+    <p>There is <strong>no Topic 9-only paper</strong> yet. The paper below is the one that carries Metals questions — its Q11 is blast-furnace extraction plus a reactivity-series explanation, and one of its multiple-choice items is on which metals carbon can and cannot reduce.</p>
+    <div class="paperlinks">
+      <a href="../practice-papers/Chemistry%20SA-1%20Practice%20Paper%20-%20Grade%20X%20Summative%20Assessment%201.html">📝 <span>Chemistry SA-1 Practice Paper — Grade X Summative Assessment 1</span></a>
     </div>
   </div>
 
@@ -924,12 +1423,12 @@
     K:{water:'Violent — fizzes, ignites, lilac flame: 2K + 2H₂O → 2KOH + H₂', acid:'Dangerously explosive — not done in school labs', ox:'Burns readily in air → K₂O', extr:'Electrolysis of a molten compound', note:'Most reactive metal here — stored under oil to keep air and water off.'},
     Na:{water:'Vigorous — melts to a ball, whizzes across the surface: 2Na + 2H₂O → 2NaOH + H₂', acid:'Explosively violent — not done safely', ox:'Burns with an orange flame → Na₂O', extr:'Electrolysis of molten NaCl', note:'Also stored under oil.'},
     Ca:{water:'Steady fizzing in cold water: Ca + 2H₂O → Ca(OH)₂ + H₂', acid:'Very vigorous fizzing', ox:'Burns → CaO', extr:'Electrolysis of a molten compound', note:'Reacts with cold water, but less violently than sodium.'},
-    Mg:{water:'Very slow in cold water; reacts with steam: Mg + H₂O → MgO + H₂', acid:'Vigorous fizzing: Mg + 2HCl → MgCl₂ + H₂', ox:'Burns with a brilliant white flame → 2MgO', extr:'Electrolysis (above carbon)', note:'The lowest of the "cold-water/steam" reactive metals; still needs electrolysis.'},
+    Mg:{water:'Very slow in cold water; reacts with steam: Mg + H₂O → MgO + H₂', acid:'Vigorous fizzing: Mg + 2HCl → MgCl₂ + H₂', ox:'Burns with a brilliant white flame → MgO', extr:'Electrolysis (above carbon)', note:'The lowest metal that still needs electrolysis — it sits just above carbon.'},
     Al:{water:'No visible reaction — sealed by a tough Al₂O₃ oxide layer', acid:'Slow at first (oxide layer), then steady → AlCl₃ + H₂', ox:'Instantly forms a protective Al₂O₃ layer', extr:'Electrolysis of Al₂O₃ in molten cryolite', note:'Truly reactive, but the oxide layer makes it appear unreactive.'},
     Zn:{water:'Reacts slowly with steam → ZnO + H₂', acid:'Steady fizzing: Zn + 2HCl → ZnCl₂ + H₂', ox:'Burns → ZnO (yellow when hot, white when cold)', extr:'Reduction by heating with carbon', note:'Below carbon, so carbon reduction works.'},
     Fe:{water:'Slowly with steam → Fe₃O₄ + H₂; rusts in air + water', acid:'Slow-to-moderate fizzing: Fe + 2HCl → FeCl₂ + H₂', ox:'Burns/sparks when heated in oxygen → iron oxide', extr:'Reduction with carbon in the blast furnace', note:'The metal extracted in the blast furnace.'},
     Cu:{water:'No reaction with water or steam', acid:'No reaction with dilute acid (below hydrogen)', ox:'Slowly forms black CuO when heated (does not burn)', extr:'Reduction with carbon / sometimes found native', note:'Unreactive and a great conductor — used for wiring and pipes.'},
-    Ag:{water:'No reaction', acid:'No reaction', ox:'Barely reacts — only tarnishes slowly', extr:'Often found native; easily reduced', note:'Very unreactive.'},
+    Ag:{water:'No reaction', acid:'No reaction', ox:'No reaction with oxygen (the black tarnish is a sulfide, not an oxide)', extr:'Often found native; easily reduced', note:'Very unreactive.'},
     Au:{water:'No reaction', acid:'No reaction', ox:'No reaction — stays shiny indefinitely', extr:'Found native (uncombined) in the ground', note:'Least reactive of all — why ancient gold survives unblemished.'}
   };
 
@@ -1176,7 +1675,7 @@ function openEqCard(key){
   const card=document.getElementById('eq-card');
   const badge=document.getElementById('eqc-badge');
   badge.textContent=e.badge;
-  badge.style.color=m.col; badge.style.background=m.bg; badge.style.borderColor=m.bd;
+  badge.style.color=m.col; badge.style.background='var(--card-chip-bg)'; badge.style.borderColor='var(--card-chip-bd)';
   document.getElementById('eqc-name').textContent=e.name;
   document.getElementById('eqc-formula').textContent=e.def;
   const sr=document.getElementById('eqc-syms'); sr.innerHTML='';
