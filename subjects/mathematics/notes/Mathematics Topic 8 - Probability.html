@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathematics Topic 8: Probability</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    /* MATHS palette — Topic 8 (Probability) roles.
+       blue = a single event & the 0–1 scale (primary) · red = the complement "not A" ·
+       amber = experiment, relative frequency, bias · indigo = combined events & tree branches ·
+       cyan = conditional / without replacement · green = exam tips (locked) · magenta = alerts (locked) */
+    --motion:   #4db8ff;   /* blue — P(A), the probability scale (primary) */
+    --force:    #ff5263;   /* red — the complement, P(A′) */
+    --energy:   #f5b13c;   /* amber — experiments, relative frequency, bias */
+    --energy2:  #f5b13c;
+    --momentum: #7c8cff;   /* indigo — combined events, tree branches */
+    --power:    #48d39a;   /* green — exam tips / success (locked role) */
+    --cyan:     #3ad9d4;   /* cyan — conditional probability, without replacement */
+    --rose:     #f25cc1;   /* alert magenta — ≥30° from warm accents (CVD-safe, locked) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #4a3a1826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 110px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 54px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #122c44, #241a44);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--momentum); }
+
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 640px;
+  }
+  .toc {
+    display:flex; flex-wrap:wrap; gap:7px; margin-top:20px;
+  }
+  .toc a {
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; text-decoration:none;
+    color:var(--muted); background:var(--surface); border:1px solid var(--border);
+    border-radius:7px; padding:5px 10px; transition:all .16s;
+  }
+  .toc a:hover { color:var(--motion); border-color:var(--motion); }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: rise 0.55s ease forwards;
+    scroll-margin-top: 20px;
+  }
+  @keyframes rise {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--bright);
+    margin-bottom: 14px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: var(--bright);
+    margin: 26px 0 10px;
+  }
+
+  p { color: var(--text); margin-bottom: 12px; }
+  em { color: #c0ccef; font-style: italic; }
+  ul { margin: 6px 0 14px 22px; }
+  li { margin-bottom: 5px; }
+
+  .eq-inline {
+    font-family: 'JetBrains Mono', monospace;
+    background: #0d1828;
+    border: 1px solid #22324a;
+    border-radius: 5px;
+    padding: 1px 7px;
+    font-size: 13px;
+    color: var(--motion);
+    white-space: nowrap;
+  }
+  body[data-theme="light"] .eq-inline {
+    background: #eef1f8;
+    border-color: #d4dcec;
+  }
+  .work {
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text);
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:8px; padding:11px 14px; margin:12px 0; line-height:1.9;
+    overflow-x:auto;
+  }
+  .work .step { color:var(--muted); }
+
+  /* ── BOXES ── */
+  .box {
+    border-radius: 11px;
+    padding: 17px 20px;
+    margin: 18px 0;
+    font-size: 14.2px;
+    border: 1px solid;
+  }
+  .box-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color: var(--motion); }
+
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color: var(--momentum); }
+
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color: var(--rose); }
+
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color: var(--power); }
+
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color: var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define {
+    border-left: 3px solid var(--motion);
+    background: linear-gradient(90deg, #0c1c2880, transparent);
+    padding: 12px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .define .term {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--bright);
+    font-size: 1.02rem;
+  }
+  .define.force-c   { border-color: var(--force); background:linear-gradient(90deg,#23120b80,transparent); }
+  .define.energy-c  { border-color: var(--energy2); background:linear-gradient(90deg,#23180680,transparent); }
+  .define.mom-c     { border-color: var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+  .define.calc-c    { border-color: var(--cyan); background:linear-gradient(90deg,#08231f80,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:20px 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 16px 18px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { transform: translateY(-3px); border-color:#3a557c; }
+  .card-title {
+    font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px;
+  }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th {
+    background: var(--surface2); color: var(--motion);
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase;
+    padding:10px 14px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background: var(--surface); }
+  td strong { color: var(--bright); }
+  td.c, th.c { text-align:center; }
+  tr.tot td { border-top:2px solid var(--border); font-weight:600; }
+
+  mark {
+    background: linear-gradient(120deg,#1c3a5a88,#243f6a88);
+    color: var(--bright); padding:1px 4px; border-radius:3px;
+  }
+
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* diagram frame (static SVG figures) */
+  svg.diagram { width:100%; height:auto; max-width:560px; max-height:400px; display:block; margin:14px auto;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+  .diag-cap {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted); text-align:center;
+    margin:-4px auto 20px; line-height:1.7; max-width:560px;
+  }
+  .diag-cap b { color:var(--text); font-weight:600; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY NOTE
+     · BASE LOCKED across subjects (bg/surface/text/border/light-theme/glow).
+     · SHARED: .explorer .scn-tabs .scn-tab .scn-read .rk .tool .slider-row
+       .vec-out .eqbank .eqcell .box .define .card table
+     · WIDGETS here: spinner relative-frequency simulator (.rf-*, .sec),
+       Venn calculator (.vn-*), tree-diagram builder (.tr-*). svg.wsvg.
+  ═════════════════════════════════════════════ */
+
+  .explorer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin: 22px 0;
+  }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab {
+    font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    padding:8px 14px; border-radius:8px; cursor:pointer;
+    background:#0e1626; border:1px solid var(--border); color:var(--muted);
+    transition:all .18s; user-select:none;
+  }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+
+  .btn-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .mini-btn {
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; cursor:pointer;
+    padding:8px 14px; border-radius:8px;
+    background:#0e1626; border:1px solid var(--border); color:var(--text);
+    transition:all .18s;
+  }
+  .mini-btn:hover { border-color:var(--motion); color:var(--motion); }
+  .mini-btn:focus-visible { outline:2px solid var(--motion); outline-offset:2px; }
+  body[data-theme="light"] .mini-btn { background:#efeadd; }
+
+  .chart-cap {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    margin-bottom:6px;
+  }
+
+  /* widget SVG panel */
+  svg.wsvg { width:100%; height:auto; max-width:480px; display:block; margin:8px auto 0;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  body[data-theme="light"] svg.wsvg { background:#fbfaf4; }
+
+  /* shared SVG text/line classes */
+  .gl5 { stroke:#22314c; stroke-width:1; }
+  .gax { stroke:#3a4d6e; stroke-width:1.4; }
+  .gnum{ fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:10px; }
+  body[data-theme="light"] .gl5 { stroke:#ddd4bf; }
+  body[data-theme="light"] .gax { stroke:#c3bba7; }
+  body[data-theme="light"] .gnum{ fill:#9a937e; }
+  .slbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; fill:var(--muted); letter-spacing:.06em; }
+  .sval { font-family:'JetBrains Mono',monospace; font-size:12px; fill:var(--bright); font-weight:600; }
+  .sbig { font-family:'Fraunces',serif; font-size:16px; fill:var(--bright); font-weight:700; }
+
+  /* probability-scale figure */
+  .ps-bar  { stroke:var(--muted); stroke-width:3; stroke-linecap:round; }
+  .ps-tick { stroke:var(--muted); stroke-width:1.4; }
+  .ps-drop { stroke:var(--motion); stroke-width:1; stroke-dasharray:3 3; }
+  .ps-dot  { fill:var(--motion); }
+  .ps-ev   { font-family:'JetBrains Mono',monospace; font-size:9.5px; fill:var(--motion); }
+  .ps-word { font-family:'JetBrains Mono',monospace; font-size:9px; fill:var(--muted); letter-spacing:.1em; }
+
+  /* sample-space figure */
+  .ss-hit  { fill:var(--motion); opacity:.20; }
+  .ss-num  { font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--text); }
+  .ss-hd   { font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--energy2); font-weight:600; }
+
+  /* Venn */
+  .vn-uni  { fill:none; stroke:var(--muted); stroke-width:1.4; }
+  .vn-a    { fill:var(--motion);   opacity:.13; }
+  .vn-b    { fill:var(--momentum); opacity:.13; }
+  .vn-ring-a { fill:none; stroke:var(--motion);   stroke-width:2; }
+  .vn-ring-b { fill:none; stroke:var(--momentum); stroke-width:2; }
+  .vn-num  { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; fill:var(--bright); }
+  .vn-lbl  { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; }
+
+  /* tree */
+  .tr-line { stroke:var(--momentum); stroke-width:1.8; fill:none; }
+  .tr-line.b2 { stroke:var(--cyan); }
+  .tr-dot  { fill:var(--motion); }
+  .tr-frac { font-family:'JetBrains Mono',monospace; font-size:10.5px; fill:var(--energy2); }
+  .tr-node { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; fill:var(--bright); }
+  .tr-out  { font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--text); }
+  .tr-hd   { font-family:'JetBrains Mono',monospace; font-size:9px; fill:var(--muted); letter-spacing:.12em; }
+
+  /* relative-frequency bars */
+  .rf-track { fill:var(--muted); opacity:.14; }
+  .rf-th    { stroke:var(--rose); stroke-width:1.6; stroke-dasharray:3 2.5; }
+  .sec      { stroke:var(--border); stroke-width:1.5; }
+  .sec.k0 { fill:var(--force);    } .rf-bar.k0 { fill:var(--force);    }
+  .sec.k1 { fill:var(--power);    } .rf-bar.k1 { fill:var(--power);    }
+  .sec.k2 { fill:var(--motion);   } .rf-bar.k2 { fill:var(--motion);   }
+  .sec.k3 { fill:var(--energy2);  } .rf-bar.k3 { fill:var(--energy2);  }
+  .sec { opacity:.75; }
+  .ptr { fill:var(--bright); }
+  #spWheel { transition: transform 1.15s cubic-bezier(.17,.72,.28,1); }
+
+  .scn-read {
+    margin-top:16px; background:#0c1c28; border:1px solid #1f4258;
+    border-radius:9px; padding:13px 16px; font-size:13.6px;
+  }
+  .scn-read .rk {
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--motion);
+    margin-bottom:6px;
+  }
+  .scn-read b { color:var(--bright); }
+
+  /* TOOL (sliders + read-out) */
+  .tool {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:20px; margin:22px 0;
+  }
+  .slider-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 20px; margin-top:6px; }
+  .slider-row { margin:12px 0; }
+  .slider-row label {
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] {
+    width:100%; -webkit-appearance:none; height:5px; border-radius:3px;
+    background:#22304a; outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--energy2); cursor:pointer; box-shadow:0 0 10px #f5b13c88;
+  }
+  input[type=range]::-moz-range-thumb {
+    width:17px; height:17px; border:none; border-radius:50%;
+    background:var(--energy2); cursor:pointer;
+  }
+  input[type=range]:focus-visible { outline:2px solid var(--motion); outline-offset:4px; }
+  .vec-out {
+    background:#171229; border:1px solid #2e2350; border-radius:9px;
+    padding:14px 16px; margin-top:16px;
+  }
+  .vec-out .ro {
+    font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:#8a7ab8; margin:9px 0 3px;
+  }
+  .vec-out .ro:first-child { margin-top:0; }
+  .vec-out .rv {
+    font-family:'JetBrains Mono',monospace; font-size:13.5px;
+    color:var(--bright); line-height:1.5;
+  }
+  .vec-out .rv.big {
+    font-family:'Fraunces',serif; font-size:1.25rem; font-weight:700; color:var(--cyan);
+  }
+  .rowpair { display:flex; gap:26px; flex-wrap:wrap; }
+
+  /* EQUATION / SKILL BANK */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqbank.interactive { padding:18px 14px 14px; border-radius:12px; }
+  .eqcell {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 12px; cursor:pointer; text-align:center;
+    transition:transform .16s, border-color .16s, box-shadow .16s;
+  }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion);
+    box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym {
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+    color:var(--bright); margin-bottom:4px;
+  }
+  .eqcell .eq-name {
+    font-size:10.5px; color:var(--muted); letter-spacing:.04em;
+  }
+  .eqcell[data-c="motion"]:hover   { border-color:var(--motion); }
+  .eqcell[data-c="force"]:hover    { border-color:var(--force); box-shadow:0 8px 22px #0008; }
+  .eqcell[data-c="energy"]:hover   { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover      { border-color:var(--momentum); }
+  .eqcell[data-c="power"]:hover    { border-color:var(--power); }
+  .eqcell[data-c="calc"]:hover     { border-color:var(--cyan); }
+
+  #eq-card {
+    display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px;
+    width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow);
+    overflow:hidden; transition:opacity .25s;
+  }
+  #eqc-top {
+    padding:18px 18px 14px; display:flex; gap:14px; align-items:center;
+    border-bottom:1px solid var(--card-divider); position:relative;
+  }
+  #eqc-badge {
+    flex-shrink:0; width:62px; height:62px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600;
+    background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd);
+  }
+  #eqc-head h4 {
+    font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright); line-height:1.15; margin-bottom:3px;
+  }
+  #eqc-formula {
+    font-family:'JetBrains Mono',monospace; font-size:13.5px; color:var(--motion);
+  }
+  #eqc-close {
+    position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted);
+    cursor:pointer; user-select:none;
+  }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--card-label); margin:10px 0 6px;
+  }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill {
+    background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px;
+    padding:5px 9px; font-size:11.5px; color:var(--card-text);
+  }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr {
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text);
+    background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em;
+  }
+  #eqc-example {
+    background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55;
+  }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip {
+    background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px;
+  }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── FOOTER ── */
+  .footer {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    text-align:center; padding-top:28px; border-top:1px solid var(--border);
+    letter-spacing:.07em; line-height:1.8;
+  }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .grid3, .eqbank, .slider-grid { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+  }
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 10000;
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-size: 17px; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    transition: transform .25s, border-color .2s, background-color .35s;
+    line-height: 1;
+  }
+  .theme-toggle:hover { transform: rotate(18deg); border-color: var(--motion); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--motion); outline-offset: 3px; }
+
+  body { transition: background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.wsvg, svg.diagram,
+  .scn-read, .scn-tab, .mini-btn, .vec-out, .chip, .work, .toc a,
+  table th, table td, .eqcell, mark {
+    transition: background-color .35s ease, border-color .35s ease, color .35s ease;
+  }
+
+  /* ═════════ LIGHT THEME ═════════ */
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;
+    --force:    #cb2531;
+    --energy:   #8f5d00;
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;
+    --power:    #107a50;
+    --cyan:     #0b7a67;
+    --rose:     #ad1a7d;
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #f3d29a22 0%, transparent 60%);
+  }
+
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+
+  body[data-theme="light"] .define          { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.force-c   { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.energy-c  { background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.mom-c     { background:linear-gradient(90deg,#ece8fb99,transparent); }
+  body[data-theme="light"] .define.calc-c    { background:linear-gradient(90deg,#dff3ef99,transparent); }
+
+  /* em carries load-bearing emphasis ("not", "given", "estimate") — the dark-mode
+     #c0ccef scores only 1.4:1 on warm paper, so it MUST be deepened for light. */
+  body[data-theme="light"] em { color:#3c4660; }
+  body[data-theme="light"] input[type=range] { background:#d8d0bb; }
+  body[data-theme="light"] input[type=range]::-webkit-slider-thumb { box-shadow:none; }
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip {
+    background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion);
+  }
+  body[data-theme="light"] .work { background:#efeadd; }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+  body[data-theme="light"] .toc a { background:#fffdf8; }
+
+  body[data-theme="light"] .scn-read   { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab    { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover  { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+
+  body[data-theme="light"] .vec-out { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .vec-out .ro { color:#6a559a; }
+  body[data-theme="light"] .vn-a { opacity:.16; }
+  body[data-theme="light"] .vn-b { opacity:.16; }
+  body[data-theme="light"] .ss-hit { opacity:.16; }
+  body[data-theme="light"] .sec { opacity:.85; }
+  body[data-theme="light"] .ptr { fill:#14181f; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    body, .theme-toggle, .box, .card, .define, .explorer, .tool,
+    svg.wsvg, svg.diagram, .scn-read, .scn-tab, .mini-btn, .vec-out, .work,
+    .chip, .toc a, table th, table td, .eqcell, mark { transition:none; }
+    #spWheel { transition:none; }
+  }
+
+  /* ═════════════════════════════════════════════
+     INTERACTIVE vs STATIC — house rule (CLAUDE.md).
+     A student must never have to guess which panels
+     respond to touch. Interactive = accent border +
+     badge. Static figure = neutral frame + FIGURE cap.
+     --live is declared on BODY (not :root) so the
+     light-theme accent override is picked up.
+  ═════════════════════════════════════════════ */
+  body { --live: var(--motion); }
+  .tool, .explorer, .interactive { position:relative; border:1.5px solid var(--live); }
+  .tool::before, .explorer::before, .interactive::before {
+    content:'● INTERACTIVE — DRAG / TAP';
+    position:absolute; top:-8px; left:16px;
+    font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:600; letter-spacing:.16em;
+    color:var(--live); background:var(--bg); padding:0 9px; border-radius:3px;
+    pointer-events:none; white-space:nowrap; }
+  .dg-cap::before, .diag-cap::before, .fig-cap::before { content:'FIGURE · '; font-family:'JetBrains Mono',monospace;
+    font-size:10px; font-weight:600; letter-spacing:.14em; color:var(--muted); }
+
+  /* ═════════ Check-yourself retrieval block ═════════ */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border); font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ═════════ this topic's own papers ═════════ */
+  .paper-links { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px 22px; margin:34px 0 0; }
+  .paper-links .pl-label {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--motion); margin-bottom:12px; }
+  .paper-links p { font-size:13.6px; color:var(--muted); margin-bottom:12px; }
+  .pl-list { display:grid; gap:9px; }
+  .pl-list a {
+    display:block; text-decoration:none; padding:11px 14px; border-radius:10px;
+    background:var(--surface2); border:1px solid var(--border); color:var(--text);
+    font-size:14px; transition:border-color .18s, color .18s; }
+  .pl-list a:hover { border-color:var(--motion); color:var(--motion); }
+  .pl-list a span { font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); display:block; margin-top:3px; }
+
+  /* ═════════ Save as PDF ═════════ */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; opacity:1 !important; animation:none !important; }
+    svg.diagram, svg.wsvg, .paper-links, .cy-item, .box, .define, .work { break-inside:avoid; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
+
+<a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Mathematics 0580 · Extended · Topic 8</div>
+    <h1><span class="a">Probability</span></h1>
+    <p class="header-sub">The whole of Topic 8 (E8.1–E8.4): the <span class="eq-inline">0</span> to <span class="eq-inline">1</span> scale and the notation <span class="eq-inline">P(A)</span>, the complement <span class="eq-inline">P(A′) = 1 − P(A)</span>, relative and expected frequency, then combined events with sample space diagrams, Venn diagrams and tree diagrams — <strong>with</strong> and <strong>without</strong> replacement — finishing with conditional probability. Spin the spinner, drag the sliders: the tree and the Venn redraw themselves.</p>
+    <div class="toc">
+      <a href="#s1">1 · What probability is</a>
+      <a href="#s2">2 · The complement</a>
+      <a href="#s3">3 · Relative &amp; expected frequency</a>
+      <a href="#s4">4 · Sample space diagrams</a>
+      <a href="#s5">5 · Venn diagrams</a>
+      <a href="#s6">6 · Tree diagrams</a>
+      <a href="#s7">7 · Without replacement</a>
+      <a href="#s8">8 · Conditional probability</a>
+      <a href="#scy">9 · Check yourself</a>
+      <a href="#s10">10 · Skill bank</a>
+    </div>
+  </div>
+
+
+  <!-- ── 01 · WHAT PROBABILITY IS ── -->
+  <div class="section" id="s1">
+    <div class="sec-label">01 / 10 · E8.1 · The big picture</div>
+    <h2>Probability is just a share of the outcomes</h2>
+
+    <p>A <strong>probability</strong> measures how likely something is, on a fixed scale from <strong>0</strong> (impossible) to <strong>1</strong> (certain). Nothing in this topic can ever be negative, and nothing can ever be more than 1 — if your answer is, you have made an arithmetic slip, not a discovery.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      List every way the situation could turn out, making sure each way is <mark>equally likely</mark>. Count the ways you care about, and divide by the total. That fraction <em>is</em> the probability. Everything else in Topic 8 — Venns, trees, conditional probability — is just a smarter way of doing that same counting when the list gets too long to write out.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎯 A picture you know</div>
+      Picture a one-metre ribbon laid on a table, and you drop a pin on it blindly. Each possible outcome is given a length of ribbon in proportion to how often it happens, and the whole ribbon is exactly 1 metre — no gaps, no overlaps. "P(barfi) = 0.25" means barfi owns 25 cm of the ribbon. Now you can <em>see</em> why probabilities must add to 1 and why none can exceed 1: there is only one ribbon.
+    </div>
+
+    <div class="define">
+      <span class="term">Probability of a single event</span><br>
+      <span class="eq-inline" style="font-size:14px">P(A) = number of favourable outcomes ÷ total number of equally likely outcomes</span><br>
+      <span style="font-size:13.4px;color:var(--muted)">Give the answer as a <strong>fraction, decimal or percentage</strong> — all three are accepted. Never as a ratio ("1 in 4" is not a probability) and never as "1 out of 4 chances".</span>
+    </div>
+
+    <h3>Worked example</h3>
+    <p>A box on the counter at a Diwali sweet shop holds <span class="eq-inline">20</span> mithai: 8 kaju katli, 7 gulab jamun and 5 barfi. Diya takes one without looking.</p>
+    <div class="work">
+      <span class="step">total equally likely outcomes = 20 sweets</span><br>
+      P(barfi) = 5/20 = <strong>1/4</strong> = 0.25 = 25%<br>
+      P(gulab jamun) = 7/20 = 0.35<br>
+      <span class="step">check — every sweet is one of the three:</span> 8/20 + 7/20 + 5/20 = 20/20 = 1 ✓
+    </div>
+
+    <svg class="diagram" viewBox="0 0 480 240" role="img" aria-label="A probability scale from 0 to 1 marked with the words impossible, unlikely, even chance, likely and certain, with four example events plotted on it: rolling a seven at 0, a fair coin landing heads at one half, a fair die showing more than two at two thirds, and the sun rising tomorrow at 1">
+      <!-- events above -->
+      <text class="ps-ev" x="50" y="40" text-anchor="start">rolling a 7 on a fair die</text>
+      <text class="ps-ev" x="430" y="40" text-anchor="end">the sun rises tomorrow</text>
+      <text class="ps-ev" x="240" y="68" text-anchor="middle">a fair coin lands heads</text>
+      <text class="ps-ev" x="250" y="96" text-anchor="start">a fair die shows more than 2</text>
+      <line class="ps-drop" x1="50"  y1="46" x2="50"  y2="130"/>
+      <line class="ps-drop" x1="430" y1="46" x2="430" y2="130"/>
+      <line class="ps-drop" x1="240" y1="74" x2="240" y2="130"/>
+      <line class="ps-drop" x1="303" y1="102" x2="303" y2="130"/>
+      <!-- the scale -->
+      <line class="ps-bar" x1="50" y1="130" x2="430" y2="130"/>
+      <line class="ps-tick" x1="50"  y1="122" x2="50"  y2="138"/>
+      <line class="ps-tick" x1="145" y1="122" x2="145" y2="138"/>
+      <line class="ps-tick" x1="240" y1="122" x2="240" y2="138"/>
+      <line class="ps-tick" x1="335" y1="122" x2="335" y2="138"/>
+      <line class="ps-tick" x1="430" y1="122" x2="430" y2="138"/>
+      <circle class="ps-dot" cx="50"  cy="130" r="4.5"/>
+      <circle class="ps-dot" cx="430" cy="130" r="4.5"/>
+      <circle class="ps-dot" cx="240" cy="130" r="4.5"/>
+      <circle class="ps-dot" cx="303" cy="130" r="4.5"/>
+      <!-- numbers -->
+      <text class="gnum" x="50"  y="158" text-anchor="middle">0</text>
+      <text class="gnum" x="145" y="158" text-anchor="middle">0.25</text>
+      <text class="gnum" x="240" y="158" text-anchor="middle">0.5</text>
+      <text class="gnum" x="335" y="158" text-anchor="middle">0.75</text>
+      <text class="gnum" x="430" y="158" text-anchor="middle">1</text>
+      <!-- words -->
+      <text class="ps-word" x="50"  y="184" text-anchor="start">IMPOSSIBLE</text>
+      <text class="ps-word" x="145" y="184" text-anchor="middle">UNLIKELY</text>
+      <text class="ps-word" x="240" y="184" text-anchor="middle">EVEN CHANCE</text>
+      <text class="ps-word" x="335" y="184" text-anchor="middle">LIKELY</text>
+      <text class="ps-word" x="430" y="184" text-anchor="end">CERTAIN</text>
+      <text class="slbl" x="240" y="214" text-anchor="middle">every probability in this topic lives somewhere on this line</text>
+    </svg>
+    <div class="diag-cap">The <b>probability scale</b>. Rolling a 7 is <b>impossible</b> (0); the sun rising is <b>certain</b> (1); heads on a fair coin is an <b>even chance</b> (½). A fair die shows more than 2 in 4 of its 6 faces, so that event sits at <b>⅔ ≈ 0.67</b> — likely, but nowhere near certain</div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The classic wrong intuition</div>
+      "There are two outcomes — it rains or it doesn't — so P(rain) = ½." <strong>No.</strong> The counting rule only works when the outcomes are <mark>equally likely</mark>. Two outcomes does not mean fifty-fifty: a drawing pin can land point-up or point-down, but it is not a fair coin. When outcomes are not equally likely the counting formula simply does not apply — you must be <em>given</em> the probabilities, or estimate them by experiment (Section&nbsp;3).
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Notation you are expected to use</div>
+      <span class="eq-inline">P(A)</span> means "the probability of event A". Extended papers use it freely, and also <span class="eq-inline">P(A′)</span> for "not A". Leave fractions <strong>unsimplified if you like</strong> — <span class="eq-inline">5/20</span> scores the same as <span class="eq-inline">1/4</span> — but if you switch to a decimal it must be <strong>exact, or correct to at least 3 significant figures</strong>: <span class="eq-inline">1/3</span> becomes 0.333, never 0.33. The exact fraction is always the safest answer.
+    </div>
+  </div>
+
+
+  <!-- ── 02 · THE COMPLEMENT ── -->
+  <div class="section" id="s2">
+    <div class="sec-label">02 / 10 · E8.1 · Not A</div>
+    <h2>The complement — the cheapest mark in the topic</h2>
+
+    <p>Every event splits the world in two: it happens, or it doesn't. Those two possibilities cover everything and overlap nowhere, so their probabilities must add to 1.</p>
+
+    <div class="define force-c">
+      <span class="term">The complement rule</span><br>
+      <span class="eq-inline" style="color:var(--force);font-size:14px">P(A′) = 1 − P(A)</span><br>
+      <span style="font-size:13.4px;color:var(--muted)">Read <span class="eq-inline" style="color:var(--force)">A′</span> as "not A" — sometimes written "A dash" or "A complement".</span>
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎒 A picture you know</div>
+      Back to the one-metre ribbon. Event A owns a stretch of it; "not A" is <em>everything else</em> on the ribbon. You don't have to measure the rest piece by piece — just take the whole metre and cut off A's piece.
+    </div>
+
+    <h3>Worked example</h3>
+    <p>The probability that Aarav's school bus is late on a given morning is <span class="eq-inline">0.15</span>. A spinner used at a school mela has red, green, blue and yellow sectors with <span class="eq-inline">P(red) = 0.4</span>, <span class="eq-inline">P(green) = 0.25</span> and <span class="eq-inline">P(blue) = 0.2</span>.</p>
+    <div class="work">
+      <span class="step">bus:</span> P(not late) = 1 − 0.15 = <strong>0.85</strong><br>
+      <span class="step">spinner — all four sectors must total 1:</span><br>
+      P(yellow) = 1 − (0.4 + 0.25 + 0.2) = 1 − 0.85 = <strong>0.15</strong>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Why this rule earns marks everywhere</div>
+      Whenever a question says <strong>"at least one"</strong>, stop and use the complement. The opposite of "at least one red" is the single, simple event "<strong>no reds at all</strong>". Counting "exactly one red, exactly two reds, exactly three reds…" is three calculations and three chances to slip; <span class="eq-inline">1 − P(none)</span> is one. You will use this in Section&nbsp;7.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Two traps</div>
+      <strong>(1)</strong> The complement of "at least one" is <em>not</em> "none of them except one" — it is simply "none". <strong>(2)</strong> Probabilities of a full outcome list add to <strong>1</strong>, not to 100, unless you are working in percentages throughout. Don't mix: 0.4 + 25% is a mark lost.
+    </div>
+  </div>
+
+
+  <!-- ── 03 · RELATIVE & EXPECTED FREQUENCY (widget) ── -->
+  <div class="section" id="s3">
+    <div class="sec-label">03 / 10 · E8.2 · Experiment</div>
+    <h2>Relative frequency &amp; expected frequency</h2>
+
+    <p>Sometimes you cannot count equally likely outcomes — a drawing pin, a bent spinner, a bottle cap. So you <strong>experiment</strong>: do the trial many times and see what fraction of the time the event actually happened. That fraction is the <strong>relative frequency</strong>, and it is your best <em>estimate</em> of the probability.</p>
+
+    <div class="define energy-c">
+      <span class="term">The two frequency formulas</span><br>
+      <span class="eq-inline" style="color:var(--energy2)">relative frequency = (times the event happened) ÷ (total trials)</span><br>
+      <span class="eq-inline" style="color:var(--energy2)">expected frequency = P(event) × (number of trials)</span><br>
+      <span style="font-size:13.4px;color:var(--muted)">One goes from data to probability; the other from probability back to a predicted count. They are inverses of each other.</span>
+    </div>
+
+    <div class="box intuition">
+      <div class="box-label">💡 Why more trials means a better estimate</div>
+      Toss a coin 10 times and 7 heads would not surprise you — relative frequency 0.7, miles from 0.5. Toss it 10&nbsp;000 times and 7000 heads would be astonishing. Each extra trial adds evidence but the <em>random wobble</em> grows more slowly than the number of trials does, so dividing one by the other <mark>settles down</mark>. That is the whole reason experiments work.
+    </div>
+
+    <p>Spin the wheel below. On the <strong>fair</strong> setting all four sectors are 0.25; on the <strong>biased</strong> setting red owns half the wheel. Watch how wildly the bars swing for the first few spins, then how firmly they lock on to the dashed marker (the true probability) once you have hundreds.</p>
+
+    <div class="explorer">
+      <div class="scn-tabs" id="spTabs">
+        <div class="scn-tab active" data-m="fair">Fair spinner</div>
+        <div class="scn-tab" data-m="biased">Biased spinner</div>
+      </div>
+      <svg class="wsvg" viewBox="0 0 480 250" id="spSvg" role="img" aria-label="A spinner with four coloured sectors beside four bars showing the relative frequency of each colour so far, each with a dashed marker at its true probability">
+        <g id="spWheel" style="transform-origin:105px 125px"></g>
+        <polygon class="ptr" points="105,50 97,32 113,32"></polygon>
+        <g id="spBars"></g>
+      </svg>
+      <div class="btn-row">
+        <button class="mini-btn" id="sp1" type="button">Spin ×1</button>
+        <button class="mini-btn" id="sp10" type="button">Spin ×10</button>
+        <button class="mini-btn" id="sp100" type="button">Spin ×100</button>
+        <button class="mini-btn" id="spR" type="button">Reset</button>
+      </div>
+      <div class="scn-read">
+        <div class="rk">What the bars say</div>
+        <div id="spRead">Press a spin button to start.</div>
+        <div style="margin-top:8px;font-size:12.6px;color:var(--muted)">The dashed magenta marker on each bar is the <strong>true</strong> probability. The solid bar is the <strong>relative frequency</strong> from the spins so far.</div>
+      </div>
+    </div>
+
+    <h3>Worked example — expected frequency</h3>
+    <p>A survey finds that <span class="eq-inline">0.35</span> of students at a school of <span class="eq-inline">1200</span> travel to school by bus. At the school fete, 500 raffle tickets are sold at <span class="eq-inline">₹20</span> each and Meera buys 4 of them.</p>
+    <div class="work">
+      <span class="step">expected number of bus travellers = P × trials</span><br>
+      = 0.35 × 1200 = <strong>420 students</strong><br><br>
+      <span class="step">raffle — one ticket is drawn from 500, all equally likely</span><br>
+      P(Meera wins) = 4/500 = <strong>1/125</strong> = 0.008<br>
+      <span class="step">expected number of wins if the same raffle ran 250 times</span><br>
+      = 0.008 × 250 = <strong>2</strong>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title" style="color:var(--power)">Fair</div>
+        <div class="card-body">Every outcome is <strong>equally likely</strong>. A fair die gives each face probability ⅙.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Biased</div>
+        <div class="card-body">Some outcome is <strong>more likely</strong> than it should be. You detect bias when the relative frequency stays far from the expected value <em>after many trials</em>.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Random</div>
+        <div class="card-body">The outcome of any one trial <strong>cannot be predicted</strong> — even from a fair, well-understood process.</div>
+      </div>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Expected ≠ guaranteed (and needn't be a whole number)</div>
+      "Expected frequency 67.5" is a perfectly good answer — <strong>do not round it</strong> unless the question explicitly tells you to. Mark schemes print the exact non-integer value even when the quantity is a number of people or objects. And an expected 420 bus travellers does not mean exactly 420 will turn up; it is the long-run average. Equally, "the coin landed heads 5 times in a row, so tails is due" is wrong — the coin has no memory.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Judging bias in words</div>
+      If asked <em>"is the dice fair? Give a reason"</em>, compare the <strong>relative frequency</strong> with the <strong>expected</strong> value and mention the <strong>number of trials</strong>. "Relative frequency 0.30 is much higher than the expected ⅙ ≈ 0.17, over 600 throws, so the dice is probably biased" scores; "it looks biased" does not.
+    </div>
+  </div>
+
+
+  <!-- ── 04 · SAMPLE SPACE DIAGRAMS ── -->
+  <div class="section" id="s4">
+    <div class="sec-label">04 / 10 · E8.3 · Listing everything</div>
+    <h2>Sample space diagrams</h2>
+
+    <p>When <em>two</em> things happen together — two dice, a coin and a spinner, two draws from a bag — the safest method is still to list every outcome. A <strong>sample space diagram</strong> is that list arranged as a grid, so you cannot miss any.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      One die has 6 outcomes. A second die has 6 outcomes <em>for each</em> of those, so together there are <span class="eq-inline">6 × 6 = 36</span> — and because both dice are fair, all 36 are <mark>equally likely</mark>. That is the crucial part: once every cell of the grid is equally likely, probability is pure cell-counting.
+    </div>
+
+    <svg class="diagram" viewBox="0 0 520 300" role="img" aria-label="A six by six sample space grid showing the sum of two fair dice, with the six cells that give a total of seven shaded along the anti-diagonal">
+      <text class="tr-hd" x="240" y="22" text-anchor="middle">SECOND DIE →</text>
+      <text class="tr-hd" x="74"  y="48" text-anchor="end">FIRST DIE ↓</text>
+      <!-- highlighted sum-7 cells -->
+      <rect class="ss-hit" x="320" y="60"  width="40" height="34"/>
+      <rect class="ss-hit" x="280" y="94"  width="40" height="34"/>
+      <rect class="ss-hit" x="240" y="128" width="40" height="34"/>
+      <rect class="ss-hit" x="200" y="162" width="40" height="34"/>
+      <rect class="ss-hit" x="160" y="196" width="40" height="34"/>
+      <rect class="ss-hit" x="120" y="230" width="40" height="34"/>
+      <!-- grid lines -->
+      <line class="gl5" x1="120" y1="60" x2="120" y2="264"/>
+      <line class="gl5" x1="160" y1="60" x2="160" y2="264"/>
+      <line class="gl5" x1="200" y1="60" x2="200" y2="264"/>
+      <line class="gl5" x1="240" y1="60" x2="240" y2="264"/>
+      <line class="gl5" x1="280" y1="60" x2="280" y2="264"/>
+      <line class="gl5" x1="320" y1="60" x2="320" y2="264"/>
+      <line class="gl5" x1="360" y1="60" x2="360" y2="264"/>
+      <line class="gl5" x1="120" y1="60"  x2="360" y2="60"/>
+      <line class="gl5" x1="120" y1="94"  x2="360" y2="94"/>
+      <line class="gl5" x1="120" y1="128" x2="360" y2="128"/>
+      <line class="gl5" x1="120" y1="162" x2="360" y2="162"/>
+      <line class="gl5" x1="120" y1="196" x2="360" y2="196"/>
+      <line class="gl5" x1="120" y1="230" x2="360" y2="230"/>
+      <line class="gl5" x1="120" y1="264" x2="360" y2="264"/>
+      <!-- headers -->
+      <text class="ss-hd" x="100" y="48" text-anchor="middle">+</text>
+      <text class="ss-hd" x="140" y="48" text-anchor="middle">1</text>
+      <text class="ss-hd" x="180" y="48" text-anchor="middle">2</text>
+      <text class="ss-hd" x="220" y="48" text-anchor="middle">3</text>
+      <text class="ss-hd" x="260" y="48" text-anchor="middle">4</text>
+      <text class="ss-hd" x="300" y="48" text-anchor="middle">5</text>
+      <text class="ss-hd" x="340" y="48" text-anchor="middle">6</text>
+      <text class="ss-hd" x="100" y="82"  text-anchor="middle">1</text>
+      <text class="ss-hd" x="100" y="116" text-anchor="middle">2</text>
+      <text class="ss-hd" x="100" y="150" text-anchor="middle">3</text>
+      <text class="ss-hd" x="100" y="184" text-anchor="middle">4</text>
+      <text class="ss-hd" x="100" y="218" text-anchor="middle">5</text>
+      <text class="ss-hd" x="100" y="252" text-anchor="middle">6</text>
+      <!-- row 1 -->
+      <text class="ss-num" x="140" y="82" text-anchor="middle">2</text>
+      <text class="ss-num" x="180" y="82" text-anchor="middle">3</text>
+      <text class="ss-num" x="220" y="82" text-anchor="middle">4</text>
+      <text class="ss-num" x="260" y="82" text-anchor="middle">5</text>
+      <text class="ss-num" x="300" y="82" text-anchor="middle">6</text>
+      <text class="ss-num" x="340" y="82" text-anchor="middle">7</text>
+      <!-- row 2 -->
+      <text class="ss-num" x="140" y="116" text-anchor="middle">3</text>
+      <text class="ss-num" x="180" y="116" text-anchor="middle">4</text>
+      <text class="ss-num" x="220" y="116" text-anchor="middle">5</text>
+      <text class="ss-num" x="260" y="116" text-anchor="middle">6</text>
+      <text class="ss-num" x="300" y="116" text-anchor="middle">7</text>
+      <text class="ss-num" x="340" y="116" text-anchor="middle">8</text>
+      <!-- row 3 -->
+      <text class="ss-num" x="140" y="150" text-anchor="middle">4</text>
+      <text class="ss-num" x="180" y="150" text-anchor="middle">5</text>
+      <text class="ss-num" x="220" y="150" text-anchor="middle">6</text>
+      <text class="ss-num" x="260" y="150" text-anchor="middle">7</text>
+      <text class="ss-num" x="300" y="150" text-anchor="middle">8</text>
+      <text class="ss-num" x="340" y="150" text-anchor="middle">9</text>
+      <!-- row 4 -->
+      <text class="ss-num" x="140" y="184" text-anchor="middle">5</text>
+      <text class="ss-num" x="180" y="184" text-anchor="middle">6</text>
+      <text class="ss-num" x="220" y="184" text-anchor="middle">7</text>
+      <text class="ss-num" x="260" y="184" text-anchor="middle">8</text>
+      <text class="ss-num" x="300" y="184" text-anchor="middle">9</text>
+      <text class="ss-num" x="340" y="184" text-anchor="middle">10</text>
+      <!-- row 5 -->
+      <text class="ss-num" x="140" y="218" text-anchor="middle">6</text>
+      <text class="ss-num" x="180" y="218" text-anchor="middle">7</text>
+      <text class="ss-num" x="220" y="218" text-anchor="middle">8</text>
+      <text class="ss-num" x="260" y="218" text-anchor="middle">9</text>
+      <text class="ss-num" x="300" y="218" text-anchor="middle">10</text>
+      <text class="ss-num" x="340" y="218" text-anchor="middle">11</text>
+      <!-- row 6 -->
+      <text class="ss-num" x="140" y="252" text-anchor="middle">7</text>
+      <text class="ss-num" x="180" y="252" text-anchor="middle">8</text>
+      <text class="ss-num" x="220" y="252" text-anchor="middle">9</text>
+      <text class="ss-num" x="260" y="252" text-anchor="middle">10</text>
+      <text class="ss-num" x="300" y="252" text-anchor="middle">11</text>
+      <text class="ss-num" x="340" y="252" text-anchor="middle">12</text>
+      <!-- legend -->
+      <text class="slbl" x="382" y="104">SHADED: TOTAL = 7</text>
+      <text class="sval" x="382" y="126">6 of 36 cells</text>
+      <text class="sval" x="382" y="146">P = 6/36 = 1/6</text>
+      <text class="slbl" x="382" y="182">36 EQUALLY</text>
+      <text class="slbl" x="382" y="196">LIKELY OUTCOMES</text>
+      <text class="slbl" x="382" y="226">EACH CELL HAS</text>
+      <text class="slbl" x="382" y="240">PROBABILITY 1/36</text>
+    </svg>
+    <div class="diag-cap">The <b>sum of two fair dice</b>. Because each of the 36 cells is equally likely, every probability here is a count divided by 36. Seven is the <b>most likely total</b> — it fills a whole diagonal (6 cells); 2 and 12 each fill only one</div>
+
+    <h3>Reading the grid</h3>
+    <div class="work">
+      P(total = 7)    = 6/36 = <strong>1/6</strong><br>
+      P(total = 12)   = 1/36<br>
+      P(total &gt; 9)  = (10:3 cells) + (11:2) + (12:1) = 6/36 = <strong>1/6</strong><br>
+      P(a double)     = 6/36 = 1/6 &nbsp;<span class="step">the cells 1&amp;1, 2&amp;2, … 6&amp;6</span><br>
+      P(total is even)= 18/36 = <strong>1/2</strong>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Order matters — 36 outcomes, not 21</div>
+      A 2 on the first die and a 5 on the second is a <strong>different outcome</strong> from a 5 then a 2, even though the total is the same. Students who "don't count the same pair twice" get 21 outcomes and every answer comes out wrong. Two dice, two <em>ordered</em> results: <span class="eq-inline">6 × 6 = 36</span>.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ When the two things are different</div>
+      A grid works for any pair. Coin (H, T) with a die (1–6) gives a <span class="eq-inline">2 × 6 = 12</span>-cell grid. If the question gives you an empty grid, <strong>fill it in completely</strong> before answering — the filled grid is usually worth marks on its own.
+    </div>
+  </div>
+
+
+  <!-- ── 05 · VENN DIAGRAMS (widget) ── -->
+  <div class="section" id="s5">
+    <div class="sec-label">05 / 10 · E8.3 · Overlapping groups</div>
+    <h2>Venn diagrams</h2>
+
+    <p>Use a Venn diagram when two events can <strong>both</strong> happen — a student who plays cricket <em>and</em> badminton, a number that is both even <em>and</em> prime. The rectangle is everything (the <strong>universal set</strong>, <span class="eq-inline">ℰ</span>); each circle is one event; the overlap is where both are true.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 Always fill the middle first</div>
+      A question saying "18 play cricket, 14 play badminton, 6 play both" does <em>not</em> mean 18 sit in the cricket-only region. The 18 <mark>already includes</mark> the 6. So write the <strong>6 in the overlap first</strong>, then subtract: cricket-only = 18 − 6 = 12, badminton-only = 14 − 6 = 8. Start anywhere else and every region is wrong.
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">The two symbols</span><br>
+      <span class="eq-inline" style="color:var(--momentum)">A ∩ B</span> — <strong>intersection</strong>, "A <em>and</em> B" — the overlap only.<br>
+      <span class="eq-inline" style="color:var(--momentum)">A ∪ B</span> — <strong>union</strong>, "A <em>or</em> B (or both)" — everything inside either circle.<br>
+      <span style="font-size:13.4px;color:var(--muted)">Memory hook: <strong>∩</strong> looks like the letter <strong>n</strong> for "a<strong>n</strong>d"; <strong>∪</strong> is a cup that scoops <em>everything</em> up.</span>
+    </div>
+
+    <svg class="diagram" viewBox="0 0 480 280" role="img" aria-label="A two set Venn diagram inside a rectangle for the universal set: cricket only 12, both 6, badminton only 8, and 4 students in neither region, totalling 30">
+      <rect class="vn-uni" x="20" y="30" width="440" height="225" rx="7"/>
+      <text class="vn-lbl" x="34" y="52" style="fill:var(--muted)">ℰ = 30 students</text>
+      <circle class="vn-a" cx="185" cy="150" r="92"/>
+      <circle class="vn-b" cx="295" cy="150" r="92"/>
+      <circle class="vn-ring-a" cx="185" cy="150" r="92"/>
+      <circle class="vn-ring-b" cx="295" cy="150" r="92"/>
+      <text class="vn-lbl" x="130" y="82" style="fill:var(--motion)">C · cricket</text>
+      <text class="vn-lbl" x="350" y="82" text-anchor="end" style="fill:var(--momentum)">B · badminton</text>
+      <text class="vn-num" x="145" y="157" text-anchor="middle">12</text>
+      <text class="vn-num" x="240" y="157" text-anchor="middle">6</text>
+      <text class="vn-num" x="335" y="157" text-anchor="middle">8</text>
+      <text class="vn-num" x="440" y="226" text-anchor="end">4</text>
+      <text class="slbl" x="145" y="176" text-anchor="middle">cricket only</text>
+      <text class="slbl" x="240" y="176" text-anchor="middle">both</text>
+      <text class="slbl" x="335" y="176" text-anchor="middle">badminton only</text>
+      <text class="slbl" x="440" y="243" text-anchor="end">neither</text>
+    </svg>
+    <div class="diag-cap">30 students: 18 play cricket, 14 play badminton, 6 play both. The <b>6 goes in the middle first</b>; then 18 − 6 = <b>12</b> and 14 − 6 = <b>8</b>. The four regions must add to the total, so "neither" = 30 − (12 + 6 + 8) = <b>4</b></div>
+
+    <h3>Reading probabilities off the diagram</h3>
+    <div class="work">
+      <span class="step">divide every region count by the total, 30</span><br>
+      P(C ∩ B) = 6/30  = <strong>1/5</strong><br>
+      P(C ∪ B) = (12 + 6 + 8)/30 = 26/30 = <strong>13/15</strong><br>
+      P(C′)    = (8 + 4)/30 = 12/30 = <strong>2/5</strong> &nbsp;<span class="step">everything outside circle C</span><br>
+      P(neither) = 4/30 = <strong>2/15</strong><br>
+      <span class="step">check with the union rule:</span> 18/30 + 14/30 − 6/30 = 26/30 ✓
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Know this cold</div>
+      <span class="eq-inline" style="color:var(--rose)">n(A ∪ B) = n(A) + n(B) − n(A ∩ B)</span> — you subtract the overlap because adding the two circles counts it <strong>twice</strong>. The same rule works with probabilities: <span class="eq-inline" style="color:var(--rose)">P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</span>.
+    </div>
+
+    <p>Drag the four sliders below — one for each region — and watch every probability recompute. Try setting the overlap to 0 (the events become <em>mutually exclusive</em>, and the union is just the sum) and then making it large.</p>
+
+    <div class="tool">
+      <div class="chart-cap">Venn calculator · two sets · counts → probabilities</div>
+      <svg class="wsvg" viewBox="0 0 440 240" id="vnSvg" role="img" aria-label="An interactive two set Venn diagram whose four region counts are set by the sliders below">
+        <rect class="vn-uni" x="10" y="14" width="420" height="200" rx="7"/>
+        <circle class="vn-a" cx="175" cy="118" r="82"/>
+        <circle class="vn-b" cx="265" cy="118" r="82"/>
+        <circle class="vn-ring-a" cx="175" cy="118" r="82"/>
+        <circle class="vn-ring-b" cx="265" cy="118" r="82"/>
+        <text class="vn-lbl" x="106" y="52" style="fill:var(--motion)">A</text>
+        <text class="vn-lbl" x="330" y="52" text-anchor="end" style="fill:var(--momentum)">B</text>
+        <text class="vn-lbl" x="24" y="34" style="fill:var(--muted)">ℰ</text>
+        <text class="vn-num" id="vnA" x="140" y="124" text-anchor="middle">12</text>
+        <text class="vn-num" id="vnX" x="220" y="124" text-anchor="middle">6</text>
+        <text class="vn-num" id="vnB" x="300" y="124" text-anchor="middle">8</text>
+        <text class="vn-num" id="vnN" x="412" y="200" text-anchor="end">4</text>
+        <text class="slbl" x="412" y="184" text-anchor="end">neither</text>
+      </svg>
+      <div class="slider-grid">
+        <div class="slider-row"><label>A only <b id="vnAv">12</b></label><input type="range" id="vnAs" min="0" max="20" step="1" value="12"></div>
+        <div class="slider-row"><label>both · A ∩ B <b id="vnXv">6</b></label><input type="range" id="vnXs" min="0" max="20" step="1" value="6"></div>
+        <div class="slider-row"><label>B only <b id="vnBv">8</b></label><input type="range" id="vnBs" min="0" max="20" step="1" value="8"></div>
+        <div class="slider-row"><label>neither <b id="vnNv">4</b></label><input type="range" id="vnNs" min="0" max="20" step="1" value="4"></div>
+      </div>
+      <div class="vec-out">
+        <div class="ro">total · n(ℰ)</div>
+        <div class="rv big" id="vnTot">30</div>
+        <div class="rowpair">
+          <div><div class="ro">P(A)</div><div class="rv" id="vnPA"></div></div>
+          <div><div class="ro">P(B)</div><div class="rv" id="vnPB"></div></div>
+          <div><div class="ro">P(A ∩ B)</div><div class="rv" id="vnPI"></div></div>
+        </div>
+        <div class="rowpair">
+          <div><div class="ro">P(A ∪ B)</div><div class="rv" id="vnPU"></div></div>
+          <div><div class="ro">P(A′)</div><div class="rv" id="vnPAc"></div></div>
+          <div><div class="ro">P(neither)</div><div class="rv" id="vnPN"></div></div>
+        </div>
+        <div class="ro">conditional — given B happened, how likely is A?</div>
+        <div class="rv" id="vnPAB"></div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Mutually exclusive</div>
+      Two events are <strong>mutually exclusive</strong> when they cannot both happen — the circles don't overlap, so <span class="eq-inline">P(A ∩ B) = 0</span> and the union rule collapses to <span class="eq-inline">P(A ∪ B) = P(A) + P(B)</span>. "Rolling a 3" and "rolling an even number" are mutually exclusive; "rolling a 3" and "rolling an odd number" are not.
+    </div>
+  </div>
+
+
+  <!-- ── 06 · TREE DIAGRAMS ── -->
+  <div class="section" id="s6">
+    <div class="sec-label">06 / 10 · E8.3 · Two stages</div>
+    <h2>Tree diagrams — multiply along, add down</h2>
+
+    <p>When something happens in <strong>stages</strong> — pick a counter, then pick another; spin, then spin again — a tree diagram lays out every path. Probabilities go <em>beside</em> the branches; outcomes go at the <em>ends</em>.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 Why you multiply along a branch</div>
+      Think of the ribbon again. The first pick cuts the metre into pieces — <span class="eq-inline">5/8</span> of it is "first counter red". Now the <em>second</em> pick cuts <strong>that piece</strong> up in the same proportions: <span class="eq-inline">5/8</span> of the red piece is "red again". A fraction of a fraction is a <mark>product</mark>. That is all "multiply along the branches" means.
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">The two tree rules</span><br>
+      <span class="eq-inline" style="color:var(--momentum)">AND → multiply</span> along a path (this happens <em>and then</em> that)<br>
+      <span class="eq-inline" style="color:var(--momentum)">OR → add</span> the finished paths (this outcome <em>or</em> that one)<br>
+      <span style="font-size:13.4px;color:var(--muted)">Branches leaving any one node always add to <strong>1</strong> — a free check as you fill the tree in.</span>
+    </div>
+
+    <h3>Worked example — with replacement</h3>
+    <p>A bag holds <span class="eq-inline">5</span> red and <span class="eq-inline">3</span> blue counters. Rohan takes one at random, <strong>puts it back</strong>, and takes another.</p>
+
+    <svg class="diagram" viewBox="0 0 520 290" role="img" aria-label="A two stage tree diagram for drawing two counters with replacement from a bag of five red and three blue: every branch probability is five eighths for red and three eighths for blue, and the four outcome probabilities are twenty-five, fifteen, fifteen and nine sixty-fourths">
+      <text class="tr-hd" x="195" y="26" text-anchor="middle">1ST PICK</text>
+      <text class="tr-hd" x="325" y="26" text-anchor="middle">2ND PICK</text>
+      <text class="tr-hd" x="425" y="26" text-anchor="middle">OUTCOME</text>
+      <!-- stage 1 -->
+      <line class="tr-line" x1="62" y1="140" x2="188" y2="80"/>
+      <line class="tr-line" x1="62" y1="146" x2="188" y2="206"/>
+      <circle class="tr-dot" cx="55" cy="143" r="4"/>
+      <text class="slbl" x="55" y="166" text-anchor="middle">start</text>
+      <text class="tr-frac" x="118" y="98">5/8</text>
+      <text class="tr-frac" x="118" y="188">3/8</text>
+      <text class="tr-node" x="196" y="80" style="fill:var(--force)">R</text>
+      <text class="tr-node" x="196" y="212" style="fill:var(--motion)">B</text>
+      <!-- stage 2 from R -->
+      <line class="tr-line b2" x1="212" y1="72" x2="318" y2="48"/>
+      <line class="tr-line b2" x1="212" y1="82" x2="318" y2="110"/>
+      <text class="tr-frac" x="258" y="52">5/8</text>
+      <text class="tr-frac" x="258" y="106">3/8</text>
+      <text class="tr-node" x="326" y="52" style="fill:var(--force)">R</text>
+      <text class="tr-node" x="326" y="114" style="fill:var(--motion)">B</text>
+      <!-- stage 2 from B -->
+      <line class="tr-line b2" x1="212" y1="200" x2="318" y2="176"/>
+      <line class="tr-line b2" x1="212" y1="212" x2="318" y2="240"/>
+      <text class="tr-frac" x="258" y="180">5/8</text>
+      <text class="tr-frac" x="258" y="236">3/8</text>
+      <text class="tr-node" x="326" y="180" style="fill:var(--force)">R</text>
+      <text class="tr-node" x="326" y="244" style="fill:var(--motion)">B</text>
+      <!-- outcomes -->
+      <text class="tr-out" x="352" y="52">R R = 5/8 × 5/8 = 25/64</text>
+      <text class="tr-out" x="352" y="114">R B = 5/8 × 3/8 = 15/64</text>
+      <text class="tr-out" x="352" y="180">B R = 3/8 × 5/8 = 15/64</text>
+      <text class="tr-out" x="352" y="244">B B = 3/8 × 3/8 = 9/64</text>
+      <text class="slbl" x="510" y="272" text-anchor="end">25 + 15 + 15 + 9 = 64  ✓  the four paths total 1</text>
+    </svg>
+    <div class="diag-cap">Two picks <b>with replacement</b>: the counter goes back, so the bag is identical for the second pick and every branch fraction is <b>eighths again</b>. The two events are <b>independent</b> — the first result tells you nothing about the second</div>
+
+    <div class="work">
+      P(both red) = 5/8 × 5/8 = <strong>25/64</strong><br>
+      P(one of each colour) = P(RB) + P(BR) = 15/64 + 15/64 = 30/64 = <strong>15/32</strong><br>
+      <span class="step">"at least one blue" — use the complement (Section 2):</span><br>
+      P(at least one blue) = 1 − P(no blue) = 1 − P(RR) = 1 − 25/64 = <strong>39/64</strong>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ One of each colour is not one path</div>
+      "One red and one blue" happens <strong>two ways</strong> — red-then-blue <em>and</em> blue-then-red. Forgetting the second path halves your answer. Whenever the question doesn't say which came first, check whether more than one path lands on that outcome.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Don't cancel too early</div>
+      Keep the products over their common denominator while you add paths, and simplify only at the very end. In the next section you will meet <span class="eq-inline">20/56 + 6/56</span> — trivial. Simplify each one first and you are adding <span class="eq-inline">5/14 + 3/28</span>, which needs a fresh common denominator for no reason. Then check your four path probabilities total <strong>1</strong> before you go on.
+    </div>
+  </div>
+
+
+  <!-- ── 07 · WITHOUT REPLACEMENT (widget) ── -->
+  <div class="section" id="s7">
+    <div class="sec-label">07 / 10 · E8.3 · Extended</div>
+    <h2>Without replacement — the bag changes</h2>
+
+    <p>Extended papers almost always take the counter <strong>out and keep it out</strong>. That single change makes the second pick depend on the first — and it is where most marks in this topic are won or lost.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 One counter fewer — in <em>two</em> places</div>
+      If the first counter drawn was red, then for the second draw there is one fewer red <em>and</em> one fewer counter altogether. So the fraction changes on <mark>top and bottom</mark>: <span class="eq-inline">5/8</span> becomes <span class="eq-inline">4/7</span>. The denominator <strong>always</strong> drops by one; the numerator drops only for the colour you removed. Students who change only the bottom lose the marks.
+    </div>
+
+    <svg class="diagram" viewBox="0 0 520 290" role="img" aria-label="A two stage tree diagram for drawing two counters without replacement from five red and three blue: the second stage fractions are over seven, giving outcome probabilities of twenty, fifteen, fifteen and six fifty-sixths">
+      <text class="tr-hd" x="195" y="26" text-anchor="middle">1ST PICK</text>
+      <text class="tr-hd" x="325" y="26" text-anchor="middle">2ND PICK · over 7</text>
+      <text class="tr-hd" x="425" y="26" text-anchor="middle">OUTCOME</text>
+      <line class="tr-line" x1="62" y1="140" x2="188" y2="80"/>
+      <line class="tr-line" x1="62" y1="146" x2="188" y2="206"/>
+      <circle class="tr-dot" cx="55" cy="143" r="4"/>
+      <text class="slbl" x="55" y="166" text-anchor="middle">start</text>
+      <text class="tr-frac" x="118" y="98">5/8</text>
+      <text class="tr-frac" x="118" y="188">3/8</text>
+      <text class="tr-node" x="196" y="80" style="fill:var(--force)">R</text>
+      <text class="tr-node" x="196" y="212" style="fill:var(--motion)">B</text>
+      <line class="tr-line b2" x1="212" y1="72" x2="318" y2="48"/>
+      <line class="tr-line b2" x1="212" y1="82" x2="318" y2="110"/>
+      <text class="tr-frac" x="258" y="52">4/7</text>
+      <text class="tr-frac" x="258" y="106">3/7</text>
+      <text class="tr-node" x="326" y="52" style="fill:var(--force)">R</text>
+      <text class="tr-node" x="326" y="114" style="fill:var(--motion)">B</text>
+      <line class="tr-line b2" x1="212" y1="200" x2="318" y2="176"/>
+      <line class="tr-line b2" x1="212" y1="212" x2="318" y2="240"/>
+      <text class="tr-frac" x="258" y="180">5/7</text>
+      <text class="tr-frac" x="258" y="236">2/7</text>
+      <text class="tr-node" x="326" y="180" style="fill:var(--force)">R</text>
+      <text class="tr-node" x="326" y="244" style="fill:var(--motion)">B</text>
+      <text class="tr-out" x="352" y="52">R R = 5/8 × 4/7 = 20/56</text>
+      <text class="tr-out" x="352" y="114">R B = 5/8 × 3/7 = 15/56</text>
+      <text class="tr-out" x="352" y="180">B R = 3/8 × 5/7 = 15/56</text>
+      <text class="tr-out" x="352" y="244">B B = 3/8 × 2/7 = 6/56</text>
+      <text class="slbl" x="510" y="272" text-anchor="end">20 + 15 + 15 + 6 = 56  ✓  still totals 1</text>
+    </svg>
+    <div class="diag-cap">The same bag, <b>without replacement</b>. Only 7 counters remain for the second pick, so every second-stage denominator is <b>7</b>. After a red the reds fall to 4; after a blue they stay at 5 — the branch you are on decides the numerator</div>
+
+    <div class="work">
+      P(both red) = 5/8 × 4/7 = 20/56 = <strong>5/14</strong><br>
+      P(one of each) = 15/56 + 15/56 = 30/56 = <strong>15/28</strong><br>
+      P(at least one blue) = 1 − P(RR) = 1 − 20/56 = 36/56 = <strong>9/14</strong>
+    </div>
+
+    <p>Change the bag below and flip between the two settings. Watch the second-stage fractions: on <strong>with replacement</strong> they never move; on <strong>without replacement</strong> the denominator drops to one less, and the numerator drops only on the branch whose colour was taken.</p>
+
+    <div class="explorer">
+      <div class="scn-tabs" id="trTabs">
+        <div class="scn-tab active" data-r="1">With replacement</div>
+        <div class="scn-tab" data-r="0">Without replacement</div>
+      </div>
+      <svg class="wsvg" viewBox="0 0 500 280" id="trSvg" role="img" aria-label="An interactive two stage tree diagram that redraws when you change the number of red and blue counters or switch replacement on and off">
+        <g id="trG"></g>
+      </svg>
+      <div class="slider-grid">
+        <div class="slider-row"><label>red counters <b id="trRv">5</b></label><input type="range" id="trR" min="1" max="9" step="1" value="5"></div>
+        <div class="slider-row"><label>blue counters <b id="trBv">3</b></label><input type="range" id="trB" min="1" max="9" step="1" value="3"></div>
+      </div>
+      <div class="vec-out">
+        <div class="ro">the four paths</div>
+        <div class="rv" id="trPaths"></div>
+        <div class="ro">both the same colour</div>
+        <div class="rv" id="trSame"></div>
+        <div class="ro">one of each colour</div>
+        <div class="rv" id="trMix"></div>
+        <div class="ro">at least one red · 1 − P(no red)</div>
+        <div class="rv big" id="trAL"></div>
+      </div>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ "Independent" only survives replacement</div>
+      With replacement the two picks are <strong>independent</strong> — the first result changes nothing. Without replacement they are <strong>not</strong>: the second-stage fractions <em>are already conditional probabilities</em> (Section 8). A question that says the counter "is not replaced", or that two people each take a sweet, or that describes picking "two counters at the same time", all mean the same thing: <mark>without replacement</mark>.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Three picks</div>
+      A third pick is the same idea one step further: denominators <span class="eq-inline">8, 7, 6</span>. P(three reds) from this bag = <span class="eq-inline">5/8 × 4/7 × 3/6 = 60/336 = 5/28</span>. You are not usually asked to <em>draw</em> a three-stage tree, but you are expected to extend the multiplication.
+    </div>
+  </div>
+
+
+  <!-- ── 08 · CONDITIONAL PROBABILITY ── -->
+  <div class="section" id="s8">
+    <div class="sec-label">08 / 10 · E8.4 · Extended only</div>
+    <h2>Conditional probability — shrink the pool</h2>
+
+    <p>"<strong>Given that</strong> the student cycles, what is the probability she is in Grade 9?" The word <em>given</em> tells you something has already been ruled out. You are no longer choosing from everybody — only from the cyclists.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The whole idea in one line</div>
+      Conditional probability is ordinary probability with a <mark>smaller denominator</mark>. Cross out everyone the condition excludes, then count what's left as if it were the whole world. No formula is needed — and the syllabus explicitly does not require one.
+      <div style="margin-top:9px;font-size:13.2px;color:var(--muted)">The shorthand <span class="eq-inline" style="color:var(--cyan)">P(A | B)</span> ("the probability of A <em>given</em> B") is used below as a compact label. You are <strong>not required</strong> to know this notation for 0580 — exam questions always say "given that…" in words — but it is handy for keeping the two directions apart.</div>
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🔦 A picture you know</div>
+      Imagine shining a torch on just one row of a two-way table. Everything outside the beam has stopped existing. Your fraction is now "the cell I want ÷ the row total" — the row total, not the grand total.
+    </div>
+
+    <h3>From a two-way table</h3>
+    <p>How 80 students of a school travel in:</p>
+
+    <table>
+      <tr><th>&nbsp;</th><th class="c">Bus</th><th class="c">Cycle</th><th class="c">Walk</th><th class="c">Total</th></tr>
+      <tr><td><strong>Grade 9</strong></td><td class="c">18</td><td class="c">12</td><td class="c">10</td><td class="c"><strong>40</strong></td></tr>
+      <tr><td><strong>Grade 10</strong></td><td class="c">14</td><td class="c">16</td><td class="c">10</td><td class="c"><strong>40</strong></td></tr>
+      <tr class="tot"><td><strong>Total</strong></td><td class="c"><strong>32</strong></td><td class="c"><strong>28</strong></td><td class="c"><strong>20</strong></td><td class="c"><strong>80</strong></td></tr>
+    </table>
+
+    <div class="work">
+      <span class="step">no condition — denominator is the grand total, 80</span><br>
+      P(cycles) = 28/80 = <strong>7/20</strong><br><br>
+      <span class="step">"given the student is in Grade 10" — denominator becomes that row, 40</span><br>
+      P(cycles | Grade 10) = 16/40 = <strong>2/5</strong><br><br>
+      <span class="step">"given the student cycles" — denominator becomes that column, 28</span><br>
+      P(Grade 9 | cycles) = 12/28 = <strong>3/7</strong>
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The two conditionals are different questions</div>
+      <span class="eq-inline">P(cycles | Grade 10) = 2/5</span> but <span class="eq-inline">P(Grade 10 | cycles) = 16/28 = 4/7</span>. Same cell on top, <strong>different denominator</strong> — and different answers. Read carefully which group the question has already restricted you to; that group is your denominator.
+    </div>
+
+    <h3>From a Venn diagram</h3>
+    <p>Using the cricket/badminton diagram from Section 5 (12 cricket only, 6 both, 8 badminton only, 4 neither):</p>
+    <div class="work">
+      <span class="step">given a student plays cricket — only the 18 in circle C exist now</span><br>
+      P(plays badminton | plays cricket) = 6/18 = <strong>1/3</strong><br>
+      <span class="step">given a student plays badminton — only the 14 in circle B</span><br>
+      P(plays cricket | plays badminton) = 6/14 = <strong>3/7</strong>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ You have already done this on a tree</div>
+      In the without-replacement tree, <span class="eq-inline">4/7</span> was <em>the probability of red on the second pick <strong>given</strong> red on the first</em>. Every second-stage branch of a without-replacement tree is a conditional probability — which is exactly why those trees are the natural home for E8.4 questions. If a question gives you a completed tree and asks for a conditional, the answer is often just a branch you can read off.
+    </div>
+
+    <div class="define calc-c">
+      <span class="term">The three-step method that always works</span><br>
+      <span style="font-size:13.6px">
+        <strong>1.</strong> Identify the condition — the group after the word "given" (or "of those who…").<br>
+        <strong>2.</strong> That group's total becomes your <strong>denominator</strong>.<br>
+        <strong>3.</strong> Count only the members of <em>that group</em> who also satisfy the event — that's the numerator.
+      </span>
+    </div>
+  </div>
+
+
+  <!-- ── 09 · CHECK YOURSELF ── -->
+  <div class="section" id="scy">
+    <div class="sec-label">09 / 10 · Retrieval</div>
+    <h2>Check yourself — try each one on paper first</h2>
+    <p>Eight questions on the places Topic 8 marks are actually lost. Work each out before you tap.</p>
+
+    <div class="cy">
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>A biased spinner has four sectors: red, green, blue, yellow. <span class="eq-inline">P(red) = 0.3</span>, <span class="eq-inline">P(green) = 0.25</span>, <span class="eq-inline">P(blue) = 0.18</span>. Find <span class="eq-inline">P(yellow)</span>, then the expected number of yellows in 250 spins.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">All four must total 1, so P(yellow) = 1 − (0.3 + 0.25 + 0.18) = 1 − 0.73 = <strong>0.27</strong>. Expected frequency = 0.27 × 250 = <strong>67.5</strong>. Leave it as 67.5 — an expected frequency is a long-run average and <em>need not</em> be a whole number. Rounding to 68 without being asked can cost the mark.</div>
+      </div>
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>Two fair dice are thrown and their scores added. Find the probability that the total is a <strong>prime number</strong>.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Prime totals are 2, 3, 5, 7 and 11. From the 6 × 6 grid the counts are 2→1, 3→2, 5→4, 7→6, 11→2, giving 1 + 2 + 4 + 6 + 2 = <strong>15</strong> cells. So P = 15/36 = <strong>5/12</strong>. Traps: 1 is <em>not</em> prime (and is impossible anyway), and 9 is <em>not</em> prime (3 × 3).</div>
+      </div>
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q3</span><span>In a group of 40 people, 25 like tea, 18 like coffee and 5 like neither. How many like <strong>both</strong>? Then find the probability that a person chosen at random likes <strong>tea only</strong>.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">People who like at least one drink: 40 − 5 = 35, so n(T ∪ C) = 35. Using n(T ∪ C) = n(T) + n(C) − n(both): 35 = 25 + 18 − n(both), so n(both) = 43 − 35 = <strong>8</strong>. Tea only = 25 − 8 = 17, so P(tea only) = <strong>17/40</strong>. The trap is treating the 25 as "tea only" — it already includes the 8.</div>
+      </div>
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>A box holds 12 pens, of which 4 are faulty. Two pens are taken at random <strong>without replacement</strong>. Find the probability that <strong>at least one</strong> is faulty.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Use the complement: the opposite of "at least one faulty" is "<strong>both fine</strong>". P(both fine) = 8/12 × 7/11 = 56/132 = 14/33. So P(at least one faulty) = 1 − 14/33 = <strong>19/33</strong>. Doing it the long way (exactly one + exactly two) also gives 19/33, but is three times the work and three times the risk.</div>
+      </div>
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q5</span><span><strong>Explain</strong> why an estimate of a probability found from 500 trials is more reliable than one found from 20 trials.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Because relative frequency <strong>approaches the true probability as the number of trials increases</strong>. With few trials a run of luck shifts the fraction a long way; with many trials each result changes the fraction only slightly, so the estimate settles down. Command-word tip: the mark is for the phrase "more trials → relative frequency gets closer to the theoretical probability", not for "it's more accurate".</div>
+      </div>
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>From the travel table in Section 8, find <span class="eq-inline">P(walks | Grade 9)</span> and <span class="eq-inline">P(Grade 9 | walks)</span>. Why are they different?</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">P(walks | Grade 9) = 10/40 = <strong>1/4</strong> — restricted to the Grade 9 <em>row</em>. P(Grade 9 | walks) = 10/20 = <strong>1/2</strong> — restricted to the walkers <em>column</em>. The numerator (10 students who are both) is the same; the <strong>condition changes the denominator</strong>, and that is what changes the answer.</div>
+      </div>
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>A bag has 7 green and 4 white marbles. Two are taken <strong>without replacement</strong>. Find the probability they are <strong>different colours</strong>.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Two paths. P(GW) = 7/11 × 4/10 = 28/110 and P(WG) = 4/11 × 7/10 = 28/110. Total = 56/110 = <strong>28/55</strong>. Note the two paths are <em>equal</em> here — that is normal, but you must still add both. Check: P(GG) = 42/110 and P(WW) = 12/110, and 42 + 28 + 28 + 12 = 110 ✓.</div>
+      </div>
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>From a bag of 5 red and 3 blue counters, <strong>three</strong> are taken without replacement. Find the probability that all three are the <strong>same colour</strong>.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">P(RRR) = 5/8 × 4/7 × 3/6 = 60/336 and P(BBB) = 3/8 × 2/7 × 1/6 = 6/336. Same colour = 60/336 + 6/336 = 66/336 = <strong>11/56</strong>. Keeping everything over 336 until the last line is what makes this safe; the denominators fall 8, 7, 6 and the numerators fall only for the colour being removed.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 10 · SKILL BANK ── -->
+  <div class="section" id="s10">
+    <div class="sec-label">10 / 10 · Reference</div>
+    <h2>Topic 8 skill bank</h2>
+    <p>Nothing here is given in the exam — it is all recall. Tap any tile for the rule, a worked line, and the trap examiners set:</p>
+
+    <div class="eqbank interactive" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ Know these cold</div>
+      <span class="eq-inline" style="color:var(--rose)">0 ≤ P(A) ≤ 1</span>
+      <span class="eq-inline" style="color:var(--rose)">P(A′) = 1 − P(A)</span>
+      <span class="eq-inline" style="color:var(--rose)">AND → × along a path</span>
+      <span class="eq-inline" style="color:var(--rose)">OR → + across whole paths</span>
+      <span class="eq-inline" style="color:var(--rose)">at least one = 1 − P(none)</span>
+      <span class="eq-inline" style="color:var(--rose)">P(A∪B) = P(A)+P(B)−P(A∩B)</span>
+      <span class="eq-inline" style="color:var(--rose)">no replacement: denominator −1</span>
+      <span class="eq-inline" style="color:var(--rose)">expected = P × trials</span>
+    </div>
+  </div>
+
+  <div class="paper-links">
+    <div class="pl-label">Practise this topic</div>
+    <p>There is <strong>no Topic 8 paper yet</strong> — probability sits outside the Grade&nbsp;X SA-1 scope, so nothing has been built for it so far. Until one exists, the eight <em>Check yourself</em> questions above are the retrieval practice for this topic; the mixed non-calculator papers cover Topics 1–7 only.</p>
+    <div class="pl-list">
+      <a href="../../../index.html">🏠 Back to the hub<span>a Topic 8 practice paper will appear on the Topic 8 card here once it is built</span></a>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE MATHEMATICS · 0580 EXTENDED · TOPIC 8 — PROBABILITY (E8.1–E8.4)<br>
+    Built for understanding — count the equally likely outcomes, multiply along a branch, add across the paths, and shrink the pool when the question says "given".
+  </div>
+
+</div>
+
+<!-- ── FLOATING DETAIL CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Key facts</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Rule / method</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   shared helpers
+════════════════════════════════════════════════ */
+const NS='http://www.w3.org/2000/svg';
+function E(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function T(g,cls,x,y,txt,anchor,style){
+  const e=E('text',{class:cls,x:x,y:y});
+  if(anchor) e.setAttribute('text-anchor',anchor);
+  if(style)  e.setAttribute('style',style);
+  e.textContent=txt; g.appendChild(e); return e;
+}
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a||1; }
+function fr(n,d){                       // simplified fraction as a string
+  if(d===0) return '—';
+  if(n===0) return '0';
+  if(n===d) return '1';          // never print "1/1" in a probability note
+  const k=gcd(n,d);
+  return (n/k)+'/'+(d/k);
+}
+function frDec(n,d){                    // "20/56 = 5/14 = 0.357"
+  if(d===0) return '—';
+  const s=fr(n,d), raw=n+'/'+d;
+  const dec=(n/d).toFixed(3);
+  return (s===raw? raw : raw+' = '+s)+'  ('+dec+')';
+}
+const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ════════════════════════════════════════════════
+   1 · SPINNER — relative frequency simulator
+════════════════════════════════════════════════ */
+(function(){
+  const svg=document.getElementById('spSvg'); if(!svg) return;
+  const wheel=document.getElementById('spWheel'), bars=document.getElementById('spBars');
+  const NAMES=['Red','Green','Blue','Amber'];   // "Amber" reads true in BOTH themes
+                                                // (--energy2 deepens to brown on paper)
+  const MODES={ fair:[0.25,0.25,0.25,0.25], biased:[0.5,0.2,0.2,0.1] };
+  const CX=105, CY=125, R=80;
+  let mode='fair', counts=[0,0,0,0], total=0, turns=0;
+
+  function cum(p){ const c=[0]; let s=0; p.forEach(v=>{ s+=v; c.push(s); }); return c; }
+  function arc(f0,f1){
+    // fractions of a turn, measured clockwise from the top
+    const a0=-Math.PI/2+f0*2*Math.PI, a1=-Math.PI/2+f1*2*Math.PI;
+    const x0=CX+R*Math.cos(a0), y0=CY+R*Math.sin(a0);
+    const x1=CX+R*Math.cos(a1), y1=CY+R*Math.sin(a1);
+    const big=(f1-f0)>0.5?1:0;
+    if(f1-f0>=0.999) return 'M '+(CX-R)+' '+CY+' A '+R+' '+R+' 0 1 1 '+(CX+R)+' '+CY+
+                            ' A '+R+' '+R+' 0 1 1 '+(CX-R)+' '+CY+' Z';
+    return 'M '+CX+' '+CY+' L '+x0.toFixed(2)+' '+y0.toFixed(2)+
+           ' A '+R+' '+R+' 0 '+big+' 1 '+x1.toFixed(2)+' '+y1.toFixed(2)+' Z';
+  }
+  function drawWheel(){
+    wheel.textContent='';
+    const c=cum(MODES[mode]);
+    for(let i=0;i<4;i++) wheel.appendChild(E('path',{class:'sec k'+i, d:arc(c[i],c[i+1])}));
+    wheel.appendChild(E('circle',{cx:CX,cy:CY,r:5,class:'ptr'}));
+  }
+  function drawBars(){
+    bars.textContent='';
+    const p=MODES[mode], X0=250, W=190;
+    T(bars,'slbl',X0,34,'SPINS: '+total);
+    T(bars,'slbl',440,34,mode==='fair'?'FAIR WHEEL':'BIASED WHEEL','end');
+    for(let i=0;i<4;i++){
+      const yT=52+45*i, rf=total? counts[i]/total : 0;
+      T(bars,'slbl',X0,yT,NAMES[i].toUpperCase());
+      T(bars,'sval',440,yT, total? (counts[i]+' → '+rf.toFixed(3)) : '—','end');
+      bars.appendChild(E('rect',{class:'rf-track',x:X0,y:yT+6,width:W,height:14,rx:3}));
+      if(rf>0) bars.appendChild(E('rect',{class:'rf-bar k'+i,x:X0,y:yT+6,width:(W*rf).toFixed(1),height:14,rx:3}));
+      const tx=X0+W*p[i];
+      bars.appendChild(E('line',{class:'rf-th',x1:tx.toFixed(1),y1:yT+1,x2:tx.toFixed(1),y2:yT+25}));
+    }
+  }
+  function readout(){
+    const p=MODES[mode];
+    if(!total){ document.getElementById('spRead').innerHTML='Press a spin button to start.'; return; }
+    const rows=NAMES.map((n,i)=>n+' <b>'+(counts[i]/total).toFixed(3)+'</b> vs true '+p[i].toFixed(2));
+    document.getElementById('spRead').innerHTML=
+      'After <b>'+total+'</b> spins — '+rows.join(' &nbsp;·&nbsp; ')+
+      (total<30? '<br>Only a handful of spins: the bars are still nowhere near the markers.' :
+       total<200? '<br>The bars are closing in on the markers — keep spinning.' :
+                  '<br>With hundreds of spins each relative frequency is now a good estimate of its true probability.');
+  }
+  function sample(){                    // returns the sector index the pointer lands on
+    const f=Math.random(), c=cum(MODES[mode]);
+    for(let i=0;i<4;i++) if(f>=c[i] && f<c[i+1]) return {i:i,f:f};
+    return {i:3,f:f};
+  }
+  function spin(n){
+    let last=null;
+    for(let k=0;k<n;k++){ last=sample(); counts[last.i]++; total++; }
+    turns+=(n===1?2:1);          // always advance, so the wheel never spins backwards
+    const deg=turns*360 - last.f*360;
+    wheel.style.transform='rotate('+deg.toFixed(2)+'deg)';
+    drawBars(); readout();
+  }
+  function reset(){ counts=[0,0,0,0]; total=0; turns=0; wheel.style.transform='rotate(0deg)';
+    drawWheel(); drawBars(); readout(); }
+
+  if(REDUCED) wheel.style.transition='none';
+  document.getElementById('sp1').addEventListener('click',()=>spin(1));
+  document.getElementById('sp10').addEventListener('click',()=>spin(10));
+  document.getElementById('sp100').addEventListener('click',()=>spin(100));
+  document.getElementById('spR').addEventListener('click',reset);
+  document.getElementById('spTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    document.querySelectorAll('#spTabs .scn-tab').forEach(b=>b.classList.remove('active'));
+    t.classList.add('active'); mode=t.dataset.m; reset();
+  });
+  reset();
+})();
+
+/* ════════════════════════════════════════════════
+   2 · VENN CALCULATOR
+════════════════════════════════════════════════ */
+(function(){
+  const svg=document.getElementById('vnSvg'); if(!svg) return;
+  const S={a:document.getElementById('vnAs'), x:document.getElementById('vnXs'),
+           b:document.getElementById('vnBs'), n:document.getElementById('vnNs')};
+  function draw(){
+    const a=+S.a.value, x=+S.x.value, b=+S.b.value, n=+S.n.value;
+    const tot=a+x+b+n, nA=a+x, nB=b+x;
+    document.getElementById('vnA').textContent=a;
+    document.getElementById('vnX').textContent=x;
+    document.getElementById('vnB').textContent=b;
+    document.getElementById('vnN').textContent=n;
+    document.getElementById('vnAv').textContent=a;
+    document.getElementById('vnXv').textContent=x;
+    document.getElementById('vnBv').textContent=b;
+    document.getElementById('vnNv').textContent=n;
+    document.getElementById('vnTot').textContent=tot;
+    const put=(id,txt)=>document.getElementById(id).textContent=txt;
+    if(tot===0){
+      ['vnPA','vnPB','vnPI','vnPU','vnPAc','vnPN','vnPAB'].forEach(id=>put(id,'—'));
+      return;
+    }
+    put('vnPA',  frDec(nA,tot));
+    put('vnPB',  frDec(nB,tot));
+    put('vnPI',  frDec(x,tot));
+    put('vnPU',  frDec(a+x+b,tot));
+    put('vnPAc', frDec(tot-nA,tot));
+    put('vnPN',  frDec(n,tot));
+    put('vnPAB', nB===0 ? 'P(A | B) undefined — nobody is in B'
+                        : 'P(A | B) = '+x+'/'+nB+' = '+fr(x,nB)+'  ('+(x/nB).toFixed(3)+')');
+  }
+  Object.values(S).forEach(s=>s.addEventListener('input',draw));
+  draw();
+})();
+
+/* ════════════════════════════════════════════════
+   3 · TREE-DIAGRAM BUILDER
+════════════════════════════════════════════════ */
+(function(){
+  const svg=document.getElementById('trSvg'); if(!svg) return;
+  const g=document.getElementById('trG');
+  const sR=document.getElementById('trR'), sB=document.getElementById('trB');
+  let repl=1;
+  function line(x1,y1,x2,y2,cls){ g.appendChild(E('line',{class:cls,x1:x1,y1:y1,x2:x2,y2:y2})); }
+  function draw(){
+    const R=+sR.value, B=+sB.value, N=R+B;
+    document.getElementById('trRv').textContent=R;
+    document.getElementById('trBv').textContent=B;
+    // second-stage numerators / denominator
+    const D2 = repl ? N : N-1;
+    const RR = repl ? R : R-1, RB = B;          // after a red
+    const BR = R,               BB = repl ? B : B-1;   // after a blue
+    g.textContent='';
+    T(g,'tr-hd',195,24,'1ST PICK','middle');
+    T(g,'tr-hd',320,24, repl? '2ND PICK · over '+N : '2ND PICK · over '+D2,'middle');
+    T(g,'tr-hd',420,24,'OUTCOME','middle');
+    // stage 1
+    line(62,138,188,78,'tr-line'); line(62,144,188,204,'tr-line');
+    g.appendChild(E('circle',{class:'tr-dot',cx:55,cy:141,r:4}));
+    T(g,'slbl',55,164,'start','middle');
+    T(g,'tr-frac',114,96, R+'/'+N);
+    T(g,'tr-frac',114,186, B+'/'+N);
+    T(g,'tr-node',196,78,'R',null,'fill:var(--force)');
+    T(g,'tr-node',196,210,'B',null,'fill:var(--motion)');
+    // stage 2
+    line(212,70,314,46,'tr-line b2');  line(212,80,314,108,'tr-line b2');
+    line(212,198,314,174,'tr-line b2'); line(212,210,314,238,'tr-line b2');
+    T(g,'tr-frac',254,50, RR+'/'+D2);
+    T(g,'tr-frac',254,104, RB+'/'+D2);
+    T(g,'tr-frac',254,178, BR+'/'+D2);
+    T(g,'tr-frac',254,234, BB+'/'+D2);
+    T(g,'tr-node',322,50,'R',null,'fill:var(--force)');
+    T(g,'tr-node',322,112,'B',null,'fill:var(--motion)');
+    T(g,'tr-node',322,178,'R',null,'fill:var(--force)');
+    T(g,'tr-node',322,242,'B',null,'fill:var(--motion)');
+    const den=N*D2;
+    const nRR=R*RR, nRB=R*RB, nBR=B*BR, nBB=B*BB;
+    T(g,'tr-out',344,50, 'R R = '+nRR+'/'+den);
+    T(g,'tr-out',344,112,'R B = '+nRB+'/'+den);
+    T(g,'tr-out',344,178,'B R = '+nBR+'/'+den);
+    T(g,'tr-out',344,242,'B B = '+nBB+'/'+den);
+    T(g,'slbl',344,268, nRR+' + '+nRB+' + '+nBR+' + '+nBB+' = '+den+'  ✓');
+    // read-outs
+    document.getElementById('trPaths').innerHTML=
+      'P(RR) = '+frDec(nRR,den)+'<br>P(RB) = '+frDec(nRB,den)+
+      '<br>P(BR) = '+frDec(nBR,den)+'<br>P(BB) = '+frDec(nBB,den);
+    document.getElementById('trSame').textContent=frDec(nRR+nBB,den);
+    document.getElementById('trMix').textContent =frDec(nRB+nBR,den);
+    document.getElementById('trAL').textContent  ='1 − '+nBB+'/'+den+' = '+fr(den-nBB,den)+
+      '  ('+((den-nBB)/den).toFixed(3)+')';
+  }
+  sR.addEventListener('input',draw); sB.addEventListener('input',draw);
+  document.getElementById('trTabs').addEventListener('click',e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return;
+    document.querySelectorAll('#trTabs .scn-tab').forEach(b=>b.classList.remove('active'));
+    t.classList.add('active'); repl=+t.dataset.r; draw();
+  });
+  draw();
+})();
+
+/* ════════════════════════════════════════════════
+   4 · SKILL BANK (tappable tiles)
+════════════════════════════════════════════════ */
+const EQ={
+  single:{c:'motion',name:'Single event',formula:'P(A) = favourable / total',
+    syms:[['0','impossible',''],['1','certain',''],['form','fraction, decimal or %','']],
+    rearr:'only valid when every listed outcome is EQUALLY LIKELY',
+    ex:'20 sweets, 5 barfi → P(barfi) = 5/20 = 1/4 = 0.25.',
+    tip:'"Two outcomes" does not mean ½. A drawing pin is not a fair coin.'},
+  complement:{c:'force',name:'Complement',formula:"P(A′) = 1 − P(A)",
+    syms:[["A′",'"not A"',''],['sum','all outcomes total 1',''],['use','"at least one"','']],
+    rearr:'P(A) + P(A′) = 1 · the opposite of "at least one" is "none"',
+    ex:'P(bus late) = 0.15 → P(not late) = 0.85.',
+    tip:'Probabilities total 1, not 100 — unless you work in % throughout. Never mix the two.'},
+  relfreq:{c:'energy',name:'Relative frequency',formula:'successes / trials',
+    syms:[['estimate','of the true probability',''],['more trials','better estimate',''],['use','when not equally likely','']],
+    rearr:'as trials increase, relative frequency approaches the theoretical probability',
+    ex:'Spinner lands green 46 times in 200 spins → 46/200 = 0.23.',
+    tip:'To judge bias you must compare with the EXPECTED value and mention the number of trials.'},
+  expfreq:{c:'energy',name:'Expected frequency',formula:'P(A) × number of trials',
+    syms:[['P','the probability',''],['n','trials or population size',''],['result','a long-run average','']],
+    rearr:'goes the other way from relative frequency: probability → predicted count',
+    ex:'P = 0.35, 1200 students → 0.35 × 1200 = 420 expected.',
+    tip:'It need not be a whole number (67.5 is a fine answer) and it is never a guarantee.'},
+  fairbias:{c:'power',name:'Fair · biased · random',formula:'the three words',
+    syms:[['fair','all outcomes equally likely',''],['biased','some outcome favoured',''],['random','one trial unpredictable','']],
+    rearr:'fair is about the LIST of outcomes; random is about any ONE trial',
+    ex:'A fair die: each face ⅙. A biased die: 6 comes up 0.30 of 600 throws.',
+    tip:'A fair process is still random — you cannot predict a single fair coin toss.'},
+  samplespace:{c:'motion',name:'Sample space',formula:'grid of all outcomes',
+    syms:[['2 dice','6 × 6 = 36 cells',''],['coin + die','2 × 6 = 12',''],['each cell','equally likely','']],
+    rearr:'probability = (cells you want) ÷ (total cells)',
+    ex:'P(total = 7) = 6/36 = 1/6 · P(a double) = 6/36 = 1/6.',
+    tip:'Order matters: 2-then-5 and 5-then-2 are DIFFERENT cells. 36 outcomes, not 21.'},
+  venn:{c:'mom',name:'Venn diagram',formula:'n(A∪B) = n(A) + n(B) − n(A∩B)',
+    syms:[['∩','intersection · AND',''],['∪','union · OR (or both)',''],['ℰ','universal set','']],
+    rearr:'fill the OVERLAP first, then subtract to get each "only" region',
+    ex:'30 students, 18 C, 14 B, 6 both → 12 | 6 | 8, neither = 4.',
+    tip:'"18 play cricket" already includes the 6 who play both — never put 18 in the cricket-only region.'},
+  andor:{c:'mom',name:'AND / OR on a tree',formula:'× along a path, + across paths',
+    syms:[['AND','multiply',''],['OR','add',''],['each node','branches total 1','']],
+    rearr:'find every path that gives the outcome, multiply each, then add them',
+    ex:'5R 3B with replacement: P(one of each) = 15/64 + 15/64 = 15/32.',
+    tip:'"One of each" is TWO paths (RB and BR). Forgetting the second halves your answer.'},
+  norepl:{c:'calc',name:'Without replacement',formula:'denominator drops by 1',
+    syms:[['1st pick','out of n',''],['2nd pick','out of n − 1',''],['numerator','drops only for the colour taken','']],
+    rearr:'three picks → denominators n, n−1, n−2',
+    ex:'5R 3B: P(RR) = 5/8 × 4/7 = 20/56 = 5/14.',
+    tip:'Change the TOP as well as the bottom. "Not replaced", "keeps it", "takes two together" all mean this.'},
+  atleast:{c:'force',name:'At least one',formula:'1 − P(none)',
+    syms:[['opposite','none of them',''],['saves','several cases',''],['works','with or without replacement','']],
+    rearr:'P(at least one A) = 1 − P(no A at all)',
+    ex:'12 pens, 4 faulty, 2 taken: 1 − (8/12 × 7/11) = 19/33.',
+    tip:'The opposite of "at least one" is "none" — not "exactly one".'},
+  conditional:{c:'calc',name:'Conditional',formula:'restrict the denominator',
+    syms:[['given','the condition',''],['denominator','that group only',''],['numerator','members of it that also qualify','']],
+    rearr:'no formula is required — cross out everyone the condition excludes, then count',
+    ex:'Table: P(cycles | Grade 10) = 16/40 = 2/5.',
+    tip:'P(A|B) ≠ P(B|A). Same cell on top, different denominator, different answer.'},
+  mutex:{c:'power',name:'Mutually exclusive',formula:'P(A ∩ B) = 0',
+    syms:[['meaning','cannot both happen',''],['Venn','circles do not overlap',''],['union','P(A) + P(B)','']],
+    rearr:'only when the events cannot occur together may you simply add',
+    ex:'Rolling a 3 and rolling an even number: P(3 or even) = 1/6 + 3/6 = 2/3.',
+    tip:'Do not add probabilities of events that CAN happen together — subtract the overlap.'}
+};
+(function(){
+  const bank=document.getElementById('eqbank');
+  Object.keys(EQ).forEach(key=>{
+    const q=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=q.c;
+    cell.innerHTML='<div class="eq-sym">'+q.formula+'</div><div class="eq-name">'+q.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+const CMAP={motion:'var(--motion)',force:'var(--force)',energy:'var(--energy2)',mom:'var(--momentum)',power:'var(--power)',calc:'var(--cyan)'};
+function openEqCard(key){
+  const q=EQ[key]; if(!q) return;
+  const col=CMAP[q.c]||'var(--motion)';
+  const badge=document.getElementById('eqc-badge');
+  badge.textContent=q.name.split(' ')[0].slice(0,6); badge.style.color=col;
+  document.getElementById('eqc-name').textContent=q.name;
+  const ff=document.getElementById('eqc-formula'); ff.textContent=q.formula; ff.style.color=col;
+  document.getElementById('eqc-syms').innerHTML=q.syms.map(s=>
+    '<div class="sym-pill"><b>'+s[0]+'</b> '+s[1]+(s[2]?' <span>'+s[2]+'</span>':'')+'</div>').join('');
+  document.getElementById('eqc-rearr').textContent=q.rearr;
+  document.getElementById('eqc-example').innerHTML='<b>e.g.</b> '+q.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Trap:</b> '+q.tip;
+  document.getElementById('eq-card').style.display='block';
+}
+function closeEqCard(){ document.getElementById('eq-card').style.display='none'; }
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) && !e.target.closest('.eqcell'))
+    closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   5 · THEME TOGGLE
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){try{return localStorage.getItem('notes-theme');}catch(e){return null;}}
+  function safeSet(v){try{localStorage.setItem('notes-theme',v);}catch(e){}}
+  function apply(t){body.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?SUN:MOON;
+    btn.setAttribute('aria-label',(t==='dark')?'Switch to light theme':'Switch to dark theme');}
+  let start=safeGet();
+  if(!start) start=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+  apply(start);
+  btn.addEventListener('click',()=>{const n=body.getAttribute('data-theme')==='dark'?'light':'dark';apply(n);safeSet(n);});
+})();
+</script>
+
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
+<button id="markDoneBtn" data-mv="3" data-id="note:maths:8" type="button" aria-pressed="false" style="position:fixed;bottom:18px;right:18px;z-index:10000;font-family:Inter,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;border-radius:22px;padding:10px 18px;border:1px solid var(--border,#263247);background:var(--surface,#121826);color:var(--text,#d6deec);box-shadow:0 6px 20px rgba(0,0,0,.35);">○ Mark as complete</button>
+<script>(function(){var b=document.getElementById('markDoneBtn'),ID=b.getAttribute('data-id'),KEY="studyProgress";function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function r(){var d=!!load()[ID];b.textContent=d?'✓ Completed':'○ Mark as complete';b.setAttribute('aria-pressed',d?'true':'false');b.style.borderColor=d?'var(--power,#4ec994)':'var(--border,#263247)';b.style.color=d?'var(--power,#4ec994)':'var(--text,#d6deec)';}b.addEventListener('click',function(){var p=load();if(p[ID])delete p[ID];else p[ID]=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}r();});window.addEventListener('miraya-progress-synced',r);r();})();</script>
+</body>
+</html>
