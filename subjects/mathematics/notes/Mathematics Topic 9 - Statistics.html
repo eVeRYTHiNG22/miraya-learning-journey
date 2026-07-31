@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathematics Topic 9: Statistics</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    /* MATHS palette — Topic 9 (Statistics). The topic is a pipeline:
+       COLLECT the data → DISPLAY it → SUMMARISE it → COMPARE it.
+       blue = the data itself, classifying & tabulating (primary) ·
+       amber = displaying it (bar, pie, pictogram, stem-and-leaf) ·
+       indigo = summarising it (mean, median, mode, quartiles, spread) ·
+       cyan = the Extended machinery (cumulative frequency, histograms, frequency density) ·
+       red = scatter, correlation and the limits of what you may claim ·
+       green = exam tips (locked) · magenta = alerts (locked) */
+    --motion:   #4db8ff;   /* blue — raw data, tally & two-way tables (primary) */
+    --force:    #ff5263;   /* red — correlation, lines of best fit, over-claiming */
+    --energy:   #f5b13c;   /* amber — charts and diagrams */
+    --energy2:  #f5b13c;
+    --momentum: #7c8cff;   /* indigo — averages and measures of spread */
+    --power:    #48d39a;   /* green — exam tips / success (locked role) */
+    --cyan:     #3ad9d4;   /* cyan — cumulative frequency, histograms, frequency density */
+    --rose:     #f25cc1;   /* alert magenta — >=30 deg from warm accents (CVD-safe, locked) */
+    /* floating detail-card tokens (themed) */
+    --card-bg:#0b1422; --card-bd:#28395a; --card-divider:#18253c;
+    --card-chip-bg:#0c2536; --card-chip-bd:#1f4258; --card-muted:#56708e;
+    --card-label:#4a6080; --card-text:#c4d2e8;
+    --card-pill-bg:#0e1626; --card-pill-bd:#243248;
+    --card-good-bg:#0f2018; --card-warn-bg:#241023;
+    --card-shadow:0 16px 54px rgba(0,0,0,.75);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #4a3a1826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+
+  .page { max-width:880px; margin:0 auto; padding:58px 40px 110px; position:relative; z-index:1; }
+
+  /* ── HEADER ── */
+  .header { margin-bottom:54px; padding-bottom:30px; border-bottom:1px solid var(--border); }
+  .chip {
+    display:inline-block;
+    background:linear-gradient(135deg,#122c44,#241a44);
+    border:1px solid #2f4a66; border-radius:20px; padding:4px 14px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--motion); margin-bottom:18px;
+  }
+  h1 {
+    font-family:'Fraunces',serif; font-size:clamp(2.1rem,5.2vw,3.5rem); font-weight:800;
+    color:var(--bright); line-height:1.06; letter-spacing:-0.01em; margin-bottom:14px;
+  }
+  h1 .a { color:var(--motion); }
+  h1 .b { color:var(--momentum); }
+  .header-sub { color:var(--muted); font-size:14px; max-width:640px; }
+  .toc { display:flex; flex-wrap:wrap; gap:7px; margin-top:20px; }
+  .toc a {
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; text-decoration:none;
+    color:var(--muted); background:var(--surface); border:1px solid var(--border);
+    border-radius:7px; padding:5px 10px; transition:all .16s;
+  }
+  .toc a:hover { color:var(--motion); border-color:var(--motion); }
+
+  /* ── SECTION ── */
+  .section { margin-bottom:60px; opacity:0; animation:rise .55s ease forwards; scroll-margin-top:20px; }
+  @keyframes rise { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+  .section:nth-of-type(1){animation-delay:.04s}
+  .section:nth-of-type(2){animation-delay:.08s}
+  .section:nth-of-type(3){animation-delay:.12s}
+  .section:nth-of-type(4){animation-delay:.16s}
+  .section:nth-of-type(5){animation-delay:.20s}
+  .section:nth-of-type(6){animation-delay:.24s}
+  .section:nth-of-type(7){animation-delay:.28s}
+  .section:nth-of-type(8){animation-delay:.32s}
+  .section:nth-of-type(9){animation-delay:.36s}
+  .section:nth-of-type(10){animation-delay:.40s}
+  .section:nth-of-type(11){animation-delay:.44s}
+
+  .sec-label {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:7px;
+  }
+  h2 { font-family:'Fraunces',serif; font-size:1.7rem; font-weight:700; color:var(--bright);
+    margin-bottom:14px; line-height:1.18; letter-spacing:-0.01em; }
+  h3 { font-family:'Fraunces',serif; font-size:1.18rem; font-weight:600; color:var(--bright); margin:26px 0 10px; }
+  p { color:var(--text); margin-bottom:12px; }
+  em { color:#c0ccef; font-style:italic; }
+  ul { margin:6px 0 14px 22px; }
+  li { margin-bottom:5px; }
+
+  .eq-inline {
+    font-family:'JetBrains Mono',monospace; background:#0d1828; border:1px solid #22324a;
+    border-radius:5px; padding:1px 7px; font-size:13px; color:var(--motion); white-space:nowrap;
+  }
+  body[data-theme="light"] .eq-inline { background:#eef1f8; border-color:#d4dcec; }
+  .work {
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text);
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:8px; padding:11px 14px; margin:12px 0; line-height:1.9; overflow-x:auto;
+  }
+  .work .step { color:var(--muted); }
+
+  /* ── BOXES ── */
+  .box { border-radius:11px; padding:17px 20px; margin:18px 0; font-size:14.2px; border:1px solid; }
+  .box-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.15em;
+    text-transform:uppercase; margin-bottom:8px; }
+  .box.intuition { background:#0c1c28; border-color:#1f4258; }
+  .box.intuition .box-label { color:var(--motion); }
+  .box.analogy   { background:#171229; border-color:#2e2350; }
+  .box.analogy .box-label { color:var(--momentum); }
+  .box.remember  { background:#241023; border-color:var(--rose); border-style:dashed; }
+  .box.remember .box-label { color:var(--rose); }
+  .box.exam      { background:#0f2018; border-color:var(--power); }
+  .box.exam .box-label { color:var(--power); }
+  .box.pitfall   { background:#231806; border-color:var(--energy2); }
+  .box.pitfall .box-label { color:var(--energy2); }
+
+  /* ── DEFINITION CALLOUT ── */
+  .define {
+    border-left:3px solid var(--motion);
+    background:linear-gradient(90deg,#0c1c2880,transparent);
+    padding:12px 18px; margin:16px 0; border-radius:0 8px 8px 0;
+  }
+  .define .term { font-family:'Fraunces',serif; font-weight:600; color:var(--bright); font-size:1.02rem; }
+  .define.force-c  { border-color:var(--force);    background:linear-gradient(90deg,#23120b80,transparent); }
+  .define.energy-c { border-color:var(--energy2);  background:linear-gradient(90deg,#23180680,transparent); }
+  .define.mom-c    { border-color:var(--momentum); background:linear-gradient(90deg,#17122980,transparent); }
+  .define.calc-c   { border-color:var(--cyan);     background:linear-gradient(90deg,#08231f80,transparent); }
+
+  /* ── CARD GRIDS ── */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:20px 0; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:11px;
+    padding:16px 18px; transition:border-color .2s, transform .2s; }
+  .card:hover { transform:translateY(-3px); border-color:#3a557c; }
+  .card-title { font-family:'Fraunces',serif; font-size:1.02rem; color:var(--bright); margin-bottom:6px; }
+  .card-body { font-size:13.4px; color:var(--muted); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13.6px; }
+  th { background:var(--surface2); color:var(--motion);
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em;
+    text-transform:uppercase; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:hover td { background:var(--surface); }
+  td strong { color:var(--bright); }
+  td.c, th.c { text-align:center; }
+  tr.tot td { border-top:2px solid var(--border); font-weight:600; }
+  .tw { overflow-x:auto; }
+  .tw table { min-width:460px; }
+
+  mark { background:linear-gradient(120deg,#1c3a5a88,#243f6a88); color:var(--bright);
+    padding:1px 4px; border-radius:3px; }
+  .divider { border:none; border-top:1px solid var(--border); margin:46px 0; }
+
+  /* diagram frame (static SVG figures) */
+  svg.diagram { width:100%; height:auto; max-width:560px; max-height:400px; display:block; margin:14px auto;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+  .diag-cap {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted); text-align:center;
+    margin:-4px auto 20px; line-height:1.7; max-width:560px;
+  }
+  .diag-cap b { color:var(--text); font-weight:600; }
+
+  /* ═════════════════════════════════════════════
+     COMPONENT LIBRARY NOTE
+     · BASE LOCKED across subjects (bg/surface/text/border/light-theme/glow).
+     · SHARED: .explorer .scn-tabs .scn-tab .scn-read .rk .tool .slider-row
+       .vec-out .eqbank .eqcell .box .define .card table
+     · WIDGETS here: averages/spread explorer (.av-*), cumulative-frequency
+       read-off tool (.cf-*), histogram frequency-density tool (.hg-*),
+       scatter & correlation explorer (.sc-*). svg.wsvg.
+     · FIGURE-ONLY classes: .bar9 .bar10 .pi0-.pi4 .sl-* .pg-*
+  ═════════════════════════════════════════════ */
+
+  .explorer { background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:20px; margin:22px 0; }
+  .scn-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .scn-tab {
+    font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    padding:8px 14px; border-radius:8px; cursor:pointer;
+    background:#0e1626; border:1px solid var(--border); color:var(--muted);
+    transition:all .18s; user-select:none;
+  }
+  .scn-tab:hover { color:var(--text); border-color:#3a557c; }
+  .scn-tab.active { background:#0c2536; border-color:var(--motion); color:var(--motion); }
+  .scn-tab:focus-visible { outline:2px solid var(--motion); outline-offset:2px; }
+
+  .btn-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .mini-btn {
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; cursor:pointer;
+    padding:8px 14px; border-radius:8px;
+    background:#0e1626; border:1px solid var(--border); color:var(--text); transition:all .18s;
+  }
+  .mini-btn:hover { border-color:var(--motion); color:var(--motion); }
+  .mini-btn:focus-visible { outline:2px solid var(--motion); outline-offset:2px; }
+  body[data-theme="light"] .mini-btn { background:#efeadd; }
+
+  .chart-cap { font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+
+  /* widget SVG panel */
+  svg.wsvg { width:100%; height:auto; max-width:480px; display:block; margin:8px auto 0;
+    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+  body[data-theme="light"] svg.wsvg { background:#fbfaf4; }
+
+  /* shared SVG text/line classes */
+  .gl5 { stroke:#22314c; stroke-width:1; }
+  .gax { stroke:#3a4d6e; stroke-width:1.4; }
+  .gnum{ fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:10px; }
+  body[data-theme="light"] .gl5 { stroke:#ddd4bf; }
+  body[data-theme="light"] .gax { stroke:#c3bba7; }
+  body[data-theme="light"] .gnum{ fill:#9a937e; }
+  .tk   { stroke:var(--muted); stroke-width:1.3; }
+  .slbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; fill:var(--muted); letter-spacing:.06em; }
+  .sval { font-family:'JetBrains Mono',monospace; font-size:12px; fill:var(--bright); font-weight:600; }
+  .sbig { font-family:'Fraunces',serif; font-size:16px; fill:var(--bright); font-weight:700; }
+  .axt  { font-family:'JetBrains Mono',monospace; font-size:9.5px; fill:var(--muted); letter-spacing:.12em; }
+
+  /* bar charts (figure) */
+  .bar9  { fill:var(--motion);   opacity:.85; }
+  .bar10 { fill:var(--momentum); opacity:.85; }
+  body[data-theme="light"] .bar9, body[data-theme="light"] .bar10 { opacity:.9; }
+
+  /* pie chart (figure) */
+  .pi0 { fill:var(--motion); } .pi1 { fill:var(--momentum); } .pi2 { fill:var(--energy2); }
+  .pi3 { fill:var(--cyan); }   .pi4 { fill:var(--force); }
+  .pi0,.pi1,.pi2,.pi3,.pi4 { opacity:.8; stroke:var(--border); stroke-width:1.2; }
+  body[data-theme="light"] .pi0,body[data-theme="light"] .pi1,body[data-theme="light"] .pi2,
+  body[data-theme="light"] .pi3,body[data-theme="light"] .pi4 { opacity:.88; }
+  .pi-ang { font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600; fill:var(--bright); }
+
+  /* pictogram (figure) */
+  .pg-sym { fill:var(--energy2); opacity:.9; }
+  .pg-lbl { font-family:'JetBrains Mono',monospace; font-size:10.5px; fill:var(--text); }
+
+  /* stem-and-leaf (figure) */
+  .sl-div  { stroke:var(--muted); stroke-width:1.4; }
+  .sl-stem { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; fill:var(--energy2); }
+  .sl-leaf { font-family:'JetBrains Mono',monospace; font-size:13px; fill:var(--bright); letter-spacing:.28em; }
+  .sl-key  { font-family:'JetBrains Mono',monospace; font-size:10.5px; fill:var(--rose); }
+
+  /* scatter (figure + widget) */
+  .sc-x    { stroke:var(--force); stroke-width:1.9; stroke-linecap:round; }
+  .sc-fit  { stroke:var(--power); stroke-width:2; }
+  .sc-dash { stroke:var(--rose); stroke-width:1.2; stroke-dasharray:4 3; }
+  .sc-mean { fill:none; stroke:var(--momentum); stroke-width:1.6; }
+
+  /* cumulative frequency (figure + widget) */
+  .cf-curve { fill:none; stroke:var(--cyan); stroke-width:2.2; }
+  .cf-pt    { stroke:var(--cyan); stroke-width:1.8; stroke-linecap:round; }
+  .cf-read  { stroke:var(--rose); stroke-width:1.2; stroke-dasharray:4 3; }
+  .cf-lbl   { font-family:'JetBrains Mono',monospace; font-size:9.5px; fill:var(--rose); }
+
+  /* histogram (figure + widget) */
+  .hg-bar   { fill:var(--cyan); opacity:.75; stroke:var(--cyan); stroke-width:1.4; }
+  .hg-bar.wrong { fill:var(--force); stroke:var(--force); }
+  body[data-theme="light"] .hg-bar { opacity:.82; }
+  .hg-f     { font-family:'JetBrains Mono',monospace; font-size:9.5px; fill:var(--bright); }
+
+  /* averages explorer (widget) */
+  .av-dot  { fill:var(--motion); stroke:var(--bg); stroke-width:1.2; }
+  .av-med  { stroke:var(--momentum); stroke-width:2.2; }
+  .av-mean { stroke:var(--energy2); stroke-width:2; stroke-dasharray:5 3; }
+  .av-iqr  { fill:var(--cyan); opacity:.13; }
+  body[data-theme="light"] .av-iqr { opacity:.18; }
+
+  .scn-read { margin-top:16px; background:#0c1c28; border:1px solid #1f4258;
+    border-radius:9px; padding:13px 16px; font-size:13.6px; }
+  .scn-read .rk { font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--motion); margin-bottom:6px; }
+  .scn-read b { color:var(--bright); }
+
+  /* TOOL (sliders + read-out) */
+  .tool { background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:20px; margin:22px 0; }
+  .slider-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 20px; margin-top:6px; }
+  .slider-row { margin:12px 0; }
+  .slider-row label {
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.06em; margin-bottom:6px;
+  }
+  .slider-row label b { color:var(--bright); font-size:13px; }
+  input[type=range] { width:100%; -webkit-appearance:none; height:5px; border-radius:3px;
+    background:#22304a; outline:none; }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--energy2); cursor:pointer; box-shadow:0 0 10px #f5b13c88; }
+  input[type=range]::-moz-range-thumb {
+    width:17px; height:17px; border:none; border-radius:50%;
+    background:var(--energy2); cursor:pointer; }
+  input[type=range]:focus-visible { outline:2px solid var(--motion); outline-offset:4px; }
+  .vec-out { background:#171229; border:1px solid #2e2350; border-radius:9px;
+    padding:14px 16px; margin-top:16px; }
+  .vec-out .ro { font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:#8a7ab8; margin:9px 0 3px; }
+  .vec-out .ro:first-child { margin-top:0; }
+  .vec-out .rv { font-family:'JetBrains Mono',monospace; font-size:13.5px;
+    color:var(--bright); line-height:1.5; }
+  .vec-out .rv.big { font-family:'Fraunces',serif; font-size:1.25rem; font-weight:700; color:var(--cyan); }
+  .rowpair { display:flex; gap:26px; flex-wrap:wrap; }
+
+  /* EQUATION / SKILL BANK */
+  .eqbank { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+  .eqbank.interactive { padding:18px 14px 14px; border-radius:12px; }
+  .eqcell { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:14px 12px; cursor:pointer; text-align:center;
+    transition:transform .16s, border-color .16s, box-shadow .16s; }
+  .eqcell:hover { transform:translateY(-3px); border-color:var(--motion); box-shadow:0 8px 22px #0008; }
+  .eqcell .eq-sym { font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+    color:var(--bright); margin-bottom:4px; }
+  .eqcell .eq-name { font-size:10.5px; color:var(--muted); letter-spacing:.04em; }
+  .eqcell[data-c="motion"]:hover { border-color:var(--motion); }
+  .eqcell[data-c="force"]:hover  { border-color:var(--force); box-shadow:0 8px 22px #0008; }
+  .eqcell[data-c="energy"]:hover { border-color:var(--energy2); }
+  .eqcell[data-c="mom"]:hover    { border-color:var(--momentum); }
+  .eqcell[data-c="power"]:hover  { border-color:var(--power); }
+  .eqcell[data-c="calc"]:hover   { border-color:var(--cyan); }
+
+  #eq-card {
+    display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--card-bg); border:1px solid var(--card-bd); border-radius:16px;
+    width:min(440px,94vw); z-index:9999; box-shadow:var(--card-shadow);
+    overflow:hidden; transition:opacity .25s;
+  }
+  #eqc-top { padding:18px 18px 14px; display:flex; gap:14px; align-items:center;
+    border-bottom:1px solid var(--card-divider); position:relative; }
+  #eqc-badge { flex-shrink:0; width:62px; height:62px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600;
+    background:var(--card-chip-bg); color:var(--motion); border:1px solid var(--card-chip-bd); }
+  #eqc-head h4 { font-family:'Fraunces',serif; font-size:1.12rem; color:var(--bright);
+    line-height:1.15; margin-bottom:3px; }
+  #eqc-formula { font-family:'JetBrains Mono',monospace; font-size:13.5px; color:var(--motion); }
+  #eqc-close { position:absolute; top:12px; right:14px; font-size:16px; color:var(--card-muted);
+    cursor:pointer; user-select:none; }
+  #eqc-close:hover { color:var(--text); }
+  #eqc-body { padding:14px 18px 18px; }
+  .eqc-section-lbl { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--card-label); margin:10px 0 6px; }
+  .sym-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .sym-pill { background:var(--card-pill-bg); border:1px solid var(--card-pill-bd); border-radius:6px;
+    padding:5px 9px; font-size:11.5px; color:var(--card-text); }
+  .sym-pill b { color:var(--motion); font-family:'JetBrains Mono',monospace; }
+  .sym-pill span { color:var(--card-muted); font-family:'JetBrains Mono',monospace; }
+  #eqc-rearr { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--card-text);
+    background:var(--card-pill-bg); border-radius:6px; padding:8px 10px; letter-spacing:.04em; }
+  #eqc-example { background:var(--card-good-bg); border-left:2px solid var(--power); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; }
+  #eqc-example b { color:var(--power); }
+  #eqc-tip { background:var(--card-warn-bg); border-left:2px solid var(--rose); border-radius:0 6px 6px 0;
+    padding:9px 12px; font-size:12.4px; color:var(--card-text); line-height:1.55; margin-top:8px; }
+  #eqc-tip b { color:var(--rose); }
+
+  /* ── FOOTER ── */
+  .footer { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    text-align:center; padding-top:28px; border-top:1px solid var(--border);
+    letter-spacing:.07em; line-height:1.8; }
+
+  @media (max-width:640px) {
+    .page { padding:34px 16px 80px; }
+    .grid2, .grid3, .eqbank, .slider-grid { grid-template-columns:1fr; }
+    .eqbank { grid-template-columns:1fr 1fr; }
+  }
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    position:fixed; top:16px; right:16px; z-index:10000;
+    width:40px; height:40px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-size:17px; cursor:pointer;
+    box-shadow:0 4px 16px rgba(0,0,0,.3);
+    transition:transform .25s, border-color .2s, background-color .35s; line-height:1;
+  }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--motion); }
+  .theme-toggle:focus-visible { outline:2px solid var(--motion); outline-offset:3px; }
+
+  body { transition:background-color .35s ease, color .35s ease; }
+  .box, .card, .define, .explorer, .tool, svg.wsvg, svg.diagram,
+  .scn-read, .scn-tab, .mini-btn, .vec-out, .chip, .work, .toc a,
+  table th, table td, .eqcell, mark {
+    transition:background-color .35s ease, border-color .35s ease, color .35s ease;
+  }
+
+  /* ═════════ LIGHT THEME ═════════ */
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;
+    --force:    #cb2531;
+    --energy:   #8f5d00;
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;
+    --power:    #107a50;
+    --cyan:     #0b7a67;
+    --rose:     #ad1a7d;
+    --card-bg:#fffdf8; --card-bd:#ddd6c4; --card-divider:#ece5d4;
+    --card-chip-bg:#eef2fb; --card-chip-bd:#cdd9f0; --card-muted:#8a8470;
+    --card-label:#9a937e; --card-text:#3a3f4a;
+    --card-pill-bg:#f1ede2; --card-pill-bd:#ddd6c4;
+    --card-good-bg:#e7f6ee; --card-warn-bg:#f8e6f4;
+    --card-shadow:0 16px 54px rgba(60,50,30,.22);
+  }
+
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #f3d29a22 0%, transparent 60%);
+  }
+
+  body[data-theme="light"] .box.intuition { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .box.analogy   { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .box.remember  { background:#f8e6f4; border-color:var(--rose); }
+  body[data-theme="light"] .box.exam      { background:#e7f6ee; border-color:var(--power); }
+  body[data-theme="light"] .box.pitfall   { background:#fbf2dc; border-color:#caa23a; }
+
+  body[data-theme="light"] .define         { background:linear-gradient(90deg,#e8f1fb99,transparent); }
+  body[data-theme="light"] .define.force-c { background:linear-gradient(90deg,#fbe6e899,transparent); }
+  body[data-theme="light"] .define.energy-c{ background:linear-gradient(90deg,#fbf0d999,transparent); }
+  body[data-theme="light"] .define.mom-c   { background:linear-gradient(90deg,#ece8fb99,transparent); }
+  body[data-theme="light"] .define.calc-c  { background:linear-gradient(90deg,#dff3ef99,transparent); }
+
+  /* em carries load-bearing emphasis ("estimate", "not", "given") — the dark-mode
+     #c0ccef scores only 1.4:1 on warm paper, so it MUST be deepened for light. */
+  body[data-theme="light"] em { color:#3c4660; }
+  body[data-theme="light"] input[type=range] { background:#d8d0bb; }
+  body[data-theme="light"] input[type=range]::-webkit-slider-thumb { box-shadow:none; }
+  body[data-theme="light"] .card:hover { border-color:#9fc0ea; }
+  body[data-theme="light"] mark { background:linear-gradient(120deg,#bfe0ff,#a9d6ff); color:#14181f; }
+  body[data-theme="light"] .chip {
+    background:linear-gradient(135deg,#e4eefb,#ece8fb); border-color:#c8d6ec; color:var(--motion); }
+  body[data-theme="light"] .work { background:#efeadd; }
+  body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
+  body[data-theme="light"] .toc a { background:#fffdf8; }
+
+  body[data-theme="light"] .scn-read { background:#e8f1fb; border-color:#bdd7f2; }
+  body[data-theme="light"] .scn-tab  { background:#efeadd; }
+  body[data-theme="light"] .scn-tab:hover  { border-color:#9fc0ea; }
+  body[data-theme="light"] .scn-tab.active { background:#e2eefb; border-color:var(--motion); color:var(--motion); }
+
+  body[data-theme="light"] .vec-out { background:#ece8fb; border-color:#d2c8f2; }
+  body[data-theme="light"] .vec-out .ro { color:#6a559a; }
+  body[data-theme="light"] .av-dot { stroke:#fbfaf4; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section { animation:none; opacity:1; }
+    body, .theme-toggle, .box, .card, .define, .explorer, .tool,
+    svg.wsvg, svg.diagram, .scn-read, .scn-tab, .mini-btn, .vec-out, .work,
+    .chip, .toc a, table th, table td, .eqcell, mark { transition:none; }
+  }
+
+  /* ═════════════════════════════════════════════
+     INTERACTIVE vs STATIC — house rule (CLAUDE.md).
+     A student must never have to guess which panels
+     respond to touch. Interactive = accent border +
+     badge. Static figure = neutral frame + FIGURE cap.
+     --live is declared on BODY (not :root) so the
+     light-theme accent override is picked up.
+  ═════════════════════════════════════════════ */
+  body { --live: var(--motion); }
+  .tool, .explorer, .interactive { position:relative; border:1.5px solid var(--live); }
+  .tool::before, .explorer::before, .interactive::before {
+    content:'● INTERACTIVE — DRAG / TAP';
+    position:absolute; top:-8px; left:16px;
+    font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:600; letter-spacing:.16em;
+    color:var(--live); background:var(--bg); padding:0 9px; border-radius:3px;
+    pointer-events:none; white-space:nowrap; }
+  .dg-cap::before, .diag-cap::before, .fig-cap::before { content:'FIGURE · '; font-family:'JetBrains Mono',monospace;
+    font-size:10px; font-weight:600; letter-spacing:.14em; color:var(--muted); }
+
+  /* ═════════ Check-yourself retrieval block ═════════ */
+  .cy { display:grid; gap:10px; margin:18px 0; }
+  .cy-item { background:var(--surface); border:1px solid var(--border); border-radius:11px;
+    padding:14px 16px; cursor:pointer; transition:border-color .2s; }
+  .cy-item:hover { border-color:var(--muted); }
+  .cy-q { font-size:14.5px; line-height:1.55; display:flex; gap:10px; align-items:flex-start; }
+  .cy-n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); padding-top:3px; flex:none; }
+  .cy-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--muted); margin-top:9px; }
+  .cy-a { display:none; margin-top:11px; padding-top:11px; border-top:1px dashed var(--border);
+    font-size:13.6px; line-height:1.6; color:var(--muted); }
+  .cy-item.open .cy-a { display:block; }
+  .cy-item.open .cy-hint { display:none; }
+
+  /* ═════════ this topic's own papers ═════════ */
+  .paper-links { background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:20px 22px; margin:34px 0 0; }
+  .paper-links .pl-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--motion); margin-bottom:12px; }
+  .paper-links p { font-size:13.6px; color:var(--muted); margin-bottom:12px; }
+  .pl-list { display:grid; gap:9px; }
+  .pl-list a { display:block; text-decoration:none; padding:11px 14px; border-radius:10px;
+    background:var(--surface2); border:1px solid var(--border); color:var(--text);
+    font-size:14px; transition:border-color .18s, color .18s; }
+  .pl-list a:hover { border-color:var(--motion); color:var(--motion); }
+  .pl-list a span { font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted);
+    display:block; margin-top:3px; }
+
+  /* ═════════ Save as PDF ═════════ */
+  .pdf-btn { position:fixed; bottom:18px; left:18px; z-index:10000;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer;
+    border-radius:22px; padding:10px 18px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); box-shadow:0 6px 20px rgba(0,0,0,.35);
+    display:inline-flex; align-items:center; gap:7px; transition:border-color .2s, color .2s; }
+  .pdf-btn:hover { border-color:var(--muted); color:var(--text); }
+  @media print {
+    @page { margin:12mm; }
+    body { font-size:11px; }
+    body::before, .theme-toggle, .hub-home, .pdf-btn, #markDoneBtn, .cy-hint { display:none !important; }
+    .cy-a { display:block !important; }
+    .section { break-inside:avoid; opacity:1 !important; animation:none !important; }
+    svg.diagram, svg.wsvg, .paper-links, .cy-item, .box, .define, .work { break-inside:avoid; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull};})();</script>
+
+<a href="../../../index.html" class="hub-home" title="Back to home" aria-label="Back to home" style="position:fixed;top:16px;left:16px;z-index:10000;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface,#121826);border:1px solid var(--border,#263247);color:var(--text,#d6deec);font-size:18px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);">🏠</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="chip">IGCSE · Mathematics 0580 · Extended · Topic 9</div>
+    <h1><span class="a">Statistics</span></h1>
+    <p class="header-sub">The whole of Topic 9 (E9.1–E9.7). Statistics is a <strong>pipeline</strong>: collect the data and tabulate it, display it, summarise it with one average and one measure of spread, then compare — and know what you are <em>not</em> allowed to conclude. Includes the two Extended-only tools that carry the most marks: <strong>cumulative frequency diagrams</strong> and <strong>histograms with frequency density</strong>. Drag the sliders — the averages, the curve and the histogram all recompute live.</p>
+    <div class="toc">
+      <a href="#s1">1 · Types of data &amp; tables</a>
+      <a href="#s2">2 · Charts &amp; diagrams</a>
+      <a href="#s3">3 · Averages for a list</a>
+      <a href="#s4">4 · From a frequency table</a>
+      <a href="#s5">5 · Grouped data</a>
+      <a href="#s6">6 · Scatter &amp; correlation</a>
+      <a href="#s7">7 · Cumulative frequency</a>
+      <a href="#s8">8 · Histograms</a>
+      <a href="#s9">9 · Comparing data sets</a>
+      <a href="#scy">10 · Check yourself</a>
+      <a href="#s11">11 · Skill bank</a>
+    </div>
+  </div>
+
+
+  <!-- ── 01 · TYPES OF DATA & TABLES ── -->
+  <div class="section" id="s1">
+    <div class="sec-label">01 / 11 · E9.1 · Collect</div>
+    <h2>First decide what kind of data you have</h2>
+
+    <p>Everything you are allowed to do later — which chart, which average, whether a histogram is even legal — is decided by <strong>what kind of numbers you are holding</strong>. So this thirty-second classification is not a warm-up; it is the instruction manual for the rest of the topic.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      Ask two questions in order. <strong>(1) Is it a number, or a word?</strong> Words (colours, brands, "agree/disagree") are <mark>qualitative</mark> — you can count how many, but you can never take their mean. <strong>(2) If it is a number, can it be measured to ever-finer decimals?</strong> If yes it is <mark>continuous</mark> (mass, height, time); if it only lands on separate values you could list, it is <mark>discrete</mark> (number of siblings, goals, cars).
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎯 A picture you know</div>
+      Discrete data is a <em>staircase</em> — you are on step 3 or step 4, never on step 3.4. Continuous data is a <em>ramp</em> — you are somewhere along it, and how precisely you can say where depends only on how good your ruler is. That is why discrete bars stand apart with gaps, and continuous bars are pushed together with no gaps: on a ramp there is nowhere to put a gap.
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Qualitative</div>
+        <div class="card-body">Categories, not numbers. <strong>Favourite subject, blood group, brand of scooter.</strong> Bar chart or pie chart. Only the <em>mode</em> makes sense.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--motion)">Discrete</div>
+        <div class="card-body">Counted, separate values. <strong>Number of people in a household, runs scored, siblings.</strong> Bars with gaps. Mean, median and mode all work.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--cyan)">Continuous</div>
+        <div class="card-body">Measured on a scale. <strong>Mass, height, time, rainfall.</strong> Normally collected into classes, and drawn with bars that <em>touch</em>. Histograms are built for grouped data like this.</div>
+      </div>
+    </div>
+
+    <h3>Tally tables — the raw count</h3>
+    <p>A <strong>tally table</strong> is how raw data becomes a frequency table. Strike four upright marks and put the fifth <em>across</em> them, so the eye reads the total in fives without counting one at a time. Every household in a 40-flat Pune apartment block was asked how many people live there:</p>
+
+    <div class="tw"><table>
+      <tr><th>People in the household</th><th class="c">Tally</th><th class="c">Frequency</th></tr>
+      <tr><td>2</td><td class="c" style="font-family:'JetBrains Mono',monospace">||||</td><td class="c"><strong>4</strong></td></tr>
+      <tr><td>3</td><td class="c" style="font-family:'JetBrains Mono',monospace">||||&#8202;/&nbsp;&nbsp;||||</td><td class="c"><strong>9</strong></td></tr>
+      <tr><td>4</td><td class="c" style="font-family:'JetBrains Mono',monospace">||||&#8202;/&nbsp;&nbsp;||||&#8202;/&nbsp;&nbsp;||</td><td class="c"><strong>12</strong></td></tr>
+      <tr><td>5</td><td class="c" style="font-family:'JetBrains Mono',monospace">||||&#8202;/&nbsp;&nbsp;|||</td><td class="c"><strong>8</strong></td></tr>
+      <tr><td>6</td><td class="c" style="font-family:'JetBrains Mono',monospace">||||&#8202;/</td><td class="c"><strong>5</strong></td></tr>
+      <tr><td>7</td><td class="c" style="font-family:'JetBrains Mono',monospace">||</td><td class="c"><strong>2</strong></td></tr>
+      <tr class="tot"><td>Total</td><td class="c">—</td><td class="c"><strong>40</strong></td></tr>
+    </table></div>
+    <p style="font-size:13.4px;color:var(--muted)">Before doing anything else, <mark>add the frequency column and compare it with the stated total</mark>: 4 + 9 + 12 + 8 + 5 + 2 = 40 ✓, matching the 40 flats. Do this every time — it catches a miscounted tally or a copying slip <em>before</em> the error spreads into the mean, the median and every part that follows. (This table is used again in section 4.)</p>
+
+    <h3>Two-way tables — two questions at once</h3>
+    <p>A <strong>two-way table</strong> crosses one category against another, with a row total, a column total and one grand total that must agree both ways. 90 students chose one sport:</p>
+
+    <div class="tw"><table>
+      <tr><th></th><th class="c">Cricket</th><th class="c">Badminton</th><th class="c">Kabaddi</th><th class="c">Total</th></tr>
+      <tr><td><strong>Grade 9</strong></td><td class="c">18</td><td class="c">12</td><td class="c">10</td><td class="c"><strong>40</strong></td></tr>
+      <tr><td><strong>Grade 10</strong></td><td class="c">14</td><td class="c">20</td><td class="c">16</td><td class="c"><strong>50</strong></td></tr>
+      <tr class="tot"><td><strong>Total</strong></td><td class="c">32</td><td class="c">32</td><td class="c">26</td><td class="c"><strong>90</strong></td></tr>
+    </table></div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Exam technique</div>
+      Two-way tables usually arrive with holes in them. Fill them by <strong>subtracting along a row or down a column</strong>, and always finish by checking the grand total <em>both</em> ways: <span class="eq-inline">40 + 50 = 90</span> and <span class="eq-inline">32 + 32 + 26 = 90</span> ✓. If the two disagree you have a mistake, and the checking costs five seconds.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The classic mistake</div>
+      "Number of shoes" is discrete; <em>"shoe size"</em> is a trap — sizes go 6, 7, 8 so it behaves as discrete, even though the foot inside is continuous. The rule is about <strong>the values recorded</strong>, not the thing being measured. Watch the inequality signs too: mass and time are usually classed as <span class="eq-inline">20 &lt; x ≤ 30</span>, but <em>age last birthday</em> rounds <strong>down</strong> (someone aged 29.8 is recorded as 29), so age classes are written the other way round, <span class="eq-inline">20 ≤ a &lt; 30</span>.
+    </div>
+  </div>
+
+
+  <!-- ── 02 · CHARTS & DIAGRAMS ── -->
+  <div class="section" id="s2">
+    <div class="sec-label">02 / 11 · E9.4 · Display</div>
+    <h2>Charts and diagrams — pick the one that answers the question</h2>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      Every chart trades something away to show something else. A <strong>bar chart</strong> keeps the actual frequencies, so you can compare sizes. A <strong>pie chart</strong> throws the frequencies away and keeps only the <mark>proportions</mark>. A <strong>stem-and-leaf diagram</strong> keeps <mark>every original value</mark>, so you can still work out the median afterwards. Choose by asking what you need to get back out.
+    </div>
+
+    <h3>Bar charts — dual and composite</h3>
+    <p>From the two-way table above, the same numbers give two different pictures. A <strong>dual</strong> (side-by-side) bar chart is for comparing the two grades sport by sport. A <strong>composite</strong> (stacked) bar chart is for comparing the <em>total</em> for each sport, with the split still visible inside.</p>
+
+    <svg class="diagram" viewBox="0 0 540 262" role="img" aria-label="Two bar charts of the same two-way table. On the left a dual bar chart with paired bars for Grade 9 and Grade 10: cricket 18 and 14, badminton 12 and 20, kabaddi 10 and 16. On the right a composite stacked bar chart with totals of 32 for cricket, 32 for badminton and 26 for kabaddi, each split into its Grade 9 and Grade 10 parts.">
+      <!-- legend -->
+      <rect class="bar9"  x="150" y="16" width="13" height="13" rx="2"/>
+      <text class="slbl" x="169" y="27">GRADE 9</text>
+      <rect class="bar10" x="250" y="16" width="13" height="13" rx="2"/>
+      <text class="slbl" x="269" y="27">GRADE 10</text>
+
+      <!-- ── LEFT: dual · scale 8.5 px per unit, baseline y=210 ── -->
+      <line class="gl5" x1="30" y1="167.5" x2="250" y2="167.5"/>
+      <line class="gl5" x1="30" y1="125"   x2="250" y2="125"/>
+      <line class="gl5" x1="30" y1="82.5"  x2="250" y2="82.5"/>
+      <line class="gl5" x1="30" y1="40"    x2="250" y2="40"/>
+      <text class="gnum" x="26" y="213" text-anchor="end">0</text>
+      <text class="gnum" x="26" y="171" text-anchor="end">5</text>
+      <text class="gnum" x="26" y="128.5" text-anchor="end">10</text>
+      <text class="gnum" x="26" y="86" text-anchor="end">15</text>
+      <text class="gnum" x="26" y="43.5" text-anchor="end">20</text>
+      <rect class="bar9"  x="53"  y="57"  width="22" height="153"/>
+      <rect class="bar10" x="77"  y="91"  width="22" height="119"/>
+      <rect class="bar9"  x="118" y="108" width="22" height="102"/>
+      <rect class="bar10" x="142" y="40"  width="22" height="170"/>
+      <rect class="bar9"  x="183" y="125" width="22" height="85"/>
+      <rect class="bar10" x="207" y="74"  width="22" height="136"/>
+      <line class="gax" x1="30" y1="210" x2="250" y2="210"/>
+      <line class="gax" x1="30" y1="210" x2="30" y2="34"/>
+      <text class="slbl" x="76"  y="226" text-anchor="middle">CRICKET</text>
+      <text class="slbl" x="141" y="226" text-anchor="middle">BADMINTON</text>
+      <text class="slbl" x="206" y="226" text-anchor="middle">KABADDI</text>
+      <text class="axt" x="140" y="248" text-anchor="middle">DUAL · FREQUENCY AXIS</text>
+
+      <!-- ── RIGHT: composite · scale 5.3125 px per unit, baseline y=210 ── -->
+      <line class="gl5" x1="300" y1="156.9" x2="520" y2="156.9"/>
+      <line class="gl5" x1="300" y1="103.8" x2="520" y2="103.8"/>
+      <line class="gl5" x1="300" y1="50.6"  x2="520" y2="50.6"/>
+      <text class="gnum" x="296" y="213" text-anchor="end">0</text>
+      <text class="gnum" x="296" y="160.4" text-anchor="end">10</text>
+      <text class="gnum" x="296" y="107.3" text-anchor="end">20</text>
+      <text class="gnum" x="296" y="54.1" text-anchor="end">30</text>
+      <rect class="bar9"  x="323" y="114.4" width="34" height="95.6"/>
+      <rect class="bar10" x="323" y="40"    width="34" height="74.4"/>
+      <rect class="bar9"  x="383" y="146.3" width="34" height="63.7"/>
+      <rect class="bar10" x="383" y="40"    width="34" height="106.3"/>
+      <rect class="bar9"  x="443" y="156.9" width="34" height="53.1"/>
+      <rect class="bar10" x="443" y="71.9"  width="34" height="85"/>
+      <text class="hg-f" x="340" y="34" text-anchor="middle">32</text>
+      <text class="hg-f" x="400" y="34" text-anchor="middle">32</text>
+      <text class="hg-f" x="460" y="66" text-anchor="middle">26</text>
+      <line class="gax" x1="300" y1="210" x2="520" y2="210"/>
+      <line class="gax" x1="300" y1="210" x2="300" y2="30"/>
+      <text class="slbl" x="340" y="226" text-anchor="middle">CRICKET</text>
+      <text class="slbl" x="400" y="226" text-anchor="middle">BADMINTON</text>
+      <text class="slbl" x="460" y="226" text-anchor="middle">KABADDI</text>
+      <text class="axt" x="410" y="248" text-anchor="middle">COMPOSITE · BAR HEIGHT = ROW TOTAL</text>
+    </svg>
+    <div class="diag-cap">The same 90 students, two chart types. <b>Dual</b> answers "which grade prefers what"; <b>composite</b> answers "which sport is most popular overall". Both need a <b>key</b> and a labelled frequency axis.</div>
+
+    <h3>Pie charts — the angle is the whole trick</h3>
+    <p>A pie chart shares out <span class="eq-inline">360°</span> in proportion to the frequencies. Do <strong>one</strong> division first — degrees per item — and the rest is multiplication. 90 students named a favourite subject, so each student is worth <span class="eq-inline">360 ÷ 90 = 4°</span>:</p>
+
+    <div class="work">
+      <span class="step">degrees per student = 360 / 90 = 4°</span><br>
+      Maths 25 &rarr; 25 &times; 4 = <strong>100°</strong> &nbsp;·&nbsp; Science 20 &rarr; <strong>80°</strong> &nbsp;·&nbsp; English 15 &rarr; <strong>60°</strong><br>
+      Hindi 12 &rarr; <strong>48°</strong> &nbsp;·&nbsp; Social Studies 18 &rarr; <strong>72°</strong><br>
+      <span class="step">check:</span> 100 + 80 + 60 + 48 + 72 = <strong>360</strong> ✓
+    </div>
+
+    <svg class="diagram" viewBox="0 0 500 280" role="img" aria-label="A pie chart of favourite subject for 90 students, divided into five sectors: Maths 100 degrees, Science 80 degrees, English 60 degrees, Hindi 48 degrees and Social Studies 72 degrees, with a legend giving each frequency and angle.">
+      <path class="pi0" d="M 150 140 L 150 45 A 95 95 0 0 1 243.6 156.5 Z"/>
+      <path class="pi1" d="M 150 140 L 243.6 156.5 A 95 95 0 0 1 150 235 Z"/>
+      <path class="pi2" d="M 150 140 L 150 235 A 95 95 0 0 1 67.7 187.5 Z"/>
+      <path class="pi3" d="M 150 140 L 67.7 187.5 A 95 95 0 0 1 59.7 110.6 Z"/>
+      <path class="pi4" d="M 150 140 L 59.7 110.6 A 95 95 0 0 1 150 45 Z"/>
+      <text class="pi-ang" x="196" y="105" text-anchor="middle">100°</text>
+      <text class="pi-ang" x="189" y="189" text-anchor="middle">80°</text>
+      <text class="pi-ang" x="120" y="195" text-anchor="middle">60°</text>
+      <text class="pi-ang" x="90"  y="150" text-anchor="middle">48°</text>
+      <text class="pi-ang" x="115" y="95"  text-anchor="middle">72°</text>
+      <text class="axt" x="150" y="266" text-anchor="middle">FAVOURITE SUBJECT · 90 STUDENTS</text>
+      <rect class="pi0" x="296" y="58"  width="14" height="14" rx="2"/><text class="pg-lbl" x="318" y="70">Maths · 25 · 100°</text>
+      <rect class="pi1" x="296" y="88"  width="14" height="14" rx="2"/><text class="pg-lbl" x="318" y="100">Science · 20 · 80°</text>
+      <rect class="pi2" x="296" y="118" width="14" height="14" rx="2"/><text class="pg-lbl" x="318" y="130">English · 15 · 60°</text>
+      <rect class="pi3" x="296" y="148" width="14" height="14" rx="2"/><text class="pg-lbl" x="318" y="160">Hindi · 12 · 48°</text>
+      <rect class="pi4" x="296" y="178" width="14" height="14" rx="2"/><text class="pg-lbl" x="318" y="190">Social St. · 18 · 72°</text>
+      <line class="gl5" x1="296" y1="206" x2="480" y2="206"/>
+      <text class="slbl" x="296" y="224">TOTAL 90 STUDENTS = 360°</text>
+      <text class="slbl" x="296" y="240">SO 1 STUDENT = 4°</text>
+    </svg>
+    <div class="diag-cap">A pie chart shows <b>proportions only</b>. Without the "90 students" written on it you could never recover the frequency 25 from the 100° sector.</div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Exam technique</div>
+      Pie-chart questions run <em>both</em> directions. Forwards: frequency → angle (<span class="eq-inline">freq ÷ total × 360</span>). Backwards is the one that catches people: given a sector of <span class="eq-inline">72°</span> representing 18 students, the total is <span class="eq-inline">18 ÷ 72 × 360 = 90</span> — or spot that 72° is one fifth of the circle, so 18 is one fifth of the total.
+    </div>
+
+    <h3>Pictograms — a symbol worth several</h3>
+    <p>A pictogram is only readable if it carries a <strong>key</strong>. Part-symbols then stand for part of that value:</p>
+
+    <svg class="diagram" viewBox="0 0 480 232" role="img" aria-label="A pictogram of bags of rice sold by four shops, where one full circle represents 10 bags: shop A three and a half circles for 35 bags, shop B two circles for 20 bags, shop C four and a half circles for 45 bags, and shop D one and a half circles for 15 bags.">
+      <text class="axt" x="240" y="28" text-anchor="middle">BAGS OF RICE SOLD LAST WEEK</text>
+      <circle class="pg-sym" cx="122" cy="46" r="9"/>
+      <text class="sl-key" x="140" y="51">= 10 bags  (key)</text>
+      <line class="gl5" x1="30" y1="62" x2="450" y2="62"/>
+      <text class="pg-lbl" x="34" y="93">Shop A</text>
+      <circle class="pg-sym" cx="122" cy="88" r="9"/><circle class="pg-sym" cx="152" cy="88" r="9"/><circle class="pg-sym" cx="182" cy="88" r="9"/>
+      <path class="pg-sym" d="M 212 79 A 9 9 0 0 0 212 97 Z"/>
+      <text class="sval" x="420" y="93" text-anchor="end">35</text>
+      <text class="pg-lbl" x="34" y="128">Shop B</text>
+      <circle class="pg-sym" cx="122" cy="123" r="9"/><circle class="pg-sym" cx="152" cy="123" r="9"/>
+      <text class="sval" x="420" y="128" text-anchor="end">20</text>
+      <text class="pg-lbl" x="34" y="163">Shop C</text>
+      <circle class="pg-sym" cx="122" cy="158" r="9"/><circle class="pg-sym" cx="152" cy="158" r="9"/><circle class="pg-sym" cx="182" cy="158" r="9"/><circle class="pg-sym" cx="212" cy="158" r="9"/>
+      <path class="pg-sym" d="M 242 149 A 9 9 0 0 0 242 167 Z"/>
+      <text class="sval" x="420" y="163" text-anchor="end">45</text>
+      <text class="pg-lbl" x="34" y="198">Shop D</text>
+      <circle class="pg-sym" cx="122" cy="193" r="9"/>
+      <path class="pg-sym" d="M 152 184 A 9 9 0 0 0 152 202 Z"/>
+      <text class="sval" x="420" y="198" text-anchor="end">15</text>
+      <text class="axt" x="240" y="222" text-anchor="middle">HALF A SYMBOL = 5 BAGS</text>
+    </svg>
+    <div class="diag-cap">Four and a half symbols at 10 bags each is <b>45</b>. With no key the diagram means nothing — drawing one is a mark.</div>
+
+    <h3>Stem-and-leaf — the diagram that keeps the data</h3>
+    <p>This is the one display you can still do maths <em>from</em>, because no information is thrown away. The stem holds the tens, each leaf a single unit digit, leaves written in <strong>order</strong>, and a <strong>key</strong> shows how to read a row. A batsman's runs in 15 innings:</p>
+
+    <svg class="diagram" viewBox="0 0 480 280" role="img" aria-label="An ordered stem and leaf diagram of runs scored in fifteen innings. Stem 0 has leaf 7. Stem 1 has leaves 2, 5, 8. Stem 2 has leaves 3, 4, 4. Stem 3 has leaves 1, 3, 8. Stem 4 has leaves 2, 5, 6. Stem 5 has leaves 1, 8. The key states that 2 bar 3 means 23 runs.">
+      <text class="axt" x="240" y="32" text-anchor="middle">RUNS SCORED IN 15 INNINGS</text>
+      <text class="axt" x="160" y="60" text-anchor="end">STEM (TENS)</text>
+      <text class="axt" x="186" y="60">LEAF (UNITS)</text>
+      <line class="sl-div" x1="170" y1="70" x2="170" y2="220"/>
+      <text class="sl-stem" x="158" y="91" text-anchor="end">0</text><text class="sl-leaf" x="186" y="91">7</text>
+      <text class="sl-stem" x="158" y="115" text-anchor="end">1</text><text class="sl-leaf" x="186" y="115">2 5 8</text>
+      <text class="sl-stem" x="158" y="139" text-anchor="end">2</text><text class="sl-leaf" x="186" y="139">3 4 4</text>
+      <text class="sl-stem" x="158" y="163" text-anchor="end">3</text><text class="sl-leaf" x="186" y="163">1 3 8</text>
+      <text class="sl-stem" x="158" y="187" text-anchor="end">4</text><text class="sl-leaf" x="186" y="187">2 5 6</text>
+      <text class="sl-stem" x="158" y="211" text-anchor="end">5</text><text class="sl-leaf" x="186" y="211">1 8</text>
+      <line class="gl5" x1="60" y1="234" x2="420" y2="234"/>
+      <text class="sl-key" x="240" y="256" text-anchor="middle">Key:   2 | 3   means   23 runs</text>
+      <text class="slbl" x="240" y="272" text-anchor="middle">15 LEAVES ALTOGETHER — COUNT THEM TO CHECK n</text>
+    </svg>
+    <div class="diag-cap">Because every value survives, you can read the <b>median</b> straight off: the 8th of 15 leaves, counting from the top, is <b>31</b> runs.</div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Two marks people give away</div>
+      A stem-and-leaf diagram is only complete with <strong>(1) leaves in order</strong> within each row and <strong>(2) a key</strong>. Both are marked. And a "leaf" is always a <em>single digit</em> — 145 goes on stem 14 with leaf 5, never as leaf "45".
+    </div>
+  </div>
+
+
+  <!-- ── 03 · AVERAGES FOR A LIST ── -->
+  <div class="section" id="s3">
+    <div class="sec-label">03 / 11 · E9.3 · Summarise</div>
+    <h2>Averages and spread — two numbers describe a data set</h2>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      One number can never describe a data set. You need <strong>two</strong>: an <mark>average</mark> saying roughly <em>where</em> the data sits, and a <mark>measure of spread</mark> saying <em>how tightly</em> it is packed around there. Two classes can have identical mean marks and be completely different classes — one where everyone got 70, one where half got 45 and half got 95.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎯 A picture you know</div>
+      Think of the values as children of different weights sitting along a see-saw. The <strong>mean</strong> is the pivot point where the plank balances — so one very heavy child far out at the end <em>drags the pivot towards them</em>. The <strong>median</strong> is simply the child sitting in the middle seat; move the heaviest child a mile further out and the middle seat does not budge. That single sentence is why exam questions about house prices, salaries and one enormous outlier always want the median.
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">The three averages and the two spreads</span><br>
+      <span class="eq-inline" style="color:var(--momentum)">mean = Σx ÷ n</span>
+      <span class="eq-inline" style="color:var(--momentum)">median = middle value once ORDERED</span>
+      <span class="eq-inline" style="color:var(--momentum)">mode = most common value</span><br>
+      <span class="eq-inline" style="color:var(--cyan)">range = largest − smallest</span>
+      <span class="eq-inline" style="color:var(--cyan)">IQR = Q₃ − Q₁</span><br>
+      <span style="font-size:13.4px;color:var(--muted)">The quartiles cut the <em>ordered</em> data into four equal parts: <strong>Q₁</strong> is the median of the lower half, <strong>Q₂</strong> is the median itself, <strong>Q₃</strong> is the median of the upper half.</span>
+    </div>
+
+    <h3>Worked example — 11 test marks</h3>
+    <p>Eleven students in Anjali's class scored these marks out of 30. They are already in order — <em>always</em> order them first, because the median, the quartiles and the range are all meaningless until you do:</p>
+    <div class="work">
+      14 &nbsp; 18 &nbsp; 21 &nbsp; 21 &nbsp; 23 &nbsp; <strong>25</strong> &nbsp; 25 &nbsp; 25 &nbsp; 27 &nbsp; 28 &nbsp; 30 &nbsp; &nbsp;<span class="step">(n = 11)</span><br>
+      <span class="step">mean:</span> Σx = 257, so mean = 257 / 11 = 23.363… = <strong>23.4</strong> (1 d.p.)<br>
+      <span class="step">median:</span> n = 11 is odd, middle is the (11+1)/2 = 6th value = <strong>25</strong><br>
+      <span class="step">mode:</span> 25 appears three times, more than any other &rarr; <strong>25</strong><br>
+      <span class="step">range:</span> 30 − 14 = <strong>16</strong><br>
+      <span class="step">Q₁ = median of the lower half</span> (14, 18, 21, 21, 23) = <strong>21</strong><br>
+      <span class="step">Q₃ = median of the upper half</span> (25, 25, 27, 28, 30) = <strong>27</strong><br>
+      <span class="step">IQR:</span> 27 − 21 = <strong>6</strong>
+    </div>
+    <p>Notice how much more the IQR tells you than the range: the middle half of this class is squeezed into just 6 marks, even though the full spread is 16. The range was stretched by the single student on 14.</p>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The classic mistake</div>
+      Writing "the median is the middle number" and then taking the middle of the list <em>as printed</em>. If the marks arrive as 25, 14, 30, 21, … the middle of that list is meaningless. Also: the median of an <strong>even</strong>-sized set is the <em>mean of the two middle values</em> — for 8 values it is <span class="eq-inline">(4th + 5th) ÷ 2</span>, and that answer may well end in ·5 even when every data value is a whole number.
+    </div>
+
+    <!-- ── WIDGET 1 · averages explorer ── -->
+    <div class="tool">
+      <div class="chart-cap">Move any value — watch which averages care</div>
+      <svg class="wsvg" viewBox="0 0 480 192" id="avSvg" role="img" aria-label="A number line showing seven data values as dots, with a shaded band spanning the interquartile range, a solid line at the median and a dashed line at the mean, all recalculated live from the seven sliders below">
+        <g id="avG"></g>
+      </svg>
+      <div class="slider-grid">
+        <div class="slider-row"><label>value 1 <b id="avv0">12</b></label><input type="range" id="av0" min="0" max="50" step="1" value="12" aria-label="data value 1"></div>
+        <div class="slider-row"><label>value 2 <b id="avv1">15</b></label><input type="range" id="av1" min="0" max="50" step="1" value="15" aria-label="data value 2"></div>
+        <div class="slider-row"><label>value 3 <b id="avv2">18</b></label><input type="range" id="av2" min="0" max="50" step="1" value="18" aria-label="data value 3"></div>
+        <div class="slider-row"><label>value 4 <b id="avv3">18</b></label><input type="range" id="av3" min="0" max="50" step="1" value="18" aria-label="data value 4"></div>
+        <div class="slider-row"><label>value 5 <b id="avv4">22</b></label><input type="range" id="av4" min="0" max="50" step="1" value="22" aria-label="data value 5"></div>
+        <div class="slider-row"><label>value 6 <b id="avv5">25</b></label><input type="range" id="av5" min="0" max="50" step="1" value="25" aria-label="data value 6"></div>
+        <div class="slider-row"><label>value 7 <b id="avv6">30</b></label><input type="range" id="av6" min="0" max="50" step="1" value="30" aria-label="data value 7"></div>
+      </div>
+      <div class="btn-row">
+        <button class="mini-btn" id="avReset" type="button">Reset</button>
+        <button class="mini-btn" id="avOut" type="button">Add an outlier</button>
+        <button class="mini-btn" id="avFlat" type="button">Make them all equal</button>
+      </div>
+      <div class="vec-out">
+        <div class="ro">Ordered data</div>
+        <div class="rv" id="avSorted"></div>
+        <div class="rowpair">
+          <div>
+            <div class="ro">Mean</div><div class="rv" id="avMean"></div>
+            <div class="ro">Median</div><div class="rv" id="avMed"></div>
+            <div class="ro">Mode</div><div class="rv" id="avMode"></div>
+          </div>
+          <div>
+            <div class="ro">Range</div><div class="rv" id="avRange"></div>
+            <div class="ro">Q₁ · Q₃</div><div class="rv" id="avQ"></div>
+            <div class="ro">Interquartile range</div><div class="rv" id="avIqr"></div>
+          </div>
+        </div>
+        <div class="ro">Mean − median</div>
+        <div class="rv big" id="avGap"></div>
+      </div>
+      <div class="scn-read">
+        <div class="rk">What to look for</div>
+        <div id="avRead"></div>
+      </div>
+      <p style="font-size:12.6px;color:var(--muted);margin:12px 0 0">Seven values are used so the median is a single value, the 4th. The quartiles use the rule 0580 expects — <em>the median of each half, leaving the middle value out</em> — which puts Q₁ at the 2nd ordered value and Q₃ at the 6th.</p>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Exam technique</div>
+      "Which average is most appropriate, and give a reason" has a fixed shape: name the average, then justify it <em>from the data</em>. Median → "because there is an extreme value / outlier that would distort the mean". Mode → "because the data is qualitative (shoe colours) so a mean cannot be found" or "because the shopkeeper wants the size that sells most". Mean → "because it uses every value".
+    </div>
+
+    <h3>Working backwards from a mean</h3>
+    <p>Half the mean questions in the paper run in reverse, and they all use the same lever: <span class="eq-inline">Σx = mean × n</span>. Turn the mean back into a <strong>total</strong>, do the arithmetic on the total, then divide again.</p>
+    <div class="work">
+      <span class="step">The mean mass of 8 parcels is 2.4 kg. A 9th parcel of mass 4.8 kg is added. New mean?</span><br>
+      total of the 8 = 2.4 &times; 8 = 19.2 kg<br>
+      new total = 19.2 + 4.8 = 24 kg &nbsp; over &nbsp; 9 parcels<br>
+      new mean = 24 / 9 = 2.666… = <strong>2.67 kg</strong> (3 s.f.)
+    </div>
+  </div>
+
+
+  <!-- ── 04 · FROM A FREQUENCY TABLE ── -->
+  <div class="section" id="s4">
+    <div class="sec-label">04 / 11 · E9.3 · Summarise</div>
+    <h2>Averages from a frequency table</h2>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      A frequency table is just a <strong>compressed list</strong>. The row "4 people — frequency 12" means the value 4 is written out twelve times. So you are not learning a new formula, you are learning how to add up a list without writing it out: instead of 4 + 4 + 4 + … twelve times, use <span class="eq-inline">4 × 12</span>. That is the entire content of <span class="eq-inline">Σfx ÷ Σf</span>.
+    </div>
+
+    <div class="define mom-c">
+      <span class="term">Mean from a frequency table</span><br>
+      <span class="eq-inline" style="font-size:14px;color:var(--momentum)">mean = Σfx ÷ Σf</span><br>
+      <span style="font-size:13.4px;color:var(--muted)">Add an <strong>fx column</strong> and a <strong>cumulative frequency column</strong> to the table. Almost every mark in these questions is sitting in those two columns.</span>
+    </div>
+
+    <h3>Worked example — people per household</h3>
+    <p>The 40 households tallied in section 1, now with the two extra columns filled in:</p>
+
+    <div class="tw"><table>
+      <tr><th>People x</th><th class="c">Frequency f</th><th class="c">f × x</th><th class="c">Cumulative frequency</th></tr>
+      <tr><td>2</td><td class="c">4</td><td class="c">8</td><td class="c">4</td></tr>
+      <tr><td>3</td><td class="c">9</td><td class="c">27</td><td class="c">13</td></tr>
+      <tr><td>4</td><td class="c">12</td><td class="c">48</td><td class="c">25</td></tr>
+      <tr><td>5</td><td class="c">8</td><td class="c">40</td><td class="c">33</td></tr>
+      <tr><td>6</td><td class="c">5</td><td class="c">30</td><td class="c">38</td></tr>
+      <tr><td>7</td><td class="c">2</td><td class="c">14</td><td class="c">40</td></tr>
+      <tr class="tot"><td>Total</td><td class="c"><strong>Σf = 40</strong></td><td class="c"><strong>Σfx = 167</strong></td><td class="c">—</td></tr>
+    </table></div>
+
+    <div class="work">
+      <span class="step">mean:</span> Σfx / Σf = 167 / 40 = <strong>4.175 people</strong>&nbsp; <span class="step">(or 4.18 to 3 s.f.)</span><br>
+      <span class="step">mode:</span> the value with the biggest frequency — f = 12 is the largest, so mode = <strong>4</strong><br>
+      <span class="step">median:</span> n = 40 is even &rarr; mean of the 20th and 21st values.<br>
+      <span class="step">from the cumulative column, values 14 to 25 are all "4",</span> so both the 20th and 21st are 4 &rarr; median = <strong>4</strong><br>
+      <span class="step">range:</span> 7 − 2 = <strong>5</strong>
+    </div>
+
+    <p>The mean of 4.175 people is not a possible household — and that is fine. A mean is a <em>fair share</em>, not a real member of the data set. "4.175 people" is the right answer; rounding it to 4 because "you cannot have 0.175 of a person" throws away the mark.</p>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The classic mistake — three of them, all in one table</div>
+      <strong>1.</strong> Dividing by the number of <em>rows</em> (6) instead of Σf (40). The denominator is always how many <mark>items</mark> there are, never how many lines the table has.<br>
+      <strong>2.</strong> Giving the mode as <em>12</em> — that is the frequency. The mode is the <mark>value</mark> that occurred most often, so it is 4.<br>
+      <strong>3.</strong> Giving the median as the middle row of the table. Use the cumulative column and find where the 20th and 21st items actually land.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Exam technique</div>
+      If the question gives the mean and hides one frequency, set the missing value as <span class="eq-inline">k</span> and build the equation. Suppose the 7-person frequency were blank but you were told the mean is 4.175. The other five rows give <span class="eq-inline">Σfx = 153</span> and <span class="eq-inline">Σf = 38</span>, so:<br>
+      <span class="eq-inline">(153 + 7k) / (38 + k) = 4.175</span> &rarr; <span class="eq-inline">153 + 7k = 158.65 + 4.175k</span> &rarr; <span class="eq-inline">2.825k = 5.65</span> &rarr; <span class="eq-inline">k = 2</span> ✓<br>
+      A frequency must be a whole number, so an answer like 2.36 is a signal to go back and re-check your Σfx and Σf.
+    </div>
+  </div>
+
+
+  <!-- ── 05 · GROUPED DATA ── -->
+  <div class="section" id="s5">
+    <div class="sec-label">05 / 11 · E9.3 · Summarise</div>
+    <h2>Grouped data — why the mean becomes an <em>estimate</em></h2>
+
+    <p>Continuous data cannot be tallied value by value: no two students spend the exact same number of minutes on homework. So it is collected into <strong>classes</strong>, and the moment that happens the individual values are gone for good. Discrete data gets grouped too whenever the list of possible values is long — marks out of 80, or runs scored — and everything in this section applies to both.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      You know 18 students fall in <span class="eq-inline">20 &lt; t ≤ 30</span> but not <em>where</em> in that band. So you make the fairest possible assumption: pretend all 18 sat at the <mark>midpoint</mark>, 25 minutes. Some were really at 21, some at 29, and those errors largely cancel. That is why the answer is called an <strong>estimate of the mean</strong> — the word "estimate" is printed in the question itself, and using the midpoint is <em>the</em> method, not a shortcut.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎯 A picture you know</div>
+      It is like being told "18 people are somewhere in coach C" of a train and asked where the passengers' centre of mass is. You cannot see the seats, so you place all 18 at the middle of coach C. Do that for every coach and the whole-train answer comes out very close — but you would never claim it was exact.
+    </div>
+
+    <div class="define calc-c">
+      <span class="term">Estimated mean of grouped data</span><br>
+      <span class="eq-inline" style="font-size:14px;color:var(--cyan)">estimated mean = Σ(f × midpoint) ÷ Σf</span><br>
+      <span style="font-size:13.4px;color:var(--muted)">Midpoint of <span class="eq-inline">a &lt; x ≤ b</span> is <span class="eq-inline">(a + b) ÷ 2</span> — the two class boundaries added and halved.<br>
+      <strong>Grouped <em>discrete</em> data works the same way</strong> but the class is printed differently: for marks in <span class="eq-inline">1–5</span> the midpoint is <span class="eq-inline">(1 + 5) ÷ 2 = 3</span>, and for <span class="eq-inline">11–20</span> it is <span class="eq-inline">15.5</span>. Add the two numbers you can see and halve them — do not go hunting for boundaries that were never printed.</span>
+    </div>
+
+    <h3>Worked example — homework time for 80 students</h3>
+    <p>This one data set is used again in section 7 (its cumulative frequency curve) and section 8 (its histogram), so it is worth following closely. Note that the classes are deliberately <strong>unequal</strong> in width — that is normal for real data, and it is what makes section 8 necessary.</p>
+
+    <div class="tw"><table>
+      <tr><th>Time t (minutes)</th><th class="c">Frequency f</th><th class="c">Midpoint</th><th class="c">f × midpoint</th></tr>
+      <tr><td>0 &lt; t ≤ 20</td><td class="c">12</td><td class="c">10</td><td class="c">120</td></tr>
+      <tr><td>20 &lt; t ≤ 30</td><td class="c">18</td><td class="c">25</td><td class="c">450</td></tr>
+      <tr><td>30 &lt; t ≤ 40</td><td class="c">22</td><td class="c">35</td><td class="c">770</td></tr>
+      <tr><td>40 &lt; t ≤ 60</td><td class="c">20</td><td class="c">50</td><td class="c">1000</td></tr>
+      <tr><td>60 &lt; t ≤ 100</td><td class="c">8</td><td class="c">80</td><td class="c">640</td></tr>
+      <tr class="tot"><td>Total</td><td class="c"><strong>80</strong></td><td class="c">—</td><td class="c"><strong>2980</strong></td></tr>
+    </table></div>
+
+    <div class="work">
+      <span class="step">midpoint of 0 &lt; t ≤ 20:</span> (0 + 20) / 2 = 10 &nbsp;&nbsp;<span class="step">midpoint of 60 &lt; t ≤ 100:</span> (60 + 100) / 2 = 80<br>
+      estimated mean = Σ(f &times; midpoint) / Σf = 2980 / 80 = <strong>37.25 minutes</strong><br>
+      <span class="step">sanity check — 37.25 lies inside the data range 0 to 100, and near the classes holding the most students ✓</span>
+    </div>
+
+    <h3>The modal class</h3>
+    <p>You cannot give a single modal <em>value</em> for grouped data, only the <strong>modal class</strong>. When the classes are equally wide, that is simply the class with the largest frequency.</p>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The unequal-width trap</div>
+      When class widths <em>differ</em>, the tallest bar on a correct histogram is the one with the greatest <mark>frequency density</mark>, not the greatest frequency — so strictly the modal class is the densest class. Here the two agree: <span class="eq-inline">30 &lt; t ≤ 40</span> has both the largest frequency (22) <em>and</em> the largest frequency density (2.2 per minute), so the modal class is <strong>30 &lt; t ≤ 40</strong> either way. Compare it with <span class="eq-inline">60 &lt; t ≤ 100</span>: only 8 students, but spread across 40 minutes — the widest class is emphatically <em>not</em> the busiest one.
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Exam technique</div>
+      Write the modal class as an <strong>interval</strong>, exactly as the table prints it: "<span class="eq-inline">30 &lt; t ≤ 40</span>". Answering "35" (the midpoint) or "22" (the frequency) scores nothing. And if a question asks for the <em>greatest possible</em> value in a class, that is the upper boundary, 40 — the <span class="eq-inline">≤</span> includes it, while the <span class="eq-inline">&lt;</span> at the other end excludes 30.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Say the word "estimate"</div>
+      Questions on grouped data ask you to "calculate an <strong>estimate</strong> of the mean". If a follow-up asks <em>why</em> it is only an estimate, the answer is: <mark>the original data values are not known — only the class each one falls in — so the midpoint is used for every value in a class</mark>. That is the mark scheme wording.
+    </div>
+  </div>
+
+
+  <!-- ── 06 · SCATTER & CORRELATION ── -->
+  <div class="section" id="s6">
+    <div class="sec-label">06 / 11 · E9.5 · Compare two variables</div>
+    <h2>Scatter diagrams, correlation and the line of best fit</h2>
+
+    <p>Everything so far has described <em>one</em> variable. A scatter diagram is the first tool that asks whether <strong>two</strong> variables move together — hours revised against marks scored, rainfall against crop yield, age of a scooter against its resale price.</p>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      Each student becomes <mark>one point</mark>, placed by their two measurements. Then you stop looking at points and start looking at the <em>shape of the cloud</em>. Sloping up together = <strong>positive correlation</strong>. One up while the other goes down = <strong>negative correlation</strong>. A shapeless blob = <strong>zero (no) correlation</strong>. Tight cloud = strong; loose cloud = weak.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎯 A picture you know</div>
+      Correlation is a <em>crowd walking down a street</em>. If everyone drifts in the same diagonal direction, you can predict where a newcomer will go — strong correlation. If people wander in all directions, knowing one person's path tells you nothing about the next — no correlation. A line of best fit is you pointing along "the way the crowd is heading".
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title" style="color:var(--power)">Positive</div>
+        <div class="card-body">As one goes up, <strong>so does the other</strong>. Cloud slopes up to the right. <em>Hours revised &amp; marks.</em></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">Negative</div>
+        <div class="card-body">As one goes up, <strong>the other goes down</strong>. Cloud slopes down to the right. <em>Age of a car &amp; its value.</em></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--muted)">Zero / none</div>
+        <div class="card-body">No pattern at all. <strong>Draw no line of best fit</strong> — there is nothing for it to follow. <em>Shoe size &amp; exam mark.</em></div>
+      </div>
+    </div>
+
+    <h3>Worked example — revision time against test mark</h3>
+    <p>Ten students recorded the hours they revised and their mark out of 50:</p>
+    <div class="tw"><table>
+      <tr><th>Hours revised</th><td class="c">1</td><td class="c">2</td><td class="c">2</td><td class="c">3</td><td class="c">4</td><td class="c">4</td><td class="c">5</td><td class="c">6</td><td class="c">7</td><td class="c">8</td></tr>
+      <tr><th>Mark / 50</th><td class="c">14</td><td class="c">18</td><td class="c">24</td><td class="c">26</td><td class="c">30</td><td class="c">34</td><td class="c">33</td><td class="c">40</td><td class="c">42</td><td class="c">46</td></tr>
+    </table></div>
+
+    <svg class="diagram" viewBox="0 0 500 300" role="img" aria-label="A scatter diagram of hours revised against test mark for ten students, plotted as small crosses, showing strong positive correlation. A single ruled line of best fit is drawn across the full data set, passing close to the mean point at 4.2 hours and 30.7 marks. Dashed lines show a mark of about 36 being read off for 5.5 hours of revision.">
+      <line class="gl5" x1="60" y1="210" x2="465" y2="210"/>
+      <line class="gl5" x1="60" y1="170" x2="465" y2="170"/>
+      <line class="gl5" x1="60" y1="130" x2="465" y2="130"/>
+      <line class="gl5" x1="60" y1="90"  x2="465" y2="90"/>
+      <line class="gl5" x1="60" y1="50"  x2="465" y2="50"/>
+      <line class="gax" x1="60" y1="250" x2="465" y2="250"/>
+      <line class="gax" x1="60" y1="250" x2="60"  y2="44"/>
+      <text class="gnum" x="54" y="254" text-anchor="end">0</text>
+      <text class="gnum" x="54" y="214" text-anchor="end">10</text>
+      <text class="gnum" x="54" y="174" text-anchor="end">20</text>
+      <text class="gnum" x="54" y="134" text-anchor="end">30</text>
+      <text class="gnum" x="54" y="94"  text-anchor="end">40</text>
+      <text class="gnum" x="54" y="54"  text-anchor="end">50</text>
+      <text class="gnum" x="105" y="266" text-anchor="middle">1</text>
+      <text class="gnum" x="150" y="266" text-anchor="middle">2</text>
+      <text class="gnum" x="195" y="266" text-anchor="middle">3</text>
+      <text class="gnum" x="240" y="266" text-anchor="middle">4</text>
+      <text class="gnum" x="285" y="266" text-anchor="middle">5</text>
+      <text class="gnum" x="330" y="266" text-anchor="middle">6</text>
+      <text class="gnum" x="375" y="266" text-anchor="middle">7</text>
+      <text class="gnum" x="420" y="266" text-anchor="middle">8</text>
+      <text class="gnum" x="465" y="266" text-anchor="middle">9</text>
+      <text class="axt" x="262" y="286" text-anchor="middle">HOURS REVISED</text>
+      <text class="axt" x="18" y="150" text-anchor="middle" transform="rotate(-90 18 150)">MARK / 50</text>
+      <!-- read-off (drawn under the points) -->
+      <line class="sc-dash" x1="60" y1="104.4" x2="307.5" y2="104.4"/>
+      <line class="sc-dash" x1="307.5" y1="104.4" x2="307.5" y2="250"/>
+      <text class="cf-lbl" x="313" y="122">5.5 h &rarr; about 36 marks</text>
+      <!-- line of best fit, across the full data set only -->
+      <line class="sc-fit" x1="105" y1="183.6" x2="420" y2="60.4"/>
+      <!-- mean point -->
+      <circle class="sc-mean" cx="249" cy="127.2" r="7"/>
+      <line class="sc-mean" x1="240" y1="127.2" x2="258" y2="127.2"/>
+      <line class="sc-mean" x1="249" y1="118.2" x2="249" y2="136.2"/>
+      <text class="slbl" x="256" y="152">mean point (4.2, 30.7)</text>
+      <!-- data crosses -->
+      <g>
+        <line class="sc-x" x1="100.5" y1="189.5" x2="109.5" y2="198.5"/><line class="sc-x" x1="109.5" y1="189.5" x2="100.5" y2="198.5"/>
+        <line class="sc-x" x1="145.5" y1="173.5" x2="154.5" y2="182.5"/><line class="sc-x" x1="154.5" y1="173.5" x2="145.5" y2="182.5"/>
+        <line class="sc-x" x1="145.5" y1="149.5" x2="154.5" y2="158.5"/><line class="sc-x" x1="154.5" y1="149.5" x2="145.5" y2="158.5"/>
+        <line class="sc-x" x1="190.5" y1="141.5" x2="199.5" y2="150.5"/><line class="sc-x" x1="199.5" y1="141.5" x2="190.5" y2="150.5"/>
+        <line class="sc-x" x1="235.5" y1="125.5" x2="244.5" y2="134.5"/><line class="sc-x" x1="244.5" y1="125.5" x2="235.5" y2="134.5"/>
+        <line class="sc-x" x1="235.5" y1="109.5" x2="244.5" y2="118.5"/><line class="sc-x" x1="244.5" y1="109.5" x2="235.5" y2="118.5"/>
+        <line class="sc-x" x1="280.5" y1="113.5" x2="289.5" y2="122.5"/><line class="sc-x" x1="289.5" y1="113.5" x2="280.5" y2="122.5"/>
+        <line class="sc-x" x1="325.5" y1="85.5"  x2="334.5" y2="94.5"/><line class="sc-x" x1="334.5" y1="85.5"  x2="325.5" y2="94.5"/>
+        <line class="sc-x" x1="370.5" y1="77.5"  x2="379.5" y2="86.5"/><line class="sc-x" x1="379.5" y1="77.5"  x2="370.5" y2="86.5"/>
+        <line class="sc-x" x1="415.5" y1="61.5"  x2="424.5" y2="70.5"/><line class="sc-x" x1="424.5" y1="61.5"  x2="415.5" y2="70.5"/>
+      </g>
+    </svg>
+    <div class="diag-cap">Strong positive correlation. The line is a <b>single ruled line drawn by inspection</b>, extending across the full data set with a roughly even number of crosses either side. A good line passes through or very near the <b>mean point</b> — a free way to check yours.</div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Exam technique — how the marks are actually awarded</div>
+      Plotting: small <strong>crosses (×)</strong>, one per pair, accurate to half a small square. Line of best fit: <strong>one straight ruled line</strong>, spanning the whole data set, with points spread roughly evenly either side of it — <em>not</em> joined dot to dot, not a curve, not a line forced through the origin. Then read your estimate <em>off your own line</em> with dashed guide lines drawn in, and a range of answers is accepted.
+    </div>
+
+    <!-- ── WIDGET 2 · scatter & correlation explorer ── -->
+    <div class="explorer">
+      <div class="chart-cap">Switch the cloud — decide whether a line is even allowed</div>
+      <div class="scn-tabs" id="scTabs">
+        <div class="scn-tab active" data-k="strong" tabindex="0" role="button">Strong positive</div>
+        <div class="scn-tab" data-k="weak" tabindex="0" role="button">Weak positive</div>
+        <div class="scn-tab" data-k="neg" tabindex="0" role="button">Negative</div>
+        <div class="scn-tab" data-k="none" tabindex="0" role="button">No correlation</div>
+      </div>
+      <svg class="wsvg" viewBox="0 0 480 264" id="scSvg" role="img" aria-label="An interactive scatter diagram that switches between four data sets — strong positive, weak positive, negative and no correlation — drawing a line of best fit for the first three and deliberately none for the fourth">
+        <g id="scG"></g>
+      </svg>
+      <div class="btn-row">
+        <button class="mini-btn" id="scFit" type="button">Hide / show the line</button>
+      </div>
+      <div class="scn-read">
+        <div class="rk">Reading this cloud</div>
+        <div id="scRead"></div>
+      </div>
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Two things correlation does NOT give you</div>
+      <strong>1. Correlation is not cause.</strong> Ice-cream sales correlate with drowning deaths; ice cream does not drown anyone — hot weather drives both. If a question asks whether the diagram <em>proves</em> that X causes Y, the answer is <mark>no</mark>: there may be a third factor, or the link may be coincidence.<br>
+      <strong>2. A line of best fit is only trustworthy inside the data.</strong> Reading it far beyond the plotted range (<em>extrapolation</em>) is unreliable — nothing guarantees the pattern continues. Twenty hours of revision does not give a mark of 100 out of 50.
+    </div>
+  </div>
+
+
+  <!-- ── 07 · CUMULATIVE FREQUENCY ── -->
+  <div class="section" id="s7">
+    <div class="sec-label">07 / 11 · E9.6 · Extended only</div>
+    <h2>Cumulative frequency — a running total you can read answers off</h2>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      Grouped data hides the individual values, so you cannot find the median by counting. A cumulative frequency diagram gets round it by plotting a <strong>running total</strong>: "how many students took <mark>20 minutes or less</mark>, 30 minutes or less, 40 minutes or less …". Once that curve exists, every "middle" question becomes a <em>read-off</em> — go in at the count you want on the vertical axis, across to the curve, down to the answer.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎯 A picture you know</div>
+      It is a queue at a ticket counter. The curve tells you how many people have been served by each moment. Want the median wait? Ask "when had <em>half</em> the queue been served?" — go in at half the total, cross to the curve, drop down to the clock. The steep part of the curve is the rush; the flat tail is the last few stragglers.
+    </div>
+
+    <div class="define calc-c">
+      <span class="term">Building the diagram — the one rule that matters</span><br>
+      <span style="font-size:13.8px">Plot each cumulative total against the <mark>UPPER class boundary</mark>, never the midpoint. Mark points with small crosses and join them with a <strong>smooth curve</strong>. Start the curve at the lowest boundary with cumulative frequency <strong>0</strong>.</span>
+    </div>
+
+    <p>Take the homework data from section 5 and turn the frequencies into running totals:</p>
+
+    <div class="tw"><table>
+      <tr><th>Time t (minutes)</th><th class="c">f</th><th class="c">Plot at t =</th><th class="c">Cumulative frequency</th></tr>
+      <tr><td>0 &lt; t ≤ 20</td><td class="c">12</td><td class="c">20</td><td class="c">12</td></tr>
+      <tr><td>20 &lt; t ≤ 30</td><td class="c">18</td><td class="c">30</td><td class="c">30</td></tr>
+      <tr><td>30 &lt; t ≤ 40</td><td class="c">22</td><td class="c">40</td><td class="c">52</td></tr>
+      <tr><td>40 &lt; t ≤ 60</td><td class="c">20</td><td class="c">60</td><td class="c">72</td></tr>
+      <tr><td>60 &lt; t ≤ 100</td><td class="c">8</td><td class="c">100</td><td class="c"><strong>80</strong></td></tr>
+    </table></div>
+    <p style="font-size:13.4px;color:var(--muted)">The last cumulative value <em>must</em> equal Σf = 80. If it does not, one of your additions is wrong — and every read-off after it would be wrong too.</p>
+
+    <svg class="diagram" viewBox="0 0 520 300" role="img" aria-label="A cumulative frequency curve for the homework times of 80 students, rising smoothly from zero at 0 minutes through 12 at 20 minutes, 30 at 30 minutes, 52 at 40 minutes, 72 at 60 minutes to 80 at 100 minutes. Dashed lines read off the lower quartile at a cumulative frequency of 20, the median at 40 and the upper quartile at 60.">
+      <line class="gl5" x1="60" y1="200" x2="480" y2="200"/>
+      <line class="gl5" x1="60" y1="150" x2="480" y2="150"/>
+      <line class="gl5" x1="60" y1="100" x2="480" y2="100"/>
+      <line class="gl5" x1="60" y1="50"  x2="480" y2="50"/>
+      <line class="gl5" x1="144" y1="250" x2="144" y2="44"/>
+      <line class="gl5" x1="228" y1="250" x2="228" y2="44"/>
+      <line class="gl5" x1="312" y1="250" x2="312" y2="44"/>
+      <line class="gl5" x1="396" y1="250" x2="396" y2="44"/>
+      <!-- read-offs -->
+      <line class="cf-read" x1="60" y1="200" x2="162.7" y2="200"/><line class="cf-read" x1="162.7" y1="200" x2="162.7" y2="250"/>
+      <line class="cf-read" x1="60" y1="150" x2="205.1" y2="150"/><line class="cf-read" x1="205.1" y1="150" x2="205.1" y2="250"/>
+      <line class="cf-read" x1="60" y1="100" x2="261.6" y2="100"/><line class="cf-read" x1="261.6" y1="100" x2="261.6" y2="250"/>
+      <!-- the curve · a monotone Catmull-Rom spline through the six plotted points AND the
+           three quartile read-off points (162.7,200) (205.1,150) (261.6,100), so the dashed
+           lines meet the drawn curve exactly where the arithmetic says they should -->
+      <path class="cf-curve" d="M 60 250 C 74 245, 126.9 228.3, 144 220 C 161.1 211.7, 155.7 207.5, 162.7 200 C 169.7 192.5, 178.9 183.3, 186 175 C 193.1 166.7, 198.1 159.2, 205.1 150 C 212.1 140.8, 218.6 128.3, 228 120 C 237.4 111.7, 247.6 108.3, 261.6 100 C 275.6 91.7, 275.6 78.3, 312 70 C 348.4 61.7, 452 53.3, 480 50"/>
+      <!-- plotted crosses -->
+      <g>
+        <line class="cf-pt" x1="56" y1="246" x2="64" y2="254"/><line class="cf-pt" x1="64" y1="246" x2="56" y2="254"/>
+        <line class="cf-pt" x1="140" y1="216" x2="148" y2="224"/><line class="cf-pt" x1="148" y1="216" x2="140" y2="224"/>
+        <line class="cf-pt" x1="182" y1="171" x2="190" y2="179"/><line class="cf-pt" x1="190" y1="171" x2="182" y2="179"/>
+        <line class="cf-pt" x1="224" y1="116" x2="232" y2="124"/><line class="cf-pt" x1="232" y1="116" x2="224" y2="124"/>
+        <line class="cf-pt" x1="308" y1="66"  x2="316" y2="74"/><line class="cf-pt" x1="316" y1="66"  x2="308" y2="74"/>
+        <line class="cf-pt" x1="476" y1="46"  x2="484" y2="54"/><line class="cf-pt" x1="484" y1="46"  x2="476" y2="54"/>
+      </g>
+      <line class="gax" x1="60" y1="250" x2="490" y2="250"/>
+      <line class="gax" x1="60" y1="250" x2="60"  y2="40"/>
+      <text class="gnum" x="54" y="254" text-anchor="end">0</text>
+      <text class="gnum" x="54" y="204" text-anchor="end">20</text>
+      <text class="gnum" x="54" y="154" text-anchor="end">40</text>
+      <text class="gnum" x="54" y="104" text-anchor="end">60</text>
+      <text class="gnum" x="54" y="54"  text-anchor="end">80</text>
+      <text class="gnum" x="60"  y="266" text-anchor="middle">0</text>
+      <text class="gnum" x="144" y="266" text-anchor="middle">20</text>
+      <text class="gnum" x="228" y="266" text-anchor="middle">40</text>
+      <text class="gnum" x="312" y="266" text-anchor="middle">60</text>
+      <text class="gnum" x="396" y="266" text-anchor="middle">80</text>
+      <text class="gnum" x="480" y="266" text-anchor="middle">100</text>
+      <text class="axt" x="275" y="286" text-anchor="middle">TIME t (MINUTES)</text>
+      <text class="axt" x="16" y="145" text-anchor="middle" transform="rotate(-90 16 145)">CUMULATIVE FREQUENCY</text>
+      <!-- labels sit just above the left end of each read-off line, clear of the curve -->
+      <text class="cf-lbl" x="66" y="95">Q₃ ≈ 48</text>
+      <text class="cf-lbl" x="66" y="145">median ≈ 34.5</text>
+      <text class="cf-lbl" x="66" y="195">Q₁ ≈ 24</text>
+    </svg>
+    <div class="diag-cap">Read <b>in from the vertical axis</b>, across to the curve, then straight down. The dashed lines are part of the answer — draw them and the method mark is yours even if your reading is a square out.</div>
+
+    <div class="work">
+      <span class="step">n = 80, so:</span><br>
+      median &rarr; go in at n/2 = <strong>40</strong> &nbsp;&rarr;&nbsp; t ≈ <strong>34.5 min</strong><br>
+      lower quartile &rarr; go in at n/4 = <strong>20</strong> &nbsp;&rarr;&nbsp; Q₁ ≈ <strong>24 min</strong><br>
+      upper quartile &rarr; go in at 3n/4 = <strong>60</strong> &nbsp;&rarr;&nbsp; Q₃ ≈ <strong>48 min</strong><br>
+      interquartile range ≈ 48 − 24 = <strong>24 min</strong> &nbsp;<span class="step">(the middle half of the students are spread over 24 minutes)</span><br>
+      <span class="step">90th percentile &rarr; go in at 0.90 &times; 80 = 72</span> &nbsp;&rarr;&nbsp; t ≈ <strong>60 min</strong><br>
+      <span class="step">every value read off a curve is an ESTIMATE — a small range of answers is accepted</span>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Exam technique — the two directions</div>
+      <strong>Downwards</strong> (given a count, find a value): median, quartiles, percentiles. Enter on the vertical axis at <span class="eq-inline">n/2</span>, <span class="eq-inline">n/4</span>, <span class="eq-inline">3n/4</span> or <span class="eq-inline">p/100 × n</span>.<br>
+      <strong>Upwards</strong> (given a value, find a count): "how many took <em>more than</em> 45 minutes?" Go up from 45 to the curve, across to read about 57 — that is how many took 45 minutes <mark>or less</mark>, so the answer is <span class="eq-inline">80 − 57 = 23</span> students. Forgetting that final subtraction is the single most common lost mark on this diagram.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ The classic mistakes</div>
+      Plotting at the <em>midpoint</em> instead of the upper boundary (this shifts every answer). Joining the crosses with straight ruled segments instead of a smooth curve. Reading the median off the <em>horizontal</em> axis at 50 minutes because "50 is halfway" — the median is halfway through the <mark>students</mark>, not halfway along the time axis.
+    </div>
+
+    <!-- ── WIDGET 3 · cumulative frequency read-off tool ── -->
+    <div class="tool">
+      <div class="chart-cap">Change the frequencies — the curve and every read-off follow</div>
+      <svg class="wsvg" viewBox="0 0 480 276" id="cfSvg" role="img" aria-label="An interactive cumulative frequency curve for five classes whose frequencies are set by the sliders below, with dashed read-off lines marking the lower quartile, median and upper quartile">
+        <g id="cfG"></g>
+      </svg>
+      <div class="slider-grid">
+        <div class="slider-row"><label>0 &lt; t ≤ 20 <b id="cfv0">12</b></label><input type="range" id="cf0" min="0" max="30" step="1" value="12" aria-label="frequency of the class 0 to 20"></div>
+        <div class="slider-row"><label>20 &lt; t ≤ 30 <b id="cfv1">18</b></label><input type="range" id="cf1" min="0" max="30" step="1" value="18" aria-label="frequency of the class 20 to 30"></div>
+        <div class="slider-row"><label>30 &lt; t ≤ 40 <b id="cfv2">22</b></label><input type="range" id="cf2" min="0" max="30" step="1" value="22" aria-label="frequency of the class 30 to 40"></div>
+        <div class="slider-row"><label>40 &lt; t ≤ 60 <b id="cfv3">20</b></label><input type="range" id="cf3" min="0" max="30" step="1" value="20" aria-label="frequency of the class 40 to 60"></div>
+        <div class="slider-row"><label>60 &lt; t ≤ 100 <b id="cfv4">8</b></label><input type="range" id="cf4" min="0" max="30" step="1" value="8" aria-label="frequency of the class 60 to 100"></div>
+      </div>
+      <div class="vec-out">
+        <div class="ro">Cumulative frequencies (at t = 20, 30, 40, 60, 100)</div>
+        <div class="rv" id="cfCum"></div>
+        <div class="rowpair">
+          <div>
+            <div class="ro">n / 4 &rarr; Q₁</div><div class="rv" id="cfQ1"></div>
+            <div class="ro">n / 2 &rarr; median</div><div class="rv" id="cfMed"></div>
+          </div>
+          <div>
+            <div class="ro">3n / 4 &rarr; Q₃</div><div class="rv" id="cfQ3"></div>
+            <div class="ro">Estimated mean</div><div class="rv" id="cfMean"></div>
+          </div>
+        </div>
+        <div class="ro">Interquartile range</div>
+        <div class="rv big" id="cfIqr"></div>
+      </div>
+      <div class="scn-read">
+        <div class="rk">What to look for</div>
+        <div id="cfRead"></div>
+      </div>
+      <p style="font-size:12.6px;color:var(--muted);margin:12px 0 0">The read-offs here are calculated exactly (by proportion within the class), so they may sit half a square from what you would read off a hand-drawn curve. That gap <em>is</em> the tolerance the mark scheme allows you.</p>
+    </div>
+  </div>
+
+
+  <!-- ── 08 · HISTOGRAMS ── -->
+  <div class="section" id="s8">
+    <div class="sec-label">08 / 11 · E9.7 · Extended only</div>
+    <h2>Histograms — where height stops meaning frequency</h2>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      In a bar chart the <em>height</em> carries the frequency. In a histogram with unequal class widths that fails: a wide class would look enormous just for being wide. So a histogram moves the information into the <mark>area</mark> of each bar. Area must equal frequency — and since area = height × width, the height has to be <span class="eq-inline">frequency ÷ class width</span>. That quantity has a name: <strong>frequency density</strong>.
+    </div>
+
+    <div class="box analogy">
+      <div class="box-label">🎯 A picture you know</div>
+      Think of two neighbourhoods. One has 8 families in 40 hectares, the other 22 families in 10 hectares. Which is <em>crowded</em>? Not the one with more families — the one with more families <mark>per hectare</mark>. Frequency density is exactly population density: how tightly the data is packed per unit of the measured scale. A histogram draws crowdedness, and lets the bar's width carry the size of the area.
+    </div>
+
+    <div class="define calc-c">
+      <span class="term">Frequency density</span><br>
+      <span class="eq-inline" style="font-size:14px;color:var(--cyan)">frequency density = frequency ÷ class width</span><br>
+      <span class="eq-inline" style="font-size:14px;color:var(--cyan)">frequency = frequency density × class width</span><br>
+      <span style="font-size:13.4px;color:var(--muted)">The vertical axis is labelled <strong>Frequency density</strong> — writing "Frequency" on it is a lost mark. Bars <strong>touch</strong> (the data is continuous) and each bar spans its class from boundary to boundary.</span>
+    </div>
+
+    <h3>Worked example — the same 80 students</h3>
+    <div class="tw"><table>
+      <tr><th>Time t (min)</th><th class="c">Frequency f</th><th class="c">Class width</th><th class="c">Frequency density</th></tr>
+      <tr><td>0 &lt; t ≤ 20</td><td class="c">12</td><td class="c">20</td><td class="c">12 ÷ 20 = <strong>0.6</strong></td></tr>
+      <tr><td>20 &lt; t ≤ 30</td><td class="c">18</td><td class="c">10</td><td class="c">18 ÷ 10 = <strong>1.8</strong></td></tr>
+      <tr><td>30 &lt; t ≤ 40</td><td class="c">22</td><td class="c">10</td><td class="c">22 ÷ 10 = <strong>2.2</strong></td></tr>
+      <tr><td>40 &lt; t ≤ 60</td><td class="c">20</td><td class="c">20</td><td class="c">20 ÷ 20 = <strong>1.0</strong></td></tr>
+      <tr><td>60 &lt; t ≤ 100</td><td class="c">8</td><td class="c">40</td><td class="c">8 ÷ 40 = <strong>0.2</strong></td></tr>
+    </table></div>
+
+    <svg class="diagram" viewBox="0 0 520 300" role="img" aria-label="A histogram of homework times for 80 students with unequal class widths. The five bars span 0 to 20 minutes at frequency density 0.6, 20 to 30 at 1.8, 30 to 40 at 2.2, 40 to 60 at 1.0 and 60 to 100 at 0.2, each annotated with the frequency it represents as its area.">
+      <line class="gl5" x1="60" y1="210" x2="480" y2="210"/>
+      <line class="gl5" x1="60" y1="170" x2="480" y2="170"/>
+      <line class="gl5" x1="60" y1="130" x2="480" y2="130"/>
+      <line class="gl5" x1="60" y1="90"  x2="480" y2="90"/>
+      <line class="gl5" x1="60" y1="50"  x2="480" y2="50"/>
+      <rect class="hg-bar" x="60"  y="202" width="84"  height="48"/>
+      <rect class="hg-bar" x="144" y="106" width="42"  height="144"/>
+      <rect class="hg-bar" x="186" y="74"  width="42"  height="176"/>
+      <rect class="hg-bar" x="228" y="170" width="84"  height="80"/>
+      <rect class="hg-bar" x="312" y="234" width="168" height="16"/>
+      <text class="hg-f" x="102" y="196" text-anchor="middle">area = 12</text>
+      <text class="hg-f" x="165" y="100" text-anchor="middle">18</text>
+      <text class="hg-f" x="207" y="68"  text-anchor="middle">22</text>
+      <text class="hg-f" x="270" y="164" text-anchor="middle">area = 20</text>
+      <text class="hg-f" x="396" y="228" text-anchor="middle">area = 8</text>
+      <line class="gax" x1="60" y1="250" x2="490" y2="250"/>
+      <line class="gax" x1="60" y1="250" x2="60"  y2="44"/>
+      <text class="gnum" x="54" y="254" text-anchor="end">0</text>
+      <text class="gnum" x="54" y="214" text-anchor="end">0.5</text>
+      <text class="gnum" x="54" y="174" text-anchor="end">1.0</text>
+      <text class="gnum" x="54" y="134" text-anchor="end">1.5</text>
+      <text class="gnum" x="54" y="94"  text-anchor="end">2.0</text>
+      <text class="gnum" x="54" y="54"  text-anchor="end">2.5</text>
+      <text class="gnum" x="60"  y="266" text-anchor="middle">0</text>
+      <text class="gnum" x="144" y="266" text-anchor="middle">20</text>
+      <text class="gnum" x="186" y="266" text-anchor="middle">30</text>
+      <text class="gnum" x="228" y="266" text-anchor="middle">40</text>
+      <text class="gnum" x="312" y="266" text-anchor="middle">60</text>
+      <text class="gnum" x="480" y="266" text-anchor="middle">100</text>
+      <text class="axt" x="275" y="286" text-anchor="middle">TIME t (MINUTES)</text>
+      <text class="axt" x="16" y="145" text-anchor="middle" transform="rotate(-90 16 145)">FREQUENCY DENSITY</text>
+    </svg>
+    <div class="diag-cap">The last class holds only 8 students yet its bar is the <b>widest</b> — and, correctly, the <b>flattest</b>. The tallest bar (density 2.2) is the modal class <b>30 &lt; t ≤ 40</b>.</div>
+
+    <!-- ── WIDGET 4 · histogram / frequency density tool ── -->
+    <div class="explorer">
+      <div class="chart-cap">Same data, two vertical axes — one of them lies</div>
+      <div class="scn-tabs" id="hgTabs">
+        <div class="scn-tab active" data-m="d" tabindex="0" role="button">Frequency density ✓ correct</div>
+        <div class="scn-tab" data-m="f" tabindex="0" role="button">Frequency as height ✗ wrong</div>
+      </div>
+      <svg class="wsvg" viewBox="0 0 480 258" id="hgSvg" role="img" aria-label="An interactive histogram of five unequal classes whose frequencies are set by the sliders below, switchable between a correct frequency-density vertical axis and an incorrect frequency-as-height axis">
+        <g id="hgG"></g>
+      </svg>
+      <div class="slider-grid">
+        <div class="slider-row"><label>0 &lt; t ≤ 20 · width 20 <b id="hgv0">12</b></label><input type="range" id="hg0" min="0" max="30" step="1" value="12" aria-label="frequency of the class 0 to 20"></div>
+        <div class="slider-row"><label>20 &lt; t ≤ 30 · width 10 <b id="hgv1">18</b></label><input type="range" id="hg1" min="0" max="30" step="1" value="18" aria-label="frequency of the class 20 to 30"></div>
+        <div class="slider-row"><label>30 &lt; t ≤ 40 · width 10 <b id="hgv2">22</b></label><input type="range" id="hg2" min="0" max="30" step="1" value="22" aria-label="frequency of the class 30 to 40"></div>
+        <div class="slider-row"><label>40 &lt; t ≤ 60 · width 20 <b id="hgv3">20</b></label><input type="range" id="hg3" min="0" max="30" step="1" value="20" aria-label="frequency of the class 40 to 60"></div>
+        <div class="slider-row"><label>60 &lt; t ≤ 100 · width 40 <b id="hgv4">8</b></label><input type="range" id="hg4" min="0" max="30" step="1" value="8" aria-label="frequency of the class 60 to 100"></div>
+      </div>
+      <div class="vec-out">
+        <div class="ro">Frequency ÷ class width = frequency density</div>
+        <div class="rv" id="hgRows"></div>
+        <div class="ro">Total frequency (= total area)</div>
+        <div class="rv big" id="hgTot"></div>
+      </div>
+      <div class="scn-read">
+        <div class="rk">What to look for</div>
+        <div id="hgRead"></div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Exam technique — histograms run backwards too</div>
+      A very common question gives you a finished histogram and asks for a frequency. Read the <strong>density</strong> off the vertical axis, read the <strong>width</strong> off the horizontal axis, and multiply: a bar spanning <span class="eq-inline">20 &lt; t ≤ 35</span> at density 3.6 holds <span class="eq-inline">3.6 × 15 = 54</span> items. Harder version: a bar is asked for over <em>part</em> of a class — take the matching fraction of the area, e.g. the half of <span class="eq-inline">40 &lt; t ≤ 60</span> above 50 minutes holds <span class="eq-inline">1.0 × 10 = 10</span> students.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Bar chart vs histogram — never mix them up</div>
+      <strong>Bar chart:</strong> discrete or qualitative data · bars have <mark>gaps</mark> · vertical axis = <em>Frequency</em> · height carries the meaning.<br>
+      <strong>Histogram:</strong> continuous grouped data · bars <mark>touch</mark> · vertical axis = <em>Frequency density</em> · <strong>area</strong> carries the meaning.<br>
+      If every class happens to be the same width the two look alike — but the axis label still has to say Frequency density.
+    </div>
+  </div>
+
+
+  <!-- ── 09 · COMPARING DATA SETS ── -->
+  <div class="section" id="s9">
+    <div class="sec-label">09 / 11 · E9.2 · Compare &amp; conclude</div>
+    <h2>Comparing two data sets — and what you may not claim</h2>
+
+    <div class="box intuition">
+      <div class="box-label">💡 The core idea</div>
+      A comparison question is marked on a <strong>fixed pair</strong> of statements: one about an <mark>average</mark> and one about the <mark>spread</mark>, each with the numbers quoted and each <em>interpreted in context</em>. "A is better" earns nothing, because no figure is given and "better" is not a statistic. Quoting the figures but naming the wrong direction earns nothing either. Two sentences, two numbers, two meanings.
+    </div>
+
+    <h3>Worked example — two students, eight tests each</h3>
+    <div class="tw"><table>
+      <tr><th></th><th class="c">Marks (%) in order</th><th class="c">Mean</th><th class="c">Median</th><th class="c">Range</th><th class="c">IQR</th></tr>
+      <tr><td><strong>Aarav</strong></td><td class="c">62 65 68 70 71 73 74 77</td><td class="c">70</td><td class="c">70.5</td><td class="c">15</td><td class="c">7</td></tr>
+      <tr><td><strong>Bhavna</strong></td><td class="c">45 52 66 70 76 78 85 88</td><td class="c">70</td><td class="c">73</td><td class="c">43</td><td class="c">22.5</td></tr>
+    </table></div>
+    <div class="work">
+      <span class="step">Aarav:</span> Σx = 560, mean = 560/8 = 70 &nbsp;·&nbsp; median = (70 + 71)/2 = 70.5<br>
+      <span class="step">Bhavna:</span> Σx = 560, mean = 560/8 = 70 &nbsp;·&nbsp; median = (70 + 76)/2 = 73<br>
+      <span class="step">Aarav Q₁ = (65+68)/2 = 66.5, Q₃ = (73+74)/2 = 73.5 &rarr;</span> IQR = <strong>7</strong><br>
+      <span class="step">Bhavna Q₁ = (52+66)/2 = 59, Q₃ = (78+85)/2 = 81.5 &rarr;</span> IQR = <strong>22.5</strong>
+    </div>
+
+    <p>Their means are <em>identical</em>. Everything interesting is in the spread:</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title" style="color:var(--power)">A full-mark answer</div>
+        <div class="card-body">"Their mean marks are <strong>equal</strong> (both 70%), so on average they performed the same. But Aarav's interquartile range is much <strong>smaller</strong> (7 against 22.5), so Aarav is far more <strong>consistent</strong>, while Bhavna's marks vary a lot from test to test."</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--force)">A no-mark answer</div>
+        <div class="card-body">"Aarav is better because his marks are closer together." No figures quoted, no average compared, and "better" is a judgement the data does not support — Bhavna's <em>median</em> is actually higher.</div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <div class="box-label">✅ Exam technique — the sentence template</div>
+      <strong>"The [average] for A is [higher / lower] than for B ([number] against [number]), which means […in context]. The [range / IQR] for A is [larger / smaller] ([number] against [number]), so A is [more / less] consistent."</strong><br>
+      Use the <strong>IQR</strong> rather than the range whenever you can justify it: the range depends on only two values and one outlier destroys it, whereas the IQR describes the middle half and ignores the extremes.
+    </div>
+
+    <div class="box pitfall">
+      <div class="box-label">⚠️ Restrictions on what you may conclude</div>
+      Three claims that are never safe from a data set alone:<br>
+      <strong>1. Cause.</strong> Two things moving together does not mean one causes the other (section 6).<br>
+      <strong>2. Generalising past the sample.</strong> A survey of 20 students in one class says nothing reliable about the whole school — the sample is too <mark>small</mark> and it is not <mark>representative</mark>. A bigger, randomly chosen sample fixes this.<br>
+      <strong>3. Predicting an individual.</strong> "The mean is 70" does not mean the next student will score 70. An average describes the group, never a member of it.
+    </div>
+
+    <div class="box remember">
+      <div class="box-label">⚠️ Which measure, and when</div>
+      <strong>Mean</strong> — uses every value; best when there are no extremes. Wrecked by an outlier.<br>
+      <strong>Median</strong> — the middle; use it when there <em>is</em> an outlier (incomes, house prices).<br>
+      <strong>Mode</strong> — the only average available for qualitative data; also what a shopkeeper wants (the size that sells).<br>
+      <strong>Range</strong> — quick, but built from just the two extreme values.<br>
+      <strong>IQR</strong> — the spread of the middle half; unaffected by outliers, so it is the better comparison.
+    </div>
+  </div>
+
+
+  <!-- ── 10 · CHECK YOURSELF ── -->
+  <div class="section" id="scy">
+    <div class="sec-label">10 / 11 · Retrieval</div>
+    <h2>Check yourself — try each one on paper first</h2>
+    <p>Reading these notes is not the same as being able to do this in an exam. Work each one out properly, <em>then</em> tap to check.</p>
+
+    <div class="cy">
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q1</span><span>Classify each of these as <strong>qualitative</strong>, <strong>discrete</strong> or <strong>continuous</strong>: (a) the number of chapatis eaten at dinner, (b) the mass of a mango, (c) favourite colour, (d) the time an athlete takes to run 400 m, (e) shoe size.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">(a) <strong>discrete</strong> — counted, whole values only. (b) <strong>continuous</strong> — measured, and more precise scales give more decimals. (c) <strong>qualitative</strong> — a category, so only the mode makes sense. (d) <strong>continuous</strong>. (e) <strong>discrete</strong> — the trap: feet are continuous, but the <em>recorded values</em> jump 6, 7, 8, so shoe size behaves as discrete. Always classify what is written down, not what is being measured.</div>
+      </div>
+
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q2</span><span>30 kirana shops were asked how many brands of atta they stock. Number of brands <span class="eq-inline">x</span>: 1, 2, 3, 4, 5 with frequencies 3, 7, 9, 8, 3. Find the <strong>mean</strong>, the <strong>median</strong> and the <strong>mode</strong>.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Σf = 3+7+9+8+3 = 30 ✓. Σfx = 3(1) + 7(2) + 9(3) + 8(4) + 3(5) = 3 + 14 + 27 + 32 + 15 = 91. Mean = 91/30 = 3.033… = <strong>3.03</strong> (3 s.f.). Mode = the value with the biggest frequency (9) = <strong>3</strong>. Median: n = 30 is even, so it is the mean of the 15th and 16th values. Cumulative frequencies are 3, 10, 19, 27, 30 — items 11 to 19 are all "3", so both the 15th and 16th are 3 and the median = <strong>3</strong>. Do <em>not</em> divide by 5 rows, and do <em>not</em> give the mode as 9.</div>
+      </div>
+
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q3</span><span>The masses <span class="eq-inline">m</span> kg of 40 parcels: <span class="eq-inline">0 &lt; m ≤ 5</span> → 8, <span class="eq-inline">5 &lt; m ≤ 10</span> → 14, <span class="eq-inline">10 &lt; m ≤ 20</span> → 10, <span class="eq-inline">20 &lt; m ≤ 40</span> → 8. Calculate an <strong>estimate of the mean</strong>, and write down the <strong>modal class</strong>.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Midpoints are 2.5, 7.5, 15 and 30. Σ(f × midpoint) = 8(2.5) + 14(7.5) + 10(15) + 8(30) = 20 + 105 + 150 + 240 = 515. Estimate of the mean = 515/40 = <strong>12.875 kg</strong> (accept 12.9 kg). Modal class: the widths are 5, 5, 10, 20, so the densities are 1.6, 2.8, 1.0 and 0.4 — the greatest is 2.8, which is also the greatest frequency (14), so the modal class is <strong>5 &lt; m ≤ 10</strong>. Write it as an interval, not as 7.5 or 14.</div>
+      </div>
+
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q4</span><span>On a histogram, one bar spans <span class="eq-inline">20 &lt; t ≤ 35</span> and has a frequency density of <span class="eq-inline">3.6</span>. (a) How many items are in that class? (b) A second class, <span class="eq-inline">35 &lt; t ≤ 55</span>, contains 30 items — what is the height of its bar?</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">(a) Class width = 35 − 20 = 15, so frequency = density × width = 3.6 × 15 = <strong>54 items</strong>. (b) Class width = 55 − 35 = 20, so frequency density = 30 ÷ 20 = <strong>1.5</strong>. The second bar is much <em>shorter</em> than the first even though it is wide, because its 30 items are thinly spread. Height is crowdedness, not count.</div>
+      </div>
+
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q5</span><span>The heights <span class="eq-inline">h</span> cm of 120 plants give cumulative frequencies: <span class="eq-inline">h ≤ 10</span> → 8, <span class="eq-inline">h ≤ 20</span> → 32, <span class="eq-inline">h ≤ 30</span> → 74, <span class="eq-inline">h ≤ 40</span> → 104, <span class="eq-inline">h ≤ 50</span> → 120. Estimate the <strong>median</strong> and the <strong>interquartile range</strong>.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">n = 120. Median is read at <span class="eq-inline">n/2 = 60</span>: 60 lies between the 32 at 20 cm and the 74 at 30 cm, so median ≈ 20 + (60−32)/(74−32) × 10 = 20 + 6.7 = <strong>26.7 cm</strong> (about 27 cm). Q₁ at <span class="eq-inline">n/4 = 30</span>: between 8 and 32, so ≈ 10 + (30−8)/24 × 10 = <strong>19.2 cm</strong>. Q₃ at <span class="eq-inline">3n/4 = 90</span>: between 74 and 104, so ≈ 30 + (90−74)/30 × 10 = <strong>35.3 cm</strong>. IQR ≈ 35.3 − 19.2 = <strong>16.1 cm</strong> (about 16 cm). Reading off a hand-drawn curve, anything within about half a square is accepted.</div>
+      </div>
+
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q6</span><span>The mean height of 12 plants is <span class="eq-inline">24.5 cm</span>. The tallest plant, of height <span class="eq-inline">41 cm</span>, is removed. Find the mean height of the remaining 11 plants.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">Turn the mean into a total: Σx = 24.5 × 12 = 294 cm. Remove the plant: 294 − 41 = 253 cm, now shared between 11 plants. New mean = 253 ÷ 11 = <strong>23 cm</strong>. Notice the mean fell by 1.5 cm from removing a single value — that is exactly how sensitive the mean is to an extreme. Never try to "adjust the mean" directly; always go via the total.</div>
+      </div>
+
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q7</span><span>Two bowlers' runs conceded per over have the same <strong>median</strong> of 6, but bowler P has an interquartile range of 2 and bowler Q an interquartile range of 9. <strong>Compare</strong> the two bowlers, using both statistics.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">A full answer must do <em>both</em> halves. "Their medians are <strong>equal</strong> (both 6 runs per over), so on average they concede the same. But P's interquartile range is much <strong>smaller</strong> (2 against 9), so P is far more <strong>consistent</strong> from over to over, while Q's overs vary widely — some cheap, some expensive." Quoting the two numbers and interpreting them in cricket context is what scores; "P is better" alone scores nothing, and note the medians tell you they are <em>not</em> better on average.</div>
+      </div>
+
+      <div class="cy-item" role="button" tabindex="0" onclick="this.classList.toggle('open')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.classList.toggle('open')}">
+        <div class="cy-q"><span class="cy-n">Q8</span><span>A scatter diagram of the number of hours 15 children spend on a phone each day against their test marks shows strong negative correlation. (a) <strong>Explain</strong> why this does not prove that phone use causes lower marks. (b) <strong>Explain</strong> why using the line of best fit to predict the mark of a child who uses a phone for 14 hours a day is unreliable.</span></div>
+        <div class="cy-hint">Tap to reveal</div>
+        <div class="cy-a">(a) Correlation shows only that the two <em>vary together</em>. A third factor could be driving both — for example, less time spent studying, or less sleep — or the sample of 15 may simply be too small and unrepresentative to show a real link. So the diagram gives no evidence of <strong>cause</strong>. (b) 14 hours is far <strong>outside the range of the plotted data</strong>. A line of best fit only describes the pattern where data exists; nothing guarantees the same straight-line trend continues beyond it, so <em>extrapolating</em> that far is unreliable (and could even give an impossible negative mark).</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 11 · SKILL BANK ── -->
+  <div class="section" id="s11">
+    <div class="sec-label">11 / 11 · Reference</div>
+    <h2>Topic 9 skill bank</h2>
+    <p>None of this is printed in the exam — it is all recall. Tap any tile for the rule, a worked line, and the trap examiners set:</p>
+
+    <div class="eqbank interactive" id="eqbank"></div>
+
+    <div class="box remember" style="margin-top:22px">
+      <div class="box-label">⚠️ Know these cold</div>
+      <span class="eq-inline" style="color:var(--rose)">mean = Σx ÷ n</span>
+      <span class="eq-inline" style="color:var(--rose)">Σx = mean × n</span>
+      <span class="eq-inline" style="color:var(--rose)">mean = Σfx ÷ Σf</span>
+      <span class="eq-inline" style="color:var(--rose)">estimated mean uses MIDPOINTS</span>
+      <span class="eq-inline" style="color:var(--rose)">IQR = Q₃ − Q₁</span>
+      <span class="eq-inline" style="color:var(--rose)">pie angle = freq ÷ total × 360</span>
+      <span class="eq-inline" style="color:var(--rose)">CF plots at the UPPER boundary</span>
+      <span class="eq-inline" style="color:var(--rose)">on a CF curve: median at n/2 · Q₁ at n/4 · Q₃ at 3n/4</span>
+      <span class="eq-inline" style="color:var(--rose)">freq density = freq ÷ class width</span>
+      <span class="eq-inline" style="color:var(--rose)">histogram: AREA = frequency</span>
+      <span class="eq-inline" style="color:var(--rose)">compare: one average + one spread</span>
+      <span class="eq-inline" style="color:var(--rose)">correlation ≠ cause</span>
+    </div>
+  </div>
+
+  <div class="paper-links">
+    <div class="pl-label">Practise this topic</div>
+    <p>There is <strong>no Topic 9 paper yet</strong> — statistics sits outside the Grade&nbsp;X SA-1 scope, so nothing has been built for it so far. Until one exists, the eight <em>Check yourself</em> questions above are the retrieval practice for this topic; the mixed non-calculator papers cover Topics 1–7 only.</p>
+    <div class="pl-list">
+      <a href="Mathematics%20Topic%208%20-%20Probability.html">📘 Topic 8 notes · Probability<span>the other half of the data-handling pair — sample spaces, Venn and tree diagrams</span></a>
+      <a href="../../../index.html">🏠 Back to the hub<span>a Topic 9 practice paper will appear on the Topic 9 card here once it is built</span></a>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div class="footer">
+    IGCSE MATHEMATICS · 0580 EXTENDED · TOPIC 9 — STATISTICS (E9.1–E9.7)<br>
+    Built for understanding — order the data before you touch it, quote one average and one spread, plot cumulative frequency at the upper boundary, and remember that on a histogram it is the area that counts.
+  </div>
+
+</div>
+
+<!-- ── FLOATING DETAIL CARD ── -->
+<div id="eq-card">
+  <div id="eqc-top">
+    <div id="eqc-close" onclick="closeEqCard()">✕</div>
+    <div id="eqc-badge"></div>
+    <div id="eqc-head">
+      <h4 id="eqc-name"></h4>
+      <div id="eqc-formula"></div>
+    </div>
+  </div>
+  <div id="eqc-body">
+    <div class="eqc-section-lbl">Key facts</div>
+    <div class="sym-row" id="eqc-syms"></div>
+    <div class="eqc-section-lbl">Rule / method</div>
+    <div id="eqc-rearr"></div>
+    <div class="eqc-section-lbl">Worked example</div>
+    <div id="eqc-example"></div>
+    <div id="eqc-tip"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   shared helpers
+════════════════════════════════════════════════ */
+const NS='http://www.w3.org/2000/svg';
+function E(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function T(g,cls,x,y,txt,anchor,style){
+  const e=E('text',{class:cls,x:x,y:y});
+  if(anchor) e.setAttribute('text-anchor',anchor);
+  if(style)  e.setAttribute('style',style);
+  e.textContent=txt; g.appendChild(e); return e;
+}
+function cross(g,cls,x,y,r){
+  g.appendChild(E('line',{class:cls,x1:x-r,y1:y-r,x2:x+r,y2:y+r}));
+  g.appendChild(E('line',{class:cls,x1:x+r,y1:y-r,x2:x-r,y2:y+r}));
+}
+/* tidy number: 4 -> "4", 4.175 -> "4.175", 23.3636 -> "23.36" */
+function nm(v,dp){
+  if(!isFinite(v)) return '—';
+  const s=v.toFixed(dp===undefined?2:dp);
+  /* only strip zeros that sit AFTER a decimal point — otherwise "20" would become "2" */
+  return (s.indexOf('.')<0 ? s : s.replace(/\.?0+$/,''))||'0';
+}
+/* a nice round axis maximum at or above v */
+function niceMax(v){
+  const L=[0.5,1,1.5,2,2.5,3,4,5,6,8,10,12,15,20,25,30,35,40,50,60];
+  for(let i=0;i<L.length;i++) if(v<=L[i]+1e-9) return L[i];
+  return Math.ceil(v/10)*10;
+}
+/* monotone-safe smooth path through points (a cumulative curve must never dip) */
+function smooth(pts){
+  if(pts.length<2) return '';
+  const cl=(v,a,b)=>Math.max(Math.min(a,b),Math.min(Math.max(a,b),v));
+  let d='M '+pts[0][0].toFixed(1)+' '+pts[0][1].toFixed(1);
+  for(let i=0;i<pts.length-1;i++){
+    const p0=pts[i-1]||pts[i], p1=pts[i], p2=pts[i+1], p3=pts[i+2]||pts[i+1];
+    let c1x=p1[0]+(p2[0]-p0[0])/6, c1y=p1[1]+(p2[1]-p0[1])/6;
+    let c2x=p2[0]-(p3[0]-p1[0])/6, c2y=p2[1]-(p3[1]-p1[1])/6;
+    c1x=cl(c1x,p1[0],p2[0]); c2x=cl(c2x,p1[0],p2[0]);
+    c1y=cl(c1y,p1[1],p2[1]); c2y=cl(c2y,p1[1],p2[1]);
+    d+=' C '+c1x.toFixed(1)+' '+c1y.toFixed(1)+', '+c2x.toFixed(1)+' '+c2y.toFixed(1)+
+       ', '+p2[0].toFixed(1)+' '+p2[1].toFixed(1);
+  }
+  return d;
+}
+/* click + keyboard on a tab strip */
+function tabs(id,fn){
+  const box=document.getElementById(id); if(!box) return;
+  function pick(t){
+    if(!t) return;
+    box.querySelectorAll('.scn-tab').forEach(b=>b.classList.remove('active'));
+    t.classList.add('active'); fn(t);
+  }
+  box.addEventListener('click',e=>pick(e.target.closest('.scn-tab')));
+  box.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pick(e.target.closest('.scn-tab')); }
+  });
+}
+
+/* ════════════════════════════════════════════════
+   1 · AVERAGES & SPREAD EXPLORER
+════════════════════════════════════════════════ */
+(function(){
+  const svg=document.getElementById('avSvg'); if(!svg) return;
+  const g=document.getElementById('avG');
+  const S=[0,1,2,3,4,5,6].map(i=>document.getElementById('av'+i));
+  const DEF=[12,15,18,18,22,25,30];
+  const X0=44, X1=444, VMAX=50, YL=132, BTOP=40;
+  const px=v=>X0+(X1-X0)*v/VMAX;
+  function mid(a){ const n=a.length,m=n>>1; return n%2? a[m] : (a[m-1]+a[m])/2; }
+
+  function draw(){
+    const v=S.map(s=>+s.value);
+    v.forEach((x,i)=>document.getElementById('avv'+i).textContent=x);
+    const s=v.slice().sort((a,b)=>a-b), n=s.length;
+    const sum=s.reduce((a,b)=>a+b,0), mean=sum/n;
+    const med=mid(s);
+    const Q1=mid(s.slice(0,n>>1)), Q3=mid(s.slice((n+1)>>1)), iqr=Q3-Q1;
+    const range=s[n-1]-s[0];
+    const cnt={}; s.forEach(x=>cnt[x]=(cnt[x]||0)+1);
+    let mx=0; for(const k in cnt) if(cnt[k]>mx) mx=cnt[k];
+    const modes=Object.keys(cnt).filter(k=>cnt[k]===mx).map(Number).sort((a,b)=>a-b);
+    const modeTxt = mx===1 ? 'no mode — every value appears once'
+      : modes.join(', ')+(modes.length>1?'  (multi-modal)':'')+'  (appears '+mx+'×)';
+
+    g.textContent='';
+    T(g,'slbl',X0,22,'▬ MEDIAN '+nm(med));
+    T(g,'slbl',242,22,'▭ IQR BAND','middle');
+    T(g,'slbl',X1,22,'┄ MEAN '+nm(mean),'end');
+    /* IQR band behind everything */
+    g.appendChild(E('rect',{class:'av-iqr',x:px(Q1).toFixed(1),y:BTOP,
+      width:Math.max(1.5,px(Q3)-px(Q1)).toFixed(1),height:YL-BTOP,rx:3}));
+    /* axis */
+    g.appendChild(E('line',{class:'gax',x1:X0,y1:YL,x2:X1,y2:YL}));
+    for(let t=0;t<=VMAX;t+=5){
+      const x=px(t);
+      g.appendChild(E('line',{class:'tk',x1:x,y1:YL,x2:x,y2:YL+(t%10?4:7)}));
+      if(t%10===0) T(g,'gnum',x,YL+20,t,'middle');
+    }
+    /* markers */
+    g.appendChild(E('line',{class:'av-med',x1:px(med).toFixed(1),y1:BTOP,x2:px(med).toFixed(1),y2:YL+9}));
+    g.appendChild(E('line',{class:'av-mean',x1:px(mean).toFixed(1),y1:BTOP,x2:px(mean).toFixed(1),y2:YL+9}));
+    /* dots, stacked where values repeat */
+    const seen={};
+    s.forEach(val=>{ seen[val]=(seen[val]||0)+1;
+      g.appendChild(E('circle',{class:'av-dot',cx:px(val).toFixed(1),
+        cy:YL-11-(seen[val]-1)*13, r:6})); });
+    T(g,'axt',242,176,'VALUE','middle');
+
+    const put=(id,txt)=>document.getElementById(id).textContent=txt;
+    put('avSorted', s.join(',  ')+'    (n = '+n+',  Σx = '+sum+')');
+    put('avMean', nm(mean)+'   ( '+sum+' / '+n+' )');
+    put('avMed',  nm(med)+'   (the 4th ordered value)');
+    put('avMode', modeTxt);
+    put('avRange', range+'   ( '+s[n-1]+' − '+s[0]+' )');
+    put('avQ',    'Q₁ = '+nm(Q1)+'    Q₃ = '+nm(Q3));
+    put('avIqr',  nm(iqr)+'   ( '+nm(Q3)+' − '+nm(Q1)+' )');
+    const gap=mean-med;
+    put('avGap', (gap>0?'+':'')+nm(gap));
+    let msg;
+    if(range===0){
+      msg='Every value is the same, so the spread is <b>zero</b> — range 0 and IQR 0 — and all three averages collapse onto that one value. No spread means no information is lost by quoting a single number.';
+    } else if(Math.abs(gap)<0.6){
+      msg='Mean and median sit almost on top of each other (difference '+nm(gap)+'), so the data is roughly <b>symmetrical</b>. Here the mean is a fair summary and there is no reason to prefer the median.';
+    } else if(gap>0){
+      msg='The mean is <b>'+nm(gap)+' above</b> the median, so the mean has been dragged to the right by one or more high values. The data has a tail towards the top end — this is when the examiner expects you to say the <b>median</b> is the more appropriate average.';
+    } else {
+      msg='The mean is <b>'+nm(-gap)+' below</b> the median, so a low value is pulling it down. Again the median is the safer average to quote, because it barely moves.';
+    }
+    msg+=' Notice that dragging the largest value alone changes the <b>mean and the range</b>, but leaves the <b>median</b> — and often the IQR — completely unmoved.';
+    document.getElementById('avRead').innerHTML=msg;
+  }
+  S.forEach(s=>s.addEventListener('input',draw));
+  document.getElementById('avReset').addEventListener('click',()=>{
+    S.forEach((s,i)=>s.value=DEF[i]); draw(); });
+  document.getElementById('avOut').addEventListener('click',()=>{
+    S.forEach((s,i)=>s.value=DEF[i]); S[6].value=50; draw(); });
+  document.getElementById('avFlat').addEventListener('click',()=>{
+    S.forEach(s=>s.value=20); draw(); });
+  draw();
+})();
+
+/* ════════════════════════════════════════════════
+   2 · SCATTER & CORRELATION EXPLORER
+════════════════════════════════════════════════ */
+const SC={
+  strong:{fit:true, at:5.5, xmax:10, xl:'HOURS REVISED', yl:'MARK / 50',
+    pts:[[1,14],[2,18],[2,24],[3,26],[4,30],[4,34],[5,33],[6,40],[7,42],[8,46]],
+    desc:'<b>Strong positive correlation.</b> The crosses hug one straight line and rise together, so a line of best fit is safe to draw and safe to read from.'},
+  weak:{fit:true, at:5.5, xmax:10, xl:'HOURS OF SPORT PER WEEK', yl:'MARK / 50',
+    pts:[[1,20],[2,14],[3,30],[3,18],[4,36],[5,24],[5,40],[6,28],[7,44],[8,32]],
+    desc:'<b>Weak positive correlation.</b> The trend still rises, but the crosses sit far from the line, so any prediction is much less reliable. "Weak" describes how <em>tight</em> the cloud is — not how steep it is.'},
+  neg:{fit:true, at:5.5, xmax:10, xl:'AGE OF SCOOTER (YEARS)', yl:'VALUE (₹ THOUSAND)',
+    pts:[[1,46],[2,44],[3,40],[4,38],[5,33],[6,30],[7,26],[8,22],[9,18],[10,14]],
+    desc:'<b>Strong negative correlation.</b> As x increases, y decreases. A negative gradient is not a "worse" correlation — it is just as strong and just as usable as a positive one.'},
+  none:{fit:false, at:null, xmax:10, xl:'SHOE SIZE', yl:'MARK / 50',
+    pts:[[1,28],[2,34],[3,22],[4,30],[5,26],[6,36],[7,24],[8,32],[9,20],[10,30]],
+    desc:'<b>Zero (no) correlation.</b> The cloud has no direction, so there is <em>nothing to fit</em>. Drawing a line here would be wrong, and a prediction read off it would be meaningless. The correct answer to "describe the correlation" is that there is none.'}
+};
+(function(){
+  const svg=document.getElementById('scSvg'); if(!svg) return;
+  const g=document.getElementById('scG');
+  const X0=54, X1=452, Y0=214, Y1=40, YMAX=50;
+  let key='strong', showFit=true;
+  const px=(x,xm)=>X0+(X1-X0)*x/xm;
+  const py=y=>Y0-(Y0-Y1)*y/YMAX;
+
+  function fitLine(pts){
+    const n=pts.length; let sx=0,sy=0,sxy=0,sxx=0;
+    pts.forEach(p=>{sx+=p[0];sy+=p[1];sxy+=p[0]*p[1];sxx+=p[0]*p[0];});
+    const Sxy=sxy-sx*sy/n, Sxx=sxx-sx*sx/n;
+    const m=Sxy/Sxx;
+    return {m:m, c:sy/n-m*sx/n, mx:sx/n, my:sy/n};
+  }
+  function clipX(m,c,x){
+    const y=m*x+c;
+    if(y<0)    return -c/m;
+    if(y>YMAX) return (YMAX-c)/m;
+    return x;
+  }
+  function draw(){
+    const D=SC[key], xm=D.xmax;
+    g.textContent='';
+    for(let i=0;i<=5;i++){
+      const y=Y1+(Y0-Y1)*i/5;
+      g.appendChild(E('line',{class:'gl5',x1:X0,y1:y.toFixed(1),x2:X1,y2:y.toFixed(1)}));
+      T(g,'gnum',X0-6,(y+3.5).toFixed(1),YMAX-YMAX*i/5,'end');
+    }
+    for(let i=0;i<=xm;i+=2) T(g,'gnum',px(i,xm).toFixed(1),Y0+16,i,'middle');
+    /* line of best fit + read-off, drawn under the crosses */
+    if(D.fit && showFit){
+      const f=fitLine(D.pts);
+      const xa=Math.min.apply(null,D.pts.map(p=>p[0])), xb=Math.max.apply(null,D.pts.map(p=>p[0]));
+      const ca=clipX(f.m,f.c,xa), cb=clipX(f.m,f.c,xb);
+      g.appendChild(E('line',{class:'sc-fit',x1:px(ca,xm).toFixed(1),y1:py(f.m*ca+f.c).toFixed(1),
+        x2:px(cb,xm).toFixed(1),y2:py(f.m*cb+f.c).toFixed(1)}));
+      /* mean point — a good hand-drawn line passes through it */
+      g.appendChild(E('circle',{class:'sc-mean',cx:px(f.mx,xm).toFixed(1),cy:py(f.my).toFixed(1),r:6}));
+      if(D.at!==null){
+        const yp=f.m*D.at+f.c;
+        g.appendChild(E('line',{class:'sc-dash',x1:px(D.at,xm).toFixed(1),y1:Y0,
+          x2:px(D.at,xm).toFixed(1),y2:py(yp).toFixed(1)}));
+        g.appendChild(E('line',{class:'sc-dash',x1:X0,y1:py(yp).toFixed(1),
+          x2:px(D.at,xm).toFixed(1),y2:py(yp).toFixed(1)}));
+      }
+    }
+    D.pts.forEach(p=>cross(g,'sc-x',px(p[0],xm),py(p[1]),4.5));
+    g.appendChild(E('line',{class:'gax',x1:X0,y1:Y0,x2:X1,y2:Y0}));
+    g.appendChild(E('line',{class:'gax',x1:X0,y1:Y0,x2:X0,y2:Y1-6}));
+    T(g,'axt',253,236,D.xl,'middle');
+    T(g,'axt',14,130,D.yl,'middle');
+    g.lastChild.setAttribute('transform','rotate(-90 14 130)');
+
+    let msg=SC[key].desc;
+    if(D.fit && showFit){
+      const f=fitLine(D.pts);
+      msg+=' The green line is the computer\'s best line — <b>yours is drawn by eye with a ruler</b> and only needs to be close to it, with a roughly even scatter of crosses either side. No calculation of a gradient is ever required.';
+      if(D.at!==null)
+        msg+=' Reading off at x = '+D.at+' gives y ≈ <b>'+nm(f.m*D.at+f.c,1)+'</b> — and drawing in those dashed guide lines is itself worth a mark.';
+      msg+=' The circle is the <b>mean point</b> ('+nm(f.mx,1)+', '+nm(f.my,1)+'); a good line should pass through or very near it.';
+    } else if(D.fit){
+      msg+=' The line is hidden — look at the bare cloud and decide for yourself which way you would lay the ruler, then show it again to compare.';
+    }
+    document.getElementById('scRead').innerHTML=msg;
+  }
+  tabs('scTabs',t=>{ key=t.dataset.k; showFit=true; draw(); });
+  document.getElementById('scFit').addEventListener('click',()=>{ showFit=!showFit; draw(); });
+  draw();
+})();
+
+/* ════════════════════════════════════════════════
+   3 · CUMULATIVE FREQUENCY READ-OFF TOOL
+════════════════════════════════════════════════ */
+const BND=[0,20,30,40,60,100];
+/* the value at cumulative position p, by proportion inside its class */
+function atPos(f,p){
+  let cum=0;
+  for(let i=0;i<f.length;i++){
+    const prev=cum; cum+=f[i];
+    if(f[i]>0 && p<=cum+1e-9)
+      return BND[i]+(p-prev)/f[i]*(BND[i+1]-BND[i]);
+  }
+  return BND[BND.length-1];
+}
+(function(){
+  const svg=document.getElementById('cfSvg'); if(!svg) return;
+  const g=document.getElementById('cfG');
+  const S=[0,1,2,3,4].map(i=>document.getElementById('cf'+i));
+  const X0=58, X1=452, Y0=232, Y1=48;
+  const px=t=>X0+(X1-X0)*t/100;
+
+  function draw(){
+    const f=S.map(s=>+s.value);
+    f.forEach((v,i)=>document.getElementById('cfv'+i).textContent=v);
+    const n=f.reduce((a,b)=>a+b,0);
+    const cum=[]; let c=0; f.forEach(v=>{ c+=v; cum.push(c); });
+    const py=v=>n? Y0-(Y0-Y1)*v/n : Y0;
+    g.textContent='';
+    for(let i=0;i<=5;i+=1){
+      const x=px(i*20);
+      g.appendChild(E('line',{class:'gl5',x1:x.toFixed(1),y1:Y0,x2:x.toFixed(1),y2:Y1-4}));
+      T(g,'gnum',x.toFixed(1),Y0+16,i*20,'middle');
+    }
+    const put=(id,txt)=>document.getElementById(id).textContent=txt;
+    if(n===0){
+      g.appendChild(E('line',{class:'gax',x1:X0,y1:Y0,x2:X1,y2:Y0}));
+      g.appendChild(E('line',{class:'gax',x1:X0,y1:Y0,x2:X0,y2:Y1-8}));
+      T(g,'slbl',253,130,'no data — raise a frequency','middle');
+      ['cfCum','cfQ1','cfMed','cfQ3','cfIqr','cfMean'].forEach(id=>put(id,'—'));
+      document.getElementById('cfRead').textContent='Every frequency is zero, so there is nothing to plot.';
+      return;
+    }
+    /* y gridlines at the four read-off levels */
+    [[0.25,'n/4'],[0.5,'n/2'],[0.75,'3n/4'],[1,'n']].forEach(L=>{
+      const y=py(n*L[0]);
+      g.appendChild(E('line',{class:'gl5',x1:X0,y1:y.toFixed(1),x2:X1,y2:y.toFixed(1)}));
+      T(g,'gnum',X0-6,(y+3.5).toFixed(1),nm(n*L[0],1),'end');
+    });
+    T(g,'gnum',X0-6,Y0+3.5,'0','end');
+    /* read-off lines */
+    const Q1=atPos(f,n/4), MD=atPos(f,n/2), Q3=atPos(f,3*n/4);
+    [[n/4,Q1,'Q₁'],[n/2,MD,'median'],[3*n/4,Q3,'Q₃']].forEach(R=>{
+      const y=py(R[0]), x=px(R[1]);
+      g.appendChild(E('line',{class:'cf-read',x1:X0,y1:y.toFixed(1),x2:x.toFixed(1),y2:y.toFixed(1)}));
+      g.appendChild(E('line',{class:'cf-read',x1:x.toFixed(1),y1:y.toFixed(1),x2:x.toFixed(1),y2:Y0}));
+    });
+    /* the curve */
+    const pts=[[px(0),py(0)]].concat(cum.map((v,i)=>[px(BND[i+1]),py(v)]));
+    g.appendChild(E('path',{class:'cf-curve',d:smooth(pts)}));
+    pts.forEach(p=>cross(g,'cf-pt',p[0],p[1],4));
+    g.appendChild(E('line',{class:'gax',x1:X0,y1:Y0,x2:X1,y2:Y0}));
+    g.appendChild(E('line',{class:'gax',x1:X0,y1:Y0,x2:X0,y2:Y1-8}));
+    T(g,'axt',253,256,'TIME t (MINUTES)','middle');
+    T(g,'cf-lbl',px(MD)+5,py(n/2)-5,'median ≈ '+nm(MD,1));
+
+    /* estimated mean, from the midpoints */
+    let sfm=0;
+    f.forEach((v,i)=>{ sfm+=v*(BND[i]+BND[i+1])/2; });
+    put('cfCum', cum.join(',  ')+'    (Σf = '+n+')');
+    put('cfQ1',  'at '+nm(n/4,1)+'  →  '+nm(Q1,1)+' min');
+    put('cfMed', 'at '+nm(n/2,1)+'  →  '+nm(MD,1)+' min');
+    put('cfQ3',  'at '+nm(3*n/4,1)+'  →  '+nm(Q3,1)+' min');
+    put('cfMean',nm(sfm/n,2)+' min   (midpoints)');
+    put('cfIqr', nm(Q3-Q1,1)+' min   ( '+nm(Q3,1)+' − '+nm(Q1,1)+' )');
+    let msg='The last cross must sit at cumulative frequency <b>'+n+'</b> = Σf — that is your check. '+
+      'The <b>steepest</b> part of the curve is where the data is most crowded, and the <b>flattest</b> part is the sparse tail.';
+    const mean=sfm/n;
+    if(mean-MD>1.5) msg+=' Here the estimated mean ('+nm(mean,1)+' min) is well <b>above</b> the median ('+nm(MD,1)+' min), so a few long-homework students are stretching the top end.';
+    else if(MD-mean>1.5) msg+=' Here the estimated mean ('+nm(mean,1)+' min) is <b>below</b> the median ('+nm(MD,1)+' min), so the low end is stretched.';
+    else msg+=' Mean and median are close here, so this distribution is fairly symmetrical.';
+    msg+=' Try dragging the last class up: the curve keeps rising, so the median moves — but far less than the mean does.';
+    document.getElementById('cfRead').innerHTML=msg;
+  }
+  S.forEach(s=>s.addEventListener('input',draw));
+  draw();
+})();
+
+/* ════════════════════════════════════════════════
+   4 · HISTOGRAM · FREQUENCY DENSITY TOOL
+════════════════════════════════════════════════ */
+(function(){
+  const svg=document.getElementById('hgSvg'); if(!svg) return;
+  const g=document.getElementById('hgG');
+  const S=[0,1,2,3,4].map(i=>document.getElementById('hg'+i));
+  const X0=58, X1=452, Y0=206, Y1=44;
+  const px=t=>X0+(X1-X0)*t/100;
+  let mode='d';
+
+  function draw(){
+    const f=S.map(s=>+s.value);
+    f.forEach((v,i)=>document.getElementById('hgv'+i).textContent=v);
+    const w=[], den=[];
+    for(let i=0;i<5;i++){ w.push(BND[i+1]-BND[i]); den.push(f[i]/w[i]); }
+    const n=f.reduce((a,b)=>a+b,0);
+    const vals = mode==='d' ? den : f;
+    const top  = niceMax(Math.max.apply(null,vals.concat([0.1])));
+    const py=v=>Y0-(Y0-Y1)*v/top;
+    g.textContent='';
+    for(let i=0;i<=5;i++){
+      const y=Y1+(Y0-Y1)*i/5, v=top-top*i/5;
+      g.appendChild(E('line',{class:'gl5',x1:X0,y1:y.toFixed(1),x2:X1,y2:y.toFixed(1)}));
+      T(g,'gnum',X0-6,(y+3.5).toFixed(1),(top<=5?nm(v,1):nm(v,0)),'end');
+    }
+    for(let i=0;i<5;i++){
+      if(vals[i]<=0) continue;
+      const x=px(BND[i]), bw=px(BND[i+1])-x, y=py(vals[i]);
+      g.appendChild(E('rect',{class:'hg-bar'+(mode==='f'?' wrong':''),
+        x:x.toFixed(1),y:y.toFixed(1),width:bw.toFixed(1),height:(Y0-y).toFixed(1)}));
+      T(g,'hg-f',(x+bw/2).toFixed(1),(y-5).toFixed(1),f[i],'middle');
+    }
+    BND.forEach(b=>T(g,'gnum',px(b).toFixed(1),Y0+16,b,'middle'));
+    g.appendChild(E('line',{class:'gax',x1:X0,y1:Y0,x2:X1,y2:Y0}));
+    g.appendChild(E('line',{class:'gax',x1:X0,y1:Y0,x2:X0,y2:Y1-8}));
+    T(g,'axt',253,238,'TIME t (MINUTES)  ·  NUMBER ON EACH BAR IS ITS FREQUENCY','middle');
+    T(g,'axt',14,125, mode==='d'?'FREQUENCY DENSITY':'FREQUENCY (WRONG AXIS)','middle','');
+    g.lastChild.setAttribute('transform','rotate(-90 14 125)');
+
+    const pad=(s,k)=>{ s=String(s); while(s.length<k) s='&nbsp;'+s; return s; };
+    const padR=(s,k)=>{ s=String(s); while(s.length<k) s=s+'&nbsp;'; return s; };
+    document.getElementById('hgRows').innerHTML=f.map((v,i)=>
+      pad(BND[i],3)+'–'+padR(BND[i+1],4)+
+      ' : '+pad(v,2)+' ÷ '+pad(w[i],2)+' = '+nm(den[i],2)
+    ).join('<br>');
+    document.getElementById('hgTot').textContent=n+' items';
+    /* name the flattest class from the DATA, so the sentence can never contradict the sliders */
+    let lo=0; for(let i=1;i<5;i++) if(den[i]<den[lo]) lo=i;
+    /* in the "wrong" mode, area on the page is f × width — find which class the eye over-reads most */
+    const area=f.map((v,i)=>v*w[i]);
+    let big=0, mostF=0;
+    for(let i=1;i<5;i++){ if(area[i]>area[big]) big=i; if(f[i]>f[mostF]) mostF=i; }
+    const cls=i=>BND[i]+'–'+BND[i+1];
+    let wrongMsg='This axis is <b>wrong</b>, and here is the lie. The eye judges a bar by its <b>area</b>, but once frequency is used as the height the areas no longer match the frequencies. ';
+    if(big!==mostF && f[big]<f[mostF])
+      wrongMsg+='The <b>'+cls(big)+'</b> bar covers '+nm(area[big],0)+' units of page for just '+f[big]+
+        ' items, while <b>'+cls(mostF)+'</b> — which holds more, '+f[mostF]+' items — covers only '+
+        nm(area[mostF],0)+'. A wide class is shouting louder than a busier narrow one.';
+    else
+      wrongMsg+='Widen or shrink a frequency and watch it: because the 60–100 class is 40 minutes wide '+
+        '(twice its neighbour and four times the 10-minute classes), each of its items claims four times '+
+        'the page area of an item in a 10-minute class.';
+    wrongMsg+=' Switch back and compare the two shapes — that distortion is the whole reason frequency density exists.';
+    document.getElementById('hgRead').innerHTML = mode==='d'
+      ? 'This is the <b>correct</b> histogram. Height is frequency density, so each bar\'s <b>area</b> equals its frequency — check any bar: height × width gives back the number printed on it. The flattest bar is <b>'+cls(lo)+'</b> at a density of only '+nm(den[lo],2)+', because its '+f[lo]+' items are spread thinly across '+w[lo]+' minutes.'
+      : wrongMsg;
+  }
+  tabs('hgTabs',t=>{ mode=t.dataset.m; draw(); });
+  S.forEach(s=>s.addEventListener('input',draw));
+  draw();
+})();
+
+/* ════════════════════════════════════════════════
+   5 · SKILL BANK (tappable tiles)
+════════════════════════════════════════════════ */
+const EQ={
+  types:{c:'motion',name:'Types of data',formula:'qualitative / discrete / continuous',
+    syms:[['qualitative','words, categories',''],['discrete','counted values',''],['continuous','measured on a scale','']],
+    rearr:'words → mode only · counted → bars with gaps · measured → grouped, bars touch',
+    ex:'Number of siblings = discrete. Mass of a mango = continuous. Blood group = qualitative.',
+    tip:'Shoe size is DISCRETE — classify the values recorded, not the foot being measured.'},
+  twoway:{c:'motion',name:'Two-way table',formula:'rows × columns, with totals',
+    syms:[['row total','one category',''],['column total','the other',''],['grand total','must agree both ways','']],
+    rearr:'fill gaps by subtracting along a row or down a column',
+    ex:'40 + 50 = 90 and 32 + 32 + 26 = 90 ✓ the table is consistent.',
+    tip:'Always check the grand total BOTH ways. One wrong cell poisons every part that follows.'},
+  mean:{c:'mom',name:'Mean',formula:'mean = Σx ÷ n',
+    syms:[['Σx','the total of all values',''],['n','how many values',''],['uses','every value','']],
+    rearr:'Σx = mean × n  — the lever for every "work backwards" question',
+    ex:'Mean of 8 parcels is 2.4 kg → total 19.2 kg; add 4.8 kg → 24/9 = 2.67 kg.',
+    tip:'One extreme value drags the mean a long way. That is when the median is the better average.'},
+  median:{c:'mom',name:'Median',formula:'middle value once ORDERED',
+    syms:[['odd n','the (n+1)/2 th value',''],['even n','mean of the two middle',''],['ignores','the extremes','']],
+    rearr:'order the data FIRST — the median of an unordered list is meaningless',
+    ex:'14 18 21 21 23 25 25 25 27 28 30 → 6th value = 25.',
+    tip:'For 8 values it is (4th + 5th)/2, so the answer can end in ·5 even with whole-number data.'},
+  mode:{c:'mom',name:'Mode / modal class',formula:'most common value',
+    syms:[['mode','the VALUE, not its frequency',''],['grouped','give a class interval',''],['may be','none, or several','']],
+    rearr:'from a table, look down the frequency column and read across to the value',
+    ex:'f = 12 is the largest frequency, at x = 4, so the mode is 4 — not 12.',
+    tip:'Grouped data has no single mode. Write the modal class as an interval: 30 < t ≤ 40.'},
+  spread:{c:'calc',name:'Range & IQR',formula:'range = max − min · IQR = Q₃ − Q₁',
+    syms:[['Q₁','median of the lower half',''],['Q₃','median of the upper half',''],['IQR','spread of the middle half','']],
+    rearr:'IQR beats range because it ignores the two extreme values',
+    ex:'14 … 30 → range 16; Q₁ = 21, Q₃ = 27 → IQR = 6.',
+    tip:'A smaller spread means MORE CONSISTENT. Say "consistent", not just "smaller".'},
+  freqmean:{c:'mom',name:'Mean from a table',formula:'mean = Σfx ÷ Σf',
+    syms:[['f','frequency of that value',''],['x','the value',''],['Σf','total number of items','']],
+    rearr:'add an fx column and a cumulative frequency column before you start',
+    ex:'Σfx = 167 over Σf = 40 → mean = 4.175 people.',
+    tip:'Divide by Σf (40), never by the number of ROWS (6). And do not round 4.175 to 4.'},
+  groupmean:{c:'calc',name:'Estimated mean',formula:'Σ(f × midpoint) ÷ Σf',
+    syms:[['midpoint','(a + b) ÷ 2',''],['why estimate','exact values unknown',''],['use','grouped data only','']],
+    rearr:'assume every item in a class sits at that class’s midpoint',
+    ex:'2980 / 80 = 37.25 minutes for the 80-student homework table.',
+    tip:'The mark scheme wants the word ESTIMATE, and the reason: only the class is known, not the values.'},
+  pie:{c:'energy',name:'Pie chart angle',formula:'angle = freq ÷ total × 360',
+    syms:[['360°','the whole data set',''],['per item','360 ÷ total',''],['check','angles sum to 360','']],
+    rearr:'backwards: total = freq ÷ angle × 360',
+    ex:'90 students → 4° each; 25 students → 100°. Angles total 360 ✓',
+    tip:'A pie chart shows PROPORTIONS only — without the total written on it, no frequency can be recovered.'},
+  charts:{c:'energy',name:'Bar · dual · composite',formula:'height = frequency',
+    syms:[['dual','bars side by side',''],['composite','bars stacked',''],['needs','a key + labelled axis','']],
+    rearr:'dual compares the groups; composite compares the totals',
+    ex:'Cricket 18 + 14 = 32 → one stacked bar of height 32.',
+    tip:'Bars have GAPS for discrete or qualitative data. Bars touching means you drew a histogram.'},
+  stem:{c:'energy',name:'Stem-and-leaf',formula:'stem | ordered leaves + key',
+    syms:[['stem','the tens',''],['leaf','ONE unit digit',''],['key','e.g. 2 | 3 = 23','']],
+    rearr:'no data is lost, so the median and quartiles can be counted straight off',
+    ex:'8th of 15 leaves = 31 runs, so the median is 31.',
+    tip:'Leaves must be in order AND a key must be given — both are marked.'},
+  scatter:{c:'force',name:'Correlation',formula:'positive / negative / zero',
+    syms:[['strong','points hug the line',''],['weak','points scattered',''],['zero','no line at all','']],
+    rearr:'one single ruled line by eye, across the full data set, even scatter either side',
+    ex:'Hours revised vs mark: strong positive; 5.5 h reads off at about 36/50.',
+    tip:'Correlation is NOT cause, and reading beyond the data (extrapolation) is unreliable.'},
+  cumfreq:{c:'calc',name:'Cumulative frequency',formula:'running total, at the UPPER bound',
+    syms:[['median','read in at n/2',''],['Q₁ · Q₃','n/4 and 3n/4',''],['pth pct','p/100 × n','']],
+    rearr:'in from the vertical axis → across to the curve → down to the answer',
+    ex:'n = 80: median at 40 → ≈34.5 min; Q₃ at 60 → ≈48 min; IQR ≈ 24 min.',
+    tip:'"More than 45 min" needs the SUBTRACTION: 80 − 57 = 23. And plot at the upper boundary, not the midpoint.'},
+  histo:{c:'calc',name:'Frequency density',formula:'f.d. = frequency ÷ class width',
+    syms:[['axis','labelled Frequency density',''],['bars','touch each other',''],['area','equals the frequency','']],
+    rearr:'frequency = frequency density × class width  (the backwards version)',
+    ex:'22 students over a 10-minute class → f.d. = 2.2. Bar of f.d. 3.6 over width 15 → 54.',
+    tip:'Never label the axis "Frequency". On a histogram it is AREA, not height, that carries the count.'}
+};
+(function(){
+  const bank=document.getElementById('eqbank');
+  Object.keys(EQ).forEach(key=>{
+    const q=EQ[key];
+    const cell=document.createElement('div');
+    cell.className='eqcell'; cell.dataset.c=q.c;
+    cell.innerHTML='<div class="eq-sym">'+q.formula+'</div><div class="eq-name">'+q.name+'</div>';
+    cell.addEventListener('click',ev=>{ ev.stopPropagation(); openEqCard(key); });
+    bank.appendChild(cell);
+  });
+})();
+const CMAP={motion:'var(--motion)',force:'var(--force)',energy:'var(--energy2)',mom:'var(--momentum)',power:'var(--power)',calc:'var(--cyan)'};
+function openEqCard(key){
+  const q=EQ[key]; if(!q) return;
+  const col=CMAP[q.c]||'var(--motion)';
+  const badge=document.getElementById('eqc-badge');
+  badge.textContent=q.name.split(' ')[0].slice(0,6); badge.style.color=col;
+  document.getElementById('eqc-name').textContent=q.name;
+  const ff=document.getElementById('eqc-formula'); ff.textContent=q.formula; ff.style.color=col;
+  document.getElementById('eqc-syms').innerHTML=q.syms.map(s=>
+    '<div class="sym-pill"><b>'+s[0]+'</b> '+s[1]+(s[2]?' <span>'+s[2]+'</span>':'')+'</div>').join('');
+  document.getElementById('eqc-rearr').textContent=q.rearr;
+  document.getElementById('eqc-example').innerHTML='<b>e.g.</b> '+q.ex;
+  document.getElementById('eqc-tip').innerHTML='<b>Trap:</b> '+q.tip;
+  document.getElementById('eq-card').style.display='block';
+}
+function closeEqCard(){ document.getElementById('eq-card').style.display='none'; }
+document.addEventListener('click',e=>{
+  const card=document.getElementById('eq-card');
+  if(card.style.display==='block' && !card.contains(e.target) && !e.target.closest('.eqcell'))
+    closeEqCard();
+});
+
+/* ════════════════════════════════════════════════
+   6 · THEME TOGGLE
+════════════════════════════════════════════════ */
+(function(){
+  const body=document.body, btn=document.getElementById('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){try{return localStorage.getItem('notes-theme');}catch(e){return null;}}
+  function safeSet(v){try{localStorage.setItem('notes-theme',v);}catch(e){}}
+  function apply(t){body.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?SUN:MOON;
+    btn.setAttribute('aria-label',(t==='dark')?'Switch to light theme':'Switch to dark theme');}
+  let start=safeGet();
+  if(!start) start=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+  apply(start);
+  btn.addEventListener('click',()=>{const n=body.getAttribute('data-theme')==='dark'?'light':'dark';apply(n);safeSet(n);});
+})();
+</script>
+
+<button class="pdf-btn" onclick="window.print()" title="Print or save these notes as a PDF" aria-label="Save as PDF"><span aria-hidden="true">🖨</span> Save as PDF</button>
+<button id="markDoneBtn" data-mv="3" data-id="note:maths:9" type="button" aria-pressed="false" style="position:fixed;bottom:18px;right:18px;z-index:10000;font-family:Inter,sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;border-radius:22px;padding:10px 18px;border:1px solid var(--border,#263247);background:var(--surface,#121826);color:var(--text,#d6deec);box-shadow:0 6px 20px rgba(0,0,0,.35);">○ Mark as complete</button>
+<script>(function(){var b=document.getElementById('markDoneBtn'),ID=b.getAttribute('data-id'),KEY="studyProgress";function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function r(){var d=!!load()[ID];b.textContent=d?'✓ Completed':'○ Mark as complete';b.setAttribute('aria-pressed',d?'true':'false');b.style.borderColor=d?'var(--power,#4ec994)':'var(--border,#263247)';b.style.color=d?'var(--power,#4ec994)':'var(--text,#d6deec)';}b.addEventListener('click',function(){var p=load();if(p[ID])delete p[ID];else p[ID]=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}r();});window.addEventListener('miraya-progress-synced',r);r();})();</script>
+</body>
+</html>
