@@ -674,9 +674,45 @@
   .checklist-cta b { color: var(--bright); font-weight: 700; }
   .checklist-cta .cta-go { margin-left: auto; color: var(--rose); font-size: 18px; font-weight: 700; }
   .checklist-cta:hover { transform: translateY(-2px); border-color: var(--rose); background: color-mix(in srgb, var(--rose) 14%, transparent); }
-  .drill-cta { margin-top: 10px; }
-  .drill-cta .cta-go { color: var(--maths); }
-  .drill-cta:hover { border-color: var(--maths); background: color-mix(in srgb, var(--maths) 14%, transparent); }
+  /* ── PRECISION DRILLS STRIP ──
+     One block, numbered pills. Deliberately NOT one full-width row per drill:
+     drills accumulate forever, so N drills must cost ~N*40px of a wrapping row,
+     not N stacked rows shoving the chapter cards below the fold. */
+  .drill-strip {
+    margin-top: 10px; padding: 11px 16px 12px; border-radius: 12px;
+    border: 1px solid color-mix(in srgb, var(--maths) 32%, var(--border));
+    background: color-mix(in srgb, var(--maths) 8%, transparent);
+  }
+  .ds-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .ds-lead { font-size: 13.5px; color: var(--text); }
+  .ds-lead b { color: var(--bright); font-weight: 700; }
+  .ds-note { font-size: 11.5px; color: var(--muted); }
+  .ds-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+  .ds-pill {
+    position: relative;
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 36px; height: 31px; padding: 0 10px;
+    border-radius: 9px; text-decoration: none;
+    font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700;
+    color: var(--text);
+    border: 1px solid color-mix(in srgb, var(--maths) 30%, var(--border));
+    background: var(--surface);
+    transition: transform .12s ease, border-color .12s ease, background .12s ease;
+  }
+  .ds-pill:hover { transform: translateY(-2px); border-color: var(--maths); color: var(--bright); }
+  .ds-pill:focus-visible { outline: 2px solid var(--maths); outline-offset: 2px; }
+  .ds-pill.is-latest {
+    background: color-mix(in srgb, var(--maths) 22%, transparent);
+    border-color: color-mix(in srgb, var(--maths) 55%, var(--border));
+    color: var(--bright);
+  }
+  .ds-pill .ds-dot {
+    position: absolute; top: -4px; right: -4px; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--power);
+    box-shadow: 0 0 0 2px var(--bg);
+  }
+  .ds-tail { margin-top: 9px; font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+  .ds-tail b { color: var(--bright); font-weight: 700; }
 
   /* ── RESUME + REVISE STRIPS ── */
   .strip-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
@@ -991,8 +1027,21 @@
       <div class="exam-pills" id="examPills"></div>
     </div>
     <a class="checklist-cta" href="sa1-checklist.html">📋 <span><b>SA-1 revision checklist</b> — tick off every chapter across all three subjects</span> <span class="cta-go">→</span></a>
-    <a class="checklist-cta drill-cta" href="precision-drill-1.html" data-added="2026-07-31">🎯 <span><b>Precision Drill 1</b> — 13 questions, 12 minutes, mixed subjects. Low-difficulty content, exact reading.</span> <span class="cta-go">→</span></a>
-    <a class="checklist-cta drill-cta" href="precision-drill-2.html" data-added="2026-08-01">🎯 <span><b>Precision Drill 2</b> — 13 new questions, 12 minutes, mixed subjects. Sets, fractions, trig graphs, circuits.</span> <span class="cta-go">→</span></a>
+    <!-- Precision drills: ONE strip, one numbered pill per drill. A new drill adds a pill
+         here (newest last) — never another full-width row. -->
+    <div class="drill-strip">
+      <div class="ds-row">
+        <span class="ds-lead">🎯&nbsp;<b>Precision Drills</b></span>
+        <span class="ds-note">~13 questions · 12 minutes · mixed subjects · auto-marked · repeatable</span>
+      </div>
+      <div class="ds-pills" id="dsPills">
+        <a class="ds-pill" href="precision-drill-1.html" data-added="2026-07-31"
+           data-desc="Low-difficulty content, exact reading — ratios, unit conversion, last-step finishes.">1</a>
+        <a class="ds-pill" href="precision-drill-2.html" data-added="2026-08-01"
+           data-desc="Sets, fractions, trig graphs, circuits.">2</a>
+      </div>
+      <div class="ds-tail" id="dsTail"></div>
+    </div>
   </header>
 
   <nav class="hubnav" aria-label="Filter and search chapters">
@@ -1921,6 +1970,36 @@
           t.appendChild(b);
         }
       });
+    })();
+
+    /* (5b) Precision-drill pills — highlight the newest and describe it.
+       Derived from the DOM so adding a drill is one <a> and nothing else. */
+    (function () {
+      var pills = document.querySelectorAll('#dsPills .ds-pill');
+      if (!pills.length) return;
+      var today = startOfToday(), NEW_DAYS = 7;
+      pills.forEach(function (p) {
+        var n = p.textContent.trim();
+        var d = p.getAttribute('data-desc') || '';
+        p.setAttribute('title', 'Precision Drill ' + n + (d ? ' — ' + d : ''));
+        p.setAttribute('aria-label', 'Precision Drill ' + n);
+        var dt = parseDate(p.getAttribute('data-added'));
+        if (dt != null) {
+          var days = Math.floor((today - dt) / 86400000);
+          if (days >= 0 && days <= NEW_DAYS) {
+            var dot = document.createElement('i');
+            dot.className = 'ds-dot'; dot.title = 'Added in the last 7 days';
+            p.appendChild(dot);
+          }
+        }
+      });
+      var last = pills[pills.length - 1];
+      last.classList.add('is-latest');
+      var tail = document.getElementById('dsTail');
+      if (tail) {
+        tail.innerHTML = 'Newest: <b>Drill ' + last.textContent.trim().replace(/\D+$/, '') + '</b> — ' +
+          (last.getAttribute('data-desc') || 'mixed-subject accuracy practice.');
+      }
     })();
 
     /* (6) Compact stacked graded papers — collapse ≥3 into one toggle */
