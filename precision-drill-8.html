@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Precision Drill 8: Mixed</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%237c8cff'>M</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    /* ── chemistry accents (energy / state axis) — same identity as the notes ──
+       --motion = SOLID (blue) · --cyan = LIQUID (teal) · --force = GAS (coral)
+       --energy = HEAT/ENERGY (amber) · --momentum = DIFFUSION (violet)
+       --power = correct / marks earned (green, fixed role)
+       --rose  = alerts / must-memorise (magenta, fixed role) */
+    --motion:   #5b8dee;
+    --cyan:     #36c9b0;
+    --force:    #f06070;
+    --energy:   #f0b144;
+    --energy2:  #f0b144;
+    --momentum: #a57ef5;
+    --power:    #4ec994;
+    --rose:     #f25cc1;
+  }
+
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;
+    --cyan:     #0b7a67;
+    --force:    #cb2531;
+    --energy:   #8f5d00;
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;
+    --power:    #107a50;
+    --rose:     #ad1a7d;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color .35s ease, color .35s ease;
+  }
+
+  /* ambient field — cool (solid) up top, warm (gas) below: the energy axis */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle{position:fixed;top:70px;right:16px;z-index:10000;width:40px;height:40px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:var(--surface);border:1px solid var(--border);color:var(--text);
+    font-size:17px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);
+    transition:transform .25s,border-color .2s,background-color .35s;line-height:1;}
+  .theme-toggle:hover{transform:rotate(18deg);border-color:var(--motion);}
+  .theme-toggle:focus-visible{outline:2px solid var(--motion);outline-offset:3px;}
+  .hub-home{position:fixed;top:70px;left:16px;z-index:10000;width:40px;height:40px;
+    display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;
+    border-radius:11px;border:1px solid var(--border);background:var(--surface);color:var(--text);
+    cursor:pointer;transition:transform .2s ease,border-color .2s ease;}
+  .hub-home:hover{transform:translateY(-2px);border-color:var(--motion);}
+  .hub-home:focus-visible{outline:2px solid var(--motion);outline-offset:3px;}
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 30px; padding-bottom: 26px; border-bottom: 1px solid var(--border); }
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+  body[data-theme="light"] .chip { background: linear-gradient(135deg,#e3eefb,#efe6fb); border-color:#cdd9f0; }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--cyan); }
+  h1 .c { color: var(--force); }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 620px; }
+
+  /* ── FRONT SHEET (exam meta + controls) ── */
+  .front {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin-bottom: 40px;
+    transition: background-color .35s, border-color .35s;
+  }
+  .front h2, .results h2, .ms-collated h2 {
+    font-family:'Fraunces',serif; font-size:1.35rem; font-weight:700;
+    color:var(--bright); margin-bottom:14px;
+  }
+  .meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 26px; margin-bottom:20px; }
+  @media (max-width:620px){ .meta-grid{ grid-template-columns:1fr; } }
+  .meta-item .k {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:2px;
+  }
+  .meta-item .v { color:var(--bright); font-weight:600; font-size:15px; }
+  .instructions { list-style:none; margin:6px 0 0; }
+  .instructions li { position:relative; padding-left:22px; margin-bottom:7px; font-size:14px; color:var(--text); }
+  .instructions li::before {
+    content:'▸'; position:absolute; left:2px; top:0; color:var(--motion); font-size:13px;
+  }
+
+  /* mode + start controls */
+  /* During the exam the front sheet collapses to its REFERENCE matter only (data,
+     rubric, List of formulas) — the real board keeps its data/formula page in front
+     of the candidate for the whole paper, so ours must not vanish on start.
+     Tag purely administrative bullets <li class="admin"> so they drop away. */
+  #front.started > h2, #front.started .meta-grid, #front.started .controls,
+  #front.started .instructions li.admin { display:none; }
+  #front.started { margin-bottom:16px; padding-bottom:4px; }
+
+  .controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px;
+    padding-top:20px; border-top:1px solid var(--border); }
+  .btn {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:14px; cursor:pointer;
+    border-radius:9px; padding:11px 20px; border:1px solid var(--border);
+    background:var(--surface2); color:var(--text);
+    transition:transform .15s, border-color .2s, background-color .2s, color .2s;
+  }
+  .btn:hover { transform:translateY(-2px); }
+  .btn:focus-visible { outline:2px solid var(--motion); outline-offset:3px; }
+  .btn.primary { background:var(--motion); border-color:var(--motion); color:#fff; }
+  body[data-theme="light"] .btn.primary { color:#fff; }
+  .btn.ghost { background:transparent; }
+  .controls .hint { font-size:12.5px; color:var(--muted); flex-basis:100%; }
+
+  /* ── STICKY EXAM BAR ── */
+  .exam-bar {
+    position:fixed; top:0; left:0; right:0; z-index:9000;
+    display:none; align-items:center; gap:18px;
+    padding:11px 20px; background:var(--surface); border-bottom:1px solid var(--border);
+    box-shadow:0 6px 22px rgba(0,0,0,.28); transition:background-color .35s,border-color .35s;
+  }
+  .exam-bar.show { display:flex; }
+  .exam-bar .timer {
+    font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:600;
+    color:var(--bright); letter-spacing:.04em; min-width:96px;
+  }
+  .exam-bar .timer .lbl { display:block; font-size:9px; letter-spacing:.16em; color:var(--muted); }
+  .exam-bar.warn .timer { color:var(--energy); }
+  .exam-bar.danger .timer { color:var(--force); }
+  .exam-bar .prog { font-size:12.5px; color:var(--muted); }
+  .exam-bar .prog b { color:var(--text); }
+  .exam-bar .spacer { flex:1; }
+  .exam-bar .mode-tag {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--cyan); border:1px solid var(--border);
+    border-radius:20px; padding:3px 11px;
+  }
+
+  /* ── SECTION HEADINGS ── */
+  .sec-head { margin:46px 0 8px; }
+  .sec-label {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:4px;
+  }
+  .sec-head h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); }
+  .sec-head .sec-sub { font-size:13px; color:var(--muted); margin-top:2px; }
+
+  /* ── QUESTION ── */
+  .q {
+    background:var(--surface); border:1px solid var(--border); border-radius:13px;
+    padding:22px 24px; margin:18px 0;
+    transition:background-color .35s, border-color .35s;
+  }
+  .q-head { display:flex; align-items:baseline; gap:12px; margin-bottom:10px; }
+  .q-no {
+    font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem; color:var(--motion);
+    min-width:26px;
+  }
+  .q-stem { color:var(--text); }
+
+  /* ── drill-specific: the subject tag on every question, and the named-slip callout ── */
+  .subj {
+    display:inline-block; margin-right:9px; padding:2px 9px; border-radius:20px;
+    font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600;
+    letter-spacing:.14em; text-transform:uppercase; vertical-align:middle;
+    border:1px solid currentColor; background:color-mix(in srgb, currentColor 12%, transparent);
+  }
+  .subj.maths { color:#7c8cff; }
+  .subj.phys  { color:#46a8ff; }
+  .subj.chem  { color:#36c9b0; }
+  .trap { font-weight:700; color:var(--energy, #e8b04b); }
+  .q-stem p { margin-bottom:8px; }
+  .marks {
+    margin-left:auto; flex-shrink:0;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    border:1px solid var(--border); border-radius:6px; padding:2px 9px; white-space:nowrap;
+  }
+  .ctx {
+    border-left:3px solid var(--cyan);
+    background:linear-gradient(90deg,#06241f55,transparent);
+    padding:10px 16px; margin:10px 0 14px; border-radius:0 8px 8px 0; font-size:13.6px;
+  }
+  body[data-theme="light"] .ctx { background:linear-gradient(90deg,#def3ee99,transparent); }
+
+  .part { margin:14px 0; }
+  .part-label { font-weight:600; color:var(--bright); margin-right:6px; }
+  .part-prompt { display:inline; }
+  .part .marks-inline {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin-left:6px;
+  }
+
+  /* MCQ options */
+  .opts { list-style:none; margin:12px 0 2px; display:grid; gap:8px; }
+  .opt {
+    display:flex; gap:11px; align-items:flex-start; cursor:pointer;
+    border:1px solid var(--border); border-radius:9px; padding:9px 14px;
+    background:var(--surface2); transition:border-color .15s, background-color .2s;
+  }
+  .opt:hover { border-color:var(--motion); }
+  .opt input { margin-top:5px; accent-color:var(--motion); }
+  .opt .opt-key { font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--motion); margin-right:2px; }
+  .opt.correct { border-color:var(--power); background:#10241a; }
+  .opt.wrong   { border-color:var(--force); background:#2a1113; }
+  body[data-theme="light"] .opt.correct { background:#e7f6ee; }
+  body[data-theme="light"] .opt.wrong   { background:#fbe4e6; }
+  .opt .verdict { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:11px; }
+  .opt.correct .verdict { color:var(--power); }
+  .opt.wrong .verdict { color:var(--force); }
+
+  /* written answer area */
+  textarea.ans {
+    width:100%; margin-top:9px; resize:vertical; min-height:60px;
+    background:var(--surface2); color:var(--text);
+    border:1px solid var(--border); border-radius:9px; padding:10px 13px;
+    font-family:'Inter',sans-serif; font-size:14px; line-height:1.6;
+    transition:background-color .35s, border-color .2s;
+  }
+  textarea.ans:focus { outline:none; border-color:var(--motion); }
+  textarea.ans:disabled { opacity:.85; }
+
+  .num-row { display:flex; align-items:center; gap:10px; margin-top:9px; flex-wrap:wrap; }
+  input.num {
+    width:150px; background:var(--surface2); color:var(--text);
+    border:1px solid var(--border); border-radius:9px; padding:9px 13px;
+    font-family:'JetBrains Mono',monospace; font-size:15px;
+    transition:background-color .35s, border-color .2s;
+  }
+  input.num:focus { outline:none; border-color:var(--motion); }
+  input.num.correct { border-color:var(--power); }
+  input.num.wrong   { border-color:var(--force); }
+  .num-unit { font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:14px; }
+  .num-verdict { font-family:'JetBrains Mono',monospace; font-size:12px; }
+
+  /* ── FIGURES / DIAGRAMS (theme-aware inline SVG) ── */
+  .fig {
+    margin:12px 0 6px; padding:14px; border:1px solid var(--border);
+    border-radius:10px; background:var(--surface2); text-align:center;
+    transition:background-color .35s, border-color .2s;
+  }
+  .fig svg { max-width:100%; height:auto; color:var(--text); }
+  .fig svg text { fill:var(--text); font-family:'Inter',sans-serif; }
+  .fig .fig-cap {
+    margin-top:8px; font-size:11.5px; color:var(--muted);
+    font-family:'JetBrains Mono',monospace; letter-spacing:.03em;
+  }
+  /* graph/grid helpers reusable inside authored SVG */
+  .fig .grid-line { stroke:var(--border); stroke-width:1; }
+  .fig .axis      { stroke:var(--text); stroke-width:1.6; }
+  .fig .plot      { stroke:var(--motion); stroke-width:2.4; fill:none; }
+  .fig .accent    { stroke:var(--force); }
+
+  /* ── DRAW / PLOT answer = upload a photo of your diagram ── */
+  .draw-row { margin-top:10px; }
+  .draw-note { font-size:12.5px; color:var(--muted); margin-bottom:8px; }
+  .draw-pick {
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    border:1px dashed var(--motion); border-radius:9px; padding:10px 16px;
+    background:var(--surface2); color:var(--motion); font-size:13.5px; font-weight:500;
+    transition:background-color .2s, border-color .2s;
+  }
+  .draw-pick:hover { background:var(--surface); }
+  .draw-pick input { display:none; }
+  .draw-preview { margin-top:10px; display:none; }
+  .draw-preview.show { display:block; }
+  .draw-preview img {
+    max-width:100%; max-height:340px; border:1px solid var(--border);
+    border-radius:9px; display:block;
+  }
+  .draw-preview .draw-meta { font-size:11.5px; color:var(--muted); margin-top:5px; font-family:'JetBrains Mono',monospace; }
+  .draw-clear {
+    margin-top:7px; font-size:12px; color:var(--force); background:none;
+    border:none; cursor:pointer; text-decoration:underline; padding:0;
+  }
+  /* printable blank box for hand-drawing on a printed paper */
+  .draw-box { display:none; }
+
+  /* print-only ruled answer lines */
+  .print-lines { display:none; }
+
+  /* ── MARK SCHEME (revealed after submit) ── */
+  .ms {
+    display:none; margin-top:14px; border-radius:10px; overflow:hidden;
+    border:1px solid var(--power);
+  }
+  .ms.show { display:block; }
+  .ms-head {
+    background:#0f2018; color:var(--power);
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; padding:8px 15px; display:flex; gap:10px; align-items:center;
+  }
+  body[data-theme="light"] .ms-head { background:#e7f6ee; }
+  .ms-head .self-note { margin-left:auto; color:var(--muted); letter-spacing:.04em; text-transform:none; font-size:11px; }
+  .ms-body { background:var(--surface2); padding:6px 6px; }
+  .ms-point {
+    display:flex; gap:11px; align-items:flex-start;
+    padding:9px 12px; border-radius:8px; cursor:pointer;
+    transition:background-color .15s;
+  }
+  .ms-point:hover { background:var(--surface); }
+  .ms-point input { margin-top:5px; accent-color:var(--power); width:16px; height:16px; flex-shrink:0; }
+  .ms-point .pt { flex:1; font-size:13.8px; color:var(--text); }
+  .ms-point .pm {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--power);
+    border:1px solid var(--power); border-radius:5px; padding:1px 7px; flex-shrink:0; white-space:nowrap;
+  }
+  .ms-point.auto { cursor:default; }
+  .ms-point.auto .lock {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em;
+    color:var(--muted); margin-left:8px;
+  }
+  .ms-note {
+    padding:8px 14px; font-size:12.5px; color:var(--muted); border-top:1px dashed var(--border);
+  }
+  #questions.locked { opacity:.5; pointer-events:none; }
+  .ms-point.read { cursor:default; padding:9px 12px 9px 14px; }
+  .ms.solution .ms-head .self-note { display:none; }
+
+  /* graded-mode "submitted" message (shown instead of a score on teacher-marked papers) */
+  .submitted-msg { display:none; }
+  body.graded .submitted-msg { display:block; margin:4px 0 6px; color:var(--text); font-size:15px; line-height:1.7; }
+  body.graded .submitted-msg b { color:var(--bright); }
+
+  /* ── RESULTS ── */
+  .results { display:none; margin:30px 0 10px; }
+  .results.show { display:block; }
+  .result-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:30px 30px; text-align:center;
+  }
+  .score-big {
+    font-family:'Fraunces',serif; font-weight:800; line-height:1;
+    font-size:clamp(3rem,11vw,5rem); color:var(--bright);
+  }
+  .score-big .den { color:var(--muted); font-size:.5em; }
+  .score-pct { font-family:'JetBrains Mono',monospace; font-size:18px; color:var(--motion); margin-top:6px; }
+  .band {
+    display:inline-block; margin-top:16px; padding:7px 18px; border-radius:22px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em;
+    border:1px solid var(--border); color:var(--bright); background:var(--surface2);
+  }
+  .result-meta { display:flex; justify-content:center; gap:30px; flex-wrap:wrap; margin-top:22px; }
+  .result-meta .rm .k {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .result-meta .rm .v { font-size:18px; color:var(--bright); font-weight:600; }
+  .result-actions { margin-top:24px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .disclaimer { font-size:12px; color:var(--muted); margin-top:16px; max-width:520px; margin-left:auto; margin-right:auto; }
+
+  .eq-inline {
+    font-family:'JetBrains Mono',monospace; background:#0d1828; border:1px solid #22324a;
+    border-radius:5px; padding:1px 7px; font-size:13px; color:var(--motion); white-space:nowrap;
+  }
+  body[data-theme="light"] .eq-inline { background:#eef1f8; border-color:#d4dcec; }
+
+  sub { font-size:.74em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, body { transition:none !important; animation:none !important; }
+    .btn:hover, .theme-toggle:hover { transform:none; }
+  }
+
+  /* ── PRINT: render as a clean blank exam paper ── */
+  @media print {
+    @page { margin:16mm; }
+    body { background:#fff; color:#000; font-size:12pt; }
+    body::before { display:none; }
+    #questions { opacity:1 !important; }
+    .theme-toggle, .hub-home, .exam-bar, .controls, .results, .front .controls,
+    .opt input, .ms, textarea.ans, input.num, .num-verdict { display:none !important; }
+    .page { max-width:none; padding:0; }
+    .front { border:none; padding:0; background:none; }
+    .q, .front { box-shadow:none; border:1px solid #999; break-inside:avoid; }
+    .q { background:#fff; }
+    .opt { background:#fff; border:1px solid #999; }
+    .opt::before { content:''; display:inline-block; width:13px; height:13px; border:1.4px solid #000; border-radius:50%; margin-top:3px; }
+    .print-lines { display:block; margin-top:8px; }
+    .print-lines .ln { border-bottom:1px dotted #444; height:26px; }
+    .ctx { background:#f4f4f4; border-left:3px solid #444; }
+    /* figures print in black & white; hide the upload UI, show a blank box to draw in */
+    .fig { background:#fff; border:1px solid #999; }
+    .fig svg { color:#000; }
+    .fig svg text { fill:#000; }
+    .draw-row, .draw-preview { display:none !important; }
+    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:180px; margin-top:8px; }
+    h1 .a, h1 .b, h1 .c, .q-no, .marks, .chip { color:#000 !important; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+
+<a class="hub-home" href="index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+
+<!-- sticky exam bar -->
+<div class="exam-bar" id="examBar">
+  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">12:00</span></div>
+  <div class="prog">Answered <b id="progDone">0</b> / <span id="progTot">0</span></div>
+  <span class="mode-tag" id="modeTag">TIMED</span>
+  <div class="spacer"></div>
+  <button class="btn primary" id="btnSubmit">Submit &amp; mark</button>
+</div>
+
+<div class="page">
+
+  <header class="header">
+    <span class="chip">Precision Drill · Mixed · 12 minutes</span>
+    <h1>Precision Drill 8<br><span class="a">Read it.</span> <span class="b">Turn it.</span> <span class="c">Finish it.</span></h1>
+    <p class="header-sub">Thirteen one-mark questions across Maths, Physics and Chemistry. <b>The content is deliberately low-difficulty</b> — nothing here is new material. Each question is built so that the most likely slip produces a <i>different number</i>, which means the machine can catch it and name it. Read the demand twice; the calculation is the easy part.</p>
+  </header>
+
+  <!-- FRONT SHEET -->
+  <section class="front" id="front">
+    <h2>Before you begin</h2>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">12 minutes</div></div>
+      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">13 marks</div></div>
+      <div class="meta-item"><div class="k">Subjects</div><div class="v">Maths · Physics · Chemistry</div></div>
+      <div class="meta-item"><div class="k">Marking</div><div class="v">Fully automatic</div></div>
+    </div>
+    <ul class="instructions">
+      <li>Answer <b>all</b> 13 questions. Each is worth exactly <b>1 mark</b>. <b>Q1 is multiple choice</b>; the other twelve each want a number typed into the box.</li>
+      <li>The subject changes from question to question — <b>read each one from scratch</b>. That switch is part of the exercise.</li>
+      <li><b>Marking is all-or-nothing and automatic.</b> There is no method mark and nothing to tick yourself, so an answer that is right except for the direction of a fraction or the last keystroke scores zero — exactly as a wrong answer would.</li>
+      <li>Where a question prints an instruction (<i>“to the nearest whole number”</i>, <i>“in cm<sup>3</sup>”</i>, <i>“as a decimal”</i>), that instruction <b>is</b> the question. Q7’s rounding instruction is marked <b>exactly</b>; elsewhere a correctly-worked value is accepted whether or not you rounded it.</li>
+      <li>On Q2–Q13, type <b>just the number</b> — the unit is already printed beside the box. Write it as an ordinary decimal (<i>0.05</i>), not in standard form.</li>
+      <li class="admin">In <b>Timed exam</b> mode a 12-minute countdown runs; the drill locks and marks itself when you submit or time runs out.</li>
+      <li>After marking, every question opens up a worked answer that <b>names the specific slip</b> the question was built to catch. Read those even for the ones you got right.</li>
+    </ul>
+    <div class="controls">
+      <button class="btn primary" id="startTimed">▶ Start timed exam</button>
+      <button class="btn ghost" id="startPractice">Practice (no timer)</button>
+      <button class="btn ghost" id="printBtn">🖨 Print blank paper</button>
+      <span class="hint">Tip: use the ☀ / ☾ button (top-right) to switch between dark and light (paper) themes.</span>
+    </div>
+  </section>
+
+  <!-- questions render here -->
+  <div id="questions"></div>
+
+  <!-- RESULTS -->
+  <section class="results" id="results">
+    <h2 id="resultsTitle">Your result</h2>
+    <div class="result-card">
+      <p class="submitted-msg" id="submittedMsg">✅ <b>Paper submitted.</b> Your answers have been submitted.</p>
+      <div id="scoreWrap">
+        <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">13</span></span></div>
+        <div class="score-pct" id="scorePct">0%</div>
+        <div class="band" id="scoreBand">—</div>
+        <div class="result-meta">
+          <div class="rm"><div class="k">Auto-marked</div><div class="v" id="autoMarked">0</div></div>
+          <div class="rm" id="selfRow"><div class="k">Self-marked</div><div class="v" id="selfMarked">0</div></div>
+          <div class="rm"><div class="k">Time taken</div><div class="v" id="timeTaken">—</div></div>
+        </div>
+      </div>
+      <div class="result-actions">
+        <button class="btn" id="downloadBtn">⬇ Download answers (for marking)</button>
+        <button class="btn ghost" id="reviewBtn">Review answers ↑</button>
+        <button class="btn ghost" id="retakeBtn">↺ Retake</button>
+        <button class="btn ghost" id="printBtn2">🖨 Print</button>
+      </div>
+      <p class="disclaimer">This drill is marked automatically. It is a short precision check, not a graded paper — the score counts traps caught, and says nothing about a grade.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ===========================================================================
+   PRACTICE-PAPER ENGINE  — generic; drives everything from the PAPER object.
+   To build a new paper, edit PAPER only (and the header markup above).
+   Question kinds:
+     'mcq'    — options[], answer (0-based index). Auto-marked.
+     'parts'  — parts[]; each part is 'text' (self-marked) or 'numeric'
+                (final answer auto-checked; method points self-marked).
+   Each markable unit lists ms[] marking points: {p:'text', m:marks, auto?:bool}
+   =========================================================================== */
+const PAPER = {
+  duration: 12,                 // minutes — a short, high-frequency drill
+  questions: [
+
+    { n:1, kind:'mcq', marks:1,
+      stem:"<span class=\"subj phys\">Physics</span> A distance–time graph is drawn for a moving object. Part of the graph is a <b>horizontal straight line</b>. What does that part of the graph show?",
+      options:[
+        "The object is stationary",
+        "The object is moving at constant speed",
+        "The object is accelerating",
+        "The object is moving back towards the start"
+      ],
+      answer:0,
+      ms:[{p:"<b>A — the object is stationary.</b> On a distance–time graph the <b>gradient</b> is the speed, and a horizontal line has gradient zero, so the speed is zero: the distance is not changing. <span class=\"trap\">Each wrong option is a named confusion:</span> <b>B</b> (constant speed) is what a <i>sloping straight</i> line shows — a constant gradient, not a zero one, and this is far and away the most common swap; <b>C</b> (accelerating) needs a <i>curve</i>, because the gradient itself has to change; <b>D</b> (moving back) needs a line sloping <i>downwards</i>. Notice all four options are answered by one question — what is the gradient doing? — so the item is really about reading the graph feature the words name. A mark went this way on the Q3 MCQ of <i>Mathematics Topic 6 Graded Paper – Trigonometry</i>: the question named one feature of a trig curve and a different feature was picked.", m:1, auto:true}] },
+
+    { n:2, kind:'parts',
+      stem:"<span class=\"subj maths\">Mathematics</span>",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:16.2, tol:0.02,
+          prompt:"Work out 3.6 × 4.5.",
+          ms:[{p:"3.6 × 4.5 = <b>16.2</b>. <span class=\"trap\">Baseline item — one step, no trap.</span> Its job is diagnostic: if the straightforward ones land and the longer ones do not, the marks are going to reading and finishing, not to the content. Across the five graded papers on record, 275 marks were sat and 19 lost — and <b>not one</b> of the 19 was a gap in the knowledge.", m:1, auto:true}]}
+      ]},
+
+    { n:3, kind:'parts',
+      stem:"<span class=\"subj chem\">Chemistry</span> 0.750 dm<sup>3</sup> of a solution contains <b>0.0900 mol</b> of sodium carbonate.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:0.12, tol:0.002, unit:"mol/dm<sup>3</sup>",
+          prompt:"Calculate the concentration of the solution in mol/dm<sup>3</sup>.",
+          ms:[{p:"c = n ÷ V = 0.0900 ÷ 0.750 = <b>0.120 mol/dm<sup>3</sup></b>. <span class=\"trap\">The trap is the direction of the triangle.</span> Turning it over gives 0.750 ÷ 0.0900 = 8.33, and multiplying gives 0.0675 — both perfectly typeable numbers. This exact inversion is the most expensive single version of that family on record: <b>5 marks in one paper</b>, on Q8(a), Q8(c) and the Q6 MCQ of <i>Chemistry Topic 3 Graded Paper 2 – Stoichiometry</i>. <span class=\"trap\">The check that costs nothing:</span> a concentration in mol/dm<sup>3</sup> is “moles in one dm<sup>3</sup>”. Here 0.09 mol is spread through more than one dm<sup>3</sup>, so the answer must be <i>smaller</i> than 0.09. That one sentence rules out both traps.", m:1, auto:true}]}
+      ]},
+
+    { n:4, kind:'parts',
+      stem:"<span class=\"subj maths\">Mathematics</span> The straight line <i>y</i> = 2<i>x</i> − 9 crosses the <i>x</i>-axis at the point (<i>p</i>, 0).",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:4.5, tol:0.02,
+          prompt:"Find the value of <i>p</i>.",
+          ms:[{p:"On the <i>x</i>-axis, <i>y</i> = 0. So 0 = 2<i>p</i> − 9, giving 2<i>p</i> = 9 and <i>p</i> = <b>4.5</b>. <span class=\"trap\">The trap:</span> writing −9, which is where the line crosses the <b>y</b>-axis. Both are “where the line crosses an axis”, and the question names which one. Picking the wrong feature of a graph after reading the words is exactly the mark lost on the Q3 MCQ of <i>Mathematics Topic 6 Graded Paper – Trigonometry</i>. <span class=\"trap\">The habit:</span> translate the axis into a value before you do anything else — <i>x</i>-axis means <i>y</i> = 0, <i>y</i>-axis means <i>x</i> = 0 — and write that substitution down. Once it is on the page the algebra is one line.", m:1, auto:true}]}
+      ]},
+
+    { n:5, kind:'parts',
+      stem:"<span class=\"subj phys\">Physics</span> A wave has a period of <b>0.0080 s</b>.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:125, tol:1, unit:"Hz",
+          prompt:"Calculate its frequency.",
+          ms:[{p:"f = 1 ÷ T = 1 ÷ 0.0080 = <b>125 Hz</b>. <span class=\"trap\">The trap:</span> frequency and period are reciprocals, so the whole item is one decision about which way up the fraction goes — and 0.008 is already sitting there looking like an answer. <span class=\"trap\">The size check:</span> a period well under a second means many waves every second, so the frequency must be a number well <i>above</i> 1. If your answer is smaller than the period you started with, the fraction is upside-down. Inverting a relationship is behind 7 of the 19 marks lost across all the graded papers so far — more than any other mechanism.", m:1, auto:true}]}
+      ]},
+
+    { n:6, kind:'parts',
+      stem:"<span class=\"subj chem\">Chemistry</span> A solution of sodium hydroxide, NaOH, has a concentration of <b>0.0800 mol/dm<sup>3</sup></b>. The M<sub>r</sub> of NaOH is 40.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:0.8, tol:0.015, unit:"g",
+          prompt:"Calculate the mass of NaOH dissolved in <b>250 cm<sup>3</sup></b> of this solution.",
+          ms:[{p:"250 cm<sup>3</sup> = 0.250 dm<sup>3</sup>. Then n = c × V = 0.0800 × 0.250 = 0.0200 mol, and m = n × M<sub>r</sub> = 0.0200 × 40 = <b>0.800 g</b>. <span class=\"trap\">Two traps, in series.</span> The first is skipping the cm<sup>3</sup> → dm<sup>3</sup> conversion: 0.0800 × 250 = 20 mol, and the mass then comes out as 800 g of solid in a small beaker. cm<sup>3</sup> → dm<sup>3</sup> is named in the Chemistry grading log’s own summary as a recurring weakness, and it is a <b>÷ 1000</b> every time. The second is stopping at 0.0200 mol, which is a correct number but not the quantity demanded — the question asked for a <b>mass</b>. <span class=\"trap\">The finishing check:</span> read the demand once more after the calculator stops, and confirm your number is the right quantity <i>in the right unit</i>.", m:1, auto:true}]}
+      ]},
+
+    { n:7, kind:'parts',
+      stem:"<span class=\"subj maths\">Mathematics</span> A scooter is priced at <b>₹74 850</b>. In a sale the price is reduced by <b>12%</b>.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:65900, tol:0, unit:"₹",
+          prompt:"Work out the sale price, correct to the <b>nearest hundred rupees</b>.",
+          ms:[{p:"A 12% reduction leaves 88%: 0.88 × 74 850 = 65 868, and the question asks for the <b>nearest hundred</b> → <b>₹65 900</b>. <span class=\"trap\">Two separate demands, and both are printed.</span> The first is that the question wants the <i>sale price</i>, not the discount — the discount is 8 982, which is a correct number answering a different question. The second is the rounding: 65 868 rounds <i>up</i> to 65 900, not down to 65 800. That is precisely the mark lost on Q13(c) of <i>Mathematics Topic 1 Graded Paper – Number</i>, where a correct 46 370.96 was written as 46 370 when the nearest hundred (46 400) was asked for — rounded, but to the wrong precision. <span class=\"trap\">This is the one item on this drill marked to the exact rounding demanded.</span> Look at the digit <i>after</i> the place you are rounding to; here that is the 6 in 65 8<b>6</b>8, and 6 rounds up.", m:1, auto:true}]}
+      ]},
+
+    { n:8, kind:'parts',
+      stem:"<span class=\"subj phys\">Physics</span> <b>6.3 kJ</b> of thermal energy is supplied to <b>0.40 kg</b> of water. The specific heat capacity of water is 4200 J/(kg·°C).",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:3.75, tol:0.05, unit:"°C",
+          prompt:"Calculate the rise in temperature of the water.",
+          ms:[{p:"First convert: 6.3 kJ = 6300 J. Then ΔT = E ÷ (m × c) = 6300 ÷ (0.40 × 4200) = 6300 ÷ 1680 = <b>3.75 °C</b>. <span class=\"trap\">The trap is the kJ.</span> Leaving the energy as 6.3 gives ΔT = 0.00375 °C — an answer so small it can only mean a unit was left unconverted, but it looks like a legitimate decimal on a screen. <span class=\"trap\">The order:</span> convert every quantity to base units first, then substitute. And do the bracket on the bottom in one go — 0.40 × 4200 — rather than dividing twice in a row, which is where a second slip likes to hide.", m:1, auto:true}]}
+      ]},
+
+    { n:9, kind:'parts',
+      stem:"<span class=\"subj maths\">Mathematics</span> <i>y</i> is directly proportional to <i>x</i><sup>2</sup>. When <i>x</i> = 4, <i>y</i> = 48.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:147, tol:1,
+          prompt:"Find the value of <i>y</i> when <i>x</i> = 7.",
+          ms:[{p:"<i>y</i> = k<i>x</i><sup>2</sup>, so 48 = k × 16 and k = 3. Then <i>y</i> = 3 × 7<sup>2</sup> = 3 × 49 = <b>147</b>. <span class=\"trap\">The trap:</span> scaling straight up — 48 × <sup>7</sup>⁄<sub>4</sub> = 84 — which is what you get by treating it as proportional to <i>x</i>, not <i>x</i><sup>2</sup>. The squared is printed and has to survive both ends of the working: once when you find k, and again when you use it. <span class=\"trap\">The reliable route:</span> always find <b>k</b> explicitly and write the equation out, <i>y</i> = 3<i>x</i><sup>2</sup>, before substituting. Shortcut scaling is where the exponent gets quietly dropped, and a written formula line is also the thing that leaves a method mark standing if the arithmetic slips — on Q9(b) of <i>Mathematics Topic 6 Graded Paper – Trigonometry</i>, no working meant one slip cost 2 marks instead of 1.", m:1, auto:true}]}
+      ]},
+
+    { n:10, kind:'parts',
+      stem:"<span class=\"subj chem\">Chemistry</span> Sodium sulfate has the formula Na<sub>2</sub>SO<sub>4</sub> and an M<sub>r</sub> of 142. (A<sub>r</sub>: Na = 23.)",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:32.4, tol:0.15, unit:"%",
+          prompt:"Calculate the percentage by mass of <b>sodium</b> in sodium sulfate. Give your answer correct to <b>1 decimal place</b>.",
+          ms:[{p:"There are <b>two</b> sodium atoms: 2 × 23 = 46. So the percentage = (46 ÷ 142) × 100 = <b>32.4 %</b>. <span class=\"trap\">The trap is the little 2.</span> Using one sodium gives (23 ÷ 142) × 100 = 16.2 %, exactly half the right answer, and nothing about 16.2 % looks wrong on its own. The subscript is part of the formula, and formulas have to be <i>counted</i>, not glanced at. Miscounting how many things are in a collection is the same mechanism as the set-counting mark lost on Q11(c) of <i>Mathematics Topic 1 Graded Paper – Number</i>. <span class=\"trap\">The check:</span> the parts must add to 100 % — Na 32.4, S 22.5, O 45.1. If you can only account for 84 %, you have missed an atom somewhere.", m:1, auto:true}]}
+      ]},
+
+    { n:11, kind:'parts',
+      stem:"<span class=\"subj phys\">Physics</span> A <b>12 Ω</b> resistor and a <b>24 Ω</b> resistor are connected in <b>parallel</b> across a 4.8 V supply.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:0.6, tol:0.01, unit:"A",
+          prompt:"Calculate the <b>total</b> current drawn from the supply.",
+          ms:[{p:"Combined resistance: <sup>1</sup>⁄<sub>R</sub> = <sup>1</sup>⁄<sub>12</sub> + <sup>1</sup>⁄<sub>24</sub> = <sup>3</sup>⁄<sub>24</sub>, so R = 8.0 Ω and I = 4.8 ÷ 8.0 = <b>0.60 A</b>. (Or add the branch currents: 0.40 + 0.20 = 0.60 A — same answer, and a useful check.) <span class=\"trap\">Two traps.</span> Adding the resistances as though they were in series gives 36 Ω and a current of 0.133 A; giving one branch’s current (0.40 A) answers a question about a <i>section</i> when the <b>total</b> was demanded. Whole-circuit and section values being swapped is the slip on Q21(d) of <i>Physics Mixed Chapters 1-18 Graded Paper 3</i>. <span class=\"trap\">The sanity check that catches the first one:</span> resistors in parallel always give a combined resistance <b>smaller than the smallest one</b>. If yours came out bigger than 12 Ω, the formula went in the wrong way.", m:1, auto:true}]}
+      ]},
+
+    { n:12, kind:'parts',
+      stem:"<span class=\"subj maths\">Mathematics</span> A box contains 7 red pens and 5 green pens. Two pens are taken out at random, <b>without replacement</b>.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:0.318, tol:0.0025,
+          prompt:"Find the probability that both pens are red. Give your answer as a decimal correct to 3 significant figures.",
+          ms:[{p:"First pen: <sup>7</sup>⁄<sub>12</sub>. After a red is taken there are 6 red left out of 11, so the second is <sup>6</sup>⁄<sub>11</sub>. Multiply: <sup>7</sup>⁄<sub>12</sub> × <sup>6</sup>⁄<sub>11</sub> = <sup>42</sup>⁄<sub>132</sub> = <b>0.318</b>. <span class=\"trap\">The trap:</span> <b>without replacement</b> is two printed words that change both numbers in the second fraction. Ignoring them gives <sup>7</sup>⁄<sub>12</sub> × <sup>7</sup>⁄<sub>12</sub> = 0.340 — close enough to the right answer to feel safe, which is what makes it dangerous. <span class=\"trap\">The habit:</span> write the second fraction as <sup>?</sup>⁄<sub>?</sub> and fill in the denominator <i>first</i>, out loud: “one pen has gone, so eleven left.” Both numbers drop by one <i>because the pen that left was red</i>: the reds go 7 → 6 and the total goes 12 → 11. The 5 green pens are untouched.", m:1, auto:true}]}
+      ]},
+
+    { n:13, kind:'parts',
+      stem:"<span class=\"subj chem\">Chemistry</span> 20.0 cm<sup>3</sup> of 0.100 mol/dm<sup>3</sup> sodium hydroxide is exactly neutralised by <b>16.0 cm<sup>3</sup></b> of hydrochloric acid.<br>NaOH + HCl → NaCl + H<sub>2</sub>O",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:0.125, tol:0.002, unit:"mol/dm<sup>3</sup>",
+          prompt:"Calculate the concentration of the hydrochloric acid in mol/dm<sup>3</sup>.",
+          ms:[{p:"n(NaOH) = c × V = 0.100 × 0.0200 = 0.00200 mol. The ratio is <b>1 : 1</b>, so n(HCl) = 0.00200 mol as well. Then c(HCl) = n ÷ V = 0.00200 ÷ 0.0160 = <b>0.125 mol/dm<sup>3</sup></b>. <span class=\"trap\">The longest chain on this drill — four steps, and every one of them has a way to go wrong:</span> forgetting ÷ 1000 on either volume; multiplying instead of dividing at the last step (0.00200 × 0.0160); or stopping at 0.00200 mol, which is a correct amount but not a concentration. <span class=\"trap\">The sanity check at the end:</span> the acid neutralised the alkali using a <i>smaller</i> volume, so at a 1 : 1 ratio it must be the <i>more</i> concentrated of the two — 0.125 is bigger than 0.100, which fits. Get into the habit of using the two volumes to predict which answer is bigger <b>before</b> you divide; then the arithmetic only has to confirm what you already know.", m:1, auto:true}]}
+      ]}
+
+  ]
+};
+
+/* ---- where graded submissions are sent ----
+   Google Apps Script web-app /exec URL. Empty string = no endpoint configured, so a
+   graded paper falls back to the student downloading the answer packet. When set, a
+   graded paper auto-sends the student's answers to the teacher's Drive on submit and
+   keeps the download button as a manual backup. If the send can't be confirmed (e.g.
+   offline), the paper automatically downloads a backup copy to the student's device. */
+const SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec';
+
+/* ---- derive section labels & totals ---- */
+const TOTAL = PAPER.questions.reduce((s,q)=> s + (q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0)), 0);
+/* GRADED = teacher-marked exam: no answer key in this file, nothing revealed to the student.
+   On submit the student only downloads their answers to send to the teacher. Set PAPER.graded = true. */
+const GRADED = !!PAPER.graded;
+/* A paper is fully auto-markable when it has NO subjective (text) answers — every part is MCQ or numeric.
+   A GRADED paper is never auto-marked here (it has no key), so it is treated as not-fully-auto. */
+const FULLY_AUTO = !GRADED && !PAPER.questions.some(q => q.kind==='parts' && q.parts.some(p => p.kind==='text'));
+
+/* ---- numeric answer parsing ----
+   Takes the FIRST number in what the student typed and ignores any trailing unit.
+   The old version stripped every non-digit, so "0.08 mol/dm3" kept the 3 of "dm3"
+   and became 0.083 — a CORRECT answer marked wrong (and inconsistently: "0.0800
+   mol/dm3" became 0.08003, which passed). Also handles "9,000", "$20", "25°" and
+   scientific notation, all of which the old strip mangled. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[\u2212\u2012\u2013\u2014\u2015]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+/* ---- DOM helpers ---- */
+const $ = id => document.getElementById(id);
+function esc(){}
+function lines(n){ let h='<div class="print-lines">'; for(let i=0;i<n;i++) h+='<div class="ln"></div>'; return h+'</div>'; }
+
+/* ---- render questions ---- */
+function msMarkup(ms, idPrefix){
+  const head = FULLY_AUTO ? 'Worked answer' : 'Mark scheme';
+  let h = '<div class="ms'+(FULLY_AUTO?' solution':'')+'" id="'+idPrefix+'-ms"><div class="ms-head">'+head
+        + (FULLY_AUTO ? '' : '<span class="self-note">tick each point you earned</span>')
+        + '</div><div class="ms-body">';
+  ms.forEach((pt,i)=>{
+    if(FULLY_AUTO){
+      h += '<div class="ms-point read"><span class="pt">'+pt.p+'</span></div>';
+    } else if(pt.auto){
+      h += '<label class="ms-point auto"><input type="checkbox" data-m="'+pt.m+'" data-auto="1" disabled>'
+         + '<span class="pt">'+pt.p+'</span><span class="pm">'+pt.m+' mk</span><span class="lock">AUTO</span></label>';
+    } else {
+      h += '<label class="ms-point"><input type="checkbox" data-m="'+pt.m+'">'
+         + '<span class="pt">'+pt.p+'</span><span class="pm">'+pt.m+' mk</span></label>';
+    }
+  });
+  return h + '</div></div>';
+}
+
+function figMarkup(svg, cap){
+  return '<div class="fig">'+svg+(cap?'<div class="fig-cap">'+cap+'</div>':'')+'</div>';
+}
+
+/* uploaded diagram photos, keyed by part id (pid) → {dataUrl, name} */
+var DRAW_IMAGES = {};
+
+function render(){
+  const wrap = $('questions');
+  let html = '';
+  let inA=false, inB=false;
+  PAPER.questions.forEach(q=>{
+    // section dividers
+    if(q.kind==='mcq' && !inA){ inA=true;
+      html += '<div class="sec-head"><div class="sec-label">Warm-up</div><h2>One multiple-choice item</h2><div class="sec-sub">Every wrong option here comes from one specific slip. Work out which slip produces each one.</div></div>'; }
+    if(q.kind!=='mcq' && !inB){ inB=true;
+      html += '<div class="sec-head"><div class="sec-label">The drill</div><h2>Twelve numerical answers</h2><div class="sec-sub">One mark each, no partial credit. Type just the number — the unit is printed for you.</div></div>'; }
+
+    const qMarks = q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0);
+    html += '<div class="q" id="q'+q.n+'">';
+    html += '<div class="q-head"><span class="q-no">'+q.n+'</span><div class="q-stem">'+(q.stem||'')+'</div><span class="marks">['+qMarks+']</span></div>';
+    if(q.ctx) html += '<div class="ctx">'+q.ctx+'</div>';
+    if(q.fig) html += figMarkup(q.fig, q.figCap);
+
+    if(q.kind==='mcq'){
+      html += '<ul class="opts" data-q="'+q.n+'">';
+      q.options.forEach((opt,i)=>{
+        const key = String.fromCharCode(65+i);
+        html += '<li><label class="opt" data-i="'+i+'"><input type="radio" name="q'+q.n+'" value="'+i+'">'
+              + '<span><span class="opt-key">'+key+'</span> '+opt+'</span><span class="verdict"></span></label></li>';
+      });
+      html += '</ul>';
+      if(!GRADED) html += msMarkup(q.ms, 'q'+q.n);
+    } else {
+      q.parts.forEach((p,pi)=>{
+        const pid = 'q'+q.n+'p'+pi;
+        html += '<div class="part" id="'+pid+'">';
+        html += '<div><span class="part-label">'+p.label+'</span><span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
+        if(p.fig) html += figMarkup(p.fig, p.figCap);
+        if(p.kind==='numeric'){
+          html += '<div class="num-row"><input class="num" type="text" inputmode="decimal" data-ans="'+p.ans+'" data-tol="'+(p.tol||0)+'" placeholder="answer">'
+                + (p.unit?'<span class="num-unit">'+p.unit+'</span>':'')
+                + '<span class="num-verdict"></span></div>';
+          html += lines(1);
+        } else if(p.kind==='draw'){
+          html += '<div class="draw-row" data-pid="'+pid+'">'
+                + '<div class="draw-note">'+(p.drawNote||'Draw your diagram on paper, then take a clear photo and upload it here.')+'</div>'
+                + '<label class="draw-pick">📷 Upload / take a photo'
+                + '<input type="file" accept="image/*" capture="environment" class="draw-in" data-pid="'+pid+'"></label>'
+                + '<div class="draw-preview" id="'+pid+'-prev"></div></div>';
+          html += '<div class="draw-box"></div>';   // printable blank for hand-drawing
+        } else {
+          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your answer…"></textarea>';
+          html += lines(p.lines||3);
+        }
+        if(!GRADED) html += msMarkup(p.ms, pid);
+        html += '</div>';
+      });
+    }
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+/* ---- state & engine ---- */
+let started=false, graded=false, mode='timed', secs=0, timerId=null, startedAt=0;
+
+function fmt(s){ const m=Math.floor(s/60), ss=s%60; return m+':'+String(ss).padStart(2,'0'); }
+
+function updateProgress(){
+  let done=0, tot=0;
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq'){ tot++; if(document.querySelector('input[name="q'+q.n+'"]:checked')) done++; }
+    else q.parts.forEach((p,pi)=>{ tot++;
+      const pid = 'q'+q.n+'p'+pi;
+      if(p.kind==='draw'){ if(DRAW_IMAGES[pid]) done++; return; }
+      const root = $(pid);
+      const f = root.querySelector('textarea.ans, input.num');
+      if(f && f.value.trim()!=='') done++;
+    });
+  });
+  $('progDone').textContent=done; $('progTot').textContent=tot;
+}
+
+function start(m){
+  if(started) return;
+  started=true; mode=m; graded=false;
+  $('front').classList.add('started');   // keep data + formulas visible during the paper
+  $('questions').classList.remove('locked');
+  setInputsEnabled(true);
+  $('examBar').classList.add('show');
+  $('modeTag').textContent = m==='timed' ? 'TIMED' : 'PRACTICE';
+  startedAt = performance.now();
+  if(m==='timed'){
+    secs = PAPER.duration*60;
+    $('timeLeft').textContent = fmt(secs);
+    timerId = setInterval(tick, 1000);
+  } else {
+    $('timeLeft').textContent = '∞';
+    $('btnSubmit').textContent = GRADED ? 'Finish & submit' : 'Finish & mark';
+    document.querySelector('.exam-bar .timer .lbl').textContent='NO LIMIT';
+  }
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function tick(){
+  secs--;
+  $('timeLeft').textContent = fmt(Math.max(0,secs));
+  const bar=$('examBar');
+  bar.classList.toggle('warn', secs<=300 && secs>60);
+  bar.classList.toggle('danger', secs<=60);
+  if(secs<=0){ clearInterval(timerId); submit(true); }
+}
+
+function autoCheckNumeric(){
+  document.querySelectorAll('input.num').forEach(inp=>{
+    const ans=parseFloat(inp.dataset.ans), tol=parseFloat(inp.dataset.tol)||0;
+    const val=numOf(inp.value);
+    const ok = !isNaN(val) && Math.abs(val-ans)<=tol;
+    inp.classList.add(ok?'correct':'wrong');
+    const v=inp.parentElement.querySelector('.num-verdict');
+    v.textContent = ok ? '✓ correct' : ((inp.value.trim()==='')?'✗ no answer (ans: '+ans+')':'✗ (ans: '+ans+')');
+    v.style.color = ok ? 'var(--power)' : 'var(--force)';
+    // auto-tick the linked auto mark-scheme point
+    const part = inp.closest('.part');
+    const autoCb = part && part.querySelector('.ms-point.auto input[data-auto]');
+    if(autoCb){ autoCb.checked = ok; }
+  });
+}
+
+function gradeMCQ(){
+  PAPER.questions.filter(q=>q.kind==='mcq').forEach(q=>{
+    const chosen = document.querySelector('input[name="q'+q.n+'"]:checked');
+    const ci = chosen ? parseInt(chosen.value,10) : -1;
+    document.querySelectorAll('.opts[data-q="'+q.n+'"] .opt').forEach(opt=>{
+      const i=parseInt(opt.dataset.i,10);
+      opt.querySelector('input').disabled=true;
+      if(i===q.answer){ opt.classList.add('correct'); opt.querySelector('.verdict').textContent='✓ correct'; }
+      if(i===ci && ci!==q.answer){ opt.classList.add('wrong'); opt.querySelector('.verdict').textContent='✗ your answer'; }
+    });
+    // auto-tick the auto mark-scheme point
+    const cb = document.querySelector('#q'+q.n+'-ms .ms-point.auto input[data-auto]');
+    if(cb) cb.checked = (ci===q.answer);
+  });
+}
+
+function computeScore(){
+  let auto=0, self=0;
+  if(FULLY_AUTO){
+    PAPER.questions.forEach(q=>{
+      if(q.kind==='mcq'){
+        const chosen=document.querySelector('input[name="q'+q.n+'"]:checked');
+        if(chosen && parseInt(chosen.value,10)===q.answer) auto+=q.marks;
+      } else {
+        q.parts.forEach((p,pi)=>{
+          const inp=$('q'+q.n+'p'+pi).querySelector('input.num');
+          if(!inp) return;
+          const ans=parseFloat(inp.dataset.ans), tol=parseFloat(inp.dataset.tol)||0;
+          const val=numOf(inp.value);
+          if(!isNaN(val) && Math.abs(val-ans)<=tol) auto+=p.marks;
+        });
+      }
+    });
+  } else {
+    document.querySelectorAll('.ms-point input:checked').forEach(cb=>{
+      const m=Number(cb.dataset.m);
+      if(cb.dataset.auto) auto+=m; else self+=m;
+    });
+  }
+  const total=auto+self;
+  $('scoreNum').textContent=total;
+  $('autoMarked').textContent=auto;
+  $('selfMarked').textContent=self;
+  const pct=Math.round(total/TOTAL*100);
+  $('scorePct').textContent=pct+'%';
+  $('scoreBand').textContent=band(pct);
+  return total;
+}
+
+/* NO grade equivalence on this file — deliberately. This is a 13-item, all-or-nothing
+   trap drill, so each band would be under 8 percentage points wide and a score here
+   predicts nothing about a grade. Mapping it to "Grade 3 / D–E" would be both
+   statistically meaningless and the opposite of what the drill is for. */
+function band(p){
+  if(p>=100) return 'Clean sweep — every demand read exactly';
+  if(p>=75) return 'Strong — a couple of traps worth re-reading';
+  if(p>=50) return 'Half the traps caught — the worked answers show the rest';
+  return 'This is exactly what the drill is for — read every worked answer below';
+}
+
+function submit(auto){
+  if(graded) return;
+  if(!auto && mode==='timed'){
+    const q = GRADED ? 'Submit the paper now? You will not be able to change your answers.'
+                     : 'Submit and mark the paper now? You will not be able to change your answers.';
+    if(!confirm(q)) return;
+  }
+  graded=true;
+  if(timerId){ clearInterval(timerId); timerId=null; }
+
+  // time taken
+  const elapsed = (performance.now()-startedAt)/1000;
+  $('timeTaken').textContent = mode==='timed'
+    ? fmt(Math.max(0, Math.round(PAPER.duration*60 - secs)))
+    : fmt(Math.round(elapsed));
+
+  // lock inputs
+  document.querySelectorAll('textarea.ans, input.num, .draw-in').forEach(f=>f.disabled=true);
+  document.querySelectorAll('.draw-clear').forEach(b=>b.style.display='none');
+
+  // GRADED (teacher-marked): no key in this file — reveal nothing, show only the "submitted" card.
+  if(GRADED){
+    document.querySelectorAll('.opts input[type="radio"]').forEach(r=>r.disabled=true);
+    $('results').classList.add('show');
+    $('btnSubmit').textContent='✓ Submitted';
+    $('btnSubmit').disabled=true;
+    $('examBar').classList.remove('warn','danger');
+    sendSubmission();
+    $('results').scrollIntoView({behavior:'smooth'});
+    return;
+  }
+
+  gradeMCQ();
+  autoCheckNumeric();
+
+  // reveal all mark schemes
+  document.querySelectorAll('.ms').forEach(ms=>ms.classList.add('show'));
+
+  // enable self-mark recompute
+  document.querySelectorAll('.ms-point input:not([disabled])').forEach(cb=>{
+    cb.addEventListener('change', computeScore);
+  });
+
+  $('scoreDen').textContent=TOTAL;
+  computeScore();
+
+  $('results').classList.add('show');
+  $('btnSubmit').textContent='✓ Submitted';
+  $('btnSubmit').disabled=true;
+  $('examBar').classList.remove('warn','danger');
+  setTimeout(function(){ $('results').scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
+}
+
+/* ---- export answers for teacher AI-marking ---- */
+function stripTags(s){
+  return (s||'').replace(/<[^>]+>/g,'')
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+    .replace(/&deg;/g,'°').replace(/\s+/g,' ').trim();
+}
+function buildMarkingExport(){
+  let out=(GRADED?'EXAM PAPER — STUDENT ANSWERS (for the teacher to grade)':'PRACTICE PAPER — ANSWERS FOR MARKING')+'\n';
+  out+='Paper: '+document.title+'\n';
+  out+='Marks available: '+TOTAL+'\n';
+  out+='='.repeat(64)+'\n\n';
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq'){
+      const chosen=document.querySelector('input[name="q'+q.n+'"]:checked');
+      const ci=chosen?parseInt(chosen.value,10):-1;
+      out+='Q'+q.n+'  (MCQ, '+q.marks+' mark)\n'+stripTags(q.stem)+'\n';
+      q.options.forEach((o,i)=>{ out+='   '+String.fromCharCode(65+i)+') '+stripTags(o)+'\n'; });
+      out+='   STUDENT ANSWER: '+(ci>=0?String.fromCharCode(65+ci):'(blank)')+'\n';
+      if(!GRADED) out+='   CORRECT: '+String.fromCharCode(65+q.answer)+'\n';
+      out+='\n';
+    } else {
+      out+='Q'+q.n+'  '+stripTags(q.stem||'')+'\n';
+      if(q.ctx) out+='   ['+stripTags(q.ctx)+']\n';
+      q.parts.forEach((p,pi)=>{
+        const pid='q'+q.n+'p'+pi;
+        const root=$(pid);
+        let val;
+        if(p.kind==='draw'){
+          val = DRAW_IMAGES[pid] ? '[diagram photo attached: '+(DRAW_IMAGES[pid].name||pid)+']' : '(no diagram uploaded)';
+        } else {
+          const f=root?root.querySelector('textarea.ans, input.num'):null;
+          val=f?f.value.trim():'';
+        }
+        out+='  '+p.label+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
+        out+='     STUDENT ANSWER: '+(val||'(blank)')+'\n';
+        if(!GRADED) out+='     MARK SCHEME: '+p.ms.map(m=>stripTags(m.p)+' ['+m.m+']').join('  |  ')+'\n';
+        out+='\n';
+      });
+    }
+  });
+  out+='='.repeat(64)+'\n';
+  if(GRADED){
+    out+='FOR THE TEACHER: grade these answers against your own answer key for this paper.\n';
+    out+='(No mark scheme is included in this file — that is by design.)\n';
+  } else {
+    out+='FOR THE MARKER (AI): award marks strictly per each MARK SCHEME.\n';
+    out+='For every part give marks awarded / max, which points were met, and one line of feedback.\n';
+    out+='End with TOTAL / '+TOTAL+' and a percentage. Do NOT give a grade — this is a precision drill, not a graded paper.\n';
+  }
+  return out;
+}
+/* ---- auto-send a graded submission to the teacher's Drive endpoint ---- */
+function sendSubmission(){
+  if(!SUBMIT_ENDPOINT) return;                 // not configured → student uses the download button
+  var images = Object.keys(DRAW_IMAGES).map(function(pid){ return { part:pid, name:DRAW_IMAGES[pid].name, dataUrl:DRAW_IMAGES[pid].dataUrl }; });
+  var payload = JSON.stringify({ title:document.title, submittedAt:new Date().toISOString(), packet:buildMarkingExport(), images:images });
+  try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}   // local backup
+  var st=$('sendStatus');
+  // CORS mode (NOT no-cors) so we can READ the server's reply and show success ONLY when the
+  // file was actually saved. Apps Script returns Access-Control-Allow-Origin:* on /exec and its
+  // redirect, and a text/plain body is a CORS-safelisted request (no preflight is triggered).
+  fetch(SUBMIT_ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload})
+    .then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.text(); })
+    .then(function(t){
+      var ok=false;
+      try{ ok = (JSON.parse(t).ok===true); }catch(e){ ok = /(^|[^a-z])ok([^a-z]|$)/i.test(t||''); }  // accept {"ok":true} or legacy "ok"
+      if(!ok) throw new Error('server did not confirm');
+      if(st) st.textContent='✅ Confirmed — your answers have been received by your teacher.';
+    })
+    .catch(function(){
+      try{ downloadAnswers(); }catch(e){}                          // bonus: auto-save a copy to the student's device so answers are never lost if the send failed
+      if(st) st.innerHTML='⚠ <b>Not confirmed.</b> We could not confirm your answers were received, so a backup copy has been <b>downloaded to this device automatically</b> — please send that file to your teacher. (If it didn’t download, tap “⬇ Download a backup copy” below.)';
+      var d=$('downloadBtn'); if(d) d.style.display='';            // keep the manual fallback button visible too
+    });
+}
+function downloadAnswers(){
+  const blob=new Blob([buildMarkingExport()],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=document.title.replace(/[:\\/?*"<>|]/g,' -')+' — answers.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ---- diagram photo upload (downscale in-browser, keep payload small) ---- */
+function handleDrawFile(input){
+  var pid = input.dataset.pid;
+  var file = input.files && input.files[0];
+  if(!file){ return; }
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var img = new Image();
+    img.onload = function(){
+      var max = 1400, w = img.width, h = img.height;
+      if(w > max || h > max){ var s = Math.min(max/w, max/h); w = Math.round(w*s); h = Math.round(h*s); }
+      var c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      var dataUrl;
+      try { dataUrl = c.toDataURL('image/jpeg', 0.82); }
+      catch(e){ dataUrl = ev.target.result; }   // fallback to original
+      DRAW_IMAGES[pid] = { dataUrl: dataUrl, name: file.name || (pid+'.jpg') };
+      var prev = $(pid+'-prev');
+      if(prev){
+        prev.classList.add('show');
+        prev.innerHTML = '<img src="'+dataUrl+'" alt="your diagram">'
+          + '<div class="draw-meta">'+ (file.name||'photo') +' · uploaded</div>'
+          + '<button type="button" class="draw-clear" data-pid="'+pid+'">remove</button>';
+      }
+      if(!graded && started) updateProgress();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function clearDrawFile(pid){
+  delete DRAW_IMAGES[pid];
+  var prev = $(pid+'-prev'); if(prev){ prev.classList.remove('show'); prev.innerHTML=''; }
+  var inp = document.querySelector('.draw-in[data-pid="'+pid+'"]'); if(inp) inp.value='';
+  if(!graded && started) updateProgress();
+}
+
+/* ---- wire up ---- */
+render();
+function setInputsEnabled(on){ document.querySelectorAll('.opt input, textarea.ans, input.num, .draw-in').forEach(f=>{ f.disabled=!on; }); }
+$('questions').classList.add('locked');
+setInputsEnabled(false);
+if(FULLY_AUTO){
+  var _db=$('downloadBtn'); if(_db) _db.style.display='none';
+  var _sr=$('selfRow'); if(_sr) _sr.style.display='none';
+  var _dc=document.querySelector('.disclaimer');
+  if(_dc) _dc.textContent='This drill is marked automatically. It is a 13-item precision check, not a graded paper — the score counts traps caught, and says nothing about a grade.';
+}
+if(GRADED){
+  document.body.classList.add('graded');
+  var _sp=$('startPractice'); if(_sp) _sp.style.display='none';    // graded: timed exam only, no practice mode
+  var _stt=$('startTimed'); if(_stt) _stt.textContent='▶ Start exam';
+  var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';        // hide score / breakdown
+  var _rt=$('resultsTitle'); if(_rt) _rt.textContent='Paper submitted';
+  var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';        // nothing to review
+  var _dc2=document.querySelector('.disclaimer'); if(_dc2) _dc2.style.display='none';
+  var _gd=$('downloadBtn');
+  if(SUBMIT_ENDPOINT){
+    if(_gd){ _gd.style.display=''; _gd.textContent='⬇ Download a backup copy'; }   // ALWAYS offer a manual backup: mode:'no-cors' can't confirm the save, so "submitted" is never proof
+    var _sm=$('submittedMsg');
+    if(_sm) _sm.innerHTML='✅ <b>Paper submitted.</b> <span id="sendStatus">Submitting your answers…</span>';
+  } else {
+    if(_gd) _gd.textContent='⬇ Download your answers';            // fallback → manual download + send
+  }
+}
+$('metaTime').textContent = PAPER.duration+' minutes';
+$('metaMarks').textContent = TOTAL+' marks';
+$('scoreDen').textContent = TOTAL;
+$('timeLeft').textContent = fmt(PAPER.duration*60);
+updateProgress();
+
+document.addEventListener('input', e=>{ if(!graded && started) updateProgress(); });
+document.addEventListener('change', e=>{
+  if(e.target && e.target.classList && e.target.classList.contains('draw-in')){ handleDrawFile(e.target); return; }
+  if(!graded && started) updateProgress();
+});
+document.addEventListener('click', e=>{
+  if(e.target && e.target.classList && e.target.classList.contains('draw-clear')){ clearDrawFile(e.target.dataset.pid); }
+});
+
+$('startTimed').addEventListener('click', ()=>start('timed'));
+$('startPractice').addEventListener('click', ()=>start('practice'));
+$('btnSubmit').addEventListener('click', ()=>submit(false));
+$('printBtn').addEventListener('click', ()=>window.print());
+$('printBtn2').addEventListener('click', ()=>window.print());
+$('reviewBtn').addEventListener('click', ()=>$('questions').scrollIntoView({behavior:'smooth'}));
+$('retakeBtn').addEventListener('click', ()=>location.reload());
+$('downloadBtn').addEventListener('click', downloadAnswers);
+
+/* ---- theme toggle ---- */
+(function(){
+  const body=document.body, btn=$('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){try{return localStorage.getItem('pp-theme');}catch(e){return null;}}
+  function safeSet(v){try{localStorage.setItem('pp-theme',v);}catch(e){}}
+  function apply(t){ body.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?SUN:MOON;
+    btn.setAttribute('aria-label',(t==='dark')?'Switch to light theme':'Switch to dark theme'); }
+  let startT=safeGet();
+  if(!startT) startT=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+  apply(startT);
+  btn.addEventListener('click', ()=>{ const n=body.getAttribute('data-theme')==='dark'?'light':'dark'; apply(n); safeSet(n); });
+})();
+</script>
+</body>
+</html>
