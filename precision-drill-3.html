@@ -387,6 +387,16 @@
 
   /* graded-mode "submitted" message (shown instead of a score on teacher-marked papers) */
   .submitted-msg { display:none; }
+  /* Frozen report: a finished drill reopens as its own marked report, never a blank. */
+  .frozen-bar { display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+    margin:0 0 18px; padding:12px 16px; border-radius:12px; font-size:14px; line-height:1.6;
+    border:1px solid color-mix(in srgb, var(--power) 40%, var(--border));
+    background:color-mix(in srgb, var(--power) 10%, transparent); color:var(--text); }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'JetBrains Mono',monospace;
+    font-weight:700; font-size:15px; color:var(--power); white-space:nowrap; }
+  @media print { .frozen-bar { break-inside:avoid; } }
+
   body.graded .submitted-msg { display:block; margin:4px 0 6px; color:var(--text); font-size:15px; line-height:1.7; }
   body.graded .submitted-msg b { color:var(--bright); }
 
@@ -948,13 +958,14 @@ function submit(auto){
   });
 
   $('scoreDen').textContent=TOTAL;
-  computeScore();
+  var _score = computeScore();
+  if(!RESTORING) freezeAttempt(_score);   // finished attempt becomes a permanent report
 
   $('results').classList.add('show');
   $('btnSubmit').textContent='✓ Submitted';
   $('btnSubmit').disabled=true;
   $('examBar').classList.remove('warn','danger');
-  setTimeout(function(){ $('results').scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
+  if(!RESTORING) setTimeout(function(){ $('results').scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
 }
 
 /* ---- export answers for teacher AI-marking ---- */
@@ -1127,8 +1138,143 @@ $('btnSubmit').addEventListener('click', ()=>submit(false));
 $('printBtn').addEventListener('click', ()=>window.print());
 $('printBtn2').addEventListener('click', ()=>window.print());
 $('reviewBtn').addEventListener('click', ()=>$('questions').scrollIntoView({behavior:'smooth'}));
-$('retakeBtn').addEventListener('click', ()=>location.reload());
+$('retakeBtn').addEventListener('click', function(){
+  if(!DNUM){ location.reload(); return; }
+  if(!confirm('Clear the saved report and take this drill again?\n\nThe report from your last attempt will be replaced.')) return;
+  var p=progLoad(); p[TICK_ID]=false; p[REP_ID]=null; progSave(p);
+  var done=function(){ location.reload(); };
+  if(!SUBMIT_ENDPOINT){ done(); return; }
+  var patch={}; patch[TICK_ID]=false; patch[REP_ID]=null;
+  fetch(SUBMIT_ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify({type:'progress',data:patch})}).then(done, done);
+});
 $('downloadBtn').addEventListener('click', downloadAnswers);
+
+/* ---- FROZEN REPORT -----------------------------------------------------------
+   A finished drill is a record, not a reusable blank. On submit we save her raw
+   answers; on every later open we replay them through the SAME grading path, so
+   the report she reopens is identical to the one she saw when she finished.
+   We deliberately store ANSWERS, never a rendered snapshot -- a snapshot would
+   drift the moment the marking code changed.
+
+   It lives in the shared 'studyProgress' object so the tick and the score reach
+   the hub and her other device. It is kept COMPACT on purpose: the Apps Script
+   record is one ScriptProperties value (9KB ceiling, ~0.5KB used today), so the
+   answers are a single pipe-joined positional string, not a per-question object. */
+var RESTORING = false;
+var PKEY = 'studyProgress';
+var DNUM = (function(){
+  var m = /precision-drill-(\d+)/i.exec(location.pathname);
+  if(!m) m = /Precision Drill\s+(\d+)/i.exec(document.title);   // fall back to the title, so a rename can't silently disable freezing
+  return m ? m[1] : null;
+})();
+var TICK_ID = 'drill:' + DNUM, REP_ID = 'drillRep:' + DNUM;
+
+function progLoad(){ try { return JSON.parse(localStorage.getItem(PKEY) || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem(PKEY, JSON.stringify(o)); } catch(e){} }
+
+/* One slot per MCQ and per part, in paper order. A published drill never changes,
+   so position is a stable key -- and a length mismatch means it did, so we bail
+   rather than paste her answers against the wrong questions. */
+function answerSlots(){
+  var s = [];
+  PAPER.questions.forEach(function(q){
+    if(q.kind === 'mcq') s.push({ mcq: q.n });
+    else q.parts.forEach(function(p, pi){ s.push({ part: 'q' + q.n + 'p' + pi }); });
+  });
+  return s;
+}
+function collectAnswers(){
+  return answerSlots().map(function(s){
+    if(s.mcq != null){
+      var c = document.querySelector('input[name="q' + s.mcq + '"]:checked');
+      return c ? c.value : '';
+    }
+    var root = $(s.part), f = root && root.querySelector('input.num, textarea.ans');
+    return encodeURIComponent(f ? f.value : '');
+  }).join('|');
+}
+function applyAnswers(str){
+  var vals = String(str == null ? '' : str).split('|'), sl = answerSlots();
+  if(vals.length !== sl.length) return false;
+  for(var i = 0; i < sl.length; i++){
+    var s = sl[i], v = vals[i];
+    if(s.mcq != null){
+      if(v === '') continue;
+      var r = document.querySelector('input[name="q' + s.mcq + '"][value="' + v + '"]');
+      if(r) r.checked = true;
+    } else {
+      var root = $(s.part), f = root && root.querySelector('input.num, textarea.ans');
+      if(f){ try { f.value = decodeURIComponent(v); } catch(e){ f.value = v; } }
+    }
+  }
+  return true;
+}
+
+/* Save the finished attempt. The shared record is written MERGE-ONLY: a full
+   snapshot from here would wipe ticks this device has not pulled yet. */
+function freezeAttempt(score){
+  if(!DNUM) return;
+  var rep = { v:1, s:score, t:TOTAL, md:mode, tm:$('timeTaken').textContent,
+              d:new Date().toISOString().slice(0,10), a:collectAnswers() };
+  var p = progLoad(); p[TICK_ID] = true; p[REP_ID] = rep; progSave(p);
+  if(!SUBMIT_ENDPOINT) return;
+  var patch = {}; patch[TICK_ID] = true; patch[REP_ID] = rep;
+  fetch(SUBMIT_ENDPOINT, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+  /* Full per-question detail to the teacher's Drive folder -- the hub only ever
+     carries a score, and a score does not say WHICH trap was missed. */
+  try {
+    fetch(SUBMIT_ENDPOINT, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ title: document.title + ' (score ' + score + '/' + TOTAL + ')',
+                             submittedAt: new Date().toISOString(),
+                             packet: buildMarkingExport(), images: [] }) }).catch(function(){});
+  } catch(e){}
+}
+
+/* Replay a saved attempt into the page, then run the ordinary submit path. */
+function showFrozen(rep){
+  if(!rep || rep.v !== 1 || graded) return;
+  RESTORING = true;
+  started = true; mode = rep.md || 'timed';
+  $('front').classList.add('started');
+  $('questions').classList.remove('locked');
+  setInputsEnabled(true);
+  if(!applyAnswers(rep.a)){ RESTORING = false; return; }
+  submit(true);
+  $('timeTaken').textContent = rep.tm || '—';
+  $('resultsTitle').textContent = 'Your marked report';
+  var bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '🔒 <b>Drill completed on ' + rep.d + '.</b> This is your marked report — ' +
+                  'your answers, what was right and wrong, the mark scheme and your score. ' +
+                  'It stays here every time you open this drill.' +
+                  '<span class="fb-score">' + rep.s + ' / ' + rep.t + '</span>';
+  var qs = $('questions');
+  if(qs && qs.parentNode && !document.querySelector('.frozen-bar')) qs.parentNode.insertBefore(bar, qs);
+  var rt = $('retakeBtn'); if(rt) rt.textContent = '↺ Clear and retake';
+  window.scrollTo(0, 0);
+  RESTORING = false;
+}
+
+/* On open: show the local report at once (no network wait), then reconcile with
+   the shared record so an attempt made on her other device also opens frozen. */
+(function(){
+  if(!DNUM) return;
+  var local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  if(!SUBMIT_ENDPOINT) return;
+  fetch(SUBMIT_ENDPOINT + '?progress=1&t=' + Date.now())
+    .then(function(r){ return r.text(); })
+    .then(function(t){
+      var c; try { c = JSON.parse(t); } catch(e){ return; }
+      if(!c || typeof c !== 'object' || c.error) return;
+      var cur = progLoad(), changed = false;
+      for(var k in c){ if(JSON.stringify(cur[k]) !== JSON.stringify(c[k])){ cur[k] = c[k]; changed = true; } }
+      if(changed) progSave(cur);
+      if(!graded && c[REP_ID]) showFrozen(c[REP_ID]);
+    }).catch(function(){});
+})();
 
 /* ---- theme toggle ---- */
 (function(){

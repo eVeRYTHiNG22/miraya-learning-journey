@@ -688,10 +688,12 @@
   .ds-lead b { color: var(--bright); font-weight: 700; }
   .ds-note { font-size: 11.5px; color: var(--muted); }
   .ds-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+  /* Fixed height whether or not a score line is present, so a half-finished
+     strip doesn't render ragged. */
   .ds-pill {
     position: relative;
-    display: inline-flex; align-items: center; justify-content: center;
-    min-width: 36px; height: 31px; padding: 0 10px;
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+    min-width: 40px; height: 38px; padding: 0 9px; gap: 1px;
     border-radius: 9px; text-decoration: none;
     font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700;
     color: var(--text);
@@ -706,11 +708,27 @@
     border-color: color-mix(in srgb, var(--maths) 55%, var(--border));
     color: var(--bright);
   }
+  /* Completed wins over latest — a finished drill reads green wherever it sits. */
+  .ds-pill.is-done {
+    background: color-mix(in srgb, var(--power) 18%, transparent);
+    border-color: color-mix(in srgb, var(--power) 52%, var(--border));
+    color: var(--bright);
+  }
+  .ds-pill.is-done:hover { border-color: var(--power); }
+  .ds-pill .ds-score { font-size: 9px; font-weight: 700; font-style: normal; color: var(--power); letter-spacing: 0; }
+  .ds-pill .ds-tick {
+    position: absolute; top: -5px; right: -5px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--power); color: var(--bg);
+    font-size: 9px; font-style: normal; line-height: 14px; text-align: center;
+    box-shadow: 0 0 0 2px var(--bg);
+  }
   .ds-pill .ds-dot {
     position: absolute; top: -4px; right: -4px; width: 8px; height: 8px;
     border-radius: 50%; background: var(--power);
     box-shadow: 0 0 0 2px var(--bg);
   }
+  .ds-pill.is-done .ds-dot { display: none; }   /* the tick already says "attended to" */
   .ds-tail { margin-top: 9px; font-size: 11.5px; color: var(--muted); line-height: 1.45; }
   .ds-tail b { color: var(--bright); font-weight: 700; }
 
@@ -2000,17 +2018,21 @@
       });
     })();
 
-    /* (5b) Precision-drill pills — highlight the newest and describe it.
-       Derived from the DOM so adding a drill is one <a> and nothing else. */
+    /* (5b) Precision-drill pills — newest highlighted, completed ones ticked.
+       Derived from the DOM so adding a drill is one <a> and nothing else.
+       A completed drill writes 'drill:<n>' = true and 'drillRep:<n>' = {s,t,d,…}
+       into studyProgress from its own page; we only read that here. */
     (function () {
-      var pills = document.querySelectorAll('#dsPills .ds-pill');
+      var pills = [].slice.call(document.querySelectorAll('#dsPills .ds-pill'));
       if (!pills.length) return;
       var today = startOfToday(), NEW_DAYS = 7;
+      var tail = document.getElementById('dsTail');
+      var last = pills[pills.length - 1];
+
+      // Pin the number BEFORE anything is appended — the score badge would
+      // otherwise end up inside textContent and corrupt the id we look up.
       pills.forEach(function (p) {
-        var n = p.textContent.trim();
-        var d = p.getAttribute('data-desc') || '';
-        p.setAttribute('title', 'Precision Drill ' + n + (d ? ' — ' + d : ''));
-        p.setAttribute('aria-label', 'Precision Drill ' + n);
+        p.setAttribute('data-n', p.textContent.trim());
         var dt = parseDate(p.getAttribute('data-added'));
         if (dt != null) {
           var days = Math.floor((today - dt) / 86400000);
@@ -2021,13 +2043,56 @@
           }
         }
       });
-      var last = pills[pills.length - 1];
       last.classList.add('is-latest');
-      var tail = document.getElementById('dsTail');
-      if (tail) {
-        tail.innerHTML = 'Newest: <b>Drill ' + last.textContent.trim().replace(/\D+$/, '') + '</b> — ' +
+
+      function readProg() {
+        try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; }
+        catch (e) { return {}; }
+      }
+
+      function paint() {
+        var pr = readProg(), done = 0;
+        pills.forEach(function (p) {
+          var n = p.getAttribute('data-n');
+          var desc = p.getAttribute('data-desc') || '';
+          var rep = pr['drillRep:' + n];
+          var ok = !!pr['drill:' + n];
+          p.classList.toggle('is-done', ok);
+          if (ok) done++;
+
+          var score = p.querySelector('.ds-score'), tick = p.querySelector('.ds-tick');
+          if (ok && rep && rep.v === 1) {
+            if (!score) { score = document.createElement('i'); score.className = 'ds-score'; p.appendChild(score); }
+            score.textContent = rep.s + '/' + rep.t;
+          } else if (score) { score.remove(); }
+          if (ok) {
+            if (!tick) { tick = document.createElement('i'); tick.className = 'ds-tick'; tick.textContent = '✓'; p.appendChild(tick); }
+          } else if (tick) { tick.remove(); }
+
+          var t = 'Precision Drill ' + n + (desc ? ' — ' + desc : '');
+          if (ok && rep && rep.v === 1) {
+            t = 'Drill ' + n + ' — completed ' + rep.d + ', scored ' + rep.s + ' / ' + rep.t +
+                '. Opens as her marked report.';
+          }
+          p.setAttribute('title', t);
+          p.setAttribute('aria-label', t);
+        });
+
+        if (!tail) return;
+        var n = last.getAttribute('data-n');
+        var head = done
+          ? '<b>' + done + ' of ' + pills.length + ' completed</b> — a ticked drill opens as her marked report. '
+          : '';
+        tail.innerHTML = head + 'Newest: <b>Drill ' + n + '</b> — ' +
           (last.getAttribute('data-desc') || 'mixed-subject accuracy practice.');
       }
+
+      paint();
+      // Repaint when the cross-device sync layer lands a newer record, and when
+      // she tabs back after finishing a drill.
+      window.addEventListener('miraya-progress-synced', paint);
+      window.addEventListener('focus', paint);
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) paint(); });
     })();
 
     /* (6) Compact stacked graded papers — collapse ≥3 into one toggle */
