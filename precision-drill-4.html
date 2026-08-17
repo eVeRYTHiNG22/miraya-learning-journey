@@ -1138,7 +1138,16 @@ $('btnSubmit').addEventListener('click', ()=>submit(false));
 $('printBtn').addEventListener('click', ()=>window.print());
 $('printBtn2').addEventListener('click', ()=>window.print());
 $('reviewBtn').addEventListener('click', ()=>$('questions').scrollIntoView({behavior:'smooth'}));
+/* ---- TEACHER-ONLY RESET --------------------------------------------------
+   A finished drill is a record, not a reusable blank. Clearing it and retaking
+   is a teacher action, not a student one, so the retake button is hidden unless
+   the page is opened with the teacher marker in the URL (#teacher or ?teacher).
+   Nothing is stored, so a student's device never becomes "teacher" by accident;
+   the marker names no secret, so reading the source grants a student nothing. */
+var IS_TEACHER = /teacher/i.test(location.hash) || /teacher/i.test(location.search);
+(function(){ var rt=$('retakeBtn'); if(rt && !IS_TEACHER) rt.style.display='none'; })();
 $('retakeBtn').addEventListener('click', function(){
+  if(!IS_TEACHER){ alert('Only your teacher can reset this drill.'); return; }
   if(!DNUM){ location.reload(); return; }
   if(!confirm('Clear the saved report and take this drill again?\n\nThe report from your last attempt will be replaced.')) return;
   var p=progLoad(); p[TICK_ID]=false; p[REP_ID]=null; progSave(p);

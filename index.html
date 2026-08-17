@@ -1585,7 +1585,11 @@
     var reset = document.getElementById('resetProg');
     if (reset) reset.addEventListener('click', function () {
       if (confirm('Clear all progress ticks? This cannot be undone.')) {
-        var keep = {}; for (var kk in prog) { if (kk.indexOf('sa1:') === 0) keep[kk] = prog[kk]; } // preserve SA-1 checklist
+        // preserve SA-1 checklist AND every drill record: a completed drill is a
+        // teacher-owned record, so a student's "clear all" un-ticks notes/papers
+        // but must not wipe any drill tick or frozen report. Only the teacher-gated
+        // retake button on a drill page (opened with #teacher) can clear those.
+        var keep = {}; for (var kk in prog) { if (kk.indexOf('sa1:') === 0 || kk.indexOf('drill:') === 0 || kk.indexOf('drillRep:') === 0) keep[kk] = prog[kk]; }
         prog = keep; save(prog); refresh();
       }
     });
