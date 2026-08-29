@@ -1070,9 +1070,9 @@
       <line x1="300" y1="134" x2="416" y2="134" class="d-ray" marker-end="url(#m6C)"/>
       <line x1="300" y1="160" x2="416" y2="160" class="d-ray" marker-end="url(#m6C)"/>
       <line x1="300" y1="186" x2="416" y2="186" class="d-ray" marker-end="url(#m6C)"/>
-      <line x1="442" y1="134" x2="534" y2="101.7" class="d-ray" marker-end="url(#m6C)"/>
-      <line x1="442" y1="186" x2="534" y2="218.3" class="d-ray" marker-end="url(#m6C)"/>
-      <line x1="442" y1="160" x2="534" y2="160" class="d-ray" marker-end="url(#m6C)"/>
+      <line x1="430" y1="134" x2="534" y2="97.5" class="d-ray" marker-end="url(#m6C)"/>
+      <line x1="430" y1="186" x2="534" y2="222.5" class="d-ray" marker-end="url(#m6C)"/>
+      <line x1="430" y1="160" x2="534" y2="160" class="d-ray" marker-end="url(#m6C)"/>
       <line x1="430" y1="134" x2="356" y2="160" class="d-ray d-virtual"/>
       <line x1="430" y1="186" x2="356" y2="160" class="d-ray d-virtual"/>
       <circle cx="356" cy="160" r="3.4" class="d-mark"/>
@@ -1125,15 +1125,27 @@
     <p>For a converging lens, the whole story depends on where the object sits relative to F and 2F. Drag the object and watch the two construction rays build the image:</p>
 
     <div class="explorer">
-      <svg class="graph" viewBox="0 0 440 220" id="lensSvg" aria-label="Converging lens ray diagram">
+      <div class="scn-tabs" id="lensTabs">
+        <div class="scn-tab active" data-lt="conv">Converging (convex) &#9660;&#9650;</div>
+        <div class="scn-tab" data-lt="div">Diverging (concave) &#9650;&#9660;</div>
+      </div>
+      <svg class="graph" viewBox="0 0 440 230" id="lensSvg" aria-label="Interactive ray diagram: drag the object distance and switch between a converging and a diverging lens to see where the image forms, which side it is on, and whether it is enlarged or diminished.">
+        <!-- side shading: which side of the lens you are on -->
+        <rect id="lSideObj" x="10" y="16" width="210" height="198" fill="var(--motion)" opacity="0.05"/>
+        <rect id="lSideImg" x="220" y="16" width="210" height="198" fill="var(--force)" opacity="0.05"/>
+        <text x="16" y="28" class="axis-lbl">&#8592; OBJECT SIDE</text>
+        <text x="424" y="28" class="axis-lbl" text-anchor="end">OTHER SIDE &#8594;</text>
         <line x1="10" y1="110" x2="430" y2="110" class="axis"/>
-        <line x1="220" y1="34" x2="220" y2="186" class="d-lens"/>
+        <!-- lens: vertical line plus the exam shorthand arrowheads (out = convex, in = concave) -->
+        <line x1="220" y1="44" x2="220" y2="176" class="d-lens"/>
+        <path id="lConvTip" class="d-lens" fill="none" d="M 214 51 L 220 43 L 226 51 M 214 169 L 220 177 L 226 169"/>
+        <path id="lDivTip"  class="d-lens" fill="none" style="display:none" d="M 214 43 L 220 51 L 226 43 M 214 177 L 220 169 L 226 177"/>
         <!-- focal points -->
         <circle cx="265" cy="110" r="3" class="d-mark"/><text x="259" y="126" class="axis-lbl">F</text>
         <circle cx="310" cy="110" r="3" class="d-mark"/><text x="302" y="126" class="axis-lbl">2F</text>
         <circle cx="175" cy="110" r="3" class="d-mark"/><text x="171" y="126" class="axis-lbl">F</text>
         <circle cx="130" cy="110" r="3" class="d-mark"/><text x="124" y="126" class="axis-lbl">2F</text>
-        <text x="224" y="46" class="axis-lbl">lens</text>
+        <text x="230" y="42" class="axis-lbl">lens</text>
         <!-- rays (positions set by JS) -->
         <line id="lR1"  class="d-ray"/>
         <line id="lR1b" class="d-ray"/>
@@ -1143,45 +1155,48 @@
         <line id="lObj" class="d-obj" marker-end="url(#objArrow)"/>
         <line id="lImg" class="d-img" marker-end="url(#imgArrow)"/>
         <line id="lImgV" class="d-img d-virtual" marker-end="url(#imgArrowV)" style="display:none"/>
+        <text id="lImgTag" class="axis-lbl" text-anchor="middle" style="fill:var(--force)"></text>
         <defs>
-          <marker id="objArrow"  markerWidth="10" markerHeight="10" refX="5" refY="6" orient="auto"><path d="M0,6 L5,0 L10,6 Z" class="mk-blue"/></marker>
-          <marker id="imgArrow"  markerWidth="10" markerHeight="10" refX="5" refY="6" orient="auto"><path d="M0,6 L5,0 L10,6 Z" class="mk-red"/></marker>
-          <marker id="imgArrowV" markerWidth="10" markerHeight="10" refX="5" refY="6" orient="auto"><path d="M0,6 L5,0 L10,6 Z" class="mk-red"/></marker>
+          <marker id="objArrow"  markerWidth="11" markerHeight="9" refX="9" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,3.5 L0,7 Z" class="mk-blue"/></marker>
+          <marker id="imgArrow"  markerWidth="11" markerHeight="9" refX="9" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,3.5 L0,7 Z" class="mk-red"/></marker>
+          <marker id="imgArrowV" markerWidth="11" markerHeight="9" refX="9" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,3.5 L0,7 Z" class="mk-red"/></marker>
         </defs>
       </svg>
       <div class="tool-grid" style="margin-top:14px">
         <div>
           <div class="slider-row">
             <label>Object distance u <b><span id="ouV">2.0</span> f</b></label>
-            <input type="range" id="ou" min="0.5" max="4" step="0.1" value="2">
+            <input type="range" id="ou" min="0.5" max="4" step="0.1" value="2" aria-label="Object distance in focal lengths">
           </div>
-          <div class="chart-cap" style="margin-top:4px">beyond 2F · at 2F · between F &amp; 2F · inside F</div>
+          <div class="chart-cap" style="margin-top:4px" id="lensZones">beyond 2F &#183; at 2F &#183; between F &amp; 2F &#183; inside F</div>
         </div>
         <div class="vec-out">
           <div class="ro">Image formed</div>
-          <div class="rv" style="font-size:1.15rem" id="imgNature">Real · same size</div>
-          <div class="ro" id="imgDetail">inverted · v = 2.0 f · m = 1.00</div>
+          <div class="rv" style="font-size:1.15rem" id="imgNature">Real &#183; same size</div>
+          <div class="ro" id="imgDetail">inverted &#183; v = 2.0 f &#183; m = 1.00</div>
+          <div class="ro" id="imgSide" style="margin-top:7px; color:var(--force)">OTHER SIDE &#183; catch it on a screen</div>
           <div class="ro" style="margin-top:7px"><span class="xs-tag" style="margin-left:0">v and m: not in 0625</span></div>
         </div>
       </div>
       <div class="scn-read">
-        <div class="rk">The two rays that locate every image</div>
-        <strong>Ray 1:</strong> travels parallel to the axis, then bends through F on the far side. <strong>Ray 2:</strong> goes straight through the centre of the lens, undeviated. Where they cross is the top of the image.
+        <div class="rk" id="lensRuleK">The two rays that locate every image</div>
+        <div id="lensRule"><strong>Ray 1:</strong> travels parallel to the axis, then bends through F on the far side. <strong>Ray 2:</strong> goes straight through the centre of the lens, undeviated. Where they cross is the top of the image.</div>
       </div>
     </div>
 
     <table>
-      <tr><th>Object position</th><th>Image</th><th>Everyday use</th></tr>
+      <tr><th>Object position &#8212; <em>converging lens</em></th><th>Image</th><th>Everyday use</th></tr>
       <tr><td>Beyond 2F</td><td>Real, inverted, <strong>diminished</strong></td><td>Camera, the eye</td></tr>
       <tr><td>At 2F</td><td>Real, inverted, same size</td><td>1:1 copier</td></tr>
       <tr><td>Between F and 2F</td><td>Real, inverted, <strong>enlarged</strong></td><td>Projector</td></tr>
       <tr><td>At F</td><td>No image (rays parallel — image at infinity)</td><td>Spotlight / searchlight</td></tr>
       <tr><td>Inside F</td><td><strong>Virtual</strong>, upright, enlarged</td><td>Magnifying glass</td></tr>
+      <tr><td><strong>Any distance</strong> &#8212; <em>diverging lens</em></td><td><strong>Virtual</strong>, upright, <strong>diminished</strong></td><td>Short-sight spectacles, door peephole</td></tr>
     </table>
 
     <div class="box beyond">
       <div class="box-label">◇ Beyond the syllabus — don't revise this</div>
-      The explorer prints an image distance <strong>v</strong> and a magnification <strong>m</strong> because they help you <em>see</em> what the rays are doing. Neither is examined by <strong>0625 (2026–28)</strong>: there is no lens equation and no linear-magnification formula anywhere in the specification. Objective <strong>3.2.3.4</strong> asks only that you describe an image using three pairs of words — <strong>enlarged / same size / diminished</strong>, <strong>upright / inverted</strong>, <strong>real / virtual</strong>. So read <span class="eq-inline">m = 2.4</span> as nothing more than "enlarged", and spend your revision time on <em>drawing</em> the two construction rays accurately instead. (A single lens used as a <strong>magnifying glass</strong> <em>is</em> examinable — that is objective 3.2.3.7 — but only as a description, never as a calculation.)
+      The explorer prints an image distance <strong>v</strong> and a magnification <strong>m</strong> because they help you <em>see</em> what the rays are doing. Neither is examined by <strong>0625 (2026–28)</strong>: there is no lens equation and no linear-magnification formula anywhere in the specification. Objective <strong>3.2.3.4</strong> asks only that you describe an image using three pairs of words — <strong>enlarged / same size / diminished</strong>, <strong>upright / inverted</strong>, <strong>real / virtual</strong>. So read <span class="eq-inline">m = 2.4</span> as nothing more than "enlarged", and spend your revision time on <em>drawing</em> the two construction rays accurately instead. (A single lens used as a <strong>magnifying glass</strong> <em>is</em> examinable — that is objective 3.2.3.7 — but only as a description, never as a calculation.) The explorer’s <strong>diverging</strong> mode is in the same category: 0625 asks only what a diverging lens does to a <em>parallel beam</em> (3.2.3.1) and that it corrects <em>short sight</em> (3.2.3.8) — there is no objective asking you to <em>draw</em> a diverging-lens ray diagram. It is here because it is the fastest way to see why the magnifying glass is special, so play with it, then revise the converging constructions.
     </div>
 
     <div class="box intuition">
@@ -1219,9 +1234,219 @@
       <div class="fig-cap">With the object <b>closer to the lens than F</b>, the two construction rays leave the lens still <b>diverging</b>, so they never meet. Extend them <b>backwards</b> (dashed) and they meet on the same side as the object: a <b>virtual, upright, enlarged</b> image. Nothing can be caught on a screen there &#8212; but the eye, looking through the lens, sees it. This is the only converging-lens case that gives an upright image.</div>
     </div>
 
+    <div class="box pitfall">
+      <div class="box-label">&#9888;&#65039; &#8220;But a diverging lens magnifies too, doesn&#8217;t it?&#8221;</div>
+      <strong>No &#8212; it never does.</strong> A diverging lens gives a <strong>diminished</strong> image whatever you do with it: virtual, upright and <em>smaller</em>, always squeezed into the gap between the lens and F. If you are short-sighted, hold your own spectacles up at arm&#8217;s length and the room through them <em>shrinks</em>. The magnifying glass is a <strong>converging</strong> lens with the object <strong>closer than F</strong> &#8212; that is the only single-lens way to get an enlarged upright image.<br><br>
+      And the side rule is the opposite of what most people guess: <mark>every virtual image is on the SAME side of the lens as the object</mark> &#8212; the magnifying glass one <em>and</em> the diverging one. (Careful: that is a rule about <em>lenses</em>. A plane mirror also makes a virtual image, and that one sits <em>behind</em> the mirror &#8212; see section 04.) The light never really reached that spot; you are looking back through the lens at where the rays only <em>seem</em> to start, so the picture sits back with the object. The image that turns up on the <strong>other</strong> side is the <strong>real</strong> one, and it is the only one a screen can catch.
+    </div>
+
+    <div class="fig">
+      <svg class="diagram" viewBox="0 0 620 312" role="img" aria-label="Three lens cases compared. With a converging lens and the object beyond F, the image is real, inverted and on the opposite side of the lens. With a converging lens and the object inside F, the magnifying glass case, the image is virtual, upright, enlarged and on the same side as the object. With a diverging lens the image is virtual, upright, diminished and also on the same side as the object.">
+      <defs>
+        <marker id="cmpB" markerWidth="9" markerHeight="7" refX="7.5" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,3 L0,6 Z" class="mk-blue"/></marker>
+        <marker id="cmpR" markerWidth="9" markerHeight="7" refX="7.5" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,3 L0,6 Z" class="mk-red"/></marker>
+        <marker id="cmpC" markerWidth="8" markerHeight="6" refX="6.5" refY="2.6" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,2.6 L0,5.2 Z" class="mk-cyan"/></marker>
+      </defs>
+      <text x="16" y="24" class="dg-lbl" text-anchor="start">WHICH SIDE IS THE IMAGE ON, AND IS IT BIGGER?</text>
+      <line x1="206" y1="36" x2="206" y2="224" class="d-normal"/>
+      <line x1="408" y1="36" x2="408" y2="224" class="d-normal"/>
+
+      <!-- ══ PANEL 1 · converging, object beyond F ══ -->
+      <text x="16" y="52" class="dg-lbl" text-anchor="start">1 &#183; CONVERGING</text>
+      <text x="16" y="66" class="dg-mut" text-anchor="start">object BEYOND F</text>
+      <rect x="102" y="80" width="96" height="138" fill="var(--force)" opacity="0.07"/>
+      <line x1="16" y1="150" x2="198" y2="150" class="axis"/>
+      <line x1="100" y1="100" x2="100" y2="200" class="d-lens"/>
+      <path class="d-lens" fill="none" d="M 93 107 L 100 98 L 107 107 M 93 193 L 100 202 L 107 193"/>
+      <circle cx="60" cy="150" r="2.6" class="d-mark"/><text x="60" y="166" class="dg-mut" text-anchor="middle">F</text>
+      <circle cx="140" cy="150" r="2.6" class="d-mark"/><text x="140" y="166" class="dg-mut" text-anchor="middle">F</text>
+      <line x1="24" y1="116" x2="100" y2="116" class="d-ray"/>
+      <line x1="100" y1="116" x2="184.4" y2="187.7" class="d-ray" marker-end="url(#cmpC)"/>
+      <line x1="24" y1="116" x2="184.4" y2="187.8" class="d-ray" marker-end="url(#cmpC)"/>
+      <line x1="24" y1="150" x2="24" y2="116" class="d-obj" marker-end="url(#cmpB)"/>
+      <line x1="184.4" y1="150" x2="184.4" y2="187.8" class="d-img" marker-end="url(#cmpR)"/>
+      <text x="106" y="240" class="dg-lbl" text-anchor="middle" style="fill:var(--force)">REAL</text>
+      <text x="106" y="256" class="dg-mut" text-anchor="middle">inverted</text>
+      <text x="106" y="272" class="dg-mut" text-anchor="middle">OTHER side &#183; screen catches it</text>
+
+      <!-- ══ PANEL 2 · converging, object inside F (magnifier) ══ -->
+      <text x="216" y="52" class="dg-lbl" text-anchor="start">2 &#183; CONVERGING</text>
+      <text x="216" y="66" class="dg-mut" text-anchor="start">object INSIDE F &#8212; magnifier</text>
+      <rect x="216" y="80" width="91" height="138" fill="var(--motion)" opacity="0.08"/>
+      <line x1="216" y1="150" x2="398" y2="150" class="axis"/>
+      <line x1="307" y1="100" x2="307" y2="200" class="d-lens"/>
+      <path class="d-lens" fill="none" d="M 300 107 L 307 98 L 314 107 M 300 193 L 307 202 L 314 193"/>
+      <circle cx="267" cy="150" r="2.6" class="d-mark"/><text x="262" y="166" class="dg-mut" text-anchor="end">F</text>
+      <circle cx="347" cy="150" r="2.6" class="d-mark"/><text x="352" y="166" class="dg-mut" text-anchor="start">F</text>
+      <line x1="285" y1="126" x2="307" y2="126" class="d-ray"/>
+      <line x1="307" y1="126" x2="390" y2="175.8" class="d-ray" marker-end="url(#cmpC)"/>
+      <line x1="285" y1="126" x2="345" y2="191.5" class="d-ray" marker-end="url(#cmpC)"/>
+      <line x1="307" y1="126" x2="258.1" y2="96.7" class="d-ray d-virtual"/>
+      <line x1="307" y1="150" x2="258.1" y2="96.7" class="d-ray d-virtual"/>
+      <line x1="285" y1="150" x2="285" y2="126" class="d-obj" marker-end="url(#cmpB)"/>
+      <line x1="258.1" y1="150" x2="258.1" y2="96.7" class="d-img d-virtual" marker-end="url(#cmpR)"/>
+      <text x="307" y="240" class="dg-lbl" text-anchor="middle" style="fill:var(--motion)">VIRTUAL &#183; ENLARGED</text>
+      <text x="307" y="256" class="dg-mut" text-anchor="middle">upright</text>
+      <text x="307" y="272" class="dg-mut" text-anchor="middle">SAME side &#183; never on a screen</text>
+
+      <!-- ══ PANEL 3 · diverging ══ -->
+      <text x="418" y="52" class="dg-lbl" text-anchor="start">3 &#183; DIVERGING</text>
+      <text x="418" y="66" class="dg-mut" text-anchor="start">object ANYWHERE &#8212; same answer</text>
+      <rect x="418" y="80" width="95" height="138" fill="var(--motion)" opacity="0.08"/>
+      <line x1="418" y1="150" x2="602" y2="150" class="axis"/>
+      <line x1="513" y1="100" x2="513" y2="200" class="d-lens"/>
+      <path class="d-lens" fill="none" d="M 506 98 L 513 107 L 520 98 M 506 202 L 513 193 L 520 202"/>
+      <circle cx="473" cy="150" r="2.6" class="d-mark"/><text x="468" y="166" class="dg-mut" text-anchor="end">F</text>
+      <circle cx="553" cy="150" r="2.6" class="d-mark"/><text x="558" y="166" class="dg-mut" text-anchor="start">F</text>
+      <line x1="453" y1="110" x2="513" y2="110" class="d-ray"/>
+      <line x1="513" y1="110" x2="545" y2="78" class="d-ray" marker-end="url(#cmpC)"/>
+      <line x1="453" y1="110" x2="596" y2="205.3" class="d-ray" marker-end="url(#cmpC)"/>
+      <line x1="513" y1="110" x2="489" y2="134" class="d-ray d-virtual"/>
+      <line x1="513" y1="150" x2="489" y2="134" class="d-ray d-virtual"/>
+      <line x1="453" y1="150" x2="453" y2="110" class="d-obj" marker-end="url(#cmpB)"/>
+      <line x1="489" y1="150" x2="489" y2="134" class="d-img d-virtual" marker-end="url(#cmpR)"/>
+      <text x="513" y="240" class="dg-lbl" text-anchor="middle" style="fill:var(--motion)">VIRTUAL &#183; DIMINISHED</text>
+      <text x="513" y="256" class="dg-mut" text-anchor="middle">upright</text>
+      <text x="513" y="272" class="dg-mut" text-anchor="middle">SAME side &#183; never on a screen</text>
+
+      <text x="310" y="292" class="dg-mut" text-anchor="middle">blue arrow = object &#183; red arrow = image &#183; shaded band = where the image lands</text>
+      <text x="310" y="306" class="dg-mut" text-anchor="middle">with a LENS, both virtual images sit back on the object&#8217;s own side</text>
+      </svg>
+      <div class="fig-cap">The whole lens story on one line. Only <b>panel 1</b> puts the image on the far side, and only panel 1 gives a <b>real</b> image &#8212; the rays genuinely cross there, so a screen shows the picture (upside down). Panels 2 and 3 both leave the lens with the rays still <b>spreading apart</b>, so nothing crosses; you must run them <i>backwards</i> (dashed) to find where they seem to start, and with a lens that point is always back on the <b>object&#8217;s own side</b>. The difference between them is only how big: the converging lens with the object inside F <b>enlarges</b>, the diverging lens always <b>shrinks</b>.</div>
+    </div>
+
+    <div class="fig">
+      <svg class="diagram" viewBox="0 0 560 300" role="img" aria-label="Ray diagram for a diverging lens. A ray parallel to the axis is bent away from the axis so that it appears to come from the principal focus on the near side; a second ray passes undeviated through the centre of the lens. The two emerging rays spread apart, so they are extended backwards as dashed lines and cross between the lens and F, forming a small upright virtual image on the same side as the object.">
+      <text x="22" y="28" class="dg-lbl" text-anchor="start">DIVERGING LENS &#8212; always virtual, upright, DIMINISHED</text>
+      <line x1="25" y1="190" x2="540" y2="190" class="axis"/>
+      <path d="M288 108 L312 108 Q294 190 312 272 L288 272 Q306 190 288 108 Z" class="d-glass"/>
+      <path d="M288 108 L312 108 Q294 190 312 272 L288 272 Q306 190 288 108 Z" fill="none" class="d-lens"/>
+      <circle cx="200" cy="190" r="3.4" class="d-mark"/>
+      <text x="200" y="212" class="dg-lbl" text-anchor="middle">F</text>
+      <circle cx="400" cy="190" r="3.4" class="d-mark"/>
+      <text x="400" y="212" class="dg-lbl" text-anchor="middle">F</text>
+      <text x="200" y="228" class="dg-mut" text-anchor="middle">rays SEEM to start here</text>
+      <line x1="160" y1="190" x2="160" y2="140" class="d-obj" marker-end="url(#dvB)"/>
+      <text x="160" y="130" class="dg-lbl" text-anchor="middle">object</text>
+      <line x1="160" y1="140" x2="300" y2="140" class="d-ray" marker-end="url(#dvC)"/>
+      <line x1="300" y1="140" x2="510" y2="35" class="d-ray" marker-end="url(#dvC)"/>
+      <line x1="160" y1="140" x2="510" y2="265" class="d-ray" marker-end="url(#dvC)"/>
+      <line x1="300" y1="140" x2="241.7" y2="169.2" class="d-ray d-virtual"/>
+      <line x1="300" y1="190" x2="241.7" y2="169.2" class="d-ray d-virtual"/>
+      <line x1="200" y1="190" x2="300" y2="140" class="d-normal"/>
+      <line x1="241.7" y1="190" x2="241.7" y2="169.2" class="d-img d-virtual" marker-end="url(#dvR)"/>
+      <text x="241.7" y="162" class="dg-lbl" text-anchor="middle" style="fill:var(--force)">image</text>
+      <text x="468" y="106" class="dg-mut" text-anchor="middle">rays leave SPREADING</text>
+      <text x="468" y="120" class="dg-mut" text-anchor="middle">&#8212; they never meet</text>
+      <text x="540" y="290" class="dg-mut" text-anchor="end">virtual &#183; upright &#183; diminished &#183; same side as the object</text>
+      <line x1="300" y1="252" x2="400" y2="252" class="axis"/>
+      <line x1="300" y1="246" x2="300" y2="258" class="axis"/>
+      <line x1="400" y1="246" x2="400" y2="258" class="axis"/>
+      <text x="350" y="268" class="dg-mut" text-anchor="middle">f</text>
+      <defs>
+        <marker id="dvB" markerWidth="11" markerHeight="9" refX="9" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,3.5 L0,7 Z" class="mk-blue"/></marker>
+        <marker id="dvR" markerWidth="11" markerHeight="9" refX="9" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,3.5 L0,7 Z" class="mk-red"/></marker>
+        <marker id="dvC" markerWidth="10" markerHeight="8" refX="8" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,3 L0,6 Z" class="mk-cyan"/></marker>
+      </defs>
+      </svg>
+      <div class="fig-cap">Same two construction rays as always, but a diverging lens bends both <b>away</b> from the axis. <b>Ray 1</b> comes in parallel and leaves along the line that starts at the <b>near</b> F (the faint guide line) &#8212; that is what &#8220;appears to come from F&#8221; means. <b>Ray 2</b> goes straight through the centre. The two emerging rays are getting further apart, so extend them <b>backwards</b> (dashed): they cross between the lens and F. Move the object wherever you like and the crossing point stays trapped in that gap &#8212; which is exactly why the image can <b>never</b> be bigger than the object.</div>
+    </div>
+
     <div class="box exam">
       <div class="box-label">✅ Correcting sight <span style="opacity:.7">(Extended)</span></div>
       <strong>Short sight</strong> (can't see far) — the eye over-focuses, so use a <strong>diverging (concave)</strong> lens to spread rays out first. <strong>Long sight</strong> (can't see near) — the eye under-focuses, so use a <strong>converging (convex)</strong> lens to help bring rays together. A single converging lens held close also acts as a <strong>magnifying glass</strong> (object inside F).
+    </div>
+
+    <div class="fig">
+      <svg class="diagram" viewBox="0 0 620 360" role="img" aria-label="Correcting sight. In short sight, parallel light from a distant object is brought to a focus in front of the retina, and a diverging concave lens placed in front of the eye spreads the light first so the focus falls on the retina. In long sight, light from a near object would come to a focus behind the retina, and a converging convex lens bends the light inwards first so the focus falls on the retina.">
+      <text x="16" y="24" class="dg-lbl" text-anchor="start">CORRECTING SIGHT &#8212; which lens, and why</text>
+      <line x1="310" y1="36" x2="310" y2="348" class="d-normal"/>
+
+      <!-- ══════ PANEL A · SHORT SIGHT ══════ -->
+      <text x="16" y="50" class="dg-lbl" text-anchor="start" style="fill:var(--energy2)">SHORT SIGHT &#8212; can&#8217;t see FAR</text>
+      <text x="16" y="64" class="dg-mut" text-anchor="start">the eye focuses TOO SOON</text>
+      <text x="16" y="78" class="dg-mut" text-anchor="start">fix with a DIVERGING (concave) lens</text>
+
+      <!-- A1 · uncorrected -->
+      <text x="16" y="100" class="dg-mut" text-anchor="start">without glasses &#183; distant object</text>
+      <text x="44" y="144" class="dg-mut" text-anchor="start">parallel light</text>
+      <circle cx="205" cy="140" r="36" fill="none" stroke="var(--muted)" stroke-width="1.6"/>
+      <ellipse cx="169" cy="140" rx="6" ry="25" class="d-glass"/>
+      <ellipse cx="169" cy="140" rx="6" ry="25" fill="none" class="d-lens"/>
+      <path d="M 227 110 Q 243 140 227 170" fill="none" stroke="var(--force)" stroke-width="3"/>
+      <text x="252" y="130" class="dg-mut" text-anchor="start">retina</text>
+      <line x1="40" y1="122" x2="169" y2="122" class="d-ray"/>
+      <line x1="40" y1="158" x2="169" y2="158" class="d-ray"/>
+      <line x1="169" y1="122" x2="211" y2="140" class="d-ray"/>
+      <line x1="169" y1="158" x2="211" y2="140" class="d-ray"/>
+      <line x1="211" y1="140" x2="233" y2="149.4" class="d-ray"/>
+      <line x1="211" y1="140" x2="233" y2="130.6" class="d-ray"/>
+      <path d="M 205 133 L 217 147 M 217 133 L 205 147" stroke="var(--force)" stroke-width="2.4" fill="none"/>
+      <text x="160" y="196" class="dg-mut" text-anchor="middle" style="fill:var(--force)">focus lands SHORT of the retina</text>
+      <text x="160" y="210" class="dg-mut" text-anchor="middle">so a blurred patch reaches it</text>
+
+      <!-- A2 · corrected -->
+      <text x="16" y="234" class="dg-mut" text-anchor="start">with the right spectacles</text>
+      <circle cx="205" cy="272" r="36" fill="none" stroke="var(--muted)" stroke-width="1.6"/>
+      <ellipse cx="169" cy="272" rx="6" ry="25" class="d-glass"/>
+      <ellipse cx="169" cy="272" rx="6" ry="25" fill="none" class="d-lens"/>
+      <path d="M 227 242 Q 243 272 227 302" fill="none" stroke="var(--force)" stroke-width="3"/>
+      <line x1="100" y1="248" x2="100" y2="296" class="d-lens"/>
+      <path class="d-lens" fill="none" d="M 93 246 L 100 255 L 107 246 M 93 298 L 100 289 L 107 298"/>
+      <text x="100" y="320" class="dg-lbl" text-anchor="middle" style="fill:var(--energy2)">concave</text>
+      <line x1="40" y1="254" x2="100" y2="254" class="d-ray"/>
+      <line x1="40" y1="290" x2="100" y2="290" class="d-ray"/>
+      <line x1="100" y1="254" x2="169" y2="249" class="d-ray"/>
+      <line x1="100" y1="290" x2="169" y2="295" class="d-ray"/>
+      <line x1="169" y1="249" x2="235" y2="272" class="d-ray"/>
+      <line x1="169" y1="295" x2="235" y2="272" class="d-ray"/>
+      <circle cx="235" cy="272" r="3.6" fill="var(--power)"/>
+      <text x="160" y="342" class="dg-mut" text-anchor="middle" style="fill:var(--power)">spread out first &#8594; focus ON the retina</text>
+
+      <!-- ══════ PANEL B · LONG SIGHT ══════ -->
+      <text x="324" y="50" class="dg-lbl" text-anchor="start" style="fill:var(--cyan)">LONG SIGHT &#8212; can&#8217;t see NEAR</text>
+      <text x="324" y="64" class="dg-mut" text-anchor="start">the eye focuses TOO LATE</text>
+      <text x="324" y="78" class="dg-mut" text-anchor="start">fix with a CONVERGING (convex) lens</text>
+
+      <!-- B1 · uncorrected -->
+      <text x="324" y="100" class="dg-mut" text-anchor="start">without glasses</text>
+      <text x="348" y="118" class="dg-mut" text-anchor="middle">near object</text>
+      <circle cx="513" cy="140" r="36" fill="none" stroke="var(--muted)" stroke-width="1.6"/>
+      <ellipse cx="477" cy="140" rx="6" ry="25" class="d-glass"/>
+      <ellipse cx="477" cy="140" rx="6" ry="25" fill="none" class="d-lens"/>
+      <path d="M 535 110 Q 551 140 535 170" fill="none" stroke="var(--force)" stroke-width="3"/>
+      <circle cx="348" cy="140" r="3" class="d-mark"/>
+      <line x1="348" y1="140" x2="477" y2="122" class="d-ray"/>
+      <line x1="348" y1="140" x2="477" y2="158" class="d-ray"/>
+      <text x="356" y="180" class="dg-mut" text-anchor="start">arrives SPREADING</text>
+      <line x1="477" y1="122" x2="543" y2="135.81" class="d-ray"/>
+      <line x1="477" y1="158" x2="543" y2="144.19" class="d-ray"/>
+      <line x1="543" y1="135.81" x2="563" y2="140" class="d-ray d-virtual"/>
+      <line x1="543" y1="144.19" x2="563" y2="140" class="d-ray d-virtual"/>
+      <path d="M 557 133 L 569 147 M 569 133 L 557 147" stroke="var(--force)" stroke-width="2.4" fill="none"/>
+      <text x="460" y="196" class="dg-mut" text-anchor="middle" style="fill:var(--force)">focus would land BEHIND the retina</text>
+      <text x="460" y="210" class="dg-mut" text-anchor="middle">the eye runs out of room first</text>
+
+      <!-- B2 · corrected -->
+      <text x="324" y="234" class="dg-mut" text-anchor="start">with the right spectacles</text>
+      <circle cx="513" cy="272" r="36" fill="none" stroke="var(--muted)" stroke-width="1.6"/>
+      <ellipse cx="477" cy="272" rx="6" ry="25" class="d-glass"/>
+      <ellipse cx="477" cy="272" rx="6" ry="25" fill="none" class="d-lens"/>
+      <path d="M 535 242 Q 551 272 535 302" fill="none" stroke="var(--force)" stroke-width="3"/>
+      <line x1="408" y1="248" x2="408" y2="296" class="d-lens"/>
+      <path class="d-lens" fill="none" d="M 401 255 L 408 246 L 415 255 M 401 289 L 408 298 L 415 289"/>
+      <text x="408" y="320" class="dg-lbl" text-anchor="middle" style="fill:var(--cyan)">convex</text>
+      <circle cx="348" cy="272" r="3" class="d-mark"/>
+      <line x1="348" y1="272" x2="408" y2="254" class="d-ray"/>
+      <line x1="348" y1="272" x2="408" y2="290" class="d-ray"/>
+      <line x1="408" y1="254" x2="477" y2="260" class="d-ray"/>
+      <line x1="408" y1="290" x2="477" y2="284" class="d-ray"/>
+      <line x1="477" y1="260" x2="543" y2="272" class="d-ray"/>
+      <line x1="477" y1="284" x2="543" y2="272" class="d-ray"/>
+      <circle cx="543" cy="272" r="3.6" fill="var(--power)"/>
+      <text x="460" y="342" class="dg-mut" text-anchor="middle" style="fill:var(--power)">bent inwards first &#8594; focus ON the retina</text>
+      </svg>
+      <div class="fig-cap">The rule underneath both: <b>the retina cannot move, so the lens in front of your eye must do the fixing.</b> A short-sighted eye is <i>too</i> powerful for distant light, so a <b>diverging</b> lens throws the rays apart before they arrive and the eye&#8217;s extra bending is used up getting them back together &#8212; the focus slides <i>back</i> onto the retina. A long-sighted eye is not powerful enough for the strongly-spreading light from something close, so a <b>converging</b> lens does part of the bending first and the focus slides <i>forward</i> onto the retina. Note that in both corrected pictures the light still ends up at a single point on the retina &#8212; that is what &#8220;in focus&#8221; means.</div>
     </div>
   </div>
 
@@ -1727,38 +1952,91 @@ function show(el,on){ el.style.display = on ? '' : 'none'; }
 })();
 
 /* ════════════════════════════════════════════════
-   3 · CONVERGING LENS RAY DIAGRAM
+   3 · LENS RAY DIAGRAM — converging AND diverging
+   Answers the question students actually ask:
+   which SIDE is the image on, and is it bigger?
 ════════════════════════════════════════════════ */
 (function(){
-  const Lx=220, AX=110, F=45, H=52, R=430;
+  const Lx=220, AX=110, F=45, H=52;
+  const CLIP={l:8, r:432, t:18, b:212};
   const ou=document.getElementById('ou');
   const lObj=document.getElementById('lObj'),
         lImg=document.getElementById('lImg'),
         lImgV=document.getElementById('lImgV'),
+        lImgTag=document.getElementById('lImgTag'),
         lR1=document.getElementById('lR1'),
         lR1b=document.getElementById('lR1b'),
         lR2=document.getElementById('lR2'),
         lR1v=document.getElementById('lR1v'),
         lR2v=document.getElementById('lR2v');
   const nat=document.getElementById('imgNature'),
-        det=document.getElementById('imgDetail');
+        det=document.getElementById('imgDetail'),
+        sideEl=document.getElementById('imgSide'),
+        zones=document.getElementById('lensZones'),
+        ruleK=document.getElementById('lensRuleK'),
+        rule=document.getElementById('lensRule'),
+        convTip=document.getElementById('lConvTip'),
+        divTip=document.getElementById('lDivTip');
+  let kind='conv';
+
+  /* walk out from (x0,y0) along (dx,dy) until the drawing box stops us */
+  function ext(x0,y0,dx,dy){
+    let t=1e9;
+    if(dx>0) t=Math.min(t,(CLIP.r-x0)/dx); else if(dx<0) t=Math.min(t,(CLIP.l-x0)/dx);
+    if(dy>0) t=Math.min(t,(CLIP.b-y0)/dy); else if(dy<0) t=Math.min(t,(CLIP.t-y0)/dy);
+    if(!isFinite(t)||t<0) t=0;
+    return [x0+dx*t, y0+dy*t];
+  }
+  function tag(txt,x,y,anchor){ lImgTag.textContent=txt; lImgTag.setAttribute('x',x); lImgTag.setAttribute('y',y);
+    lImgTag.setAttribute('text-anchor', anchor||'middle'); }
+  /* As the object nears F the image races away and grows without limit, so for part of
+     the slider it genuinely will not fit. Say so rather than drawing a clipped stump. */
+  const fits=(x,y)=> x>CLIP.l+12 && x<CLIP.r-12 && y>CLIP.t+10 && y<CLIP.b-10;
 
   function upd(){
     const u=+ou.value; document.getElementById('ouV').textContent=u.toFixed(1);
     const xo=Lx - u*F, oy=AX - H;
     setLine(lObj, xo, AX, xo, oy);
+    show(lImg,false); show(lImgV,false); show(lR1v,false); show(lR2v,false);
 
+    /* ── DIVERGING (concave): always virtual, upright, diminished, SAME side ── */
+    if(kind==='div'){
+      // ray 1: parallel in, then spreads out as if it started at F on the OBJECT side
+      const e1=ext(Lx, oy, F, oy-AX);   // outgoing ray, along F(near)→exit point
+      setLine(lR1, xo, oy, Lx, oy);
+      setLine(lR1b, Lx, oy, e1[0], e1[1]);
+      // ray 2: straight through the centre, undeviated
+      const e2=ext(Lx, AX, Lx-xo, AX-oy);
+      setLine(lR2, xo, oy, e2[0], e2[1]);
+      // image: extend both backwards — they cross between the lens and F
+      const xi=Lx - F*u/(u+1), m=1/(u+1), yi=AX - H*m;
+      setLine(lR1v, Lx, oy, xi, yi);
+      setLine(lR2v, Lx, AX, xi, yi);
+      setLine(lImgV, xi, AX, xi, yi);
+      show(lR1,true); show(lR1b,true); show(lR2,true);
+      show(lR1v,true); show(lR2v,true); show(lImgV,true);
+      tag('image', xi-8, yi-4, 'end');
+      nat.textContent='Virtual · diminished';
+      det.textContent='upright · v = -'+(F*u/(u+1)/F).toFixed(2)+' f · m = '+m.toFixed(2);
+      sideEl.textContent='SAME SIDE as the object · never on a screen';
+      sideEl.style.color='var(--motion)';
+      return;
+    }
+
+    /* ── CONVERGING (convex) ── */
     // object at (near) the focus → image at infinity
     if(Math.abs(u-1) < 0.12){
       setLine(lR1, xo, oy, Lx, oy);
-      const sl=(AX-oy)/F;                 // slope of ray through F
-      setLine(lR1b, Lx, oy, R, oy + (R-Lx)*sl);
-      const sl2=(AX-oy)/(Lx-xo);          // slope of ray through centre
-      setLine(lR2, xo, oy, R, AX + (R-Lx)*sl2);
+      let e1=ext(Lx, oy, F, AX-oy);
+      setLine(lR1b, Lx, oy, e1[0], e1[1]);
+      let e2=ext(Lx, AX, Lx-xo, AX-oy);
+      setLine(lR2, xo, oy, e2[0], e2[1]);
       show(lR1,true); show(lR1b,true); show(lR2,true);
-      show(lImg,false); show(lImgV,false); show(lR1v,false); show(lR2v,false);
+      tag('', 0, 0);
       nat.textContent='Image at infinity';
-      det.textContent='object at F · refracted rays emerge parallel';
+      det.textContent='object at (or within 0.1 f of) F · rays emerge parallel';
+      sideEl.textContent='NO image forms · rays never meet';
+      sideEl.style.color='var(--muted)';
       return;
     }
 
@@ -1768,35 +2046,62 @@ function show(el,on){ el.style.display = on ? '' : 'none'; }
     const hi=H*m;
 
     if(vf>0){
-      // real, inverted image (below axis)
+      // real, inverted image (below axis), on the far side
       const yi=AX + hi;
       setLine(lR1,  xo, oy, Lx, oy);
       setLine(lR1b, Lx, oy, xi, yi);
       setLine(lR2,  xo, oy, xi, yi);
       setLine(lImg, xi, AX, xi, yi);
-      show(lR1,true); show(lR1b,true); show(lR2,true); show(lImg,true);
-      show(lImgV,false); show(lR1v,false); show(lR2v,false);
+      show(lR1,true); show(lR1b,true); show(lR2,true);
+      const ok=fits(xi,yi); show(lImg,ok);
+      if(ok) tag('image', xi+9, yi+4, 'start');
+      else   tag('image is off the diagram — follow the rays', 424, 202, 'end');
       nat.textContent = m>1.05 ? 'Real · enlarged' : (m<0.95 ? 'Real · diminished' : 'Real · same size');
-      det.textContent = 'inverted · v = '+vf.toFixed(1)+' f · m = '+m.toFixed(2);
+      det.textContent = 'inverted · v = '+vf.toFixed(1)+' f · m = '+m.toFixed(2)+(ok?'':' · too big to draw');
+      sideEl.textContent='OTHER SIDE · catch it on a screen';
+      sideEl.style.color='var(--force)';
     } else {
-      // virtual, upright image (above axis, same side as object)
+      // virtual, upright, enlarged image — the MAGNIFYING GLASS case
       const yi=AX - hi;
       setLine(lR1, xo, oy, Lx, oy);
-      const sl=(AX-oy)/F;
-      setLine(lR1b, Lx, oy, R, oy + (R-Lx)*sl);
-      const sl2=(AX-oy)/(Lx-xo);
-      setLine(lR2, xo, oy, R, AX + (R-Lx)*sl2);
+      let e1=ext(Lx, oy, F, AX-oy);
+      setLine(lR1b, Lx, oy, e1[0], e1[1]);
+      let e2=ext(Lx, AX, Lx-xo, AX-oy);
+      setLine(lR2, xo, oy, e2[0], e2[1]);
       setLine(lR1v, Lx, oy, xi, yi);
       setLine(lR2v, Lx, AX, xi, yi);
       setLine(lImgV, xi, AX, xi, yi);
       show(lR1,true); show(lR1b,true); show(lR2,true);
-      show(lR1v,true); show(lR2v,true); show(lImgV,true);
-      show(lImg,false);
+      show(lR1v,true); show(lR2v,true);
+      const ok=fits(xi,yi); show(lImgV,ok);
+      if(ok) tag('image', xi-9, yi-4, 'end');
+      else   tag('image is off the diagram — follow the dashes', 16, 46, 'start');
       nat.textContent='Virtual · enlarged';
-      det.textContent='upright · v = '+vf.toFixed(1)+' f · m = '+m.toFixed(2)+' (magnifier)';
+      det.textContent='upright · v = '+vf.toFixed(1)+' f · m = '+m.toFixed(2)+(ok?' (magnifier)':' · too big to draw');
+      sideEl.textContent='SAME SIDE as the object · never on a screen';
+      sideEl.style.color='var(--motion)';
     }
   }
-  ou.addEventListener('input',upd); upd();
+
+  function setKind(k){
+    kind=k;
+    document.querySelectorAll('#lensTabs .scn-tab').forEach(t=>t.classList.toggle('active', t.dataset.lt===k));
+    show(convTip, k==='conv'); show(divTip, k==='div');
+    if(k==='div'){
+      zones.innerHTML='the answer never changes &#183; virtual &#183; upright &#183; diminished &#183; same side';
+      ruleK.textContent='The two rays for a diverging lens';
+      rule.innerHTML='<strong>Ray 1:</strong> arrives parallel to the axis and is bent <em>away</em> from it, leaving as though it had come from the F on the <strong>near</strong> side. <strong>Ray 2:</strong> goes straight through the centre, undeviated. The two emerging rays are spreading apart, so they never meet &#8212; trace them <strong>backwards</strong> (dashed) and they cross between the lens and F. That crossing is the image.';
+    } else {
+      zones.innerHTML='beyond 2F &#183; at 2F &#183; between F &amp; 2F &#183; inside F';
+      ruleK.textContent='The two rays that locate every image';
+      rule.innerHTML='<strong>Ray 1:</strong> travels parallel to the axis, then bends through F on the far side. <strong>Ray 2:</strong> goes straight through the centre of the lens, undeviated. Where they cross is the top of the image.';
+    }
+    upd();
+  }
+  document.getElementById('lensTabs').addEventListener('click', e=>{
+    const t=e.target.closest('.scn-tab'); if(!t) return; setKind(t.dataset.lt);
+  });
+  ou.addEventListener('input',upd); setKind('conv');
 })();
 
 /* ════════════════════════════════════════════════
