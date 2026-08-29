@@ -687,10 +687,34 @@
     border: 1px solid color-mix(in srgb, var(--maths) 32%, var(--border));
     background: color-mix(in srgb, var(--maths) 8%, transparent);
   }
-  .ds-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  /* The header row IS the collapse toggle — 46 pills is six wrapped rows of
+     header, so the strip ships collapsed and remembers her choice (hubDrills). */
+  .ds-row {
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; width: 100%;
+    padding: 0; background: none; border: 0; font: inherit; color: inherit;
+    text-align: left; cursor: pointer;
+  }
+  .ds-row:focus-visible { outline: 2px solid var(--maths); outline-offset: 4px; border-radius: 8px; }
   .ds-lead { font-size: 13.5px; color: var(--text); }
   .ds-lead b { color: var(--bright); font-weight: 700; }
   .ds-note { font-size: 11.5px; color: var(--muted); }
+  .ds-count {
+    font-size: 11px; font-weight: 700; letter-spacing: .02em;
+    color: var(--maths); padding: 2px 8px; border-radius: 20px;
+    border: 1px solid color-mix(in srgb, var(--maths) 34%, var(--border));
+    background: color-mix(in srgb, var(--maths) 12%, transparent);
+  }
+  .ds-badge {
+    font-size: 9.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+    color: #06210f; background: var(--power); padding: 2px 7px; border-radius: 20px;
+  }
+  .ds-chev {
+    margin-left: auto; font-size: 11px; color: var(--muted);
+    transition: transform .25s ease;
+  }
+  .ds-row:hover .ds-chev { color: var(--maths); }
+  .drill-strip.is-collapsed .ds-chev { transform: rotate(-90deg); }
+  .drill-strip.is-collapsed .ds-pills { display: none; }
   .ds-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
   /* Fixed height whether or not a score line is present, so a half-finished
      strip doesn't render ragged. */
@@ -1084,11 +1108,13 @@
     <a class="checklist-cta gt-cta" href="grade-tracker.html">📊 <span><b>My grade tracker</b> — log your FA, SA &amp; test marks and watch each subject average</span> <span class="cta-go">→</span></a>
     <!-- Precision drills: ONE strip, one numbered pill per drill. A new drill adds a pill
          here (newest last) — never another full-width row. -->
-    <div class="drill-strip">
-      <div class="ds-row">
+    <div class="drill-strip is-collapsed" id="drillStrip">
+      <button class="ds-row" id="dsToggle" type="button" aria-expanded="false" aria-controls="dsPills">
         <span class="ds-lead">🎯&nbsp;<b>Precision Drills</b></span>
         <span class="ds-note">~13 questions · 12 minutes · auto-marked · repeatable</span>
-      </div>
+        <span class="ds-count" id="dsCount"></span>
+        <span class="ds-chev" aria-hidden="true">▾</span>
+      </button>
       <div class="ds-pills" id="dsPills">
         <span class="ds-group">Mixed &mdash; Maths, Physics &amp; Chemistry</span>
         <a class="ds-pill" href="precision-drill-1.html" data-added="2026-07-31"
@@ -2134,6 +2160,9 @@
       if (!pills.length) return;
       var today = startOfToday(), NEW_DAYS = 7;
       var tail = document.getElementById('dsTail');
+      var count = document.getElementById('dsCount');
+      var toggle = document.getElementById('dsToggle');
+      var strip = document.getElementById('drillStrip');
       var last = pills[pills.length - 1];
 
       // Pin the number BEFORE anything is appended — the score badge would
@@ -2185,6 +2214,10 @@
           p.setAttribute('aria-label', t);
         });
 
+        // The count rides in the header so the collapsed strip still says
+        // how many drills there are and how many are done.
+        if (count) count.textContent = done ? done + ' / ' + pills.length + ' done' : pills.length + ' drills';
+
         if (!tail) return;
         var n = last.getAttribute('data-n');
         var head = done
@@ -2192,6 +2225,31 @@
           : '';
         tail.innerHTML = head + 'Newest: <b>Drill ' + n + '</b> — ' +
           (last.getAttribute('data-desc') || 'mixed-subject accuracy practice.');
+      }
+
+      /* Collapse/expand. Collapsed by default — the strip is otherwise six
+         wrapped rows of pills sitting above the chapter cards. Her choice is
+         remembered per device in 'hubDrills'; a drill added in the last 7 days
+         puts a NEW badge on the header so a collapsed strip never hides one. */
+      if (toggle && strip) {
+        var open = false;
+        try { open = localStorage.getItem('hubDrills') === 'open'; } catch (e) {}
+        function setOpen(o) {
+          strip.classList.toggle('is-collapsed', !o);
+          toggle.setAttribute('aria-expanded', o ? 'true' : 'false');
+          toggle.setAttribute('title', o ? 'Hide the drill list' : 'Show all ' + pills.length + ' drills');
+        }
+        setOpen(open);
+        toggle.addEventListener('click', function () {
+          open = !open; setOpen(open);
+          try { localStorage.setItem('hubDrills', open ? 'open' : 'closed'); } catch (e) {}
+        });
+        if (document.querySelector('#dsPills .ds-dot')) {
+          var badge = document.createElement('span');
+          badge.className = 'ds-badge'; badge.textContent = 'New';
+          badge.title = 'A drill was added in the last 7 days';
+          toggle.insertBefore(badge, toggle.querySelector('.ds-chev'));
+        }
       }
 
       paint();
