@@ -324,6 +324,27 @@
   .fig .plot.shade       { fill:currentColor; fill-opacity:.13; }
   .fig .accent.shade     { fill:currentColor; fill-opacity:.16; }
 
+  /* Figures on the PRINT path.  The main @media print block whitens the page and sets
+     .fig{background:#fff}, but it does NOT pin the caption colour or the SVG stroke
+     colours, so .fig-cap prints near-invisible and grid/axis/plot keep their theme
+     values.  Measured 2026-08-29 by rendering drill 37 twice with the print block
+     forced on, before and after: the real gain is caption legibility, pinned strokes,
+     and break-inside:avoid so a figure cannot split across a page boundary.  (The
+     earlier note here claimed an unpatched .fig "prints a dark panel"; that is not
+     what the render shows — the basic rule already whitens the panel.)
+     Backported to Drills 32-41 on 2026-08-29; every drill that has figures now carries it. */
+  @media print {
+    .fig            { background:#fff !important; border-color:#999 !important;
+                      break-inside:avoid; }
+    .fig svg text   { fill:#000 !important; }
+    .fig .fig-cap   { color:#444 !important; }
+    .fig .grid-line { stroke:#b9b9b9 !important; }
+    .fig .axis      { stroke:#000 !important; }
+    .fig .plot      { stroke:#1c4e9c !important; }
+    .fig .accent    { stroke:#b03a2e !important; color:#b03a2e !important; }
+  }
+
+
   /* ── DRAW / PLOT answer = upload a photo of your diagram ── */
   .draw-row { margin-top:10px; }
   .draw-note { font-size:12.5px; color:var(--muted); margin-bottom:8px; }
