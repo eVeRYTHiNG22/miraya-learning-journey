@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Precision Drill 41: Physics</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2346a8ff'>P</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0d14;
+    --surface:  #121826;
+    --surface2: #19202f;
+    --border:   #263247;
+    --text:     #d6deec;
+    --muted:    #7b8aa8;
+    --bright:   #f0f4ff;
+
+    /* ── chemistry accents (energy / state axis) — same identity as the notes ──
+       --motion = SOLID (blue) · --cyan = LIQUID (teal) · --force = GAS (coral)
+       --energy = HEAT/ENERGY (amber) · --momentum = DIFFUSION (violet)
+       --power = correct / marks earned (green, fixed role)
+       --rose  = alerts / must-memorise (magenta, fixed role) */
+    --motion:   #5b8dee;
+    --cyan:     #36c9b0;
+    --force:    #f06070;
+    --energy:   #f0b144;
+    --energy2:  #f0b144;
+    --momentum: #a57ef5;
+    --power:    #4ec994;
+    --rose:     #f25cc1;
+  }
+
+  body[data-theme="light"] {
+    --bg:       #f4f1e8;
+    --surface:  #fffdf8;
+    --surface2: #efeadd;
+    --border:   #ddd6c4;
+    --text:     #2c313c;
+    --muted:    #6f7484;
+    --bright:   #14181f;
+
+    --motion:   #1769d6;
+    --cyan:     #0b7a67;
+    --force:    #cb2531;
+    --energy:   #8f5d00;
+    --energy2:  #8f5d00;
+    --momentum: #5b40d6;
+    --power:    #107a50;
+    --rose:     #ad1a7d;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color .35s ease, color .35s ease;
+  }
+
+  /* ambient field — cool (solid) up top, warm (gas) below: the energy axis */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #123a6626 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #5a221826 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 6%,            #2a1c5520 0%, transparent 48%);
+    pointer-events:none; z-index:0;
+  }
+  body[data-theme="light"]::before {
+    background:
+      radial-gradient(ellipse 85% 55% at 50% -12%, #9cc4ff20 0%, transparent 60%),
+      radial-gradient(ellipse 95% 55% at 50% 114%, #ffc7a022 0%, transparent 60%);
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 58px 40px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle{position:fixed;top:70px;right:16px;z-index:10000;width:40px;height:40px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:var(--surface);border:1px solid var(--border);color:var(--text);
+    font-size:17px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);
+    transition:transform .25s,border-color .2s,background-color .35s;line-height:1;}
+  .theme-toggle:hover{transform:rotate(18deg);border-color:var(--motion);}
+  .theme-toggle:focus-visible{outline:2px solid var(--motion);outline-offset:3px;}
+  .hub-home{position:fixed;top:70px;left:16px;z-index:10000;width:40px;height:40px;
+    display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;
+    border-radius:11px;border:1px solid var(--border);background:var(--surface);color:var(--text);
+    cursor:pointer;transition:transform .2s ease,border-color .2s ease;}
+  .hub-home:hover{transform:translateY(-2px);border-color:var(--motion);}
+  .hub-home:focus-visible{outline:2px solid var(--motion);outline-offset:3px;}
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 30px; padding-bottom: 26px; border-bottom: 1px solid var(--border); }
+  .chip {
+    display: inline-block;
+    background: linear-gradient(135deg, #0e2c40, #2a1840);
+    border: 1px solid #2f4a66;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--motion);
+    margin-bottom: 18px;
+  }
+  body[data-theme="light"] .chip { background: linear-gradient(135deg,#e3eefb,#efe6fb); border-color:#cdd9f0; }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    font-weight: 800;
+    color: var(--bright);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  h1 .a { color: var(--motion); }
+  h1 .b { color: var(--cyan); }
+  h1 .c { color: var(--force); }
+  .header-sub { color: var(--muted); font-size: 14px; max-width: 620px; }
+
+  /* ── FRONT SHEET (exam meta + controls) ── */
+  .front {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin-bottom: 40px;
+    transition: background-color .35s, border-color .35s;
+  }
+  .front h2, .results h2, .ms-collated h2 {
+    font-family:'Fraunces',serif; font-size:1.35rem; font-weight:700;
+    color:var(--bright); margin-bottom:14px;
+  }
+  .meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 26px; margin-bottom:20px; }
+  @media (max-width:620px){ .meta-grid{ grid-template-columns:1fr; } }
+  .meta-item .k {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:2px;
+  }
+  .meta-item .v { color:var(--bright); font-weight:600; font-size:15px; }
+  .instructions { list-style:none; margin:6px 0 0; }
+  .instructions li { position:relative; padding-left:22px; margin-bottom:7px; font-size:14px; color:var(--text); }
+  .instructions li::before {
+    content:'▸'; position:absolute; left:2px; top:0; color:var(--motion); font-size:13px;
+  }
+
+  /* mode + start controls */
+  /* During the exam the front sheet collapses to its REFERENCE matter only (data,
+     rubric, List of formulas) — the real board keeps its data/formula page in front
+     of the candidate for the whole paper, so ours must not vanish on start.
+     Tag purely administrative bullets <li class="admin"> so they drop away. */
+  #front.started > h2, #front.started .meta-grid, #front.started .controls,
+  #front.started .instructions li.admin { display:none; }
+  #front.started { margin-bottom:16px; padding-bottom:4px; }
+
+  .controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:22px;
+    padding-top:20px; border-top:1px solid var(--border); }
+  .btn {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:14px; cursor:pointer;
+    border-radius:9px; padding:11px 20px; border:1px solid var(--border);
+    background:var(--surface2); color:var(--text);
+    transition:transform .15s, border-color .2s, background-color .2s, color .2s;
+  }
+  .btn:hover { transform:translateY(-2px); }
+  .btn:focus-visible { outline:2px solid var(--motion); outline-offset:3px; }
+  .btn.primary { background:var(--motion); border-color:var(--motion); color:#fff; }
+  body[data-theme="light"] .btn.primary { color:#fff; }
+  .btn.ghost { background:transparent; }
+  .controls .hint { font-size:12.5px; color:var(--muted); flex-basis:100%; }
+
+  /* ── STICKY EXAM BAR ── */
+  .exam-bar {
+    position:fixed; top:0; left:0; right:0; z-index:9000;
+    display:none; align-items:center; gap:18px;
+    padding:11px 20px; background:var(--surface); border-bottom:1px solid var(--border);
+    box-shadow:0 6px 22px rgba(0,0,0,.28); transition:background-color .35s,border-color .35s;
+  }
+  .exam-bar.show { display:flex; }
+  .exam-bar .timer {
+    font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:600;
+    color:var(--bright); letter-spacing:.04em; min-width:96px;
+  }
+  .exam-bar .timer .lbl { display:block; font-size:9px; letter-spacing:.16em; color:var(--muted); }
+  .exam-bar.warn .timer { color:var(--energy); }
+  .exam-bar.danger .timer { color:var(--force); }
+  .exam-bar .prog { font-size:12.5px; color:var(--muted); }
+  .exam-bar .prog b { color:var(--text); }
+  .exam-bar .spacer { flex:1; }
+  .exam-bar .mode-tag {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--cyan); border:1px solid var(--border);
+    border-radius:20px; padding:3px 11px;
+  }
+
+  /* ── SECTION HEADINGS ── */
+  .sec-head { margin:46px 0 8px; }
+  .sec-label {
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:4px;
+  }
+  .sec-head h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); }
+  .sec-head .sec-sub { font-size:13px; color:var(--muted); margin-top:2px; }
+
+  /* ── QUESTION ── */
+  .q {
+    background:var(--surface); border:1px solid var(--border); border-radius:13px;
+    padding:22px 24px; margin:18px 0;
+    transition:background-color .35s, border-color .35s;
+  }
+  .q-head { display:flex; align-items:baseline; gap:12px; margin-bottom:10px; }
+  .q-no {
+    font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem; color:var(--motion);
+    min-width:26px;
+  }
+  .q-stem { color:var(--text); }
+
+  /* ── drill-specific: the subject tag on every question, and the named-slip callout ── */
+  .subj {
+    display:inline-block; margin-right:9px; padding:2px 9px; border-radius:20px;
+    font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:600;
+    letter-spacing:.14em; text-transform:uppercase; vertical-align:middle;
+    border:1px solid currentColor; background:color-mix(in srgb, currentColor 12%, transparent);
+  }
+  .subj.maths { color:#7c8cff; }
+  .subj.phys  { color:#46a8ff; }
+  .subj.chem  { color:#36c9b0; }
+  .trap { font-weight:700; color:var(--energy, #e8b04b); }
+  .q-stem p { margin-bottom:8px; }
+  .marks {
+    margin-left:auto; flex-shrink:0;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);
+    border:1px solid var(--border); border-radius:6px; padding:2px 9px; white-space:nowrap;
+  }
+  .ctx {
+    border-left:3px solid var(--cyan);
+    background:linear-gradient(90deg,#06241f55,transparent);
+    padding:10px 16px; margin:10px 0 14px; border-radius:0 8px 8px 0; font-size:13.6px;
+  }
+  body[data-theme="light"] .ctx { background:linear-gradient(90deg,#def3ee99,transparent); }
+
+  .part { margin:14px 0; }
+  .part-label { font-weight:600; color:var(--bright); margin-right:6px; }
+  .part-prompt { display:inline; }
+  .part .marks-inline {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin-left:6px;
+  }
+
+  /* MCQ options */
+  .opts { list-style:none; margin:12px 0 2px; display:grid; gap:8px; }
+  .opt {
+    display:flex; gap:11px; align-items:flex-start; cursor:pointer;
+    border:1px solid var(--border); border-radius:9px; padding:9px 14px;
+    background:var(--surface2); transition:border-color .15s, background-color .2s;
+  }
+  .opt:hover { border-color:var(--motion); }
+  .opt input { margin-top:5px; accent-color:var(--motion); }
+  .opt .opt-key { font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--motion); margin-right:2px; }
+  .opt.correct { border-color:var(--power); background:#10241a; }
+  .opt.wrong   { border-color:var(--force); background:#2a1113; }
+  body[data-theme="light"] .opt.correct { background:#e7f6ee; }
+  body[data-theme="light"] .opt.wrong   { background:#fbe4e6; }
+  .opt .verdict { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:11px; }
+  .opt.correct .verdict { color:var(--power); }
+  .opt.wrong .verdict { color:var(--force); }
+
+  /* written answer area */
+  textarea.ans {
+    width:100%; margin-top:9px; resize:vertical; min-height:60px;
+    background:var(--surface2); color:var(--text);
+    border:1px solid var(--border); border-radius:9px; padding:10px 13px;
+    font-family:'Inter',sans-serif; font-size:14px; line-height:1.6;
+    transition:background-color .35s, border-color .2s;
+  }
+  textarea.ans:focus { outline:none; border-color:var(--motion); }
+  textarea.ans:disabled { opacity:.85; }
+
+  .num-row { display:flex; align-items:center; gap:10px; margin-top:9px; flex-wrap:wrap; }
+  input.num {
+    width:150px; background:var(--surface2); color:var(--text);
+    border:1px solid var(--border); border-radius:9px; padding:9px 13px;
+    font-family:'JetBrains Mono',monospace; font-size:15px;
+    transition:background-color .35s, border-color .2s;
+  }
+  input.num:focus { outline:none; border-color:var(--motion); }
+  input.num.correct { border-color:var(--power); }
+  input.num.wrong   { border-color:var(--force); }
+  .num-unit { font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:14px; }
+  .num-verdict { font-family:'JetBrains Mono',monospace; font-size:12px; }
+
+  /* ── FIGURES / DIAGRAMS (theme-aware inline SVG) ── */
+  .fig {
+    margin:12px 0 6px; padding:14px; border:1px solid var(--border);
+    border-radius:10px; background:var(--surface2); text-align:center;
+    transition:background-color .35s, border-color .2s;
+  }
+  .fig svg { max-width:100%; height:auto; color:var(--text); }
+  .fig svg text { fill:var(--text); font-family:'Inter',sans-serif; }
+  .fig .fig-cap {
+    margin-top:8px; font-size:11.5px; color:var(--muted);
+    font-family:'JetBrains Mono',monospace; letter-spacing:.03em;
+  }
+  /* graph/grid helpers reusable inside authored SVG */
+  .fig .grid-line { stroke:var(--border); stroke-width:1; }
+  .fig .axis      { stroke:var(--text); stroke-width:1.6; }
+  .fig .plot      { stroke:var(--motion); stroke-width:2.4; fill:none; }
+  .fig .accent    { stroke:var(--force); }
+  /* deltas for the generated diagrams: the base rule sets .plot{fill:none}, but the
+     shapes below are drawn shaded, and .accent needs a colour for currentColor fills */
+  .fig .accent           { color:var(--force); }
+  .fig .plot.shade       { fill:currentColor; fill-opacity:.13; }
+  .fig .accent.shade     { fill:currentColor; fill-opacity:.16; }
+
+  /* ── DRAW / PLOT answer = upload a photo of your diagram ── */
+  .draw-row { margin-top:10px; }
+  .draw-note { font-size:12.5px; color:var(--muted); margin-bottom:8px; }
+  .draw-pick {
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    border:1px dashed var(--motion); border-radius:9px; padding:10px 16px;
+    background:var(--surface2); color:var(--motion); font-size:13.5px; font-weight:500;
+    transition:background-color .2s, border-color .2s;
+  }
+  .draw-pick:hover { background:var(--surface); }
+  .draw-pick input { display:none; }
+  .draw-preview { margin-top:10px; display:none; }
+  .draw-preview.show { display:block; }
+  .draw-preview img {
+    max-width:100%; max-height:340px; border:1px solid var(--border);
+    border-radius:9px; display:block;
+  }
+  .draw-preview .draw-meta { font-size:11.5px; color:var(--muted); margin-top:5px; font-family:'JetBrains Mono',monospace; }
+  .draw-clear {
+    margin-top:7px; font-size:12px; color:var(--force); background:none;
+    border:none; cursor:pointer; text-decoration:underline; padding:0;
+  }
+  /* printable blank box for hand-drawing on a printed paper */
+  .draw-box { display:none; }
+
+  /* print-only ruled answer lines */
+  .print-lines { display:none; }
+
+  /* ── MARK SCHEME (revealed after submit) ── */
+  .ms {
+    display:none; margin-top:14px; border-radius:10px; overflow:hidden;
+    border:1px solid var(--power);
+  }
+  .ms.show { display:block; }
+  .ms-head {
+    background:#0f2018; color:var(--power);
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; padding:8px 15px; display:flex; gap:10px; align-items:center;
+  }
+  body[data-theme="light"] .ms-head { background:#e7f6ee; }
+  .ms-head .self-note { margin-left:auto; color:var(--muted); letter-spacing:.04em; text-transform:none; font-size:11px; }
+  .ms-body { background:var(--surface2); padding:6px 6px; }
+  .ms-point {
+    display:flex; gap:11px; align-items:flex-start;
+    padding:9px 12px; border-radius:8px; cursor:pointer;
+    transition:background-color .15s;
+  }
+  .ms-point:hover { background:var(--surface); }
+  .ms-point input { margin-top:5px; accent-color:var(--power); width:16px; height:16px; flex-shrink:0; }
+  .ms-point .pt { flex:1; font-size:13.8px; color:var(--text); }
+  .ms-point .pm {
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--power);
+    border:1px solid var(--power); border-radius:5px; padding:1px 7px; flex-shrink:0; white-space:nowrap;
+  }
+  .ms-point.auto { cursor:default; }
+  .ms-point.auto .lock {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em;
+    color:var(--muted); margin-left:8px;
+  }
+  .ms-note {
+    padding:8px 14px; font-size:12.5px; color:var(--muted); border-top:1px dashed var(--border);
+  }
+  #questions.locked { opacity:.5; pointer-events:none; }
+  .ms-point.read { cursor:default; padding:9px 12px 9px 14px; }
+  .ms.solution .ms-head .self-note { display:none; }
+
+  /* graded-mode "submitted" message (shown instead of a score on teacher-marked papers) */
+  .submitted-msg { display:none; }
+  /* Frozen report: a finished drill reopens as its own marked report, never a blank. */
+  .frozen-bar { display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+    margin:0 0 18px; padding:12px 16px; border-radius:12px; font-size:14px; line-height:1.6;
+    border:1px solid color-mix(in srgb, var(--power) 40%, var(--border));
+    background:color-mix(in srgb, var(--power) 10%, transparent); color:var(--text); }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'JetBrains Mono',monospace;
+    font-weight:700; font-size:15px; color:var(--power); white-space:nowrap; }
+  @media print { .frozen-bar { break-inside:avoid; } }
+
+  body.graded .submitted-msg { display:block; margin:4px 0 6px; color:var(--text); font-size:15px; line-height:1.7; }
+  body.graded .submitted-msg b { color:var(--bright); }
+
+  /* ── RESULTS ── */
+  .results { display:none; margin:30px 0 10px; }
+  .results.show { display:block; }
+  .result-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:30px 30px; text-align:center;
+  }
+  .score-big {
+    font-family:'Fraunces',serif; font-weight:800; line-height:1;
+    font-size:clamp(3rem,11vw,5rem); color:var(--bright);
+  }
+  .score-big .den { color:var(--muted); font-size:.5em; }
+  .score-pct { font-family:'JetBrains Mono',monospace; font-size:18px; color:var(--motion); margin-top:6px; }
+  .band {
+    display:inline-block; margin-top:16px; padding:7px 18px; border-radius:22px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em;
+    border:1px solid var(--border); color:var(--bright); background:var(--surface2);
+  }
+  .result-meta { display:flex; justify-content:center; gap:30px; flex-wrap:wrap; margin-top:22px; }
+  .result-meta .rm .k {
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .result-meta .rm .v { font-size:18px; color:var(--bright); font-weight:600; }
+  .result-actions { margin-top:24px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .disclaimer { font-size:12px; color:var(--muted); margin-top:16px; max-width:520px; margin-left:auto; margin-right:auto; }
+
+  .eq-inline {
+    font-family:'JetBrains Mono',monospace; background:#0d1828; border:1px solid #22324a;
+    border-radius:5px; padding:1px 7px; font-size:13px; color:var(--motion); white-space:nowrap;
+  }
+  body[data-theme="light"] .eq-inline { background:#eef1f8; border-color:#d4dcec; }
+
+  sub { font-size:.74em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, body { transition:none !important; animation:none !important; }
+    .btn:hover, .theme-toggle:hover { transform:none; }
+  }
+
+  /* ── PRINT: render as a clean blank exam paper ── */
+  @media print {
+    @page { margin:16mm; }
+    body { background:#fff; color:#000; font-size:12pt; }
+    body::before { display:none; }
+    #questions { opacity:1 !important; }
+    .theme-toggle, .hub-home, .exam-bar, .controls, .results, .front .controls,
+    .opt input, .ms, textarea.ans, input.num, .num-verdict { display:none !important; }
+    .page { max-width:none; padding:0; }
+    .front { border:none; padding:0; background:none; }
+    .q, .front { box-shadow:none; border:1px solid #999; break-inside:avoid; }
+    .q { background:#fff; }
+    .opt { background:#fff; border:1px solid #999; }
+    .opt::before { content:''; display:inline-block; width:13px; height:13px; border:1.4px solid #000; border-radius:50%; margin-top:3px; }
+    .print-lines { display:block; margin-top:8px; }
+    .print-lines .ln { border-bottom:1px dotted #444; height:26px; }
+    .ctx { background:#f4f4f4; border-left:3px solid #444; }
+    /* figures print in black & white; hide the upload UI, show a blank box to draw in */
+    .fig { background:#fff; border:1px solid #999; }
+    .fig svg { color:#000; }
+    .fig svg text { fill:#000; }
+    .draw-row, .draw-preview { display:none !important; }
+    .draw-box { display:block; border:1px solid #999; border-radius:6px; height:180px; margin-top:8px; }
+    h1 .a, h1 .b, h1 .c, .q-no, .marks, .chip { color:#000 !important; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+
+<a class="hub-home" href="index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" title="Toggle light / dark">☀</button>
+
+<!-- sticky exam bar -->
+<div class="exam-bar" id="examBar">
+  <div class="timer"><span class="lbl">TIME LEFT</span><span id="timeLeft">15:00</span></div>
+  <div class="prog">Answered <b id="progDone">0</b> / <span id="progTot">0</span></div>
+  <span class="mode-tag" id="modeTag">TIMED</span>
+  <div class="spacer"></div>
+  <button class="btn primary" id="btnSubmit">Submit &amp; mark</button>
+</div>
+
+<div class="page">
+
+  <header class="header">
+    <span class="chip">Precision Drill · Physics only · 15 minutes</span>
+    <h1>Precision Drill 41<br><span class="a">Read it.</span> <span class="b">Turn it.</span> <span class="c">Finish it.</span></h1>
+    <p class="header-sub">Thirteen one-mark <b>Physics</b> questions, <b>all inside your SA-1 syllabus</b> (book chapters 1&ndash;21). <b>Most of them carry a diagram</b>, so read the picture before you read the question. <b>The content is deliberately low-difficulty</b> — everything here is work you have already done. What is being tested is the habit: read the demand exactly, turn the ratio the right way up, and take the last step.</p>
+  </header>
+
+  <!-- FRONT SHEET -->
+  <section class="front" id="front">
+    <h2>Before you begin</h2>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="k">Time allowed</div><div class="v" id="metaTime">15 minutes</div></div>
+      <div class="meta-item"><div class="k">Total marks</div><div class="v" id="metaMarks">13 marks</div></div>
+      <div class="meta-item"><div class="k">Subject</div><div class="v">Physics only</div></div>
+      <div class="meta-item"><div class="k">Marking</div><div class="v">Fully automatic</div></div>
+    </div>
+    <ul class="instructions">
+      <li>Answer <b>all</b> 13 questions. Each is worth exactly <b>1 mark</b>. <b>Q1 is multiple choice</b>; the other twelve each want a number typed into the box.</li>
+      <li>Every question is Physics, and <b>the topic keeps changing as you go</b> &mdash; motion, forces, measurement, waves, sound, light and energy: this drill is the mixed review of the batch. Read each one from scratch; that switch is part of the exercise.</li>
+      <li><b>Most questions carry a diagram.</b> Everything the diagram shows &mdash; an arrow&rsquo;s direction, which angle is marked, which length is which &mdash; is part of the question. Name what each labelled thing is <i>before</i> you look at what is being asked for.</li>
+      <li><b>Marking is all-or-nothing and automatic.</b> There is no method mark and nothing to tick yourself, so an answer that is right except for the direction of a fraction or the last keystroke scores zero — exactly as a wrong answer would.</li>
+      <li>Where a question prints an instruction (<i>“to the nearest whole number”</i>, <i>“in cm<sup>3</sup>”</i>, <i>“as a decimal”</i>), that instruction <b>is</b> the question. Q10’s rounding instruction is marked <b>exactly</b>; elsewhere a correctly-worked value is accepted whether or not you rounded it.</li>
+      <li>On Q2–Q13, type <b>just the number</b> — the unit is printed beside the box wherever the quantity has one. Write it as an ordinary decimal (<i>0.05</i>), not in standard form.</li>
+      <li class="admin">In <b>Timed exam</b> mode a 15-minute countdown runs; the drill locks and marks itself when you submit or time runs out.</li>
+      <li>After marking, every question opens up a worked answer that <b>names the specific slip</b> the question was built to catch. Read those even for the ones you got right.</li>
+    </ul>
+    <div class="controls">
+      <button class="btn primary" id="startTimed">▶ Start timed exam</button>
+      <button class="btn ghost" id="startPractice">Practice (no timer)</button>
+      <button class="btn ghost" id="printBtn">🖨 Print blank paper</button>
+      <span class="hint">Tip: use the ☀ / ☾ button (top-right) to switch between dark and light (paper) themes.</span>
+    </div>
+  </section>
+
+  <!-- questions render here -->
+  <div id="questions"></div>
+
+  <!-- RESULTS -->
+  <section class="results" id="results">
+    <h2 id="resultsTitle">Your result</h2>
+    <div class="result-card">
+      <p class="submitted-msg" id="submittedMsg">✅ <b>Paper submitted.</b> Your answers have been submitted.</p>
+      <div id="scoreWrap">
+        <div class="score-big"><span id="scoreNum">0</span><span class="den"> / <span id="scoreDen">13</span></span></div>
+        <div class="score-pct" id="scorePct">0%</div>
+        <div class="band" id="scoreBand">—</div>
+        <div class="result-meta">
+          <div class="rm"><div class="k">Auto-marked</div><div class="v" id="autoMarked">0</div></div>
+          <div class="rm" id="selfRow"><div class="k">Self-marked</div><div class="v" id="selfMarked">0</div></div>
+          <div class="rm"><div class="k">Time taken</div><div class="v" id="timeTaken">—</div></div>
+        </div>
+      </div>
+      <div class="result-actions">
+        <button class="btn" id="downloadBtn">⬇ Download answers (for marking)</button>
+        <button class="btn ghost" id="reviewBtn">Review answers ↑</button>
+        <button class="btn ghost" id="retakeBtn">↺ Retake</button>
+        <button class="btn ghost" id="printBtn2">🖨 Print</button>
+      </div>
+      <p class="disclaimer">This drill is marked automatically. It is a short precision check, not a graded paper — the score counts traps caught, and says nothing about a grade.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ===========================================================================
+   PRACTICE-PAPER ENGINE  — generic; drives everything from the PAPER object.
+   To build a new paper, edit PAPER only (and the header markup above).
+   Question kinds:
+     'mcq'    — options[], answer (0-based index). Auto-marked.
+     'parts'  — parts[]; each part is 'text' (self-marked) or 'numeric'
+                (final answer auto-checked; method points self-marked).
+   Each markable unit lists ms[] marking points: {p:'text', m:marks, auto?:bool}
+   =========================================================================== */
+const PAPER = {
+  duration: 15,                 // minutes — longer than the 12 of a text drill: these questions carry diagrams,
+                                //           and a timer tight enough to make her rush would manufacture
+                                //           the very reading slips the drill exists to measure
+  questions: [
+
+    { n:1, kind:'mcq', marks:1,
+      stem:"<span class=\"subj phys\">Motion</span> The distance&ndash;time graph shows an object moving along a straight road. The journey is divided into four sections <b>P</b>, <b>Q</b>, <b>R</b> and <b>S</b>. In which section is the object <b>at rest</b>?<div class=\"fig\"><svg viewBox=\"0 0 440 310\" role=\"img\" aria-label=\"A distance-time graph rising to 60 metres at 4 seconds, staying level at 60 metres until 8 seconds, rising to 90 metres at 14 seconds and then rising steeply to 150 metres at 18 seconds, with the four sections labelled P, Q, R and S\"><line class=\"grid-line\" x1=\"58.0\" y1=\"26.0\" x2=\"58.0\" y2=\"264.0\"/><text x=\"58.0\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">0</text><line class=\"grid-line\" x1=\"131.2\" y1=\"26.0\" x2=\"131.2\" y2=\"264.0\"/><text x=\"131.2\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">4</text><line class=\"grid-line\" x1=\"204.4\" y1=\"26.0\" x2=\"204.4\" y2=\"264.0\"/><text x=\"204.4\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">8</text><line class=\"grid-line\" x1=\"277.6\" y1=\"26.0\" x2=\"277.6\" y2=\"264.0\"/><text x=\"277.6\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">12</text><line class=\"grid-line\" x1=\"350.8\" y1=\"26.0\" x2=\"350.8\" y2=\"264.0\"/><text x=\"350.8\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">16</text><line class=\"grid-line\" x1=\"424.0\" y1=\"26.0\" x2=\"424.0\" y2=\"264.0\"/><text x=\"424.0\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">20</text><line class=\"grid-line\" x1=\"58.0\" y1=\"264.0\" x2=\"424.0\" y2=\"264.0\"/><text x=\"51.0\" y=\"268.0\" font-size=\"10\" text-anchor=\"end\" font-weight=\"400\" opacity=\".75\">0</text><line class=\"grid-line\" x1=\"58.0\" y1=\"204.5\" x2=\"424.0\" y2=\"204.5\"/><text x=\"51.0\" y=\"208.5\" font-size=\"10\" text-anchor=\"end\" font-weight=\"400\" opacity=\".75\">40</text><line class=\"grid-line\" x1=\"58.0\" y1=\"145.0\" x2=\"424.0\" y2=\"145.0\"/><text x=\"51.0\" y=\"149.0\" font-size=\"10\" text-anchor=\"end\" font-weight=\"400\" opacity=\".75\">80</text><line class=\"grid-line\" x1=\"58.0\" y1=\"85.5\" x2=\"424.0\" y2=\"85.5\"/><text x=\"51.0\" y=\"89.5\" font-size=\"10\" text-anchor=\"end\" font-weight=\"400\" opacity=\".75\">120</text><line class=\"grid-line\" x1=\"58.0\" y1=\"26.0\" x2=\"424.0\" y2=\"26.0\"/><text x=\"51.0\" y=\"30.0\" font-size=\"10\" text-anchor=\"end\" font-weight=\"400\" opacity=\".75\">160</text><line class=\"axis\" x1=\"58.0\" y1=\"264.0\" x2=\"424.0\" y2=\"264.0\"/><line class=\"axis\" x1=\"58.0\" y1=\"264.0\" x2=\"58.0\" y2=\"26.0\"/><text x=\"241.0\" y=\"302.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"400\">time / s</text><text x=\"14\" y=\"145.0\" font-size=\"11\" text-anchor=\"middle\" transform=\"rotate(-90 14 145.0)\">distance / m</text><polyline class=\"plot\" points=\"58.0,264.0 131.2,174.8 204.4,174.8 314.2,130.1 387.4,40.9\" fill=\"none\" stroke-width=\"2.6\"/><text x=\"94.6\" y=\"211.4\" font-size=\"13\" text-anchor=\"middle\" font-weight=\"700\">P</text><text x=\"167.8\" y=\"166.8\" font-size=\"13\" text-anchor=\"middle\" font-weight=\"700\">Q</text><text x=\"259.3\" y=\"144.4\" font-size=\"13\" text-anchor=\"middle\" font-weight=\"700\">R</text><text x=\"350.8\" y=\"77.5\" font-size=\"13\" text-anchor=\"middle\" font-weight=\"700\">S</text></svg><div class=\"fig-cap\">Distance&ndash;time graph for the journey</div></div>",
+      options:[
+        "Section <b>P</b>",
+        "Section <b>Q</b>",
+        "Section <b>R</b>",
+        "Section <b>S</b>"
+      ],
+      answer:1,
+      ms:[{p:"<b>B &mdash; section Q.</b> On a <b>distance</b>&ndash;time graph a horizontal line means the distance is not changing, so the object is <b>at rest</b>. That is Q. <span class=\"trap\">Every wrong option is one named slip:</span> <b>P</b> and <b>S</b> are the steep sections, which is the <i>fastest</i> motion, not the slowest; <b>R</b> is the gentlest slope, so it is the slowest section that is still <i>moving</i> &mdash; a very close second-best answer, and the one to guard against. Notice also that this is a distance&ndash;time graph, not a speed&ndash;time graph: on a speed&ndash;time graph a horizontal line would mean <i>constant speed</i>, not rest. <span class=\"trap\">The check:</span> read the vertical axis across section Q &mdash; the distance stays at 60 m from 4 s to 8 s, so nothing moved in those four seconds &#10003;.", m:1, auto:true}]},
+
+    { n:2, kind:'parts',
+      stem:"<span class=\"subj phys\">Work &amp; power</span> A force of <b>24 N</b> pushes a box <b>7.5 m</b> in the direction of the force.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:180, tol:0.5, unit:"J",
+          prompt:"Calculate the work done, in J.",
+          ms:[{p:"<b>180 J.</b> <i>W</i> = <i>Fd</i> = 24 &times; 7.5 = <b>180 J</b>. <span class=\"trap\">This question is the drill&rsquo;s declared baseline &mdash; it carries no trap at all.</span> It is the reference point for the rest of the paper: if this one lands and the trapped ones do not, the marks are going to reading and finishing rather than to the physics. <span class=\"trap\">The check:</span> 180 &divide; 7.5 = 24 &#10003;.", m:1, auto:true}]}
+      ]},
+
+    { n:3, kind:'parts',
+      stem:"<span class=\"subj phys\">Measurement</span> A block of aluminium has a mass of <b>648 g</b>. The density of aluminium is <b>2.7 g/cm&#179;</b>.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:240, tol:0.5, unit:"cm&#179;",
+          prompt:"Calculate its volume, in cm&#179;.",
+          ms:[{p:"<b>240 cm&#179;.</b> <i>&#961;</i> = <i>m</i> &divide; <i>V</i>, so <i>V</i> = <i>m</i> &divide; <i>&#961;</i> = 648 &divide; 2.7 = <b>240 cm&#179;</b>. <span class=\"trap\">The trap:</span> 648 &times; 2.7 = 1750 &mdash; reading <i>&#961;</i> = <i>m</i>&#8260;<i>V</i> and multiplying because the two numbers are sitting there. <span class=\"trap\">A second trap:</span> 2.7 &divide; 648 = 0.0042, the division inverted. Using a formula upside-down is the biggest single source of lost marks across your graded papers &mdash; five in <i>Chemistry Topic 3 Graded Paper 2 &ndash; Stoichiometry</i> from the mole triangle alone. <span class=\"trap\">The habit:</span> write the rearranged formula on its own line first. <span class=\"trap\">The check:</span> 240 &times; 2.7 = 648 &#10003;.", m:1, auto:true}]}
+      ]},
+
+    { n:4, kind:'parts',
+      stem:"<span class=\"subj phys\">Waves</span> A sound wave in air has a wavelength of <b>0.72 m</b>, as marked on the diagram. Sound travels at <b>340 m/s</b> in air.<div class=\"fig\"><svg viewBox=\"0 0 440 250\" role=\"img\" aria-label=\"A transverse wave with one wavelength marked by a measurement bar labelled 0.72 metres\"><line class=\"grid-line\" x1=\"32.0\" y1=\"111.0\" x2=\"416.0\" y2=\"111.0\" stroke-dasharray=\"5 4\"/><polyline class=\"plot\" points=\"46.0,111.0 46.9,108.6 47.8,106.1 48.7,103.7 49.6,101.3 50.5,98.9 51.5,96.5 52.4,94.2 53.3,91.9 54.2,89.6 55.1,87.4 56.0,85.2 56.9,83.1 57.8,81.1 58.7,79.1 59.6,77.2 60.6,75.4 61.5,73.7 62.4,72.0 63.3,70.4 64.2,68.9 65.1,67.5 66.0,66.2 66.9,65.0 67.8,63.9 68.8,63.0 69.7,62.1 70.6,61.3 71.5,60.6 72.4,60.1 73.3,59.6 74.2,59.3 75.1,59.1 76.0,59.0 76.9,59.0 77.8,59.2 78.8,59.4 79.7,59.8 80.6,60.3 81.5,60.8 82.4,61.5 83.3,62.4 84.2,63.3 85.1,64.3 86.0,65.4 87.0,66.7 87.9,68.0 88.8,69.4 89.7,70.9 90.6,72.5 91.5,74.2 92.4,76.0 93.3,77.9 94.2,79.8 95.1,81.8 96.0,83.8 97.0,85.9 97.9,88.1 98.8,90.3 99.7,92.6 100.6,94.9 101.5,97.3 102.4,99.7 103.3,102.1 104.2,104.5 105.2,106.9 106.1,109.4 107.0,111.8 107.9,114.3 108.8,116.7 109.7,119.1 110.6,121.5 111.5,123.9 112.4,126.3 113.3,128.6 114.2,130.9 115.2,133.1 116.1,135.3 117.0,137.5 117.9,139.5 118.8,141.6 119.7,143.5 120.6,145.4 121.5,147.2 122.4,148.9 123.3,150.5 124.3,152.1 125.2,153.5 126.1,154.9 127.0,156.2 127.9,157.3 128.8,158.4 129.7,159.3 130.6,160.2 131.5,160.9 132.4,161.6 133.4,162.1 134.3,162.5 135.2,162.8 136.1,162.9 137.0,163.0 137.9,162.9 138.8,162.8 139.7,162.5 140.6,162.1 141.6,161.6 142.5,160.9 143.4,160.2 144.3,159.3 145.2,158.4 146.1,157.3 147.0,156.2 147.9,154.9 148.8,153.5 149.7,152.1 150.7,150.5 151.6,148.9 152.5,147.2 153.4,145.4 154.3,143.5 155.2,141.6 156.1,139.5 157.0,137.5 157.9,135.3 158.8,133.1 159.8,130.9 160.7,128.6 161.6,126.3 162.5,123.9 163.4,121.5 164.3,119.1 165.2,116.7 166.1,114.3 167.0,111.8 167.9,109.4 168.8,106.9 169.8,104.5 170.7,102.1 171.6,99.7 172.5,97.3 173.4,94.9 174.3,92.6 175.2,90.3 176.1,88.1 177.0,85.9 177.9,83.8 178.9,81.8 179.8,79.8 180.7,77.9 181.6,76.0 182.5,74.2 183.4,72.5 184.3,70.9 185.2,69.4 186.1,68.0 187.1,66.7 188.0,65.4 188.9,64.3 189.8,63.3 190.7,62.4 191.6,61.5 192.5,60.8 193.4,60.3 194.3,59.8 195.2,59.4 196.2,59.2 197.1,59.0 198.0,59.0 198.9,59.1 199.8,59.3 200.7,59.6 201.6,60.1 202.5,60.6 203.4,61.3 204.3,62.1 205.2,63.0 206.2,63.9 207.1,65.0 208.0,66.2 208.9,67.5 209.8,68.9 210.7,70.4 211.6,72.0 212.5,73.7 213.4,75.4 214.3,77.2 215.3,79.1 216.2,81.1 217.1,83.1 218.0,85.2 218.9,87.4 219.8,89.6 220.7,91.9 221.6,94.2 222.5,96.5 223.4,98.9 224.4,101.3 225.3,103.7 226.2,106.1 227.1,108.6 228.0,111.0 228.9,113.4 229.8,115.9 230.7,118.3 231.6,120.7 232.6,123.1 233.5,125.5 234.4,127.8 235.3,130.1 236.2,132.4 237.1,134.6 238.0,136.8 238.9,138.9 239.8,140.9 240.7,142.9 241.7,144.8 242.6,146.6 243.5,148.3 244.4,150.0 245.3,151.6 246.2,153.1 247.1,154.5 248.0,155.8 248.9,157.0 249.8,158.1 250.8,159.0 251.7,159.9 252.6,160.7 253.5,161.4 254.4,161.9 255.3,162.4 256.2,162.7 257.1,162.9 258.0,163.0 258.9,163.0 259.9,162.8 260.8,162.6 261.7,162.2 262.6,161.7 263.5,161.2 264.4,160.5 265.3,159.6 266.2,158.7 267.1,157.7 268.0,156.6 268.9,155.3 269.9,154.0 270.8,152.6 271.7,151.1 272.6,149.5 273.5,147.8 274.4,146.0 275.3,144.1 276.2,142.2 277.1,140.2 278.1,138.2 279.0,136.1 279.9,133.9 280.8,131.7 281.7,129.4 282.6,127.1 283.5,124.7 284.4,122.3 285.3,119.9 286.2,117.5 287.1,115.1 288.1,112.6 289.0,110.2 289.9,107.7 290.8,105.3 291.7,102.9 292.6,100.5 293.5,98.1 294.4,95.7 295.3,93.4 296.2,91.1 297.2,88.9 298.1,86.7 299.0,84.5 299.9,82.5 300.8,80.4 301.7,78.5 302.6,76.6 303.5,74.8 304.4,73.1 305.4,71.5 306.3,69.9 307.2,68.5 308.1,67.1 309.0,65.8 309.9,64.7 310.8,63.6 311.7,62.7 312.6,61.8 313.5,61.1 314.4,60.4 315.4,59.9 316.3,59.5 317.2,59.2 318.1,59.1 319.0,59.0 319.9,59.1 320.8,59.2 321.7,59.5 322.6,59.9 323.6,60.4 324.5,61.1 325.4,61.8 326.3,62.7 327.2,63.6 328.1,64.7 329.0,65.8 329.9,67.1 330.8,68.5 331.7,69.9 332.6,71.5 333.6,73.1 334.5,74.8 335.4,76.6 336.3,78.5 337.2,80.4 338.1,82.5 339.0,84.5 339.9,86.7 340.8,88.9 341.8,91.1 342.7,93.4 343.6,95.7 344.5,98.1 345.4,100.5 346.3,102.9 347.2,105.3 348.1,107.7 349.0,110.2 349.9,112.6 350.9,115.1 351.8,117.5 352.7,119.9 353.6,122.3 354.5,124.7 355.4,127.1 356.3,129.4 357.2,131.7 358.1,133.9 359.0,136.1 359.9,138.2 360.9,140.2 361.8,142.2 362.7,144.1 363.6,146.0 364.5,147.8 365.4,149.5 366.3,151.1 367.2,152.6 368.1,154.0 369.1,155.3 370.0,156.6 370.9,157.7 371.8,158.7 372.7,159.6 373.6,160.5 374.5,161.2 375.4,161.7 376.3,162.2 377.2,162.6 378.1,162.8 379.1,163.0 380.0,163.0 380.9,162.9 381.8,162.7 382.7,162.4 383.6,161.9 384.5,161.4 385.4,160.7 386.3,159.9 387.2,159.0 388.2,158.1 389.1,157.0 390.0,155.8 390.9,154.5 391.8,153.1 392.7,151.6 393.6,150.0 394.5,148.3 395.4,146.6 396.4,144.8 397.3,142.9 398.2,140.9 399.1,138.9 400.0,136.8 400.9,134.6 401.8,132.4 402.7,130.1 403.6,127.8 404.5,125.5 405.4,123.1 406.4,120.7 407.3,118.3 408.2,115.9 409.1,113.4 410.0,111.0\" fill=\"none\" stroke-width=\"2.6\"/><line class=\"grid-line\" x1=\"76.3\" y1=\"45.0\" x2=\"197.7\" y2=\"45.0\" stroke-width=\"2.2\"/><polygon class=\"grid-line\" points=\"197.7,45.0 192.2,47.4 192.2,42.6\" fill=\"currentColor\" stroke=\"none\"/><line class=\"grid-line\" x1=\"197.7\" y1=\"45.0\" x2=\"76.3\" y2=\"45.0\" stroke-width=\"2.2\"/><polygon class=\"grid-line\" points=\"76.3,45.0 81.8,42.6 81.8,47.4\" fill=\"currentColor\" stroke=\"none\"/><text x=\"137.0\" y=\"39.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"400\">0.72 m</text><line class=\"grid-line\" x1=\"76.3\" y1=\"45.0\" x2=\"76.3\" y2=\"59.0\" stroke-dasharray=\"3 3\"/><line class=\"grid-line\" x1=\"197.7\" y1=\"45.0\" x2=\"197.7\" y2=\"59.0\" stroke-dasharray=\"3 3\"/><text x=\"228.0\" y=\"244.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".85\">distance</text></svg><div class=\"fig-cap\">One wavelength of the sound wave</div></div>",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:472, tol:0.6, unit:"Hz",
+          prompt:"Calculate the frequency of this sound, in Hz.",
+          ms:[{p:"<b>472 Hz.</b> <i>v</i> = <i>f</i>&#955;, so <i>f</i> = <i>v</i> &divide; &#955; = 340 &divide; 0.72 = 472.2, which is <b>472 Hz</b> to 3 s.f. <span class=\"trap\">The trap:</span> 0.72 &divide; 340 = 0.0021 &mdash; the division turned upside-down. A frequency of two-thousandths of a hertz would be one wave every eight minutes. <span class=\"trap\">A second trap:</span> 340 &times; 0.72 = 245, from not rearranging at all. <span class=\"trap\">The habit:</span> check the size of the answer against something you know: audible sound runs from about 20 Hz to 20 000 Hz. <span class=\"trap\">The check:</span> 472 &times; 0.72 = 340 m/s &#10003;.", m:1, auto:true}]}
+      ]},
+
+    { n:5, kind:'parts',
+      stem:"<span class=\"subj phys\">Work &amp; power</span> A pump does <b>27 000 J</b> of work in <b>6.0 minutes</b>.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:75, tol:0.2, unit:"W",
+          prompt:"Calculate its power, in W.",
+          ms:[{p:"<b>75 W.</b> A watt is a joule <b>per second</b>, so the time must be in seconds: 6.0 minutes = 6.0 &times; 60 = 360 s. Then <i>P</i> = <i>W</i> &divide; <i>t</i> = 27 000 &divide; 360 = <b>75 W</b>. <span class=\"trap\">The trap:</span> 27 000 &divide; 6.0 = 4500 &mdash; using the time as printed, which makes the pump sixty times too powerful. <span class=\"trap\">A second trap:</span> 360 &divide; 27 000 = 0.013, the formula inverted. <span class=\"trap\">The habit:</span> convert the time on a line of its own before the formula. <span class=\"trap\">The check:</span> 75 W &times; 360 s = 27 000 J &#10003;.", m:1, auto:true}]}
+      ]},
+
+    { n:6, kind:'parts',
+      stem:"<span class=\"subj phys\">Energy</span> A motor is supplied with <b>940 J</b> of energy. It transfers <b>611 J</b> of this usefully.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:329, tol:0.5, unit:"J",
+          prompt:"Calculate the energy that is <b>wasted</b>, in J.",
+          ms:[{p:"<b>329 J.</b> Energy is conserved, so whatever is not transferred usefully is wasted: 940 &minus; 611 = <b>329 J</b>. <span class=\"trap\">The trap:</span> writing 611 &mdash; the <b>useful</b> energy, which is printed in the question and is not what the demand names. <span class=\"trap\">A second trap:</span> 65, the <i>efficiency</i> as a percentage (611 &divide; 940 &times; 100 = 65%) &mdash; a genuine quantity about this motor, in a box that asked for joules. Answering a different quantity from the one demanded is the mark lost on Q16(c)(ii) of <i>Physics Mixed Chapters 1-18 Graded Paper 3</i>, where the motion was described and a <i>value</i> was what the question wanted. <span class=\"trap\">The habit:</span> circle the quantity word and its unit in the demand before you calculate. <span class=\"trap\">The check:</span> 611 + 329 = 940 &#10003;.", m:1, auto:true}]}
+      ]},
+
+    { n:7, kind:'parts',
+      stem:"<span class=\"subj phys\">Forces</span> A uniform plank of weight <b>246 N</b> rests horizontally on <b>two identical supports</b>, one near each end.<div class=\"fig\"><svg viewBox=\"0 0 440 210\" role=\"img\" aria-label=\"A uniform plank resting on two supports near its ends, with its weight of 246 newtons acting downwards at the centre\"><line class=\"axis\" x1=\"70.0\" y1=\"90.0\" x2=\"370.0\" y2=\"90.0\" stroke-width=\"4\"/><polygon class=\"plot shade\" points=\"88.0,93.0 72.0,130.0 104.0,130.0\" stroke=\"currentColor\" stroke-width=\"1.6\"/><text x=\"88.0\" y=\"146.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".85\">support</text><polygon class=\"plot shade\" points=\"352.0,93.0 336.0,130.0 368.0,130.0\" stroke=\"currentColor\" stroke-width=\"1.6\"/><text x=\"352.0\" y=\"146.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".85\">support</text><line class=\"accent\" x1=\"220.0\" y1=\"90.0\" x2=\"220.0\" y2=\"146.0\" stroke-width=\"2.2\"/><polygon class=\"accent\" points=\"220.0,146.0 217.1,139.6 222.9,139.6\" fill=\"currentColor\" stroke=\"none\"/><text x=\"220.0\" y=\"164.0\" font-size=\"12\" text-anchor=\"middle\" font-weight=\"700\">weight 246 N</text><text x=\"220.0\" y=\"74.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".85\">uniform plank</text></svg><div class=\"fig-cap\">The plank on its two supports</div></div>",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:123, tol:0.2, unit:"N",
+          prompt:"Calculate the force on <b>each</b> support, in N.",
+          ms:[{p:"<b>123 N.</b> The plank is uniform and the supports are placed symmetrically, so each one carries <b>half</b> the weight: 246 &divide; 2 = <b>123 N</b>. <span class=\"trap\">The trap:</span> writing 246 &mdash; the <b>whole</b> weight put onto <b>one</b> support. The word &ldquo;each&rdquo; is doing all the work in that sentence. Taking a whole-object value where a section value was wanted is the <b>two marks</b> lost on Q21(d) of <i>Physics Mixed Chapters 1-18 Graded Paper 3</i>, where the full 12 V was used across a section that had only 4.0 V. <span class=\"trap\">A second trap:</span> 492, from doubling instead of halving. <span class=\"trap\">The habit:</span> ask &ldquo;how many things share this?&rdquo; before you divide. <span class=\"trap\">The check:</span> 123 + 123 = 246 N &#10003; &mdash; the two upward forces must balance the weight.", m:1, auto:true}]}
+      ]},
+
+    { n:8, kind:'parts',
+      stem:"<span class=\"subj phys\">Light</span> A ray of light travelling inside a glass block of refractive index <b>n</b> = <b>1.5</b> meets the surface at an angle of <b>25&#176;</b> to the normal and passes out into the air. The angle in the air is marked <b><i>r</i></b>.<div class=\"fig\"><svg viewBox=\"0 0 400 300\" role=\"img\" aria-label=\"A ray of light inside a glass block meeting the boundary with air, with the dashed normal drawn, the angle inside the glass marked 25 degrees and the angle in the air marked r\"><rect x=\"0\" y=\"150.0\" width=\"400\" height=\"150.0\" class=\"plot shade\" stroke=\"none\"/><line class=\"axis\" x1=\"20.0\" y1=\"150.0\" x2=\"380.0\" y2=\"150.0\" stroke-width=\"2\"/><line class=\"grid-line\" x1=\"200.0\" y1=\"28.0\" x2=\"200.0\" y2=\"272.0\" stroke-dasharray=\"5 4\"/><text x=\"206.0\" y=\"282.0\" font-size=\"10\" text-anchor=\"start\" font-weight=\"400\" opacity=\".8\">normal</text><line class=\"accent\" x1=\"150.1\" y1=\"256.9\" x2=\"200.0\" y2=\"150.0\" stroke-width=\"2.2\"/><polygon class=\"accent\" points=\"200.0,150.0 199.9,157.0 194.7,154.6\" fill=\"currentColor\" stroke=\"none\"/><line class=\"accent\" x1=\"200.0\" y1=\"150.0\" x2=\"274.8\" y2=\"58.7\" stroke-width=\"2.2\"/><polygon class=\"accent\" points=\"274.8,58.7 273.0,65.5 268.5,61.9\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M 181.4 189.9 A 44 44 0 0 0 200.0 194.0\" fill=\"none\" class=\"grid-line\" stroke-width=\"1.4\"/><text x=\"186.8\" y=\"213.6\" font-size=\"12\" text-anchor=\"middle\" font-weight=\"700\">25&#176;</text><path d=\"M 227.9 116.0 A 44 44 0 0 0 200.0 106.0\" fill=\"none\" class=\"grid-line\" stroke-width=\"1.4\"/><text x=\"220.5\" y=\"96.6\" font-size=\"12\" text-anchor=\"middle\" font-weight=\"700\"><tspan font-style=\"italic\">r</tspan></text><text x=\"376.0\" y=\"138.0\" font-size=\"11\" text-anchor=\"end\" font-weight=\"400\" opacity=\".85\">air</text><text x=\"376.0\" y=\"170.0\" font-size=\"11\" text-anchor=\"end\" font-weight=\"400\" opacity=\".85\">glass</text><text x=\"24.0\" y=\"170.0\" font-size=\"12\" text-anchor=\"start\" font-weight=\"700\">n = 1.5</text></svg><div class=\"fig-cap\">Light passing from glass into air</div></div>",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:39.3, tol:0.15, unit:"&#176;",
+          prompt:"Calculate the angle <i>r</i>, in degrees.",
+          ms:[{p:"<b>39.3&#176;.</b> Going from glass into air the relationship runs the other way: sin&nbsp;<i>r</i> = <i>n</i> &times; sin&nbsp;25&#176; = 1.5 &times; 0.4226 = 0.6339. That is <b>not the answer</b> &mdash; it is the sine of the answer. Take the inverse: <i>r</i> = sin<sup>&minus;1</sup>(0.6339) = <b>39.3&#176;</b>. <span class=\"trap\">The trap:</span> writing 0.63 and stopping. That is the mark lost on <b>Q19(a)</b> of <i>Physics Mixed Chapters 1-18 Graded Paper 3</i>: sin&nbsp;<i>r</i> = 0.43 was reached correctly and the sin<sup>&minus;1</sup> was never taken. Both method marks were earned; only the last keystroke was missing. <span class=\"trap\">A second trap:</span> 16.4&#176;, from dividing by 1.5 instead of multiplying &mdash; that is the rule for light going <i>into</i> the glass, and here it is coming out. <span class=\"trap\">The check:</span> leaving a denser medium, light bends <b>away</b> from the normal, so <i>r</i> must be <b>bigger</b> than 25&#176; &mdash; and the diagram shows exactly that &#10003;.", m:1, auto:true}]}
+      ]},
+
+    { n:9, kind:'parts',
+      stem:"<span class=\"subj phys\">Measurement</span> A metal rod is laid against a ruler. Its left-hand end is at the <b>3.4 cm</b> mark and its right-hand end is at the <b>11.9 cm</b> mark.<div class=\"fig\"><svg viewBox=\"0 0 440 190\" role=\"img\" aria-label=\"A metal rod lying against a centimetre ruler, its left end at the 3.4 centimetre mark and its right end at the 11.9 centimetre mark\"><line class=\"axis\" x1=\"40.0\" y1=\"118.0\" x2=\"400.0\" y2=\"118.0\" stroke-width=\"2.4\"/><line class=\"grid-line\" x1=\"40.0\" y1=\"118.0\" x2=\"40.0\" y2=\"131.0\"/><text x=\"40.0\" y=\"146.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".8\">0</text><line class=\"grid-line\" x1=\"52.9\" y1=\"118.0\" x2=\"52.9\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"65.7\" y1=\"118.0\" x2=\"65.7\" y2=\"131.0\"/><line class=\"grid-line\" x1=\"78.6\" y1=\"118.0\" x2=\"78.6\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"91.4\" y1=\"118.0\" x2=\"91.4\" y2=\"131.0\"/><text x=\"91.4\" y=\"146.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".8\">2</text><line class=\"grid-line\" x1=\"104.3\" y1=\"118.0\" x2=\"104.3\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"117.1\" y1=\"118.0\" x2=\"117.1\" y2=\"131.0\"/><line class=\"grid-line\" x1=\"130.0\" y1=\"118.0\" x2=\"130.0\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"142.9\" y1=\"118.0\" x2=\"142.9\" y2=\"131.0\"/><text x=\"142.9\" y=\"146.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".8\">4</text><line class=\"grid-line\" x1=\"155.7\" y1=\"118.0\" x2=\"155.7\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"168.6\" y1=\"118.0\" x2=\"168.6\" y2=\"131.0\"/><line class=\"grid-line\" x1=\"181.4\" y1=\"118.0\" x2=\"181.4\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"194.3\" y1=\"118.0\" x2=\"194.3\" y2=\"131.0\"/><text x=\"194.3\" y=\"146.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".8\">6</text><line class=\"grid-line\" x1=\"207.1\" y1=\"118.0\" x2=\"207.1\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"220.0\" y1=\"118.0\" x2=\"220.0\" y2=\"131.0\"/><line class=\"grid-line\" x1=\"232.9\" y1=\"118.0\" x2=\"232.9\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"245.7\" y1=\"118.0\" x2=\"245.7\" y2=\"131.0\"/><text x=\"245.7\" y=\"146.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".8\">8</text><line class=\"grid-line\" x1=\"258.6\" y1=\"118.0\" x2=\"258.6\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"271.4\" y1=\"118.0\" x2=\"271.4\" y2=\"131.0\"/><line class=\"grid-line\" x1=\"284.3\" y1=\"118.0\" x2=\"284.3\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"297.1\" y1=\"118.0\" x2=\"297.1\" y2=\"131.0\"/><text x=\"297.1\" y=\"146.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".8\">10</text><line class=\"grid-line\" x1=\"310.0\" y1=\"118.0\" x2=\"310.0\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"322.9\" y1=\"118.0\" x2=\"322.9\" y2=\"131.0\"/><line class=\"grid-line\" x1=\"335.7\" y1=\"118.0\" x2=\"335.7\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"348.6\" y1=\"118.0\" x2=\"348.6\" y2=\"131.0\"/><text x=\"348.6\" y=\"146.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".8\">12</text><line class=\"grid-line\" x1=\"361.4\" y1=\"118.0\" x2=\"361.4\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"374.3\" y1=\"118.0\" x2=\"374.3\" y2=\"131.0\"/><line class=\"grid-line\" x1=\"387.1\" y1=\"118.0\" x2=\"387.1\" y2=\"125.0\"/><line class=\"grid-line\" x1=\"400.0\" y1=\"118.0\" x2=\"400.0\" y2=\"131.0\"/><text x=\"400.0\" y=\"146.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".8\">14</text><text x=\"220.0\" y=\"164.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".85\">ruler / cm</text><rect x=\"127.4\" y=\"76.0\" width=\"218.6\" height=\"30\" rx=\"3\" class=\"accent shade\" stroke=\"currentColor\" stroke-width=\"1.8\"/><text x=\"236.7\" y=\"96.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"600\">metal rod</text><text x=\"127.4\" y=\"68.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"700\">3.4 cm</text><text x=\"346.0\" y=\"68.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"700\">11.9 cm</text></svg><div class=\"fig-cap\">The rod measured against the ruler</div></div>",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:8.5, tol:0.05, unit:"cm",
+          prompt:"Calculate the length of the rod, in cm.",
+          ms:[{p:"<b>8.5 cm.</b> The rod does not start at zero, so its length is the <b>difference</b> between the two readings: 11.9 &minus; 3.4 = <b>8.5 cm</b>. <span class=\"trap\">The trap:</span> writing 11.9 &mdash; the reading at the far end, which would only be the length if the rod began at the 0 cm mark. It plainly does not, and the diagram is what tells you so. <span class=\"trap\">A second trap:</span> 15.3, from adding the two readings. <span class=\"trap\">The habit:</span> on any scale reading, check where the object <i>starts</i> before you read where it ends. <span class=\"trap\">The check:</span> 3.4 + 8.5 = 11.9 &#10003;.", m:1, auto:true}]}
+      ]},
+
+    { n:10, kind:'parts',
+      stem:"<span class=\"subj phys\">Motion</span> A car speeds up steadily from <b>4.0 m/s</b> to <b>27.0 m/s</b> in <b>9.0 s</b>.",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:2.6, tol:0, unit:"m/s&#178;",
+          prompt:"Calculate its acceleration, <b>correct to 1 decimal place</b>, in m/s&#178;.",
+          ms:[{p:"<b>2.6 m/s&#178;.</b> <i>a</i> = &#916;<i>v</i> &divide; &#916;<i>t</i>, and &#916;<i>v</i> is the <b>change</b> in speed: 27.0 &minus; 4.0 = 23.0 m/s. So <i>a</i> = 23.0 &divide; 9.0 = 2.5556&hellip;, which to 1 decimal place is <b>2.6</b>. <span class=\"trap\">This is the one item on this drill marked to the exact rounding demanded</span> &mdash; the box accepts 2.6 and nothing else. <span class=\"trap\">The trap:</span> writing 2.5 &mdash; chopping the decimal off instead of rounding it; 2.5556 is nearer 2.6 than 2.5. <span class=\"trap\">A second trap:</span> 27.0 &divide; 9.0 = 3.0, using the <i>final</i> speed instead of the change. Dropping a printed rounding instruction is the mark lost on Q13(c) of <i>Mathematics Topic 1 Graded Paper &ndash; Number</i>. <span class=\"trap\">The check:</span> 2.5556 &times; 9.0 = 23.0 m/s, and 4.0 + 23.0 = 27.0 m/s &#10003;.", m:1, auto:true}]}
+      ]},
+
+    { n:11, kind:'parts',
+      stem:"<span class=\"subj phys\">Motion</span> The speed&ndash;time graph shows a train setting off. The region under the first <b>10 s</b> has been shaded.<div class=\"fig\"><svg viewBox=\"0 0 430 310\" role=\"img\" aria-label=\"A speed-time graph rising from the origin to 15 metres per second at 10 seconds and then staying level to 18 seconds, with the region under the first 10 seconds shaded\"><line class=\"grid-line\" x1=\"58.0\" y1=\"26.0\" x2=\"58.0\" y2=\"264.0\"/><text x=\"58.0\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">0</text><line class=\"grid-line\" x1=\"93.6\" y1=\"26.0\" x2=\"93.6\" y2=\"264.0\"/><text x=\"93.6\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">2</text><line class=\"grid-line\" x1=\"129.2\" y1=\"26.0\" x2=\"129.2\" y2=\"264.0\"/><text x=\"129.2\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">4</text><line class=\"grid-line\" x1=\"164.8\" y1=\"26.0\" x2=\"164.8\" y2=\"264.0\"/><text x=\"164.8\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">6</text><line class=\"grid-line\" x1=\"200.4\" y1=\"26.0\" x2=\"200.4\" y2=\"264.0\"/><text x=\"200.4\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">8</text><line class=\"grid-line\" x1=\"236.0\" y1=\"26.0\" x2=\"236.0\" y2=\"264.0\"/><text x=\"236.0\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">10</text><line class=\"grid-line\" x1=\"271.6\" y1=\"26.0\" x2=\"271.6\" y2=\"264.0\"/><text x=\"271.6\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">12</text><line class=\"grid-line\" x1=\"307.2\" y1=\"26.0\" x2=\"307.2\" y2=\"264.0\"/><text x=\"307.2\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">14</text><line class=\"grid-line\" x1=\"342.8\" y1=\"26.0\" x2=\"342.8\" y2=\"264.0\"/><text x=\"342.8\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">16</text><line class=\"grid-line\" x1=\"378.4\" y1=\"26.0\" x2=\"378.4\" y2=\"264.0\"/><text x=\"378.4\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">18</text><line class=\"grid-line\" x1=\"414.0\" y1=\"26.0\" x2=\"414.0\" y2=\"264.0\"/><text x=\"414.0\" y=\"280.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".75\">20</text><line class=\"grid-line\" x1=\"58.0\" y1=\"264.0\" x2=\"414.0\" y2=\"264.0\"/><text x=\"51.0\" y=\"268.0\" font-size=\"10\" text-anchor=\"end\" font-weight=\"400\" opacity=\".75\">0</text><line class=\"grid-line\" x1=\"58.0\" y1=\"204.5\" x2=\"414.0\" y2=\"204.5\"/><text x=\"51.0\" y=\"208.5\" font-size=\"10\" text-anchor=\"end\" font-weight=\"400\" opacity=\".75\">5</text><line class=\"grid-line\" x1=\"58.0\" y1=\"145.0\" x2=\"414.0\" y2=\"145.0\"/><text x=\"51.0\" y=\"149.0\" font-size=\"10\" text-anchor=\"end\" font-weight=\"400\" opacity=\".75\">10</text><line class=\"grid-line\" x1=\"58.0\" y1=\"85.5\" x2=\"414.0\" y2=\"85.5\"/><text x=\"51.0\" y=\"89.5\" font-size=\"10\" text-anchor=\"end\" font-weight=\"400\" opacity=\".75\">15</text><line class=\"grid-line\" x1=\"58.0\" y1=\"26.0\" x2=\"414.0\" y2=\"26.0\"/><text x=\"51.0\" y=\"30.0\" font-size=\"10\" text-anchor=\"end\" font-weight=\"400\" opacity=\".75\">20</text><line class=\"axis\" x1=\"58.0\" y1=\"264.0\" x2=\"414.0\" y2=\"264.0\"/><line class=\"axis\" x1=\"58.0\" y1=\"264.0\" x2=\"58.0\" y2=\"26.0\"/><text x=\"236.0\" y=\"302.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"400\">time / s</text><text x=\"14\" y=\"145.0\" font-size=\"11\" text-anchor=\"middle\" transform=\"rotate(-90 14 145.0)\">speed / (m/s)</text><polygon class=\"plot shade\" points=\"58.0,264.0 58.0,264.0 236.0,85.5 236.0,264.0\" style=\"stroke:none\"/><polyline class=\"plot\" points=\"58.0,264.0 236.0,85.5 378.4,85.5\" fill=\"none\" stroke-width=\"2.6\"/></svg><div class=\"fig-cap\">Speed&ndash;time graph for the train</div></div>",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:75, tol:0.5, unit:"m",
+          prompt:"Calculate the distance the train travels in the first <b>10 s</b>, in m.",
+          ms:[{p:"<b>75 m.</b> Distance is the <b>area</b> under a speed&ndash;time graph. For the first 10 s that area is a triangle of base 10 s and height 15 m/s: &frac12; &times; 10 &times; 15 = <b>75 m</b>. <span class=\"trap\">The trap:</span> 150 &mdash; forgetting the &frac12; and treating the triangle as a rectangle. That is the area the train <i>would</i> cover if it had travelled at 15 m/s for the whole 10 s, and it starts from rest. <span class=\"trap\">A second trap:</span> writing 15, the speed read straight off the axis, on a question asking for a distance. <span class=\"trap\">The habit:</span> name the shape of the area before you calculate it. <span class=\"trap\">The check:</span> the train&rsquo;s average speed over those 10 s is (0 + 15) &divide; 2 = 7.5 m/s, and 7.5 &times; 10 = 75 m &#10003; &mdash; the same answer by a different route.", m:1, auto:true}]}
+      ]},
+
+    { n:12, kind:'parts',
+      stem:"<span class=\"subj phys\">Sound</span> A student standing <b>84 m</b> from a wall claps once. She hears the echo <b>0.50 s</b> later.<div class=\"fig\"><svg viewBox=\"0 0 440 210\" role=\"img\" aria-label=\"A student standing 84 metres from a wall, with one arrow showing the clap travelling out to the wall and a second arrow showing the echo coming back\"><line class=\"axis\" x1=\"30.0\" y1=\"156.0\" x2=\"410.0\" y2=\"156.0\" stroke-width=\"2\"/><rect class=\"plot shade\" x=\"380.0\" y=\"60.0\" width=\"26.0\" height=\"96.0\" rx=\"3\" fill=\"currentColor\" fill-opacity=\".16\" stroke=\"currentColor\" stroke-width=\"1.6\"/><text x=\"393.0\" y=\"50.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".9\">wall</text><circle class=\"accent\" cx=\"66.0\" cy=\"94.0\" r=\"11.0\" fill=\"currentColor\"/><line class=\"accent\" x1=\"66.0\" y1=\"105.0\" x2=\"66.0\" y2=\"134.0\" stroke-width=\"2.2\"/><line class=\"accent\" x1=\"66.0\" y1=\"134.0\" x2=\"55.0\" y2=\"156.0\" stroke-width=\"2.2\"/><line class=\"accent\" x1=\"66.0\" y1=\"134.0\" x2=\"77.0\" y2=\"156.0\" stroke-width=\"2.2\"/><line class=\"plot\" x1=\"84.0\" y1=\"68.0\" x2=\"374.0\" y2=\"68.0\" stroke-width=\"2.2\"/><polygon class=\"plot\" points=\"374.0,68.0 367.6,70.9 367.6,65.1\" fill=\"currentColor\" stroke=\"none\"/><line class=\"plot\" x1=\"374.0\" y1=\"122.0\" x2=\"84.0\" y2=\"122.0\" stroke-width=\"2.2\"/><polygon class=\"plot\" points=\"84.0,122.0 90.4,119.1 90.4,124.9\" fill=\"currentColor\" stroke=\"none\"/><text x=\"223.0\" y=\"60.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".85\">clap travels out</text><text x=\"223.0\" y=\"114.0\" font-size=\"10\" text-anchor=\"middle\" font-weight=\"400\" opacity=\".85\">echo comes back</text><line class=\"grid-line\" x1=\"66.0\" y1=\"182.0\" x2=\"380.0\" y2=\"182.0\" stroke-width=\"2.2\"/><polygon class=\"grid-line\" points=\"380.0,182.0 374.5,184.4 374.5,179.6\" fill=\"currentColor\" stroke=\"none\"/><line class=\"grid-line\" x1=\"380.0\" y1=\"182.0\" x2=\"66.0\" y2=\"182.0\" stroke-width=\"2.2\"/><polygon class=\"grid-line\" points=\"66.0,182.0 71.5,179.6 71.5,184.4\" fill=\"currentColor\" stroke=\"none\"/><text x=\"223.0\" y=\"198.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"400\">84 m</text></svg><div class=\"fig-cap\">The clap and its echo</div></div>",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:336, tol:0.6, unit:"m/s",
+          prompt:"Calculate the speed of sound, in m/s.",
+          ms:[{p:"<b>336 m/s.</b> In 0.50 s the sound travels <b>to the wall and back</b>, so it covers 2 &times; 84 = 168 m. Speed = distance &divide; time = 168 &divide; 0.50 = <b>336 m/s</b>. <span class=\"trap\">The trap:</span> 84 &divide; 0.50 = 168 &mdash; using the one-way distance and getting exactly half the right answer. The arrows on the diagram show both legs of the journey. <span class=\"trap\">A second trap:</span> 0.50 &divide; 168 = 0.003, the division inverted. <span class=\"trap\">The habit:</span> on any echo question, write &ldquo;distance = 2 &times; &hellip;&rdquo; before anything else. <span class=\"trap\">The check:</span> the speed of sound in air is about 330&ndash;340 m/s, so 336 is right and 168 is plainly not &#10003;.", m:1, auto:true}]}
+      ]},
+
+    { n:13, kind:'parts',
+      stem:"<span class=\"subj phys\">Work &amp; power</span> A lift of mass <b>450 kg</b> carries a person of mass <b>70 kg</b> upwards through <b>24 m</b> in <b>30 s</b>. Take <i>g</i> = <b>10 N/kg</b>.<div class=\"fig\"><svg viewBox=\"0 0 340 290\" role=\"img\" aria-label=\"A lift of mass 450 kilograms containing a person of mass 70 kilograms, being raised through a height of 24 metres\"><line class=\"axis\" x1=\"116.0\" y1=\"30.0\" x2=\"248.0\" y2=\"30.0\" stroke-width=\"3\"/><line class=\"plot\" x1=\"182.0\" y1=\"30.0\" x2=\"182.0\" y2=\"64.0\" stroke-width=\"2\"/><rect class=\"plot shade\" x=\"130.0\" y=\"64.0\" width=\"104.0\" height=\"84.0\" rx=\"3\" fill=\"currentColor\" fill-opacity=\".13\" stroke=\"currentColor\" stroke-width=\"1.8\"/><text x=\"182.0\" y=\"100.0\" font-size=\"12\" text-anchor=\"middle\" font-weight=\"700\">lift 450 kg</text><text x=\"182.0\" y=\"120.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"400\">person 70 kg</text><line class=\"axis\" x1=\"92.0\" y1=\"236.0\" x2=\"272.0\" y2=\"236.0\" stroke-width=\"2\"/><line class=\"grid-line\" x1=\"106.0\" y1=\"64.0\" x2=\"106.0\" y2=\"236.0\" stroke-width=\"2.2\"/><polygon class=\"grid-line\" points=\"106.0,236.0 103.6,230.5 108.4,230.5\" fill=\"currentColor\" stroke=\"none\"/><line class=\"grid-line\" x1=\"106.0\" y1=\"236.0\" x2=\"106.0\" y2=\"64.0\" stroke-width=\"2.2\"/><polygon class=\"grid-line\" points=\"106.0,64.0 108.4,69.5 103.6,69.5\" fill=\"currentColor\" stroke=\"none\"/><text x=\"106.0\" y=\"150.0\" font-size=\"11\" text-anchor=\"middle\" font-weight=\"400\"></text><text x=\"98.0\" y=\"150.0\" font-size=\"11\" text-anchor=\"end\" font-weight=\"400\">24 m</text><line class=\"accent\" x1=\"256.0\" y1=\"226.0\" x2=\"256.0\" y2=\"72.0\" stroke-width=\"2.2\"/><polygon class=\"accent\" points=\"256.0,72.0 258.9,78.4 253.1,78.4\" fill=\"currentColor\" stroke=\"none\"/><text x=\"266.0\" y=\"139.0\" font-size=\"11\" text-anchor=\"start\" font-weight=\"400\" opacity=\".85\">up</text></svg><div class=\"fig-cap\">The lift and its passenger</div></div>",
+      parts:[
+        { label:'', kind:'numeric', marks:1, ans:4160, tol:5, unit:"W",
+          prompt:"Calculate the useful power output of the motor, in W.",
+          ms:[{p:"<b>4160 W.</b> Four steps, and the first is where the mark is won or lost. <b>(1)</b> The motor lifts the lift <i>and</i> the person: total mass = 450 + 70 = <b>520 kg</b>. <b>(2)</b> Total weight = <i>mg</i> = 520 &times; 10 = 5200 N. <b>(3)</b> Work done = <i>Fd</i> = 5200 &times; 24 = 124 800 J. <b>(4)</b> Power = work &divide; time = 124 800 &divide; 30 = <b>4160 W</b>. <span class=\"trap\">The trap:</span> using 450 kg alone, which gives 3600 W &mdash; leaving out part of what is being lifted. The person is drawn inside the lift for exactly this reason. <span class=\"trap\">A second trap:</span> writing 124 800, the work done, into a box asking for a power. <span class=\"trap\">The habit:</span> write all four lines down. On Q9(b) of <i>Mathematics Topic 6 Graded Paper &ndash; Trigonometry</i> a single slip cost <b>two</b> marks rather than one, purely because there was no working on the page for a method mark to be awarded to. <span class=\"trap\">The check:</span> 4160 W &times; 30 s = 124 800 J &#10003;.", m:1, auto:true}]}
+      ]},
+  ]
+};
+
+/* ---- where graded submissions are sent ----
+   Google Apps Script web-app /exec URL. Empty string = no endpoint configured, so a
+   graded paper falls back to the student downloading the answer packet. When set, a
+   graded paper auto-sends the student's answers to the teacher's Drive on submit and
+   keeps the download button as a manual backup. If the send can't be confirmed (e.g.
+   offline), the paper automatically downloads a backup copy to the student's device. */
+const SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec';
+
+/* ---- derive section labels & totals ---- */
+const TOTAL = PAPER.questions.reduce((s,q)=> s + (q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0)), 0);
+/* GRADED = teacher-marked exam: no answer key in this file, nothing revealed to the student.
+   On submit the student only downloads their answers to send to the teacher. Set PAPER.graded = true. */
+const GRADED = !!PAPER.graded;
+/* A paper is fully auto-markable when it has NO subjective (text) answers — every part is MCQ or numeric.
+   A GRADED paper is never auto-marked here (it has no key), so it is treated as not-fully-auto. */
+const FULLY_AUTO = !GRADED && !PAPER.questions.some(q => q.kind==='parts' && q.parts.some(p => p.kind==='text'));
+
+/* ---- numeric answer parsing ----
+   Takes the FIRST number in what the student typed and ignores any trailing unit.
+   The old version stripped every non-digit, so "0.08 mol/dm3" kept the 3 of "dm3"
+   and became 0.083 — a CORRECT answer marked wrong (and inconsistently: "0.0800
+   mol/dm3" became 0.08003, which passed). Also handles "9,000", "$20", "25°" and
+   scientific notation, all of which the old strip mangled. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[\u2212\u2012\u2013\u2014\u2015]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+/* ---- DOM helpers ---- */
+const $ = id => document.getElementById(id);
+function esc(){}
+function lines(n){ let h='<div class="print-lines">'; for(let i=0;i<n;i++) h+='<div class="ln"></div>'; return h+'</div>'; }
+
+/* ---- render questions ---- */
+function msMarkup(ms, idPrefix){
+  const head = FULLY_AUTO ? 'Worked answer' : 'Mark scheme';
+  let h = '<div class="ms'+(FULLY_AUTO?' solution':'')+'" id="'+idPrefix+'-ms"><div class="ms-head">'+head
+        + (FULLY_AUTO ? '' : '<span class="self-note">tick each point you earned</span>')
+        + '</div><div class="ms-body">';
+  ms.forEach((pt,i)=>{
+    if(FULLY_AUTO){
+      h += '<div class="ms-point read"><span class="pt">'+pt.p+'</span></div>';
+    } else if(pt.auto){
+      h += '<label class="ms-point auto"><input type="checkbox" data-m="'+pt.m+'" data-auto="1" disabled>'
+         + '<span class="pt">'+pt.p+'</span><span class="pm">'+pt.m+' mk</span><span class="lock">AUTO</span></label>';
+    } else {
+      h += '<label class="ms-point"><input type="checkbox" data-m="'+pt.m+'">'
+         + '<span class="pt">'+pt.p+'</span><span class="pm">'+pt.m+' mk</span></label>';
+    }
+  });
+  return h + '</div></div>';
+}
+
+function figMarkup(svg, cap){
+  return '<div class="fig">'+svg+(cap?'<div class="fig-cap">'+cap+'</div>':'')+'</div>';
+}
+
+/* uploaded diagram photos, keyed by part id (pid) → {dataUrl, name} */
+var DRAW_IMAGES = {};
+
+function render(){
+  const wrap = $('questions');
+  let html = '';
+  let inA=false, inB=false;
+  PAPER.questions.forEach(q=>{
+    // section dividers
+    if(q.kind==='mcq' && !inA){ inA=true;
+      html += '<div class="sec-head"><div class="sec-label">Warm-up</div><h2>One multiple-choice item</h2><div class="sec-sub">Every wrong option here comes from one specific slip. Work out which slip produces each one.</div></div>'; }
+    if(q.kind!=='mcq' && !inB){ inB=true;
+      html += '<div class="sec-head"><div class="sec-label">The drill</div><h2>Twelve numerical answers</h2><div class="sec-sub">One mark each, no partial credit. Type just the number — the unit is printed for you.</div></div>'; }
+
+    const qMarks = q.kind==='mcq' ? q.marks : q.parts.reduce((a,p)=>a+p.marks,0);
+    html += '<div class="q" id="q'+q.n+'">';
+    html += '<div class="q-head"><span class="q-no">'+q.n+'</span><div class="q-stem">'+(q.stem||'')+'</div><span class="marks">['+qMarks+']</span></div>';
+    if(q.ctx) html += '<div class="ctx">'+q.ctx+'</div>';
+    if(q.fig) html += figMarkup(q.fig, q.figCap);
+
+    if(q.kind==='mcq'){
+      html += '<ul class="opts" data-q="'+q.n+'">';
+      q.options.forEach((opt,i)=>{
+        const key = String.fromCharCode(65+i);
+        html += '<li><label class="opt" data-i="'+i+'"><input type="radio" name="q'+q.n+'" value="'+i+'">'
+              + '<span><span class="opt-key">'+key+'</span> '+opt+'</span><span class="verdict"></span></label></li>';
+      });
+      html += '</ul>';
+      if(!GRADED) html += msMarkup(q.ms, 'q'+q.n);
+    } else {
+      q.parts.forEach((p,pi)=>{
+        const pid = 'q'+q.n+'p'+pi;
+        html += '<div class="part" id="'+pid+'">';
+        html += '<div><span class="part-label">'+p.label+'</span><span class="part-prompt">'+p.prompt+'</span><span class="marks-inline">['+p.marks+']</span></div>';
+        if(p.fig) html += figMarkup(p.fig, p.figCap);
+        if(p.kind==='numeric'){
+          html += '<div class="num-row"><input class="num" type="text" inputmode="decimal" data-ans="'+p.ans+'" data-tol="'+(p.tol||0)+'" placeholder="answer">'
+                + (p.unit?'<span class="num-unit">'+p.unit+'</span>':'')
+                + '<span class="num-verdict"></span></div>';
+          html += lines(1);
+        } else if(p.kind==='draw'){
+          html += '<div class="draw-row" data-pid="'+pid+'">'
+                + '<div class="draw-note">'+(p.drawNote||'Draw your diagram on paper, then take a clear photo and upload it here.')+'</div>'
+                + '<label class="draw-pick">📷 Upload / take a photo'
+                + '<input type="file" accept="image/*" capture="environment" class="draw-in" data-pid="'+pid+'"></label>'
+                + '<div class="draw-preview" id="'+pid+'-prev"></div></div>';
+          html += '<div class="draw-box"></div>';   // printable blank for hand-drawing
+        } else {
+          html += '<textarea class="ans" rows="'+(p.lines||3)+'" placeholder="Type your answer…"></textarea>';
+          html += lines(p.lines||3);
+        }
+        if(!GRADED) html += msMarkup(p.ms, pid);
+        html += '</div>';
+      });
+    }
+    html += '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+/* ---- state & engine ---- */
+let started=false, graded=false, mode='timed', secs=0, timerId=null, startedAt=0;
+
+function fmt(s){ const m=Math.floor(s/60), ss=s%60; return m+':'+String(ss).padStart(2,'0'); }
+
+function updateProgress(){
+  let done=0, tot=0;
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq'){ tot++; if(document.querySelector('input[name="q'+q.n+'"]:checked')) done++; }
+    else q.parts.forEach((p,pi)=>{ tot++;
+      const pid = 'q'+q.n+'p'+pi;
+      if(p.kind==='draw'){ if(DRAW_IMAGES[pid]) done++; return; }
+      const root = $(pid);
+      const f = root.querySelector('textarea.ans, input.num');
+      if(f && f.value.trim()!=='') done++;
+    });
+  });
+  $('progDone').textContent=done; $('progTot').textContent=tot;
+}
+
+function start(m){
+  if(started) return;
+  started=true; mode=m; graded=false;
+  $('front').classList.add('started');   // keep data + formulas visible during the paper
+  $('questions').classList.remove('locked');
+  setInputsEnabled(true);
+  $('examBar').classList.add('show');
+  $('modeTag').textContent = m==='timed' ? 'TIMED' : 'PRACTICE';
+  startedAt = performance.now();
+  if(m==='timed'){
+    secs = PAPER.duration*60;
+    $('timeLeft').textContent = fmt(secs);
+    timerId = setInterval(tick, 1000);
+  } else {
+    $('timeLeft').textContent = '∞';
+    $('btnSubmit').textContent = GRADED ? 'Finish & submit' : 'Finish & mark';
+    document.querySelector('.exam-bar .timer .lbl').textContent='NO LIMIT';
+  }
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function tick(){
+  secs--;
+  $('timeLeft').textContent = fmt(Math.max(0,secs));
+  const bar=$('examBar');
+  bar.classList.toggle('warn', secs<=300 && secs>60);
+  bar.classList.toggle('danger', secs<=60);
+  if(secs<=0){ clearInterval(timerId); submit(true); }
+}
+
+function autoCheckNumeric(){
+  document.querySelectorAll('input.num').forEach(inp=>{
+    const ans=parseFloat(inp.dataset.ans), tol=parseFloat(inp.dataset.tol)||0;
+    const val=numOf(inp.value);
+    const ok = !isNaN(val) && Math.abs(val-ans)<=tol;
+    inp.classList.add(ok?'correct':'wrong');
+    const v=inp.parentElement.querySelector('.num-verdict');
+    v.textContent = ok ? '✓ correct' : ((inp.value.trim()==='')?'✗ no answer (ans: '+ans+')':'✗ (ans: '+ans+')');
+    v.style.color = ok ? 'var(--power)' : 'var(--force)';
+    // auto-tick the linked auto mark-scheme point
+    const part = inp.closest('.part');
+    const autoCb = part && part.querySelector('.ms-point.auto input[data-auto]');
+    if(autoCb){ autoCb.checked = ok; }
+  });
+}
+
+function gradeMCQ(){
+  PAPER.questions.filter(q=>q.kind==='mcq').forEach(q=>{
+    const chosen = document.querySelector('input[name="q'+q.n+'"]:checked');
+    const ci = chosen ? parseInt(chosen.value,10) : -1;
+    document.querySelectorAll('.opts[data-q="'+q.n+'"] .opt').forEach(opt=>{
+      const i=parseInt(opt.dataset.i,10);
+      opt.querySelector('input').disabled=true;
+      if(i===q.answer){ opt.classList.add('correct'); opt.querySelector('.verdict').textContent='✓ correct'; }
+      if(i===ci && ci!==q.answer){ opt.classList.add('wrong'); opt.querySelector('.verdict').textContent='✗ your answer'; }
+    });
+    // auto-tick the auto mark-scheme point
+    const cb = document.querySelector('#q'+q.n+'-ms .ms-point.auto input[data-auto]');
+    if(cb) cb.checked = (ci===q.answer);
+  });
+}
+
+function computeScore(){
+  let auto=0, self=0;
+  if(FULLY_AUTO){
+    PAPER.questions.forEach(q=>{
+      if(q.kind==='mcq'){
+        const chosen=document.querySelector('input[name="q'+q.n+'"]:checked');
+        if(chosen && parseInt(chosen.value,10)===q.answer) auto+=q.marks;
+      } else {
+        q.parts.forEach((p,pi)=>{
+          const inp=$('q'+q.n+'p'+pi).querySelector('input.num');
+          if(!inp) return;
+          const ans=parseFloat(inp.dataset.ans), tol=parseFloat(inp.dataset.tol)||0;
+          const val=numOf(inp.value);
+          if(!isNaN(val) && Math.abs(val-ans)<=tol) auto+=p.marks;
+        });
+      }
+    });
+  } else {
+    document.querySelectorAll('.ms-point input:checked').forEach(cb=>{
+      const m=Number(cb.dataset.m);
+      if(cb.dataset.auto) auto+=m; else self+=m;
+    });
+  }
+  const total=auto+self;
+  $('scoreNum').textContent=total;
+  $('autoMarked').textContent=auto;
+  $('selfMarked').textContent=self;
+  const pct=Math.round(total/TOTAL*100);
+  $('scorePct').textContent=pct+'%';
+  $('scoreBand').textContent=band(pct);
+  return total;
+}
+
+/* NO grade equivalence on this file — deliberately. This is a 13-item, all-or-nothing
+   trap drill, so each band would be under 8 percentage points wide and a score here
+   predicts nothing about a grade. Mapping it to "Grade 3 / D–E" would be both
+   statistically meaningless and the opposite of what the drill is for. */
+function band(p){
+  if(p>=100) return 'Clean sweep — every demand read exactly';
+  if(p>=75) return 'Strong — a couple of traps worth re-reading';
+  if(p>=50) return 'Half the traps caught — the worked answers show the rest';
+  return 'This is exactly what the drill is for — read every worked answer below';
+}
+
+function submit(auto){
+  if(graded) return;
+  if(!auto && mode==='timed'){
+    const q = GRADED ? 'Submit the paper now? You will not be able to change your answers.'
+                     : 'Submit and mark the paper now? You will not be able to change your answers.';
+    if(!confirm(q)) return;
+  }
+  graded=true;
+  if(timerId){ clearInterval(timerId); timerId=null; }
+
+  // time taken
+  const elapsed = (performance.now()-startedAt)/1000;
+  $('timeTaken').textContent = mode==='timed'
+    ? fmt(Math.max(0, Math.round(PAPER.duration*60 - secs)))
+    : fmt(Math.round(elapsed));
+
+  // lock inputs
+  document.querySelectorAll('textarea.ans, input.num, .draw-in').forEach(f=>f.disabled=true);
+  document.querySelectorAll('.draw-clear').forEach(b=>b.style.display='none');
+
+  // GRADED (teacher-marked): no key in this file — reveal nothing, show only the "submitted" card.
+  if(GRADED){
+    document.querySelectorAll('.opts input[type="radio"]').forEach(r=>r.disabled=true);
+    $('results').classList.add('show');
+    $('btnSubmit').textContent='✓ Submitted';
+    $('btnSubmit').disabled=true;
+    $('examBar').classList.remove('warn','danger');
+    sendSubmission();
+    $('results').scrollIntoView({behavior:'smooth'});
+    return;
+  }
+
+  gradeMCQ();
+  autoCheckNumeric();
+
+  // reveal all mark schemes
+  document.querySelectorAll('.ms').forEach(ms=>ms.classList.add('show'));
+
+  // enable self-mark recompute
+  document.querySelectorAll('.ms-point input:not([disabled])').forEach(cb=>{
+    cb.addEventListener('change', computeScore);
+  });
+
+  $('scoreDen').textContent=TOTAL;
+  var _score = computeScore();
+  if(!RESTORING) freezeAttempt(_score);   // finished attempt becomes a permanent report
+
+  $('results').classList.add('show');
+  $('btnSubmit').textContent='✓ Submitted';
+  $('btnSubmit').disabled=true;
+  $('examBar').classList.remove('warn','danger');
+  if(!RESTORING) setTimeout(function(){ $('results').scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
+}
+
+/* ---- export answers for teacher AI-marking ---- */
+function stripTags(s){
+  return (s||'').replace(/<[^>]+>/g,'')
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+    .replace(/&deg;/g,'°').replace(/\s+/g,' ').trim();
+}
+function buildMarkingExport(){
+  let out=(GRADED?'EXAM PAPER — STUDENT ANSWERS (for the teacher to grade)':'PRACTICE PAPER — ANSWERS FOR MARKING')+'\n';
+  out+='Paper: '+document.title+'\n';
+  out+='Marks available: '+TOTAL+'\n';
+  out+='='.repeat(64)+'\n\n';
+  PAPER.questions.forEach(q=>{
+    if(q.kind==='mcq'){
+      const chosen=document.querySelector('input[name="q'+q.n+'"]:checked');
+      const ci=chosen?parseInt(chosen.value,10):-1;
+      out+='Q'+q.n+'  (MCQ, '+q.marks+' mark)\n'+stripTags(q.stem)+'\n';
+      q.options.forEach((o,i)=>{ out+='   '+String.fromCharCode(65+i)+') '+stripTags(o)+'\n'; });
+      out+='   STUDENT ANSWER: '+(ci>=0?String.fromCharCode(65+ci):'(blank)')+'\n';
+      if(!GRADED) out+='   CORRECT: '+String.fromCharCode(65+q.answer)+'\n';
+      out+='\n';
+    } else {
+      out+='Q'+q.n+'  '+stripTags(q.stem||'')+'\n';
+      if(q.ctx) out+='   ['+stripTags(q.ctx)+']\n';
+      q.parts.forEach((p,pi)=>{
+        const pid='q'+q.n+'p'+pi;
+        const root=$(pid);
+        let val;
+        if(p.kind==='draw'){
+          val = DRAW_IMAGES[pid] ? '[diagram photo attached: '+(DRAW_IMAGES[pid].name||pid)+']' : '(no diagram uploaded)';
+        } else {
+          const f=root?root.querySelector('textarea.ans, input.num'):null;
+          val=f?f.value.trim():'';
+        }
+        out+='  '+p.label+' ('+p.marks+' mk) '+stripTags(p.prompt)+'\n';
+        out+='     STUDENT ANSWER: '+(val||'(blank)')+'\n';
+        if(!GRADED) out+='     MARK SCHEME: '+p.ms.map(m=>stripTags(m.p)+' ['+m.m+']').join('  |  ')+'\n';
+        out+='\n';
+      });
+    }
+  });
+  out+='='.repeat(64)+'\n';
+  if(GRADED){
+    out+='FOR THE TEACHER: grade these answers against your own answer key for this paper.\n';
+    out+='(No mark scheme is included in this file — that is by design.)\n';
+  } else {
+    out+='FOR THE MARKER (AI): award marks strictly per each MARK SCHEME.\n';
+    out+='For every part give marks awarded / max, which points were met, and one line of feedback.\n';
+    out+='End with TOTAL / '+TOTAL+' and a percentage. Do NOT give a grade — this is a precision drill, not a graded paper.\n';
+  }
+  return out;
+}
+/* ---- auto-send a graded submission to the teacher's Drive endpoint ---- */
+function sendSubmission(){
+  if(!SUBMIT_ENDPOINT) return;                 // not configured → student uses the download button
+  var images = Object.keys(DRAW_IMAGES).map(function(pid){ return { part:pid, name:DRAW_IMAGES[pid].name, dataUrl:DRAW_IMAGES[pid].dataUrl }; });
+  var payload = JSON.stringify({ title:document.title, submittedAt:new Date().toISOString(), packet:buildMarkingExport(), images:images });
+  try{ localStorage.setItem('lastSubmission:'+document.title, payload); }catch(e){}   // local backup
+  var st=$('sendStatus');
+  // CORS mode (NOT no-cors) so we can READ the server's reply and show success ONLY when the
+  // file was actually saved. Apps Script returns Access-Control-Allow-Origin:* on /exec and its
+  // redirect, and a text/plain body is a CORS-safelisted request (no preflight is triggered).
+  fetch(SUBMIT_ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:payload})
+    .then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.text(); })
+    .then(function(t){
+      var ok=false;
+      try{ ok = (JSON.parse(t).ok===true); }catch(e){ ok = /(^|[^a-z])ok([^a-z]|$)/i.test(t||''); }  // accept {"ok":true} or legacy "ok"
+      if(!ok) throw new Error('server did not confirm');
+      if(st) st.textContent='✅ Confirmed — your answers have been received by your teacher.';
+    })
+    .catch(function(){
+      try{ downloadAnswers(); }catch(e){}                          // bonus: auto-save a copy to the student's device so answers are never lost if the send failed
+      if(st) st.innerHTML='⚠ <b>Not confirmed.</b> We could not confirm your answers were received, so a backup copy has been <b>downloaded to this device automatically</b> — please send that file to your teacher. (If it didn’t download, tap “⬇ Download a backup copy” below.)';
+      var d=$('downloadBtn'); if(d) d.style.display='';            // keep the manual fallback button visible too
+    });
+}
+function downloadAnswers(){
+  const blob=new Blob([buildMarkingExport()],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=document.title.replace(/[:\\/?*"<>|]/g,' -')+' — answers.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ---- diagram photo upload (downscale in-browser, keep payload small) ---- */
+function handleDrawFile(input){
+  var pid = input.dataset.pid;
+  var file = input.files && input.files[0];
+  if(!file){ return; }
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var img = new Image();
+    img.onload = function(){
+      var max = 1400, w = img.width, h = img.height;
+      if(w > max || h > max){ var s = Math.min(max/w, max/h); w = Math.round(w*s); h = Math.round(h*s); }
+      var c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      var dataUrl;
+      try { dataUrl = c.toDataURL('image/jpeg', 0.82); }
+      catch(e){ dataUrl = ev.target.result; }   // fallback to original
+      DRAW_IMAGES[pid] = { dataUrl: dataUrl, name: file.name || (pid+'.jpg') };
+      var prev = $(pid+'-prev');
+      if(prev){
+        prev.classList.add('show');
+        prev.innerHTML = '<img src="'+dataUrl+'" alt="your diagram">'
+          + '<div class="draw-meta">'+ (file.name||'photo') +' · uploaded</div>'
+          + '<button type="button" class="draw-clear" data-pid="'+pid+'">remove</button>';
+      }
+      if(!graded && started) updateProgress();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function clearDrawFile(pid){
+  delete DRAW_IMAGES[pid];
+  var prev = $(pid+'-prev'); if(prev){ prev.classList.remove('show'); prev.innerHTML=''; }
+  var inp = document.querySelector('.draw-in[data-pid="'+pid+'"]'); if(inp) inp.value='';
+  if(!graded && started) updateProgress();
+}
+
+/* ---- wire up ---- */
+render();
+function setInputsEnabled(on){ document.querySelectorAll('.opt input, textarea.ans, input.num, .draw-in').forEach(f=>{ f.disabled=!on; }); }
+$('questions').classList.add('locked');
+setInputsEnabled(false);
+if(FULLY_AUTO){
+  var _db=$('downloadBtn'); if(_db) _db.style.display='none';
+  var _sr=$('selfRow'); if(_sr) _sr.style.display='none';
+  var _dc=document.querySelector('.disclaimer');
+  if(_dc) _dc.textContent='This drill is marked automatically. It is a 13-item precision check, not a graded paper — the score counts traps caught, and says nothing about a grade.';
+}
+if(GRADED){
+  document.body.classList.add('graded');
+  var _sp=$('startPractice'); if(_sp) _sp.style.display='none';    // graded: timed exam only, no practice mode
+  var _stt=$('startTimed'); if(_stt) _stt.textContent='▶ Start exam';
+  var _sw=$('scoreWrap'); if(_sw) _sw.style.display='none';        // hide score / breakdown
+  var _rt=$('resultsTitle'); if(_rt) _rt.textContent='Paper submitted';
+  var _rv=$('reviewBtn'); if(_rv) _rv.style.display='none';        // nothing to review
+  var _dc2=document.querySelector('.disclaimer'); if(_dc2) _dc2.style.display='none';
+  var _gd=$('downloadBtn');
+  if(SUBMIT_ENDPOINT){
+    if(_gd){ _gd.style.display=''; _gd.textContent='⬇ Download a backup copy'; }   // ALWAYS offer a manual backup: mode:'no-cors' can't confirm the save, so "submitted" is never proof
+    var _sm=$('submittedMsg');
+    if(_sm) _sm.innerHTML='✅ <b>Paper submitted.</b> <span id="sendStatus">Submitting your answers…</span>';
+  } else {
+    if(_gd) _gd.textContent='⬇ Download your answers';            // fallback → manual download + send
+  }
+}
+$('metaTime').textContent = PAPER.duration+' minutes';
+$('metaMarks').textContent = TOTAL+' marks';
+$('scoreDen').textContent = TOTAL;
+$('timeLeft').textContent = fmt(PAPER.duration*60);
+updateProgress();
+
+document.addEventListener('input', e=>{ if(!graded && started) updateProgress(); });
+document.addEventListener('change', e=>{
+  if(e.target && e.target.classList && e.target.classList.contains('draw-in')){ handleDrawFile(e.target); return; }
+  if(!graded && started) updateProgress();
+});
+document.addEventListener('click', e=>{
+  if(e.target && e.target.classList && e.target.classList.contains('draw-clear')){ clearDrawFile(e.target.dataset.pid); }
+});
+
+$('startTimed').addEventListener('click', ()=>start('timed'));
+$('startPractice').addEventListener('click', ()=>start('practice'));
+$('btnSubmit').addEventListener('click', ()=>submit(false));
+$('printBtn').addEventListener('click', ()=>window.print());
+$('printBtn2').addEventListener('click', ()=>window.print());
+$('reviewBtn').addEventListener('click', ()=>$('questions').scrollIntoView({behavior:'smooth'}));
+/* ---- TEACHER-ONLY RESET --------------------------------------------------
+   A finished drill is a record, not a reusable blank. Clearing it and retaking
+   is a teacher action, not a student one, so the retake button is hidden unless
+   the page is opened with the teacher marker in the URL (#teacher or ?teacher).
+   Nothing is stored, so a student's device never becomes "teacher" by accident;
+   the marker names no secret, so reading the source grants a student nothing. */
+var IS_TEACHER = /teacher/i.test(location.hash) || /teacher/i.test(location.search);
+(function(){ var rt=$('retakeBtn'); if(rt && !IS_TEACHER) rt.style.display='none'; })();
+$('retakeBtn').addEventListener('click', function(){
+  if(!IS_TEACHER){ alert('Only your teacher can reset this drill.'); return; }
+  if(!DNUM){ location.reload(); return; }
+  if(!confirm('Clear the saved report and take this drill again?\n\nThe report from your last attempt will be replaced.')) return;
+  var p=progLoad(); p[TICK_ID]=false; p[REP_ID]=null; progSave(p);
+  var done=function(){ location.reload(); };
+  if(!SUBMIT_ENDPOINT){ done(); return; }
+  var patch={}; patch[TICK_ID]=false; patch[REP_ID]=null;
+  fetch(SUBMIT_ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify({type:'progress',data:patch})}).then(done, done);
+});
+$('downloadBtn').addEventListener('click', downloadAnswers);
+
+/* ---- FROZEN REPORT -----------------------------------------------------------
+   A finished drill is a record, not a reusable blank. On submit we save her raw
+   answers; on every later open we replay them through the SAME grading path, so
+   the report she reopens is identical to the one she saw when she finished.
+   We deliberately store ANSWERS, never a rendered snapshot -- a snapshot would
+   drift the moment the marking code changed.
+
+   It lives in the shared 'studyProgress' object so the tick and the score reach
+   the hub and her other device. It is kept COMPACT on purpose: the Apps Script
+   record is one ScriptProperties value (9KB ceiling, ~0.5KB used today), so the
+   answers are a single pipe-joined positional string, not a per-question object. */
+var RESTORING = false;
+var PKEY = 'studyProgress';
+var DNUM = (function(){
+  var m = /precision-drill-(\d+)/i.exec(location.pathname);
+  if(!m) m = /Precision Drill\s+(\d+)/i.exec(document.title);   // fall back to the title, so a rename can't silently disable freezing
+  return m ? m[1] : null;
+})();
+var TICK_ID = 'drill:' + DNUM, REP_ID = 'drillRep:' + DNUM;
+
+function progLoad(){ try { return JSON.parse(localStorage.getItem(PKEY) || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem(PKEY, JSON.stringify(o)); } catch(e){} }
+
+/* One slot per MCQ and per part, in paper order. A published drill never changes,
+   so position is a stable key -- and a length mismatch means it did, so we bail
+   rather than paste her answers against the wrong questions. */
+function answerSlots(){
+  var s = [];
+  PAPER.questions.forEach(function(q){
+    if(q.kind === 'mcq') s.push({ mcq: q.n });
+    else q.parts.forEach(function(p, pi){ s.push({ part: 'q' + q.n + 'p' + pi }); });
+  });
+  return s;
+}
+function collectAnswers(){
+  return answerSlots().map(function(s){
+    if(s.mcq != null){
+      var c = document.querySelector('input[name="q' + s.mcq + '"]:checked');
+      return c ? c.value : '';
+    }
+    var root = $(s.part), f = root && root.querySelector('input.num, textarea.ans');
+    return encodeURIComponent(f ? f.value : '');
+  }).join('|');
+}
+function applyAnswers(str){
+  var vals = String(str == null ? '' : str).split('|'), sl = answerSlots();
+  if(vals.length !== sl.length) return false;
+  for(var i = 0; i < sl.length; i++){
+    var s = sl[i], v = vals[i];
+    if(s.mcq != null){
+      if(v === '') continue;
+      var r = document.querySelector('input[name="q' + s.mcq + '"][value="' + v + '"]');
+      if(r) r.checked = true;
+    } else {
+      var root = $(s.part), f = root && root.querySelector('input.num, textarea.ans');
+      if(f){ try { f.value = decodeURIComponent(v); } catch(e){ f.value = v; } }
+    }
+  }
+  return true;
+}
+
+/* Save the finished attempt. The shared record is written MERGE-ONLY: a full
+   snapshot from here would wipe ticks this device has not pulled yet. */
+function freezeAttempt(score){
+  if(!DNUM) return;
+  var rep = { v:1, s:score, t:TOTAL, md:mode, tm:$('timeTaken').textContent,
+              d:new Date().toISOString().slice(0,10), a:collectAnswers() };
+  var p = progLoad(); p[TICK_ID] = true; p[REP_ID] = rep; progSave(p);
+  if(!SUBMIT_ENDPOINT) return;
+  var patch = {}; patch[TICK_ID] = true; patch[REP_ID] = rep;
+  fetch(SUBMIT_ENDPOINT, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+  /* Full per-question detail to the teacher's Drive folder -- the hub only ever
+     carries a score, and a score does not say WHICH trap was missed. */
+  try {
+    fetch(SUBMIT_ENDPOINT, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ title: document.title + ' (score ' + score + '/' + TOTAL + ')',
+                             submittedAt: new Date().toISOString(),
+                             packet: buildMarkingExport(), images: [] }) }).catch(function(){});
+  } catch(e){}
+}
+
+/* Replay a saved attempt into the page, then run the ordinary submit path. */
+function showFrozen(rep){
+  if(!rep || rep.v !== 1 || graded) return;
+  RESTORING = true;
+  started = true; mode = rep.md || 'timed';
+  $('front').classList.add('started');
+  $('questions').classList.remove('locked');
+  setInputsEnabled(true);
+  if(!applyAnswers(rep.a)){ RESTORING = false; return; }
+  submit(true);
+  $('timeTaken').textContent = rep.tm || '—';
+  $('resultsTitle').textContent = 'Your marked report';
+  var bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '🔒 <b>Drill completed on ' + rep.d + '.</b> This is your marked report — ' +
+                  'your answers, what was right and wrong, the mark scheme and your score. ' +
+                  'It stays here every time you open this drill.' +
+                  '<span class="fb-score">' + rep.s + ' / ' + rep.t + '</span>';
+  var qs = $('questions');
+  if(qs && qs.parentNode && !document.querySelector('.frozen-bar')) qs.parentNode.insertBefore(bar, qs);
+  var rt = $('retakeBtn'); if(rt) rt.textContent = '↺ Clear and retake';
+  window.scrollTo(0, 0);
+  RESTORING = false;
+}
+
+/* On open: show the local report at once (no network wait), then reconcile with
+   the shared record so an attempt made on her other device also opens frozen. */
+(function(){
+  if(!DNUM) return;
+  var local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  if(!SUBMIT_ENDPOINT) return;
+  fetch(SUBMIT_ENDPOINT + '?progress=1&t=' + Date.now())
+    .then(function(r){ return r.text(); })
+    .then(function(t){
+      var c; try { c = JSON.parse(t); } catch(e){ return; }
+      if(!c || typeof c !== 'object' || c.error) return;
+      var cur = progLoad(), changed = false;
+      for(var k in c){ if(JSON.stringify(cur[k]) !== JSON.stringify(c[k])){ cur[k] = c[k]; changed = true; } }
+      if(changed) progSave(cur);
+      if(!graded && c[REP_ID]) showFrozen(c[REP_ID]);
+    }).catch(function(){});
+})();
+
+/* ---- theme toggle ---- */
+(function(){
+  const body=document.body, btn=$('themeToggle');
+  const SUN='☀', MOON='☾';
+  function safeGet(){try{return localStorage.getItem('pp-theme');}catch(e){return null;}}
+  function safeSet(v){try{localStorage.setItem('pp-theme',v);}catch(e){}}
+  function apply(t){ body.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?SUN:MOON;
+    btn.setAttribute('aria-label',(t==='dark')?'Switch to light theme':'Switch to dark theme'); }
+  let startT=safeGet();
+  if(!startT) startT=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+  apply(startT);
+  btn.addEventListener('click', ()=>{ const n=body.getAttribute('data-theme')==='dark'?'light':'dark'; apply(n); safeSet(n); });
+})();
+</script>
+</body>
+</html>
