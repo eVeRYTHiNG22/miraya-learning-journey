@@ -119,7 +119,17 @@
   .btn { display:inline-flex; align-items:center; gap:7px; text-decoration:none; font-size:12.5px; font-weight:600; padding:8px 14px; border-radius:9px; border:1px solid var(--border); transition:transform .15s ease, border-color .15s ease, background .15s ease; }
   .btn.notes { color:var(--accent); border-color:color-mix(in srgb,var(--accent) 45%,transparent); background:color-mix(in srgb,var(--accent) 11%,transparent); }
   .btn.notes:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--accent) 20%,transparent); border-color:var(--accent); }
+  .btn.paper { color:var(--power); border-color:color-mix(in srgb,var(--power) 45%,transparent); background:color-mix(in srgb,var(--power) 11%,transparent); }
+  .btn.paper:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--power) 20%,transparent); border-color:var(--power); }
+  .btn .tmin { font-size:10px; font-weight:700; line-height:1; padding:2px 6px; border-radius:999px; background:color-mix(in srgb,currentColor 16%,transparent); opacity:.9; }
   .btn.coming { color:var(--muted); border-style:dashed; cursor:default; font-weight:500; }
+  .track { display:flex; gap:8px; flex-wrap:wrap; margin-top:13px; padding-top:12px; border-top:1px dashed var(--border); }
+  .done .score { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--power); margin-left:2px; }
+  .done .score:empty { display:none; }
+  .subj-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:-6px 0 14px 51px; }
+  .subj-soon { font-size:12px; color:var(--muted); font-style:italic; }
+  .ms-pill .score { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--power); }
+  .ms-pill .score:empty { display:none; }
   .done { display:inline-flex; align-items:center; gap:7px; font-size:11.5px; font-weight:600; color:var(--muted); padding:6px 11px; border-radius:8px; border:1px solid var(--border); }
   .done .box { width:15px; height:15px; border-radius:5px; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
   .done.is-done { color:var(--power); border-color:color-mix(in srgb,var(--power) 50%,transparent); background:color-mix(in srgb,var(--power) 10%,transparent); }
@@ -154,6 +164,7 @@
     .page { padding:52px 20px 90px; }
     .exam-pills, .ms-pills { margin-left:0; }
     .cards { grid-template-columns:1fr; }
+    .subj-row { margin-left:0; }
   }
 </style>
 </head>
@@ -168,7 +179,7 @@
   <header>
     <span class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Class X · Allen Career Institute</span>
     <h1>TALLENTEX 2027</h1>
-    <p class="sub">Every topic Allen can ask, grouped the way the paper is. Open a topic for its notes and a timed <b>+4 / −1</b> drill; sit the mocks as they arrive. Cards marked <b>not in IGCSE</b> are the ones school won't cover — start there.</p>
+    <p class="sub">Every topic Allen can ask, grouped the way the paper is. Each unit gets notes and <b>20-minute papers</b> (+4 / −1, like the real thing); each subject a 45-minute paper; and there are four full 2-hour mocks. Cards marked <b>not in IGCSE</b> are the ones school won't cover — start there.</p>
 
     <div class="examband" id="examBand" style="display:none;">
       <span class="exam-lead">🎯&nbsp;<b>Exam day</b></span>
@@ -210,44 +221,47 @@
   <p class="empty" id="empty">Nothing matches that — try a topic name from Allen's list, like “syllogism” or “excretion”.</p>
 
   <footer class="foot">
-    Topics are Allen's official <em>TALLENTEX 2027 — Syllabus &amp; Pattern, Class 10</em>, grouped into study units; (9th) / (10th) is the class each topic belongs to. Notes and drills appear on their cards as they're built; a card ticks itself when you finish its drill.
+    Topics are Allen's official <em>TALLENTEX 2027 — Syllabus &amp; Pattern, Class 10</em>, grouped into study units; (9th) / (10th) is the class each topic belongs to. Notes and papers appear on their cards as they're built; a card ticks itself when you've done everything on it.
   </footer>
 </div>
 
 <script>
-  /* ── The 47 official topics, grouped into 22 study units. Each unit's `slug` is its hub id
-       (progress key tx:<slug>) and, once built, its page is tallentex/<slug>.html (set `href`).
-       `tag`: 'new' = not in her IGCSE syllabus at all; 'partly' = the named part isn't.  ── */
+  /* ── The 47 official topics in 22 study units (docs/tallentex.md §6). A unit's `slug` is its id.
+       Its pages: tallentex/<slug>.html (notes) and tallentex/<slug>-paper-N.html (20-minute papers).
+       A section's subject paper: tallentex/subject-<key>.html (45 minutes). Mocks: tallentex/mock-N.html.
+       SHIP a page by filling `notes`, pushing into `papers`, or setting `paper` — nothing else changes.
+       `tag`: 'new' = not in her IGCSE syllabus at all; 'partly' = the named part isn't.
+       Progress keys the pages write: tx:<slug>:notes · tx:<slug>:pN · tx:subj:<key> · tx:mock-N  ── */
   var TX = [
-    { key:'phys', name:'Physics', mono:'P', accent:'--physics', q:15, cards:[
-      { slug:'phys-motion-forces',          title:'Motion & Forces',                    topics:[['Motion',9],['Force and Laws of Motion',9]] },
-      { slug:'phys-gravitation-work-energy',title:'Gravitation, Work & Energy',         topics:[['Gravitation',9],['Work, Power and Energy',9]], tag:'partly', why:'universal gravitation, buoyancy' },
-      { slug:'phys-sound',                  title:'Sound',                              topics:[['Sound',9]] },
-      { slug:'phys-light-mirrors-lenses',   title:'Light: Mirrors & Lenses',            topics:[['Reflection of Light',10],['Refraction of Light',10]], tag:'new', why:'spherical mirrors, mirror & lens formulae, lens power' },
-      { slug:'phys-eye-colour',             title:'The Human Eye & Colourful World',    topics:[['The Human Eye and Colourful World',10]], tag:'new', why:'eye defects, scattering' } ] },
-    { key:'chem', name:'Chemistry', mono:'C', accent:'--chem', q:15, cards:[
-      { slug:'chem-atoms-structure',        title:'Atoms, Molecules & Atomic Structure',topics:[['Atoms and Molecules',9],['Structure of the Atom',9]] },
-      { slug:'chem-reactions-acids-bases',  title:'Reactions; Acids, Bases & Salts',    topics:[['Chemical Reactions and Equations',10],['Acids, Bases and Salts',10]] },
-      { slug:'chem-metals',                 title:'Metals & Non-metals',                topics:[['Metals and non-metals',10]] } ] },
-    { key:'bio', name:'Biology', mono:'B', accent:'--bio', q:15, cards:[
-      { slug:'bio-nutrition-respiration',   title:'Nutrition & Respiration',            topics:[['Nutrition',0],['Respiration',0]], tag:'new' },
-      { slug:'bio-transport-excretion',     title:'Transportation & Excretion',         topics:[['Transportation',0],['Excretion',0]], tag:'new' },
-      { slug:'bio-control-coordination',    title:'Control & Coordination',             topics:[['Control and Coordination',0]], tag:'new' },
-      { slug:'bio-tissues-food',            title:'Tissues; Food Resources',            topics:[['Tissues in Action',0],['Improvement in Food Resources',0]], tag:'new' } ] },
-    { key:'maths', name:'Maths', mono:'M', accent:'--maths', q:15, cards:[
-      { slug:'maths-numbers-polynomials',   title:'Real Numbers & Polynomials',         topics:[['Real Numbers',10],['Polynomials',10]], tag:'partly', why:'zeroes ↔ coefficients, Euclid’s lemma' },
-      { slug:'maths-trigonometry',          title:'Trigonometry',                       topics:[['Introduction to Trigonometry',10]], tag:'new', why:'identities, sec · cosec · cot' },
-      { slug:'maths-geometry',              title:'Lines, Angles, Quadrilaterals & Triangles', topics:[['Lines and Angles',9],['Quadrilaterals',9],['Triangles',10]] },
-      { slug:'maths-mensuration-heron',     title:'Mensuration & Heron’s Formula',      topics:[['Heron’s Formula',9],['Surface area and Volumes',9]], tag:'partly', why:'Heron’s formula' },
-      { slug:'maths-linear-coord-stats',    title:'Linear Equations, Coordinates & Statistics', topics:[['Pair of Linear Equations in Two Variables',10],['Coordinate Geometry',10],['Statistics',9]], tag:'partly', why:'section formula' } ] },
-    { key:'iq', name:'Mental Ability', mono:'IQ', accent:'--iq', q:20, cards:[
-      { slug:'iq-time-ranking',             title:'Clocks, Calendars & Ranking',        topics:[['Number, Ranking and Time Sequence Test',0]], tag:'new' },
-      { slug:'iq-relations-directions-codes',title:'Relations, Directions & Codes',     topics:[['Blood Relation',0],['Direction Sense',0],['Coding-Decoding',0],['Alphabet Test',0]], tag:'new' },
-      { slug:'iq-series-operations',        title:'Series, Missing Characters & Operations', topics:[['Series (Verbal & Non-Verbal)',0],['Inserting the Missing Character',0],['Mathematical Operations',0],['Arithmetical Reasoning',0]], tag:'new' },
-      { slug:'iq-logic-puzzles',            title:'Syllogism, Puzzles & Seating',       topics:[['Syllogism',0],['Puzzle Test',0],['Sitting Arrangement',0]], tag:'new' },
-      { slug:'iq-figures-dice-cubes',       title:'Figures, Dice & Cubes',              topics:[['Counting of Figures',0],['Embedded Figure',0],['Dice',0],['Cube',0]], tag:'new' } ] }
+    { key:'phys', name:'Physics', mono:'P', accent:'--physics', q:15, paper:null, cards:[
+      { slug:'phys-motion-forces',           title:'Motion & Forces',                     topics:[['Motion',9],['Force and Laws of Motion',9]], notes:null, papers:[] },
+      { slug:'phys-gravitation-work-energy', title:'Gravitation, Work & Energy',          topics:[['Gravitation',9],['Work, Power and Energy',9]], tag:'partly', why:'universal gravitation, buoyancy', notes:null, papers:[] },
+      { slug:'phys-sound',                   title:'Sound',                               topics:[['Sound',9]], notes:null, papers:[] },
+      { slug:'phys-light-mirrors-lenses',    title:'Light: Mirrors & Lenses',             topics:[['Reflection of Light',10],['Refraction of Light',10]], tag:'new', why:'spherical mirrors, mirror & lens formulae, lens power', notes:null, papers:[] },
+      { slug:'phys-eye-colour',              title:'The Human Eye & Colourful World',     topics:[['The Human Eye and Colourful World',10]], tag:'new', why:'eye defects, scattering', notes:null, papers:[] } ] },
+    { key:'chem', name:'Chemistry', mono:'C', accent:'--chem', q:15, paper:null, cards:[
+      { slug:'chem-atoms-structure',         title:'Atoms, Molecules & Atomic Structure', topics:[['Atoms and Molecules',9],['Structure of the Atom',9]], notes:null, papers:[] },
+      { slug:'chem-reactions-acids-bases',   title:'Reactions; Acids, Bases & Salts',     topics:[['Chemical Reactions and Equations',10],['Acids, Bases and Salts',10]], notes:null, papers:[] },
+      { slug:'chem-metals',                  title:'Metals & Non-metals',                 topics:[['Metals and non-metals',10]], notes:null, papers:[] } ] },
+    { key:'bio', name:'Biology', mono:'B', accent:'--bio', q:15, paper:null, cards:[
+      { slug:'bio-nutrition-respiration',    title:'Nutrition & Respiration',             topics:[['Nutrition',0],['Respiration',0]], tag:'new', notes:null, papers:[] },
+      { slug:'bio-transport-excretion',      title:'Transportation & Excretion',          topics:[['Transportation',0],['Excretion',0]], tag:'new', notes:null, papers:[] },
+      { slug:'bio-control-coordination',     title:'Control & Coordination',              topics:[['Control and Coordination',0]], tag:'new', notes:null, papers:[] },
+      { slug:'bio-tissues-food',             title:'Tissues; Food Resources',             topics:[['Tissues in Action',0],['Improvement in Food Resources',0]], tag:'new', notes:null, papers:[] } ] },
+    { key:'maths', name:'Maths', mono:'M', accent:'--maths', q:15, paper:null, cards:[
+      { slug:'maths-numbers-polynomials',    title:'Real Numbers & Polynomials',          topics:[['Real Numbers',10],['Polynomials',10]], tag:'partly', why:'zeroes ↔ coefficients, Euclid’s lemma', notes:null, papers:[] },
+      { slug:'maths-trigonometry',           title:'Trigonometry',                        topics:[['Introduction to Trigonometry',10]], tag:'new', why:'identities, sec · cosec · cot', notes:null, papers:[] },
+      { slug:'maths-geometry',               title:'Lines, Angles, Quadrilaterals & Triangles', topics:[['Lines and Angles',9],['Quadrilaterals',9],['Triangles',10]], notes:null, papers:[] },
+      { slug:'maths-mensuration-heron',      title:'Mensuration & Heron’s Formula',       topics:[['Heron’s Formula',9],['Surface area and Volumes',9]], tag:'partly', why:'Heron’s formula', notes:null, papers:[] },
+      { slug:'maths-linear-coord-stats',     title:'Linear Equations, Coordinates & Statistics', topics:[['Pair of Linear Equations in Two Variables',10],['Coordinate Geometry',10],['Statistics',9]], tag:'partly', why:'section formula', notes:null, papers:[] } ] },
+    { key:'iq', name:'Mental Ability', mono:'IQ', accent:'--iq', q:20, paper:null, cards:[
+      { slug:'iq-time-ranking',              title:'Clocks, Calendars & Ranking',         topics:[['Number, Ranking and Time Sequence Test',0]], tag:'new', notes:null, papers:[] },
+      { slug:'iq-relations-directions-codes',title:'Relations, Directions & Codes',       topics:[['Blood Relation',0],['Direction Sense',0],['Coding-Decoding',0],['Alphabet Test',0]], tag:'new', notes:null, papers:[] },
+      { slug:'iq-series-operations',         title:'Series, Missing Characters & Operations', topics:[['Series (Verbal & Non-Verbal)',0],['Inserting the Missing Character',0],['Mathematical Operations',0],['Arithmetical Reasoning',0]], tag:'new', notes:null, papers:[] },
+      { slug:'iq-logic-puzzles',             title:'Syllogism, Puzzles & Seating',        topics:[['Syllogism',0],['Puzzle Test',0],['Sitting Arrangement',0]], tag:'new', notes:null, papers:[] },
+      { slug:'iq-figures-dice-cubes',        title:'Figures, Dice & Cubes',               topics:[['Counting of Figures',0],['Embedded Figure',0],['Dice',0],['Cube',0]], tag:'new', notes:null, papers:[] } ] }
   ];
-  /* Timed mocks — set `href` when a mock page ships (tallentex/mock-N.html); id tx:mock-N */
+  /* Timed mocks — set `href` when tallentex/mock-N.html ships; progress key tx:mock-N */
   var MOCKS = [
     { n:1, src:'2018 paper', href:null }, { n:2, src:'2024 paper · U', href:null },
     { n:3, src:'2024 paper · A', href:null }, { n:4, src:'2017 paper', href:null }
@@ -256,6 +270,7 @@
   var KEY = 'studyProgress';
   function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ return {}; } }
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function chip(id, label){ return '<span class="done" data-txid="' + id + '"><span class="box"></span>' + label + '<span class="score"></span></span>'; }
 
   /* build */
   (function () {
@@ -265,63 +280,84 @@
       sec.className = 'subject'; sec.setAttribute('data-subj', s.key);
       sec.style.setProperty('--accent', 'var(' + s.accent + ')');
       var nTopics = s.cards.reduce(function (a, c) { return a + c.topics.length; }, 0);
+      var subjPaper = s.paper
+        ? '<a class="btn paper subj-paper" href="' + s.paper.href + '"><span class="ico">📝</span>Subject paper <span class="tmin">' + s.paper.min + ' min</span></a>' + chip('tx:subj:' + s.key, 'Subject paper')
+        : '<span class="subj-soon">📝 subject paper · 45 min · coming</span>';
       sec.innerHTML = '<div class="subject-head"><span class="mono">' + s.mono + '</span><div><h2>' + s.name + '</h2>'
         + '<span class="subject-board">Q' + start + '–' + (start + s.q - 1) + ' · ' + s.q + ' questions · ' + (s.q * 4) + ' marks · ' + nTopics + ' topics</span></div>'
-        + '<span class="count-pill" id="cp-' + s.key + '"></span></div><div class="cards" id="cards-' + s.key + '"></div>';
+        + '<span class="count-pill" id="cp-' + s.key + '"></span></div>'
+        + '<div class="subj-row">' + subjPaper + '</div>'
+        + '<div class="cards" id="cards-' + s.key + '"></div>';
       start += s.q;
       host.appendChild(sec);
       var wrap = sec.querySelector('.cards');
       s.cards.forEach(function (c) {
         num++;
-        var live = !!c.href;
+        var live = !!c.notes || c.papers.length > 0;
         var el = document.createElement('div');
         el.className = 'card' + (live ? '' : ' soon');
         el.setAttribute('data-num', num); el.setAttribute('data-slug', c.slug);
         if (c.tag) el.setAttribute('data-tag', c.tag);
         var chips = c.topics.map(function (t) { return '<span class="topic">' + esc(t[0]) + (t[1] ? '<small>(' + t[1] + 'th)</small>' : '') + '</span>'; }).join('');
         var tag = c.tag === 'new' ? '<span class="tag">not in IGCSE</span>'
-                : c.tag === 'partly' ? '<span class="tag partly" title="' + esc(c.why || '') + '">partly new: ' + esc(c.why || '') + '</span>' : '';
-        var btn = live
-          ? '<a class="btn notes" href="' + c.href + '" data-txid="tx:' + c.slug + '"><span class="ico">📘</span>Notes + drill</a><span class="done" data-txid="tx:' + c.slug + '"><span class="box"></span>Done</span>'
-          : '<span class="btn coming">Notes + drill · coming</span>';
+                : c.tag === 'partly' ? '<span class="tag partly">partly new: ' + esc(c.why || '') + '</span>' : '';
+        var btns = '', track = '';
+        if (c.notes) { btns += '<a class="btn notes" href="' + c.notes + '"><span class="ico">📘</span>Notes</a>'; track += chip('tx:' + c.slug + ':notes', 'Notes'); }
+        c.papers.forEach(function (p, i) {
+          var n = i + 1;
+          btns += '<a class="btn paper" href="' + p.href + '"><span class="ico">📝</span>Paper ' + n + ' <span class="tmin">' + (p.min || 20) + ' min</span></a>';
+          track += chip('tx:' + c.slug + ':p' + n, 'Paper ' + n);
+        });
+        if (!live) btns = '<span class="btn coming">Notes · 20-min paper · coming</span>';
         el.innerHTML = '<div class="card-topic">' + s.name + ' · ' + c.topics.length + (c.topics.length === 1 ? ' topic' : ' topics') + tag + '</div>'
-          + '<div class="card-title">' + esc(c.title) + '</div><div class="topics">' + chips + '</div><div class="btns">' + btn + '</div>';
+          + '<div class="card-title">' + esc(c.title) + '</div><div class="topics">' + chips + '</div><div class="btns">' + btns + '</div>'
+          + (track ? '<div class="track">' + track + '</div>' : '');
         el.setAttribute('data-search', (c.title + ' ' + c.topics.map(function (t) { return t[0]; }).join(' ') + ' ' + s.name).toLowerCase());
         wrap.appendChild(el);
       });
     });
     var mp = document.getElementById('mockPills');
     mp.innerHTML = MOCKS.map(function (m) {
-      return m.href ? '<a class="ms-pill" href="' + m.href + '" data-txid="tx:mock-' + m.n + '">Mock ' + m.n + ' <small>' + esc(m.src) + '</small></a>'
+      return m.href ? '<a class="ms-pill" href="' + m.href + '" data-txid="tx:mock-' + m.n + '">Mock ' + m.n + ' <small>' + esc(m.src) + '</small><span class="score"></span></a>'
                     : '<span class="ms-pill soon" title="Coming">Mock ' + m.n + ' <small>' + esc(m.src) + ' · coming</small></span>';
     }).join('');
   })();
 
-  /* progress — read-only; a topic page writes tx:<slug> when its drill is finished */
+  /* progress — read-only. Notes pages write tx:<slug>:notes (timestamp); papers write
+     tx:<slug>:pN / tx:subj:<key> / tx:mock-N as {t, m, mx} on submit. */
+  function scoreOf(v){ return (v && typeof v === 'object' && v.mx) ? (v.m + '/' + v.mx) : ''; }
   function render() {
-    var prog = load(), totalLive = 0, done = 0;
+    var prog = load(), unitsLive = 0, unitsDone = 0, units = 0;
     TX.forEach(function (s) {
       var live = 0, sd = 0;
       document.querySelectorAll('#cards-' + s.key + ' .card').forEach(function (card) {
-        var d = card.querySelector('.done'); if (!d) return;
-        live++; totalLive++;
-        var on = !!prog[d.getAttribute('data-txid')];
-        d.classList.toggle('is-done', on); card.classList.toggle('all-done', on);
-        if (on) { sd++; done++; }
+        units++;
+        var chips = card.querySelectorAll('.done[data-txid]'); if (!chips.length) return;
+        live++; unitsLive++;
+        var all = true;
+        chips.forEach(function (d) {
+          var v = prog[d.getAttribute('data-txid')], on = !!v;
+          d.classList.toggle('is-done', on); d.querySelector('.score').textContent = on ? scoreOf(v) : '';
+          if (!on) all = false;
+        });
+        card.classList.toggle('all-done', all);
+        if (all) { sd++; unitsDone++; }
       });
+      var sp = document.querySelector('#cards-' + s.key).previousElementSibling.querySelector('.done[data-txid]');
+      if (sp) { var v = prog[sp.getAttribute('data-txid')]; sp.classList.toggle('is-done', !!v); sp.querySelector('.score').textContent = v ? scoreOf(v) : ''; }
       var cp = document.getElementById('cp-' + s.key);
       cp.innerHTML = live ? '<span class="ring" style="--pct:' + Math.round(sd / live * 100) + '"></span>' + sd + ' / ' + live + ' done' : s.cards.length + ' units · coming';
     });
-    document.querySelectorAll('#mockPills .ms-pill[data-txid]').forEach(function (p) { p.classList.toggle('is-done', !!prog[p.getAttribute('data-txid')]); });
-    var pct = totalLive ? Math.round(done / totalLive * 100) : 0;
+    document.querySelectorAll('#mockPills .ms-pill[data-txid]').forEach(function (p) {
+      var v = prog[p.getAttribute('data-txid')]; p.classList.toggle('is-done', !!v); p.querySelector('.score').textContent = v ? scoreOf(v) : '';
+    });
+    var pct = unitsLive ? Math.round(unitsDone / unitsLive * 100) : 0;
     document.getElementById('progFill').style.width = pct + '%';
-    var built = document.getElementById('ppBuilt'), t = document.getElementById('progText');
-    var units = TX.reduce(function (a, s) { return a + s.cards.length; }, 0);
-    built.textContent = totalLive + ' of ' + units + ' units built';
-    t.innerHTML = totalLive === 0
-      ? 'Notes and drills are being built and will appear on the cards below. Until then, read <b>How to play it</b> and sit the printed sample paper.'
-      : done === 0 ? 'Finish a topic’s drill and its card ticks itself — <b>' + totalLive + '</b> built so far.'
-      : '<b>' + done + ' of ' + totalLive + '</b> built units done · ' + pct + '%';
+    document.getElementById('ppBuilt').textContent = unitsLive + ' of ' + units + ' units built';
+    document.getElementById('progText').innerHTML = unitsLive === 0
+      ? 'Notes and 20-minute papers are being built and will appear on the cards below. Until then, read <b>How to play it</b>.'
+      : unitsDone === 0 ? 'Finish a unit’s notes and papers and its card ticks itself — <b>' + unitsLive + '</b> built so far.'
+      : '<b>' + unitsDone + ' of ' + unitsLive + '</b> built units done · ' + pct + '%';
   }
   render();
   window.addEventListener('miraya-progress-synced', render);
