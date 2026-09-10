@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Clocks, Calendars &amp; Ranking — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+    </div>
+    <p class="startnote">Practice mode still marks you and still applies −1 — only the countdown is off.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  title: 'TALLENTEX · Clocks, Calendars & Ranking — Paper 1',
+  kind: 'topic',
+  duration: 20,
+  id: 'tx:iq-time-ranking:p1',
+  accent: 'iq',
+  sub: 'Thirteen questions on <b>Number, Ranking and Time Sequence Test</b> — clock angles, calendars and odd days, positions in a row, and counting inside a digit string. Sit it the way you will sit the real thing: <b>no calculator, no rough paper</b>.',
+  sections: [ { name:'Mental Ability', from:1, to:13 } ],
+  questions: [
+
+    { n:1, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'plain',
+      stem:'<p>In a row of <b>45</b> students, Kavya is <b>17th from the left</b> end of the row. What is her position from the <b>right</b> end?</p>',
+      options:['27th','28th','29th','30th'], answer:2,
+      sol:'<p>Position from the right = Total − position from the left + 1 = <b>45 − 17 + 1 = 29th</b>.</p>' +
+          '<p>If you answered <b>28th</b> you did 45 − 17 and stopped — the commonest slip in the whole topic. Check it on a tiny row: in a row of 3, the person 1st from the left is 3rd from the right, and 3 − 1 + 1 = 3 ✓, while 3 − 1 = 2 ✗.</p>' },
+
+    { n:2, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'diagram',
+      stem:'<p><b>Read the time from the figure.</b> What is the angle between the hour hand and the minute hand?</p>',
+      fig:'<svg viewBox="0 0 200 200" width="196" height="196" role="img" aria-label="Clock face showing twenty minutes past seven">' +
+          '<circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="2.5"/>' +
+          '<g stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".55">' +
+          '<line x1="100" y1="24" x2="100" y2="33"/><line x1="176" y1="100" x2="167" y2="100"/>' +
+          '<line x1="100" y1="176" x2="100" y2="167"/><line x1="24" y1="100" x2="33" y2="100"/>' +
+          '<line x1="138" y1="34.2" x2="133.5" y2="42"/><line x1="165.8" y1="62" x2="158" y2="66.5"/>' +
+          '<line x1="165.8" y1="138" x2="158" y2="133.5"/><line x1="138" y1="165.8" x2="133.5" y2="158"/>' +
+          '<line x1="62" y1="165.8" x2="66.5" y2="158"/><line x1="34.2" y1="138" x2="42" y2="133.5"/>' +
+          '<line x1="34.2" y1="62" x2="42" y2="66.5"/><line x1="62" y1="34.2" x2="66.5" y2="42"/></g>' +
+          '<g font-family="Inter, sans-serif" font-size="12" text-anchor="middle" fill="currentColor" opacity=".8">' +
+          '<text x="100" y="40">12</text><text x="164" y="104">3</text><text x="100" y="168">6</text><text x="36" y="104">9</text></g>' +
+          '<line x1="100" y1="100" x2="160.6" y2="135" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>' +
+          '<line x1="100" y1="100" x2="66.6" y2="139.8" stroke="currentColor" stroke-width="4.2" stroke-linecap="round"/>' +
+          '<circle cx="100" cy="100" r="4.5" fill="currentColor"/></svg>',
+      figCap:'The thick hand is the hour hand, the thin one the minute hand.',
+      options:['90°','100°','110°','120°'], answer:1,
+      sol:'<p>First read the dial: the minute hand points exactly at the <b>4</b>, so M = <b>20</b>; the hour hand is just past the <b>7</b>, so H = <b>7</b> — the time is <b>7:20</b>.</p>' +
+          '<p>θ = |30H − 5.5M| = <b>|30×7 − 5.5×20| = |210 − 110| = 100°</b>.</p>' +
+          '<p><b>90°</b> is what you get by leaving the hour hand parked on the 7 (210° − 120° = 90°) — but in 20 minutes it has crept 10° towards the 8, and the figure shows it: the hour hand is clearly past the 7. <b>110°</b> is 5.5 × 20 on its own; <b>120°</b> is just the minute hand\'s own position.</p>' },
+
+    { n:3, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'plain',
+      stem:'<p>How many <b>8</b>s are there in the following sequence which are <b>immediately preceded by 4</b> and <b>immediately followed by 6</b>?</p>' +
+           '<p style="font-family:\'JetBrains Mono\',monospace; font-size:15px; letter-spacing:.13em; background:var(--surface2); border:1px solid var(--border); border-radius:9px; padding:11px 13px; overflow-x:auto">4 8 6 2 4 8 9 4 8 6 7 8 4 8 3 6 9 8 6 4 8 6 5</p>',
+      options:['2','3','4','5'], answer:1,
+      sol:'<p>Take every 8 in turn and look at the digit on each side. There are seven 8s:</p>' +
+          '<p><b>4&nbsp;8&nbsp;6</b> ✓ · 4&nbsp;8&nbsp;9 ✗ (followed by 9) · <b>4&nbsp;8&nbsp;6</b> ✓ · 7&nbsp;8&nbsp;4 ✗ (preceded by 7) · 4&nbsp;8&nbsp;3 ✗ (followed by 3) · 9&nbsp;8&nbsp;6 ✗ (preceded by 9) · <b>4&nbsp;8&nbsp;6</b> ✓</p>' +
+          '<p>That is <b>3</b>.</p>' +
+          '<p>The distractors are exactly what dropping one clause gives you: count only "preceded by 4" and you get <b>5</b>; count only "followed by 6" and you get <b>4</b>. Both clauses, every time.</p>' },
+
+    { n:4, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'plain',
+      stem:'<p>On what day of the week did <b>2 October 1969</b> fall?</p>',
+      options:['Tuesday','Wednesday','Thursday','Friday'], answer:2,
+      sol:'<p>Count odd days: <b>complete years before it</b>, then <b>days elapsed in 1969</b>.</p>' +
+          '<p><b>1968 = 1600 + 300 + 68.</b> 1600 → 0 odd days; 300 → 1 odd day.</p>' +
+          '<p>68 years (1901–1968) contain the leap years 1904, 1908, … 1968 → (1968 − 1904)/4 + 1 = <b>17</b> leap and 51 ordinary. Odd days = 51 + 2×17 = 85, and 85 ÷ 7 leaves <b>1</b>.</p>' +
+          '<p>Sub-total = 0 + 1 + 1 = <b>2</b>.</p>' +
+          '<p>Days in 1969 up to 2 October (1969 is <b>not</b> a leap year): 31+28+31+30+31+30+31+31+30+2 = <b>275</b>. 275 ÷ 7 = 39 remainder <b>2</b>.</p>' +
+          '<p>Total odd days = 2 + 2 = <b>4 → Thursday</b>.</p>' +
+          '<p><b>Friday</b> is what you get by treating 1969 as a leap year and adding a 29 February. <b>Wednesday</b> comes from counting only the days <em>before</em> 2 October (274 instead of 275) — the date itself has to be included. <b>Tuesday</b> means the +2 for October was dropped altogether, leaving 273 days = exactly 39 weeks.</p>' },
+
+    { n:5, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'diagram',
+      stem:'<p>A clock is held up to a mirror. The figure shows <b>the image seen in the mirror</b>. What is the <b>actual</b> time?</p>',
+      fig:'<svg viewBox="0 0 200 200" width="196" height="196" role="img" aria-label="Mirror image of a clock, reading twenty minutes past eight">' +
+          '<circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="2.5"/>' +
+          '<g stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".55">' +
+          '<line x1="100" y1="24" x2="100" y2="33"/><line x1="176" y1="100" x2="167" y2="100"/>' +
+          '<line x1="100" y1="176" x2="100" y2="167"/><line x1="24" y1="100" x2="33" y2="100"/>' +
+          '<line x1="138" y1="34.2" x2="133.5" y2="42"/><line x1="165.8" y1="62" x2="158" y2="66.5"/>' +
+          '<line x1="165.8" y1="138" x2="158" y2="133.5"/><line x1="138" y1="165.8" x2="133.5" y2="158"/>' +
+          '<line x1="62" y1="165.8" x2="66.5" y2="158"/><line x1="34.2" y1="138" x2="42" y2="133.5"/>' +
+          '<line x1="34.2" y1="62" x2="42" y2="66.5"/><line x1="62" y1="34.2" x2="66.5" y2="42"/></g>' +
+          '<g font-family="Inter, sans-serif" font-size="12" text-anchor="middle" fill="currentColor" opacity=".8">' +
+          '<text x="100" y="40">12</text><text x="164" y="104">3</text><text x="100" y="168">6</text><text x="36" y="104">9</text></g>' +
+          '<line x1="100" y1="100" x2="160.6" y2="135" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>' +
+          '<line x1="100" y1="100" x2="51.1" y2="117.8" stroke="currentColor" stroke-width="4.2" stroke-linecap="round"/>' +
+          '<circle cx="100" cy="100" r="4.5" fill="currentColor"/></svg>',
+      figCap:'The clock exactly as it appears in the mirror.',
+      options:['2:40','3:20','4:40','3:40'], answer:3,
+      sol:'<p>Read the image first: minute hand on the <b>4</b> (20 minutes), hour hand between the <b>8</b> and the <b>9</b> — the image reads <b>8:20</b>.</p>' +
+          '<p>For any mirror-image clock, <b>actual time = 11:60 − image time</b> (use 12:60 only when the image reads between 12:00 and 1:00).</p>' +
+          '<p>11:60 − 8:20 = <b>3:40</b>.</p>' +
+          '<p>Check it the slow way: a mirror flips the face left-to-right, so a hand at "8" reflects to "4", and 20 minutes past reflects to 40 minutes past — landing the hour hand between 3 and 4 at 3:40 ✓.</p>' +
+          '<p><b>4:40</b> is what you get by subtracting from <b>12:60</b> instead of 11:60 — that form of the rule applies only when the image reads between 12:00 and 1:00. <b>3:20</b> reflects the hour (11 − 8 = 3) but leaves the minutes at 20 instead of reflecting those too (60 − 20 = 40).</p>' },
+
+    { n:6, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'diagram',
+      stem:'<p>The figure shows a clock at <b>4 o\'clock</b>. After how many minutes will the two hands be at <b>right angles</b> for the <b>first</b> time?</p>',
+      fig:'<svg viewBox="0 0 200 200" width="196" height="196" role="img" aria-label="Clock face showing four o\'clock">' +
+          '<circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="2.5"/>' +
+          '<g stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".55">' +
+          '<line x1="100" y1="24" x2="100" y2="33"/><line x1="176" y1="100" x2="167" y2="100"/>' +
+          '<line x1="100" y1="176" x2="100" y2="167"/><line x1="24" y1="100" x2="33" y2="100"/>' +
+          '<line x1="138" y1="34.2" x2="133.5" y2="42"/><line x1="165.8" y1="62" x2="158" y2="66.5"/>' +
+          '<line x1="165.8" y1="138" x2="158" y2="133.5"/><line x1="138" y1="165.8" x2="133.5" y2="158"/>' +
+          '<line x1="62" y1="165.8" x2="66.5" y2="158"/><line x1="34.2" y1="138" x2="42" y2="133.5"/>' +
+          '<line x1="34.2" y1="62" x2="42" y2="66.5"/><line x1="62" y1="34.2" x2="66.5" y2="42"/></g>' +
+          '<g font-family="Inter, sans-serif" font-size="12" text-anchor="middle" fill="currentColor" opacity=".8">' +
+          '<text x="100" y="40">12</text><text x="164" y="104">3</text><text x="100" y="168">6</text><text x="36" y="104">9</text></g>' +
+          '<line x1="100" y1="100" x2="100" y2="30" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>' +
+          '<line x1="100" y1="100" x2="145" y2="126" stroke="currentColor" stroke-width="4.2" stroke-linecap="round"/>' +
+          '<circle cx="100" cy="100" r="4.5" fill="currentColor"/></svg>',
+      figCap:'The clock at 4 o\'clock.',
+      options:['5 <sup>5</sup>⁄<sub>11</sub> min','6 <sup>6</sup>⁄<sub>11</sub> min','10 <sup>10</sup>⁄<sub>11</sub> min','38 <sup>2</sup>⁄<sub>11</sub> min'], answer:0,
+      sol:'<p>Set |30H − 5.5M| = 90 with H = 4, so |120 − 5.5M| = 90. That gives two solutions:</p>' +
+          '<p><b>120 − 5.5M = 90</b> → 5.5M = 30 → M = 60/11 = <b>5 <sup>5</sup>⁄<sub>11</sub></b> minutes (minute hand still behind).<br>' +
+          '<b>120 − 5.5M = −90</b> → 5.5M = 210 → M = 420/11 = <b>38 <sup>2</sup>⁄<sub>11</sub></b> minutes (minute hand now ahead).</p>' +
+          '<p>The question asks for the <b>first</b> time, so <b>5 <sup>5</sup>⁄<sub>11</sub> minutes</b>. Option (4) is the second one — a right answer to the wrong question, and the trap here.</p>' +
+          '<p>Faster route: at 4:00 the gap is 120°. It must shrink to 90°, i.e. close by 30°, and the minute hand closes at 5.5° per minute → 30 ÷ 5.5 = 60/11 minutes.</p>' +
+          '<p>The other two only look right because they carry an eleventh: <b>6 <sup>6</sup>⁄<sub>11</sub></b> (= 72/11) leaves the hands 84° apart, and <b>10 <sup>10</sup>⁄<sub>11</sub></b> (= 120/11) leaves them 60° apart. A denominator of 11 is necessary, not sufficient — always finish the division.</p>' },
+
+    { n:7, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'statement',
+      stem:'<p>Consider the following statements.</p>' +
+           '<ol class="roman"><li>The hands of a clock are in a straight line 44 times in a day.</li>' +
+           '<li>The year 2024 has 2 odd days.</li>' +
+           '<li>In a row of 20 people, a person standing 6th from the left is 14th from the right.</li>' +
+           '<li>A century year is a leap year only if it is divisible by 400.</li></ol>' +
+           '<p>Which of the statements are <b>correct</b>?</p>',
+      options:['I, II and IV only','I, II and III only','II, III and IV only','I, II, III and IV'], answer:0,
+      sol:'<p><b>I — true.</b> The hands are in a straight line (together or opposite) 22 times in 12 hours, so 44 times in 24 hours.</p>' +
+          '<p><b>II — true.</b> 2024 is divisible by 4 and is not a century year, so it is a leap year: 366 = 52×7 + 2 → 2 odd days.</p>' +
+          '<p><b>III — false.</b> Position from the right = 20 − 6 + 1 = <b>15th</b>, not 14th.</p>' +
+          '<p><b>IV — true.</b> 1900 was not a leap year; 2000 was.</p>' +
+          '<p>So I, II and IV → <b>option (1)</b>.</p>' +
+          '<p><b>How to save a minute here:</b> statement III appears in options (2), (3) and (4). Test <em>it</em> first — proving it false deletes three options at once and you never need to check the other three clauses at all. On any multi-statement item, attack the clause that appears in the most options.</p>' },
+
+    { n:8, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'match',
+      stem:'<p>Match the quantity in <b>Column I</b> with its value in <b>Column II</b>.</p>' +
+           '<table><thead><tr><th>Column I</th><th>Column II</th></tr></thead><tbody>' +
+           '<tr><td><b>A.</b> Odd days in 100 years</td><td><b>1.</b> 0.5°</td></tr>' +
+           '<tr><td><b>B.</b> Number of times the hands coincide in 12 hours</td><td><b>2.</b> 2</td></tr>' +
+           '<tr><td><b>C.</b> Angle turned by the hour hand in one minute</td><td><b>3.</b> 5</td></tr>' +
+           '<tr><td><b>D.</b> Odd days in a leap year</td><td><b>4.</b> 11</td></tr>' +
+           '</tbody></table>',
+      options:['A-4, B-3, C-1, D-2','A-3, B-4, C-2, D-1','A-2, B-4, C-1, D-3','A-3, B-4, C-1, D-2'], answer:3,
+      sol:'<p><b>A → 3.</b> 100 years = 76 ordinary + 24 leap = 124 days above whole weeks; 124 ÷ 7 leaves <b>5</b>.</p>' +
+          '<p><b>B → 4.</b> The hands coincide <b>11</b> times in 12 hours, not 12 — between 11 o\'clock and 1 o\'clock there is only one coincidence.</p>' +
+          '<p><b>C → 1.</b> The hour hand turns 30° per hour = <b>0.5°</b> per minute.</p>' +
+          '<p><b>D → 2.</b> A leap year is 366 days = 52 weeks + <b>2</b>.</p>' +
+          '<p>So A-3, B-4, C-1, D-2 → <b>option (4)</b>. Option (2) swaps C and D — the classic mix-up between the hour hand\'s 0.5° and the leap year\'s 2 odd days.</p>' },
+
+    { n:9, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'diagram',
+      stem:'<p>The figure shows the calendar of a <b>30-day month</b> whose 1st falls on a Wednesday. <b>How many weekdays occur exactly five times</b> in this month?</p>',
+      fig:'<svg viewBox="0 0 400 212" width="400" height="212" role="img" aria-label="Calendar grid for a thirty-day month beginning on Wednesday">' +
+          '<g font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle" fill="currentColor" opacity=".65">' +
+          '<text x="28" y="22">SUN</text><text x="84" y="22">MON</text><text x="140" y="22">TUE</text><text x="196" y="22">WED</text>' +
+          '<text x="252" y="22">THU</text><text x="308" y="22">FRI</text><text x="364" y="22">SAT</text></g>' +
+          '<g stroke="currentColor" stroke-width="1" opacity=".35" fill="none">' +
+          '<line x1="0" y1="30" x2="392" y2="30"/><line x1="0" y1="64" x2="392" y2="64"/><line x1="0" y1="98" x2="392" y2="98"/>' +
+          '<line x1="0" y1="132" x2="392" y2="132"/><line x1="0" y1="166" x2="392" y2="166"/><line x1="0" y1="200" x2="392" y2="200"/>' +
+          '<line x1="0" y1="30" x2="0" y2="200"/><line x1="56" y1="30" x2="56" y2="200"/><line x1="112" y1="30" x2="112" y2="200"/>' +
+          '<line x1="168" y1="30" x2="168" y2="200"/><line x1="224" y1="30" x2="224" y2="200"/><line x1="280" y1="30" x2="280" y2="200"/>' +
+          '<line x1="336" y1="30" x2="336" y2="200"/><line x1="392" y1="30" x2="392" y2="200"/></g>' +
+          '<g font-family="Inter, sans-serif" font-size="13" text-anchor="middle" fill="currentColor">' +
+          '<text x="196" y="52">1</text><text x="252" y="52">2</text><text x="308" y="52">3</text><text x="364" y="52">4</text>' +
+          '<text x="28" y="86">5</text><text x="84" y="86">6</text><text x="140" y="86">7</text><text x="196" y="86">8</text><text x="252" y="86">9</text><text x="308" y="86">10</text><text x="364" y="86">11</text>' +
+          '<text x="28" y="120">12</text><text x="84" y="120">13</text><text x="140" y="120">14</text><text x="196" y="120">15</text><text x="252" y="120">16</text><text x="308" y="120">17</text><text x="364" y="120">18</text>' +
+          '<text x="28" y="154">19</text><text x="84" y="154">20</text><text x="140" y="154">21</text><text x="196" y="154">22</text><text x="252" y="154">23</text><text x="308" y="154">24</text><text x="364" y="154">25</text>' +
+          '<text x="28" y="188">26</text><text x="84" y="188">27</text><text x="140" y="188">28</text><text x="196" y="188">29</text><text x="252" y="188">30</text></g></svg>',
+      figCap:'The full month, laid out week by week.',
+      options:['1','2','3','4'], answer:1,
+      sol:'<p>30 days = <b>4 complete weeks (28 days) + 2 spare days</b>. The four whole weeks hand every weekday exactly four occurrences, so only the two spare days can lift a weekday to five.</p>' +
+          '<p>Those spare days are the <b>29th and 30th</b>, which land on the same weekdays as the 1st and 2nd — <b>Wednesday and Thursday</b>. So exactly <b>2</b> weekdays occur five times: Wednesday on 1, 8, 15, 22, 29 and Thursday on 2, 9, 16, 23, 30. Every other weekday, Sunday included, occurs four times.</p>' +
+          '<p>The distractors are simply other month lengths: <b>1</b> is the answer for a 29-day February (4 weeks + 1 spare) and <b>3</b> for a 31-day month (4 weeks + 3 spare); <b>4</b> would need a 32-day month.</p>' +
+          '<p><b>The shortcut worth keeping:</b> the count of weekdays occurring five times is just <b>days − 28</b>, and <em>which</em> weekdays they are is fixed by the day the month starts on. You never need to draw the grid.</p>' },
+
+    { n:10, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'plain',
+      stem:'<p>A clock is set right at <b>8 a.m. on Monday</b>. The clock <b>gains 3 minutes in 24 hours</b>. What will this clock show when the correct time is <b>8 p.m. on Tuesday</b>?</p>',
+      options:['8:03 p.m.','8:04 p.m.','8:04:30 p.m.','8:06 p.m.'], answer:2,
+      sol:'<p>From 8 a.m. Monday to 8 p.m. Tuesday is <b>36 hours</b> of correct time (24 + 12).</p>' +
+          '<p>The clock gains 3 minutes per 24 hours, so in 36 hours it gains 3 × 36/24 = 3 × 1.5 = <b>4.5 minutes</b>.</p>' +
+          '<p>A gaining clock reads <b>ahead</b> of the true time, so it shows 8 p.m. + 4 min 30 s = <b>8:04:30 p.m.</b></p>' +
+          '<p><b>8:03</b> forgets to scale 3 minutes up from 24 hours to 36. <b>8:06</b> scales to 48 hours instead of 36. <b>8:04</b> is the right calculation with the half-minute thrown away — and on an MCQ, throwing away a half never pays.</p>' },
+
+    { n:11, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'ar',
+      stem:'<p>The question has an <b>Assertion (A)</b> and a <b>Reason (R)</b>.</p>' +
+           '<p><b>Assertion (A):</b> The calendar of the year 2024 will be repeated in the year 2052.</p>' +
+           '<p><b>Reason (R):</b> The calendar of a leap year repeats after 28 years.</p>' +
+           '<p>Choose the correct option.</p>',
+      options:['Both A and R are true, and R is the correct explanation of A',
+               'Both A and R are true, but R is not the correct explanation of A',
+               'A is true but R is false',
+               'A is false but R is true'], answer:0,
+      sol:'<p><b>R is true.</b> A leap year repeats its calendar after 28 years: the leap cycle is 4 years and the weekday cycle is 7, so the two realign after 4 × 7 = 28 years — provided no "skipped" century leap year (1900, 2100…) falls inside the span.</p>' +
+          '<p><b>A is true</b>, and it is exactly this rule applied: 2024 + 28 = <b>2052</b>, with no century year in between.</p>' +
+          '<p><b>Check by odd days:</b> the years 2024–2051 contain 7 leap years (2024, 2028, … 2048) and 21 ordinary ones, giving 21 + 2×7 = 35 odd days. 35 ÷ 7 leaves <b>0</b> — so 1 January 2052 falls on the same weekday as 1 January 2024, and 2052 is itself a leap year. The calendars match exactly.</p>' +
+          '<p>R genuinely explains A, so <b>option (1)</b>.</p>' },
+
+    { n:12, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'plain',
+      stem:'<p>In a row of students, Sneha is <b>11th from the left</b> end and Rahul is <b>9th from the right</b> end. Sneha and Rahul <b>exchange places</b>, after which Sneha is <b>17th from the left</b> end. How many students are in the row?</p>',
+      options:['24','25','26','27'], answer:1,
+      sol:'<p>The one idea that unlocks every interchange question: <b>after the swap, Sneha is standing in the seat Rahul used to occupy.</b></p>' +
+          '<p>So Rahul\'s original position from the left was <b>17th</b>. And we were told Rahul is <b>9th from the right</b> — both counts now describe <b>one person at one moment</b>, which is exactly when L + R − 1 is allowed:</p>' +
+          '<p>Total = 17 + 9 − 1 = <b>25</b>.</p>' +
+          '<p>Sneha\'s original "11th from the left" is consistent with this (it makes her 15th from the right) but it is <b>not needed</b> — real papers include a figure like it to see whether you reach for the wrong pair. Adding 11 and 9 gets you nowhere: those two belong to different people.</p>' +
+          '<p><b>26</b> is 17 + 9 with the −1 forgotten. <b>27</b> is the trap the spare number sets: 17 + 11 − 1, fusing Sneha\'s position <em>after</em> the swap with her position <em>before</em> it — two different seats, so the formula does not apply. <b>24</b> subtracts a 1 for each of the two students instead of one for the single person counted twice.</p>' },
+
+    { n:13, section:'Mental Ability', topic:'Number, Ranking and Time Sequence Test', fmt:'plain',
+      stem:'<p>Arjun\'s birthday falls on <b>20 March</b>. In <b>2024</b> his birthday fell on a <b>Wednesday</b>. On what day will his birthday fall in <b>2027</b>?</p>',
+      options:['Thursday','Friday','Saturday','Sunday'], answer:2,
+      sol:'<p>Move one year at a time and ask each time whether a <b>29 February falls inside the interval</b>.</p>' +
+          '<p>20 Mar 2024 → 20 Mar 2025: 2024 is a leap year, but its 29 February came <b>before</b> 20 March 2024, so it is <em>not</em> inside this interval. 365 days → <b>+1</b> → Thursday.</p>' +
+          '<p>20 Mar 2025 → 20 Mar 2026: 365 days → <b>+1</b> → Friday.</p>' +
+          '<p>20 Mar 2026 → 20 Mar 2027: 365 days → <b>+1</b> → <b>Saturday</b>.</p>' +
+          '<p>The next leap year is 2028, so no interval here contains a leap day: Wednesday + 3 = <b>Saturday</b>.</p>' +
+          '<p><b>Sunday</b> is the trap — it is what you get by counting 2024 as a leap year and adding 4 days. A leap year only adds a day to an interval if <b>29 February actually lies between the two dates</b>, and for a March birthday in a leap year it does not. <b>Friday</b> drops one of the three years (+2); <b>Thursday</b> counts a single year only.</p>' }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b}. A mock also stores
+   its answers + flags so the frozen report can be replayed on any device;
+   the hub only ever reads m/mx. Written MERGE-ONLY. */
+function saveAttempt(sc, timeTaken){
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank };
+  if(IS_MOCK){ rec.a = answers.slice(); rec.f = flags.slice(); rec.md = mode; rec.tm = timeTaken; rec.v = 1; }
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function showFrozen(rec){
+  if(!rec || !IS_MOCK || submitted || !rec.a) return;
+  RESTORING = true;
+  answers = rec.a.slice();
+  flags   = (rec.f || new Array(NQ).fill(false)).slice();
+  mode    = rec.md || 'timed';
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>

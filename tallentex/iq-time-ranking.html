@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Clocks, Calendars & Ranking</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--iq); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--iq); background:color-mix(in srgb,var(--iq) 14%,transparent); border:1px solid color-mix(in srgb,var(--iq) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  ol.roman { list-style-type:upper-roman; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--physics); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--iq); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:620px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--iq); background:color-mix(in srgb,var(--iq) 13%,transparent); border:1px solid color-mix(in srgb,var(--iq) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--iq); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(128px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--iq); background:color-mix(in srgb,var(--iq) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--iq) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb { display:block !important; background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Mental Ability · Crash notes</div>
+    <h1>Clocks, Calendars &amp; Ranking</h1>
+    <p class="sub">Official topic: <b>Number, Ranking and Time Sequence Test</b>. This is the densest,
+    most formula-able cluster in the whole Mental Ability section — in the 2024-A paper four
+    <em>consecutive</em> questions came from it. Almost every question here is worth 4 marks in under a
+    minute <b>if</b> you know three formulas cold. Learn them, then never think about them again.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <ul>
+        <li><b>Angle between the hands</b> of a clock at a stated time — the single most common form.</li>
+        <li><b>When do the hands coincide / oppose / make a right angle</b> between two given hours.</li>
+        <li><b>A clock that gains or loses</b> a few minutes a day — what does it read?</li>
+        <li><b>What day of the week</b> was a given date (often an Indian date — 15 August 1947, 26 January 1950).</li>
+        <li><b>Position in a row</b> — total from two positions, or how many people sit between two named students.</li>
+        <li><b>Counting inside a digit string</b> — "how many 7s are immediately preceded by 3 and followed by 5".</li>
+      </ul>
+      <p style="margin-top:9px">Format-wise this topic is mostly <b>plain</b> and <b>diagram</b> items. About one
+      in three carries a drawn clock face. Statement items (I / II / III — which are correct) show up
+      on calendar facts. Expect a mix: roughly half go in 40 seconds, and one or two will genuinely eat
+      two minutes.</p>
+    </div>
+  </section>
+
+  <!-- ============================ 1. RANKING ============================ -->
+  <section>
+    <h2><span class="n">1</span>Ranking — position in a row</h2>
+    <p class="lede">The easiest marks in the whole paper, and the ones most often thrown away by an
+    <b>off-by-one</b>. Every ranking formula is really one idea: <b>the person is counted from both
+    ends, so they get counted twice.</b></p>
+
+    <figure>
+      <svg viewBox="0 0 620 162" width="620" height="162" role="img" aria-label="A row of nine children with Anika seventh from the left and third from the right">
+        <text x="18" y="26" font-family="JetBrains Mono, monospace" font-size="12" fill="currentColor" opacity=".65">LEFT</text>
+        <text x="560" y="26" font-family="JetBrains Mono, monospace" font-size="12" fill="currentColor" opacity=".65">RIGHT</text>
+        <g>
+          <!-- nine children, the 7th highlighted -->
+          <g fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="50"  cy="62" r="13"/><circle cx="115" cy="62" r="13"/><circle cx="180" cy="62" r="13"/>
+            <circle cx="245" cy="62" r="13"/><circle cx="310" cy="62" r="13"/><circle cx="375" cy="62" r="13"/>
+            <circle cx="505" cy="62" r="13"/><circle cx="570" cy="62" r="13"/>
+          </g>
+          <circle cx="440" cy="62" r="15" fill="var(--iq)" fill-opacity=".22" stroke="var(--iq)" stroke-width="2.5"/>
+          <text x="440" y="67" font-family="Inter, sans-serif" font-size="11" font-weight="700" text-anchor="middle" fill="var(--iq)">A</text>
+        </g>
+        <!-- numbering from the left -->
+        <g font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle" fill="currentColor" opacity=".6">
+          <text x="50" y="98">1</text><text x="115" y="98">2</text><text x="180" y="98">3</text>
+          <text x="245" y="98">4</text><text x="310" y="98">5</text><text x="375" y="98">6</text>
+          <text x="505" y="98">8</text><text x="570" y="98">9</text>
+        </g>
+        <text x="440" y="98" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle" fill="var(--iq)" font-weight="600">7</text>
+        <!-- brackets -->
+        <g stroke="var(--iq)" stroke-width="1.6" fill="none">
+          <path d="M40 116 L40 124 L440 124 L440 116"/>
+          <path d="M440 116 L440 138 L580 138 L580 116" opacity=".55"/>
+        </g>
+        <text x="240" y="139" font-family="Inter, sans-serif" font-size="11.5" text-anchor="middle" fill="var(--iq)">7th from the left</text>
+        <text x="510" y="152" font-family="Inter, sans-serif" font-size="11.5" text-anchor="middle" fill="var(--iq)" opacity=".8">3rd from the right</text>
+      </svg>
+      <figcaption>Anika is 7th from the left and 3rd from the right. Total = 7 + 3 − 1 = <b>9</b> —
+      and there really are nine circles. The <b>−1</b> is Anika herself, who appears in both counts.</figcaption>
+    </figure>
+
+    <div class="bank">
+      <div class="fx">
+        <div class="eq">Total = L + R − 1</div>
+        <div class="wh"><b>L</b> = position from the left, <b>R</b> = from the right, for the
+        <b>same</b> person. Subtract 1 because that person is counted twice.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">R = Total − L + 1</div>
+        <div class="wh">The same formula rearranged — use it to convert a "from the right" position
+        into a "from the left" one before comparing two people.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">Between = |L₂ − L₁| − 1</div>
+        <div class="wh">People strictly <b>between</b> two students, once both positions are measured
+        <b>from the same end</b>. The subtraction already drops the first of them; the <b>−1</b> drops
+        the second.</div>
+      </div>
+    </div>
+
+    <div class="box trap">
+      <h4>The two traps that cost the marks</h4>
+      <ul>
+        <li><b>"Between" is not "difference".</b> If Ravi is 12th and Meena is 26th from the same end,
+        the number <em>between</em> them is 26 − 12 − 1 = <b>13</b>, not 14. Positions 13 to 25.</li>
+        <li><b>Mixing ends.</b> You can never subtract a from-the-left position from a from-the-right
+        one. Convert first. This is the single most common slip in the topic.</li>
+      </ul>
+    </div>
+
+    <div class="box def">
+      <h4>Interchange questions</h4>
+      <p>"Ravi and Meena <b>exchange places</b>. After the exchange Ravi is <b>22nd from the left</b>
+      and <b>9th from the right</b>. How many students are in the row, and what was Meena's original
+      position?"</p>
+      <p>One idea unlocks all of these: <b>after a swap, Ravi is standing in exactly the seat Meena
+      used to occupy.</b> So:</p>
+      <ul>
+        <li><b>Total</b> — both of Ravi's new counts belong to one person at one moment, so
+        <code>22 + 9 − 1 = 30</code> students.</li>
+        <li><b>Meena's original position</b> — it is the seat Ravi now holds: <b>22nd from the left</b>
+        (equivalently 9th from the right).</li>
+      </ul>
+      <p><b>The rule to hold onto:</b> only ever add L + R − 1 for <em>one person at one moment</em>.
+      Mixing Ravi's new position with Meena's old one is the mistake the question is fishing for.</p>
+    </div>
+  </section>
+
+  <!-- ======================= 2. NUMBER SEQUENCE ======================= -->
+  <section>
+    <h2><span class="n">2</span>Number sequence — counting inside a digit string</h2>
+    <p class="lede">A long string of digits, and a condition with the words <b>immediately preceded
+    by</b> and/or <b>immediately followed by</b>. Pure care, no maths — and worth 4 marks in 45 seconds
+    once you have a method.</p>
+
+    <div class="box">
+      <h4>The method — scan for the middle digit, then look both ways</h4>
+      <ol>
+        <li>Underline every occurrence of the digit the question is <b>about</b> (the middle one).</li>
+        <li>For each, check the digit <b>immediately to its left</b> and <b>immediately to its right</b>.</li>
+        <li>Count only those satisfying <em>every</em> clause. Never count the first or last digit of
+        the string if the condition needs a neighbour it does not have.</li>
+      </ol>
+    </div>
+
+    <p><b>Worked scan.</b> How many <b>5</b>s are immediately preceded by <b>3</b> and immediately
+    followed by <b>7</b>?</p>
+    <p style="font-family:'JetBrains Mono',monospace; font-size:15.5px; letter-spacing:.14em; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:12px 14px; overflow-x:auto">
+      3 5 7 2 3 5 9 5 7 1 3 5 7 4 7 5 3 6 3 5 7
+    </p>
+    <p>Every 5 in the string, in order, with its neighbours:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>#</th><th class="mono">Left</th><th class="mono">5</th><th class="mono">Right</th><th>Counts?</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td class="mono">3</td><td class="mono">5</td><td class="mono">7</td><td><b>Yes</b></td></tr>
+          <tr><td class="mono">2</td><td class="mono">3</td><td class="mono">5</td><td class="mono">9</td><td>No — followed by 9</td></tr>
+          <tr><td class="mono">3</td><td class="mono">9</td><td class="mono">5</td><td class="mono">7</td><td>No — preceded by 9</td></tr>
+          <tr><td class="mono">4</td><td class="mono">3</td><td class="mono">5</td><td class="mono">7</td><td><b>Yes</b></td></tr>
+          <tr><td class="mono">5</td><td class="mono">7</td><td class="mono">5</td><td class="mono">3</td><td>No — preceded by 7</td></tr>
+          <tr><td class="mono">6</td><td class="mono">3</td><td class="mono">5</td><td class="mono">7</td><td><b>Yes</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Answer: <b>3</b>. Notice how close the wrong answers sit — count only the 5s <em>preceded by 3</em>
+    and you get 4; count only those <em>followed by 7</em> and you also get 4. Either clause on its own
+    overcounts. <b>Read both clauses before you start counting.</b></p>
+  </section>
+
+  <!-- ============================ 3. CLOCKS ============================ -->
+  <section>
+    <h2><span class="n">3</span>Clocks</h2>
+    <p class="lede">Everything about clocks follows from two speeds. Learn these two numbers and the
+    whole topic collapses into arithmetic.</p>
+
+    <div class="figrow">
+      <figure style="margin-top:6px">
+        <svg viewBox="0 0 200 200" width="205" height="205" role="img" aria-label="Clock face marked with the two hand speeds">
+          <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <g stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".55">
+            <line x1="100" y1="24" x2="100" y2="33"/><line x1="176" y1="100" x2="167" y2="100"/>
+            <line x1="100" y1="176" x2="100" y2="167"/><line x1="24" y1="100" x2="33" y2="100"/>
+            <line x1="138" y1="34.2" x2="133.5" y2="42"/><line x1="165.8" y1="62" x2="158" y2="66.5"/>
+            <line x1="165.8" y1="138" x2="158" y2="133.5"/><line x1="138" y1="165.8" x2="133.5" y2="158"/>
+            <line x1="62" y1="165.8" x2="66.5" y2="158"/><line x1="34.2" y1="138" x2="42" y2="133.5"/>
+            <line x1="34.2" y1="62" x2="42" y2="66.5"/><line x1="62" y1="34.2" x2="66.5" y2="42"/>
+          </g>
+          <g font-family="Inter, sans-serif" font-size="12" text-anchor="middle" fill="currentColor" opacity=".8">
+            <text x="100" y="49">12</text><text x="127.5" y="56.4">1</text><text x="147.6" y="76.5">2</text>
+            <text x="155" y="104">3</text><text x="147.6" y="131.5">4</text><text x="127.5" y="151.6">5</text>
+            <text x="100" y="159">6</text><text x="72.5" y="151.6">7</text><text x="52.4" y="131.5">8</text>
+            <text x="45" y="104">9</text><text x="52.4" y="76.5">10</text><text x="72.5" y="56.4">11</text>
+          </g>
+          <!-- minute hand to 12, hour hand to 12: show the 30 degree sector between 12 and 1 -->
+          <path d="M100 100 L100 58 A42 42 0 0 1 121 63.6 Z" fill="var(--iq)" fill-opacity=".22" stroke="var(--iq)" stroke-width="1.4"/>
+          <text x="130" y="88" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--iq)" text-anchor="middle">30°</text>
+          <circle cx="100" cy="100" r="4" fill="currentColor"/>
+        </svg>
+        <figcaption>One hour mark = <b>30°</b> (360 ÷ 12). Every clock question is measured from this.</figcaption>
+      </figure>
+
+      <figure style="margin-top:6px">
+        <svg viewBox="0 0 264 200" width="264" height="200" role="img" aria-label="Clock face showing twenty past four, hands ten degrees apart">
+          <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <g stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".55">
+            <line x1="100" y1="24" x2="100" y2="33"/><line x1="176" y1="100" x2="167" y2="100"/>
+            <line x1="100" y1="176" x2="100" y2="167"/><line x1="24" y1="100" x2="33" y2="100"/>
+          </g>
+          <g font-family="Inter, sans-serif" font-size="12" text-anchor="middle" fill="currentColor" opacity=".8">
+            <text x="100" y="49">12</text><text x="155" y="104">3</text>
+            <text x="100" y="159">6</text><text x="45" y="104">9</text>
+            <text x="147.6" y="131.5">4</text>
+          </g>
+          <!-- minute hand: 20 min -> 120deg from 12 -->
+          <line x1="100" y1="100" x2="160.6" y2="135" stroke="var(--physics)" stroke-width="2.6" stroke-linecap="round"/>
+          <!-- hour hand: 4:20 -> 130deg from 12 -->
+          <line x1="100" y1="100" x2="139.8" y2="133.4" stroke="var(--iq)" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="100" cy="100" r="4.5" fill="currentColor"/>
+          <g font-family="JetBrains Mono, monospace" font-size="10.5">
+            <line x1="192" y1="86" x2="208" y2="86" stroke="var(--iq)" stroke-width="4" stroke-linecap="round"/>
+            <text x="213" y="90" fill="var(--iq)">hour</text>
+            <line x1="192" y1="104" x2="208" y2="104" stroke="var(--physics)" stroke-width="2.2" stroke-linecap="round"/>
+            <text x="213" y="108" fill="var(--physics)">minute</text>
+          </g>
+          <text x="100" y="192" font-family="Inter, sans-serif" font-size="12.5" text-anchor="middle" fill="currentColor">4:20 → hands only <tspan fill="var(--iq)" font-weight="700">10°</tspan> apart</text>
+        </svg>
+        <figcaption>At 4:20 the minute hand has <em>not yet reached</em> the hour hand: the minute hand
+        sits exactly on the 4, while the hour hand has already crept 10° past it. Students who answer 20°
+        forgot that the hour hand moves at all during those 20 minutes.</figcaption>
+      </figure>
+    </div>
+
+    <div class="bank">
+      <div class="fx">
+        <div class="eq">Minute hand: 6° per minute</div>
+        <div class="wh">360° in 60 minutes. A full lap every hour.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">Hour hand: 0.5° per minute</div>
+        <div class="wh">30° per hour = half a degree a minute. <b>It never stops moving</b> — this is
+        the fact that every wrong answer forgets.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">θ = |30H − 5.5M|</div>
+        <div class="wh"><b>H</b> = hour, <b>M</b> = minutes past it. If the result exceeds 180°, the
+        answer is <b>360 − θ</b> (the paper wants the smaller angle).</div>
+      </div>
+      <div class="fx">
+        <div class="eq">Relative speed = 5.5° per minute</div>
+        <div class="wh">6 − 0.5. The minute hand gains on the hour hand at this rate — every
+        "when do the hands…" question is one division by 5.5.</div>
+      </div>
+    </div>
+
+    <div class="box def">
+      <h4>Where θ = |30H − 5.5M| comes from</h4>
+      <p>Measure both hands clockwise from 12. After <b>H</b> hours and <b>M</b> minutes:</p>
+      <ul>
+        <li>Minute hand = <code>6M</code> degrees.</li>
+        <li>Hour hand = <code>30H + 0.5M</code> degrees — the 30H for whole hours, the 0.5M for the
+        creep during those M minutes.</li>
+      </ul>
+      <p>The gap is <code>|30H + 0.5M − 6M| = |30H − 5.5M|</code>. That is the entire derivation; if
+      you ever blank on the formula in the hall, rebuild it in ten seconds from the two speeds.</p>
+    </div>
+
+    <h3>When do the hands do something special?</h3>
+    <p>Set <code>|30H − 5.5M|</code> equal to the angle you want and solve for <b>M</b>:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Situation</th><th>Set θ to</th><th>Times in 12 hours</th></tr></thead>
+        <tbody>
+          <tr><td><b>Hands coincide</b> (together)</td><td class="mono">0°</td><td><b>11</b> — not 12</td></tr>
+          <tr><td><b>Hands opposite</b> (straight line, apart)</td><td class="mono">180°</td><td><b>11</b></td></tr>
+          <tr><td><b>Hands at right angles</b></td><td class="mono">90°</td><td><b>22</b></td></tr>
+          <tr><td><b>Hands in a straight line</b> (either way)</td><td class="mono">0° or 180°</td><td><b>22</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box trap">
+      <h4>Why 11 and not 12</h4>
+      <p>In 12 hours the minute hand laps the hour hand only <b>11</b> times: between 11 o'clock and
+      1 o'clock there is just <em>one</em> coincidence (at 12:00 exactly), not two. The hands coincide
+      every <code>720/11 = 65 5/11</code> minutes, which is a little over 65 minutes — so the
+      coincidences drift, and one gets swallowed.</p>
+    </div>
+
+    <div class="box def">
+      <h4>Clocks that gain or lose</h4>
+      <p>Treat it as a rate: <b>a clock gaining 5 minutes a day</b> gains 5 minutes per 24 hours. After
+      <b>t</b> hours it is ahead by <code>5 × t / 24</code> minutes. Two cautions:</p>
+      <ul>
+        <li>A clock that is <b>set right</b> at a moment and then gains, shows the true time <em>plus</em>
+        the gain. A losing clock shows true time <em>minus</em> the loss.</li>
+        <li>"How much does it gain in a day" questions about the <em>hands</em> are different: a correct
+        clock's hands coincide every 65 5/11 minutes. If a clock's hands coincide every 65 minutes, it
+        is running <b>fast</b>, gaining <code>5/11</code> of a minute every 65 minutes.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- =========================== 4. CALENDARS =========================== -->
+  <section>
+    <h2><span class="n">4</span>Calendars — the odd-days method</h2>
+    <p class="lede">One idea does all of it: <b>an odd day is a leftover day after removing whole
+    weeks</b>. Count the odd days between a known reference and your date, and the leftover tells you
+    the weekday.</p>
+
+    <div class="box def">
+      <h4>Definitions</h4>
+      <ul>
+        <li><b>Odd days</b> = remainder when the total number of days is divided by 7.</li>
+        <li><b>Ordinary year</b> = 365 days = 52 weeks + 1 → <b>1 odd day</b>.</li>
+        <li><b>Leap year</b> = 366 days = 52 weeks + 2 → <b>2 odd days</b>.</li>
+        <li><b>Leap year test</b>: divisible by 4 — <em>except</em> century years, which must be
+        divisible by 400. So 1900 was <b>not</b> a leap year; <b>2000 was</b>.</li>
+      </ul>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Block</th><th class="mono">Odd days</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>100 years</td><td class="mono"><b>5</b></td><td>76 ordinary + 24 leap = 124 days over whole weeks; 124 ÷ 7 leaves 5</td></tr>
+          <tr><td>200 years</td><td class="mono"><b>3</b></td><td>10 ÷ 7 leaves 3</td></tr>
+          <tr><td>300 years</td><td class="mono"><b>1</b></td><td>15 ÷ 7 leaves 1</td></tr>
+          <tr><td>400 years</td><td class="mono"><b>0</b></td><td>the extra leap day in the 400th year pushes it back to a whole number of weeks</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Because 400 years carries 0 odd days, <b>the calendar repeats every 400 years</b> — and you can
+    always throw away whole multiples of 400 before you start counting.</p>
+
+    <div class="box">
+      <h4>Month codes — days to carry, month by month</h4>
+      <p>Add up complete months using their day counts, then take the remainder mod 7. The four
+      31-day/30-day patterns worth memorising as odd days:</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Month length</th><th class="mono">Odd days</th><th>Months</th></tr></thead>
+          <tbody>
+            <tr><td>31 days</td><td class="mono">3</td><td>Jan, Mar, May, Jul, Aug, Oct, Dec</td></tr>
+            <tr><td>30 days</td><td class="mono">2</td><td>Apr, Jun, Sep, Nov</td></tr>
+            <tr><td>28 days (Feb, ordinary)</td><td class="mono">0</td><td>February in a common year</td></tr>
+            <tr><td>29 days (Feb, leap)</td><td class="mono">1</td><td>February in a leap year</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <h4>Reading the leftover</h4>
+      <p>With the counting convention used here (odd days counted from the start of the Christian era),
+      the remainder maps to:</p>
+      <p style="font-family:'JetBrains Mono',monospace; font-size:13.5px; line-height:2">
+        0 → Sunday &nbsp;·&nbsp; 1 → Monday &nbsp;·&nbsp; 2 → Tuesday &nbsp;·&nbsp; 3 → Wednesday
+        &nbsp;·&nbsp; 4 → Thursday &nbsp;·&nbsp; 5 → Friday &nbsp;·&nbsp; 6 → Saturday
+      </p>
+      <p><b>Sanity check you can always use:</b> you know some anchor dates by heart. 15 August 1947 was
+      a <b>Friday</b>; 26 January 1950 was a <b>Thursday</b>. If your method gives the right answer on an
+      anchor, trust it on the question.</p>
+    </div>
+  </section>
+
+  <!-- ========================= WORKED EXAMPLES ========================= -->
+  <section>
+    <h2><span class="n">5</span>Five worked questions — with the elimination said out loud</h2>
+    <p class="lede">These are pitched at TALLENTEX level. Try each before opening the working. The
+    <b>elimination</b> line is the part worth copying: on the day, ruling out two options is often
+    faster than solving.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">Clock angle · ~40 seconds</span></div>
+      <p>What is the angle between the hour hand and the minute hand at <b>4:20</b>?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>0°</div>
+        <div class="we-opt key"><span class="ob">2</span>10°</div>
+        <div class="we-opt"><span class="ob">3</span>20°</div>
+        <div class="we-opt"><span class="ob">4</span>30°</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>θ = |30H − 5.5M| with H = 4, M = 20:</p>
+        <p><code>30 × 4 = 120</code> &nbsp;·&nbsp; <code>5.5 × 20 = 110</code> &nbsp;·&nbsp;
+        <code>|120 − 110| = 10°</code>.</p>
+        <p>Sanity: at 4:20 the minute hand sits exactly on the 4, and the hour hand has crept
+        <b>one third of the way</b> from 4 towards 5 — a third of 30° is 10°. The minute hand is
+        <em>behind</em> it. <b>10°</b>.</p>
+        <div class="elim"><b>Elimination:</b> option (1) 0° is what you get if you <b>forget the hour
+        hand creeps at all</b> — the minute hand at 20 minutes sits exactly on the 4, so if the hour
+        hand were still parked on the 4 the two would coincide. (They really do coincide, but not
+        until 4:21 <sup>9</sup>⁄<sub>11</sub>.) Option (3) 20° takes the creep as <b>20°</b> — reading
+        "20 minutes" straight off as degrees instead of 0.5°/min × 20 = 10°. Option (4) 30° is a whole
+        hour-mark, the gap between two adjacent numerals, not an answer to this. Only (2) survives.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">Ranking · ~50 seconds</span></div>
+      <p>In a row of <b>40</b> students, Ravi is <b>12th from the left</b> end and Meena is
+      <b>15th from the right</b> end. How many students are seated <b>between</b> Ravi and Meena?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>12</div>
+        <div class="we-opt key"><span class="ob">2</span>13</div>
+        <div class="we-opt"><span class="ob">3</span>14</div>
+        <div class="we-opt"><span class="ob">4</span>Cannot be determined</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — put both on the same ruler.</b> Meena is 15th from the right, so from the left
+        she is <code>40 − 15 + 1 = 26th</code>.</p>
+        <p><b>Step 2 — the gap.</b> Ravi is 12th, Meena 26th, both from the left. Between them sit
+        positions 13 to 25, which is <code>26 − 12 − 1 = 13</code> students.</p>
+        <p>Answer: <b>13</b>.</p>
+        <div class="elim"><b>Elimination:</b> option (3) 14 is the raw difference 26 − 12 — the
+        classic off-by-one, and the most popular wrong answer. Option (1) 12 is the
+        <em>over</em>-correction: there is a one-line shortcut here, <code>40 − 12 − 15 = 13</code>
+        (chop 12 off the left end and 15 off the right, and what is left is the middle), and 12 is
+        what you get by subtracting a further 1 out of habit. Option (4) is a decoy — the row length
+        is given, so it <em>is</em> determined. Note the two −1s in this topic pull opposite ways:
+        <code>L + R − 1</code> <b>adds back</b> a double-counted person, while
+        <code>L₂ − L₁ − 1</code> <b>removes</b> an endpoint. Know which one you are using.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">Calendar · ~2 minutes</span></div>
+      <p>What day of the week was <b>15 August 1947</b>?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Thursday</div>
+        <div class="we-opt key"><span class="ob">2</span>Friday</div>
+        <div class="we-opt"><span class="ob">3</span>Saturday</div>
+        <div class="we-opt"><span class="ob">4</span>Sunday</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Split the date into <b>complete years before it</b> plus <b>days elapsed in 1947</b>.</p>
+        <p><b>Complete years: 1946 = 1600 + 300 + 46.</b></p>
+        <ul>
+          <li>1600 years → <code>0</code> odd days (a multiple of 400).</li>
+          <li>300 years → <code>1</code> odd day.</li>
+          <li>46 years (1901–1946): leap years are 1904, 1908, … 1944 → <code>(1944−1904)/4 + 1 = 11</code>
+          of them, and 35 ordinary years. Odd days = <code>35×1 + 11×2 = 57</code>; <code>57 ÷ 7</code>
+          leaves <b>1</b>.</li>
+        </ul>
+        <p>Sub-total: <code>0 + 1 + 1 = 2</code> odd days.</p>
+        <p><b>Days in 1947 up to 15 August</b> (1947 is not a leap year, so February has 28):</p>
+        <p><code>31 + 28 + 31 + 30 + 31 + 30 + 31 + 15 = 227</code> days. <code>227 ÷ 7 = 32</code>
+        remainder <b>3</b>.</p>
+        <p><b>Total odd days = 2 + 3 = 5 → Friday.</b></p>
+        <div class="elim"><b>Elimination:</b> this is one to <em>check</em> rather than eliminate —
+        Independence Day 1947 being a Friday is a fact worth simply knowing, and it doubles as the
+        anchor that proves your method works. If your arithmetic gives <b>Thursday</b> you dropped the
+        +15 and stopped at the end of July. If it gives <b>Saturday</b>, you either counted 1947 itself
+        among the complete years or treated it as a leap year and added a 29 February — both of those
+        land on Saturday.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">Clock — coincidence · ~90 seconds</span></div>
+      <p>At what time between <b>3 o'clock and 4 o'clock</b> will the two hands of a clock be
+      <b>together</b>?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>15 min past 3</div>
+        <div class="we-opt key"><span class="ob">2</span>16 <sup>4</sup>⁄<sub>11</sub> min past 3</div>
+        <div class="we-opt"><span class="ob">3</span>17 <sup>1</sup>⁄<sub>11</sub> min past 3</div>
+        <div class="we-opt"><span class="ob">4</span>18 min past 3</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Together means θ = 0, so <code>30H − 5.5M = 0</code> with H = 3:</p>
+        <p><code>90 = 5.5M</code> → <code>M = 90 / 5.5 = 180/11 = 16 4/11</code> minutes.</p>
+        <p>Answer: <b>16 4/11 minutes past 3</b>.</p>
+        <p><em>The same result the other way:</em> at 3:00 the minute hand is 90° behind the hour hand.
+        It closes the gap at 5.5° per minute, so it needs <code>90 ÷ 5.5</code> minutes.</p>
+        <div class="elim"><b>Elimination:</b> option (1) 15 min is where the minute hand reaches the 3
+        — but by then the hour hand has moved on by 7.5°, so they are not together. That "obvious"
+        answer is the trap in every coincidence question. Options with an eleventh in them are the
+        plausible ones, because <b>every</b> coincidence time has a denominator of 11 — that alone
+        kills (1) and (4) in two seconds.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">Statement item · ~90 seconds</span></div>
+      <p>Consider the following statements.</p>
+      <ol class="roman">
+        <li>The year 2100 will be a leap year.</li>
+        <li>An ordinary year has 1 odd day.</li>
+        <li>The hands of a clock are at right angles 22 times in 12 hours.</li>
+      </ol>
+      <p>Which of the statements are <b>correct</b>?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>I and II only</div>
+        <div class="we-opt"><span class="ob">2</span>I and III only</div>
+        <div class="we-opt key"><span class="ob">3</span>II and III only</div>
+        <div class="we-opt"><span class="ob">4</span>I, II and III</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>I is false.</b> 2100 is a century year, so it needs to be divisible by <b>400</b>, not
+        just 4. 2100 ÷ 400 is not a whole number → not a leap year.</p>
+        <p><b>II is true.</b> 365 = 52 × 7 + 1.</p>
+        <p><b>III is true.</b> 22 right angles in 12 hours (twice per lap of the relative motion, 11 laps).</p>
+        <p>So II and III → <b>option (3)</b>.</p>
+        <div class="elim"><b>Elimination:</b> the whole item turns on statement I. Settle I first —
+        it appears in options (1), (2) and (4), so proving it <em>false</em> deletes three of the four
+        options at a stroke and you never need to check II or III at all. <b>On any statement item,
+        find the clause that appears in the most options and test that one first.</b></div>
+      </div></details>
+    </div>
+  </section>
+
+  <!-- ========================= CHECK YOURSELF ========================= -->
+  <section>
+    <h2><span class="n">6</span>Check yourself</h2>
+    <p class="lede">Five quick ones. <b>No negative marking here</b> — this is practice, not the exam.
+    Click an option to see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="iq-time-ranking-paper-1.html">📝 Now sit Paper 1 — 13 questions, 20 minutes</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Mental Ability · <b>Number, Ranking and Time Sequence Test</b> — the official topic
+    name from Allen's Class X syllabus. Crash notes: read once now, once the night before.<br>
+    Tip: press 🖨 (bottom-left) to print these as a revision sheet · 🏆 (top-left) goes back to the TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'In a row of children, Priya is 9th from the left and 14th from the right. How many children are in the row?',
+    o:['21','22','23','24'], a:1,
+    fb:'Total = L + R − 1 = 9 + 14 − 1 = <b>22</b>. The −1 is Priya, counted from both ends.' },
+  { q:'What is the angle between the hands of a clock at <b>2:30</b>?',
+    o:['90°','95°','105°','120°'], a:2,
+    fb:'θ = |30×2 − 5.5×30| = |60 − 165| = <b>105°</b>. The trap is <b>120°</b>: that is the gap if you leave the hour hand parked on the 2. By 2:30 it has crept 15° towards the 3, which <em>closes</em> the gap from 120° to 105°.' },
+  { q:'Which of these is a leap year?',
+    o:['1900','2000','2100','2200'], a:1,
+    fb:'A century year must be divisible by <b>400</b>. 2000 ÷ 400 = 5 ✓. The other three are divisible by 4 but not by 400, so they are ordinary years.' },
+  { q:'How many times in <b>12 hours</b> do the hands of a clock coincide?',
+    o:['10','11','12','24'], a:1,
+    fb:'<b>11</b>. The minute hand laps the hour hand every 65 5/11 minutes, so between 11 o\'clock and 1 o\'clock there is only one coincidence (at 12:00) — a twelfth never happens.' },
+  { q:'In a class of 35, Arjun ranks 18th from the top. What is his rank from the bottom?',
+    o:['17th','18th','19th','20th'], a:1,
+    fb:'Rank from bottom = Total − rank from top + 1 = 35 − 18 + 1 = <b>18th</b>. He is exactly in the middle, so both ranks match — a good check that the formula is right.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. Go and sit Paper 1.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed, then sit Paper 1.'
+                        : 'Worth a second read of the formula banks before Paper 1 — these are marks you should never drop.');
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:iq-time-ranking:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
