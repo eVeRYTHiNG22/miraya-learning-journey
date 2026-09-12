@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Trigonometry — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+    </div>
+    <p class="startnote">Practice mode still marks you and still applies −1 — only the countdown is off.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  title: 'TALLENTEX · Trigonometry — Paper 1',
+  kind: 'topic',
+  duration: 20,
+  id: 'tx:maths-trigonometry:p1',
+  accent: 'maths',
+  sub: 'Introduction to Trigonometry — ratios, the standard angles, the three identities and complementary angles. <b>13 questions · 52 marks · 20 minutes.</b> Pitched at the real TALLENTEX paper, so expect to run out of clock before you run out of questions — that is the point. Triage, do not grind.',
+  sections: [ { name:'Mathematics', from:1, to:13 } ],
+  questions: [
+
+    { n:1, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'diagram',
+      stem:'<p>In the triangle shown, &ang;B = 90&deg;, AB = 8 cm and BC = 15 cm. What is the value of <b>(sin A + cos A) &divide; (sin A &minus; cos A)</b>?</p>',
+      fig:'<svg viewBox="0 0 270 180" width="270" height="180" role="img" aria-label="Right triangle A B C, right-angled at B, with AB equal to 8 centimetres and BC equal to 15 centimetres"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M45 140 L225 140 L45 44 Z"/></g><path d="M45 126 L59 126 L59 140" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M64.4 54.3 A 22 22 0 0 0 45 66" fill="none" stroke="var(--maths)" stroke-width="2"/><text x="36" y="36" fill="currentColor" font-family="Inter,sans-serif" font-size="13">A</text><text x="34" y="157" fill="currentColor" font-family="Inter,sans-serif" font-size="13">B</text><text x="220" y="158" fill="currentColor" font-family="Inter,sans-serif" font-size="13">C</text><text x="34" y="98" fill="currentColor" font-family="Inter,sans-serif" font-size="12.5" text-anchor="end">8 cm</text><text x="135" y="160" fill="currentColor" font-family="Inter,sans-serif" font-size="12.5" text-anchor="middle">15 cm</text></svg>',
+      figCap:'The right angle is at B. The marked angle at the top vertex is A.',
+      options:['&minus;23/7','7/23','23/17','23/7'], answer:3,
+      sol:'<p>AC = &radic;(8&sup2; + 15&sup2;) = &radic;289 = <b>17 cm</b>. For angle A the opposite side is BC = 15 and the adjacent side is AB = 8, so sin A = 15/17 and cos A = 8/17.</p><p>The 17s cancel: (15/17 + 8/17) &divide; (15/17 &minus; 8/17) = (15 + 8)/(15 &minus; 8) = <b>23/7</b>.</p><p>Where the other options come from: <b>&minus;23/7</b> is sin and cos swapped (using sin A = 8/17), which flips the sign of the denominator. <b>7/23</b> is the whole fraction turned upside down. <b>23/17</b> is stopping after the numerator, sin A + cos A = 23/17.</p>' },
+
+    { n:2, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'plain',
+      stem:'<p>Evaluate</p><p style="text-align:center"><b>(5 cos&sup2;60&deg; + 4 sec&sup2;30&deg; &minus; tan&sup2;45&deg;) &divide; (sin&sup2;30&deg; + cos&sup2;30&deg;)</b></p>',
+      options:['13/4','67/12','79/12','41/6'], answer:1,
+      sol:'<p>The denominator is the identity sin&sup2;&theta; + cos&sup2;&theta; = 1, so it is just <b>1</b> &mdash; spot that before you compute anything.</p><p>Numerator: cos 60&deg; = 1/2 so 5 cos&sup2;60&deg; = 5 &times; 1/4 = 5/4. sec 30&deg; = 2/&radic;3 so sec&sup2;30&deg; = 4/3 and 4 sec&sup2;30&deg; = 16/3. tan 45&deg; = 1 so tan&sup2;45&deg; = 1.</p><p>5/4 + 16/3 &minus; 1 = (15 + 64 &minus; 12)/12 = <b>67/12</b>.</p><p>Where the other options come from: <b>13/4</b> is sec 30&deg; confused with cos 30&deg; = &radic;3/2, giving 4 &times; 3/4 = 3. <b>79/12</b> is forgetting the &minus;1 (reading tan 45&deg; as 0). <b>41/6</b> = 82/12 is reading cos&sup2;60&deg; as cos 60&deg; = 1/2, giving 5/2 instead of 5/4.</p>' },
+
+    { n:3, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'plain',
+      stem:'<p>If <b>sec &theta; + tan &theta; = 5/2</b>, where &theta; is an acute angle, then cos &theta; equals</p>',
+      options:['20/29','21/29','20/21','29/20'], answer:0,
+      sol:'<p>Use sec&sup2;&theta; &minus; tan&sup2;&theta; = 1, which factorises as (sec &theta; + tan &theta;)(sec &theta; &minus; tan &theta;) = 1. So sec &theta; &minus; tan &theta; = <b>2/5</b>.</p><p>Adding the two equations: 2 sec &theta; = 5/2 + 2/5 = 29/10, so sec &theta; = 29/20 and therefore <b>cos &theta; = 20/29</b>.</p><p>(Check: subtracting gives tan &theta; = 21/20, so sin &theta; = 21/29, and 21&sup2; + 20&sup2; = 441 + 400 = 841 = 29&sup2;. &#10003;)</p><p>Where the other options come from: <b>21/29</b> is sin &theta;. <b>20/21</b> is cot &theta;. <b>29/20</b> is sec &theta; &mdash; the question asked for cos &theta;, so it still has to be turned upside down.</p>' },
+
+    { n:4, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'diagram',
+      stem:'<p>In the figure, AD is perpendicular to BC, &ang;B = 30&deg;, &ang;C = 45&deg; and AD = 6 cm. The length of <b>BC</b> is</p>',
+      fig:'<svg viewBox="0 0 300 180" width="300" height="180" role="img" aria-label="Triangle A B C with A D perpendicular to B C, angle B 30 degrees, angle C 45 degrees, A D 6 centimetres"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M25 140 L254 140 L170 56 Z"/></g><line x1="170" y1="56" x2="170" y2="140" stroke="currentColor" stroke-width="1.8" stroke-dasharray="5 4"/><path d="M170 128 L158 128 L158 140" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M62 140 A 37 37 0 0 0 56.5 121.5" fill="none" stroke="var(--maths)" stroke-width="2"/><path d="M224 140 A 30 30 0 0 0 232.5 118.8" fill="none" stroke="var(--maths)" stroke-width="2"/><text x="68" y="132" fill="var(--maths)" font-family="Inter,sans-serif" font-size="12" font-weight="600">30&#176;</text><text x="200" y="133" fill="var(--maths)" font-family="Inter,sans-serif" font-size="12" font-weight="600">45&#176;</text><text x="166" y="46" fill="currentColor" font-family="Inter,sans-serif" font-size="13">A</text><text x="16" y="157" fill="currentColor" font-family="Inter,sans-serif" font-size="13">B</text><text x="163" y="157" fill="currentColor" font-family="Inter,sans-serif" font-size="13">D</text><text x="250" y="157" fill="currentColor" font-family="Inter,sans-serif" font-size="13">C</text><text x="164" y="102" fill="currentColor" font-family="Inter,sans-serif" font-size="12.5" text-anchor="end">6 cm</text></svg>',
+      figCap:'AD &#8869; BC, so both ABD and ADC are right-angled triangles. D lies between B and C.',
+      options:['(6 + 2&radic;3) cm','(6 + 3&radic;3) cm','12 cm','(6 + 6&radic;3) cm'], answer:3,
+      sol:'<p>Split BC at D and work in the two right triangles separately &mdash; AD = 6 is the side <i>opposite</i> both marked angles, so use tan.</p><p>In &#9651;ABD: tan 30&deg; = AD/BD, so BD = 6 &divide; (1/&radic;3) = <b>6&radic;3 cm</b>.</p><p>In &#9651;ADC: tan 45&deg; = AD/DC, so DC = 6 &divide; 1 = <b>6 cm</b>.</p><p>BC = BD + DC = <b>(6 + 6&radic;3) cm</b> &asymp; 16.4 cm.</p><p>Where the other options come from: <b>(6 + 2&radic;3)</b> is multiplying by tan 30&deg; instead of dividing (BD = 6 &times; 1/&radic;3 = 2&radic;3). <b>(6 + 3&radic;3)</b> is using cos 30&deg; (BD = 6 &times; &radic;3/2). <b>12</b> is treating &ang;B as 45&deg; as well, so both parts come out 6.</p>' },
+
+    { n:5, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'plain',
+      stem:'<p>If <b>3 cot A = 4</b>, then the value of</p><p style="text-align:center"><b>[(2 + 2 sin A)(1 &minus; sin A)] &divide; [(1 + cos A)(2 &minus; 2 cos A)]</b></p><p>is</p>',
+      options:['9/16','3/4','16/9','2'], answer:2,
+      sol:'<p>Simplify <i>before</i> substituting. Take the 2 out of each bracket that has one: the expression is 2(1 + sin A)(1 &minus; sin A) &divide; [2(1 + cos A)(1 &minus; cos A)], and the 2s cancel.</p><p>= (1 &minus; sin&sup2;A)/(1 &minus; cos&sup2;A) = cos&sup2;A/sin&sup2;A = <b>cot&sup2;A</b>, using sin&sup2;A + cos&sup2;A = 1 both ways round (1 &minus; sin&sup2;A = cos&sup2;A and 1 &minus; cos&sup2;A = sin&sup2;A) and cot A = cos A &divide; sin A.</p><p>cot A = 4/3, so the value is (4/3)&sup2; = <b>16/9</b>. (You never need sin A or cos A at all.)</p><p>Where the other options come from: <b>9/16</b> is tan&sup2;A &mdash; the fraction inverted. <b>3/4</b> is stopping at tan A. <b>2</b> comes from cancelling wrongly to (1 &minus; sin A)/(1 &minus; cos A): with cot A = 4/3 the triangle is 3&ndash;4&ndash;5, so sin A = 3/5 and cos A = 4/5, giving (2/5) &divide; (1/5) = 2.</p>' },
+
+    { n:6, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'statement',
+      stem:'<p>Consider the following four statements.</p><ol class="roman"><li>sin 60&deg; cos 30&deg; + cos 60&deg; sin 30&deg; = 1</li><li>2 tan&sup2;45&deg; + cos&sup2;30&deg; &minus; sin&sup2;60&deg; = 2</li><li>(1 &minus; tan&sup2;45&deg;) &divide; (1 + tan&sup2;45&deg;) = cos 90&deg;</li><li>cosec&sup2;30&deg; &minus; cot&sup2;30&deg; = 2</li></ol><p>Which of them are <b>correct</b>?</p>',
+      options:['I, II and III only','I and III only','II, III and IV only','All four are correct'], answer:0,
+      sol:'<p><b>I &#10003;</b> &nbsp;(&radic;3/2)(&radic;3/2) + (1/2)(1/2) = 3/4 + 1/4 = 1.</p><p><b>II &#10003;</b> &nbsp;2(1)&sup2; + (&radic;3/2)&sup2; &minus; (&radic;3/2)&sup2; = 2 + 3/4 &minus; 3/4 = 2. The last two terms are equal because cos 30&deg; = sin 60&deg;, so they cancel.</p><p><b>III &#10003;</b> &nbsp;(1 &minus; 1)/(1 + 1) = 0, and cos 90&deg; = 0.</p><p><b>IV &#10005;</b> &nbsp;cosec 30&deg; = 2 and cot 30&deg; = &radic;3, so 4 &minus; 3 = <b>1</b>, not 2. The identity is cosec&sup2;&theta; &minus; cot&sup2;&theta; = 1 &mdash; check it rather than assume the number on the right.</p><p>So I, II and III only.</p>' },
+
+    { n:7, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'diagram',
+      stem:'<p>In the figure, &ang;ABC = 90&deg;, AB = 12 cm, AC = 13 cm, and BD is perpendicular to AC. What is <b>cos &theta;</b>, where &theta; = &ang;DBC?</p>',
+      fig:'<svg viewBox="0 0 210 190" width="260" height="235" role="img" aria-label="Right triangle A B C right-angled at B with B D perpendicular to the hypotenuse A C, and theta the angle D B C"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M70 30 L70 150 L120 150 Z"/></g><line x1="70" y1="150" x2="112.6" y2="132.2" stroke="currentColor" stroke-width="1.8" stroke-dasharray="5 4"/><path d="M70 138 L82 138 L82 150" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M116.4 141.5 L107.2 145.3 L103.4 136.1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M96 150 A 26 26 0 0 0 94 140.7" fill="none" stroke="var(--maths)" stroke-width="2"/><text x="99" y="143" fill="var(--maths)" font-family="Inter,sans-serif" font-size="12" font-weight="600">&#952;</text><text x="62" y="24" fill="currentColor" font-family="Inter,sans-serif" font-size="13">A</text><text x="56" y="164" fill="currentColor" font-family="Inter,sans-serif" font-size="13">B</text><text x="124" y="164" fill="currentColor" font-family="Inter,sans-serif" font-size="13">C</text><text x="118" y="128" fill="currentColor" font-family="Inter,sans-serif" font-size="13">D</text><text x="62" y="94" fill="currentColor" font-family="Inter,sans-serif" font-size="12.5" text-anchor="end">12 cm</text><text x="104" y="82" fill="currentColor" font-family="Inter,sans-serif" font-size="12.5">13 cm</text></svg>',
+      figCap:'D is the foot of the perpendicular from B onto AC. &theta; is the angle DBC, inside the small triangle BDC.',
+      options:['5/13','5/12','12/13','13/12'], answer:2,
+      sol:'<p>First the third side: BC = &radic;(13&sup2; &minus; 12&sup2;) = &radic;25 = <b>5 cm</b>.</p><p>Now the key step &mdash; <b>&theta; = &ang;A</b>. The angles of a triangle add to 180&deg;, so in a right-angled triangle the other two add to 90&deg;. In &#9651;BDC the angle at D is 90&deg;, so &theta; = 90&deg; &minus; &ang;C. In &#9651;ABC the angle at B is 90&deg;, so &ang;A = 90&deg; &minus; &ang;C as well. Two angles equal to the same thing are equal.</p><p>So cos &theta; = cos A = AB/AC = <b>12/13</b>.</p><p>Where the other options come from: <b>5/13</b> is taking &theta; = &ang;C instead of &ang;A. <b>5/12</b> is tan A. <b>13/12</b> is sec A, the reciprocal.</p>' },
+
+    { n:8, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'plain',
+      stem:'<p>If <b>tan 2A = cot(A &minus; 18&deg;)</b> and <b>sec 3B = cosec(B + 10&deg;)</b>, where 2A and 3B are both acute angles, then <b>A &minus; B</b> equals</p>',
+      options:['11&deg;','16&deg;','52&deg;','56&deg;'], answer:1,
+      sol:'<p>Both equations are cofunction pairs, and every cofunction pair works the same way: <b>tan x = cot y</b>, <b>sec x = cosec y</b> and <b>sin x = cos y</b> all hold exactly when <b>x + y = 90&deg;</b> (for acute angles), because cot(90&deg; &minus; x) = tan x and cosec(90&deg; &minus; x) = sec x.</p><p><b>First equation:</b> 2A + (A &minus; 18&deg;) = 90&deg; &rarr; 3A = 108&deg; &rarr; <b>A = 36&deg;</b>. Check: 2A = 72&deg; (acute &#10003;), A &minus; 18&deg; = 18&deg;, and 72&deg; + 18&deg; = 90&deg;. &#10003;</p><p><b>Second equation:</b> 3B + (B + 10&deg;) = 90&deg; &rarr; 4B = 80&deg; &rarr; <b>B = 20&deg;</b>. Check: 3B = 60&deg; (acute &#10003;), sec 60&deg; = 2 and cosec 30&deg; = 2. &#10003;</p><p>So A &minus; B = 36&deg; &minus; 20&deg; = <b>16&deg;</b>.</p><p>Where the other options come from: <b>11&deg;</b> is a sign slip in the second equation, 3B + B &minus; 10&deg; = 90&deg; giving B = 25&deg;, so 36&deg; &minus; 25&deg;. <b>52&deg;</b> is subtracting the bracket instead of adding it in the first equation, 2A &minus; (A &minus; 18&deg;) = 90&deg; giving A = 72&deg;, so 72&deg; &minus; 20&deg;. <b>56&deg;</b> is adding A and B instead of subtracting, 36&deg; + 20&deg;.</p>' },
+
+    { n:9, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'match',
+      stem:'<p>Match each expression in Column I with its value in Column II.</p><table><tr><th>Column I</th><th>Column II</th></tr><tr><td>(P)&nbsp; tan 30&deg; &middot; cot 60&deg;</td><td>(i)&nbsp; &radic;3/2</td></tr><tr><td>(Q)&nbsp; sin&sup2;30&deg; + cos&sup2;60&deg;</td><td>(ii)&nbsp; 1</td></tr><tr><td>(R)&nbsp; 2 sin 30&deg; cos 30&deg;</td><td>(iii)&nbsp; 1/3</td></tr><tr><td>(S)&nbsp; sec 60&deg; &middot; sin 30&deg;</td><td>(iv)&nbsp; 1/2</td></tr></table>',
+      options:['P&ndash;ii, Q&ndash;iv, R&ndash;i, S&ndash;iii','P&ndash;iii, Q&ndash;iv, R&ndash;i, S&ndash;ii','P&ndash;iii, Q&ndash;ii, R&ndash;i, S&ndash;iv','P&ndash;iii, Q&ndash;iv, R&ndash;ii, S&ndash;i'], answer:1,
+      sol:'<p><b>P:</b> tan 30&deg; = 1/&radic;3 and cot 60&deg; = 1/&radic;3 (not &radic;3 &mdash; that is tan 60&deg;), so the product is <b>1/3</b> &rarr; (iii).</p><p><b>Q:</b> sin 30&deg; = 1/2 and cos 60&deg; = 1/2, so 1/4 + 1/4 = <b>1/2</b> &rarr; (iv). It is <i>not</i> the Pythagorean identity &mdash; that needs the same angle in both terms.</p><p><b>R:</b> 2 &times; (1/2) &times; (&radic;3/2) = <b>&radic;3/2</b> &rarr; (i).</p><p><b>S:</b> sec 60&deg; = 1/cos 60&deg; = 2, so 2 &times; 1/2 = <b>1</b> &rarr; (ii).</p><p>Each wrong option is one of those traps: (1) reads cot 60&deg; as &radic;3, (3) reads Q as sin&sup2;30&deg; + cos&sup2;30&deg; = 1, and (4) is the correct answer with the values of R and S swapped over.</p>' },
+
+    { n:10, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'ar',
+      stem:'<p>Read the two statements below.</p><p><b>Assertion (A):</b> cos &theta; = 1 &divide; sec &theta; holds for <i>every</i> angle &theta; with 0&deg; &le; &theta; &le; 90&deg;.</p><p><b>Reason (R):</b> sec 90&deg; is not defined.</p><p>Which of the following is correct?</p>',
+      options:['Both A and R are true, and R is the correct explanation of A.','Both A and R are true, but R is not the correct explanation of A.','A is true but R is false.','A is false but R is true.'], answer:3,
+      sol:'<p><b>R is true.</b> sec 90&deg; = 1/cos 90&deg; = 1/0, which is not defined.</p><p><b>A is false</b> &mdash; and R is exactly why. At &theta; = 90&deg; the right-hand side 1 &divide; sec 90&deg; has no value at all, so the equation cannot hold there. It holds for every &theta; from 0&deg; up to but <i>not including</i> 90&deg;; the word &ldquo;every&rdquo; and the closed range &le; 90&deg; are what break it.</p><p>So <b>A is false but R is true</b>. Read the range in an assertion as carefully as you read the formula &mdash; one endpoint is doing all the work here.</p>' },
+
+    { n:11, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'plain',
+      stem:'<p>If <b>sin &theta; + cos &theta; = &radic;2 cos &theta;</b> (and &theta; &ne; 90&deg;), then <b>cos &theta; &minus; sin &theta;</b> equals</p>',
+      options:['&radic;2 sin &theta;','&radic;2 cos &theta;','&minus;&radic;2 sin &theta;','(&radic;2 + 1) sin &theta;'], answer:0,
+      sol:'<p>From the given equation, sin &theta; = &radic;2 cos &theta; &minus; cos &theta; = <b>(&radic;2 &minus; 1) cos &theta;</b>.</p><p>Substitute into what is asked:<br>cos &theta; &minus; sin &theta; = cos &theta; &minus; (&radic;2 &minus; 1) cos &theta; = (2 &minus; &radic;2) cos &theta;.</p><p>Now take &radic;2 out: 2 &minus; &radic;2 = &radic;2(&radic;2 &minus; 1), so this is &radic;2 &times; (&radic;2 &minus; 1) cos &theta; = <b>&radic;2 sin &theta;</b>, using the first line again.</p><p>(Sanity check: the condition gives tan &theta; = &radic;2 &minus; 1, i.e. &theta; = 22.5&deg;. Then cos &theta; &minus; sin &theta; &asymp; 0.924 &minus; 0.383 = 0.541, and &radic;2 sin &theta; &asymp; 1.414 &times; 0.383 = 0.541. &#10003;)</p><p>Where the other options come from: <b>&radic;2 cos &theta;</b> is copying the shape of the given equation without doing the algebra. <b>&minus;&radic;2 sin &theta;</b> is a sign slip in the subtraction. <b>(&radic;2 + 1) sin &theta;</b> is cos &theta; itself, rewritten in terms of sin &theta; (divide the first line by &radic;2 &minus; 1) &mdash; the substitution done but the &minus; sin &theta; never subtracted.</p>' },
+
+    { n:12, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'diagram',
+      stem:'<p>For the angle &theta; marked in the figure, the value of <b>cosec &theta; &minus; cot &theta;</b> is</p>',
+      fig:'<svg viewBox="0 0 200 190" width="250" height="238" role="img" aria-label="Right triangle with the right angle at Q, hypotenuse 13 centimetres, the side adjacent to theta 5 centimetres, and theta marked at P"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M45 150 L95 150 L95 30 Z"/></g><path d="M95 138 L83 138 L83 150" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M73 150 A 28 28 0 0 0 55.77 124.15" fill="none" stroke="var(--maths)" stroke-width="2"/><text x="57" y="143" fill="var(--maths)" font-family="Inter,sans-serif" font-size="12" font-weight="600">&#952;</text><text x="36" y="164" fill="currentColor" font-family="Inter,sans-serif" font-size="13">P</text><text x="90" y="164" fill="currentColor" font-family="Inter,sans-serif" font-size="13">Q</text><text x="99" y="26" fill="currentColor" font-family="Inter,sans-serif" font-size="13">R</text><text x="70" y="176" fill="currentColor" font-family="Inter,sans-serif" font-size="12.5" text-anchor="middle">5 cm</text><text x="58" y="86" fill="currentColor" font-family="Inter,sans-serif" font-size="12.5" text-anchor="end">13 cm</text></svg>',
+      figCap:'&ang;PQR = 90&deg;. PQ = 5 cm is the side adjacent to &theta;; PR = 13 cm is the hypotenuse. QR is not given.',
+      options:['1/5','5/12','2/3','3/2'], answer:2,
+      sol:'<p>The side opposite &theta; is QR = &radic;(13&sup2; &minus; 5&sup2;) = &radic;144 = <b>12 cm</b>.</p><p>cosec &theta; = hypotenuse/opposite = 13/12, and cot &theta; = adjacent/opposite = 5/12. Both have the same denominator, so subtract straight away:</p><p>13/12 &minus; 5/12 = 8/12 = <b>2/3</b>.</p><p>Where the other options come from: <b>1/5</b> is swapping the two legs (cosec = 13/5, cot = 12/5). <b>5/12</b> is giving cot &theta; on its own. <b>3/2</b> = 18/12 is adding instead of subtracting.</p>' },
+
+    { n:13, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'plain',
+      stem:'<p>If <b>x = a sec &theta; + b tan &theta;</b> and <b>y = a tan &theta; + b sec &theta;</b>, then <b>x&sup2; &minus; y&sup2;</b> equals</p>',
+      options:['1','a&sup2; + b&sup2;','b&sup2; &minus; a&sup2;','a&sup2; &minus; b&sup2;'], answer:3,
+      sol:'<p>Expand both squares. The middle terms are identical &mdash; that is the whole trick:</p><p>x&sup2; = a&sup2;sec&sup2;&theta; + <i>2ab sec &theta; tan &theta;</i> + b&sup2;tan&sup2;&theta;<br>y&sup2; = a&sup2;tan&sup2;&theta; + <i>2ab sec &theta; tan &theta;</i> + b&sup2;sec&sup2;&theta;</p><p>Subtracting, the 2ab terms cancel and the rest groups:<br>x&sup2; &minus; y&sup2; = a&sup2;(sec&sup2;&theta; &minus; tan&sup2;&theta;) &minus; b&sup2;(sec&sup2;&theta; &minus; tan&sup2;&theta;) = (a&sup2; &minus; b&sup2;)(sec&sup2;&theta; &minus; tan&sup2;&theta;).</p><p>And sec&sup2;&theta; &minus; tan&sup2;&theta; = 1, so the answer is <b>a&sup2; &minus; b&sup2;</b>.</p><p>Where the other options come from: <b>b&sup2; &minus; a&sup2;</b> is subtracting the wrong way round (y&sup2; &minus; x&sup2;). <b>a&sup2; + b&sup2;</b> comes from adding x&sup2; and y&sup2; instead of subtracting &mdash; which needs two slips, assuming the 2ab terms cancel the way they do in the subtraction <i>and</i> then reading sec&sup2;&theta; + tan&sup2;&theta; as 1. <b>1</b> is remembering sec&sup2; &minus; tan&sup2; = 1 but dropping a and b.</p>' }
+
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b}. A mock also stores
+   its answers + flags so the frozen report can be replayed on any device;
+   the hub only ever reads m/mx. Written MERGE-ONLY. */
+function saveAttempt(sc, timeTaken){
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank };
+  if(IS_MOCK){ rec.a = answers.slice(); rec.f = flags.slice(); rec.md = mode; rec.tm = timeTaken; rec.v = 1; }
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function showFrozen(rec){
+  if(!rec || !IS_MOCK || submitted || !rec.a) return;
+  RESTORING = true;
+  answers = rec.a.slice();
+  flags   = (rec.f || new Array(NQ).fill(false)).slice();
+  mode    = rec.md || 'timed';
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
