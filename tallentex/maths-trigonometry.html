@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Trigonometry</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--maths);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #2e246b30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--maths); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#241f4a); border:1px solid #332d5e;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--maths); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--maths); background:color-mix(in srgb,var(--maths) 14%,transparent); border:1px solid color-mix(in srgb,var(--maths) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  ol.roman { list-style-type:upper-roman; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--physics); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--maths); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:620px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; }
+  table.vals td, table.vals th { text-align:center; }
+  table.vals td:first-child, table.vals th:first-child { text-align:left; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--maths); background:color-mix(in srgb,var(--maths) 13%,transparent); border:1px solid color-mix(in srgb,var(--maths) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--maths); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(128px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--maths); background:color-mix(in srgb,var(--maths) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--maths) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5b40d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#e9e6fb,#e8f0fb); border-color:#cfc7ee; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb { display:block !important; background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Maths · Crash notes</div>
+    <h1>Trigonometry</h1>
+    <p class="sub">Official topic: <b>Introduction to Trigonometry</b> (Class 10). Most of this chapter
+    is new to you — your IGCSE course teaches <b>sin, cos, tan</b> and the exact values, but it has
+    <b>no sec, cosec or cot and no identities at all</b>. That missing half is precisely what TALLENTEX
+    asks. Read this once now and once the night before.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Every trigonometry question in the five cached real papers was pulled out and re-solved
+      against Allen's own answer key — including the 2017 and 2018 booklets, which are scans and do not
+      turn up in a text search. <b>Eight items</b>, and they agree almost eerily:</p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th>Paper</th><th>Q</th><th>What it gives you</th><th>What it wants</th></tr></thead>
+        <tbody>
+          <tr><td>2017 · E</td><td class="mono">56</td><td class="m">7 cosec θ − 3 cot θ = 7</td><td class="m">7 cot θ − 3 cosec θ</td></tr>
+          <tr><td>2017 · E</td><td class="mono">57</td><td class="m">sin x + sin²x + sin³x = 1</td><td class="m">cos⁶x − 4cos⁴x + 8cos²x</td></tr>
+          <tr><td>2018 · S</td><td class="mono">56</td><td class="m">x cot30°·sin60° = cos²30°·sin30°</td><td class="m">√x</td></tr>
+          <tr><td>2018 · S</td><td class="mono">57</td><td class="m">tan α = n tan β &nbsp;and&nbsp; sin α = m sin β</td><td class="m">(m² − 1)/(n² − 1)</td></tr>
+          <tr><td>Sample</td><td class="mono">52</td><td class="m">5 cos A − 12 sin A = 0</td><td class="m">(sec²A − 1)/(2 tan A + sec A)</td></tr>
+          <tr><td>Sample</td><td class="mono">58</td><td class="m">T<sub>n</sub> = sinⁿθ + cosⁿθ</td><td class="m">(T₃ − T₅)/T₁</td></tr>
+          <tr><td>2024 · U</td><td class="mono">56</td><td class="m">sin x + 3sin²x + sin³x = 3</td><td class="m">cos⁶x + 4cos⁴x + 8cos²x</td></tr>
+          <tr><td>2024 · A</td><td class="mono">56</td><td class="m">8 tan θ = 3 cos θ</td><td class="m">E = the sum of all six ratios — then a+b+c+d</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>That is <b>one or two of the fifteen Maths questions in every single paper</b>. Four things
+      follow, and they should change how you revise:</p>
+      <ol>
+        <li><b>Not one of the eight has a figure.</b> TALLENTEX trigonometry is <b>algebra</b>. There is
+        no triangle to measure and nothing to read off a diagram.</li>
+        <li><b>Not one of them asks you to find an angle.</b> θ is never the answer. You are always
+        asked for the <b>value of an expression</b>.</li>
+        <li><b>Heights and Distances is not on the 2027 syllabus at all.</b> No ladders, no towers, no
+        angles of elevation. Do not spend a minute on it.</li>
+        <li><b>Allen recycles the same question.</b> Look at 2017 Q57 and 2024 Q56: same shape, tiny
+        change of constants, and <b>both answers are 4</b>. Seven years apart. Learn the machine in
+        section 6 and you have very likely already done the 2027 version of it.</li>
+      </ol>
+      <p>Six of the eight are the <b>same machine</b>: you are handed one equation linking the ratios,
+      you squeeze it down to a single number or a single polynomial, and the thing you are asked for
+      turns out to be built from exactly that. Sections 4–6 are that machine, taken apart. (The two
+      exceptions: 2018 Q56 is a straight exact-values substitution — section 2 — and 2018 Q57 asks you
+      to eliminate a second angle between two relations, which is the one genuinely different shape in
+      seven years of papers.)</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">1</span>The six ratios — three you know, three you don't</h2>
+    <p class="lede">NCERT names the sides of a right-angled triangle <b>relative to the angle you are
+    looking at</b>: <b>P</b> perpendicular (opposite), <b>B</b> base (adjacent), <b>H</b> hypotenuse
+    (always the side facing the right angle). Get this labelling right and the rest is bookkeeping.</p>
+
+    <figure>
+      <div class="figrow">
+        <svg viewBox="0 0 345 215" width="345" height="215" role="img" aria-label="Right-angled triangle ABC with the right angle at B. Seen from angle A, side BC is the perpendicular P, side AB is the base B and side AC is the hypotenuse H.">
+          <polygon points="40,175 285,175 285,45" fill="none" stroke="var(--maths)" stroke-width="2.4"/>
+          <path d="M285,175 L285,157 L267,157 L267,175 Z" fill="none" stroke="var(--muted)" stroke-width="1.6"/>
+          <path d="M75,175 A35,35 0 0,0 71,159" fill="none" stroke="var(--chem)" stroke-width="2.2"/>
+          <text x="86" y="167" fill="var(--chem)" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600">A</text>
+          <text x="30" y="192" fill="var(--bright)" font-family="JetBrains Mono, monospace" font-size="13">A</text>
+          <text x="288" y="192" fill="var(--bright)" font-family="JetBrains Mono, monospace" font-size="13">B</text>
+          <text x="288" y="40" fill="var(--bright)" font-family="JetBrains Mono, monospace" font-size="13">C</text>
+          <text x="150" y="196" fill="var(--muted)" font-family="Inter, sans-serif" font-size="12.5" text-anchor="middle">base <tspan fill="var(--maths)" font-weight="600">B</tspan></text>
+          <text x="297" y="115" fill="var(--muted)" font-family="Inter, sans-serif" font-size="12.5">perp <tspan fill="var(--maths)" font-weight="600">P</tspan></text>
+          <text x="145" y="98" fill="var(--muted)" font-family="Inter, sans-serif" font-size="12.5" text-anchor="middle" transform="rotate(-28 145 98)">hyp <tspan fill="var(--maths)" font-weight="600">H</tspan></text>
+          <text x="165" y="26" fill="var(--muted)" font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="middle" letter-spacing="1.4">SEEN FROM ANGLE A</text>
+        </svg>
+        <svg viewBox="0 0 345 215" width="345" height="215" role="img" aria-label="The same triangle seen from angle C. Now side AB is the perpendicular and side BC is the base; the hypotenuse AC is unchanged.">
+          <polygon points="40,175 285,175 285,45" fill="none" stroke="var(--maths)" stroke-width="2.4"/>
+          <path d="M285,175 L285,157 L267,157 L267,175 Z" fill="none" stroke="var(--muted)" stroke-width="1.6"/>
+          <path d="M285,80 A35,35 0 0,1 254,61" fill="none" stroke="var(--rose)" stroke-width="2.2"/>
+          <text x="246" y="86" fill="var(--rose)" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600">C</text>
+          <text x="30" y="192" fill="var(--bright)" font-family="JetBrains Mono, monospace" font-size="13">A</text>
+          <text x="288" y="192" fill="var(--bright)" font-family="JetBrains Mono, monospace" font-size="13">B</text>
+          <text x="288" y="40" fill="var(--bright)" font-family="JetBrains Mono, monospace" font-size="13">C</text>
+          <text x="150" y="196" fill="var(--muted)" font-family="Inter, sans-serif" font-size="12.5" text-anchor="middle">perp <tspan fill="var(--rose)" font-weight="600">P</tspan></text>
+          <text x="297" y="115" fill="var(--muted)" font-family="Inter, sans-serif" font-size="12.5">base <tspan fill="var(--rose)" font-weight="600">B</tspan></text>
+          <text x="145" y="98" fill="var(--muted)" font-family="Inter, sans-serif" font-size="12.5" text-anchor="middle" transform="rotate(-28 145 98)">hyp <tspan fill="var(--rose)" font-weight="600">H</tspan></text>
+          <text x="165" y="26" fill="var(--muted)" font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="middle" letter-spacing="1.4">SEEN FROM ANGLE C</text>
+        </svg>
+      </div>
+      <figcaption>The same triangle, the same three sides. Switch which acute angle you stand at and
+      <b>P and B swap over</b> — only H stays put. This single swap is where most "I got the reciprocal
+      of the right answer" mistakes are born.</figcaption>
+    </figure>
+
+    <div class="box def">
+      <h4>The three you already have</h4>
+      <p class="m">sin A = P/H &nbsp;·&nbsp; cos A = B/H &nbsp;·&nbsp; tan A = P/B = sin A / cos A</p>
+      <p>Identical to the SOH-CAH-TOA you use in IGCSE — only the letters are NCERT's.</p>
+    </div>
+
+    <div class="box def">
+      <h4>The three that are new to you</h4>
+      <p>Each is simply <b>one of the first three turned upside down</b>. There is nothing else to them.</p>
+      <div class="bank" style="margin:10px 0 0">
+        <div class="fx">
+          <div class="eq">cosec A = H/P = 1/sin A</div>
+          <div class="wh">Pairs with <b>sin</b>. Note the spelling: <b>cosec</b>, and it is the
+          reciprocal of <b>sin</b> — not of cos, despite the "co".</div>
+        </div>
+        <div class="fx">
+          <div class="eq">sec A = H/B = 1/cos A</div>
+          <div class="wh">Pairs with <b>cos</b>. <b>sec</b> goes with <b>cos</b> — the one without the
+          "co" in its name.</div>
+        </div>
+        <div class="fx">
+          <div class="eq">cot A = B/P = 1/tan A = cos A / sin A</div>
+          <div class="wh">Pairs with <b>tan</b>. Also equal to cos/sin, which is the form that turns
+          up most often inside an expression.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box trap">
+      <h4>The pairing trap — worth ten seconds of memorising</h4>
+      <p>The obvious guess is that <b>sec</b> pairs with <b>sin</b> and <b>cosec</b> with <b>cos</b>,
+      because the names look like they match. <b>It is the other way round.</b> The reliable rule:</p>
+      <p><b>Exactly one of the two names in a reciprocal pair carries "co".</b> sin ↔ <b>co</b>sec.
+      <b>co</b>s ↔ sec. tan ↔ <b>co</b>t. If you ever write a pair with two "co"s or none, it is wrong.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>Exact values — no calculator, so these must be automatic</h2>
+    <p class="lede">You already know the sin/cos/tan row from IGCSE. What is new is the <b>bottom three
+    rows</b> — and the fact that in TALLENTEX there is <b>no calculator, no log table and no rough
+    paper</b>. These thirty numbers have to come out of your head in under a second each.</p>
+
+    <figure>
+      <div class="figrow">
+        <svg viewBox="0 0 250 200" width="250" height="200" role="img" aria-label="A 30-60-90 right triangle with the side opposite 30 degrees of length 1, the side opposite 60 degrees of length root 3, and hypotenuse 2.">
+          <polygon points="35,160 182,160 182,75" fill="none" stroke="var(--maths)" stroke-width="2.4"/>
+          <path d="M182,160 L182,144 L166,144 L166,160 Z" fill="none" stroke="var(--muted)" stroke-width="1.6"/>
+          <path d="M69,160 A34,34 0 0,0 64,143" fill="none" stroke="var(--chem)" stroke-width="2.2"/>
+          <text x="76" y="152" fill="var(--chem)" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="600">30°</text>
+          <path d="M182,105 A30,30 0 0,1 156,90" fill="none" stroke="var(--rose)" stroke-width="2.2"/>
+          <text x="146" y="110" fill="var(--rose)" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="600">60°</text>
+          <text x="108" y="179" fill="var(--maths)" font-family="JetBrains Mono, monospace" font-size="13.5" font-weight="600" text-anchor="middle">√3</text>
+          <text x="192" y="122" fill="var(--maths)" font-family="JetBrains Mono, monospace" font-size="13.5" font-weight="600">1</text>
+          <text x="98" y="107" fill="var(--maths)" font-family="JetBrains Mono, monospace" font-size="13.5" font-weight="600" text-anchor="middle" transform="rotate(-30 98 107)">2</text>
+          <text x="120" y="24" fill="var(--muted)" font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="middle" letter-spacing="1.3">HALF AN EQUILATERAL</text>
+        </svg>
+        <svg viewBox="0 0 215 200" width="215" height="200" role="img" aria-label="A 45-45-90 right triangle with both legs of length 1 and hypotenuse root 2.">
+          <polygon points="35,160 145,160 145,50" fill="none" stroke="var(--maths)" stroke-width="2.4"/>
+          <path d="M145,160 L145,144 L129,144 L129,160 Z" fill="none" stroke="var(--muted)" stroke-width="1.6"/>
+          <path d="M69,160 A34,34 0 0,0 59,136" fill="none" stroke="var(--chem)" stroke-width="2.2"/>
+          <text x="74" y="150" fill="var(--chem)" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="600">45°</text>
+          <path d="M145,80 A30,30 0 0,1 124,71" fill="none" stroke="var(--rose)" stroke-width="2.2"/>
+          <text x="112" y="99" fill="var(--rose)" font-family="JetBrains Mono, monospace" font-size="12.5" font-weight="600">45°</text>
+          <text x="90" y="179" fill="var(--maths)" font-family="JetBrains Mono, monospace" font-size="13.5" font-weight="600" text-anchor="middle">1</text>
+          <text x="155" y="110" fill="var(--maths)" font-family="JetBrains Mono, monospace" font-size="13.5" font-weight="600">1</text>
+          <text x="80" y="97" fill="var(--maths)" font-family="JetBrains Mono, monospace" font-size="13.5" font-weight="600" text-anchor="middle" transform="rotate(-45 80 97)">√2</text>
+          <text x="105" y="24" fill="var(--muted)" font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="middle" letter-spacing="1.3">HALF A SQUARE</text>
+        </svg>
+      </div>
+      <figcaption>The whole table comes from these two triangles. Cut an equilateral triangle of side 2
+      in half and you get the left one; cut a unit square along its diagonal and you get the right one.
+      If you forget a value, redraw the triangle — it takes eight seconds and it is never wrong.</figcaption>
+    </figure>
+
+    <div class="tablewrap">
+    <table class="vals">
+      <thead><tr><th></th><th class="mono">0°</th><th class="mono">30°</th><th class="mono">45°</th><th class="mono">60°</th><th class="mono">90°</th></tr></thead>
+      <tbody>
+        <tr><td class="m"><b>sin</b></td><td class="mono">0</td><td class="mono">1/2</td><td class="mono">1/√2</td><td class="mono">√3/2</td><td class="mono">1</td></tr>
+        <tr><td class="m"><b>cos</b></td><td class="mono">1</td><td class="mono">√3/2</td><td class="mono">1/√2</td><td class="mono">1/2</td><td class="mono">0</td></tr>
+        <tr><td class="m"><b>tan</b></td><td class="mono">0</td><td class="mono">1/√3</td><td class="mono">1</td><td class="mono">√3</td><td class="mono">not defined</td></tr>
+        <tr><td class="m"><b>cosec</b></td><td class="mono">not defined</td><td class="mono">2</td><td class="mono">√2</td><td class="mono">2/√3</td><td class="mono">1</td></tr>
+        <tr><td class="m"><b>sec</b></td><td class="mono">1</td><td class="mono">2/√3</td><td class="mono">√2</td><td class="mono">2</td><td class="mono">not defined</td></tr>
+        <tr><td class="m"><b>cot</b></td><td class="mono">not defined</td><td class="mono">√3</td><td class="mono">1</td><td class="mono">1/√3</td><td class="mono">0</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="box def">
+      <h4>How to rebuild the table in fifteen seconds</h4>
+      <p>Write <b class="m">0 &nbsp; 1 &nbsp; 2 &nbsp; 3 &nbsp; 4</b>. Take the square root of each and
+      halve it — that is the whole <b>sin</b> row:</p>
+      <p class="m">√0/2 = 0 &nbsp;·&nbsp; √1/2 = 1/2 &nbsp;·&nbsp; √2/2 = 1/√2 &nbsp;·&nbsp; √3/2 &nbsp;·&nbsp; √4/2 = 1</p>
+      <p>The <b>cos</b> row is the same five numbers <b>read backwards</b>. The <b>tan</b> row is
+      sin ÷ cos. The bottom three rows are the top three <b>flipped</b>. You never memorise thirty
+      numbers — you memorise five and a direction.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Where "not defined" bites</h4>
+      <p>tan 90° and sec 90° are <b>not defined</b> because cos 90° = 0 and you cannot divide by zero.
+      Likewise cot 0° and cosec 0°, because sin 0° = 0. Write <b>"not defined"</b> — never <b>∞</b>,
+      and never <b>0</b>. An option offering "0" for tan 90° is there to catch exactly that.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>The three identities — this is the new half of the chapter</h2>
+    <p class="lede">Your IGCSE syllabus contains <b>no trigonometric identities at all</b>. These three
+    lines are the single most valuable thing on this page: every one of the four real questions in the
+    table above is solved with them.</p>
+
+    <p>All three are <b>Pythagoras in disguise</b>. Start with <span class="m">p² + b² = h²</span> and
+    divide the whole line by the <b>square</b> of each of the three sides in turn:</p>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Divide p² + b² = h² by…</th><th>You get</th><th>Which reads</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">h²</td><td class="mono">(p/h)² + (b/h)² = 1</td><td class="m"><b>sin²A + cos²A = 1</b></td></tr>
+        <tr><td class="mono">b²</td><td class="mono">(p/b)² + 1 = (h/b)²</td><td class="m"><b>1 + tan²A = sec²A</b></td></tr>
+        <tr><td class="mono">p²</td><td class="mono">1 + (b/p)² = (h/p)²</td><td class="m"><b>1 + cot²A = cosec²A</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>So there is really only <b>one</b> identity, met three times. If you ever blank, write Pythagoras
+    down and divide.</p>
+
+    <div class="box def">
+      <h4>The rearranged forms — memorise these, not the originals</h4>
+      <p>The paper almost never hands you an identity the right way up. It hands you a fragment and
+      expects you to recognise it. These are the forms that actually appear:</p>
+      <div class="bank" style="margin:10px 0 0">
+        <div class="fx">
+          <div class="eq">sec²A − tan²A = 1</div>
+          <div class="wh">So <b>sec²A − 1 = tan²A</b> and <b>tan²A + 1 = sec²A</b>. Sample Q52 is
+          nothing but spotting <span class="m">sec²A − 1</span> and writing <span class="m">tan²A</span>.</div>
+        </div>
+        <div class="fx">
+          <div class="eq">cosec²A − cot²A = 1</div>
+          <div class="wh">So <b>cosec²A − 1 = cot²A</b>. The same move, one row down.</div>
+        </div>
+        <div class="fx">
+          <div class="eq">sin²A = 1 − cos²A</div>
+          <div class="wh">And <b>cos²A = 1 − sin²A</b>. This is how you turn a mixed equation into one
+          containing a single ratio — see section 5.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box exam">
+      <h4>The conjugate trick — the highest-value line on this page</h4>
+      <p>Because <span class="m">sec²A − tan²A = 1</span> is a difference of two squares, it factorises:</p>
+      <p class="m" style="font-size:15px"><b>(sec A + tan A)(sec A − tan A) = 1</b></p>
+      <p>Which means <b>sec A + tan A and sec A − tan A are reciprocals of each other</b>. Hand one to
+      a student and they have the other for free. The same holds one row down:</p>
+      <p class="m" style="font-size:15px"><b>(cosec A + cot A)(cosec A − cot A) = 1</b></p>
+      <p>Whenever a question gives you <span class="m">sec θ + tan θ = k</span>, immediately write
+      <span class="m">sec θ − tan θ = 1/k</span>. Adding the two lines gives you <b>2 sec θ</b>; subtracting them
+      gives you <b>2 tan θ</b>. Two lines of work and the question is finished — worked example 3 does exactly this.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Notation: sin²A means (sin A)², not sin(A²)</h4>
+      <p><span class="m">sin²A = sin A × sin A</span>. It is written with the square on the "sin" purely
+      to avoid a forest of brackets. <span class="m">sin(A²)</span> is a completely different and
+      entirely useless object — it will never appear. Similarly <span class="m">sin⁻¹A</span> is <b>not</b> 1/sin A — that is cosec A. It means
+      "the angle whose sine is A", so sin⁻¹(1/2) = 30°.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>Technique 1 — one ratio given, all six wanted</h2>
+    <p class="lede">The commonest opening move in the whole chapter. You are told <b>one</b> ratio and
+    asked for an expression built from several. Do <b>not</b> reach for an identity. Draw the triangle.</p>
+
+    <p>Suppose you are told <span class="m">sec θ = 13/5</span> and asked for
+    <span class="m">tan θ + cot θ</span>.</p>
+
+    <figure>
+      <svg viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="A right triangle with base 5, perpendicular 12 and hypotenuse 13, illustrating sec theta equals 13 over 5. The perpendicular is much longer than the base.">
+        <polygon points="45,170 100,170 100,38" fill="none" stroke="var(--maths)" stroke-width="2.4"/>
+        <path d="M100,170 L100,154 L84,154 L84,170 Z" fill="none" stroke="var(--muted)" stroke-width="1.6"/>
+        <path d="M71,170 A26,26 0 0,0 55,146" fill="none" stroke="var(--chem)" stroke-width="2.2"/>
+        <text x="66" y="152" fill="var(--chem)" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">θ</text>
+        <text x="72" y="189" fill="var(--maths)" font-family="JetBrains Mono, monospace" font-size="13.5" font-weight="600" text-anchor="middle">B = 5</text>
+        <text x="110" y="108" fill="var(--maths)" font-family="JetBrains Mono, monospace" font-size="13.5" font-weight="600">P = 12</text>
+        <text x="8" y="98" fill="var(--maths)" font-family="JetBrains Mono, monospace" font-size="13.5" font-weight="600">H = 13</text>
+      </svg>
+      <figcaption><span class="m">sec θ = H/B = 13/5</span>, so put <b>13 on the hypotenuse and 5 on the
+      base</b>. Pythagoras fills in the third side: <span class="m">P = √(13² − 5²) = √(169 − 25) =
+      √144 = 12</span>. Now <b>every one of the six ratios can be read straight off the picture</b> —
+      no identity needed.</figcaption>
+    </figure>
+
+    <p>From the triangle: <span class="m">tan θ = 12/5</span> and <span class="m">cot θ = 5/12</span>, so</p>
+    <p class="m" style="font-size:15px"><b>tan θ + cot θ = 12/5 + 5/12 = 144/60 + 25/60 = 169/60</b></p>
+
+    <div class="box def">
+      <h4>Learn the three Pythagorean triples by sight</h4>
+      <p>Examiners reuse them endlessly because they keep the arithmetic calculator-free:</p>
+      <p class="m" style="font-size:15px"><b>3, 4, 5</b> &nbsp;·&nbsp; <b>5, 12, 13</b> &nbsp;·&nbsp; <b>8, 15, 17</b></p>
+      <p>and their multiples (6-8-10, 9-12-15, 10-24-26 …). If a question hands you <b>5/13</b> or
+      <b>8/17</b>, the missing side is already known to you — that is a free five seconds.</p>
+    </div>
+
+    <div class="box exam">
+      <h4>The identity route, for when the triangle is awkward</h4>
+      <p>The same answer falls out algebraically, and it is worth seeing because the paper sometimes
+      wants the general form rather than a number:</p>
+      <p class="m">tan θ + cot θ = sin θ/cos θ + cos θ/sin θ = (sin²θ + cos²θ)/(sin θ cos θ) = <b>1/(sin θ cos θ)</b></p>
+      <p>Check it: <span class="m">sin θ = 12/13</span>, <span class="m">cos θ = 5/13</span>, so
+      <span class="m">1/(sin θ cos θ) = 169/60</span> ✓ — the same number by a different road. Two routes
+      agreeing is the cheapest error-check you own; use it whenever you have thirty spare seconds.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>Technique 2 — a mixed equation becomes a quadratic</h2>
+    <p class="lede">When the given equation contains <b>both</b> sin and cos, and one of them is
+    squared, you can always force it into a quadratic in a <b>single</b> ratio. This is the engine
+    behind 2024 code A, Q56.</p>
+
+    <p><b>Worked:</b> if <span class="m">2 sin²θ = 3 cos θ</span> and θ is acute, find cos θ.</p>
+    <ol>
+      <li><b>Pick the survivor.</b> The unsquared ratio is cos, so aim for an equation in cos alone.</li>
+      <li><b>Replace the squared one</b> using <span class="m">sin²θ = 1 − cos²θ</span>:
+        <br><span class="m">2(1 − cos²θ) = 3 cos θ</span></li>
+      <li><b>Tidy into standard form.</b> Write <span class="m">c</span> for cos θ:
+        <br><span class="m">2 − 2c² = 3c &nbsp;→&nbsp; 2c² + 3c − 2 = 0</span></li>
+      <li><b>Factorise:</b> <span class="m">(2c − 1)(c + 2) = 0 &nbsp;→&nbsp; c = 1/2 or c = −2</span></li>
+      <li><b>Throw out the impossible root.</b> A cosine can never be less than −1, so
+        <span class="m">c = −2</span> is rejected. <b>cos θ = 1/2</b>, i.e. θ = 60°.</li>
+    </ol>
+
+    <div class="box trap">
+      <h4>Step 5 is not optional, and it is where the marks go</h4>
+      <p>A quadratic hands you <b>two</b> roots and the paper will always list the rejected one as an
+      option. <b>sin θ and cos θ live between −1 and 1</b>; for an acute angle they live between 0
+      and 1. Anything outside that is not an answer, it is a trap. Check the range <em>before</em> you
+      look at the options, not after — once you have seen your number printed as option (4) it is very
+      hard to talk yourself out of it.</p>
+      <p>(<b>tan</b> and <b>cot</b> have no such limit — they run over every real number. <b>sec</b>
+      and <b>cosec</b> are the opposite way round: they can never lie strictly between −1 and 1.)</p>
+    </div>
+
+    <div class="box exam">
+      <h4>Same machine, uglier numbers</h4>
+      <p>2024 code A, Q56 gives you <span class="m">8 tan θ = 3 cos θ</span>. Write tan as sin/cos,
+      multiply up, replace cos²θ by 1 − sin²θ, and you have a quadratic in sin θ — then all six ratios
+      follow from the triangle, exactly as in section 4. But read its demand to the end: it does not want E,
+      it wants E written as <span class="m">(a + b√c)/d</span> and then the value of
+      <span class="m">a + b + c + d</span>. <b>Working E out and bubbling it scores −1</b>, because E
+      itself is not one of the options. <b>That question will turn up in a mock later in the programme,
+      so it is deliberately not solved here.</b> The method above is all you need to beat it.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>Technique 3 — the expression <em>is</em> the identity</h2>
+    <p class="lede">The hardest-looking trigonometry in these papers is also the most mechanical once
+    you see the shape. You are given a monstrous expression and asked what it equals. The move is
+    always the same: <b>factor out, then use sin² + cos² = 1 to collapse a bracket to 1.</b></p>
+
+    <p><b>Worked — the official sample paper, Q58.</b> If
+    <span class="m">T<sub>n</sub> = sinⁿθ + cosⁿθ</span>, find
+    <span class="m">(T₃ − T₅) / T₁</span>.</p>
+
+    <p>Write the numerator out and group the sines with the sines:</p>
+    <p class="m">T₃ − T₅ = (sin³θ + cos³θ) − (sin⁵θ + cos⁵θ) = sin³θ(1 − sin²θ) + cos³θ(1 − cos²θ)</p>
+    <p>Now each bracket collapses — <span class="m">1 − sin²θ = cos²θ</span> and
+    <span class="m">1 − cos²θ = sin²θ</span>:</p>
+    <p class="m">= sin³θ·cos²θ + cos³θ·sin²θ = sin²θ cos²θ (sin θ + cos θ) = sin²θ cos²θ · T₁</p>
+    <p>So <span class="m">(T₃ − T₅)/T₁ = <b>sin²θ cos²θ</b></span>. The question asks which of the
+    listed expressions equals it — and <span class="m">(T₅ − T₇)/T₃</span> collapses to exactly the
+    same thing by exactly the same two lines. <b>Official key: option (1).</b></p>
+
+    <div class="box def">
+      <h4>The pattern to carry into the exam</h4>
+      <p>Any time you see a <b>difference of two powers</b> of sin and cos, the lower power factors out
+      and what is left is <span class="m">1 − (something)²</span>, which is the other ratio squared.
+      You are never really doing trigonometry — you are doing algebra with
+      <span class="m">sin²θ + cos²θ = 1</span> as the only fact.</p>
+      <p>2024 code U, Q56 is the same idea run backwards: a given cubic in sin θ is rearranged into a
+      cubic in cos²θ, and the expression you are asked for turns out to be that very cubic. <b>It too is being
+      saved for a later mock, so it is not worked here.</b></p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">7</span>Complementary angles — a free shortcut</h2>
+    <p class="lede">Two acute angles of a right triangle add to 90°. Stand at one, then the other, and
+    P and B swap — which is the picture at the very top of this page. Every complementary rule is just
+    that swap written down.</p>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">sin(90° − A) = cos A</div><div class="wh">and cos(90° − A) = sin A</div></div>
+      <div class="fx"><div class="eq">tan(90° − A) = cot A</div><div class="wh">and cot(90° − A) = tan A</div></div>
+      <div class="fx"><div class="eq">sec(90° − A) = cosec A</div><div class="wh">and cosec(90° − A) = sec A</div></div>
+    </div>
+
+    <p>The rule in words: <b>the angle turns into its complement and the name swaps with its
+    "co" partner.</b> So <span class="m">sin 55° = cos 35°</span>, because 55 + 35 = 90.</p>
+
+    <div class="box exam">
+      <h4>What this is for</h4>
+      <p>It turns a fraction that looks impossible without a calculator into the number <b>1</b>:</p>
+      <p class="m" style="font-size:15px">sin 25° / cos 65° = sin 25° / sin 25° = <b>1</b></p>
+      <p>Whenever you see two angles in one expression that <b>add to 90</b>, this is why they are
+      there. Scan for that sum first — it is usually the entire question.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Three errors this chapter punishes hardest</h4>
+      <ul>
+        <li><b>Answering the wrong ratio.</b> You correctly find θ = 30° and then read off sin instead
+        of cot. Underline what is being <em>asked</em> before you start, and check it again before you
+        bubble — this is the single most expensive slip in the section.</li>
+        <li><b>(sin A + cos A)² is not sin²A + cos²A.</b> It is
+        <span class="m">sin²A + cos²A + 2 sin A cos A = 1 + 2 sin A cos A</span>. The cross term is
+        deliberately left out of one option in nearly every paper that asks this.</li>
+        <li><b>Flipping a reciprocal one time too many or too few.</b> If you want cot and you have
+        tan = 3/4, cot is 4/3 — not 3/4, and not −3/4. Say the word "flip" out loud as you do it.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">8</span>Five worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">One per technique, in the order you met them. Try each before opening the working,
+    and give yourself <b>90 seconds</b> — that is the real paper's average. The elimination reasoning is
+    written out because on the day, ruling two options out is worth almost as much as solving.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">One ratio → all six · ~70 seconds</span></div>
+      <p>If <span class="m">15 cot A = 8</span> and A is acute, then
+      <span class="m">(sin A + cos A) / (sin A − cos A)</span> equals</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>−23/7</div>
+        <div class="we-opt"><span class="ob">2</span>−7/23</div>
+        <div class="we-opt"><span class="ob">3</span>7/23</div>
+        <div class="we-opt key"><span class="ob">4</span>23/7</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><span class="m">15 cot A = 8 → cot A = 8/15</span>. cot is <b>B/P</b>, so
+        <b>B = 8, P = 15</b>, and <span class="m">H = √(64 + 225) = √289 = 17</span> — the 8-15-17 triple.</p>
+        <p>Read the two ratios off: <span class="m">sin A = 15/17</span>, <span class="m">cos A = 8/17</span>.</p>
+        <p><span class="m">(15/17 + 8/17) / (15/17 − 8/17) = (23/17) / (7/17) = <b>23/7</b></span> — the 17s
+        cancel, which is why the answer is a clean fraction and why you should never convert to decimals.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1) −23/7</b> — reading cot A = 8/15 as <em>tan</em> A = 8/15. That swaps P and B, giving
+        sin A = 8/17 and cos A = 15/17, so the denominator turns negative: 23/(−7).
+        <b>(3) 7/23</b> — the right two ratios, but the final fraction written upside down.
+        <b>(2) −7/23</b> — both slips at once. Notice that all four options are ± the same two
+        numbers: that is the examiner telling you the arithmetic is easy and the <em>bookkeeping</em> is
+        the test.
+        <b>Elimination:</b> cot A = 8/15 is less than 1, so tan A &gt; 1 and A is past 45° — which makes
+        sin A bigger than cos A and the denominator <em>positive</em>. Both negative options die before
+        you compute a single thing.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">The expression is the identity · ~2 minutes</span></div>
+      <p>If <span class="m">T<sub>n</sub> = sinⁿθ + cosⁿθ</span>, then
+      <span class="m">(T₄ − T₆) / (T₂ − T₄)</span> equals</p>
+      <div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>1/2</div>
+        <div class="we-opt"><span class="ob">2</span>1</div>
+        <div class="we-opt"><span class="ob">3</span>2</div>
+        <div class="we-opt"><span class="ob">4</span>sin²θ cos²θ</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Numerator.</b> <span class="m">T₄ − T₆ = sin⁴θ(1 − sin²θ) + cos⁴θ(1 − cos²θ)
+        = sin⁴θ cos²θ + cos⁴θ sin²θ</span></p>
+        <p><span class="m">= sin²θ cos²θ (sin²θ + cos²θ) = <b>sin²θ cos²θ</b></span></p>
+        <p><b>Denominator.</b> <span class="m">T₂ − T₄ = sin²θ(1 − sin²θ) + cos²θ(1 − cos²θ)
+        = sin²θ cos²θ + cos²θ sin²θ = <b>2 sin²θ cos²θ</b></span></p>
+        <p>Here the two terms are <b>identical</b>, so they add rather than factor — that is the whole
+        question. Dividing: <span class="m">sin²θ cos²θ / (2 sin²θ cos²θ) = <b>1/2</b></span>.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2) 1</b> — writing the denominator as sin²θ cos²θ instead of 2 sin²θ cos²θ, i.e. collapsing
+        the two equal terms into one instead of adding them. This is <em>the</em> trap of the item.
+        <b>(3) 2</b> — the fraction inverted.
+        <b>(4) sin²θ cos²θ</b> — stopping after the numerator, which is the value of T₄ − T₆ alone.
+        <b>Elimination:</b> option (4) is the only one still carrying θ, and the numerator and
+        denominator plainly share the same factor, so the answer <em>must</em> be a pure number — (4)
+        can be struck without any algebra at all.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">The conjugate trick · ~80 seconds</span></div>
+      <p>If <span class="m">sec θ + tan θ = 3</span> and <span class="m">0° ≤ θ &lt; 90°</span>,
+      then sin θ equals</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>3/5</div>
+        <div class="we-opt key"><span class="ob">2</span>4/5</div>
+        <div class="we-opt"><span class="ob">3</span>4/3</div>
+        <div class="we-opt"><span class="ob">4</span>5/3</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Because <span class="m">sec²θ − tan²θ = 1</span>, the conjugate is the reciprocal:
+        <span class="m">sec θ − tan θ = 1/3</span>.</p>
+        <p><b>Add</b> the two equations: <span class="m">2 sec θ = 3 + 1/3 = 10/3 → sec θ = 5/3 →
+        cos θ = 3/5</span>.</p>
+        <p><b>Subtract</b> them: <span class="m">2 tan θ = 3 − 1/3 = 8/3 → tan θ = 4/3</span>.</p>
+        <p><span class="m">sin θ = tan θ × cos θ = (4/3)(3/5) = <b>4/5</b></span>.
+        Check: <span class="m">sec θ + tan θ = 5/3 + 4/3 = 3</span> ✓</p>
+        <p>(Faster still: sec θ = 5/3 means H = 5, B = 3, so P = 4 — the 3-4-5 triangle — and
+        sin θ = 4/5 straight off.)</p>
+        <div class="elim"><b>Where each wrong option comes from.</b> Every wrong option is a real number
+        you produce <em>on the way</em>: <b>(4) 5/3</b> is sec θ, <b>(3) 4/3</b> is tan θ, <b>(1) 3/5</b>
+        is cos θ. Not one of them is filler. That is the designed trap — the working is easy and the
+        only difficulty is remembering which of four numbers on your page the question actually wanted.
+        <b>Underline the word "sin" in the stem before you start.</b>
+        <b>Elimination:</b> a sine can never exceed 1, so (3) 4/3 and (4) 5/3 are impossible answers no
+        matter how naturally the working produces them. The real choice was only ever between 3/5 and
+        4/5 — which is a 1-in-2 guess worth +1.5 marks on average if you stall.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">Complementary angles · ~35 seconds</span></div>
+      <p>The value of
+      <span class="m">cos 18°/sin 72° + sin 41°/cos 49° − 2 sin 30°</span> is</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>0</div>
+        <div class="we-opt key"><span class="ob">2</span>1</div>
+        <div class="we-opt"><span class="ob">3</span>2</div>
+        <div class="we-opt"><span class="ob">4</span>3</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Scan for angles that add to 90 — there are two such pairs, and they are the reason the
+        question exists.</p>
+        <p><span class="m">18 + 72 = 90</span>, so <span class="m">sin 72° = cos 18°</span> and the first
+        fraction is <b>1</b>.</p>
+        <p><span class="m">41 + 49 = 90</span>, so <span class="m">cos 49° = sin 41°</span> and the second
+        fraction is <b>1</b>.</p>
+        <p><span class="m">2 sin 30° = 2 × 1/2 = 1</span>.</p>
+        <p><span class="m">1 + 1 − 1 = <b>1</b></span></p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(4) 3</b> — a sign slip: adding the third term instead of subtracting it.
+        <b>(3) 2</b> — reading only as far as the two fractions and never evaluating the third term. This
+        is the single most common way marks leak in this paper: the stem is longer than you think.
+        <b>(1) 0</b> — taking sin 30° = 1 (it is sin 90° that equals 1), which makes the last term 2.
+        <b>Elimination:</b> you can see in about ten seconds that both fractions are 1, so the answer is
+        <span class="m">2 − (something small)</span>. That alone kills (4).</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">Quadratic, rejected root, then a chain · ~90 seconds</span></div>
+      <p>If <span class="m">5 cos²θ = 7 sin θ − 1</span> and <span class="m">0° &lt; θ &lt; 90°</span>,
+      then cot θ equals</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>3/4</div>
+        <div class="we-opt"><span class="ob">2</span>4/5</div>
+        <div class="we-opt key"><span class="ob">3</span>4/3</div>
+        <div class="we-opt"><span class="ob">4</span>5/3</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Section 5's machine again, but the constants are different and there is a stray
+        <span class="m">− 1</span> on the right, so nothing can be copied across — you have to build the
+        quadratic yourself.</p>
+        <p>The unsquared ratio is sin, so aim for sin. Replace
+        <span class="m">cos²θ = 1 − sin²θ</span>, and write <span class="m">s</span> for sin θ:</p>
+        <p><span class="m">5(1 − s²) = 7s − 1 → 5 − 5s² = 7s − 1 → 5s² + 7s − 6 = 0</span></p>
+        <p>Factorise: <span class="m">(5s − 3)(s + 2) = 0</span>, so
+        <span class="m">s = 3/5</span> or <span class="m">s = −2</span>. <b>Reject −2</b>: a sine can
+        never be below −1. Hence <span class="m">sin θ = 3/5</span>.</p>
+        <p>P = 3, H = 5, so B = 4 — the 3-4-5 triangle — and
+        <span class="m">cot θ = B/P = <b>4/3</b></span>.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b> All three belong to a student who
+        did the hard part perfectly and then read the wrong ratio off the triangle:
+        <b>(1) 3/4</b> is tan θ — the reciprocal flipped the wrong way; <b>(2) 4/5</b> is cos θ;
+        <b>(4) 5/3</b> is cosec θ. The algebra is not what this question tests. <b>Finding sin θ is the
+        first half of the work, not the end of it</b> — and in a paper marked +4/−1, stopping early
+        costs you 5 marks against the student who did not.
+        <b>Elimination:</b> sin θ = 3/5 puts θ below 45°, where tan θ &lt; 1 and so cot θ &gt; 1. That
+        strikes (1) and (2) on sight, leaving a two-way choice worth +1.5 marks on average even if the
+        last step deserts you.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">9</span>Check yourself</h2>
+    <p class="lede">Five quick ones on the new material. <b>No negative marking here</b> — this is
+    practice, not the exam. Click an option to see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="strategy.html">🎯 Read the exam strategy page</a>
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Maths · <b>Introduction to Trigonometry</b> — the official topic name from Allen's
+    Class X syllabus. <b>Heights and Distances is not on the 2027 list</b> and is deliberately absent
+    from these notes.<br>
+    Tip: press 🖨 (bottom-left) to print these as a revision sheet · 🏆 (top-left) goes back to the
+    TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'Which ratio is the reciprocal of <b>cos θ</b>?',
+    o:['sin θ','sec θ','cosec θ','cot θ'], a:1,
+    fb:'<b>sec θ = 1/cos θ.</b> The reliable rule is that exactly one name in a reciprocal pair carries "co": sin ↔ <b>co</b>sec, <b>co</b>s ↔ sec, tan ↔ <b>co</b>t. Choosing cosec here is the classic mistake — the names look like they should match, and they do not.' },
+  { q:'<b>1 + tan²A</b> is equal to',
+    o:['sin²A','cosec²A','sec²A','cot²A'], a:2,
+    fb:'<b>sec²A.</b> Divide Pythagoras p² + b² = h² through by b². The look-alike identity one row down is 1 + cot²A = cosec²A — note that <b>cot goes with cosec</b>, so picking cosec²A here means you have paired tan with cosec.' },
+  { q:'If <b>sin θ = 3/5</b> and θ is acute, then tan θ =',
+    o:['3/4','4/5','4/3','5/3'], a:0,
+    fb:'P = 3, H = 5, so B = 4 — the 3-4-5 triangle — and <b>tan θ = P/B = 3/4</b>. The other three options are all genuine values from that same triangle: 4/5 is cos θ, 4/3 is cot θ and 5/3 is cosec θ. Finding the triangle is the easy half; picking the right row off it is the half that is marked.' },
+  { q:'<b>cot 60° × tan 30°</b> equals',
+    o:['1/3','1/√3','1','3'], a:0,
+    fb:'cot 60° = 1/√3 and tan 30° = 1/√3, so the product is <b>1/3</b>. The trap is <b>1</b>: cot and tan <em>are</em> reciprocals, but only at the <em>same</em> angle. Here the angles differ, and 60° and 30° are complementary — so cot 60° equals tan 30° rather than cancelling it, and you are squaring, not cancelling.' },
+  { q:'<b>sin 63° / cos 27°</b> equals',
+    o:['sin 36°','cos 36°','tan 63°','1'], a:3,
+    fb:'63 + 27 = 90, so cos 27° = sin 63° and the fraction is <b>1</b>. Options sin 36° and cos 36° come from subtracting the angles (63 − 27), which is not a rule that exists. tan 63° comes from mis-stepping to cos 63° instead of sin 63°.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. The reciprocals and the identities have landed.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed — sections 1 and 3 carry most of the new material.'
+                        : 'Worth a second pass through sections 1–3 before the paper. These five are the cheapest marks in the topic.');
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:maths-trigonometry:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
