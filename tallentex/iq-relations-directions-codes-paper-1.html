@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Relations, Directions &amp; Codes — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+    </div>
+    <p class="startnote">Practice mode still marks you and still applies −1 — only the countdown is off.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  title: 'TALLENTEX · Relations, Directions & Codes — Paper 1',
+  kind: 'topic',
+  duration: 20,
+  id: 'tx:iq-relations-directions-codes:p1',
+  accent: 'iq',
+  sub: 'Thirteen questions on <b>Blood Relation</b>, <b>Direction Sense</b>, <b>Coding-Decoding</b> and the <b>Alphabet Test</b>, pitched at the <b>real</b> TALLENTEX paper rather than the sample — most items chain two steps, and every distractor is a slip students really make. <b>Triage: bank the quick ones, flag the rest, never leave a blank.</b> No calculator, no rough paper — draw the family tree or the route in the margin.',
+  sections: [ { name:'Mental Ability', from:1, to:13 } ],
+  questions: [
+
+    { n:1, section:'Mental Ability', topic:'Blood Relation', fmt:'plain',
+      stem:'<p>Pointing to a woman in a photograph, Nikhil said, <b>"Her mother\'s husband\'s only son is my father."</b> How is <b>Nikhil\'s mother</b> related to the woman?</p>',
+      options:['Sister','Mother','Daughter-in-law','Sister-in-law'], answer:3,
+      sol:'<p><b>Decode from the far end of the sentence, one link at a time.</b></p>' +
+          '<p>Her mother\'s husband = <b>her father</b>. Her father\'s only son = <b>her brother</b> (she is a daughter, so the only son is not her). That brother <b>is Nikhil\'s father</b>.</p>' +
+          '<p>So the woman is the sister of Nikhil\'s father — his <b>paternal aunt</b> (bua).</p>' +
+          '<p><b>Second link.</b> Nikhil\'s mother is the wife of the woman\'s brother, so she is the woman\'s <b>sister-in-law</b> (bhabhi).</p>' +
+          '<p><b>Sister</b> would be right only if the woman were Nikhil\'s <em>maternal</em> aunt, his mother\'s sister — a guess the words "is my father" rule out, since they tie her to his father\'s side. <b>Mother</b> comes from dropping the last link of the sentence — reading "her only brother is me" instead of "is my father", which makes the woman Nikhil\'s sister. <b>Daughter-in-law</b> answers for the wrong person: it is the woman\'s <em>mother</em> (Nikhil\'s grandmother) whose daughter-in-law Nikhil\'s mother is. Decode the sentence first, then take the second step — never try both at once.</p>' },
+
+    { n:2, section:'Mental Ability', topic:'Direction Sense', fmt:'plain',
+      stem:'<p>Point B is <b>8 m south</b> of point A. Point C is <b>10 m east</b> of B. Point D is <b>14 m north</b> of C. Point E is <b>2 m west</b> of D.</p>' +
+           '<p>A man stands at D, <b>facing C</b>. How far is E from A, and on which side of the man does E lie?</p>',
+      options:['10 m, to his left','10 m, to his right','14 m, to his left','14 m, to his right'], answer:1,
+      sol:'<p><b>Step 1 — put A at (0, 0), east = +x, north = +y.</b> B = (0, −8); C = (10, −8); D = (10, 6); E = (8, 6).</p>' +
+          '<p><b>Step 2 — the distance.</b> E is 8 m east and 6 m north of A, so AE = √(8² + 6²) = √100 = <b>10 m</b>.</p>' +
+          '<p><b>Step 3 — the side.</b> C is due south of D, so the man faces <b>south</b>. E is 2 m <b>west</b> of D. When you face south, your right hand points west — so E is on his <b>right</b>.</p>' +
+          '<p>Answer <b>10 m, to his right</b>. <b>14 m</b> is 8 + 6, adding the two legs instead of using Pythagoras. <b>"To his left"</b> is the classic slip of reading left and right as they look on the page, as if he were facing north. When a person faces south, turn the page upside down in your head — or remember that facing south swaps left and right.</p>' },
+
+    { n:3, section:'Mental Ability', topic:'Coding-Decoding', fmt:'plain',
+      stem:'<p>In a certain code language, <b>MANGO</b> is written as <b>REPZN</b>. How will <b>PASTE</b> be written in that code language?</p>',
+      options:['HRUZQ','QZURH','HVUBQ','FSUYS'], answer:0,
+      sol:'<p><b>Step 1 — spot that the letters have been reversed.</b> Compared letter by letter, M→R, A→E, N→P, G→Z, O→N shows no pattern (+5, +4, +2, −7, −1). Read the code backwards instead — <b>NZPER</b> — and line it up with MANGO.</p>' +
+          '<p><b>Step 2 — find the shift on every letter.</b> M → N is <b>+1</b>; A → Z is <b>−1</b> (going back from A wraps round to Z); N → P is <b>+2</b>; G → E is <b>−2</b>; O → R is <b>+3</b>. So the rule is: shift by <b>+1, −1, +2, −2, +3</b>, then write the result backwards.</p>' +
+          '<p><b>Step 3 — apply it to PASTE.</b> P + 1 = Q; A − 1 = <b>Z</b> (wrap again); S + 2 = U; T − 2 = R; E + 3 = H → QZURH → reversed: <b>HRUZQ</b>.</p>' +
+          '<p><b>QZURH</b> does the shifting and forgets the reversal. <b>HVUBQ</b> reverses but ignores the minus signs (+1, +1, +2, +2, +3 gives QBUVH) — the trap for anyone who counts the size of each jump but not its direction. <b>FSUYS</b> reverses PASTE <em>first</em> (ETSAP) and then applies +1, −1, +2, −2, +3. Reversing first is a perfectly good route — but then the pattern, read off OGNAM → REPZN, is <b>+3, −2, +2, −1, +1</b>. FSUYS mixes the pattern found in one order with the steps done in the other.</p>' },
+
+    { n:4, section:'Mental Ability', topic:'Alphabet Test', fmt:'plain',
+      stem:'<p>The <b>first 13 letters</b> of the English alphabet (A to M) are written in <b>reverse order</b>, and the remaining 13 letters (N to Z) are left as they are. In this new arrangement, which letter is <b>7th to the left of the 18th letter from the right end</b>?</p>',
+      options:['B','C','L','P'], answer:2,
+      sol:'<p>The new arrangement is <b>M L K J I H G F E D C B A</b> N O P Q R S T U V W X Y Z.</p>' +
+          '<p><b>Step 1 — convert "from the right" to "from the left".</b> In a row of 26, the n-th from the right is the (27 − n)-th from the left: 27 − 18 = <b>9th from the left</b>, which is <b>E</b>.</p>' +
+          '<p><b>Step 2 — move 7 to the left.</b> 9 − 7 = position <b>2</b>, which is <b>L</b>.</p>' +
+          '<p><b>C</b> comes from counting the 18th from the <em>left</em> end (R) and then moving 7 left to position 11. <b>P</b> moves 7 to the <em>right</em> instead (position 16). <b>B</b> is what the ordinary, un-rearranged alphabet gives: 9th letter I, 7 to the left → B. Always write the new arrangement out first — it takes ten seconds and removes the last trap.</p>' },
+
+    { n:5, section:'Mental Ability', topic:'Blood Relation', fmt:'diagram',
+      stem:'<p>The figure shows a family of three generations. How is <b>K</b> related to <b>F\'s unmarried brother-in-law</b>?</p>',
+      fig:'<svg viewBox="0 0 340 252" width="340" height="252" role="img" aria-label="Family tree. A, male, is married to B, female. Their children are C, male, E, male, and D, female. C is married to F, female; their children are H, female, and J, male. D is married to G, male; their child is K, female. E is unmarried.">' +
+          '<g stroke="currentColor" stroke-width="1.6" fill="none">' +
+          '<rect x="138" y="18" width="24" height="24" rx="2"/><circle cx="210" cy="30" r="12"/>' +
+          '<circle cx="30" cy="110" r="12"/><rect x="78" y="98" width="24" height="24" rx="2"/><rect x="158" y="98" width="24" height="24" rx="2"/>' +
+          '<circle cx="250" cy="110" r="12"/><rect x="298" y="98" width="24" height="24" rx="2"/>' +
+          '<circle cx="30" cy="195" r="12"/><rect x="78" y="183" width="24" height="24" rx="2"/><circle cx="280" cy="195" r="12"/></g>' +
+          '<g stroke="var(--iq)" stroke-width="1.6">' +
+          '<line x1="162" y1="27" x2="198" y2="27"/><line x1="162" y1="33" x2="198" y2="33"/>' +
+          '<line x1="42" y1="107" x2="78" y2="107"/><line x1="42" y1="113" x2="78" y2="113"/>' +
+          '<line x1="262" y1="107" x2="298" y2="107"/><line x1="262" y1="113" x2="298" y2="113"/></g>' +
+          '<g stroke="currentColor" stroke-width="1.3" opacity=".7" fill="none">' +
+          '<line x1="180" y1="33" x2="180" y2="72"/><line x1="90" y1="72" x2="250" y2="72"/>' +
+          '<line x1="90" y1="72" x2="90" y2="98"/><line x1="170" y1="72" x2="170" y2="98"/><line x1="250" y1="72" x2="250" y2="98"/>' +
+          '<line x1="60" y1="113" x2="60" y2="160"/><line x1="30" y1="160" x2="90" y2="160"/>' +
+          '<line x1="30" y1="160" x2="30" y2="183"/><line x1="90" y1="160" x2="90" y2="183"/>' +
+          '<line x1="280" y1="113" x2="280" y2="183"/></g>' +
+          '<g font-family="Inter, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="currentColor">' +
+          '<text x="150" y="34">A</text><text x="210" y="34">B</text>' +
+          '<text x="30" y="114">F</text><text x="90" y="114">C</text><text x="170" y="114">E</text><text x="250" y="114">D</text><text x="310" y="114">G</text>' +
+          '<text x="30" y="199">H</text><text x="90" y="199">J</text><text x="280" y="199">K</text></g>' +
+          '<g font-family="Inter, sans-serif" font-size="11" fill="currentColor" opacity=".8">' +
+          '<rect x="18" y="229" width="14" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="38" y="240">Male</text>' +
+          '<circle cx="100" cy="236" r="7" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="113" y="240">Female</text>' +
+          '<line x1="178" y1="233" x2="196" y2="233" stroke="var(--iq)" stroke-width="1.6"/><line x1="178" y1="239" x2="196" y2="239" stroke="var(--iq)" stroke-width="1.6"/><text x="202" y="240">Married</text>' +
+          '<line x1="262" y1="229" x2="262" y2="243" stroke="currentColor" stroke-width="1.3"/><text x="268" y="240">Children</text></g></svg>',
+      figCap:'Squares are male, circles female; a double line joins a married couple, and lines drop from a couple to their children.',
+      options:['Daughter','Cousin','Niece','Granddaughter'], answer:2,
+      sol:'<p><b>Step 1 — find F\'s brothers-in-law.</b> F is married to C. A woman\'s brother-in-law is her husband\'s brother or her sister\'s husband — and in everyday use her husband\'s sister\'s husband too. F has no siblings in the tree, so look at C\'s side. C\'s only brother is <b>E</b>, who is unmarried. The only other candidate is <b>G</b> (married to C\'s sister D), and G is married — so under either usage the <b>unmarried</b> brother-in-law is <b>E</b>.</p>' +
+          '<p><b>Step 2 — relate K to E.</b> K is the daughter of D, and D is E\'s sister. So E is K\'s maternal uncle, and K is E\'s <b>niece</b>.</p>' +
+          '<p><b>Daughter</b> is the answer for G — what you get if you skip the word "unmarried" and take the first brother-in-law you find. <b>Cousin</b> comes from grabbing the other unmarried male in the tree, <b>J</b>: K and J are cousins, but J is F\'s <em>son</em>, not her brother-in-law. <b>Granddaughter</b> is K\'s relation to A — the slip of reading "brother-in-law" as "father-in-law".</p>' },
+
+    { n:6, section:'Mental Ability', topic:'Direction Sense', fmt:'diagram',
+      stem:'<p>A truck hit the signpost at a crossing and twisted it, so that the arm for <b>Sitapur</b> — a village that lies <b>due south</b> of the crossing — now points <b>east</b>. The figure shows the signpost as it stands now.</p>' +
+           '<p>A traveller walks 5 km along the road that <b>really</b> leads to <b>Devgarh</b>, then <b>turns right</b> and walks 5 km. In which direction is he now from the crossing?</p>',
+      fig:'<svg viewBox="0 0 300 232" width="300" height="232" role="img" aria-label="Twisted signpost at a crossing. Arms now point: north to Rampur, east to Sitapur, south to Devgarh, west to Chandpur. A compass arrow shows true north pointing up the page.">' +
+          '<g stroke="var(--iq)" stroke-width="3" stroke-linecap="round">' +
+          '<line x1="150" y1="116" x2="150" y2="54"/><line x1="150" y1="116" x2="206" y2="116"/>' +
+          '<line x1="150" y1="116" x2="150" y2="178"/><line x1="150" y1="116" x2="94" y2="116"/></g>' +
+          '<g fill="var(--iq)">' +
+          '<polygon points="150,42 143,56 157,56"/><polygon points="218,116 204,109 204,123"/>' +
+          '<polygon points="150,190 143,176 157,176"/><polygon points="82,116 96,109 96,123"/></g>' +
+          '<circle cx="150" cy="116" r="5" fill="currentColor"/>' +
+          '<g font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="currentColor">' +
+          '<text x="150" y="33" text-anchor="middle">RAMPUR</text><text x="225" y="120">SITAPUR</text>' +
+          '<text x="150" y="207" text-anchor="middle">DEVGARH</text><text x="75" y="120" text-anchor="end">CHANDPUR</text></g>' +
+          '<g stroke="currentColor" stroke-width="1.6" fill="currentColor">' +
+          '<line x1="272" y1="66" x2="272" y2="36"/><polygon points="272,28 267,39 277,39" stroke="none"/></g>' +
+          '<text x="272" y="20" font-family="Inter, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="currentColor">N</text>' +
+          '<text x="150" y="228" font-family="Inter, sans-serif" font-size="10.5" text-anchor="middle" fill="currentColor" opacity=".65">Crossing (centre dot)</text></svg>',
+      figCap:'The twisted signpost. The small arrow marked N shows true north.',
+      options:['North-east','North-west','South-east','South-west'], answer:1,
+      sol:'<p><b>Step 1 — how far was the post turned?</b> Sitapur\'s arm should point south but points east. Going from south to east is a quarter-turn <b>anticlockwise</b>, and the whole post turned together. So every arm now points 90° anticlockwise of the truth — to recover the true direction, turn each arm <b>90° clockwise</b>.</p>' +
+          '<p><b>Step 2 — the true road to Devgarh.</b> Its arm points south; 90° clockwise from south is <b>west</b>.</p>' +
+          '<p><b>Step 3 — the walk.</b> 5 km west; facing west, a right turn means <b>north</b>; 5 km north. He ends 5 km west and 5 km north of the crossing: <b>north-west</b>.</p>' +
+          '<p><b>South-west</b> is what you get by trusting the twisted signpost (Devgarh south, right turn → west). <b>South-east</b> turns the post back the wrong way (Devgarh east, right turn → south). <b>North-east</b> is the "a twisted post points the opposite way" shortcut — a half-turn instead of a quarter-turn (Devgarh north, right turn → east). Work out the size <em>and</em> sense of the twist from the one arm you are told about.</p>' },
+
+    { n:7, section:'Mental Ability', topic:'Coding-Decoding', fmt:'statement',
+      stem:'<p>In a certain code language:</p>' +
+           '<p style="margin-left:14px">"rain brings green fields" is written as "<b>ti ru ka mo</b>"<br>' +
+           '"green trees need rain" is written as "<b>pe mo sa ti</b>"<br>' +
+           '"fields need care" is written as "<b>lu ru pe</b>"</p>' +
+           '<p>(The codes are not necessarily in the same order as the words.) Consider the following statements.</p>' +
+           '<ol class="roman"><li>"need" is written as "pe".</li><li>"rain" is written as "mo".</li><li>"care" is written as "lu".</li><li>"brings" is written as "ka".</li></ol>' +
+           '<p>Which of the statements are <b>definitely</b> true?</p>',
+      options:['I and III only','I only','I, II, III and IV','I, III and IV only'], answer:3,
+      sol:'<p>Compare sentences in pairs: a word common to two sentences must have the code common to both.</p>' +
+          '<p><b>Sentences 2 and 3</b> share only "need" and only "pe" → <b>need = pe</b>. <b>I is true.</b></p>' +
+          '<p><b>Sentences 1 and 3</b> share only "fields" and only "ru" → <b>fields = ru</b>. Sentence 3 is then fields (ru) + need (pe) + care, so <b>care = lu</b>. <b>III is true.</b></p>' +
+          '<p><b>Sentences 1 and 2</b> share "rain" and "green", and the codes "ti" and "mo". So {rain, green} = {ti, mo} — but <b>nothing tells you which is which</b>. <b>II is not definitely true.</b></p>' +
+          '<p>Sentence 1 is rain, brings, green, fields = ti, ru, ka, mo. Fields took ru; rain and green took ti and mo between them; the only code left for "brings" is <b>ka</b>. <b>IV is true.</b></p>' +
+          '<p>I, III and IV → <b>option (4)</b>.</p>' +
+          '<p><b>Option (3)</b> assigns "mo" to "rain" — but rain and green share the pair {ti, mo} and nothing decides which is which, so "mo" could just as well be "green". (Matching words to codes by position does not help either: the codes are jumbled.) <b>Option (1)</b> gives up on "brings" as if it were as uncertain as "rain", missing that the undecided pair uses up exactly ti and mo. <b>Option (2)</b> makes the first comparison (need = pe) and stops — but III follows from one more comparison (sentences 1 and 3), and IV from comparing sentences 1 and 2 as well. "Definitely" is the word the whole question turns on.</p>' },
+
+    { n:8, section:'Mental Ability', topic:'Blood Relation', fmt:'plain',
+      stem:'<p>A family has six members — P, Q, R, S, T and U.</p>' +
+           '<p style="margin-left:14px">Q is the son of R, but R is not the mother of Q.<br>P is the mother of R.<br>T is the sister of Q.<br>U is the brother of P.<br>S is the husband of T.</p>' +
+           '<p><b>How many male members</b> are there in the family, and <b>how is P related to T</b>?</p>',
+      options:['3; maternal grandmother','3; paternal grandmother','4; maternal grandmother','4; paternal grandmother'], answer:3,
+      sol:'<p><b>Step 1 — the clue that carries the question.</b> Q is the son of R, and R is <em>not</em> Q\'s mother — so R is Q\'s <b>father</b>, and R is male.</p>' +
+          '<p><b>Step 2 — everyone else.</b> Q is a son (male); P is a mother (female); T is a sister (female); U is a brother (male); S is a husband (male). Males: <b>Q, R, U, S = 4</b>. Females: P and T.</p>' +
+          '<p><b>Step 3 — P and T.</b> T is Q\'s sister, so T is also R\'s child. P is R\'s mother — the mother of T\'s <em>father</em> — so P is T\'s <b>paternal grandmother</b> (dadi).</p>' +
+          '<p>Answer <b>4; paternal grandmother</b>.</p>' +
+          '<p><b>3; maternal grandmother</b> is what skipping "not the mother" does to <em>both</em> halves at once: take R as Q\'s mother and R is female, leaving only three males (Q, U, S), and P becomes the mother of T\'s mother. <b>3; paternal grandmother</b> gets the relation right but counts only the people <em>called</em> son, brother or husband (Q, U, S), forgetting that R was proved male. <b>4; maternal grandmother</b> counts correctly but mislabels the side — the word "mother" in "P is the mother of R" pulls towards <em>maternal</em>, yet P reaches T through T\'s father.</p>' +
+          '<p>Nobody in this family is described by gender except through a relation word — and R is described only by what R is <em>not</em>. Underline every "not" before you draw the tree.</p>' },
+
+    { n:9, section:'Mental Ability', topic:'Direction Sense', fmt:'plain',
+      stem:'<p>One morning, soon after sunrise, Kiran and Farhan stood in an open field <b>facing each other</b>. Kiran\'s shadow fell <b>exactly to her right</b>.</p>' +
+           '<p>Farhan then turned <b>270° clockwise</b>, then <b>135° anticlockwise</b>, and finally <b>90° anticlockwise</b>. Which direction was Farhan facing at the end?</p>',
+      options:['North-east','North-west','South-east','South-west'], answer:0,
+      sol:'<p><b>Step 1 — the sun fixes Kiran.</b> Soon after sunrise the sun is in the <b>east</b>, so shadows fall to the <b>west</b>. Kiran\'s shadow is on her right, so her right hand points west — she is facing <b>south</b>.</p>' +
+          '<p><b>Step 2 — Farhan faces her</b>, so he faces <b>north</b>.</p>' +
+          '<p><b>Step 3 — the turns.</b> Add them up with clockwise as + and anticlockwise as −: +270 − 135 − 90 = <b>+45°</b>. So he ends 45° clockwise of north: <b>north-east</b>. (Step by step: north → 270° clockwise → west → 135° anticlockwise → south-east → 90° anticlockwise → north-east.)</p>' +
+          '<p><b>South-west</b> is the sun-side slip: putting the sun on the <em>same</em> side as the shadow makes Kiran face north and Farhan south, and south turned 45° clockwise net is south-west. The same wrong answer comes from applying the turns to Kiran instead of Farhan. <b>North-west</b> swaps clockwise and anticlockwise all the way through (net −45°, i.e. 45° anticlockwise of north). <b>South-east</b> makes both slips at once.</p>' },
+
+    { n:10, section:'Mental Ability', topic:'Blood Relation', fmt:'plain',
+      stem:'<p>In a certain code:</p>' +
+           '<p style="margin-left:14px">"A <b>+</b> B" means "A is the <b>brother</b> of B"<br>' +
+           '"A <b>−</b> B" means "A is the <b>mother</b> of B"<br>' +
+           '"A <b>×</b> B" means "A is the <b>husband</b> of B"<br>' +
+           '"A <b>÷</b> B" means "A is the <b>daughter</b> of B"</p>' +
+           '<p>Which of the following means that <b>P is the maternal uncle of Q</b>?</p>',
+      options:['P + R × S − Q','P × R − S + Q','P + R − S + Q','P + R ÷ S − Q'], answer:2,
+      sol:'<p>A maternal uncle is <b>the brother of Q\'s mother</b>. So you need: P is the brother of someone, and that someone is Q\'s mother. Read each expression pair by pair, left to right.</p>' +
+          '<p><b>(3) P + R − S + Q:</b> P is the brother of R; R is the mother of S; S is the brother of Q — so Q is S\'s sibling and R is <b>Q\'s mother</b> too. P is the brother of Q\'s mother → <b>maternal uncle ✓</b>.</p>' +
+          '<p><b>(1) P + R × S − Q:</b> P is the brother of R; R is the husband of S; S is the mother of Q. So R is Q\'s <b>father</b>, and P is the father\'s brother — a <b>paternal</b> uncle. This is the trap: every link is a brother, a spouse, a mother, but the chain reaches Q through the father.</p>' +
+          '<p><b>(2) P × R − S + Q:</b> P is the husband of R, who is the mother of S and hence of Q — so P is Q\'s <b>father</b>. It becomes a maternal uncle only if you misread × as "brother" — then it reads exactly like option (3).</p>' +
+          '<p><b>(4) P + R ÷ S − Q:</b> P is the brother of R; R is the daughter of S; S is the mother of Q. So R is Q\'s <b>sister</b>, not mother, and P is Q\'s <b>brother</b>. The ÷ link goes <em>up</em> a generation to S, which puts R level with Q.</p>' },
+
+    { n:11, section:'Mental Ability', topic:'Direction Sense', fmt:'diagram',
+      stem:'<p>The figure is a map of the streets of a town; all streets run north–south or east–west, and one block is the distance between two neighbouring crossings.</p>' +
+           '<p>Leaving the <b>School</b>, Rohan walks <b>2 blocks north</b>, <b>turns right</b> and walks 3 blocks, <b>turns right</b> again and walks 1 block, then <b>turns left</b> and walks 1 block. Which place does he reach, and where is it with respect to the <b>Temple</b>?</p>',
+      fig:'<svg viewBox="0 0 390 248" width="390" height="248" role="img" aria-label="Street grid, five north-south streets and four east-west streets. Places at crossings: School at bottom-left; Market three blocks east of the School; Bank two blocks east and one north of the School; Hospital four east and one north; Library one east and two north; Post Office at top-left, three north of the School; Park two east and three north; Temple at top-right, four east and three north. Compass arrow shows north up the page.">' +
+          '<g stroke="currentColor" stroke-width="5" opacity=".18" stroke-linecap="round">' +
+          '<line x1="40" y1="210" x2="320" y2="210"/><line x1="40" y1="150" x2="320" y2="150"/><line x1="40" y1="90" x2="320" y2="90"/><line x1="40" y1="30" x2="320" y2="30"/>' +
+          '<line x1="40" y1="30" x2="40" y2="210"/><line x1="110" y1="30" x2="110" y2="210"/><line x1="180" y1="30" x2="180" y2="210"/><line x1="250" y1="30" x2="250" y2="210"/><line x1="320" y1="30" x2="320" y2="210"/></g>' +
+          '<g fill="var(--iq)">' +
+          '<circle cx="40" cy="210" r="5"/><circle cx="250" cy="210" r="5"/><circle cx="180" cy="150" r="5"/><circle cx="320" cy="150" r="5"/>' +
+          '<circle cx="110" cy="90" r="5"/><circle cx="40" cy="30" r="5"/><circle cx="180" cy="30" r="5"/><circle cx="320" cy="30" r="5"/></g>' +
+          '<g font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="currentColor">' +
+          '<text x="40" y="230" text-anchor="middle">School</text><text x="250" y="230" text-anchor="middle">Market</text>' +
+          '<text x="186" y="142">Bank</text><text x="326" y="142">Hospital</text>' +
+          '<text x="116" y="82">Library</text><text x="40" y="18" text-anchor="middle">Post Office</text>' +
+          '<text x="180" y="18" text-anchor="middle">Park</text><text x="320" y="18" text-anchor="middle">Temple</text></g>' +
+          '<g stroke="currentColor" stroke-width="1.6" fill="currentColor">' +
+          '<line x1="370" y1="228" x2="370" y2="198"/><polygon points="370,190 365,201 375,201" stroke="none"/></g>' +
+          '<text x="370" y="182" font-family="Inter, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="currentColor">N</text></svg>',
+      figCap:'Dots mark the places, each at a crossing. North is up the page.',
+      options:['Hospital; south of the Temple','Bank; south-west of the Temple','Hospital; north of the Temple','Park; west of the Temple'], answer:0,
+      sol:'<p><b>Step 1 — trace the walk, keeping track of which way he faces.</b> From the School, 2 blocks north. Facing north, right is <b>east</b>: 3 blocks east. Facing east, right is <b>south</b>: 1 block south. Facing south, left is <b>east</b>: 1 block east. He is now 4 blocks east and 1 block north of the School — the <b>Hospital</b>.</p>' +
+          '<p><b>Step 2 — relate it to the Temple.</b> The Temple is 4 east and 3 north of the School, exactly 2 blocks above the Hospital. So the Hospital is <b>south of the Temple</b>.</p>' +
+          '<p><b>Bank</b> comes from the last turn: facing south, "left" is east, but reading it as the page\'s left (west) ends one block short at the Bank — which is south-west of the Temple. <b>Park</b> comes from turning the wrong way at the second turn (north instead of south) and then turning left from there. <b>"Hospital; north of the Temple"</b> gets the place right but answers the reverse question — where the Temple is from the Hospital would be north.</p>' },
+
+    { n:12, section:'Mental Ability', topic:'Coding-Decoding', fmt:'diagram',
+      stem:'<p>The letters are arranged in two matrices. Matrix I has rows and columns numbered 0 to 3; Matrix II has rows and columns numbered 5 to 8. A letter is written as its <b>row number followed by its column number</b> — for example, T can be written as 02 or 67.</p>' +
+           '<p>Which set of numbers represents the word <b>LAMP</b>?</p>',
+      fig:'<svg viewBox="0 0 340 172" width="340" height="172" role="img" aria-label="Matrix I, rows 0 to 3 and columns 0 to 3. Row 0: P A T E. Row 1: R L M A. Row 2: E S P N. Row 3: T M O L. Matrix II, rows 5 to 8 and columns 5 to 8. Row 5: L N A R. Row 6: M E T P. Row 7: A O S L. Row 8: P R M N.">' +
+          '<g font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="currentColor" text-anchor="middle">' +
+          '<text x="86" y="14">Matrix I</text><text x="266" y="14">Matrix II</text></g>' +
+          '<g font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="var(--iq)" text-anchor="middle">' +
+          '<text x="44" y="36">0</text><text x="72" y="36">1</text><text x="100" y="36">2</text><text x="128" y="36">3</text>' +
+          '<text x="20" y="60">0</text><text x="20" y="88">1</text><text x="20" y="116">2</text><text x="20" y="144">3</text>' +
+          '<text x="224" y="36">5</text><text x="252" y="36">6</text><text x="280" y="36">7</text><text x="308" y="36">8</text>' +
+          '<text x="200" y="60">5</text><text x="200" y="88">6</text><text x="200" y="116">7</text><text x="200" y="144">8</text></g>' +
+          '<g stroke="currentColor" stroke-width="1" opacity=".45" fill="none">' +
+          '<rect x="30" y="42" width="112" height="112"/><line x1="58" y1="42" x2="58" y2="154"/><line x1="86" y1="42" x2="86" y2="154"/><line x1="114" y1="42" x2="114" y2="154"/>' +
+          '<line x1="30" y1="70" x2="142" y2="70"/><line x1="30" y1="98" x2="142" y2="98"/><line x1="30" y1="126" x2="142" y2="126"/>' +
+          '<rect x="210" y="42" width="112" height="112"/><line x1="238" y1="42" x2="238" y2="154"/><line x1="266" y1="42" x2="266" y2="154"/><line x1="294" y1="42" x2="294" y2="154"/>' +
+          '<line x1="210" y1="70" x2="322" y2="70"/><line x1="210" y1="98" x2="322" y2="98"/><line x1="210" y1="126" x2="322" y2="126"/></g>' +
+          '<g font-family="Inter, sans-serif" font-size="13" fill="currentColor" text-anchor="middle">' +
+          '<text x="44" y="61">P</text><text x="72" y="61">A</text><text x="100" y="61">T</text><text x="128" y="61">E</text>' +
+          '<text x="44" y="89">R</text><text x="72" y="89">L</text><text x="100" y="89">M</text><text x="128" y="89">A</text>' +
+          '<text x="44" y="117">E</text><text x="72" y="117">S</text><text x="100" y="117">P</text><text x="128" y="117">N</text>' +
+          '<text x="44" y="145">T</text><text x="72" y="145">M</text><text x="100" y="145">O</text><text x="128" y="145">L</text>' +
+          '<text x="224" y="61">L</text><text x="252" y="61">N</text><text x="280" y="61">A</text><text x="308" y="61">R</text>' +
+          '<text x="224" y="89">M</text><text x="252" y="89">E</text><text x="280" y="89">T</text><text x="308" y="89">P</text>' +
+          '<text x="224" y="117">A</text><text x="252" y="117">O</text><text x="280" y="117">S</text><text x="308" y="117">L</text>' +
+          '<text x="224" y="145">P</text><text x="252" y="145">R</text><text x="280" y="145">M</text><text x="308" y="145">N</text></g></svg>',
+      figCap:'Row numbers run down the left of each matrix, column numbers across the top.',
+      options:['55, 31, 12, 85','33, 75, 56, 22','11, 57, 87, 86','78, 01, 65, 00'], answer:3,
+      sol:'<p><b>Check every code in an option — one wrong number kills the whole set.</b> Row first, column second.</p>' +
+          '<p><b>(4) 78, 01, 65, 00:</b> row 7 col 8 = L; row 0 col 1 = A; row 6 col 5 = M; row 0 col 0 = P → <b>LAMP ✓</b>.</p>' +
+          '<p><b>(1) 55, 31, 12, 85:</b> 55 = L, but <b>31</b> = row 3 col 1 = <b>M</b>, not A. A sits at row 1 col 3, i.e. 13 — writing 31 is reading the column first.</p>' +
+          '<p><b>(2) 33, 75, 56, 22:</b> 33 = L, 75 = A, but <b>56</b> = row 5 col 6 = <b>N</b>. M is at row 6 col 5 = 65: the column-first slip again. Option (2) is in fact the <em>complete</em> column-first answer — read every code column first and it spells LAMP — which is exactly why the stem\'s example (T = 02, not 20) matters.</p>' +
+          '<p><b>(3) 11, 57, 87, 86:</b> 11 = L, 57 = A, 87 = M, but <b>86</b> = row 8 col 6 = <b>R</b>. P is at 68: once more, row and column swapped.</p>' +
+          '<p>Each wrong set has exactly one swapped code — the second, third and fourth code in turn — and every <b>first</b> code (55, 33, 11, 78) is a genuine L, so a glance at the first number proves nothing. Check all four. A swapped code always lands on a real letter, which is why it looks right at a glance.</p>' },
+
+    { n:13, section:'Mental Ability', topic:'Alphabet Test', fmt:'match',
+      stem:'<p>Match each description in <b>Column I</b> with the letter it gives in <b>Column II</b>. All positions refer to the ordinary English alphabet A to Z.</p>' +
+           '<table><thead><tr><th>Column I</th><th style="white-space:nowrap">Column II</th></tr></thead><tbody>' +
+           '<tr><td><b>A.</b> The 7th letter to the right of the 11th letter from the right end</td><td><b>1.</b> M</td></tr>' +
+           '<tr><td><b>B.</b> The letter exactly midway between F and T</td><td><b>2.</b> R</td></tr>' +
+           '<tr><td><b>C.</b> The letter that occupies the same position from the right end as the 9th letter does from the left end</td><td><b>3.</b> W</td></tr>' +
+           '<tr><td><b>D.</b> The 4th letter to the left of the 19th letter from the left end</td><td><b>4.</b> O</td></tr>' +
+           '</tbody></table>',
+      options:['A-2, B-1, C-3, D-4','A-3, B-1, C-2, D-4','A-4, B-1, C-2, D-3','A-3, B-2, C-1, D-4'], answer:1,
+      sol:'<p><b>A → 3.</b> 11th from the right = 27 − 11 = 16th from the left = P. Seven to the right: 16 + 7 = 23 = <b>W</b>.</p>' +
+          '<p><b>B → 1.</b> F = 6, T = 20; midway is (6 + 20) ÷ 2 = 13 = <b>M</b>. (Check: 6 letters G–L on one side, 6 letters N–S on the other.)</p>' +
+          '<p><b>C → 2.</b> The 9th letter from the left is I; the 9th from the right is 27 − 9 = 18th from the left = <b>R</b>. These "opposite" pairs always add to 27.</p>' +
+          '<p><b>D → 4.</b> 19th from the left = S; four to the left: 19 − 4 = 15 = <b>O</b>.</p>' +
+          '<p>A-3, B-1, C-2, D-4 → <b>option (2)</b>.</p>' +
+          '<p><b>Option (1)</b> is where counting A from the <em>left</em> end leads: 11th from the left is K, and 7 to the right is R — which forces C onto W, a letter no reading of C produces. <b>Option (3)</b> follows from moving 4 to the <em>right</em> in D (19 + 4 = 23 = W), which pushes A onto O. <b>Option (4)</b> simply swaps B and C. <b>Fastest route:</b> C is one subtraction (27 − 9 = 18 = R), and settling C = 2 kills options (1) and (4) at once; D then separates (2) from (3).</p>' }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b}. A mock also stores
+   its answers + flags so the frozen report can be replayed on any device;
+   the hub only ever reads m/mx. Written MERGE-ONLY. */
+function saveAttempt(sc, timeTaken){
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank };
+  if(IS_MOCK){ rec.a = answers.slice(); rec.f = flags.slice(); rec.md = mode; rec.tm = timeTaken; rec.v = 1; }
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function showFrozen(rec){
+  if(!rec || !IS_MOCK || submitted || !rec.a) return;
+  RESTORING = true;
+  answers = rec.a.slice();
+  flags   = (rec.f || new Array(NQ).fill(false)).slice();
+  mode    = rec.md || 'timed';
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
