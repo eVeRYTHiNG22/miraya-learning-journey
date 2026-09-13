@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Relations, Directions & Codes</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--iq); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--iq); background:color-mix(in srgb,var(--iq) 14%,transparent); border:1px solid color-mix(in srgb,var(--iq) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  ol.roman { list-style-type:upper-roman; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--physics); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--iq); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:620px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--iq); background:color-mix(in srgb,var(--iq) 13%,transparent); border:1px solid color-mix(in srgb,var(--iq) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--iq); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(128px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--iq); background:color-mix(in srgb,var(--iq) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--iq) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb { display:block !important; background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Mental Ability · Crash notes</div>
+    <h1>Relations, Directions &amp; Codes</h1>
+    <p class="sub">Official topics: <b>Blood Relation</b>, <b>Direction Sense</b>, <b>Coding-Decoding</b> and
+    <b>Alphabet Test</b>. None of them needs any maths beyond counting. They need a <b>method you
+    draw on the booklet</b> (a family tree, a small grid, the alphabet with numbers under it), because
+    every question is built so that doing it in your head drops one link.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>All five cached papers (2017-E, 2018-S, 2024-U, 2024-A and the sample) were read question by
+      question and each item solved and checked against the official key. <b>This unit is about
+      4 of the 20 Mental Ability questions in every paper, so about 16 marks.</b></p>
+      <ul>
+        <li><b>Blood Relation, in all five papers (8 questions).</b> Most often a spoken riddle:
+        <em>"Pointing to a person in the photograph, a lady said…"</em>. Also a bare chain (<em>"If X is brother of son of Y's
+        son…"</em>) and <b>symbol-coded relations</b> (<em>"P × Q means P is the father of Q … which of
+        the following represents S is the niece of T?"</em>).</li>
+        <li><b>Direction Sense, in all five (6 questions).</b> A walk with turns, then the shortest
+        distance home. The positions of several points, then where one is from another (one version
+        asks it for a man facing north). A string of left and right turns, then the direction
+        someone ends up facing.</li>
+        <li><b>Coding-Decoding, in all five (5 questions, and the key to one was later scrapped).</b>
+        The rule changes every time: letter shifts that alternate +1 / −3, letters numbered from Z
+        instead of from A, the product of the word lengths, matching sentences to scrambled codes.
+        2024-U also had a letter analogy built on a fixed shift of 8.</li>
+        <li><b>Alphabet Test, once (2024-A).</b> The alphabet is rearranged first (vowels moved to
+        the end), then there's a nested position: <em>"the 12th letter to the left of the 17th letter to
+        the right of the 20th letter from the right end"</em>.</li>
+      </ul>
+      <p style="margin-top:9px"><b>None of these questions had a figure.</b> They are all plain text,
+      so you draw the tree, the grid or the numbered alphabet yourself. Allen also recycles: the
+      points-and-a-man-facing-north question in 2024-A (Q69) is <b>word for word</b> the sample's Q74.</p>
+      <p><b>Your teacher found the real paper harder than the sample.</b> Many real items chain two steps. You follow the turns
+      <em>and then</em> use Pythagoras (2024-U). You rearrange the alphabet <em>and then</em> count a nested
+      position in the new series (2024-A). You translate a symbol chain <em>and then</em> check every link
+      and gender (2017-E). Get the method below down to zero effort so your attention is free for the second step.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 1. BLOOD RELATION ========================= -->
+  <section>
+    <h2><span class="n">1</span>Blood Relation: draw the tree, never hold it in your head</h2>
+    <p class="lede">Every blood-relation question is a chain of links like "father of", "son of"
+    and "wife of". Mistakes come from dropping a link, from <b>guessing a gender</b>, or from answering
+    about the wrong person. A four-symbol family tree prevents all three.</p>
+
+    <figure>
+      <svg viewBox="0 0 620 262" width="620" height="262" role="img" aria-label="Family tree: father married to mother; their children Meera and her only brother; the brother's son">
+        <g font-family="Inter, sans-serif" font-size="13" text-anchor="middle">
+          <!-- generation 1 -->
+          <rect x="135" y="28" width="110" height="34" rx="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <text x="190" y="50" fill="currentColor">Father (+)</text>
+          <rect x="275" y="28" width="110" height="34" rx="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <text x="330" y="50" fill="currentColor">Mother (−)</text>
+          <!-- marriage: double line -->
+          <line x1="245" y1="41" x2="275" y2="41" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="245" y1="49" x2="275" y2="49" stroke="currentColor" stroke-width="1.8"/>
+          <!-- down to siblings -->
+          <line x1="260" y1="49" x2="260" y2="100" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="170" y1="100" x2="350" y2="100" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="170" y1="100" x2="170" y2="113" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="350" y1="100" x2="350" y2="113" stroke="currentColor" stroke-width="1.8"/>
+          <!-- generation 2 -->
+          <rect x="115" y="113" width="110" height="34" rx="8" fill="var(--iq)" fill-opacity=".16" stroke="var(--iq)" stroke-width="2.2"/>
+          <text x="170" y="135" fill="var(--iq)" font-weight="700">Meera (−)</text>
+          <rect x="285" y="113" width="130" height="34" rx="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <text x="350" y="135" fill="currentColor">only son (+)</text>
+          <!-- generation 3 -->
+          <line x1="350" y1="147" x2="350" y2="198" stroke="currentColor" stroke-width="1.8"/>
+          <rect x="295" y="198" width="110" height="34" rx="8" fill="var(--iq)" fill-opacity=".16" stroke="var(--iq)" stroke-width="2.2"/>
+          <text x="350" y="220" fill="var(--iq)" font-weight="700">the boy (+)</text>
+          <!-- generation labels -->
+          <g font-family="JetBrains Mono, monospace" font-size="10.5" fill="currentColor" opacity=".55" text-anchor="start">
+            <text x="10" y="50">GEN 1</text><text x="10" y="135">GEN 2</text><text x="10" y="220">GEN 3</text>
+          </g>
+          <!-- legend -->
+          <g font-family="JetBrains Mono, monospace" font-size="11" fill="currentColor" text-anchor="start">
+            <text x="462" y="40">+  male</text>
+            <text x="462" y="62">−  female</text>
+            <line x1="462" y1="80" x2="484" y2="80" stroke="currentColor" stroke-width="1.6"/>
+            <line x1="462" y1="86" x2="484" y2="86" stroke="currentColor" stroke-width="1.6"/>
+            <text x="492" y="87">married</text>
+            <line x1="462" y1="106" x2="484" y2="106" stroke="currentColor" stroke-width="1.6"/>
+            <text x="492" y="110">siblings</text>
+            <line x1="473" y1="122" x2="473" y2="142" stroke="currentColor" stroke-width="1.6"/>
+            <text x="492" y="136">parent → child</text>
+          </g>
+        </g>
+      </svg>
+      <figcaption>Meera points to a boy: <em>"He is the son of my father's only son."</em> Start at Meera
+      and take one link at a time. My father's only son is her <b>brother</b>, and his son is her
+      <b>nephew</b>. Gender is written on every box: <b>+</b> male, <b>−</b> female, or leave it blank
+      when the question does not tell you. Many books draw a <b>male as a square</b> and a <b>female as a
+      circle</b>, with a <b>double line</b> for a married couple. It is the same tree, so read the key the
+      question gives.</figcaption>
+    </figure>
+
+    <div class="box def">
+      <h4>The method, in three moves</h4>
+      <ol>
+        <li><b>Start from the person you know</b>, usually the speaker, and add <b>one link at a
+        time</b>. With <code>'s</code> ("my father's son's mother") that means reading <b>left to
+        right</b>. With <code>of</code> ("the son of the brother of my mother") it means reading
+        <b>right to left</b>, because the person you know comes last.</li>
+        <li><b>Draw each person once</b>, with generations on separate levels, and mark
+        <b>+ / −</b> only when a word proves it.</li>
+        <li><b>Read the answer the right way round.</b> "How is A related to B?" means "A is B's ___".</li>
+      </ol>
+    </div>
+
+    <div class="box trap">
+      <h4>The five traps the papers set</h4>
+      <ul>
+        <li><b>The speaker can be the person described.</b> Meera's "my father's only son" is her
+        brother. If a <b>boy</b> says exactly the same words, the only son is <b>himself</b>, and the
+        boy in the photo is his <b>son</b>. In the same way, "my mother's only daughter" said by a girl
+        is the girl herself. When the chain comes back to the speaker's own generation, ask
+        <em>"could this be me?"</em></li>
+        <li><b>A name never gives a gender. Only a relation word does.</b> <em>son, brother, father,
+        husband, uncle, nephew</em> are male. <em>daughter, sister, mother, wife, aunt, niece</em> are
+        female. <em>child, sibling, parent, spouse, cousin</em> say nothing. "Kiran is Ravi's parent"
+        does not make Kiran a father or a mother, so a statement that depends on it is <b>not
+        definitely true</b>. A pronoun in the question (<em>"he recalled"</em>) does count.</li>
+        <li><b>"Only" is doing work.</b> "The only son of my father's mother" is your father. Drop the
+        word "only" and he might be an uncle. A plain <b>"my grandmother"</b> is ambiguous, but the 2024-A key
+        reads it as the <b>father's mother</b>. Follow that unless the question says maternal.</li>
+        <li><b>Answering about the wrong person.</b> If you work out that A is B's nephew, then B is A's
+        uncle or aunt. The two answers are mirror words, and expect both among the options.</li>
+        <li><b>Maternal or paternal.</b> The side is the parent the link passes through: mother's brother
+        is the <b>maternal</b> uncle, father's brother the <b>paternal</b> uncle. Both are often options.</li>
+      </ul>
+    </div>
+
+    <h3>Words the papers use</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Link</th><th>Relation</th><th>At home</th></tr></thead>
+        <tbody>
+          <tr><td>Father's brother</td><td><b>Uncle</b> (paternal)</td><td>chacha / tau</td></tr>
+          <tr><td>Mother's brother</td><td><b>Uncle</b> (maternal)</td><td>mama</td></tr>
+          <tr><td>Father's sister · mother's sister</td><td><b>Aunt</b></td><td>bua · mausi</td></tr>
+          <tr><td>Aunt's husband · uncle's wife</td><td><b>Uncle · Aunt</b></td><td>phupha, mausa · chachi, mami</td></tr>
+          <tr><td>Brother's or sister's son · daughter</td><td><b>Nephew · Niece</b></td><td></td></tr>
+          <tr><td>Child of an uncle or aunt</td><td><b>Cousin</b></td><td></td></tr>
+          <tr><td>Sister's husband · spouse's brother</td><td><b>Brother-in-law</b></td><td></td></tr>
+          <tr><td>Brother's wife · spouse's sister</td><td><b>Sister-in-law</b></td><td></td></tr>
+          <tr><td>Spouse's father · son's wife</td><td><b>Father-in-law · Daughter-in-law</b></td><td></td></tr>
+          <tr><td>Spouse's mother · daughter's husband</td><td><b>Mother-in-law · Son-in-law</b></td><td></td></tr>
+          <tr><td>Parent's father · son's or daughter's daughter</td><td><b>Grandfather · Granddaughter</b></td><td>dada, nana</td></tr>
+          <tr><td>Son's or daughter's son</td><td><b>Grandson</b></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13.4px;color:var(--muted)">Two conventions these questions assume unless they say
+    otherwise: <b>"my father's wife" is my mother</b>, and nobody has been married twice.</p>
+
+    <div class="box">
+      <h4>Coded relations: translate every symbol, then draw</h4>
+      <p>Suppose <code>P # Q</code> means P is the <b>mother</b> of Q, <code>P @ Q</code> means P is the
+      <b>brother</b> of Q, <code>P % Q</code> means P is the <b>father</b> of Q, and <code>P $ Q</code>
+      means P is the <b>wife</b> of Q. Which expression means <b>A is the maternal uncle of D</b>?</p>
+      <p>A maternal uncle is <b>the brother of the mother</b>, so you need exactly
+      "A brother of someone, and that someone mother of D":</p>
+      <ul>
+        <li><code>A @ B # D</code>: A is the brother of B, and B is the mother of D. <b>✓ Maternal uncle.</b></li>
+        <li><code>A @ B % D</code>: B is the <em>father</em> of D, which makes A the <b>paternal</b> uncle.</li>
+        <li><code>A % B @ D</code>: A is the father of B, and B is the brother of D. That makes A <b>D's father</b>.</li>
+        <li><code>B # A @ D</code>: A is the brother of D. They are <b>siblings</b>, not uncle and nephew.</li>
+      </ul>
+      <p><b>A gender word fixes the gender of the person it names. A husband or wife word also fixes the spouse.</b> <code>A @ B</code>
+      (A is the brother of B) makes A male and says <b>nothing about B</b>. <code>A $ B</code> (A is the wife
+      of B) makes A female <em>and</em> B male, because a wife's spouse is a husband. Watch which way the
+      definition runs, too. The sample paper wrote <em>"P − Q means Q is father of P"</em>, where the gendered
+      person is the <b>second</b> one. Questions that ask "which is the niece" or "which is the sister" are won
+      or lost on this.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 2. DIRECTION SENSE ========================= -->
+  <section>
+    <h2><span class="n">2</span>Direction Sense: put the walk on a grid</h2>
+    <p class="lede">Turns cause the mistakes, and a <b>right turn is always clockwise</b>, whichever way
+    you are facing. Convert every turn into a compass direction as you go, write each leg as a move
+    east–west or north–south, and add them up at the end.</p>
+
+    <div class="figrow">
+      <figure style="margin-top:6px">
+        <svg viewBox="0 0 230 230" width="230" height="230" role="img" aria-label="Compass with eight directions and a clockwise arrow labelled right turn">
+          <circle cx="115" cy="115" r="78" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".45"/>
+          <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="115" y1="115" x2="115" y2="45"/><line x1="115" y1="115" x2="185" y2="115"/>
+            <line x1="115" y1="115" x2="115" y2="185"/><line x1="115" y1="115" x2="45" y2="115"/>
+          </g>
+          <g stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity=".6">
+            <line x1="115" y1="115" x2="164.5" y2="65.5"/><line x1="115" y1="115" x2="164.5" y2="164.5"/>
+            <line x1="115" y1="115" x2="65.5" y2="164.5"/><line x1="115" y1="115" x2="65.5" y2="65.5"/>
+          </g>
+          <g font-family="Inter, sans-serif" font-weight="700" font-size="14" text-anchor="middle" fill="var(--iq)">
+            <text x="115" y="30">N</text><text x="203" y="120">E</text><text x="115" y="210">S</text><text x="27" y="120">W</text>
+          </g>
+          <g font-family="Inter, sans-serif" font-size="11" text-anchor="middle" fill="currentColor" opacity=".8">
+            <text x="180" y="56">NE</text><text x="180" y="182">SE</text><text x="50" y="182">SW</text><text x="50" y="56">NW</text>
+          </g>
+          <!-- clockwise arrow -->
+          <path d="M131 58 A58 58 0 0 1 172 99" fill="none" stroke="var(--physics)" stroke-width="2.4"/>
+          <path d="M172 99 L164 92 M172 99 L175 89" fill="none" stroke="var(--physics)" stroke-width="2.4" stroke-linecap="round"/>
+          <text x="115" y="226" font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="middle" fill="var(--physics)">right turn = clockwise 90°</text>
+        </svg>
+        <figcaption>The four in-between directions sit at 45°. North-east is exactly halfway
+        between N and E.</figcaption>
+      </figure>
+
+      <figure style="margin-top:6px">
+        <svg viewBox="0 0 330 230" width="330" height="230" role="img" aria-label="Grid walk: 4 km east, left 3 km north, left 8 km west; the shortest line home is 5 km">
+          <g stroke="currentColor" stroke-width="1" opacity=".16">
+            <line x1="10" y1="50" x2="320" y2="50"/><line x1="10" y1="80" x2="320" y2="80"/>
+            <line x1="10" y1="110" x2="320" y2="110"/><line x1="10" y1="140" x2="320" y2="140"/>
+            <line x1="10" y1="170" x2="320" y2="170"/>
+            <line x1="40" y1="30" x2="40" y2="190"/><line x1="70" y1="30" x2="70" y2="190"/>
+            <line x1="100" y1="30" x2="100" y2="190"/><line x1="130" y1="30" x2="130" y2="190"/>
+            <line x1="160" y1="30" x2="160" y2="190"/><line x1="190" y1="30" x2="190" y2="190"/>
+            <line x1="220" y1="30" x2="220" y2="190"/><line x1="250" y1="30" x2="250" y2="190"/>
+            <line x1="280" y1="30" x2="280" y2="190"/><line x1="310" y1="30" x2="310" y2="190"/>
+          </g>
+          <!-- walk -->
+          <polyline points="160,170 280,170 280,80 40,80" fill="none" stroke="var(--iq)" stroke-width="3" stroke-linejoin="round"/>
+          <!-- shortest -->
+          <line x1="160" y1="170" x2="40" y2="80" stroke="var(--power)" stroke-width="2.4" stroke-dasharray="7 5"/>
+          <circle cx="160" cy="170" r="5.5" fill="currentColor"/>
+          <circle cx="40" cy="80" r="5.5" fill="var(--iq)"/>
+          <g font-family="Inter, sans-serif" font-size="11.5">
+            <text x="160" y="190" text-anchor="middle" fill="currentColor">Start</text>
+            <text x="220" y="163" text-anchor="middle" fill="var(--iq)">4 km E</text>
+            <text x="287" y="129" fill="var(--iq)">3 km N</text>
+            <text x="160" y="72" text-anchor="middle" fill="var(--iq)">8 km W</text>
+            <text x="40" y="70" text-anchor="middle" fill="currentColor">Finish</text>
+            <text x="86" y="146" fill="var(--power)" font-weight="700">5 km</text>
+          </g>
+          <text x="306" y="22" font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle" fill="currentColor" opacity=".7">N ↑</text>
+        </svg>
+        <figcaption>Rohan walks 4 km east, turns <b>left</b> and walks 3 km, then turns <b>left</b>
+        again and walks 8 km. East–west: 4 − 8 = −4, i.e. <b>4 km west</b>. North–south: <b>3 km north</b>.
+        The shortest distance home is √(4² + 3²) = <b>5 km</b>, and he is <b>north-west</b> of the start.</figcaption>
+      </figure>
+    </div>
+
+    <div class="bank">
+      <div class="fx">
+        <div class="eq">Right = clockwise · Left = anticlockwise</div>
+        <div class="wh">Facing <b>N</b>: right is E. Facing <b>E</b>: right is S. Facing <b>S</b>:
+        right is <b>W</b>. Facing <b>W</b>: right is N. Left is always the opposite of right.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">East +x · North +y</div>
+        <div class="wh">Add up the legs. Final <b>(x, y)</b>: both positive is NE, x positive and y
+        negative is SE, both negative is SW, x negative and y positive is NW. If one of them is 0, the
+        answer is due N, S, E or W.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">Shortest = √(x² + y²)</div>
+        <div class="wh">The numbers are chosen to come out whole, so learn the triples:
+        <b>3-4-5 · 6-8-10 · 5-12-13 · 9-12-15 · 8-15-17 · 7-24-25</b>.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">Turning on the spot: add angles</div>
+        <div class="wh">Take N = 0°, E = 90°, S = 180°, W = 270°. A clockwise turn adds, an
+        anticlockwise turn subtracts, then take the result mod 360°. A clockwise turn of 90° is a right turn.</div>
+      </div>
+    </div>
+
+    <div class="box def">
+      <h4>"Where is A with respect to B?" Stand at B, look at A</h4>
+      <p>P is due north of Q, and R is due west of Q. <b>Where is P with respect to R?</b> Put Q at the
+      origin: P = (0, +1) and R = (−1, 0). Going from R to P is <b>east and north</b>, so P is
+      <b>north-east</b> of R. The reverse, R with respect to P, is <b>south-west</b>, and that is likely to be
+      an option too.</p>
+      <p>Read <b>"X is north-east of Y"</b> exactly as written: stand at Y and X lies north-east. Never flip it.
+      When the question puts a <b>person facing a direction</b> at B, answer in compass terms if the options are
+      compass directions (in both real versions they were, so the facing was a red herring). Convert to left
+      or right only when the options use those words. For a man facing north, west is his left.</p>
+      <p><b>No starting direction given?</b> ("He walks 10 km straight, then turns right…") Assume he starts
+      facing <b>north</b>. The shortest distance does not depend on that choice. <b>A right angle as a
+      clue:</b> if D is north of A and ∠CDA = 90°, then DC runs due east–west, so D and C are level.</p>
+    </div>
+
+    <div class="box">
+      <h4>Shadows: the sun tells you where you are facing</h4>
+      <ul>
+        <li>The sun rises in the <b>east</b>, so in the <b>morning</b> shadows fall towards the
+        <b>west</b>.</li>
+        <li>It sets in the <b>west</b>, so in the <b>evening</b> shadows fall towards the <b>east</b>.</li>
+        <li><b>Facing south swaps left and right</b> compared with the page: your right is west. So if your
+        shadow falls to your <b>right</b> in the morning (towards the west), you are facing <b>south</b>.</li>
+        <li>If you face your shadow in the morning, you are facing west and your right hand points
+        <b>north</b>. This is a common variant in practice books. None of the five cached papers used
+        it, but it belongs to the same official topic.</li>
+      </ul>
+    </div>
+
+    <div class="box def">
+      <h4>A twisted signpost: find the twist, then undo it</h4>
+      <p>A signpost has been turned on its pole, so every arm points the wrong way <b>by the same angle
+      in the same sense</b>. One arm tells you the twist. Say the arm marked <b>NORTH</b> actually points
+      <b>east</b>. That is a turn of <b>90° clockwise</b>, so every arm points 90° clockwise of its label:
+      the arm marked EAST points south, SOUTH points west, and WEST points north.</p>
+      <p>To travel <b>west</b>, go back 90° <em>anticlockwise</em> from where you want to go: follow the arm
+      marked <b>SOUTH</b>. Two slips to avoid: turning the wrong way (that gives NORTH), and following the arm
+      labelled WEST (that takes you north).</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Where the marks go</h4>
+      <ul>
+        <li><b>A turn is relative, a direction is absolute.</b> "Turns left" while facing south means
+        walking <b>east</b>. Write the compass letter on each leg as you read it.</li>
+        <li><b>Shortest distance is not distance walked.</b> The total of the legs is usually among the
+        options.</li>
+        <li><b>Adding the legs instead of using Pythagoras.</b> 12 km east and 5 km north is 13 km from
+        the start, not 17.</li>
+        <li><b>Reversing "with respect to".</b> Where the finish is from the start and where the start is
+        from the finish are opposite directions, and expect both among the options.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================= 3. CODING-DECODING ========================= -->
+  <section>
+    <h2><span class="n">3</span>Coding-Decoding: find the rule, then prove it on every letter</h2>
+    <p class="lede">You are shown a word and its code, and you must code a new word by the same rule.
+    The whole skill is <b>writing the letter numbers down and testing the rule on every position</b>.
+    A rule that fits the first two letters and fails the third is the distractor.</p>
+
+    <figure>
+      <svg viewBox="0 0 600 150" width="600" height="150" role="img" aria-label="Alphabet in two rows: A to M above, Z to N below; each column adds to 27">
+        <g font-family="Inter, sans-serif" text-anchor="middle">
+          <g font-size="17" font-weight="600" fill="currentColor">
+            <text x="36" y="42">A</text><text x="80" y="42">B</text><text x="124" y="42">C</text><text x="168" y="42">D</text>
+            <text x="212" y="42" fill="var(--iq)" font-weight="800">E</text><text x="256" y="42">F</text><text x="300" y="42">G</text><text x="344" y="42">H</text>
+            <text x="388" y="42">I</text><text x="432" y="42" fill="var(--iq)" font-weight="800">J</text><text x="476" y="42">K</text><text x="520" y="42">L</text><text x="564" y="42">M</text>
+          </g>
+          <g font-family="JetBrains Mono, monospace" font-size="11" fill="currentColor" opacity=".6">
+            <text x="36" y="60">1</text><text x="80" y="60">2</text><text x="124" y="60">3</text><text x="168" y="60">4</text>
+            <text x="212" y="60">5</text><text x="256" y="60">6</text><text x="300" y="60">7</text><text x="344" y="60">8</text>
+            <text x="388" y="60">9</text><text x="432" y="60">10</text><text x="476" y="60">11</text><text x="520" y="60">12</text><text x="564" y="60">13</text>
+          </g>
+          <g stroke="currentColor" stroke-width="1" opacity=".22">
+            <line x1="36" y1="68" x2="36" y2="84"/><line x1="80" y1="68" x2="80" y2="84"/><line x1="124" y1="68" x2="124" y2="84"/>
+            <line x1="168" y1="68" x2="168" y2="84"/><line x1="212" y1="68" x2="212" y2="84"/><line x1="256" y1="68" x2="256" y2="84"/>
+            <line x1="300" y1="68" x2="300" y2="84"/><line x1="344" y1="68" x2="344" y2="84"/><line x1="388" y1="68" x2="388" y2="84"/>
+            <line x1="432" y1="68" x2="432" y2="84"/><line x1="476" y1="68" x2="476" y2="84"/><line x1="520" y1="68" x2="520" y2="84"/>
+            <line x1="564" y1="68" x2="564" y2="84"/>
+          </g>
+          <g font-size="17" font-weight="600" fill="currentColor">
+            <text x="36" y="106">Z</text><text x="80" y="106" fill="var(--iq)" font-weight="800">Y</text><text x="124" y="106">X</text><text x="168" y="106">W</text>
+            <text x="212" y="106">V</text><text x="256" y="106">U</text><text x="300" y="106" fill="var(--iq)" font-weight="800">T</text><text x="344" y="106">S</text>
+            <text x="388" y="106">R</text><text x="432" y="106">Q</text><text x="476" y="106">P</text><text x="520" y="106" fill="var(--iq)" font-weight="800">O</text><text x="564" y="106">N</text>
+          </g>
+          <g font-family="JetBrains Mono, monospace" font-size="11" fill="currentColor" opacity=".6">
+            <text x="36" y="124">26</text><text x="80" y="124">25</text><text x="124" y="124">24</text><text x="168" y="124">23</text>
+            <text x="212" y="124">22</text><text x="256" y="124">21</text><text x="300" y="124">20</text><text x="344" y="124">19</text>
+            <text x="388" y="124">18</text><text x="432" y="124">17</text><text x="476" y="124">16</text><text x="520" y="124">15</text><text x="564" y="124">14</text>
+          </g>
+          <text x="300" y="146" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--iq)">each column is an opposite pair · the two numbers add to 27</text>
+        </g>
+      </svg>
+      <figcaption>Fold the alphabet in half. <b>E J O T Y</b> are 5, 10, 15, 20, 25, so every
+      letter from C to Z is at most two steps from an anchor. Opposite letters (A–Z, B–Y, … M–N) always add to
+      <b>27</b>, so a letter's position counted from Z is <code>27 − n</code>.</figcaption>
+    </figure>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Rule type</th><th>Test</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><b>Constant shift</b></td><td>Every letter moves the same number of steps</td><td class="mono">CAT → ECV (+2)</td></tr>
+          <tr><td><b>Position-based shift</b></td><td>Shifts alternate or grow: +1 −3 +1 −3, or +1 −1 +2 −2 +3</td><td class="mono">BOOK → CLPH (+1 −3)<br>ZEBRA → ADDPD (+1 −1 +2 −2 +3)</td></tr>
+          <tr><td><b>Opposite letters</b></td><td>Each pair adds to 27</td><td class="mono">COLD → XLOW</td></tr>
+          <tr><td><b>Reverse, then shift</b></td><td>Compare the code with the word written backwards</td><td class="mono">PLANT → UOBMQ (TNALP, +1)</td></tr>
+          <tr><td><b>Letters rearranged</b></td><td>Same letters, new order: each half reversed, or neighbours swapped</td><td class="mono">COMPUTER → PMOCRETU (halves)<br>COMPUTER → OCPMTURE (pairs)</td></tr>
+          <tr><td><b>Letter analogy</b></td><td>Find the shift inside the first pair, apply it to the second</td><td class="mono">DFHJ : GIKM :: LNPR : OQSU (+3)</td></tr>
+          <tr><td><b>Letter ↔ digit</b></td><td>Each letter always gets the same digit; read them off</td><td class="mono">TEAM = 5238 → MEAT = 8235</td></tr>
+          <tr><td><b>Matrix code</b></td><td>A letter is written as its <b>row number, then column number</b></td><td>see below</td></tr>
+          <tr><td><b>Word → number</b></td><td>Sum of positions · sum counted from Z · letter count</td><td class="mono">BAD → 7 (2+1+4)</td></tr>
+          <tr><td><b>Sentence → code words</b></td><td>Common word ↔ common code word (order is scrambled)</td><td>see below</td></tr>
+          <tr><td><b>Substitution</b></td><td>Words stand for other words; answer in the <em>code</em> word</td><td>see below</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bank">
+      <div class="fx">
+        <div class="eq">After Z comes A</div>
+        <div class="wh">Shifts wrap around. <b>Y + 3 = B</b>, <b>A − 3 = X</b>. To go back 3 from A,
+        count Z, Y, X. Going <em>forward</em> to D by mistake is the standard slip.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">From Z: 27 − n</div>
+        <div class="wh">"Letters numbered backwards" means Z = 1 … A = 26, which is the same as
+        <b>27 − the usual position</b>. Using 26 − n puts every letter one out.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">Test simple → complex</div>
+        <div class="wh">For a word-number code try: sum of positions → sum from Z → <b>average</b> of
+        positions (FHG → 7) → doubled or squared positions (C → 6 or 9) → number of letters (added, or multiplied across words). Ignore hyphens and
+        spaces. <b>Accept a rule only when it fits every example given.</b></div>
+      </div>
+    </div>
+
+    <div class="box def">
+      <h4>Sentence codes: match by the shared word, never by position</h4>
+      <p><code>sun is hot</code> → <code>ka la ma</code> &nbsp;·&nbsp; <code>sun rises early</code> →
+      <code>ta ka pa</code> &nbsp;·&nbsp; <code>hot tea is good</code> → <code>la ra ma sa</code></p>
+      <ul>
+        <li>Sentences 1 and 2 share only <b>sun</b>, and their codes share only <b>ka</b>, so
+        <b>sun = ka</b>. Sun is the first word of both sentences, but ka is the first code in one and
+        the second in the other, because the order of the code words is scrambled.</li>
+        <li>Sentences 1 and 3 share <b>is</b> and <b>hot</b>, and their codes share <b>la</b> and
+        <b>ma</b>. Each of is and hot is la or ma, but <b>these three sentences cannot tell you
+        which</b>. When "cannot be determined" is an option, this is the reason it can be correct.</li>
+        <li><b>Elimination pins a word down.</b> Add a fourth sentence: <code>early morning walk</code> →
+        <code>pa zo ni</code>. It shares only <b>early</b> with sentence 2 and only <b>pa</b> with its code, so
+        <b>early = pa</b>. Sentence 2 now has one word and one code left, so <b>rises = ta</b>.</li>
+      </ul>
+    </div>
+
+    <div class="box exam">
+      <h4>Substitution: the answer is the code word</h4>
+      <p>"If <em>white</em> is called <em>black</em>, <em>black</em> is called <em>red</em>,
+      <em>red</em> is called <em>yellow</em> and <em>yellow</em> is called <em>green</em>, what is the
+      colour of blood?" Blood is red, and red is <b>called yellow</b>, so the answer is
+      <b>yellow</b>. "Red" is the trap: it is the real colour, but the question asks what it is
+      called in the code.</p>
+    </div>
+
+    <div class="box def">
+      <h4>Matrix codes: row first, then column</h4>
+      <p>The letters sit in a grid with numbered rows and columns:</p>
+      <div class="tablewrap"><table style="width:auto;margin:6px 0 10px">
+        <thead><tr><th class="mono"></th><th class="mono">1</th><th class="mono">2</th><th class="mono">3</th><th class="mono">4</th><th class="mono">5</th></tr></thead>
+        <tbody>
+          <tr><th class="mono">1</th><td class="mono">A</td><td class="mono">B</td><td class="mono">C</td><td class="mono">D</td><td class="mono">E</td></tr>
+          <tr><th class="mono">2</th><td class="mono">F</td><td class="mono"><b>G</b></td><td class="mono">H</td><td class="mono">I</td><td class="mono">J</td></tr>
+          <tr><th class="mono">3</th><td class="mono">K</td><td class="mono">L</td><td class="mono">M</td><td class="mono">N</td><td class="mono"><b>O</b></td></tr>
+          <tr><th class="mono">4</th><td class="mono">P</td><td class="mono">Q</td><td class="mono">R</td><td class="mono">S</td><td class="mono"><b>T</b></td></tr>
+          <tr><th class="mono">5</th><td class="mono">U</td><td class="mono">V</td><td class="mono">W</td><td class="mono">X</td><td class="mono">Y</td></tr>
+        </tbody>
+      </table></div>
+      <p>Each letter is written as <b>its row number followed by its column number</b>. So G is <b>22</b>,
+      O is row 3, column 5, giving <b>35</b>, and T is <b>45</b>. <b>GOT = 22 35 45.</b> The trap option reads
+      column first (22 53 54). When a question gives two grids, find the letter in either one, and still
+      write row, then column.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 4. ALPHABET TEST ========================= -->
+  <section>
+    <h2><span class="n">4</span>Alphabet Test: number the series, then do plain arithmetic</h2>
+    <p class="lede">Every alphabet-test question becomes addition and subtraction once each letter has
+    a number. What makes the hard versions hard is <b>changing the series first</b> (reversed,
+    vowels removed, halves swapped). After that change, the old positions are wrong.</p>
+
+    <div class="bank">
+      <div class="fx">
+        <div class="eq">k-th from right = N − k + 1</div>
+        <div class="wh">In the full alphabet N = 26, so k-th from the right is <b>27 − k</b>
+        (7th from the right is the 20th letter, T). In a shortened series, use its own N.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">k to the right: p + k · to the left: p − k</div>
+        <div class="wh">Here <b>p</b> is a position counted from the left. Moving right increases it. Convert
+        every "from the right" position into "from the left" before adding.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">Nested? Start at the end</div>
+        <div class="wh">In "the 5th letter to the left of the 9th letter from the right", the letter
+        you can find directly is named <b>last</b>. Find it, then work back towards the start of the
+        sentence.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">Letters between = difference − 1</div>
+        <div class="wh">Between D (4) and J (10) there are <b>10 − 4 − 1 = 5</b> letters (E F G H I),
+        not 6. The same off-by-one as people in a row.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">Midway letter = average</div>
+        <div class="wh">The letter exactly midway between D (4) and R (18) is at <b>(4 + 18) ÷ 2 = 11</b>, K.
+        If the two positions add to an odd number, no single letter is midway.</div>
+      </div>
+      <div class="fx">
+        <div class="eq">Dictionary order</div>
+        <div class="wh">Compare words letter by letter from the left. The first letter that differs
+        decides. If one word runs out first (<b>CAR</b>, CARE), the shorter one comes first.</div>
+      </div>
+    </div>
+
+    <div class="box def">
+      <h4>Rearranged series: rewrite and renumber before anything else</h4>
+      <p>If the vowels are removed, 21 letters remain: <code>B C D F G H J K L M N P Q R S T V W X Y Z</code>,
+      numbered 1 to 21. B is now 1st and Z is 21st. The question is now about <b>this</b> row, so
+      "from the right end" uses N = 21, and "the 12th letter" means the 12th <em>consonant</em>, P.
+      Write the new row out on the booklet and number it. Doing it in your head is where the letter
+      slips by one.</p>
+    </div>
+
+    <div class="box">
+      <h4>Letter pairs: "as many letters between them in the word as in the alphabet"</h4>
+      <p>A pair qualifies when the gap between the two letters' <b>positions in the word</b> equals the gap
+      between their <b>positions in the alphabet</b>. Take <b>DECIMAL</b> (D4 E5 C3 I9 M13 A1 L12):</p>
+      <ul>
+        <li><b>D, E</b>: next to each other in the word, and next to each other in the alphabet (4, 5). ✓</li>
+        <li><b>E … A</b>: 4 places apart in the word (2nd and 6th), and E5 to A1 is 4 apart. ✓
+        This pair runs backwards (E comes after A), and it still counts.</li>
+        <li><b>I … L</b>: 3 places apart in the word (4th and 7th), and I9 to L12 is 3 apart. ✓</li>
+      </ul>
+      <p>Answer: <b>3 pairs</b>. Unless the question says "in the same order as in the alphabet",
+      <b>count pairs in both directions</b>. The forward-only count, 2 here, is the planted wrong option.</p>
+    </div>
+  </section>
+
+  <!-- ========================= WORKED EXAMPLES ========================= -->
+  <section>
+    <h2><span class="n">5</span>Five worked questions, with the elimination spelled out</h2>
+    <p class="lede">These are pitched at TALLENTEX level: two steps each. Try each one before opening
+    the working. The <b>elimination</b> lines are worth studying most, because every wrong option
+    below is what a real slip produces.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">Blood Relation · ~60 seconds</span></div>
+      <p>Pointing to a boy, Asha says, <b>"He is the son of the only child of my father's wife."</b>
+      How is the boy related to Asha?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Brother</div>
+        <div class="we-opt"><span class="ob">2</span>Nephew</div>
+        <div class="we-opt key"><span class="ob">3</span>Son</div>
+        <div class="we-opt"><span class="ob">4</span>Grandson</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>"<em>of</em>" chains are read from the right, starting with the person you know.</p>
+        <p><b>My father's wife</b> is Asha's mother. Her <b>only child</b> must be Asha herself,
+        because Asha is her child, so if there were anyone else she would not be the <em>only</em> one.
+        The boy is <b>the son of Asha</b>.</p>
+        <p>Answer: <b>Son</b>, option (3).</p>
+        <div class="elim"><b>Elimination:</b> (2) Nephew comes from treating "the only child of my
+        father's wife" as a <em>sibling</em> of Asha, whose son would be her nephew. Forgetting that the
+        speaker can be that only child is the trap this item is built on. The answer does not depend on
+        Asha's gender. (1) Brother skips a
+        link: it is "son of my father's wife", with the only child dropped. (4) Grandson is right about
+        the wrong person: the boy is the grandson of <em>Asha's mother</em>, but the question asks how
+        he is related to Asha.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">Direction Sense · ~75 seconds</span></div>
+      <p>Meera starts from her school and walks <b>9 km north</b>. She turns right and walks
+      <b>5 km</b>, turns right again and walks <b>4 km</b>, then turns left and walks <b>7 km</b>. How
+      far is she from the school, and in which direction?</p>
+      <div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>13 km north-east</div>
+        <div class="we-opt"><span class="ob">2</span>13 km south-west</div>
+        <div class="we-opt"><span class="ob">3</span>17 km north-east</div>
+        <div class="we-opt"><span class="ob">4</span>25 km north-east</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1: turn each turn into a direction.</b> She starts facing north. Turning right gives
+        <b>east</b>. Turning right again gives <b>south</b>. Turning left while facing south gives
+        <b>east</b>.</p>
+        <p><b>Step 2: add the legs.</b> North–south: <code>+9 − 4 = 5 km north</code>. East–west:
+        <code>5 + 7 = 12 km east</code>.</p>
+        <p><b>Step 3: distance and direction.</b> <code>√(12² + 5²) = √169 = 13 km</code>. Both
+        components are positive (east and north), so she is <b>north-east</b> of the school.</p>
+        <div class="elim"><b>Elimination:</b> (4) 25 km is 9 + 5 + 4 + 7, the distance walked, not the
+        distance from school. (3) 17 km is 12 + 5: the legs added instead of using Pythagoras. (2) has the
+        right distance but the reversed direction. South-west is where the <em>school</em> is from
+        Meera, not where she is from the school. The 5-12-13 triple settles the distance in two seconds, and
+        after that you only have to check the direction.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">Coding-Decoding · ~70 seconds</span></div>
+      <p>In a certain code, <b>TIGER</b> is written as <b>UFHBS</b>. How is <b>PANEL</b> written in that code?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>QDOBM</div>
+        <div class="we-opt key"><span class="ob">2</span>QXOBM</div>
+        <div class="we-opt"><span class="ob">3</span>QXOHM</div>
+        <div class="we-opt"><span class="ob">4</span>OXMBK</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1: find the rule on every letter.</b> T→U is <b>+1</b>, I→F is <b>−3</b>, G→H is
+        <b>+1</b>, E→B is <b>−3</b> and R→S is <b>+1</b>. The shifts alternate <b>+1, −3</b>.</p>
+        <p><b>Step 2: apply it to PANEL.</b> P+1 = <b>Q</b>. A−3 wraps round to Z, Y, <b>X</b>.
+        N+1 = <b>O</b>. E−3 = <b>B</b>. L+1 = <b>M</b>.</p>
+        <p>Answer: <b>QXOBM</b>, option (2).</p>
+        <div class="elim"><b>Elimination:</b> (1) QDOBM moves A <em>forward</em> to D. Going
+        backwards past A is the wrap-around slip, and it is the most tempting wrong option. (3) QXOHM
+        uses +3 instead of −3 on the E, a sign slip on the fourth letter. (4) OXMBK uses −1 instead of
+        +1 on the first, third and fifth letters, which is what happens when you work out T→U as a step
+        backwards. Every wrong option matches the right code in at least two letters, so check <b>every</b>
+        position, not just the first.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">Alphabet Test · ~80 seconds</span></div>
+      <p>If all the <b>vowels are removed</b> from the English alphabet, which letter will be the
+      <b>4th to the right of the 11th letter from the right end</b>?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>R</div>
+        <div class="we-opt key"><span class="ob">2</span>S</div>
+        <div class="we-opt"><span class="ob">3</span>T</div>
+        <div class="we-opt"><span class="ob">4</span>Y</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1: rewrite the series.</b> Removing A, E, I, O, U leaves 21 letters:
+        <code>B C D F G H J K L M N P Q R S T V W X Y Z</code>.</p>
+        <p><b>Step 2: the letter named last.</b> The 11th from the right of 21 letters is
+        position <code>21 − 11 + 1 = 11</code> from the left, which is <b>N</b>.</p>
+        <p><b>Step 3: 4 to the right.</b> Position <code>11 + 4 = 15</code>: P (12), Q (13), R (14),
+        <b>S</b> (15).</p>
+        <p>Answer: <b>S</b>, option (2).</p>
+        <div class="elim"><b>Elimination:</b> (3) T is the answer in the <em>full</em> alphabet (11th
+        from the right is P, and 4 on is T), where the rearrangement has been ignored. (4) Y uses the
+        full-alphabet formula <code>27 − 11 = 16</code> on the 21-letter row, which gives T as the start
+        and Y as the answer. (1) R drops the +1 and takes position <code>21 − 11 = 10</code> (M), which
+        also puts the answer one letter early.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">Statement item · ~90 seconds</span></div>
+      <p>Ravi is the son of Kiran. Kiran's only sister is Neha. Neha's husband is Arun. Consider
+      the following statements.</p>
+      <ol class="roman">
+        <li>Arun is Ravi's uncle.</li>
+        <li>Kiran is Ravi's father.</li>
+        <li>Neha is Ravi's aunt.</li>
+        <li>Ravi is Arun's nephew.</li>
+      </ol>
+      <p>Which of the statements are <b>definitely</b> true?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>I and III only</div>
+        <div class="we-opt"><span class="ob">2</span>II and III only</div>
+        <div class="we-opt"><span class="ob">3</span>I, II, III and IV</div>
+        <div class="we-opt key"><span class="ob">4</span>I, III and IV only</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>II cannot be decided.</b> "Ravi is the son of Kiran" makes <em>Ravi</em> male and says
+        nothing about Kiran, who may be his father or his mother. The name does not settle it (in India
+        Kiran is used for both), so II is <b>not definitely true</b>.</p>
+        <p><b>III is true.</b> Neha is the sister of Ravi's parent, and "sister" makes her female, so
+        she is his <b>aunt</b>.</p>
+        <p><b>I is true.</b> An aunt's husband is an <b>uncle</b>, and "husband" makes Arun male.</p>
+        <p><b>IV is true.</b> Arun is Ravi's uncle, and Ravi is male ("son"), so Ravi is Arun's
+        <b>nephew</b>.</p>
+        <p>So I, III and IV, which is <b>option (4)</b>.</p>
+        <div class="elim"><b>Elimination:</b> settle II first, because it is the only statement whose
+        truth depends on something missing, and it appears in two options. Once II is out, (2) and (3)
+        are gone, which leaves (1) or (4). Those differ only on IV, and "son" answers that at once.
+        (3) is the answer you give if you read Kiran as a man's name. (2) keeps II and also rejects
+        I and IV, which is what happens if you think an aunt's husband is not really an uncle. (1) drops IV,
+        which is the slip of reading it the wrong way round, as "Arun is Ravi's nephew".</div>
+      </div></details>
+    </div>
+  </section>
+
+  <!-- ========================= CHECK YOURSELF ========================= -->
+  <section>
+    <h2><span class="n">6</span>Check yourself</h2>
+    <p class="lede">Five quick ones. <b>No negative marking here</b>, because this is practice, not the
+    exam. Click an option and you'll see straight away whether you were right.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above and your score will appear here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to TALLENTEX: Paper 1 for this unit is on its way</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Mental Ability · <b>Blood Relation · Direction Sense · Coding-Decoding · Alphabet Test</b>,
+    using the official topic names from Allen's Class X syllabus. These are crash notes: read them once now and once the night before.<br>
+    Tip: press 🖨 (bottom-left) to print these as a revision sheet. 🏆 (top-left) takes you back to the TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'Pointing to a man, Riya says, "He is the only son of my mother\'s father." How is the man related to Riya?',
+    o:['Father','Maternal uncle','Brother','Grandfather'], a:1,
+    fb:'Her mother\'s father is Riya\'s maternal grandfather. His only son is her <b>mother\'s brother</b>, which makes him her <b>maternal uncle</b>. He cannot be her father, because her father is her mother\'s husband and not her mother\'s brother.' },
+  { q:'Sameer is facing <b>east</b>. He turns 90° clockwise, then 180° anticlockwise, then 45° clockwise. Which direction is he facing now?',
+    o:['North-east','North-west','South-east','South-west'], a:0,
+    fb:'Take N = 0°. East is 90°. After 90° clockwise he is at 180° (south). After 180° anticlockwise he is at 0° (north). After 45° clockwise he is at 45°, which is <b>north-east</b>.' },
+  { q:'In a certain code, <b>BLUR</b> is written as <b>YOFI</b>. How is <b>HEAT</b> written in that code?',
+    o:['RUYF','SVZG','GZVS','TAEH'], a:1,
+    fb:'Each letter is replaced by its opposite letter: B(2)↔Y(25), L(12)↔O(15), and each pair adds to 27. For HEAT: H(8)→S(19), E(5)→V(22), A(1)→Z(26), T(20)→G(7), giving <b>SVZG</b>. RUYF is what you get from 26 − n instead of 27 − n (every letter one short). GZVS is the right letters in reverse order.' },
+  { q:'Which letter is <b>6th to the right of the 15th letter from the right end</b> of the English alphabet?',
+    o:['F','Q','R','U'], a:2,
+    fb:'The 15th from the right is position 27 − 15 = 12, which is <b>L</b>. Six to the right is 12 + 6 = 18, which is <b>R</b>. F is 6 to the <em>left</em> of L. Q comes from using 26 − 15 = 11 (K) as the start, and U from counting 15 from the <em>left</em> (O) instead.' },
+  { q:'One morning after sunrise, Ananya stood facing her own shadow. Which direction was she facing?',
+    o:['North','South','East','West'], a:3,
+    fb:'In the morning the sun is in the east, so shadows fall towards the <b>west</b>. Facing her shadow, she faces <b>west</b>, and her right hand points north.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + '. Keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'All five. The four methods are in place.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed. Each one is a single rule.'
+                        : 'Read the trap boxes once more. Each of these is a single rule, and worth making automatic.');
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:iq-relations-directions-codes:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
