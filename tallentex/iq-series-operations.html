@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Series, Missing Characters & Operations</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--iq); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--iq); background:color-mix(in srgb,var(--iq) 14%,transparent); border:1px solid color-mix(in srgb,var(--iq) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  ol.roman { list-style-type:upper-roman; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--physics); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--iq); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:620px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--iq); background:color-mix(in srgb,var(--iq) 13%,transparent); border:1px solid color-mix(in srgb,var(--iq) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--iq); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(128px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--iq); background:color-mix(in srgb,var(--iq) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--iq) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb { display:block !important; background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Mental Ability · Crash notes</div>
+    <h1>Series, Missing Characters &amp; Operations</h1>
+    <p class="sub">Official topics: <b>Series (Verbal &amp; Non-Verbal)</b>, <b>Inserting the Missing
+    Character</b>, <b>Mathematical Operations</b> and <b>Arithmetical Reasoning</b>. Together they are
+    the <b>pattern-hunting</b> corner of the paper. Nothing here needs a formula you must memorise —
+    every question hands you two or three worked examples and asks you to find the rule they share, then
+    use it once more. The whole skill is <b>having a fixed order of things to try</b>, so you find the
+    rule in forty seconds instead of staring at it for four minutes.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>All five cached papers (2017-E, 2018-S, 2024-U, 2024-A and the sample) were read question by
+      question and every item re-solved and checked against the official key. <b>This unit is 18 to 20 questions across the five papers &mdash; roughly 4 of the 20 Mental
+      Ability questions per sitting, so about 16 marks.</b> It is 18 counting only what is
+      unambiguously this unit's (2017-E 3, 2018-S 4, 2024-U 4, 2024-A 3, sample 4), and 20 if you also
+      count the two <b>calendar-counting</b> items below &mdash; those sit on the border, and the
+      <em>Clocks, Calendars &amp; Ranking</em> unit teaches them too. Either way: budget for four a
+      paper and be ready for five.</p>
+      <ul>
+        <li><b>Inserting the Missing Character — 6 items, the biggest single slice</b> (2017-E Q79,
+        2018-S Q79, 2024-U Q72, 2024-A Q72, Sample Q67, Sample Q76). <b>Every one of them is a
+        figure</b> — a row of bracketed numbers, a grid with a totals row, four corners round a centre,
+        a triangle, a square. The rule is <em>never</em> stated; you get two or three completed
+        examples and must work it out.</li>
+        <li><b>Series — 5 items, one in every paper</b> (2017-E Q64, 2018-S Q64, 2024-U Q75, 2024-A
+        Q75, Sample Q61). <b>Three of the five are non-verbal</b> (a strip of figures, pick the next),
+        one is a number series to continue, and one asks for the <em>wrong</em> term rather than the
+        next one.</li>
+        <li><b>Mathematical Operations — 5 items, one in every paper</b> (2017-E Q61, 2018-S Q61,
+        2024-U Q71, 2024-A Q71, Sample Q63). Four different shapes: the signs are redefined and you
+        evaluate; the equation is wrong and you choose which two signs to swap; an operation is
+        invented out of thin air (<em>"if 32 × 41 = 15 …"</em>) and you must decode it; or Greek
+        letters stand in for &lt;, &gt; and = and you chain the inequalities.</li>
+        <li><b>Arithmetical Reasoning — 2 clear items, plus 2 shared ones.</b> The clear pair
+        (2018-S Q62, 2024-U Q78) are league tables: who lost the most matches. The shared pair
+        (2018-S Q77, Sample Q72) are <b>calendar counting</b> — how many leap years lie between two
+        dates, how many 29ths there are in 400 years. Allen's topic list has no "Calendar" entry, so
+        those two could equally be filed under <em>Clocks, Calendars &amp; Ranking</em>. They are
+        taught here because they are pure counting, and they are worth knowing twice.</li>
+      </ul>
+      <p style="margin-top:9px"><b>Allen recycles this unit harder than any other.</b> Sample Q67 and
+      2024-A Q72 are <b>the same question, numbers and all</b> — the same four triangles (three worked,
+      one blank), the same four options. And 2018-S Q62 ("which country lost most") came back six years later as 2024-U Q78
+      with cricket nations swapped for IPL teams and nothing else changed. <b>If you can do the items
+      in these notes, you have very likely already done one question on the real paper.</b></p>
+      <p><b>Your teacher found the real paper harder than the sample.</b> The missing-character items
+      in particular chain two steps: find the rule from the worked examples, <em>and then</em> notice
+      that the answer is written backwards, or that the numbers must be divided before they are joined.
+      Section 2 is the one to make automatic.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 1. SERIES ========================= -->
+  <section>
+    <h2><span class="n">1</span>Series: run the checklist, don't stare</h2>
+    <p class="lede">A series question gives you a run of numbers or figures and asks for the next one,
+    or for the one that does not belong. <b>Staring at it is the mistake.</b> There is a short list of
+    things a setter can do, and you try them in a fixed order. Be warned that the real papers do <b>not</b>
+    stop at the easy checks: of the two number series in these five papers, one needed check <b>6</b> and
+    the other does not fall to any of them cleanly. Run the list anyway &mdash; it is what stops you
+    staring, and the first five checks cost seconds each.</p>
+
+    <h3>The number-series checklist, in order</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>#</th><th>Check</th><th>What it looks like</th><th>Then the rule is</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td><b>Write the differences underneath</b></td><td class="mono">3 · 7 · 11 · 15 → 4, 4, 4</td><td>Add a constant</td></tr>
+          <tr><td class="mono">2</td><td><b>Differences of the differences</b></td><td class="mono">2 · 6 · 12 · 20 → 4, 6, 8 → 2, 2</td><td>Something in the <b>n²</b> family</td></tr>
+          <tr><td class="mono">3</td><td><b>Divide each term by the one before</b></td><td class="mono">3 · 12 · 48 → ×4, ×4</td><td>Multiply by a constant</td></tr>
+          <tr><td class="mono">4</td><td><b>Try ×a + b</b></td><td class="mono">3 · 8 · 18 · 38 → ×2 + 2 each time</td><td>Doubling differences give this away</td></tr>
+          <tr><td class="mono">5</td><td><b>Split into alternate terms</b></td><td class="mono">7 · 2 · 12 · 4 · 17 · 6 → 7,12,17 and 2,4,6</td><td>Two series woven together</td></tr>
+          <tr><td class="mono">6</td><td><b>Look at the digits, not the value</b></td><td class="mono">41 = <b>4</b>|<b>1</b> = 2² then 1</td><td>Digits glued together</td></tr>
+          <tr><td class="mono">7</td><td><b>Compare with squares and cubes</b></td><td class="mono">2 · 9 · 28 · 65 → n³ + 1</td><td>A known list, shifted</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <h4>The one Allen actually set (2024-U Q75)</h4>
+      <p><b>41, 12, 163, 94, 365, 256, ?</b> Checks 1 to 5 all fail. Check 6 saves it: read the
+      <em>digits</em>. 41 is <b>4</b> then <b>1</b>; 12 is <b>1</b> then <b>2</b>; 163 is <b>16</b> then
+      <b>3</b>; 94 is <b>9</b> then <b>4</b>. So each term is a <b>square</b> with its <b>position
+      number</b> stuck on the end — and the squares run 2², 1², 4², 3², 6², 5², so they come in swapped
+      pairs. Next comes 8² = 64 with position 7 → <b>647</b>. The official key is option (1), 647.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Trap: "find the <em>wrong</em> term" is a different question</h4>
+      <p>2024-A Q75 asked for the term that <b>does not fit</b>, not the next one. The method changes:
+      write the differences, find where the ladder breaks, then check that changing <b>one</b> term
+      makes everything else consistent. A wrong term <b>in the middle</b> breaks <b>two</b> differences
+      in a row — the one going into it and the one coming out — so it sits <em>between</em> them. A
+      wrong <b>first or last</b> term breaks only <b>one</b>, so <b>check the two ends separately</b>
+      before you settle on a middle term.</p>
+      <p>Be warned about that particular question. Its series is <code>39, 28, 15, 08, 01</code>, the
+      differences are 11, 13, 7, 7, and <b>no single change repairs it</b> — which is presumably why
+      <b>Allen's own key accepts two different options</b>. Wrong-term items are the loosest thing in
+      this unit. Give one a fair attempt, take the worst offender, and move on rather than lose four
+      minutes proving it cannot be done.</p>
+    </div>
+
+    <h3>Non-verbal series: track each feature down its own column</h3>
+    <p>Three of the five real series items are figures, so this half matters more than the numbers.
+    A figure series changes <b>two or three things at once</b>, and each one changes on its own
+    schedule. Trying to see the picture "as a whole" is what makes these feel impossible. Instead
+    <b>name the features</b> — position of the dot, number of lines, shading, which way the arrow
+    points, how far it has rotated — and follow each one across the strip separately, as if it were
+    its own little number series.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 152" width="640" height="152" role="img" aria-label="A four-step non-verbal series: a dot moves one corner clockwise each step while the number of bars increases by one; the fifth box shows the answer">
+        <g font-family="Inter, sans-serif" font-size="12" text-anchor="middle">
+          <!-- Box A -->
+          <rect x="10" y="15" width="100" height="100" rx="6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="26" cy="31" r="6" fill="var(--iq)"/>
+          <line x1="43" y1="47" x2="77" y2="47" stroke="currentColor" stroke-width="2.4"/>
+          <text x="60" y="136" fill="currentColor">(A)</text>
+          <!-- Box B -->
+          <rect x="128" y="15" width="100" height="100" rx="6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="212" cy="31" r="6" fill="var(--iq)"/>
+          <line x1="161" y1="47" x2="195" y2="47" stroke="currentColor" stroke-width="2.4"/>
+          <line x1="161" y1="58" x2="195" y2="58" stroke="currentColor" stroke-width="2.4"/>
+          <text x="178" y="136" fill="currentColor">(B)</text>
+          <!-- Box C -->
+          <rect x="246" y="15" width="100" height="100" rx="6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="330" cy="99" r="6" fill="var(--iq)"/>
+          <line x1="279" y1="47" x2="313" y2="47" stroke="currentColor" stroke-width="2.4"/>
+          <line x1="279" y1="58" x2="313" y2="58" stroke="currentColor" stroke-width="2.4"/>
+          <line x1="279" y1="69" x2="313" y2="69" stroke="currentColor" stroke-width="2.4"/>
+          <text x="296" y="136" fill="currentColor">(C)</text>
+          <!-- Box D -->
+          <rect x="364" y="15" width="100" height="100" rx="6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="380" cy="99" r="6" fill="var(--iq)"/>
+          <line x1="397" y1="47" x2="431" y2="47" stroke="currentColor" stroke-width="2.4"/>
+          <line x1="397" y1="58" x2="431" y2="58" stroke="currentColor" stroke-width="2.4"/>
+          <line x1="397" y1="69" x2="431" y2="69" stroke="currentColor" stroke-width="2.4"/>
+          <line x1="397" y1="80" x2="431" y2="80" stroke="currentColor" stroke-width="2.4"/>
+          <text x="414" y="136" fill="currentColor">(D)</text>
+          <!-- Answer box -->
+          <rect x="500" y="15" width="100" height="100" rx="6" fill="none" stroke="var(--iq)" stroke-width="2.2" stroke-dasharray="5 4"/>
+          <circle cx="516" cy="31" r="6" fill="var(--iq)"/>
+          <line x1="533" y1="47" x2="567" y2="47" stroke="currentColor" stroke-width="2.4"/>
+          <line x1="533" y1="58" x2="567" y2="58" stroke="currentColor" stroke-width="2.4"/>
+          <line x1="533" y1="69" x2="567" y2="69" stroke="currentColor" stroke-width="2.4"/>
+          <line x1="533" y1="80" x2="567" y2="80" stroke="currentColor" stroke-width="2.4"/>
+          <line x1="533" y1="91" x2="567" y2="91" stroke="currentColor" stroke-width="2.4"/>
+          <text x="550" y="136" fill="var(--iq)">next</text>
+        </g>
+      </svg>
+      <figcaption>Two features, two separate schedules. <b>The dot</b> moves one corner <b>clockwise</b>
+      each step: top-left → top-right → bottom-right → bottom-left, so the next one is back at
+      top-left. <b>The bars</b> simply count up: 1, 2, 3, 4, so the next has 5. Neither feature tells
+      you anything about the other — which is exactly why you must follow them one at a time.</figcaption>
+    </figure>
+
+    <div class="box exam">
+      <h4>Reading a figure series fast</h4>
+      <ul>
+        <li><b>Count first.</b> How many separate marks are in each box? A count that goes 1, 2, 3, 4
+        or 4, 3, 2, 1 is the easiest feature to spot and it often settles two options straight away.</li>
+        <li><b>Then rotation.</b> Pick one feature that has a direction (an arrow, a flag, an open side)
+        and ask how far it has turned each step: 45°, 90°, 180°? Check whether it is clockwise all the way.</li>
+        <li><b>Then position.</b> Is something walking round the corners or edges of the box?</li>
+        <li><b>Then shading.</b> Filled ↔ empty alternating is very common and costs you nothing to check.</li>
+        <li><b>Use the options.</b> You do not have to construct the answer. Once you have <em>one</em>
+        feature nailed, throw out every option that gets it wrong. Often only one survives.</li>
+      </ul>
+    </div>
+
+    <h3>Letter series</h3>
+    <p>A verbal series is usually letters, and letters are just numbers in disguise. Write
+    <b>A = 1 … Z = 26</b> under them and the pattern becomes ordinary arithmetic. The series
+    <code>AZ, CX, EV, GT, …</code> is 1·26, 3·24, 5·22, 7·20 — the first letter climbing by 2 and the
+    second falling by 2 — so the next pair is 9·18, which is <b>IR</b>.</p>
+  </section>
+
+  <!-- ========================= 2. MISSING CHARACTER ========================= -->
+  <section>
+    <h2><span class="n">2</span>Inserting the Missing Character: the biggest slice, and always a figure</h2>
+    <p class="lede">Six of this unit's twenty real questions are missing-character items, and
+    <b>every single one came with a figure</b>. You are shown two or three completed arrangements of
+    numbers and one with a gap. The rule that links them is <b>never written down</b>. Your job is to
+    find it from the completed ones and apply it once.</p>
+
+    <div class="box def">
+      <h4>The method — and it is always the same four steps</h4>
+      <ol>
+        <li><b>Name the positions.</b> Before touching arithmetic, decide what to call each slot —
+        top-left, top-right, bottom-left, bottom-right, centre; or apex, left foot, right foot. Write
+        the letters on the booklet. Most wrong answers come from applying a correct rule to the wrong
+        two numbers.</li>
+        <li><b>Guess a rule from the <em>first</em> arrangement.</b> Start with the four cheap
+        operations on the outer numbers: add them all, multiply the pairs, subtract down each side,
+        subtract across.</li>
+        <li><b>Test it on the <em>second</em> arrangement — this step is not optional.</b> Almost any
+        first arrangement can be hit by three or four different rules. Only the second one tells you
+        which. If there is a third completed arrangement, test that too.</li>
+        <li><b>Then apply it to the gap</b>, and check your answer is actually one of the options. If
+        it is not, your rule is wrong, not the paper.</li>
+      </ol>
+    </div>
+
+    <h3>The five shapes Allen has actually used</h3>
+    <p>These are the exact layouts from the cached papers, redrawn with fresh numbers so you can
+    practise the rule rather than remember an answer. Recognising the shape is worth a few seconds
+    on the day.</p>
+
+    <div class="figrow">
+      <figure style="flex:0 1 200px; margin:10px 0;">
+        <svg viewBox="0 0 200 152" width="200" height="152" role="img" aria-label="Three rows, each a number, a bracketed number and a number: 9 (32) 6; 20 (54) 16; 42 (?) 12">
+          <g font-family="JetBrains Mono, monospace" font-size="14" text-anchor="middle">
+            <rect x="12" y="20" width="52" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="72" y="20" width="52" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="132" y="20" width="52" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="38" y="39" fill="currentColor">9</text><text x="98" y="39" fill="var(--iq)">(32)</text><text x="158" y="39" fill="currentColor">6</text>
+            <rect x="12" y="56" width="52" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="72" y="56" width="52" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="132" y="56" width="52" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="38" y="75" fill="currentColor">20</text><text x="98" y="75" fill="var(--iq)">(54)</text><text x="158" y="75" fill="currentColor">16</text>
+            <rect x="12" y="92" width="52" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="72" y="92" width="52" height="28" rx="4" fill="none" stroke="var(--iq)" stroke-width="2"/>
+            <rect x="132" y="92" width="52" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="38" y="111" fill="currentColor">42</text><text x="98" y="111" fill="var(--iq)">(?)</text><text x="158" y="111" fill="currentColor">12</text>
+            <text x="100" y="140" font-family="Inter, sans-serif" font-size="10.5" fill="var(--muted)">① row with brackets · 2017-E Q79</text>
+          </g>
+        </svg>
+      </figure>
+
+      <figure style="flex:0 1 200px; margin:10px 0;">
+        <svg viewBox="0 0 200 152" width="200" height="152" role="img" aria-label="A three by three grid of digits with a fourth row of three larger numbers underneath">
+          <g font-family="JetBrains Mono, monospace" font-size="13" text-anchor="middle">
+            <rect x="30" y="16" width="42" height="24" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="72" y="16" width="42" height="24" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="114" y="16" width="42" height="24" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <text x="51" y="33" fill="currentColor">4</text><text x="93" y="33" fill="currentColor">3</text><text x="135" y="33" fill="currentColor">2</text>
+            <rect x="30" y="40" width="42" height="24" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="72" y="40" width="42" height="24" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="114" y="40" width="42" height="24" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <text x="51" y="57" fill="currentColor">3</text><text x="93" y="57" fill="currentColor">3</text><text x="135" y="57" fill="currentColor">4</text>
+            <rect x="30" y="64" width="42" height="24" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="72" y="64" width="42" height="24" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="114" y="64" width="42" height="24" fill="none" stroke="var(--iq)" stroke-width="2"/>
+            <text x="51" y="81" fill="currentColor">2</text><text x="93" y="81" fill="currentColor">7</text><text x="135" y="81" fill="var(--iq)">?</text>
+            <rect x="30" y="94" width="42" height="26" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="72" y="94" width="42" height="26" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="114" y="94" width="42" height="26" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <text x="51" y="112" fill="var(--iq)">42</text><text x="93" y="112" fill="var(--iq)">36</text><text x="135" y="112" fill="var(--iq)">84</text>
+            <text x="100" y="140" font-family="Inter, sans-serif" font-size="10.5" fill="var(--muted)">② grid with a totals row · 2018-S Q79</text>
+          </g>
+        </svg>
+      </figure>
+
+      <figure style="flex:0 1 200px; margin:10px 0;">
+        <svg viewBox="0 0 200 152" width="200" height="152" role="img" aria-label="Four numbers at the corners of a square with a fifth number in the middle: 19 and 3 on top, 48 in the centre, 7 and 5 below">
+          <g font-family="JetBrains Mono, monospace" font-size="14" text-anchor="middle">
+            <rect x="28" y="22" width="44" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="128" y="22" width="44" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="78" y="58" width="44" height="26" rx="4" fill="none" stroke="var(--iq)" stroke-width="2"/>
+            <rect x="28" y="94" width="44" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="128" y="94" width="44" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="50" y="40" fill="currentColor">19</text><text x="150" y="40" fill="currentColor">3</text>
+            <text x="100" y="76" fill="var(--iq)">48</text>
+            <text x="50" y="112" fill="currentColor">7</text><text x="150" y="112" fill="currentColor">5</text>
+            <text x="100" y="140" font-family="Inter, sans-serif" font-size="10.5" fill="var(--muted)">③ corners round a centre · 2024-U Q72</text>
+          </g>
+        </svg>
+      </figure>
+
+      <figure style="flex:0 1 200px; margin:10px 0;">
+        <svg viewBox="0 0 200 152" width="200" height="152" role="img" aria-label="A triangle with 14 at the apex, 8 at the bottom left, 3 at the bottom right and 52 inside">
+          <g font-family="JetBrains Mono, monospace" font-size="14" text-anchor="middle">
+            <polygon points="100,38 52,110 148,110" fill="none" stroke="currentColor" stroke-width="1.7"/>
+            <text x="100" y="30" fill="currentColor">14</text>
+            <text x="40" y="118" fill="currentColor">8</text>
+            <text x="160" y="118" fill="currentColor">3</text>
+            <text x="100" y="96" fill="var(--iq)">52</text>
+            <text x="100" y="140" font-family="Inter, sans-serif" font-size="10" fill="var(--muted)">④ triangle · 2024-A Q72 = Sample Q67</text>
+          </g>
+        </svg>
+      </figure>
+
+      <figure style="flex:0 1 200px; margin:10px 0;">
+        <svg viewBox="0 0 200 152" width="200" height="152" role="img" aria-label="A square with 3 and 7 at the top corners, 5 and 2 at the bottom corners and 31 inside">
+          <g font-family="JetBrains Mono, monospace" font-size="14" text-anchor="middle">
+            <rect x="58" y="40" width="84" height="66" fill="none" stroke="currentColor" stroke-width="1.7"/>
+            <text x="48" y="36" fill="currentColor">3</text>
+            <text x="152" y="36" fill="currentColor">7</text>
+            <text x="48" y="120" fill="currentColor">5</text>
+            <text x="152" y="120" fill="currentColor">2</text>
+            <text x="100" y="79" fill="var(--iq)">31</text>
+            <text x="100" y="140" font-family="Inter, sans-serif" font-size="10.5" fill="var(--muted)">⑤ corners of a square · Sample Q76</text>
+          </g>
+        </svg>
+      </figure>
+    </div>
+
+    <h3>The rules those five figures actually hide</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Shape</th><th>The rule</th><th>Check it on the figure</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>① row with brackets</td>
+            <td><b>Divide both outer numbers by their HCF and write the two answers side by side.</b></td>
+            <td class="mono">9, 6 → HCF 3 → 3 and 2 → 32<br>20, 16 → HCF 4 → 5 and 4 → 54<br>42, 12 → HCF 6 → 7 and 2 → <b>72</b></td>
+          </tr>
+          <tr>
+            <td>② grid with a totals row</td>
+            <td><b>Multiply the three numbers in each column, then write the product backwards.</b></td>
+            <td class="mono">4×3×2 = 24 → 42<br>3×3×7 = 63 → 36<br>2×4×? = 48 → <b>? = 6</b> (84 backwards is 48)</td>
+          </tr>
+          <tr>
+            <td>③ corners round a centre</td>
+            <td><b>(top-left − bottom-left) × (top-right + bottom-right), halved.</b></td>
+            <td class="mono">(19 − 7) × (3 + 5) ÷ 2<br>= 12 × 8 ÷ 2 = <b>48</b></td>
+          </tr>
+          <tr>
+            <td>④ triangle</td>
+            <td><b>Add all three numbers, then write the sum backwards.</b></td>
+            <td class="mono">14 + 8 + 3 = 25 → <b>52</b></td>
+          </tr>
+          <tr>
+            <td>⑤ corners of a square</td>
+            <td><b>Multiply the top pair, multiply the bottom pair, add.</b></td>
+            <td class="mono">3×7 + 5×2 = 21 + 10 = <b>31</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box trap">
+      <h4>Trap: the answer written backwards</h4>
+      <p><b>Two of the five shapes hide the answer by reversing its digits</b>, and in the real 2024-A
+      Q72 the <em>un-reversed</em> sum was sitting there as option (1). If your rule produces a
+      two-digit number that is not among the options, <b>turn it round before you give up</b> — and
+      if it <em>is</em> among the options, check whether its reverse is there too, because that is the
+      tell that reversing is the whole point of the question.</p>
+    </div>
+
+    <div class="box exam">
+      <h4>What to try, in order, when nothing is obvious</h4>
+      <ol>
+        <li>Add all the outer numbers. Compare with the centre: equal? double? half? reversed?</li>
+        <li>Multiply the outer numbers in pairs (across, then down, then diagonally) and add the two products.</li>
+        <li>Subtract down each side, then combine the two differences.</li>
+        <li>Look for a <b>common factor</b> shared by the outer numbers — that is the HCF family.</li>
+        <li>Read the centre as <b>two separate digits</b> rather than one number, and ask where each digit could come from.</li>
+        <li>If the centre is much bigger than the outers, a product is involved. If it is much smaller, a division or a difference is.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================= 3. MATHEMATICAL OPERATIONS ========================= -->
+  <section>
+    <h2><span class="n">3</span>Mathematical Operations: substitute, <em>then</em> BODMAS</h2>
+    <p class="lede">One of these appeared in every one of the five papers. They look like arithmetic
+    and they are really about <b>obedience to an order of operations</b> — which is exactly what gets
+    dropped when a clock is running. There are four shapes, and they need four different reflexes.</p>
+
+    <h3>Shape A — the signs have been redefined</h3>
+    <p><em>"If '+' means '÷', '÷' means '−', '−' means '×' and '×' means '+', then 12 + 2 × 10 ÷ 8 − 2
+    = ?"</em> — that is 2018-S Q61, word for word.</p>
+    <div class="box">
+      <h4>Do it in two clean passes</h4>
+      <p><b>Pass 1 — rewrite.</b> Copy the expression out on the booklet with every sign replaced.
+      Do not evaluate anything yet.<br>
+      <code>12 + 2 × 10 ÷ 8 − 2</code> becomes <code>12 ÷ 2 + 10 − 8 × 2</code>.</p>
+      <p><b>Pass 2 — evaluate by BODMAS.</b> Brackets, then Of/Orders, then <b>Division and
+      Multiplication together, left to right</b>, then <b>Addition and Subtraction together, left to
+      right</b>.<br>
+      <code>12 ÷ 2 = 6</code> and <code>8 × 2 = 16</code>, leaving <code>6 + 10 − 16 = 0</code>.
+      The official key is option (1), <b>0</b>.</p>
+    </div>
+    <div class="box trap">
+      <h4>Trap: working left to right after the swap</h4>
+      <p>This is the single most common way to lose these four marks. Straight across, the rewritten
+      line reads 12 ÷ 2 = 6, + 10 = 16, − 8 = 8, × 2 = <b>16</b> — a clean, confident, wrong answer.
+      And 16 <b>is</b> option (4) on that very question: Allen put the left-to-right answer in the list on purpose. <b>The swap does not suspend BODMAS.</b> The safest habit is to
+      circle every × and ÷ in the rewritten line before you compute anything, and do those first.</p>
+    </div>
+
+    <h3>Shape B — which two signs should be swapped?</h3>
+    <p><em>"Which interchange of signs will make the following equation correct? (16 − 4) × 6 ÷ 2 + 8 =
+    30"</em> — 2017-E Q61. As printed the left side is 44, not 30, and you must find the swap that
+    fixes it.</p>
+    <div class="box def">
+      <h4>Work backwards from the options — never forwards</h4>
+      <p>There is no way to reason your way to the right pair, and there are only four options. <b>Test
+      them.</b> Each test is one line of arithmetic, so four tests cost less than one minute of
+      hunting. For 2017-E Q61 the answer is <b>swap − and ÷</b>: <code>(16 ÷ 4) × 6 − 2 + 8 = 24 − 2 +
+      8 = 30</code> ✓.</p>
+      <p><b>Two shortcuts that save time.</b> Start with the option that changes the <em>bracket</em>,
+      because a bracket is evaluated first and so has the largest effect. And <b>stop the moment one
+      option works</b> — exactly one is correct, so there is nothing to gain from checking the rest.</p>
+    </div>
+
+    <h3>Shape C — an operation invented out of nowhere</h3>
+    <p><em>"If 32 × 41 = 15, 51 × 34 = 47, 41 × 52 = 37, then 87 × 53 = ?"</em> — 2024-A Q71. The × has
+    nothing to do with multiplication; it is just a bar between two numbers, and 32 × 41 = 15 is a
+    definition, not a calculation.</p>
+    <div class="box">
+      <h4>Decode it digit by digit</h4>
+      <p>Two-digit inputs and a two-digit output almost always means <b>each output digit comes from
+      one of the two input numbers</b>. So split the output: 15 is a <b>1</b> and a <b>5</b>.</p>
+      <ul>
+        <li><b>First, rule out the obvious.</b> If both numbers were treated the same way, the digit
+        <em>differences</em> would give 32 &rarr; 1 and 41 &rarr; 3, so 13; the digit <em>sums</em>
+        would give 5 and 5, so 55. Neither is 15. <b>So the two numbers are being treated
+        differently</b> &mdash; and that is the clue, not a dead end.</li>
+        <li><b>Now match them up.</b> 32 &rarr; 3 &minus; 2 = <b>1</b>, and 41 &rarr; 4 + 1 = <b>5</b>.
+        Together, 15 &#10003;. Guess: <b>subtract the first number's two digits, add the second
+        number's two digits</b>.</li>
+        <li><b>Test on the second example.</b> 51 &rarr; 5 &minus; 1 = 4; 34 &rarr; 3 + 4 = 7 &rarr;
+        <b>47</b> &#10003;.</li>
+        <li><b>Test on the third.</b> 41 &rarr; 4 &minus; 1 = 3; 52 &rarr; 5 + 2 = 7 &rarr; <b>37</b>
+        &#10003;. Three for three, so the rule is safe to use.</li>
+        <li><b>Apply it.</b> 87 &rarr; 8 &minus; 7 = <b>1</b>; 53 &rarr; 5 + 3 = <b>8</b> &rarr;
+        <b>18</b>, the official key, option (4).</li>
+      </ul>
+      <p><b>Notice the shape of that reasoning.</b> The first two guesses were wrong and took about ten
+      seconds each to kill. That is the method working, not failing. <b>A rule that has only been
+      checked against one example is still a guess</b> &mdash; and on a paper with negative marking, an
+      untested guess is worth &minus;1.</p>
+    </div>
+
+    <h3>Shape D — Greek letters standing for &lt;, &gt; and =</h3>
+    <p>2024-U Q71 defined α as &gt;, β and γ as &lt;, δ as &gt; and θ as =, then gave
+    <code>C β 2D</code>, <code>A α 2C</code> and <code>2A θ 3B</code> and asked what must be true.
+    <b>Rewrite it as ordinary algebra on the booklet and the puzzle disappears:</b>
+    C &lt; 2D, A &gt; 2C, 2A = 3B. From the last, A = 1·5B; substituting into the middle,
+    1·5B &gt; 2C, so C &lt; 0·75B, which is certainly less than B. So <b>C &lt; B</b> — written in
+    their symbols, <b>C β B</b>, the official key, option (3).</p>
+    <div class="box exam">
+      <h4>The word "surely" is doing real work</h4>
+      <p>These items ask what is <b>surely</b> or <b>definitely</b> true. An option that <em>might</em>
+      be true is wrong. Here nothing links D to A, B or C beyond one loose inequality, so every option
+      mentioning D is unsafe the moment you notice it — which kills two of the four options before you
+      calculate anything.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>One item in the sample paper has no correct option — and you have already sat it</h4>
+      <p>Sample Q63 says: interchange − with + and 10 with 1000 in <code>1000 − 100 + 100 − 10</code>.
+      Doing exactly that gives <code>10 + 100 − 100 + 1000 = 1010</code>, and <b>1010 is not one of the
+      four options</b> (they are 1009, 999, 1000 and 1100); the published key says 1009.
+      <b>The lesson is not the arithmetic, it is
+      the clock:</b> when your answer is not on the list, re-read the question once — and if it still
+      is not there, pick the nearest and move on. Never spend three minutes proving a printed paper
+      wrong during an exam.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 4. ARITHMETICAL REASONING ========================= -->
+  <section>
+    <h2><span class="n">4</span>Arithmetical Reasoning: careful counting, not algebra</h2>
+    <p class="lede">Two clear items in the cached papers, plus two calendar-counting ones that the
+    <em>Clocks, Calendars &amp; Ranking</em> unit also covers. None of them needed an equation — they
+    needed a <b>tally</b> or a <b>rule about the calendar</b>, applied without slipping. These are among
+    the most reliable marks in the whole Mental Ability section, so do not skip them in triage.</p>
+
+    <h3>The league table question — asked twice, six years apart</h3>
+    <p>2018-S Q62 listed five results between four cricket nations and asked which country lost most.
+    2024-U Q78 listed five results between four IPL teams and asked exactly the same thing. <b>Same
+    machine, different names.</b></p>
+    <div class="box def">
+      <h4>Make a two-column tally and the answer falls out</h4>
+      <p>Every sentence of the form "<em>X defeated Y twice</em>" is <b>two marks for X in the won
+      column and two for Y in the lost column</b>. Write the five lines down, then count the lost
+      column. For 2024-U Q78:</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Result</th><th>Won</th><th>Lost</th></tr></thead>
+          <tbody>
+            <tr><td>CSK beat MI twice</td><td class="mono">CSK ✓✓</td><td class="mono">MI ✗✗</td></tr>
+            <tr><td>RCB beat CSK twice</td><td class="mono">RCB ✓✓</td><td class="mono">CSK ✗✗</td></tr>
+            <tr><td>MI beat RCB twice</td><td class="mono">MI ✓✓</td><td class="mono">RCB ✗✗</td></tr>
+            <tr><td>CSK beat DC twice</td><td class="mono">CSK ✓✓</td><td class="mono"><b>DC ✗✗</b></td></tr>
+            <tr><td>RCB beat DC twice</td><td class="mono">RCB ✓✓</td><td class="mono"><b>DC ✗✗</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><b>Totals: MI 2, CSK 2, RCB 2, DC 4.</b> So DC — the official key, option (3).</p>
+      <p><b>The ten-second version:</b> scan the <em>winner</em> column first. The team that
+      <b>never appears as a winner</b> is almost always the answer, and it was in both real versions of
+      this question. It is a strong hint rather than a proof — a team can win once and still lose the
+      most — so <b>finish the lost column anyway</b>. Five seconds, on a paper that takes a mark off
+      you for being wrong, is cheap.</p>
+    </div>
+
+    <h3>The calendar-counting questions</h3>
+    <p>Sample Q72 asked how many leap years lie between 1701 and 1900 inclusive. 2018-S Q77 asked how
+    many times the 29th day of a month occurs in 400 consecutive years. Both are pure counting on top
+    of one rule.</p>
+
+    <div class="box def">
+      <h4>Definition — the leap-year rule</h4>
+      <p>A year is a leap year if it is <b>divisible by 4</b>, <b>except</b> century years, which are
+      leap years only if they are <b>divisible by 400</b>. So 2024 and 2000 are leap years; 1900, 1800
+      and 2100 are not.</p>
+    </div>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">400 years → 97 leap years</div><div class="wh">100 multiples of 4, <b>minus</b> the 4 century years, <b>plus back</b> the one divisible by 400.</div></div>
+      <div class="fx"><div class="eq">100 years → 24 leap years</div><div class="wh">…unless the century year itself is divisible by 400, in which case <b>25</b>.</div></div>
+      <div class="fx"><div class="eq">400 years = 146 097 days</div><div class="wh">= 20 871 weeks <b>exactly</b>, so the calendar repeats every 400 years.</div></div>
+      <div class="fx"><div class="eq">Months with 31 days = 7</div><div class="wh">Jan, Mar, May, Jul, Aug, Oct, Dec. With 30 days: 4. February: 1.</div></div>
+    </div>
+
+    <p><b>Sample Q72 worked.</b> Multiples of 4 from 1704 to 1900: (1900 − 1704) ÷ 4 + 1 = <b>50</b>.
+    Now knock out the century years in that range that are <em>not</em> divisible by 400 — those are
+    1800 and 1900, so <b>two</b>. (1700 is outside the range, since it starts at 1701.) That leaves
+    <b>50 − 2 = 48</b>, the official key, option (3). The options 50 and 49 are exactly what you get by
+    forgetting the century rule entirely, or by remembering only one of the two.</p>
+
+    <p><b>2018-S Q77 worked.</b> In 400 years there are 12 × 400 = 4800 months. <b>Eleven</b> of the
+    twelve months have a 29th every single year, which is 11 × 400 = 4400. February has a 29th only in
+    a leap year, and there are 97 of those. Total <b>4400 + 97 = 4497</b>, the official key, option (2).</p>
+
+    <div class="box trap">
+      <h4>Trap: "both included" and the leap-day reflex</h4>
+      <p>Two slips account for nearly all the lost marks here. The first is the <b>inclusive
+      endpoint</b> — "from 1701 to 1900, both included" means you add 1 after dividing, and it means
+      1700 is <em>out</em>. The second is <b>adding 97 when leap years are irrelevant</b>: a question
+      about the 31st of the month has nothing to do with February, so the leap count must not appear
+      in the answer at all. Before adding 97 to anything, ask whether February is actually involved.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 5. FACT BANK ========================= -->
+  <section>
+    <h2><span class="n">5</span>The whole unit on one screen</h2>
+    <p class="lede">Nothing here is a formula to memorise. It is a list of <b>first moves</b> — what to
+    write on the booklet in the first ten seconds, before you have any idea what the rule is.</p>
+    <div class="bank">
+      <div class="fx"><div class="eq">Number series</div><div class="wh">Write the <b>differences</b> underneath. If they are not constant, take differences again, then try <b>ratios</b>, then <b>×a + b</b>, then <b>alternate terms</b>, then the <b>digits</b>.</div></div>
+      <div class="fx"><div class="eq">Wrong-term series</div><div class="wh">A bad term in the <b>middle</b> breaks <b>two</b> differences in a row and sits <b>between</b> them. A bad <b>end</b> term breaks only one — check the ends separately.</div></div>
+      <div class="fx"><div class="eq">Figure series</div><div class="wh">Name the features (<b>count · rotation · position · shading</b>) and follow each one across on its own.</div></div>
+      <div class="fx"><div class="eq">Letter series</div><div class="wh">Write <b>A = 1 … Z = 26</b> underneath. From the right, position = <b>27 &minus; n</b>.</div></div>
+      <div class="fx"><div class="eq">Missing character</div><div class="wh">Label the slots, guess from the <b>first</b> arrangement, <b>test on the second</b>, then apply.</div></div>
+      <div class="fx"><div class="eq">Missing character, if stuck</div><div class="wh">Try: sum of the outers · products of pairs added · differences down each side · the <b>HCF</b> · the answer written <b>backwards</b>.</div></div>
+      <div class="fx"><div class="eq">Redefined signs</div><div class="wh"><b>Rewrite first, evaluate second.</b> BODMAS still applies &mdash; &times; and &divide; before + and &minus;.</div></div>
+      <div class="fx"><div class="eq">"Which signs to swap?"</div><div class="wh"><b>Test the four options.</b> Do not solve forwards. Stop at the first one that works.</div></div>
+      <div class="fx"><div class="eq">Invented operation</div><div class="wh">Split the output into <b>digits</b> and find where each one comes from. Then <b>test on a second example</b>.</div></div>
+      <div class="fx"><div class="eq">Who lost most?</div><div class="wh">Two-column tally. The name that <b>never appears as a winner</b> is almost always the answer.</div></div>
+      <div class="fx"><div class="eq">Leap years</div><div class="wh">Divisible by <b>4</b>, except centuries, which need <b>400</b>. In 400 years: <b>97</b>.</div></div>
+      <div class="fx"><div class="eq">Month lengths</div><div class="wh"><b>7</b> months of 31 days, <b>4</b> of 30, and February. Only February cares about leap years.</div></div>
+    </div>
+  </section>
+
+  <!-- ========================= 6. WORKED MCQs ========================= -->
+  <section>
+    <h2><span class="n">6</span>Five worked questions</h2>
+    <p class="lede">Pitched at the real paper, not the sample. Each one is the same machine as a real
+    item with fresh numbers, so you practise the method rather than remember an answer. <b>Try each one
+    before you open the working.</b></p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">Series (Verbal &amp; Non-Verbal) · find the wrong term</span></div>
+      <p>Find the term that does <b>not</b> belong in the series:<br>
+      <code>2, 6, 12, 20, 31, 42</code></p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span><span>12</span></div>
+        <div class="we-opt"><span class="ob">2</span><span>20</span></div>
+        <div class="we-opt key"><span class="ob">3</span><span>31</span></div>
+        <div class="we-opt"><span class="ob">4</span><span>42</span></div>
+      </div>
+      <details><summary>Show the working</summary><div class="work">
+        <p><b>Step 1 — differences underneath.</b> 6 &minus; 2 = 4, 12 &minus; 6 = 6, 20 &minus; 12 = 8,
+        31 &minus; 20 = 11, 42 &minus; 31 = 11. So the ladder runs <b>4, 6, 8, 11, 11</b>.</p>
+        <p><b>Step 2 — find the break.</b> The first three differences climb by 2, so the fourth should
+        be <b>10</b> and the fifth <b>12</b>. Instead <b>two differences in a row are wrong</b>, and the
+        term sitting between them is 31.</p>
+        <p><b>Step 3 — confirm by repairing it.</b> Replace 31 by <b>30</b> and the differences become
+        4, 6, 8, 10, 12 — perfect. And the repaired series is a familiar machine: 1&times;2, 2&times;3,
+        3&times;4, 4&times;5, 5&times;6, 6&times;7. So the wrong term is <b>31</b>, option (3).</p>
+        <div class="elim"><b>Elimination:</b> 42 is 6 &times; 7 and 20 is 4 &times; 5 — both sit exactly
+        where the machine puts them, so (2) and (4) go straight away. 12 is 3 &times; 4, so (1) goes
+        too. The tell that needs no algebra: <b>a wrong term in the middle breaks two consecutive
+        differences</b>, and only 31 does. The two ends need their own check — and they pass, because
+        2 = 1&times;2 starts the machine and 42 = 6&times;7 finishes it.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">Inserting the Missing Character · corners round a centre</span></div>
+      <p>Which number replaces the question mark in the third set?</p>
+      <figure style="margin:12px 0;">
+        <svg viewBox="0 0 640 160" width="640" height="160" role="img" aria-label="Three sets of four corner numbers with a centre number: 19, 3, 48, 7, 5; then 14, 6, 40, 6, 4; then 23, 2, question mark, 11, 8">
+          <g font-family="JetBrains Mono, monospace" font-size="14" text-anchor="middle">
+            <!-- set 1 -->
+            <rect x="20" y="18" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="132" y="18" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="76" y="56" width="48" height="26" rx="4" fill="none" stroke="var(--iq)" stroke-width="1.8"/>
+            <rect x="20" y="94" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="132" y="94" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="44" y="36" fill="currentColor">19</text><text x="156" y="36" fill="currentColor">3</text>
+            <text x="100" y="74" fill="var(--iq)">48</text>
+            <text x="44" y="112" fill="currentColor">7</text><text x="156" y="112" fill="currentColor">5</text>
+            <text x="100" y="142" font-family="Inter, sans-serif" font-size="11" fill="var(--muted)">Set 1</text>
+            <!-- set 2 -->
+            <rect x="230" y="18" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="342" y="18" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="286" y="56" width="48" height="26" rx="4" fill="none" stroke="var(--iq)" stroke-width="1.8"/>
+            <rect x="230" y="94" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="342" y="94" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="254" y="36" fill="currentColor">14</text><text x="366" y="36" fill="currentColor">6</text>
+            <text x="310" y="74" fill="var(--iq)">40</text>
+            <text x="254" y="112" fill="currentColor">6</text><text x="366" y="112" fill="currentColor">4</text>
+            <text x="310" y="142" font-family="Inter, sans-serif" font-size="11" fill="var(--muted)">Set 2</text>
+            <!-- set 3 -->
+            <rect x="440" y="18" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="552" y="18" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="496" y="56" width="48" height="26" rx="4" fill="none" stroke="var(--iq)" stroke-width="2.4"/>
+            <rect x="440" y="94" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="552" y="94" width="48" height="26" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="464" y="36" fill="currentColor">23</text><text x="576" y="36" fill="currentColor">2</text>
+            <text x="520" y="74" fill="var(--iq)">?</text>
+            <text x="464" y="112" fill="currentColor">11</text><text x="576" y="112" fill="currentColor">8</text>
+            <text x="520" y="142" font-family="Inter, sans-serif" font-size="11" fill="var(--muted)">Set 3</text>
+          </g>
+        </svg>
+      </figure>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span><span>30</span></div>
+        <div class="we-opt key"><span class="ob">2</span><span>60</span></div>
+        <div class="we-opt"><span class="ob">3</span><span>120</span></div>
+        <div class="we-opt"><span class="ob">4</span><span>170</span></div>
+      </div>
+      <details><summary>Show the working</summary><div class="work">
+        <p><b>Step 1 — label the slots.</b> Call them TL, TR, BL, BR and the centre C.</p>
+        <p><b>Step 2 — guess from Set 1.</b> The centre 48 is much larger than any corner, so a product
+        is involved. Down the left side, 19 &minus; 7 = <b>12</b>. Down the right side, 3 + 5 = <b>8</b>.
+        And 12 &times; 8 = 96, which is exactly <b>twice</b> 48. So try
+        <b>C = (TL &minus; BL) &times; (TR + BR) &divide; 2</b>.</p>
+        <p><b>Step 3 — test on Set 2.</b> (14 &minus; 6) &times; (6 + 4) &divide; 2 = 8 &times; 10
+        &divide; 2 = <b>40</b> &#10003;. The rule survives, so it is safe.</p>
+        <p><b>Step 4 — apply to Set 3.</b> (23 &minus; 11) &times; (2 + 8) &divide; 2 = 12 &times; 10
+        &divide; 2 = <b>60</b>, option (2).</p>
+        <div class="elim"><b>Elimination:</b> every wrong option is a real slip. <b>120</b> is what you
+        get if you find the rule but forget to halve — the commonest error by far, and worth checking
+        your answer against. <b>30</b> is halving twice. <b>170</b> comes from <em>adding</em> down the
+        left side instead of subtracting: (23 + 11) &times; (2 + 8) &divide; 2. Notice that this last
+        one gives <b>104</b> for Set 1 and <b>100</b> for Set 2 — more than double each true centre — so it
+        dies the moment you test it, which is precisely why Step 3 exists.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">Inserting the Missing Character · the reversal</span></div>
+      <p>What number should replace the question mark? (Three worked sets and a gap &mdash; the shape
+      the real paper uses.)</p>
+      <figure style="margin:12px 0;">
+        <svg viewBox="0 0 640 158" width="640" height="158" role="img" aria-label="Four triangles, each with a number at the apex, one at each foot and one inside: 14 8 3 with 52; 9 12 5 with 62; 21 6 5 with 23; 16 7 8 with a question mark">
+          <g font-family="JetBrains Mono, monospace" font-size="14" text-anchor="middle">
+            <polygon points="85,42 45,112 125,112" fill="none" stroke="currentColor" stroke-width="1.7"/>
+            <text x="85" y="34" fill="currentColor">14</text>
+            <text x="31" y="122" fill="currentColor">8</text>
+            <text x="139" y="122" fill="currentColor">3</text>
+            <text x="85" y="98" fill="var(--iq)">52</text>
+            <text x="85" y="146" font-family="Inter, sans-serif" font-size="11" fill="var(--muted)">Set 1</text>
+
+            <polygon points="250,42 210,112 290,112" fill="none" stroke="currentColor" stroke-width="1.7"/>
+            <text x="250" y="34" fill="currentColor">9</text>
+            <text x="196" y="122" fill="currentColor">12</text>
+            <text x="304" y="122" fill="currentColor">5</text>
+            <text x="250" y="98" fill="var(--iq)">62</text>
+            <text x="250" y="146" font-family="Inter, sans-serif" font-size="11" fill="var(--muted)">Set 2</text>
+
+            <polygon points="415,42 375,112 455,112" fill="none" stroke="currentColor" stroke-width="1.7"/>
+            <text x="415" y="34" fill="currentColor">21</text>
+            <text x="361" y="122" fill="currentColor">6</text>
+            <text x="469" y="122" fill="currentColor">5</text>
+            <text x="415" y="98" fill="var(--iq)">23</text>
+            <text x="415" y="146" font-family="Inter, sans-serif" font-size="11" fill="var(--muted)">Set 3</text>
+
+            <polygon points="570,42 530,112 610,112" fill="none" stroke="var(--iq)" stroke-width="2"/>
+            <text x="570" y="34" fill="currentColor">16</text>
+            <text x="516" y="122" fill="currentColor">7</text>
+            <text x="624" y="122" fill="currentColor">8</text>
+            <text x="570" y="98" fill="var(--iq)">?</text>
+            <text x="570" y="146" font-family="Inter, sans-serif" font-size="11" fill="var(--muted)">Set 4</text>
+          </g>
+        </svg>
+      </figure>
+      <div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span><span>13</span></div>
+        <div class="we-opt"><span class="ob">2</span><span>31</span></div>
+        <div class="we-opt"><span class="ob">3</span><span>51</span></div>
+        <div class="we-opt"><span class="ob">4</span><span>61</span></div>
+      </div>
+      <details><summary>Show the working</summary><div class="work">
+        <p><b>Step 1 — add the three outer numbers.</b> Set 1: 14 + 8 + 3 = <b>25</b>. The centre is
+        <b>52</b>. Those are the same two digits the other way round.</p>
+        <p><b>Step 2 — test on Set 2 before believing it.</b> 9 + 12 + 5 = <b>26</b>, centre <b>62</b>
+        &#10003;. <b>And on Set 3:</b> 21 + 6 + 5 = <b>32</b>, centre <b>23</b> &#10003;. Three for
+        three, so the rule is <b>add the three, then reverse the digits</b>.</p>
+        <p><b>Step 4 — apply to Set 4.</b> 16 + 7 + 8 = <b>31</b>, reversed gives <b>13</b>, option (1).</p>
+        <div class="elim"><b>Elimination:</b> <b>31</b> is the sum written forwards — the setter's main
+        trap, and in the real version of this question (2024-A Q72, which is word for word the sample's
+        Q67) the un-reversed sum was sitting there as option (1). <b>51</b> is 15 reversed, which is
+        what you get by adding only the two feet and forgetting the apex. <b>61</b> is 16 reversed —
+        the apex alone. The moment you see two options that are digit-reverses of each other, the
+        reversal <em>is</em> the question.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">Mathematical Operations · which two signs to swap</span></div>
+      <p>Which interchange of signs will make this equation correct?<br>
+      <code>(20 &minus; 4) &divide; 8 &times; 6 + 2 = 40</code></p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span><span>&minus; and &times;</span></div>
+        <div class="we-opt"><span class="ob">2</span><span>&minus; and +</span></div>
+        <div class="we-opt key"><span class="ob">3</span><span>&divide; and +</span></div>
+        <div class="we-opt"><span class="ob">4</span><span>&times; and +</span></div>
+      </div>
+      <details><summary>Show the working</summary><div class="work">
+        <p><b>Do not try to reason forwards.</b> There are only four options and each is one line of
+        arithmetic. As printed the left side is 16 &divide; 8 &times; 6 + 2 = 2 &times; 6 + 2 =
+        <b>14</b>, not 40, so something must change.</p>
+        <p><b>(1) swap &minus; and &times;:</b> (20 &times; 4) &divide; 8 &minus; 6 + 2 = 10 &minus; 6 + 2 = <b>6</b>.</p>
+        <p><b>(2) swap &minus; and +:</b> (20 + 4) &divide; 8 &times; 6 &minus; 2 = 3 &times; 6 &minus; 2 = <b>16</b>.</p>
+        <p><b>(3) swap &divide; and +:</b> (20 &minus; 4) + 8 &times; 6 &divide; 2 = 16 + 24 = <b>40</b> &#10003;.</p>
+        <p><b>(4) swap &times; and +:</b> (20 &minus; 4) &divide; 8 + 6 &times; 2 = 2 + 12 = <b>14</b>.</p>
+        <p>So option <b>(3)</b>.</p>
+        <div class="elim"><b>Elimination:</b> notice option (4) returns <b>14</b> — the value the
+        equation already had before any swap. That is the reward for swapping two signs that turn out
+        not to matter, and it is a favourite of setters. Notice too that in option (3) the &times; and
+        &divide; must be done <b>before</b> the +, which is the only reason it reaches 40 at all: work
+        left to right and you get (16 + 8) &times; 6 &divide; 2 = 72 instead, and you would reject the
+        correct answer.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">Arithmetical Reasoning · counting across the calendar</span></div>
+      <p>How many times does the <b>31st day of a month</b> occur in 400 consecutive years?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span><span>2400</span></div>
+        <div class="we-opt key"><span class="ob">2</span><span>2800</span></div>
+        <div class="we-opt"><span class="ob">3</span><span>2897</span></div>
+        <div class="we-opt"><span class="ob">4</span><span>4497</span></div>
+      </div>
+      <details><summary>Show the working</summary><div class="work">
+        <p><b>Step 1 — which months even have a 31st?</b> January, March, May, July, August, October,
+        December. That is <b>seven</b> — and the pair to watch is <b>July and August, which are both
+        31 days</b>, the one place the knuckle rule catches people out.</p>
+        <p><b>Step 2 — does the year matter?</b> No. Those seven months have 31 days in <em>every</em>
+        year, leap or not. Only February ever changes length.</p>
+        <p><b>Step 3 — multiply.</b> 7 &times; 400 = <b>2800</b>, option (2).</p>
+        <div class="elim"><b>Elimination:</b> <b>2897</b> is 2800 + 97, which is the leap-day reflex
+        firing when February is not even involved — the single most likely wrong answer here.
+        <b>4497</b> is the answer to the <em>29th</em>-day version of this question, which Allen really
+        did set as 2018-S Q77; if you have practised that one, this option is designed to catch you.
+        <b>2400</b> is 6 &times; 400, from counting only six 31-day months.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <!-- ========================= CHECK YOURSELF ========================= -->
+  <section>
+    <h2><span class="n">7</span>Check yourself</h2>
+    <p class="lede">Five quick ones, one from each corner of the unit. <b>No negative marking here</b>,
+    because this is practice, not the exam. Click an option and you will see straight away whether you
+    were right.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above and your score will appear here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">&#10003; Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="../tallentex.html">&#127942; Back to TALLENTEX &mdash; the 20-minute paper for this unit lives on the same card</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 &middot; Mental Ability &middot; <b>Series (Verbal &amp; Non-Verbal) &middot;
+    Inserting the Missing Character &middot; Mathematical Operations &middot; Arithmetical
+    Reasoning</b>, using the official topic names from Allen's Class X syllabus. These are crash
+    notes: read them once now and once the night before.<br>
+    Every real question named here (2017-E, 2018-S, 2024-U, 2024-A and the sample) was re-solved and
+    checked against the official key while these notes were written.<br>
+    Tip: press &#128424; (bottom-left) to print these as a revision sheet. &#127942; (top-left) takes
+    you back to the TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'Find the next term: <b>4, 9, 20, 43, 90, ?</b>',
+    o:['180','181','184','185'], a:3,
+    fb:'The differences are 5, 11, 23, 47 &mdash; roughly doubling, which points at a <b>&times;2 + something</b> rule rather than a difference pattern. Check it: 4&times;2+1 = 9, 9&times;2+2 = 20, 20&times;2+3 = 43, 43&times;2+4 = 90. The number added climbs 1, 2, 3, 4, so next is 90&times;2+5 = <b>185</b>. 180 is doubling and forgetting to add at all; 181 is restarting the count at +1; 184 is repeating the previous +4 instead of moving on to +5.' },
+  { q:'If <b>+</b> means <b>&times;</b>, <b>&minus;</b> means <b>+</b>, <b>&times;</b> means <b>&divide;</b> and <b>&divide;</b> means <b>&minus;</b>, then <b>12 &minus; 3 + 4 &times; 2 &divide; 6</b> = ?',
+    o:['0','12','15','24'], a:1,
+    fb:'Rewrite first, evaluate second. The line becomes <b>12 + 3 &times; 4 &divide; 2 &minus; 6</b>. Now BODMAS: 3&times;4 = 12, &divide;2 = 6, leaving 12 + 6 &minus; 6 = <b>12</b>. The big trap is <b>24</b>, which is what you get working straight across: 12+3 = 15, &times;4 = 60, &divide;2 = 30, &minus;6 = 24. <b>15</b> is stopping after that first step. <b>0</b> is forgetting that &minus; means + and leaving it alone: 12 &minus; 3 &times; 4 &divide; 2 &minus; 6 = 12 &minus; 6 &minus; 6.' },
+  { q:'Which number replaces the question mark?<br><code>15 (52) 6</code> &nbsp;&middot;&nbsp; <code>21 (74) 12</code> &nbsp;&middot;&nbsp; <code>40 ( ? ) 24</code>',
+    o:['35','53','58','64'], a:1,
+    fb:'Divide the two outer numbers by their <b>HCF</b> and write the two answers side by side. 15 and 6 share 3 &rarr; 5 and 2 &rarr; 52. 21 and 12 share 3 &rarr; 7 and 4 &rarr; 74. 40 and 24 share <b>8</b> &rarr; 5 and 3 &rarr; <b>53</b>. 35 is the two quotients in the wrong order; 64 is simply 40 + 24; 58 comes from dividing 40 by 8 and then writing the divisor instead of the second quotient.' },
+  { q:'In a school league, Ravi House beat Tagore House twice, Tagore House beat Nehru House twice, Nehru House beat Ravi House twice, Tagore House beat Bose House twice, and Nehru House beat Bose House twice. Which house <b>lost</b> the most matches?',
+    o:['Ravi House','Tagore House','Nehru House','Bose House'], a:3,
+    fb:'Tally the losses: Tagore 2 (to Ravi), Nehru 2 (to Tagore), Ravi 2 (to Nehru), <b>Bose 2 + 2 = 4</b>. So Bose House. The ten-second route: <b>Bose is the only house that never appears as a winner</b>, and everyone else won something, so nobody else can have lost as often.' },
+  { q:'Which pair continues the series? <b>AZ, CX, EV, GT, ?</b>',
+    o:['HR','IR','IS','JQ'], a:1,
+    fb:'Number the letters A = 1 &hellip; Z = 26. The pairs are 1&middot;26, 3&middot;24, 5&middot;22, 7&middot;20 &mdash; the first letter climbing by 2 and the second falling by 2. Next is 9&middot;18, which is <b>IR</b>. HR moves the first letter by only 1; IS drops the second letter by only 1; JQ moves both by 3.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + '. Keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'All five. The checklists are in place — now it is about speed.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed. Each one is a single first move.'
+                        : 'Read the trap boxes once more, then come back. None of these needs new knowledge — only a fixed order of things to try.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:iq-series-operations:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
