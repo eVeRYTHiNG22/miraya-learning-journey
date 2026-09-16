@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Light: Mirrors &amp; Lenses</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2346a8ff'>P</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--physics);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #2e246b30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--physics); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--physics); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#241f4a); border:1px solid #2b3f63;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--physics); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--physics); background:color-mix(in srgb,var(--physics) 14%,transparent); border:1px solid color-mix(in srgb,var(--physics) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child, .box .tablewrap:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--physics); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--physics); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; margin:12px 0; }
+  .tablewrap table { margin:0; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--physics); background:color-mix(in srgb,var(--physics) 13%,transparent); border:1px solid color-mix(in srgb,var(--physics) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--physics); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--physics); background:color-mix(in srgb,var(--physics) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--physics) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5b40d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#e2edfb,#e8f0fb); border-color:#c3d7f2; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb { display:block !important; background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Physics · Crash notes</div>
+    <h1>Light: Mirrors &amp; Lenses</h1>
+    <p class="sub">Official topics: <b>Reflection of Light</b> and <b>Refraction of Light</b> (Class 10).
+    This is the <b>biggest single block of physics on the whole 2027 list</b> — and almost all of the
+    machinery is new to you. Your IGCSE course teaches plane mirrors, refraction and lens ray
+    diagrams, but it has <b>no spherical mirrors, no sign convention, no mirror or lens formula and
+    no lens power</b> at all. That missing machinery is exactly what Allen asks. Read this once now
+    and once the night before.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Every Physics question (Q1–15) in all five cached real papers was read page by page and every
+      light question re-solved against Allen's own answer key — including the 2017 and 2018 booklets,
+      which are scans and return <em>nothing</em> to a text search. <b>Twelve items</b>, and the pattern
+      is unusually clean:</p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th>Paper</th><th>Q</th><th>What it gives you</th><th>What it wants</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td>Sample</td><td class="mono">6</td><td>You run at a plane mirror at 15 m/s</td><td>Speed of the image <em>relative to you</em></td><td class="mono">(2) 30 m/s</td></tr>
+          <tr><td>Sample</td><td class="mono">7</td><td>Plane mirror tilted 30° to the horizontal, a vertical ray</td><td>Angle between mirror and reflected ray</td><td class="mono">(3) 60°</td></tr>
+          <tr><td>Sample</td><td class="mono">8</td><td>n<sub>glass</sub>=3/2, n<sub>water</sub>=4/3, speed in glass 2.00×10⁸</td><td>Speed in water</td><td class="mono">(2) 2.25×10⁸</td></tr>
+          <tr><td>Sample</td><td class="mono">10</td><td>A ray's path through five stacked media (figure)</td><td>Put the five refractive indices in order</td><td class="mono">(1)</td></tr>
+          <tr><td>2024 · U</td><td class="mono">2</td><td>The magnification of an image is positive</td><td>What that tells you about the image</td><td class="mono">(3) erect</td></tr>
+          <tr><td>2024 · U</td><td class="mono">5</td><td>i = 60°, slab 2√3 m thick, n = √3</td><td>Lateral shift</td><td class="mono">(1) 2 m</td></tr>
+          <tr><td>2024 · U</td><td class="mono">9</td><td>Convex mirror R = 20 cm, image half the size</td><td>Object distance</td><td class="mono">(1) 10 cm</td></tr>
+          <tr><td>2024 · U</td><td class="mono">12</td><td>A ray bending as it goes from medium X to Y (figure)</td><td>What happens to speed / wavelength / frequency</td><td class="mono">(3)</td></tr>
+          <tr><td>2024 · A</td><td class="mono">2</td><td>A spherical mirror with three points marked X, Y, Z</td><td><em>Name</em> them</td><td class="mono">(1)</td></tr>
+          <tr><td>2024 · A</td><td class="mono">5</td><td>Air bubble in a slab (n = 1.6): looks 4 cm deep one way, 5 cm the other</td><td>Thickness of the slab</td><td class="mono">(1) 14.4 cm</td></tr>
+          <tr><td>2024 · A</td><td class="mono">9</td><td>Concave mirror f = 25 cm; object at 15, 25, 50, 75 cm</td><td>Match each to its image</td><td class="mono">(3)</td></tr>
+          <tr><td>2024 · A</td><td class="mono">12</td><td>An object under water with two depths marked X and Y</td><td><em>Name</em> them</td><td class="mono">(1)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>Five things follow, and they should change how you revise:</p>
+      <ol>
+        <li><b>Four of the fifteen Physics questions, every time.</b> Each of the three recent papers —
+        both 2024 sittings and the sample — carries exactly four. That is <b>16 marks a paper</b>, more
+        than any other physics chapter on the list.</li>
+        <li><b>The 2017 and 2018 papers contain not one light question between them.</b> Those two are older,
+        full-syllabus papers: about half of each physics section is electricity, magnetism and Ohm's
+        law, <em>none of which is on the 2027 list</em>, and the other half is Motion, Force,
+        Gravitation, Sound and Work &amp; Energy, which very much is. So they are still worth sitting —
+        just not for <em>this</em> chapter, where the three recent papers are the only evidence and they
+        all agree. (This is also
+        why you cannot judge the chapter by a keyword search: those two files are image scans with no
+        text layer, and a search silently reports zero.)</li>
+        <li><b>In both 2024 sittings the light questions sat at exactly Q2, Q5, Q9 and Q12.</b> Do not
+        bank on that repeating — the question-number blueprint has broken before — but it does mean
+        light is spread through the section, not clustered at the end where you may never reach it.</li>
+        <li><b>Half of them are figure questions, and two are pure vocabulary.</b> 2024-A Q2 and Q12 ask
+        you to <em>name</em> labelled points: pole, focus, centre of curvature; real depth, apparent
+        depth. Eight marks for knowing five words. Section 1 is therefore not throat-clearing — it is
+        the highest-value page in these notes.</li>
+        <li><b>Not one of the twelve needs a calculator.</b> Every number is chosen so it cancels:
+        2√3 and √3, 4 and 5 with 1.6, R = 20 with m = ½. If your arithmetic is turning ugly, you have
+        made a sign error, not a rounding error.</li>
+      </ol>
+      <p><b>One honest gap.</b> No question in these five papers used the lens formula with a real
+      object distance. Lenses still turn up — both 2024 papers ask for the <b>power</b> of a
+      spectacle lens (U Q14, A Q14) — but those belong to the next unit, <em>The Human Eye and
+      Colourful World</em>. Lenses are explicitly on the 2027 list under Refraction of Light and NCERT
+      gives them equal weight to mirrors, so section 7 prepares them properly. Do not read "it hasn't
+      been asked yet" as "it won't be".</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">1</span>The five words that are worth eight marks</h2>
+    <p class="lede">A <b>spherical mirror</b> is a slice cut from a silvered sphere. Everything in this
+    chapter is measured from one point on it, so learn these names before anything else — Allen has
+    twice simply pointed at them and asked what they are called.</p>
+
+    <figure>
+      <svg viewBox="0 0 540 240" width="540" height="240" role="img" aria-label="A concave mirror drawn as an arc that bulges to the right, with its hollow reflecting side facing left. The principal axis is a horizontal dashed line. The pole P sits where the axis meets the mirror, the centre of curvature C sits far to the left at the centre of the sphere, and the focus F sits exactly halfway between C and P. The distance from C to P is labelled R and the distance from F to P is labelled f equals R over 2.">
+        <line x1="30" y1="120" x2="505" y2="120" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="6 5"/>
+        <text x="36" y="112" font-family="Inter,sans-serif" font-size="11" fill="var(--muted)">principal axis</text>
+        <text x="36" y="34" font-family="Inter,sans-serif" font-size="11" fill="var(--muted)">light arrives from this side →</text>
+
+        <path d="M 431.8 26.3 A 250 250 0 0 1 431.8 213.7" fill="none" stroke="var(--physics)" stroke-width="3.5" stroke-linecap="round"/>
+        <g stroke="var(--physics)" stroke-width="1.6" opacity=".55">
+          <line x1="437.8" y1="42.7" x2="449.2" y2="39.0"/>
+          <line x1="446.9" y1="80.9" x2="458.8" y2="79.0"/>
+          <line x1="450" y1="120" x2="462" y2="120"/>
+          <line x1="446.9" y1="159.1" x2="458.8" y2="161.0"/>
+          <line x1="437.8" y1="197.3" x2="449.2" y2="201.0"/>
+        </g>
+
+        <g stroke="var(--rose)" stroke-width="1.3">
+          <line x1="200" y1="64" x2="444" y2="64"/>
+          <path d="M 200 64 l 8 -4 v 8 z" fill="var(--rose)" stroke="none"/>
+          <path d="M 444 64 l -8 -4 v 8 z" fill="var(--rose)" stroke="none"/>
+          <line x1="325" y1="92" x2="446" y2="92"/>
+          <path d="M 325 92 l 8 -4 v 8 z" fill="var(--rose)" stroke="none"/>
+          <path d="M 446 92 l -8 -4 v 8 z" fill="var(--rose)" stroke="none"/>
+        </g>
+        <text x="325" y="52" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--rose)" text-anchor="middle">R</text>
+        <text x="387" y="81" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--rose)" text-anchor="middle">f = R/2</text>
+
+        <circle cx="200" cy="120" r="4.5" fill="var(--bright)"/>
+        <circle cx="325" cy="120" r="4.5" fill="var(--bright)"/>
+        <circle cx="450" cy="120" r="4.5" fill="var(--bright)"/>
+        <text x="200" y="142" font-family="JetBrains Mono,monospace" font-size="13" fill="var(--bright)" text-anchor="middle">C</text>
+        <text x="325" y="142" font-family="JetBrains Mono,monospace" font-size="13" fill="var(--bright)" text-anchor="middle">F</text>
+        <text x="466" y="112" font-family="JetBrains Mono,monospace" font-size="13" fill="var(--bright)">P</text>
+        <text x="200" y="158" font-family="Inter,sans-serif" font-size="10.5" fill="var(--muted)" text-anchor="middle">centre of</text>
+        <text x="200" y="171" font-family="Inter,sans-serif" font-size="10.5" fill="var(--muted)" text-anchor="middle">curvature</text>
+        <text x="325" y="158" font-family="Inter,sans-serif" font-size="10.5" fill="var(--muted)" text-anchor="middle">principal</text>
+        <text x="325" y="171" font-family="Inter,sans-serif" font-size="10.5" fill="var(--muted)" text-anchor="middle">focus</text>
+        <text x="466" y="140" font-family="Inter,sans-serif" font-size="10.5" fill="var(--muted)">pole</text>
+        <text x="466" y="196" font-family="Inter,sans-serif" font-size="10.5" fill="var(--muted)">back</text>
+      </svg>
+      <figcaption>A <b>concave</b> mirror: the hollow side faces the light, and the centre of curvature
+      <span class="m">C</span> lies <em>in front</em> of it. For a <b>convex</b> mirror the drawing flips —
+      the bulge faces the light and <span class="m">C</span> and <span class="m">F</span> sit
+      <em>behind</em> the mirror, which is the whole reason their signs come out positive.</figcaption>
+    </figure>
+
+    <div class="box def">
+      <h4>The five names, in NCERT's words</h4>
+      <ul>
+        <li><b>Pole (P)</b> — the centre of the mirror's reflecting surface. <b>Every distance in this
+        chapter is measured from here.</b></li>
+        <li><b>Centre of curvature (C)</b> — the centre of the sphere the mirror was cut from. Not a
+        point on the mirror.</li>
+        <li><b>Radius of curvature (R)</b> — the distance <span class="m">PC</span>.</li>
+        <li><b>Principal focus (F)</b> — where rays parallel to the axis actually meet (concave), or
+        appear to come from (convex). It sits exactly <b>halfway between C and P</b>.</li>
+        <li><b>Focal length (f)</b> — the distance <span class="m">PF</span>, and therefore
+        <span class="m">f = R/2</span>, always.</li>
+      </ul>
+    </div>
+
+    <div class="box trap">
+      <h4>The trap Allen actually plants here</h4>
+      <p>In 2024-A Q2 the wrong options did not offer silly words — they offered
+      <b>"Y → focal length, Z → radius of curvature"</b> and <b>"X → optical centre"</b>. That is,
+      they swapped a <em>point</em> for a <em>distance</em>, and a mirror's word for a lens's word.
+      F and C are <b>places</b>; f and R are <b>lengths</b>; the <b>optical centre</b> belongs to a
+      lens, never to a mirror. Read the option to the end before you tick it.</p>
+    </div>
+
+    <h3>Before the curved ones: two plane-mirror rules</h3>
+    <p>Two of the twelve cached questions — Sample Q6 and Q7, eight marks — are about an ordinary
+    <b>flat</b> mirror. Your IGCSE course covers plane mirrors, but neither of these is answered by the
+    part it covers, so here are the two rules they actually need.</p>
+
+    <div class="box exam">
+      <h4>Rule 1 — a mirror image closes on you at double speed</h4>
+      <p>A plane mirror puts the image <b>as far behind the mirror as the object is in front</b>, same
+      size, erect, virtual, left&ndash;right reversed. So if you walk towards it at <span class="m">v</span>,
+      your image walks towards it at <span class="m">v</span> too &mdash; from the other side. You and it
+      therefore approach each other at <b><span class="m">2v</span></b>.</p>
+      <p><em>Sample Q6:</em> you run at a mirror at 15 m/s, so the image's speed <b>relative to you</b>
+      is <span class="m">2 &times; 15 = <b>30 m/s</b></span>. The trap option is 15 &mdash; the image's speed
+      relative to the <em>mirror</em>, which is not what was asked.</p>
+    </div>
+
+    <div class="box exam">
+      <h4>Rule 2 &mdash; angles are measured from the normal, so subtract from 90&deg;</h4>
+      <p>The laws of reflection (<span class="m">i = r</span>, measured <b>from the normal</b>) are the
+      easy half. The marks are lost converting: <b>the angle a ray makes with the <em>mirror</em> is
+      90&deg; minus the angle it makes with the <em>normal</em></b>.</p>
+      <p><em>Sample Q7:</em> a mirror is tilted 30&deg; to the horizontal and a <b>vertical</b> ray hits it.
+      The normal is perpendicular to the mirror, so it sits 30&deg; from the vertical &mdash; which makes
+      <span class="m">i = 30&deg;</span>, and so <span class="m">r = 30&deg;</span>. The question asks for the
+      angle between the mirror and the <b>reflected ray</b>:
+      <span class="m">90&deg; &minus; 30&deg; = <b>60&deg;</b></span>. Answering 30&deg; &mdash; the angle from the
+      normal &mdash; is the whole trap, and 30&deg; is one of the four options.</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 340 215" width="340" height="215" role="img" aria-label="A plane mirror drawn as a straight line tilted 30 degrees to the horizontal. A vertical ray comes down and strikes it. The dashed normal is perpendicular to the mirror and lies 30 degrees from the vertical, so the angle of incidence i and the angle of reflection r are each 30 degrees. The reflected ray leaves up and to the left, making 60 degrees with the mirror surface.">
+        <line x1="247.3" y1="82.5" x2="82.7" y2="177.5" stroke="var(--physics)" stroke-width="3" stroke-linecap="round"/>
+        <g stroke="var(--physics)" stroke-width="1.4" opacity=".5">
+          <line x1="238.6" y1="87.5" x2="244.6" y2="97.9"/>
+          <line x1="212.6" y1="102.5" x2="218.6" y2="112.9"/>
+          <line x1="186.6" y1="117.5" x2="192.6" y2="127.9"/>
+          <line x1="160.6" y1="132.5" x2="166.6" y2="142.9"/>
+          <line x1="134.6" y1="147.5" x2="140.6" y2="157.9"/>
+          <line x1="108.6" y1="162.5" x2="114.6" y2="172.9"/>
+        </g>
+        <line x1="130" y1="69.4" x2="200" y2="190.6" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <line x1="165" y1="130" x2="255" y2="130" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 4"/>
+
+        <line x1="165" y1="30" x2="165" y2="130" stroke="var(--power)" stroke-width="2"/>
+        <path d="M 165 108 L 161.5 99.5 L 168.5 99.5 Z" fill="var(--power)"/>
+        <line x1="165" y1="130" x2="87.1" y2="85" stroke="var(--power)" stroke-width="2"/>
+        <path d="M 113 100 L 121.6 103.4 L 118.1 96.3 Z" fill="var(--power)"/>
+
+        <path d="M 165 85 A 45 45 0 0 0 142.5 91" fill="none" stroke="var(--rose)" stroke-width="1.2"/>
+        <text x="150" y="78" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--rose)">i</text>
+        <path d="M 142.5 91 A 45 45 0 0 0 126 107.5" fill="none" stroke="var(--rose)" stroke-width="1.2"/>
+        <text x="117" y="90" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--rose)">r</text>
+        <path d="M 117.4 102.5 A 55 55 0 0 0 117.4 157.5" fill="none" stroke="var(--force)" stroke-width="1.3"/>
+        <text x="79" y="136" font-family="JetBrains Mono,monospace" font-size="12.5" fill="var(--force)">60°</text>
+        <path d="M 215 130 A 50 50 0 0 0 208.3 105" fill="none" stroke="var(--muted)" stroke-width="1.1"/>
+        <text x="217" y="121" font-family="JetBrains Mono,monospace" font-size="11" fill="var(--muted)">30°</text>
+
+        <text x="176" y="44" font-family="Inter,sans-serif" font-size="11" fill="var(--power)">vertical ray in</text>
+        <text x="100" y="74" font-family="Inter,sans-serif" font-size="11" fill="var(--power)" text-anchor="end">reflected ray</text>
+        <text x="137" y="62" font-family="Inter,sans-serif" font-size="11" fill="var(--muted)">normal</text>
+        <text x="252" y="76" font-family="Inter,sans-serif" font-size="11" fill="var(--physics)">mirror</text>
+        <text x="228" y="145" font-family="Inter,sans-serif" font-size="10.5" fill="var(--muted)">horizontal</text>
+      </svg>
+      <figcaption><b>i and r are both 30&deg;, measured from the dashed normal</b> &mdash; but the question
+      asked for the angle to the <em>mirror</em>, which is the other 60&deg;. Whenever a plane-mirror
+      question names an angle, check first whether it is measured from the mirror or from the
+      normal.</figcaption>
+    </figure>
+
+    <div class="box exam">
+      <h4>Rule 3 &mdash; three more plane-mirror facts the papers use</h4>
+      <ul>
+        <li><b>Two mirrors at an angle &theta;:</b> a ray that bounces off both obeys
+        <b><span class="m">i&#8321; + i&#8322; = &theta;</span></b>. Why: the ray and the two mirrors make a
+        triangle, and its angles are <span class="m">&theta;</span>, <span class="m">(90&deg; &minus; i&#8321;)</span>
+        and <span class="m">(90&deg; &minus; i&#8322;)</span>, which must total 180&deg;. Check it on the easy case
+        &mdash; two mirrors at 90&deg;, hit the first at 30&deg;, and you meet the second at 60&deg;.</li>
+        <li><b>The shortest mirror you can see your whole self in is <span class="m">half your
+        height</span></b> &mdash; and that answer does <b>not depend on how far away you stand</b>, which is
+        the part that gets asked. Light from your head reaches your eye off a point halfway between
+        them, so the mirror only has to span head-to-eye and eye-to-toe at half scale.</li>
+        <li><b>A plane mirror is just a spherical mirror with <span class="m">R = &infin;</span></b>, so
+        <span class="m">f = &infin;</span> and <span class="m">1/f = 0</span>. Feed that into the mirror
+        formula: <span class="m">1/v + 1/u = 0 &rArr; v = &minus;u</span> &mdash; the image is exactly as far
+        behind as the object is in front &mdash; and <span class="m">m = &minus;v/u = +1</span>, erect and
+        same size. Rule 1 was not a separate fact after all; it falls straight out of section 4.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>The sign convention — this is the chapter</h2>
+    <p class="lede">Almost every mark lost in this topic is a sign, not a formula. NCERT uses the
+    <b>New Cartesian Sign Convention</b>, and it is really just one idea: <b>put the pole (or the
+    optical centre) at the origin, make the light travel left to right, and then read every distance
+    off an ordinary x-axis.</b> Right is positive. Left is negative. Up is positive. Down is negative.</p>
+
+    <div class="box def">
+      <h4>The whole convention</h4>
+      <ul>
+        <li>The object is <b>always</b> placed on the left, so light travels <b>left → right</b>.</li>
+        <li>All distances are measured <b>from the pole P</b> (mirror) or the <b>optical centre O</b>
+        (lens) — never from C, never from F.</li>
+        <li>Distances measured <b>along</b> the incoming light (to the right) are <b>+</b>; those
+        measured <b>against</b> it (to the left) are <b>−</b>.</li>
+        <li>Heights <b>above</b> the principal axis are <b>+</b>; heights <b>below</b> it are <b>−</b>.</li>
+      </ul>
+      <p>Two consequences do all the work: <b>u is always negative</b> (the object is always on the
+      left), and <b>an inverted image has a negative height</b>, so a negative magnification
+      <em>means</em> inverted.</p>
+    </div>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Quantity</th><th>Mirror</th><th>Lens</th><th>Read it as</th></tr></thead>
+      <tbody>
+        <tr><td><b>u</b> — object distance</td><td class="mono">always −</td><td class="mono">always −</td><td>the object is on the left of the origin, full stop</td></tr>
+        <tr><td><b>v</b> — image distance</td><td class="mono">− real · + virtual</td><td class="mono">+ real · − virtual</td><td>a real image forms where the light really goes: <em>back</em> for a mirror, <em>through</em> for a lens</td></tr>
+        <tr><td><b>f</b> — focal length</td><td class="mono">− concave · + convex</td><td class="mono">+ convex (converging) · − concave (diverging)</td><td>positive when F sits on the far side from the object</td></tr>
+        <tr><td><b>h′</b> — image height</td><td class="mono">+ erect · − inverted</td><td class="mono">+ erect · − inverted</td><td>above the axis or below it</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="box trap">
+      <h4>The one that catches everybody</h4>
+      <p>A <b>concave</b> mirror has a <b>negative</b> f, and a <b>convex</b> mirror has a
+      <b>positive</b> f — but for <b>lenses it is the other way round</b>: a <b>convex</b> (converging)
+      lens has a <b>positive</b> f and a <b>concave</b> (diverging) lens a <b>negative</b> one. The
+      words "concave" and "convex" do <em>not</em> carry a sign with them. What carries the sign is
+      <b>which side F is on</b>: a concave mirror focuses light back in front of itself (left,
+      negative); a convex lens focuses it out behind (right, positive).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>Where the image goes — the two rays and the six cases</h2>
+    <p class="lede">To locate an image you only ever need <b>two</b> rays from the top of the object,
+    and NCERT gives you four to choose from. Two of them are enough, and these two are the easiest to
+    draw.</p>
+
+    <div class="box def">
+      <h4>The four ray rules (concave and convex mirrors alike)</h4>
+      <ol>
+        <li>A ray <b>parallel to the principal axis</b> reflects <b>through F</b> (concave) or
+        <b>appears to come from F</b> (convex).</li>
+        <li>A ray <b>through F</b> (or heading towards F) reflects <b>parallel to the axis</b>. Rule 1
+        run backwards.</li>
+        <li>A ray <b>through C</b> hits the mirror head-on — along a radius, so along the normal — and
+        <b>retraces its own path</b>.</li>
+        <li>A ray striking the <b>pole</b> reflects at the same angle on the other side of the axis.</li>
+      </ol>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 560 280" width="560" height="280" role="img" aria-label="Ray diagram for a concave mirror with the object placed beyond the centre of curvature. One ray leaves the top of the object parallel to the principal axis, strikes the mirror and reflects through the focus F. A second ray leaves the top of the object, passes through F, strikes the mirror and reflects parallel to the axis. The two reflected rays cross between F and C, where a smaller inverted image is formed below the axis.">
+        <line x1="30" y1="150" x2="520" y2="150" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="6 5"/>
+        <path d="M 431.9 47.4 A 300 300 0 0 1 431.9 252.6" fill="none" stroke="var(--physics)" stroke-width="3.2" stroke-linecap="round"/>
+
+        <line x1="90" y1="150" x2="90" y2="118" stroke="var(--bright)" stroke-width="2.4"/>
+        <path d="M 90 114 l -5 9 h 10 z" fill="var(--bright)"/>
+        <text x="84" y="112" font-family="Inter,sans-serif" font-size="11" fill="var(--bright)" text-anchor="end">object</text>
+
+        <polyline points="90,118 448.3,118 194.8,172.7" fill="none" stroke="var(--power)" stroke-width="1.9"/>
+        <path d="M 290 118 l -9 -4.5 v 9 z" fill="var(--power)" transform="translate(9,0)"/>
+        <polyline points="90,118 449.1,172.7 170,172.7" fill="none" stroke="var(--rose)" stroke-width="1.9"/>
+        <path d="M 270 145.4 l -9 -3 l 2 9 z" fill="var(--rose)"/>
+
+        <line x1="194.8" y1="150" x2="194.8" y2="172.7" stroke="var(--force)" stroke-width="2.6"/>
+        <path d="M 194.8 176.7 l -5 -9 h 10 z" fill="var(--force)"/>
+        <text x="204" y="188" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--force)">I</text>
+
+        <circle cx="150" cy="150" r="4" fill="var(--bright)"/>
+        <circle cx="300" cy="150" r="4" fill="var(--bright)"/>
+        <circle cx="450" cy="150" r="4" fill="var(--bright)"/>
+        <text x="150" y="141" font-family="JetBrains Mono,monospace" font-size="12.5" fill="var(--bright)" text-anchor="middle">C</text>
+        <text x="300" y="141" font-family="JetBrains Mono,monospace" font-size="12.5" fill="var(--bright)" text-anchor="middle">F</text>
+        <text x="462" y="145" font-family="JetBrains Mono,monospace" font-size="12.5" fill="var(--bright)">P</text>
+        <text x="40" y="44" font-family="Inter,sans-serif" font-size="11" fill="var(--power)">ray 1: parallel in → through F</text>
+        <text x="40" y="60" font-family="Inter,sans-serif" font-size="11" fill="var(--rose)">ray 2: through F → parallel out</text>
+      </svg>
+      <figcaption>Object <b>beyond C</b> on a concave mirror: the image lands <b>between F and C</b>,
+      and it is <b>real, inverted and diminished</b>. Slide the object towards the mirror and the image
+      slides away from it — that single seesaw generates the whole table below.</figcaption>
+    </figure>
+
+    <p>You do not have to redraw this in the exam. Learn the table — it <em>is</em> 2024-A Q9, which
+    handed out a concave mirror of focal length 25 cm and four object distances (15, 25, 50 and 75 cm)
+    and asked you to match each to its image.</p>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Object is…</th><th>Image forms…</th><th>Nature</th><th>Size</th></tr></thead>
+      <tbody>
+        <tr><td>at infinity</td><td>at F</td><td>real, inverted</td><td>a point</td></tr>
+        <tr><td><b>beyond C</b></td><td>between F and C</td><td>real, inverted</td><td><b>diminished</b></td></tr>
+        <tr><td><b>at C</b></td><td>at C</td><td>real, inverted</td><td><b>same size</b></td></tr>
+        <tr><td>between C and F</td><td>beyond C</td><td>real, inverted</td><td>magnified</td></tr>
+        <tr><td><b>at F</b></td><td>at infinity</td><td>real, inverted</td><td><b>hugely magnified</b></td></tr>
+        <tr><td><b>between P and F</b></td><td>behind the mirror</td><td><b>virtual, erect</b></td><td><b>magnified</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="box exam">
+      <h4>How to use that table in 40 seconds</h4>
+      <p>Do <b>not</b> memorise six rows. Memorise the <b>one row that breaks the pattern</b> — the last
+      one — and two facts: <b>a concave mirror gives a real, inverted image for every object beyond
+      F</b>, and <b>the only virtual image it can give is when the object is closer than F</b> (that is
+      your shaving mirror, and a dentist's). Then reconstruct the rest from the seesaw.</p>
+      <p><b>But read a match-the-following item before you start matching.</b> In 2024-A Q9, f = 25, so
+      15 cm is inside F — the virtual, magnified row — and it is tempting to start there. It would have
+      wasted your time: <b>all four options already agreed that (a) is the virtual, magnified one</b>.
+      The rows that actually decided it were the two special positions: <b>(b) 25 cm is exactly F</b>,
+      so the image is at infinity — "highly magnified real" — which killed two options, and then
+      <b>(c) 50 cm is exactly 2f</b>, giving the same-size real image, which killed a third. <b>On a
+      matching question, find the row the options disagree about and test only that.</b> Checking a row
+      they all share tells you nothing.</p>
+    </div>
+
+    <h3>The convex mirror only ever does one thing</h3>
+    <p>Whatever you put in front of a convex mirror, wherever you put it, the image is
+    <b>virtual, erect, diminished</b> and squeezed into the space <b>between P and F, behind the
+    mirror</b>. That is why every vehicle in India carries one: a huge field of view, at the price of
+    everything looking small and far away.</p>
+
+    <figure>
+      <svg viewBox="0 0 560 250" width="560" height="250" role="img" aria-label="Ray diagram for a convex mirror. The mirror bulges towards the object on the left. The centre of curvature C and focus F lie behind the mirror on the right. One ray leaves the top of the object parallel to the axis and reflects away as if it came from F. A second ray heads towards C and reflects straight back. The dashed backward extensions of the two reflected rays meet behind the mirror, forming a small upright virtual image between the pole and F.">
+        <line x1="30" y1="125" x2="545" y2="125" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="6 5"/>
+        <path d="M 316 42.6 A 220 220 0 0 0 316 207.4" fill="none" stroke="var(--physics)" stroke-width="3.2" stroke-linecap="round"/>
+
+        <line x1="140" y1="125" x2="140" y2="80" stroke="var(--bright)" stroke-width="2.4"/>
+        <path d="M 140 76 l -5 9 h 10 z" fill="var(--bright)"/>
+        <text x="134" y="74" font-family="Inter,sans-serif" font-size="11" fill="var(--bright)" text-anchor="end">object</text>
+
+        <polyline points="140,80 304.7,80 150,13.9" fill="none" stroke="var(--power)" stroke-width="1.9"/>
+        <line x1="304.7" y1="80" x2="450" y2="142.1" stroke="var(--power)" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <line x1="140" y1="80" x2="301.5" y2="99.1" stroke="var(--rose)" stroke-width="1.9"/>
+        <path d="M 230 90.6 l -9 -2 l 1 9 z" fill="var(--rose)"/>
+        <line x1="301.5" y1="99.1" x2="520" y2="125" stroke="var(--rose)" stroke-width="1.4" stroke-dasharray="5 4"/>
+
+        <line x1="367" y1="125" x2="367" y2="107" stroke="var(--force)" stroke-width="2.4" stroke-dasharray="4 3"/>
+        <path d="M 367 103 l -5 9 h 10 z" fill="var(--force)"/>
+        <text x="374" y="103" font-family="JetBrains Mono,monospace" font-size="11.5" fill="var(--force)">I (virtual)</text>
+
+        <circle cx="300" cy="125" r="4" fill="var(--bright)"/>
+        <circle cx="410" cy="125" r="4" fill="var(--bright)"/>
+        <circle cx="520" cy="125" r="4" fill="var(--bright)"/>
+        <text x="288" y="146" font-family="JetBrains Mono,monospace" font-size="12.5" fill="var(--bright)">P</text>
+        <text x="410" y="146" font-family="JetBrains Mono,monospace" font-size="12.5" fill="var(--bright)" text-anchor="middle">F</text>
+        <text x="520" y="146" font-family="JetBrains Mono,monospace" font-size="12.5" fill="var(--bright)" text-anchor="middle">C</text>
+        <text x="40" y="228" font-family="Inter,sans-serif" font-size="11" fill="var(--muted)">dashed = where the light only <tspan font-style="italic">seems</tspan> to come from</text>
+      </svg>
+      <figcaption>A convex mirror, always: <b>virtual, erect, diminished, between P and F</b>. Note
+      that F and C are now <em>behind</em> the mirror — which is exactly why f and R come out
+      <b>positive</b>.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>The mirror formula and magnification</h2>
+    <p class="lede">Two lines of algebra that your IGCSE course never gives you, and that TALLENTEX
+    expects you to apply in under ninety seconds.</p>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">1/v + 1/u = 1/f</div><div class="wh">The <b>mirror formula</b>. Note the <b>plus</b>. <b>u</b> object distance, <b>v</b> image distance, <b>f</b> focal length — all measured from the pole, all carrying signs.</div></div>
+      <div class="fx"><div class="eq">m = h′/h = −v/u</div><div class="wh">The <b>magnification</b> of a mirror. Note the <b>minus</b>. <b>m &gt; 0</b> ⇒ erect and virtual; <b>m &lt; 0</b> ⇒ inverted and real.</div></div>
+      <div class="fx"><div class="eq">f = R/2</div><div class="wh">Mirrors only. f and R always share a sign, because C and F are always on the same side.</div></div>
+    </div>
+
+    <div class="box exam">
+      <h4>The four-step drill — do it the same way every time</h4>
+      <ol>
+        <li><b>Write the signs down first</b>, before any arithmetic. u = −(the number). f = −(the
+        number) for concave, +(the number) for convex. If you were given R, halve it <em>now</em>.</li>
+        <li><b>Put them in the formula</b> and solve for the one thing missing.</li>
+        <li><b>Read the sign of the answer.</b> For a mirror, a negative v means the image is real and
+        in front; a positive v means virtual and behind.</li>
+        <li><b>Only then</b> use <span class="m">m = −v/u</span>, and check the sign of m agrees with
+        step 3. If it does not, you have a sign error — go back, do not "adjust".</li>
+      </ol>
+    </div>
+
+    <p>2024-U Q9 is this drill run backwards, and it is worth walking through because it is the exact
+    shape Allen likes. <em>A convex mirror has radius of curvature 20 cm; the image is half the size of
+    the object; find the object distance.</em> R = 20 for a convex mirror, so
+    <span class="m">f = +10</span>. A convex mirror <em>only</em> makes erect virtual images, so
+    <span class="m">m = +½</span> — that sign is not given to you, you have to know it.
+    Then <span class="m">m = −v/u</span> gives <span class="m">v = −u/2</span>, and with
+    <span class="m">u = −d</span> that is <span class="m">v = +d/2</span>. Substituting:
+    <span class="m">2/d − 1/d = 1/10</span>, so <span class="m">d = 10 cm</span>. The whole question
+    turns on knowing that m is <b>+</b>½ and not <b>−</b>½.</p>
+
+    <div class="box trap">
+      <h4>Three sign traps, in the order they bite</h4>
+      <ul>
+        <li><b>Being handed R and using it as f.</b> Every answer then comes out doubled, and the
+        doubled value is always one of the four options.</li>
+        <li><b>Dropping the minus in m = −v/u.</b> You get the right size and the wrong nature, and
+        "real and erect" is a combination that cannot exist for a single mirror.</li>
+        <li><b>Using the lens formula on a mirror.</b> <span class="m">1/v − 1/u</span> instead of
+        <span class="m">1/v + 1/u</span>. The two formulas differ by exactly one sign and sit two pages
+        apart in NCERT.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>Refraction — what changes and what never does</h2>
+    <p class="lede">Light bends when it enters a new medium because it <b>changes speed</b> there.
+    Everything else in this half of the chapter follows from that one sentence.</p>
+
+    <figure>
+      <div class="figrow">
+        <svg viewBox="0 0 250 200" width="250" height="200" role="img" aria-label="A ray travelling downward through air strikes a horizontal boundary and enters glass, bending towards the dashed vertical normal. The angle of incidence in air is larger than the angle of refraction in glass.">
+          <rect x="20" y="100" width="215" height="88" fill="var(--physics)" fill-opacity=".10"/>
+          <line x1="20" y1="100" x2="235" y2="100" stroke="var(--physics)" stroke-width="1.8"/>
+          <line x1="130" y1="22" x2="130" y2="188" stroke="var(--muted)" stroke-width="1.1" stroke-dasharray="5 4"/>
+          <line x1="60" y1="30" x2="130" y2="100" stroke="var(--power)" stroke-width="2"/>
+          <path d="M 110.4 80.4 L 106.16 71.92 L 101.92 76.16 Z" fill="var(--power)"/>
+          <line x1="130" y1="100" x2="172" y2="179" stroke="var(--power)" stroke-width="2"/>
+          <path d="M 156.2 149.3 L 154.63 139.94 L 149.33 142.76 Z" fill="var(--power)"/>
+          <path d="M 130 62 A 38 38 0 0 0 103 73" fill="none" stroke="var(--rose)" stroke-width="1.2"/>
+          <text x="107" y="58" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--rose)">i</text>
+          <path d="M 130 140 A 40 40 0 0 0 148.8 135.3" fill="none" stroke="var(--rose)" stroke-width="1.2"/>
+          <text x="136" y="152" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--rose)">r</text>
+          <text x="28" y="90" font-family="Inter,sans-serif" font-size="11" fill="var(--muted)">air (rarer)</text>
+          <text x="28" y="118" font-family="Inter,sans-serif" font-size="11" fill="var(--muted)">glass (denser)</text>
+        </svg>
+        <svg viewBox="0 0 250 200" width="250" height="200" role="img" aria-label="A ray travelling upward through glass strikes the same boundary and enters air, bending away from the dashed vertical normal. The angle in glass is smaller than the angle in air.">
+          <rect x="20" y="100" width="215" height="88" fill="var(--physics)" fill-opacity=".10"/>
+          <line x1="20" y1="100" x2="235" y2="100" stroke="var(--physics)" stroke-width="1.8"/>
+          <line x1="130" y1="22" x2="130" y2="188" stroke="var(--muted)" stroke-width="1.1" stroke-dasharray="5 4"/>
+          <line x1="88" y1="179" x2="130" y2="100" stroke="var(--power)" stroke-width="2"/>
+          <path d="M 114.0 130.0 L 107.13 136.53 L 112.43 139.35 Z" fill="var(--power)"/>
+          <line x1="130" y1="100" x2="200" y2="30" stroke="var(--power)" stroke-width="2"/>
+          <path d="M 173.4 56.6 L 164.92 60.84 L 169.16 65.08 Z" fill="var(--power)"/>
+          <path d="M 130 140 A 40 40 0 0 1 111.2 135.3" fill="none" stroke="var(--rose)" stroke-width="1.2"/>
+          <text x="113" y="152" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--rose)">i</text>
+          <path d="M 130 62 A 38 38 0 0 1 157 73" fill="none" stroke="var(--rose)" stroke-width="1.2"/>
+          <text x="145" y="58" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--rose)">r</text>
+          <text x="28" y="90" font-family="Inter,sans-serif" font-size="11" fill="var(--muted)">air (rarer)</text>
+          <text x="28" y="118" font-family="Inter,sans-serif" font-size="11" fill="var(--muted)">glass (denser)</text>
+        </svg>
+      </div>
+      <figcaption><b>Into a denser medium, bend towards the normal; out into a rarer one, bend away
+      from it.</b> The normal is the dashed line — angles are <em>never</em> measured from the
+      surface. A ray that arrives <em>along</em> the normal (i = 0) goes straight through, bending by
+      nothing.</figcaption>
+    </figure>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">n = c / v</div><div class="wh"><b>Absolute refractive index.</b> c = 3×10⁸ m/s in vacuum; v is the speed in the medium. n is always <b>&gt; 1</b> — light never speeds up on entering a material.</div></div>
+      <div class="fx"><div class="eq">n₂₁ = n₂/n₁ = v₁/v₂</div><div class="wh"><b>Relative refractive index</b> of medium 2 with respect to 1. The speeds flip over — note the subscripts.</div></div>
+      <div class="fx"><div class="eq">sin i / sin r = n₂₁</div><div class="wh"><b>Snell's law</b> (the second law of refraction). i and r are measured <b>from the normal</b>.</div></div>
+      <div class="fx"><div class="eq">λ<sub>medium</sub> = λ<sub>air</sub> / n</div><div class="wh">Wavelength shrinks by the same factor the speed does, because <b>frequency is fixed</b>.</div></div>
+    </div>
+
+    <div class="box def">
+      <h4>What changes when light enters glass — and what does not</h4>
+      <ul>
+        <li><b>Speed: changes.</b> It drops by a factor of n. This is the cause of everything else.</li>
+        <li><b>Wavelength: changes.</b> It shrinks by the same factor n.</li>
+        <li><b>Frequency: NEVER changes.</b> The source sets it; the medium cannot. Colour, which is
+        what your eye reads, therefore does not change either.</li>
+        <li><b>Direction: changes</b> — unless the ray arrives along the normal.</li>
+      </ul>
+    </div>
+
+    <div class="box exam">
+      <h4>This is 2024-U Q12, and it is a gift</h4>
+      <p>You were shown a ray bending as it crossed from X into Y and asked what happened. The four
+      options paired speed, frequency and wavelength in different combinations, and <b>every option
+      containing the word "frequency" was wrong on sight</b> — because frequency never changes.
+      One remembered sentence <b>halves the paper in front of you</b> — but it does not finish the
+      question, and this is where people stop too early. The two survivors were "both the speed and
+      wavelength decrease" and "the speed decreases and wavelength increases". To pick between them you
+      need the <em>second</em> fact: the figure shows the ray bending <b>towards</b> the normal, so Y is
+      denser, so the speed falls — and wavelength always falls with speed, because frequency is pinned.
+      Answer: both decrease.</p>
+      <p>Sample Q8 has a shortcut too, but a <em>different</em> one — its four options are all speeds
+      and the word "frequency" never appears. There, the lever is that <b>water (n = 4/3) is rarer than
+      glass (n = 3/2)</b>, so light must travel <em>faster</em> in water than the 2.00×10⁸ m/s you were
+      given. Both options below that value die on sight, leaving two.</p>
+    </div>
+
+    <p>Sample Q8 shows how the speed relation is asked: given
+    <span class="m">n<sub>glass</sub> = 3/2</span>, <span class="m">n<sub>water</sub> = 4/3</span> and
+    a speed in glass of <span class="m">2.00 × 10⁸ m/s</span>, find the speed in water. You are not
+    given c — you <b>recover</b> it: <span class="m">c = n<sub>g</sub> v<sub>g</sub> = 1.5 × 2×10⁸ =
+    3×10⁸</span>, then <span class="m">v<sub>w</sub> = c / n<sub>w</sub> = 3×10⁸ ÷ (4/3) =
+    2.25×10⁸ m/s</span>. Two steps, both one line. And Sample Q10 asks nothing but the ordering:
+    <b>where the ray bends towards the normal, it entered a denser medium</b> — read the bends off the
+    figure and the inequality chain writes itself.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>The glass slab — Allen's favourite object</h2>
+    <p class="lede">A rectangular slab refracts light <b>twice</b>, at the top face and the bottom
+    face, and the two bends are equal and opposite. So the ray comes out <b>parallel to how it went
+    in</b> — just shifted sideways. Three of the twelve cached questions live on this one shape.</p>
+
+    <h3>Lateral shift</h3>
+    <figure>
+      <svg viewBox="0 0 480 250" width="480" height="250" role="img" aria-label="A ray strikes the top face of a horizontal glass slab at 45 degrees to the vertical normal, bends towards the normal inside the glass, and leaves the bottom face at 45 degrees again, travelling parallel to its original direction. A dotted line continues the original direction through the slab, and a short double arrow between that dotted line and the emergent ray marks the lateral shift d.">
+        <rect x="80" y="90" width="320" height="80" fill="var(--physics)" fill-opacity=".10" stroke="var(--physics)" stroke-width="1.6"/>
+        <text x="330" y="136" font-family="Inter,sans-serif" font-size="11.5" fill="var(--muted)">glass, n</text>
+
+        <line x1="180" y1="50" x2="180" y2="128" stroke="var(--muted)" stroke-width="1.1" stroke-dasharray="5 4"/>
+        <line x1="222.5" y1="132" x2="222.5" y2="212" stroke="var(--muted)" stroke-width="1.1" stroke-dasharray="5 4"/>
+
+        <line x1="135" y1="45" x2="180" y2="90" stroke="var(--power)" stroke-width="2.1"/>
+        <path d="M 163 73 l 1 -10 l 9 1 z" fill="var(--power)"/>
+        <line x1="180" y1="90" x2="222.5" y2="170" stroke="var(--power)" stroke-width="2.1"/>
+        <path d="M 207 141 l 1 -10 l 8 4 z" fill="var(--power)"/>
+        <line x1="222.5" y1="170" x2="267.5" y2="215" stroke="var(--power)" stroke-width="2.1"/>
+        <path d="M 240 187.5 L 235.76 179.02 L 231.52 183.26 Z" fill="var(--power)"/>
+
+        <line x1="180" y1="90" x2="305" y2="215" stroke="var(--muted)" stroke-width="1.3" stroke-dasharray="3 4"/>
+        <text x="308" y="222" font-family="Inter,sans-serif" font-size="10.5" fill="var(--muted)">undeviated path</text>
+
+        <line x1="250" y1="197.5" x2="268.7" y2="178.8" stroke="var(--force)" stroke-width="1.6"/>
+        <path d="M 268.7 178.8 L 265.16 186.58 L 260.92 182.34 Z" fill="var(--force)"/>
+        <path d="M 250 197.5 L 253.54 189.72 L 257.78 193.96 Z" fill="var(--force)"/>
+        <text x="245" y="174" font-family="JetBrains Mono,monospace" font-size="13" fill="var(--force)">d</text>
+
+        <line x1="105" y1="90" x2="105" y2="170" stroke="var(--rose)" stroke-width="1.3"/>
+        <path d="M 105 90 l -4 8 h 8 z" fill="var(--rose)"/>
+        <path d="M 105 170 l -4 -8 h 8 z" fill="var(--rose)"/>
+        <text x="90" y="134" font-family="JetBrains Mono,monospace" font-size="13" fill="var(--rose)">t</text>
+
+        <path d="M 180 58 A 32 32 0 0 0 157 68" fill="none" stroke="var(--rose)" stroke-width="1.2"/>
+        <text x="160" y="54" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--rose)">i</text>
+        <path d="M 180 124 A 34 34 0 0 0 196 118" fill="none" stroke="var(--rose)" stroke-width="1.2"/>
+        <text x="184" y="136" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--rose)">r</text>
+      </svg>
+      <figcaption>The emergent ray is <b>parallel</b> to the incident ray — the slab does not turn
+      light, it only slides it. The perpendicular gap <span class="m">d</span> between where the ray
+      would have gone and where it actually goes is the <b>lateral shift</b>.</figcaption>
+    </figure>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">d = t · sin(i − r) / cos r</div><div class="wh"><b>Lateral shift.</b> <b>t</b> = thickness of the slab, <b>i</b> and <b>r</b> the angles at the first face. Zero when i = 0, and it grows with both t and i.</div></div>
+      <div class="fx"><div class="eq">L = t / cos r</div><div class="wh"><b>The distance the ray actually travels inside the slab</b> — a different question from the shift, and asked as one. The slab is <b>t</b> thick straight down, but the ray crosses it at <b>r</b> to the normal, so its path is longer. At r = 0 it is just t.</div></div>
+    </div>
+
+    <div class="box trap">
+      <h4>NCERT does not give you this formula. Allen asks for it anyway.</h4>
+      <p>Your textbook shows the parallel-shifted ray and names the shift, but stops there — it never
+      writes the formula down. <b>2024-U Q5 asked for a number.</b> (i = 60°, t = 2√3 m, n = √3: Snell
+      gives sin r = sin 60° / √3 = ½, so r = 30°, and
+      <span class="m">d = 2√3 · sin 30° / cos 30° = 2√3 · (½)/(√3/2) = 2 m</span>.) Learn the formula
+      — it is the clearest example in this chapter of Allen asking past the textbook, and you have now
+      seen it done.</p>
+    </div>
+
+    <h3>Apparent depth</h3>
+    <p>Look straight down into water and the bottom seems closer than it is, because the rays leaving
+    the water bend away from the normal and your brain traces them back in straight lines. This is
+    2024-A Q12 — which did not even ask for a number, only for the two labels.</p>
+
+    <figure>
+      <svg viewBox="0 0 520 250" width="520" height="250" role="img" aria-label="A coin lies on the bottom of a tank of water. Two rays leave the coin, bend away from the vertical at the water surface and travel up to an eye. Their dashed backward extensions meet at a point directly above the coin but much closer to the surface, which is the apparent position of the coin. A tall double arrow on the left, from the surface down to the coin, is labelled real depth; a shorter double arrow on the right, from the surface down to the apparent position, is labelled apparent depth.">
+        <rect x="55" y="70" width="440" height="140" fill="var(--physics)" fill-opacity=".10"/>
+        <line x1="55" y1="70" x2="495" y2="70" stroke="var(--physics)" stroke-width="1.8"/>
+        <line x1="55" y1="210" x2="495" y2="210" stroke="var(--border)" stroke-width="2.5"/>
+        <text x="420" y="60" font-family="Inter,sans-serif" font-size="11.5" fill="var(--muted)">air</text>
+        <text x="400" y="92" font-family="Inter,sans-serif" font-size="11.5" fill="var(--muted)">water (n = 4/3)</text>
+
+        <ellipse cx="170" cy="207" rx="13" ry="4.5" fill="var(--force)"/>
+        <text x="190" y="223" font-family="Inter,sans-serif" font-size="11" fill="var(--force)">the coin</text>
+
+        <line x1="170" y1="205" x2="182" y2="70" stroke="var(--power)" stroke-width="1.9"/>
+        <line x1="182" y1="70" x2="187.2" y2="25" stroke="var(--power)" stroke-width="1.9"/>
+        <line x1="170" y1="205" x2="196" y2="70" stroke="var(--power)" stroke-width="1.9"/>
+        <line x1="196" y1="70" x2="207.3" y2="25" stroke="var(--power)" stroke-width="1.9"/>
+        <line x1="182" y1="70" x2="170" y2="173" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <line x1="196" y1="70" x2="170" y2="173" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 4"/>
+
+        <ellipse cx="197" cy="16" rx="19" ry="10" fill="none" stroke="var(--bright)" stroke-width="1.6"/>
+        <circle cx="197" cy="16" r="4" fill="var(--bright)"/>
+        <text x="222" y="20" font-family="Inter,sans-serif" font-size="11" fill="var(--muted)">your eye</text>
+
+        <circle cx="170" cy="173" r="4" fill="var(--rose)"/>
+        <text x="186" y="164" font-family="Inter,sans-serif" font-size="11" fill="var(--rose)">apparent position</text>
+
+        <line x1="110" y1="70" x2="110" y2="207" stroke="var(--bright)" stroke-width="1.3"/>
+        <path d="M 110 70 l -4 8 h 8 z" fill="var(--bright)"/>
+        <path d="M 110 207 l -4 -8 h 8 z" fill="var(--bright)"/>
+        <text x="102" y="134" font-family="Inter,sans-serif" font-size="11" fill="var(--bright)" text-anchor="end">real</text>
+        <text x="102" y="148" font-family="Inter,sans-serif" font-size="11" fill="var(--bright)" text-anchor="end">depth</text>
+
+        <line x1="300" y1="70" x2="300" y2="173" stroke="var(--rose)" stroke-width="1.3"/>
+        <path d="M 300 70 l -4 8 h 8 z" fill="var(--rose)"/>
+        <path d="M 300 173 l -4 -8 h 8 z" fill="var(--rose)"/>
+        <text x="309" y="112" font-family="Inter,sans-serif" font-size="11" fill="var(--rose)">apparent</text>
+        <text x="309" y="126" font-family="Inter,sans-serif" font-size="11" fill="var(--rose)">depth</text>
+      </svg>
+      <figcaption>The coin's image is <b>virtual, erect and raised</b>. Water of refractive index 4/3
+      makes the bottom look <span class="m">¾</span> as deep as it is — a swimming pool marked 2 m
+      looks about 1.5 m.</figcaption>
+    </figure>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">n = real depth / apparent depth</div><div class="wh">So <b>apparent depth = real depth ÷ n</b>, and the object always appears <b>raised</b>. For layers stacked on top of each other, shrink each layer by <em>its own</em> n and add.</div></div>
+    </div>
+
+    <div class="box exam">
+      <h4>2024-A Q5, the same idea run backwards</h4>
+      <p><em>An air bubble inside a slab of n = 1.6 appears 4 cm deep from one face and 5 cm deep from
+      the other. How thick is the slab?</em> Each apparent depth is a real depth divided by 1.6, so
+      multiply back: the bubble is really <span class="m">4 × 1.6 = 6.4 cm</span> below one face and
+      <span class="m">5 × 1.6 = 8.0 cm</span> below the other. The slab is
+      <span class="m">6.4 + 8.0 = 14.4 cm</span> thick. The trap is dividing instead of multiplying —
+      which gives 5.6 cm — thinner than 4 + 5 = 9 cm, the least the slab could possibly be, and
+      therefore impossible. <b>Sanity
+      always beats arithmetic: apparent depth is smaller than real depth, so going from apparent back
+      to real you must multiply.</b></p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">7</span>Lenses — everything mirrors do, with two signs changed</h2>
+    <p class="lede">A lens refracts light <b>through</b> itself instead of bouncing it back, so real
+    images now form on the <b>far</b> side. You already draw lens ray diagrams in IGCSE. What is new is
+    the <b>formula</b>, the <b>magnification</b> and the <b>power</b>.</p>
+
+    <div class="box def">
+      <h4>The ray rules for a thin lens</h4>
+      <ol>
+        <li>A ray <b>parallel to the axis</b> leaves through the focus — <b>F₂ on the far side</b> for a
+        convex lens; for a <b>concave</b> lens it emerges spreading, and only <em>appears</em> to come
+        from <b>F₁ on the near side</b>. (Look at the two figures below: the focus the ray uses is the
+        one the lens can actually send light to.)</li>
+        <li>A ray through the <b>optical centre O</b> goes <b>straight on, undeviated</b>. This is the
+        easiest ray in the whole chapter — always draw it first.</li>
+        <li>A ray through the <b>near focus</b> emerges <b>parallel</b> to the axis.</li>
+      </ol>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 560 265" width="560" height="265" role="img" aria-label="Ray diagram for a convex converging lens with the object beyond twice the focal length on the left. One ray leaves the top of the object parallel to the axis and is bent down through the far focus. A second ray passes straight through the optical centre. They cross beyond the far focus, forming a smaller inverted image below the axis between F two and two F two.">
+        <line x1="25" y1="130" x2="540" y2="130" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="6 5"/>
+        <path d="M 290 45 Q 332 130 290 215 Q 248 130 290 45 Z" fill="var(--physics)" fill-opacity=".13" stroke="var(--physics)" stroke-width="2.2"/>
+
+        <line x1="80" y1="130" x2="80" y2="90" stroke="var(--bright)" stroke-width="2.4"/>
+        <path d="M 80 86 l -5 9 h 10 z" fill="var(--bright)"/>
+        <text x="74" y="84" font-family="Inter,sans-serif" font-size="11" fill="var(--bright)" text-anchor="end">object</text>
+
+        <polyline points="80,90 290,90 490,178.9" fill="none" stroke="var(--power)" stroke-width="1.9"/>
+        <path d="M 200 90 l -9 -4.5 v 9 z" fill="var(--power)" transform="translate(9,0)"/>
+        <line x1="80" y1="90" x2="500" y2="170.0" stroke="var(--rose)" stroke-width="1.9"/>
+        <path d="M 160 105.2 l -9 -3 l 2 9 z" fill="var(--rose)"/>
+
+        <line x1="447.5" y1="130" x2="447.5" y2="160" stroke="var(--force)" stroke-width="2.6"/>
+        <path d="M 447.5 164 l -5 -9 h 10 z" fill="var(--force)"/>
+        <text x="455" y="152" font-family="JetBrains Mono,monospace" font-size="12" fill="var(--force)">I</text>
+
+        <circle cx="110" cy="130" r="4" fill="var(--bright)"/>
+        <circle cx="200" cy="130" r="4" fill="var(--bright)"/>
+        <circle cx="290" cy="130" r="4" fill="var(--bright)"/>
+        <circle cx="380" cy="130" r="4" fill="var(--bright)"/>
+        <circle cx="470" cy="130" r="4" fill="var(--bright)"/>
+        <text x="110" y="122" font-family="JetBrains Mono,monospace" font-size="11.5" fill="var(--bright)" text-anchor="middle">2F₁</text>
+        <text x="200" y="122" font-family="JetBrains Mono,monospace" font-size="11.5" fill="var(--bright)" text-anchor="middle">F₁</text>
+        <text x="297" y="240" font-family="JetBrains Mono,monospace" font-size="11.5" fill="var(--bright)">O</text>
+        <text x="380" y="122" font-family="JetBrains Mono,monospace" font-size="11.5" fill="var(--bright)" text-anchor="middle">F₂</text>
+        <text x="470" y="122" font-family="JetBrains Mono,monospace" font-size="11.5" fill="var(--bright)" text-anchor="middle">2F₂</text>
+        <text x="30" y="40" font-family="Inter,sans-serif" font-size="11" fill="var(--power)">parallel in → out through F₂</text>
+        <text x="30" y="56" font-family="Inter,sans-serif" font-size="11" fill="var(--rose)">through O → straight on</text>
+      </svg>
+      <figcaption>A <b>convex</b> lens with the object beyond 2F₁: the image is <b>real, inverted,
+      diminished</b> and lands between F₂ and 2F₂ — the same seesaw as a concave mirror, played out on
+      the other side of the glass. This is the camera.</figcaption>
+    </figure>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Object is…</th><th>Image forms…</th><th>Nature</th><th>Size</th></tr></thead>
+      <tbody>
+        <tr><td>at infinity</td><td>at F₂</td><td>real, inverted</td><td>a point</td></tr>
+        <tr><td>beyond 2F₁</td><td>between F₂ and 2F₂</td><td>real, inverted</td><td>diminished</td></tr>
+        <tr><td>at 2F₁</td><td>at 2F₂</td><td>real, inverted</td><td>same size</td></tr>
+        <tr><td>between F₁ and 2F₁</td><td>beyond 2F₂</td><td>real, inverted</td><td>magnified</td></tr>
+        <tr><td>at F₁</td><td>at infinity</td><td>real, inverted</td><td>hugely magnified</td></tr>
+        <tr><td><b>between F₁ and O</b></td><td><b>same side as the object</b></td><td><b>virtual, erect</b></td><td><b>magnified</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>And the <b>concave (diverging) lens</b>, like the convex mirror, has only one answer:
+    <b>virtual, erect, diminished</b>, always between F₁ and O, wherever you put the object.</p>
+
+    <figure>
+      <svg viewBox="0 0 460 220" width="460" height="220" role="img" aria-label="Ray diagram for a concave diverging lens. One ray from the top of the object arrives parallel to the axis and leaves spreading upward, its dashed backward extension passing through the focus on the object side. A second ray goes straight through the optical centre. The dashed backward extensions meet between the focus and the lens, forming a small upright virtual image.">
+        <line x1="25" y1="110" x2="430" y2="110" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="6 5"/>
+        <path d="M 236 30 Q 250 110 236 190 L 264 190 Q 250 110 264 30 Z" fill="var(--physics)" fill-opacity=".13" stroke="var(--physics)" stroke-width="2.2"/>
+
+        <line x1="90" y1="110" x2="90" y2="70" stroke="var(--bright)" stroke-width="2.4"/>
+        <path d="M 90 66 l -5 9 h 10 z" fill="var(--bright)"/>
+
+        <polyline points="90,70 250,70 360,15" fill="none" stroke="var(--power)" stroke-width="1.9"/>
+        <line x1="250" y1="70" x2="170" y2="110" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <line x1="90" y1="70" x2="400" y2="147.5" stroke="var(--rose)" stroke-width="1.9"/>
+
+        <line x1="196.7" y1="110" x2="196.7" y2="96.7" stroke="var(--force)" stroke-width="2.4" stroke-dasharray="4 3"/>
+        <path d="M 196.7 92.7 l -5 9 h 10 z" fill="var(--force)"/>
+        <text x="197" y="58" font-family="Inter,sans-serif" font-size="11" fill="var(--force)" text-anchor="middle">virtual image</text>
+
+        <circle cx="170" cy="110" r="4" fill="var(--bright)"/>
+        <circle cx="330" cy="110" r="4" fill="var(--bright)"/>
+        <text x="168" y="128" font-family="JetBrains Mono,monospace" font-size="11.5" fill="var(--bright)" text-anchor="middle">F₁</text>
+        <text x="330" y="128" font-family="JetBrains Mono,monospace" font-size="11.5" fill="var(--bright)" text-anchor="middle">F₂</text>
+        <text x="256" y="208" font-family="JetBrains Mono,monospace" font-size="11.5" fill="var(--bright)">O</text>
+      </svg>
+      <figcaption>A <b>concave</b> lens: the emerging rays spread, so only their dashed backward
+      extensions meet. <b>Virtual, erect, diminished</b> — every time.</figcaption>
+    </figure>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">1/v − 1/u = 1/f</div><div class="wh">The <b>lens formula</b>. <b>Minus</b> — the mirror's is plus. Same u, v, f conventions, measured from the optical centre O.</div></div>
+      <div class="fx"><div class="eq">m = h′/h = v/u</div><div class="wh">The <b>lens magnification</b>. <b>No minus</b> — the mirror's has one. m negative still means inverted and real.</div></div>
+      <div class="fx"><div class="eq">P = 1/f&nbsp;(in metres)</div><div class="wh"><b>Power</b>, in <b>dioptres (D)</b>. Convex lens ⇒ <b>+</b>; concave lens ⇒ <b>−</b>. A lens of f = 25 cm has P = 1/0.25 = +4 D.</div></div>
+      <div class="fx"><div class="eq">P = P₁ + P₂ + …</div><div class="wh">Thin lenses <b>in contact</b> simply add their powers. This is why powers exist at all — focal lengths do not add.</div></div>
+    </div>
+
+    <div class="box trap">
+      <h4>The crossed signs — write this on your hand</h4>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>Formula</th><th>Magnification</th></tr></thead>
+        <tbody>
+          <tr><td><b>Mirror</b></td><td class="mono">1/v <b>+</b> 1/u = 1/f</td><td class="mono">m = <b>−</b>v/u</td></tr>
+          <tr><td><b>Lens</b></td><td class="mono">1/v <b>−</b> 1/u = 1/f</td><td class="mono">m = <b>+</b>v/u</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>They are <b>crossed</b>: the one with the plus in the formula has the minus in the
+      magnification. Getting this pair the wrong way round is the single most common lost mark in the
+      chapter, and Allen builds options for it every time.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Two more power traps</h4>
+      <ul>
+        <li><b>f must be in metres.</b> Feeding 25 instead of 0.25 gives 0.04 D instead of 4 D — and
+        0.04 is always one of the options.</li>
+        <li><b>The sign of P is the sign of f — and you cannot guess it.</b> Both 2024 papers put a
+        power question at Q14 and they pull in <b>opposite directions</b>. 2024-A corrects a
+        <em>short</em>-sighted eye (far point 4.03 m) with a <b>concave</b> lens: key <b>−0.25 D</b>.
+        2024-U corrects a <em>near</em> point at 75 cm with a <b>convex</b> lens: key <b>+8/3 D</b>. So
+        never learn "spectacle lens ⇒ minus". Work out which way the lens has to bend the light, get the
+        sign of f from that, and let it carry through to P. (Those two are eye questions and belong to
+        the next unit — but the formula they run on is this one.)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">8</span>Five worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">One per machine, in the order you met them. Try each before opening the working and
+    give yourself <b>90 seconds</b> — the real paper's average. The elimination reasoning is written out
+    because on the day, ruling two options out is worth almost as much as solving.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">Mirror formula, run backwards · ~90 seconds</span></div>
+      <p>A concave mirror throws a <b>real</b> image <b>twice</b> the size of the object onto a screen
+      placed <span class="m">45 cm</span> from the mirror. The focal length of the mirror is</p>
+      <div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>15 cm</div>
+        <div class="we-opt"><span class="ob">2</span>22.5 cm</div>
+        <div class="we-opt"><span class="ob">3</span>30 cm</div>
+        <div class="we-opt"><span class="ob">4</span>45 cm</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Signs first.</b> The image is real, so it is in front of the mirror:
+        <span class="m">v = −45</span>. A real image is inverted, so the magnification is
+        <b>negative</b>: <span class="m">m = −2</span>.</p>
+        <p><span class="m">m = −v/u → −2 = −(−45)/u = 45/u → u = −22.5 cm</span> — negative, as u always
+        is. Good, the signs are consistent.</p>
+        <p><span class="m">1/f = 1/v + 1/u = −1/45 − 2/45 = −3/45 = −1/15</span>, so
+        <span class="m">f = −15 cm</span>: <b>15 cm</b>, and the minus confirms it is concave.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2) 22.5</b> — the object distance. You did the hard half and answered the wrong question;
+        under time pressure this is the most likely slip of the four.
+        <b>(3) 30</b> — that is <em>R</em>, not f. Doubling at the end instead of at the start.
+        <b>(4) 45</b> — two different errors both land here: using the <em>lens</em> formula
+        <span class="m">1/v − 1/u</span>, or writing m = +2 because you read "twice the size" and
+        forgot that a real image is inverted.
+        <b>Elimination.</b> Once you have <span class="m">|u| = 22.5</span>, stop. The image is real
+        <em>and</em> magnified, so the object must lie <b>between F and C</b>: that means
+        <span class="m">f &lt; 22.5 &lt; 2f</span>, i.e. <span class="m">11.25 &lt; f &lt; 22.5</span>.
+        Only 15 survives — you never need the mirror formula at all.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">Apparent depth, two layers · ~80 seconds</span></div>
+      <p>A one-rupee coin lies at the bottom of a tank holding <span class="m">12 cm</span> of water
+      (<span class="m">n = 4/3</span>), on top of which floats a <span class="m">3 cm</span> layer of
+      oil (<span class="m">n = 3/2</span>). Seen from directly above, the coin appears to be below the
+      top surface by</p>
+      <div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>11 cm</div>
+        <div class="we-opt"><span class="ob">2</span>11.25 cm</div>
+        <div class="we-opt"><span class="ob">3</span>12 cm</div>
+        <div class="we-opt"><span class="ob">4</span>13.5 cm</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Each layer is shrunk by <b>its own</b> refractive index, and the shrunken depths add.</p>
+        <p>Water: <span class="m">12 ÷ (4/3) = 12 × 3/4 = 9 cm</span>.</p>
+        <p>Oil: <span class="m">3 ÷ (3/2) = 3 × 2/3 = 2 cm</span>.</p>
+        <p>Apparent depth <span class="m">= 9 + 2 = <b>11 cm</b></span> — against a real depth of 15 cm,
+        so the coin has been raised 4 cm. Every apparent depth must come out <em>smaller</em> than the
+        real one; that is your check.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2) 11.25</b> — using water's n on the whole 15 cm and ignoring that the oil is a different
+        medium: <span class="m">15 × 3/4</span>.
+        <b>(3) 12</b> — shrinking the water correctly and then adding the oil's real 3 cm unshrunk. The
+        commonest error here, because the thin layer feels negligible.
+        <b>(4) 13.5</b> — multiplying by n for the oil instead of dividing: <span class="m">9 + 3×1.5</span>.
+        <b>Elimination:</b> the answer must be under 15, and the water alone already accounts for 9,
+        so it lies between 9 and 12. That leaves only 11 and 11.25 before you compute the oil — and
+        11.25 is what you would get if you treated the oil as though it were more water.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">What changes in a medium · ~45 seconds</span></div>
+      <p>Light of wavelength <span class="m">600 nm</span> in air enters a glass block of refractive
+      index <span class="m">1.5</span>. Inside the glass,</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>both the frequency and the wavelength fall to two-thirds of their air values</div>
+        <div class="we-opt key"><span class="ob">2</span>the wavelength becomes 400 nm and the frequency is unchanged</div>
+        <div class="we-opt"><span class="ob">3</span>the wavelength is unchanged and the frequency rises to 1.5 times</div>
+        <div class="we-opt"><span class="ob">4</span>the speed becomes 4.5 × 10⁸ m/s</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Frequency is set by the source and never changes.</b> That single fact removes options
+        (1) and (3) instantly.</p>
+        <p>Speed drops by n: <span class="m">v = c/n = 3×10⁸ / 1.5 = 2×10⁸ m/s</span> — so (4), which
+        has light speeding <em>up</em> inside glass, is impossible before you even divide.</p>
+        <p>With f fixed and v = fλ, the wavelength must fall by the same factor:
+        <span class="m">λ = 600/1.5 = <b>400 nm</b></span>.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> — "everything shrinks by n", which sounds tidy and is wrong about the one quantity
+        that is protected.
+        <b>(3)</b> — swapping which of the pair is fixed. If frequency changed, the colour would change,
+        and a red laser does not turn orange in a fish tank.
+        <b>(4)</b> — multiplying by n instead of dividing: 3×10⁸ × 1.5. Anything faster than 3×10⁸ is
+        automatically wrong, which makes this the cheapest elimination in the chapter.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">Convex mirror, the whole drill · ~90 seconds</span></div>
+      <p>The rear-view mirror of a car is convex with radius of curvature <span class="m">4.0 m</span>.
+      A motorcycle is <span class="m">2.0 m</span> behind the car. Its image is</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>2.0 m behind the mirror, the same size</div>
+        <div class="we-opt"><span class="ob">2</span>1.33 m behind the mirror, two-thirds the size</div>
+        <div class="we-opt key"><span class="ob">3</span>1.0 m behind the mirror, half the size</div>
+        <div class="we-opt"><span class="ob">4</span>1.0 m in front of the mirror, half the size</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Signs first.</b> Convex, so <span class="m">f = +R/2 = +2.0 m</span>. The motorcycle is in
+        front: <span class="m">u = −2.0 m</span>.</p>
+        <p><span class="m">1/v = 1/f − 1/u = 1/2 + 1/2 = 1 → v = +1.0 m</span>. Positive, so the image
+        is <b>behind</b> the mirror — virtual, as a convex mirror's always is.</p>
+        <p><span class="m">m = −v/u = −(1.0)/(−2.0) = +0.5</span>. Positive ⇒ erect; magnitude ½ ⇒ half
+        the size. Both agree with the "convex mirrors only do one thing" rule, so the answer is safe.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> — plane-mirror thinking: image as far behind as the object is in front, same size.
+        True for a flat mirror, never for a curved one.
+        <b>(2)</b> — forgetting <span class="m">f = R/2</span> and using f = 4.0, which gives
+        v = 4/3 m and m = 2/3.
+        <b>(4)</b> — the right arithmetic with the sign of v misread, putting a virtual image in front
+        of the mirror, where it cannot be.
+        <b>Elimination:</b> a convex mirror <em>always</em> gives a virtual, erect, <b>diminished</b>
+        image, so (1) dies on "same size" and (4) on "in front". You are down to two before touching
+        the formula — and the remaining choice is decided purely by whether you halved R.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">Lens formula and power · ~2 minutes</span></div>
+      <p>A convex lens forms a sharp image of a <b>distant</b> tree on a screen <span class="m">25 cm</span>
+      from the lens. The same lens is then used to image a candle standing <span class="m">75 cm</span>
+      away. The power of the lens and the new image distance are</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>+0.04 D and 37.5 cm</div>
+        <div class="we-opt"><span class="ob">2</span>−4 D and 37.5 cm</div>
+        <div class="we-opt"><span class="ob">3</span>+4 D and 18.75 cm</div>
+        <div class="we-opt key"><span class="ob">4</span>+4 D and 37.5 cm</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — the word "distant" is the gift.</b> Rays from a distant object arrive parallel,
+        so they converge at the focus. The screen is <em>at</em> F:
+        <span class="m">f = +25 cm = +0.25 m</span>.</p>
+        <p><span class="m">P = 1/f = 1/0.25 = <b>+4 D</b></span> — metres, and positive because the lens
+        is converging.</p>
+        <p><b>Step 2 — the candle.</b> <span class="m">u = −75 cm</span>, <span class="m">f = +25 cm</span>.
+        Lens formula: <span class="m">1/v = 1/f + 1/u = 1/25 − 1/75 = (3 − 1)/75 = 2/75</span>, so
+        <span class="m">v = <b>+37.5 cm</b></span> — positive, so real and on the far side.</p>
+        <p><b>Check:</b> 75 cm is beyond 2f (= 50 cm), so the image must land between f and 2f, i.e.
+        between 25 and 50 cm. 37.5 sits there. ✔</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1) +0.04 D</b> — f left in centimetres: 1/25 instead of 1/0.25. Always one of the options,
+        every single time power is asked.
+        <b>(2) −4 D</b> — the right size with a converging lens given a negative focal length.
+        <b>(3) 18.75 cm</b> — the sign of u dropped, or the mirror formula used:
+        <span class="m">1/25 + 1/75 = 4/75</span>. Note it fails the check above — an image closer than
+        f is impossible for a real object — so you can strike it without redoing the algebra.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">9</span>Check yourself</h2>
+    <p class="lede">Five quick ones on the new machinery. <b>No negative marking here</b> — this is
+    practice, not the exam. Click an option to see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="strategy.html">🎯 Read the exam strategy page</a>
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Physics · <b>Reflection of Light</b> and <b>Refraction of Light</b> — the official
+    topic names from Allen's Class X syllabus.<br>
+    <b>Deliberately not here:</b> prisms, dispersion, the rainbow, scattering and eye defects all
+    belong to the next unit, <em>The Human Eye and Colourful World</em>. <b>Total internal reflection,
+    the critical angle and optical fibres</b> — which your IGCSE course does teach — are in neither
+    Class-10 NCERT light chapter, and none of the twelve cached questions asked for them: do not spend
+    revision time there.<br>
+    Tip: press 🖨 (bottom-left) to print these as a revision sheet · 🏆 (top-left) goes back to the
+    TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'A tank holds <b>16 cm</b> of water (n = 4/3). Seen from directly above, the bottom appears to be below the surface by',
+    o:['12 cm','4 cm','16 cm','21.3 cm'], a:0,
+    fb:'<b>12 cm.</b> Apparent depth = real depth \u00f7 n = 16 \u00f7 (4/3) = 16 \u00d7 3/4 = <b>12 cm</b>, and it must come out <em>smaller</em> than 16 \u2014 that is your check. <b>4 cm</b> is how far the bottom is <em>raised</em> (16 \u2212 12), which is a different question; <b>16 cm</b> forgets to shrink it at all; <b>21.3 cm</b> multiplies by n instead of dividing, which would make the water look deeper than it is.' },
+  { q:'An object is placed <b>between the pole and the focus</b> of a concave mirror. The image is',
+    o:['real, inverted and magnified','virtual, erect and magnified','virtual, erect and diminished','real, inverted and diminished'], a:1,
+    fb:'<b>Virtual, erect and magnified.</b> This is the one row of the six-case table that breaks the pattern — every other position of the object gives a real, inverted image — and it is why a shaving mirror and a dentist’s mirror work. "Virtual, erect and diminished" is the <em>convex</em> mirror’s answer, offered here to see whether you read which mirror it was.' },
+  { q:'When light passes from air into glass, which quantity does <b>not</b> change?',
+    o:['its speed','its wavelength','its frequency','the direction of a ray that meets the surface at an angle'], a:2,
+    fb:'<b>Frequency.</b> The source sets it and the medium cannot alter it — which is why colour survives the journey. Speed falls by n and wavelength falls by the same factor (that is what keeps v = fλ true), and an oblique ray bends. 2024-U Q12 was built on exactly this: every option containing the word "frequency" was wrong on sight.' },
+  { q:'A lens has a focal length of <b>−50 cm</b>. Its power is',
+    o:['−0.02 D','−0.5 D','+2 D','−2 D'], a:3,
+    fb:'<b>−2 D.</b> Convert first: −50 cm = −0.5 m, and P = 1/f = 1/(−0.5) = −2 D. The negative sign says it is a diverging (concave) lens and must be kept. <b>−0.02 D</b> is 1/(−50) with the centimetres left in — the trap that appears every time power is asked; <b>−0.5 D</b> is the focal length in metres copied out as if it were the power.' },
+  { q:'In the New Cartesian sign convention, the object distance <b>u</b> is',
+    o:['always positive','always negative','positive for mirrors and negative for lenses','negative only for concave mirrors'], a:1,
+    fb:'<b>Always negative</b> — for every mirror and every lens, without exception. The object is always drawn on the left, light always travels left to right, and distances measured against the light are negative. If a u ever comes out positive in your working, you have made a sign error, so go back rather than carry it forward.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. The sign convention has landed — that is most of this chapter.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed — sections 2 and 4 carry the signs, which is where the marks actually go.'
+                        : 'Worth a second pass through sections 1–4 before the paper. Four of the fifteen physics questions come from here.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:phys-light-mirrors-lenses:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
