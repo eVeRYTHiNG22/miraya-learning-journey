@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Mathematics — Subject Paper</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+    </div>
+    <p class="startnote">Practice mode still marks you and still applies −1 — only the countdown is off.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  title: 'TALLENTEX \u00b7 Mathematics \u2014 Subject Paper',
+  kind: 'subject',
+  duration: 45,
+  id: 'tx:subj:maths',
+  accent: 'maths',
+  sub: 'All <b>11 official Maths topics</b> in one 45-minute sitting \u2014 30 questions, +4 / \u22121 / 0, no calculator. Pitched at the real TALLENTEX paper, where Maths is the section that eats the clock: expect most questions to need <b>two steps</b>, not one remembered formula.',
+  sections: [ { name:'Mathematics', from:1, to:30 } ],
+  questions: [
+    /* ---------- Real Numbers (Q1-Q3) ---------- */
+    { n:1, section:'Mathematics', topic:'Real Numbers', fmt:'plain',
+      stem:'<p>The LCM of two numbers is <b>14 times</b> their HCF, and the sum of the LCM and the HCF is <b>600</b>. If one of the numbers is <b>280</b>, the other number is</p>',
+      options:['40','80','320','560'], answer:1,
+      sol:'<p>Let HCF = <i>h</i>. Then LCM = 14<i>h</i>, so <i>h</i> + 14<i>h</i> = 600 &rarr; 15<i>h</i> = 600 &rarr; <b><i>h</i> = 40</b> and LCM = 560.</p><p>For two numbers, HCF &times; LCM = product of the numbers: 40 &times; 560 = 22400. So the other number = 22400 &divide; 280 = <b>80</b>.</p><p>Check: 280 = 2&sup3;&middot;5&middot;7 and 80 = 2&#8308;&middot;5, so HCF = 40 and LCM = 560 &#10003;.</p><p><b>Why the others tempt you.</b> <b>40</b> is the HCF &mdash; the value you solve for first, then stop. <b>560</b> is the LCM, the same slip one step later. <b>320</b> comes from using the <i>sum</i> instead of the product: 600 &minus; 280.</p>' },
+
+    { n:2, section:'Mathematics', topic:'Real Numbers', fmt:'plain',
+      stem:'<p>What is the <b>smallest</b> natural number which leaves remainder <b>5</b> when divided by each of 12, 16 and 24, and is also <b>exactly divisible by 7</b>?</p>',
+      options:['53','101','245','341'], answer:2,
+      sol:'<p>If <i>N</i> leaves remainder 5 with 12, 16 and 24, then <i>N</i> &minus; 5 is a common multiple of all three. 12 = 2&sup2;&middot;3, 16 = 2&#8308;, 24 = 2&sup3;&middot;3, so LCM = 2&#8308;&middot;3 = <b>48</b>, and <i>N</i> = 48<i>k</i> + 5.</p><p>Now force 7 | <i>N</i>. Test in order: <i>k</i>=1 &rarr; 53, <i>k</i>=2 &rarr; 101, <i>k</i>=3 &rarr; 149, <i>k</i>=4 &rarr; 197 &mdash; none divisible by 7. <i>k</i>=5 &rarr; <b>245 = 7 &times; 35</b> &#10003;.</p><p>Check: 245 &minus; 5 = 240 = 48 &times; 5, and 240 is divisible by 12, 16 and 24 &#10003;.</p><p><b>Why the others tempt you.</b> <b>53</b> and <b>101</b> are the first two values of 48k + 5; both satisfy the remainder condition but fail the &divide;7 test, so they are what you get by abandoning the search before testing divisibility by 7. <b>341</b> = 48&times;7 + 5 is the trap of assuming the divisor 7 must be the value of <i>k</i>; 341 &divide; 7 = 48.71&hellip;, not a whole number.</p>' },
+
+    { n:3, section:'Mathematics', topic:'Real Numbers', fmt:'ar',
+      stem:'<p>Read the two statements below.</p><p><b>Assertion (A):</b> The largest number that divides <b>398, 436 and 542</b>, leaving remainders <b>7, 11 and 15</b> respectively, is <b>19</b>.</p><p><b>Reason (R):</b> If a number leaves remainder <i>r</i> on division by <i>d</i>, then <i>d</i> divides (that number &minus; <i>r</i>) exactly.</p>',
+      options:['Both A and R are true, and R is the correct explanation of A','Both A and R are true, but R is not the correct explanation of A','A is true but R is false','A is false but R is true'], answer:3,
+      sol:'<p><b>R is true</b>, and it is the tool the question needs: if a division leaves remainder <i>r</i>, then subtracting <i>r</i> leaves a multiple of the divisor.</p><p><b>Now test A.</b> Subtract each remainder: 398 &minus; 7 = <b>391</b>, 436 &minus; 11 = <b>425</b>, 542 &minus; 15 = <b>527</b>. The number we want is the HCF of these three.</p><p>425 = 5&sup2; &times; 17 is the easiest to break up, so try 17 on the others: 391 = 17 &times; 23 and 527 = 17 &times; 31. Since 23, 25 and 31 share no factor, <b>HCF = 17</b>.</p><p>The largest such number is <b>17, not 19</b> &mdash; and indeed 391 &divide; 19 = 20 remainder 11, so 19 does not even divide the first one. <b>A is false, R is true &rarr; option (4).</b></p><p><b>The trap.</b> R is stated so cleanly that it is tempting to mark both true without checking the arithmetic in A. The Reason being correct tells you nothing about whether the Assertion&rsquo;s <i>number</i> is right.</p>' },
+
+    /* ---------- Polynomials (Q4-Q6) ---------- */
+    { n:4, section:'Mathematics', topic:'Polynomials', fmt:'plain',
+      stem:'<p>If &alpha; and &beta; are the zeroes of the polynomial <b>p(x) = 3x&sup2; &minus; 5x &minus; 2</b>, then the value of <b>&alpha;&sup3; + &beta;&sup3;</b> is</p>',
+      options:['35/27','125/27','179/27','215/27'], answer:3,
+      sol:'<p>&alpha; + &beta; = &minus;<i>b</i>/<i>a</i> = 5/3 and &alpha;&beta; = <i>c</i>/<i>a</i> = &minus;2/3.</p><p>&alpha;&sup3; + &beta;&sup3; = (&alpha; + &beta;)&sup3; &minus; 3&alpha;&beta;(&alpha; + &beta;) = (5/3)&sup3; &minus; 3(&minus;2/3)(5/3) = 125/27 + 10/3 = 125/27 + 90/27 = <b>215/27</b>.</p><p>Check by factorising: 3x&sup2; &minus; 5x &minus; 2 = (3x + 1)(x &minus; 2), so the zeroes are 2 and &minus;1/3. Then 2&sup3; + (&minus;1/3)&sup3; = 8 &minus; 1/27 = 215/27 &#10003;.</p><p><b>Why the others tempt you.</b> <b>125/27</b> is (&alpha;+&beta;)&sup3; alone &mdash; the correction term dropped. <b>35/27</b> is 125/27 &minus; 90/27, the same work with the sign of &alpha;&beta; taken as +2/3. <b>179/27</b> = 125/27 + 54/27 comes from writing &minus;3&alpha;&beta; = 2 and forgetting the (&alpha;+&beta;) factor that multiplies it.</p>' },
+
+    { n:5, section:'Mathematics', topic:'Polynomials', fmt:'diagram',
+      stem:'<p>The graph of the quadratic polynomial <b>p(x) = ax&sup2; + bx + c</b> is shown. What is the value of <b>a + b + c</b>?</p>',
+      fig:'<svg viewBox="0 0 320 245" width="320" height="245" role="img" aria-label="Upward parabola cutting the x-axis at minus 1 and 4 and the y-axis at minus 8"><g stroke="currentColor" stroke-width="1.4" opacity=".55"><line x1="30" y1="80" x2="300" y2="80"/><line x1="123" y1="18" x2="123" y2="232"/></g><path d="M295 76 L300 80 L295 84" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M119 23 L123 18 L127 23" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M77 25 L92 80 L108 125 L123 160 L139 185 L154 200 L162 204 L170 205 L178 204 L186 200 L201 185 L217 160 L232 125 L248 80 L263 25" fill="none" stroke="var(--maths)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><g fill="var(--maths)"><circle cx="92" cy="80" r="3.6"/><circle cx="248" cy="80" r="3.6"/><circle cx="123" cy="160" r="3.6"/></g><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="80" y="97">&#8722;1</text><text x="245" y="97">4</text><text x="92" y="165">&#8722;8</text><text x="303" y="76" font-size="11" font-style="italic">x</text><text x="112" y="16" font-size="11" font-style="italic">y</text><text x="128" y="94" font-size="11">O</text></g></svg>',
+      figCap:'The curve meets the x-axis at &minus;1 and 4, and the y-axis at &minus;8.',
+      options:['&minus;12','&minus;6','&minus;5','0'], answer:0,
+      sol:'<p>The zeroes are &minus;1 and 4, so p(x) = a(x + 1)(x &minus; 4) = a(x&sup2; &minus; 3x &minus; 4).</p><p>The y-intercept gives p(0) = &minus;4a = &minus;8, so <b>a = 2</b> and p(x) = 2x&sup2; &minus; 6x &minus; 8. Hence a = 2, b = &minus;6, c = &minus;8 and <b>a + b + c = &minus;12</b>.</p><p>Faster route: a + b + c is just <b>p(1)</b> = 2 &minus; 6 &minus; 8 = &minus;12 &#10003;.</p><p><b>Why the others tempt you.</b> <b>&minus;6</b> is 1 &minus; 3 &minus; 4 &mdash; taking a = 1 and never using the y-intercept. <b>&minus;5</b> is 2 &minus; 3 &minus; 4: a = 2 found correctly but only the leading term scaled. <b>0</b> comes from reading the zeroes with flipped signs, p(x) = 2(x &minus; 1)(x + 4) = 2x&sup2; + 6x &minus; 8.</p>' },
+
+    { n:6, section:'Mathematics', topic:'Polynomials', fmt:'statement',
+      stem:'<p>Consider the following four statements about the polynomial <b>p(x) = 2x&sup2; &minus; 5x &minus; 3</b>.</p><ol class="roman"><li>(x &minus; 3) is a factor of p(x).</li><li>The sum of the zeroes of p(x) is 5/2.</li><li>The product of the zeroes of p(x) is 3/2.</li><li>p(x) has two distinct real zeroes.</li></ol><p><b>How many</b> of these statements are correct?</p>',
+      options:['One','Two','Three','Four'], answer:2,
+      sol:'<p>Factorise first by splitting the middle term: 2x&sup2; &minus; 5x &minus; 3 = 2x&sup2; &minus; 6x + x &minus; 3 = (2x + 1)(x &minus; 3), so the zeroes are <b>3</b> and <b>&minus;1/2</b>.</p><p><b>I &mdash; true.</b> p(3) = 18 &minus; 15 &minus; 3 = 0, so (x &minus; 3) is a factor.</p><p><b>II &mdash; true.</b> Sum = 3 &minus; 1/2 = 5/2, which matches &minus;<i>b</i>/<i>a</i> = 5/2.</p><p><b>III &mdash; false.</b> Product = 3 &times; (&minus;1/2) = <b>&minus;3/2</b>, not 3/2. The formula is <i>c</i>/<i>a</i> = &minus;3/2; the minus sign is the whole point.</p><p><b>IV &mdash; true.</b> The two factors (2x + 1) and (x &minus; 3) are different, so the two zeroes 3 and &minus;1/2 are real and distinct.</p><p>Three of the four hold &rarr; <b>(3)</b>.</p>' },
+
+    /* ---------- Pair of Linear Equations (Q7-Q9) ---------- */
+    { n:7, section:'Mathematics', topic:'Pair of Linear Equations in Two Variables', fmt:'plain',
+      stem:'<p>At a stationery shop in Indore, <b>2 notebooks and 3 pens cost &#8377;110</b>, while <b>4 notebooks and 5 pens cost &#8377;200</b>. Miraya buys <b>5 notebooks and 7 pens</b>. What does she pay?</p>',
+      options:['&#8377;265','&#8377;275','&#8377;310','&#8377;355'], answer:0,
+      sol:'<p>Let a notebook cost &#8377;<i>n</i> and a pen &#8377;<i>p</i>.</p><p>2<i>n</i> + 3<i>p</i> = 110 &nbsp;&hellip;(i)&nbsp;&nbsp;&nbsp; 4<i>n</i> + 5<i>p</i> = 200 &nbsp;&hellip;(ii)</p><p>(i) &times; 2: 4<i>n</i> + 6<i>p</i> = 220. Subtract (ii): <b><i>p</i> = 20</b>. Then 2<i>n</i> = 110 &minus; 60 = 50, so <b><i>n</i> = 25</b>.</p><p>5<i>n</i> + 7<i>p</i> = 125 + 140 = <b>&#8377;265</b>.</p><p><b>Why the others tempt you.</b> <b>&#8377;275</b> is 5(20) + 7(25) &mdash; <i>n</i> and <i>p</i> swapped, the commonest slip in this shape. <b>&#8377;310</b> is (i) + (ii) = 6<i>n</i> + 8<i>p</i>: adding the two equations and stopping. <b>&#8377;355</b> is 310 + 45, adding (<i>n</i> + <i>p</i>) to close the gap instead of subtracting it.</p>' },
+
+    { n:8, section:'Mathematics', topic:'Pair of Linear Equations in Two Variables', fmt:'plain',
+      stem:'<p>The solution of <b>2x + 3y = 11</b> and <b>2x &minus; 4y = &minus;24</b> also satisfies <b>y = mx + 3</b>. The value of <b>m</b> is</p>',
+      options:['&minus;1','1','4','8'], answer:0,
+      sol:'<p>Subtracting the second equation from the first: 7y = 35, so <b>y = 5</b>. Then 2x = 11 &minus; 15 = &minus;4, so <b>x = &minus;2</b>. (Check in the second equation: &minus;4 &minus; 20 = &minus;24 &#10003;.)</p><p>Substituting into y = mx + 3: 5 = &minus;2m + 3 &rarr; &minus;2m = 2 &rarr; <b>m = &minus;1</b>.</p><p><b>Why the others tempt you.</b> <b>1</b> is the same work with the sign of x dropped. <b>4</b> comes from writing 5 + 3 = 2m instead of 5 &minus; 3 = &minus;2m. <b>8</b> is 5 + 3 with the division by 2 forgotten altogether.</p>' },
+
+    { n:9, section:'Mathematics', topic:'Pair of Linear Equations in Two Variables', fmt:'plain',
+      stem:'<p>For which value of <b>p</b> does the pair of equations</p><p style="text-align:center"><b>px + 3y = p &minus; 3</b> &nbsp;and&nbsp; <b>12x + py = p</b></p><p>have <b>infinitely many solutions</b>?</p>',
+      options:['&minus;6','3','6','Both 6 and &minus;6'], answer:2,
+      sol:'<p>Infinitely many solutions need <b>all three</b> ratios equal: p/12 = 3/p = (p &minus; 3)/p.</p><p>From p/12 = 3/p: p&sup2; = 36, so p = 6 <b>or</b> p = &minus;6. That is only half the job &mdash; the third ratio decides it.</p><p><b>p = 6:</b> 6/12 = 1/2, 3/6 = 1/2, (6 &minus; 3)/6 = 1/2. All equal &#10003; &mdash; infinitely many solutions.</p><p><b>p = &minus;6:</b> &minus;6/12 = &minus;1/2 and 3/(&minus;6) = &minus;1/2, but (&minus;6 &minus; 3)/(&minus;6) = 3/2 &ne; &minus;1/2. The first two ratios match while the third does not, which is the condition for <b>no solution</b>, not infinitely many.</p><p>So <b>p = 6</b> only.</p><p><b>Why the others tempt you.</b> <b>Both 6 and &minus;6</b> is what you get by solving p&sup2; = 36 and stopping &mdash; the single commonest error here. <b>&minus;6</b> picks the wrong root of the same equation. <b>3</b> comes from forcing the y-coefficients to be equal (3 = p) instead of proportional.</p>' },
+
+    /* ---------- Coordinate Geometry (Q10-Q12) ---------- */
+    { n:10, section:'Mathematics', topic:'Coordinate Geometry', fmt:'match',
+      stem:'<p>Match each quantity in Column I with its value in Column II.</p><table><tr><th>Column I</th><th>Column II</th></tr><tr><td>(a) Distance between (&minus;5, 7) and (&minus;1, 3)</td><td>(i) 0</td></tr><tr><td>(b) Distance of (&minus;6, 8) from the origin</td><td>(ii) 3</td></tr><tr><td>(c) x-coordinate of the point dividing the join of (&minus;2, 3) and (4, 9) in the ratio 1 : 2</td><td>(iii) 4&radic;2</td></tr><tr><td>(d) y-coordinate of the midpoint of (3, &minus;5) and (&minus;1, 11)</td><td>(iv) 10</td></tr></table>',
+      options:['a&ndash;iv, b&ndash;iii, c&ndash;i, d&ndash;ii','a&ndash;iii, b&ndash;iv, c&ndash;ii, d&ndash;i','a&ndash;iv, b&ndash;iii, c&ndash;ii, d&ndash;i','a&ndash;iii, b&ndash;iv, c&ndash;i, d&ndash;ii'], answer:3,
+      sol:'<p><b>(a)</b> &radic;[(&minus;1 + 5)&sup2; + (3 &minus; 7)&sup2;] = &radic;(16 + 16) = &radic;32 = <b>4&radic;2</b> &rarr; (iii).</p><p><b>(b)</b> &radic;(36 + 64) = &radic;100 = <b>10</b> &rarr; (iv).</p><p><b>(c)</b> Section formula with m : n = 1 : 2 &rarr; x = (1&times;4 + 2&times;(&minus;2))/(1 + 2) = (4 &minus; 4)/3 = <b>0</b> &rarr; (i).</p><p><b>(d)</b> Midpoint y = (&minus;5 + 11)/2 = <b>3</b> &rarr; (ii).</p><p>So a&ndash;iii, b&ndash;iv, c&ndash;i, d&ndash;ii &rarr; option <b>(4)</b>.</p><p><b>Why the others tempt you.</b> Options (1) and (3) swap the two distances &mdash; 4&radic;2 &asymp; 5.66 against 10. Options (2) and (3) put the two small numbers on the wrong rows: <b>0</b> is the section point&rsquo;s x-coordinate and <b>3</b> is the midpoint&rsquo;s y-coordinate. Before committing, check which row you actually computed &mdash; and note that reversing the ratio to 2 : 1 would give x = 2, which is not even offered.</p>' },
+
+    { n:11, section:'Mathematics', topic:'Coordinate Geometry', fmt:'diagram',
+      stem:'<p>In the figure, the line <b>3x + 4y = 24</b> cuts the axes at A and B, and the shaded region is triangle OAB. What is the length <b>d</b> of the perpendicular drawn from the origin O to AB?</p>',
+      fig:'<svg viewBox="0 0 300 220" width="300" height="220" role="img" aria-label="Line 3x plus 4y equals 24 meeting the axes at A and B, with a dashed perpendicular d from the origin to the line"><g stroke="currentColor" stroke-width="1.4" opacity=".55"><line x1="50" y1="170" x2="285" y2="170"/><line x1="50" y1="170" x2="50" y2="22"/></g><path d="M280 166 L285 170 L280 174" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M46 27 L50 22 L54 27" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M50 38 L226 170 L50 170 Z" fill="var(--maths)" opacity=".13"/><line x1="50" y1="38" x2="226" y2="170" stroke="var(--maths)" stroke-width="2.6" stroke-linecap="round"/><line x1="50" y1="170" x2="113" y2="86" stroke="var(--maths)" stroke-width="1.8" stroke-dasharray="5 4"/><path d="M108 92.7 L100.8 87.3 L106.2 80.1" fill="none" stroke="currentColor" stroke-width="1.5"/><g fill="var(--maths)"><circle cx="50" cy="38" r="3.6"/><circle cx="226" cy="170" r="3.6"/></g><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="34" y="36">B</text><text x="230" y="186">A</text><text x="34" y="185">O</text><text x="74" y="120" font-style="italic">d</text><text x="150" y="86" fill="var(--maths)" font-size="11.5">3x + 4y = 24</text><text x="288" y="166" font-size="11" font-style="italic">x</text><text x="40" y="20" font-size="11" font-style="italic">y</text></g></svg>',
+      figCap:'The dashed segment is the perpendicular from O to the line AB.',
+      options:['4.8','5.0','6.0','8.0'], answer:0,
+      sol:'<p><b>Step 1 &mdash; the intercepts.</b> Put y = 0: 3x = 24 &rarr; A(8, 0). Put x = 0: 4y = 24 &rarr; B(0, 6).</p><p><b>Step 2 &mdash; the hypotenuse.</b> Triangle OAB is right-angled at O with legs 8 and 6, so AB = &radic;(64 + 36) = <b>10</b>.</p><p><b>Step 3 &mdash; two ways to write the same area.</b> Using the legs: area = &frac12; &times; 8 &times; 6 = 24. Using AB as the base and d as the height: area = &frac12; &times; 10 &times; d. So &frac12; &times; 10 &times; d = 24 &rarr; <b>d = 4.8</b>.</p><p><b>Why the others tempt you.</b> <b>5.0</b> is half the hypotenuse &mdash; that is the <i>median</i> from O, not the perpendicular, and the two are equal only in special cases. <b>6.0</b> and <b>8.0</b> come from dividing twice the area by the wrong side (48 &divide; 8 and 48 &divide; 6), i.e. treating a leg as the base while still calling the answer d.</p>' },
+
+    { n:12, section:'Mathematics', topic:'Coordinate Geometry', fmt:'plain',
+      stem:'<p>The points <b>A(1, 2), B(4, y), C(x, 6) and D(3, 5)</b>, taken in this order, are the vertices of a parallelogram. The value of <b>x + y</b> is</p>',
+      options:['3','9','11','18'], answer:1,
+      sol:'<p>In a parallelogram the <b>diagonals bisect each other</b>, so the midpoint of AC equals the midpoint of BD.</p><p>Midpoint of AC = ((1 + x)/2, (2 + 6)/2) = ((1 + x)/2, 4).<br>Midpoint of BD = ((4 + 3)/2, (y + 5)/2) = (7/2, (y + 5)/2).</p><p>Equate: (1 + x)/2 = 7/2 &rarr; <b>x = 6</b>; and 4 = (y + 5)/2 &rarr; <b>y = 3</b>. So x + y = <b>9</b>.</p><p>Check: A(1,2), B(4,3), C(6,6), D(3,5). Vector AB = (3, 1) and vector DC = (3, 1) &#10003;.</p><p><b>Why the others tempt you.</b> <b>11</b> comes from equating the midpoints of the <i>sides</i> AB and CD instead of the diagonals, which gives x = 2, y = 9. <b>3</b> is x &minus; y, and <b>18</b> is xy &mdash; both are the right values combined the wrong way.</p>' },
+    /* ---------- Introduction to Trigonometry (Q13-Q16) ---------- */
+    { n:13, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'plain',
+      stem:'<p>If <b>cosec &theta; &minus; cot &theta; = 1/3</b>, where &theta; is acute, then the value of</p><p style="text-align:center"><b>(5 sin &theta; &minus; 3 cos &theta;) &divide; (5 sin &theta; + 2 cos &theta;)</b></p><p>is</p>',
+      options:['3/23','11/26','3/5','27/23'], answer:0,
+      sol:'<p><b>Step 1 &mdash; the partner identity.</b> cosec&sup2;&theta; &minus; cot&sup2;&theta; = 1, so (cosec &theta; &minus; cot &theta;)(cosec &theta; + cot &theta;) = 1. Given the first bracket is 1/3, the second must be <b>3</b>.</p><p><b>Step 2 &mdash; add the two.</b> 2 cosec &theta; = 1/3 + 3 = 10/3, so cosec &theta; = 5/3 and <b>sin &theta; = 3/5</b>. Subtracting instead gives 2 cot &theta; = 3 &minus; 1/3 = 8/3, so cot &theta; = 4/3 and <b>cos &theta; = 4/5</b>. (Check: 9/25 + 16/25 = 1 &#10003;.)</p><p><b>Step 3 &mdash; substitute.</b> (5&middot;&frac35; &minus; 3&middot;&frac45;) &divide; (5&middot;&frac35; + 2&middot;&frac45;) = (3 &minus; 12/5) &divide; (3 + 8/5) = (3/5) &divide; (23/5) = <b>3/23</b>.</p><p><b>Why the others tempt you.</b> <b>3/5</b> is sin &theta; &mdash; the value you find in Step 2 and then forget to use. <b>11/26</b> is the same substitution with sin and cos swapped (4/5 and 3/5): (4 &minus; 9/5) &divide; (4 + 6/5). <b>27/23</b> is a sign slip in the numerator: (3 + 12/5) &divide; (23/5).</p>' },
+
+    { n:14, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'plain',
+      stem:'<p>If <b>sin &theta; + cos &theta; = p</b> and <b>sec &theta; + cosec &theta; = q</b>, then <b>q(p&sup2; &minus; 1)</b> is equal to</p>',
+      options:['p','2q','2pq','2p'], answer:3,
+      sol:'<p><b>Step 1.</b> q = 1/cos &theta; + 1/sin &theta; = (sin &theta; + cos &theta;)/(sin &theta; cos &theta;) = p/(sin &theta; cos &theta;), so <b>sin &theta; cos &theta; = p/q</b>.</p><p><b>Step 2.</b> p&sup2; = (sin &theta; + cos &theta;)&sup2; = sin&sup2;&theta; + cos&sup2;&theta; + 2 sin &theta; cos &theta; = 1 + 2 sin &theta; cos &theta;, so <b>p&sup2; &minus; 1 = 2 sin &theta; cos &theta; = 2p/q</b>.</p><p><b>Step 3.</b> q(p&sup2; &minus; 1) = q &times; 2p/q = <b>2p</b>.</p><p><b>Why the others tempt you.</b> <b>p</b> drops the factor 2, i.e. reads p&sup2; &minus; 1 as sin &theta; cos &theta; rather than twice it. <b>2q</b> is the last step cancelled on the wrong letter: q &times; 2p/q is <b>2p</b>, not 2q. <b>2pq</b> is the result of multiplying by q instead of cancelling it.</p>' },
+
+    { n:15, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'plain',
+      stem:'<p>Evaluate</p><p style="text-align:center"><b>2(sin&sup2;35&deg; + sin&sup2;55&deg;) &divide; (cos&sup2;18&deg; + cos&sup2;72&deg;) &minus; 3(tan 10&deg; &middot; tan 20&deg; &middot; tan 70&deg; &middot; tan 80&deg;) &minus; 4 sin 30&deg; &middot; cos 60&deg; &middot; tan 45&deg;</b></p>',
+      options:['&minus;5','&minus;2','&minus;1','0'], answer:1,
+      sol:'<p><b>First term.</b> sin 55&deg; = cos 35&deg;, so the numerator is sin&sup2;35&deg; + cos&sup2;35&deg; = 1. cos 72&deg; = sin 18&deg;, so the denominator is cos&sup2;18&deg; + sin&sup2;18&deg; = 1. The term is 2(1)/1 = <b>2</b>.</p><p><b>Second term.</b> tan 80&deg; = cot 10&deg; and tan 70&deg; = cot 20&deg;, so the product pairs off: (tan 10&deg; &middot; cot 10&deg;)(tan 20&deg; &middot; cot 20&deg;) = 1. The term is <b>3</b>.</p><p><b>Third term.</b> These are complementary too, but they <i>multiply</i> rather than cancelling to 1, so they must actually be evaluated: sin 30&deg; = &frac12;, cos 60&deg; = &frac12;, tan 45&deg; = 1, so the product is &frac14; and 4 &times; &frac14; = <b>1</b>.</p><p>Putting it together: 2 &minus; 3 &minus; 1 = <b>&minus;2</b>.</p><p><b>Why the others tempt you.</b> <b>&minus;1</b> is 2 &minus; 3 with the third term dropped &mdash; easy to do once the first two collapse so neatly. <b>&minus;5</b> takes sin 30&deg; &middot; cos 60&deg; &middot; tan 45&deg; as 1 rather than &frac14;, giving 2 &minus; 3 &minus; 4. <b>0</b> is 2 &minus; 3 + 1, the last minus sign lost.</p>' },
+
+    { n:16, section:'Mathematics', topic:'Introduction to Trigonometry', fmt:'plain',
+      stem:'<p>If <b>tan &theta; &minus; cot &theta; = 3</b>, then <b>tan&#8308;&theta; + cot&#8308;&theta;</b> equals</p>',
+      options:['11','119','121','123'], answer:1,
+      sol:'<p>The fact that makes this work: <b>tan &theta; &middot; cot &theta; = 1</b>, always. Square twice &mdash; but watch the sign, because the two stages correct in <i>opposite</i> directions.</p><p><b>Square once.</b> (tan &theta; &minus; cot &theta;)&sup2; = tan&sup2;&theta; + cot&sup2;&theta; &minus; 2(tan &theta; cot &theta;), so 9 = tan&sup2;&theta; + cot&sup2;&theta; &minus; 2, which <b>adds</b>: tan&sup2;&theta; + cot&sup2;&theta; = <b>11</b>.</p><p><b>Square again.</b> (tan&sup2;&theta; + cot&sup2;&theta;)&sup2; = tan&#8308;&theta; + cot&#8308;&theta; + 2(tan &theta; cot &theta;)&sup2;, so 11&sup2; = tan&#8308;&theta; + cot&#8308;&theta; + 2, which <b>subtracts</b>.</p><p>Hence tan&#8308;&theta; + cot&#8308;&theta; = 121 &minus; 2 = <b>119</b>.</p><p><b>Why the others tempt you.</b> <b>11</b> is tan&sup2;&theta; + cot&sup2;&theta; &mdash; the halfway value, and the one to guard against when the question asks for a fourth power. <b>121</b> is 11&sup2; with the second correction forgotten. <b>123</b> = 11&sup2; + 2 is the sign trap this question is built around: the first stage really does add 2, so it is natural to add at the second stage too &mdash; but there the 2 comes off.</p>' },
+
+    /* ---------- Triangles (Q17-Q19) ---------- */
+    { n:17, section:'Mathematics', topic:'Triangles', fmt:'diagram',
+      stem:'<p>In the figure, <b>DE &#8741; BC</b>, <b>AD = 4 cm</b>, <b>DB = 6 cm</b>, and the area of &#9651;ADE is <b>16 cm&sup2;</b>. What is the area of the trapezium <b>DBCE</b>?</p>',
+      fig:'<svg viewBox="0 0 300 200" width="300" height="200" role="img" aria-label="Triangle A B C with D on A B and E on A C, D E parallel to B C, A D 4 centimetres and D B 6 centimetres"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M150 25 L40 165 L260 165 Z"/></g><line x1="106" y1="81" x2="194" y2="81" stroke="var(--maths)" stroke-width="2.4"/><path d="M144 75 L152 81 L144 87" fill="none" stroke="var(--maths)" stroke-width="1.6"/><path d="M144 159 L152 165 L144 171" fill="none" stroke="currentColor" stroke-width="1.6"/><g fill="var(--maths)"><circle cx="106" cy="81" r="3.2"/><circle cx="194" cy="81" r="3.2"/></g><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="145" y="18">A</text><text x="26" y="180">B</text><text x="266" y="180">C</text><text x="88" y="78">D</text><text x="200" y="78">E</text><text x="96" y="52">4 cm</text><text x="34" y="133">6 cm</text><text x="130" y="71" fill="var(--maths)" font-size="11">16 cm&#178;</text></g></svg>',
+      figCap:'DE is parallel to BC; the small triangle ADE has area 16 cm&sup2;.',
+      options:['20 cm&sup2;','24 cm&sup2;','84 cm&sup2;','100 cm&sup2;'], answer:2,
+      sol:'<p><b>Step 1 &mdash; the right ratio.</b> AB = AD + DB = 4 + 6 = <b>10 cm</b>, so AD : AB = 4 : 10 = <b>2 : 5</b>. (Not 4 : 6 &mdash; the similar triangle is ABC, whose side is the whole of AB.)</p><p><b>Step 2 &mdash; from length ratio to area ratio.</b> Since DE &#8741; BC, &#9651;ADE ~ &#9651;ABC. Both triangles share the angle at A, so area = &frac12; &middot; AD &middot; AE &middot; sin A against &frac12; &middot; AB &middot; AC &middot; sin A: the areas are in the ratio (2/5)&sup2; = <b>4/25</b>.</p><p><b>Step 3.</b> ar(ABC) = 16 &times; 25/4 = 100 cm&sup2;, so ar(DBCE) = 100 &minus; 16 = <b>84 cm&sup2;</b>.</p><p><b>Why the others tempt you.</b> <b>100 cm&sup2;</b> is ar(ABC) &mdash; the answer one step early, and the single commonest response. <b>20 cm&sup2;</b> uses AD : DB = 2 : 3, giving ar(ABC) = 36. <b>24 cm&sup2;</b> uses the length ratio 5/2 directly for the areas, giving ar(ABC) = 40.</p>' },
+
+    { n:18, section:'Mathematics', topic:'Triangles', fmt:'diagram',
+      stem:'<p>In the figure, ABC is an <b>equilateral</b> triangle with <b>AB = 12 cm</b>, and D is the point on BC for which <b>BD = &#8531; BC</b>. What is <b>AD&sup2;</b>?</p>',
+      fig:'<svg viewBox="0 0 300 205" width="300" height="205" role="img" aria-label="Equilateral triangle A B C with D on B C one third of the way from B, and A D drawn"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M150 25 L65 172 L235 172 Z"/></g><line x1="150" y1="25" x2="122" y2="172" stroke="var(--maths)" stroke-width="2.3"/><circle cx="122" cy="172" r="3.4" fill="var(--maths)"/><g stroke="currentColor" stroke-width="1.6"><line x1="103" y1="94" x2="111" y2="99"/><line x1="189" y1="99" x2="197" y2="94"/><line x1="150" y1="166" x2="150" y2="178"/></g><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="145" y="18">A</text><text x="52" y="188">B</text><text x="240" y="188">C</text><text x="112" y="190">D</text><text x="76" y="92">12 cm</text><text x="196" y="92">12 cm</text><text x="82" y="190">4 cm</text></g></svg>',
+      figCap:'ABC is equilateral, so BC = 12 cm and BD = 4 cm. AD is the segment drawn from A to D.',
+      options:['104 cm&sup2;','108 cm&sup2;','112 cm&sup2;','144 cm&sup2;'], answer:2,
+      sol:'<p><b>Step 1 &mdash; drop the altitude.</b> Let AE &#8869; BC. In an equilateral triangle the foot E is the <b>midpoint</b> of BC, so BE = 6 cm and AE&sup2; = 12&sup2; &minus; 6&sup2; = 144 &minus; 36 = <b>108</b>.</p><p><b>Step 2 &mdash; locate D relative to E.</b> BD = &#8531; &times; 12 = 4 cm, so <b>DE = BE &minus; BD = 6 &minus; 4 = 2 cm</b>. This is the step the whole question turns on: D is <i>not</i> the foot of the altitude.</p><p><b>Step 3 &mdash; Pythagoras in &#9651;ADE.</b> AD&sup2; = AE&sup2; + DE&sup2; = 108 + 4 = <b>112 cm&sup2;</b>.</p><p>This is the standard result 9AD&sup2; = 7AB&sup2;: 9 &times; 112 = 1008 = 7 &times; 144 &#10003;.</p><p><b>Why the others tempt you.</b> <b>108 cm&sup2;</b> is AE&sup2; &mdash; treating AD as the altitude, i.e. forgetting Step 2 entirely. <b>104 cm&sup2;</b> is 108 &minus; 4, subtracting DE&sup2; instead of adding it. <b>144 cm&sup2;</b> is simply AB&sup2;.</p>' },
+
+    { n:19, section:'Mathematics', topic:'Triangles', fmt:'statement',
+      stem:'<p>Consider the following statements about two triangles ABC and DEF.</p><ol class="roman"><li>If &ang;A = &ang;D and AB/DE = AC/DF, then the triangles are similar.</li><li>If AB/DE = BC/EF = CA/FD, then the triangles are similar.</li><li>If &ang;A = &ang;D, &ang;B = &ang;E and AB = DE, then the triangles are congruent.</li><li>Two triangles with equal areas are always congruent.</li></ol><p>Which of the statements are correct?</p>',
+      options:['I, II and III only','I and II only','II, III and IV only','I, III and IV only'], answer:0,
+      sol:'<p><b>I &mdash; true.</b> One equal angle lying between two pairs of proportional sides is the <b>SAS similarity</b> criterion.</p><p><b>II &mdash; true.</b> All three pairs of sides in the same ratio is the <b>SSS similarity</b> criterion.</p><p><b>III &mdash; true.</b> Two equal angles with the included side equal is <b>ASA congruence</b> &mdash; note that here the sides are <i>equal</i>, not merely proportional, which upgrades similarity to congruence.</p><p><b>IV &mdash; false.</b> A triangle with base 8 and height 3 and one with base 12 and height 2 both have area 12, but they are nowhere near congruent. Equal area fixes only the product of base and height.</p><p>So I, II and III &rarr; option <b>(1)</b>.</p>' },
+
+    /* ---------- Lines and Angles (Q20-Q22) ---------- */
+    { n:20, section:'Mathematics', topic:'Lines and Angles', fmt:'diagram',
+      stem:'<p>In &#9651;ABC, <b>&ang;A exceeds &ang;B by 20&deg;</b> and <b>&ang;C = 40&deg;</b>. The bisectors of &ang;ABC and &ang;ACB meet at O, as shown. What is <b>&ang;BOC</b>?</p>',
+      fig:'<svg viewBox="0 0 300 200" width="300" height="200" role="img" aria-label="Triangle A B C with angle C equal to 40 degrees and the bisectors of angle B and angle C meeting at point O inside the triangle"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M117 64.6 L55 172 L245 172 Z"/></g><g fill="none" stroke="var(--maths)" stroke-width="2.1"><line x1="55" y1="172" x2="128.5" y2="129.6"/><line x1="245" y1="172" x2="128.5" y2="129.6"/></g><circle cx="128.5" cy="129.6" r="3.6" fill="var(--maths)"/><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M81 172 A26 26 0 0 0 77.5 159"/><path d="M77.5 159 A26 26 0 0 0 68 149.5"/><path d="M219 172 A26 26 0 0 1 220.6 163.1"/><path d="M220.6 163.1 A26 26 0 0 1 225.1 155.3"/></g><path d="M205 172 A40 40 0 0 1 214.4 146.3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M149.1 137.1 A22 22 0 0 1 109.4 140.6" fill="none" stroke="var(--maths)" stroke-width="1.6"/><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="111" y="57">A</text><text x="41" y="188">B</text><text x="251" y="188">C</text><text x="135" y="126">O</text><text x="186" y="169" font-size="11">40&#176;</text><text x="123" y="159" fill="var(--maths)">?</text></g></svg>',
+      figCap:'The outer arc at C spans the whole of &ang;C; the paired inner arcs at B and at C show that each of those angles has been bisected. &ang;A and &ang;B are not marked &mdash; they have to be found first.',
+      options:['50&deg;','110&deg;','120&deg;','130&deg;'], answer:3,
+      sol:'<p><b>Step 1 &mdash; find &ang;A.</b> &ang;A + &ang;B = 180&deg; &minus; 40&deg; = 140&deg;, and &ang;A = &ang;B + 20&deg;. So (&ang;B + 20&deg;) + &ang;B = 140&deg; &rarr; &ang;B = <b>60&deg;</b> and &ang;A = <b>80&deg;</b>.</p><p><b>Step 2 &mdash; halve the base angles.</b> BO and CO are bisectors, so &ang;OBC = 30&deg; and &ang;OCB = 20&deg;, which add to <b>50&deg;</b>.</p><p><b>Step 3 &mdash; angle sum in &#9651;OBC.</b> &ang;BOC = 180&deg; &minus; 50&deg; = <b>130&deg;</b>.</p><p>The general result is &ang;BOC = 90&deg; + &frac12;&ang;A, which checks out: 90&deg; + 40&deg; = 130&deg; &#10003;. Note that it is &ang;<b>A</b> that gets halved, even though A is the vertex <i>not</i> being bisected &mdash; which is why Step 1 cannot be skipped.</p><p><b>Why the others tempt you.</b> <b>50&deg;</b> is &ang;OBC + &ang;OCB &mdash; Step 2 handed in as the answer. <b>120&deg;</b> is 90&deg; + &frac12;&ang;B, the formula applied to the wrong angle. <b>110&deg;</b> is 90&deg; + &frac12;&ang;C, the same mistake made with the one angle the question actually gives you, which is what makes it the most tempting of the three.</p>' },
+
+    { n:21, section:'Mathematics', topic:'Lines and Angles', fmt:'plain',
+      stem:'<p>Two <b>supplementary</b> angles A and B satisfy <b>A : B = 4 : 5</b>. Angle A is then increased by <b>20%</b> and angle B is decreased by <b>20%</b>. What is the new ratio <b>A : B</b>?</p>',
+      options:['6 : 5','5 : 6','4 : 5','8 : 15'], answer:0,
+      sol:'<p><b>Step 1.</b> Supplementary means they add to 180&deg;: 4x + 5x = 180 &rarr; x = 20, so the angles are <b>80&deg;</b> and <b>100&deg;</b>.</p><p><b>Step 2.</b> Smaller increased by 20%: 80 &times; 1.2 = <b>96&deg;</b>. Larger decreased by 20%: 100 &times; 0.8 = <b>80&deg;</b>.</p><p><b>Step 3.</b> New ratio = 96 : 80 = <b>6 : 5</b>. (Note the new angles add to 176&deg;, so they are no longer supplementary &mdash; nothing in the question says they should be.)</p><p><b>Why the others tempt you.</b> <b>5 : 6</b> is the right pair written in the wrong order &mdash; note that after the change A (96&deg;) is the <i>larger</i> of the two, so writing &ldquo;smaller : larger&rdquo; out of habit inverts the answer. The question asks for A : B. <b>4 : 5</b> is the original ratio, i.e. assuming the two 20% changes cancel &mdash; they do not, because 20% of 80 is not 20% of 100. <b>8 : 15</b> comes from applying the changes to the wrong angles: 80 &times; 0.8 = 64 and 100 &times; 1.2 = 120.</p>' },
+
+    { n:22, section:'Mathematics', topic:'Lines and Angles', fmt:'plain',
+      stem:'<p>In &#9651;ABC, <b>&ang;A : &ang;B = 3 : 2</b> and <b>&ang;C is 40&deg; more than &ang;B</b>. The bisector of &ang;A meets BC at D. What is <b>&ang;ADB</b>?</p>',
+      options:['70&deg;','80&deg;','100&deg;','110&deg;'], answer:3,
+      sol:'<p><b>Step 1 &mdash; find the three angles.</b> Write &ang;A = 3k and &ang;B = 2k, so &ang;C = 2k + 40&deg;. The angle sum gives 3k + 2k + 2k + 40&deg; = 180&deg; &rarr; 7k = 140&deg; &rarr; k = 20&deg;.</p><p>So &ang;A = <b>60&deg;</b>, &ang;B = <b>40&deg;</b>, &ang;C = <b>80&deg;</b> (check: 60 + 40 + 80 = 180 &#10003;, and 60 : 40 = 3 : 2 &#10003;).</p><p><b>Step 2 &mdash; use the bisector.</b> AD bisects &ang;A, so &ang;BAD = 30&deg;.</p><p><b>Step 3 &mdash; angle sum in &#9651;ABD.</b> Its three angles are &ang;BAD = 30&deg;, &ang;ABD = &ang;B = 40&deg;, and &ang;ADB. So &ang;ADB = 180&deg; &minus; 30&deg; &minus; 40&deg; = <b>110&deg;</b>.</p><p>(As a check, &ang;ADC = 180&deg; &minus; 110&deg; = 70&deg;, and in &#9651;ADC: 30&deg; + 80&deg; + 70&deg; = 180&deg; &#10003;.)</p><p><b>Why the others tempt you.</b> <b>80&deg;</b> is 180&deg; &minus; 60&deg; &minus; 40&deg;, i.e. forgetting to bisect and using the whole of &ang;A &mdash; the commonest slip here. <b>70&deg;</b> is &ang;ADC, the angle on the other side of D. <b>100&deg;</b> is the exterior angle at C (180&deg; &minus; 80&deg;) &mdash; a real angle of this triangle, but not the one asked for.</p>' },
+    /* ---------- Quadrilaterals (Q23-Q24) ---------- */
+    { n:23, section:'Mathematics', topic:'Quadrilaterals', fmt:'diagram',
+      stem:'<p>In quadrilateral ABCD, the diagonals <b>AC and BD are perpendicular</b>, with <b>AC = 10 cm</b> and <b>BD = 14 cm</b>. P, Q, R and S are the midpoints of AB, BC, CD and DA respectively. What is the <b>area of PQRS</b>?</p>',
+      fig:'<svg viewBox="0 0 300 200" width="300" height="200" role="img" aria-label="Quadrilateral A B C D with perpendicular diagonals, and P, Q, R and S marked at the midpoints of its four sides"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="5 4" opacity=".75"><line x1="95.4" y1="88.1" x2="196.7" y2="131.1"/><line x1="172" y1="22.8" x2="111.8" y2="164.6"/></g><path d="M128.6 102.2 L132.1 93.9 L140.4 97.4" fill="none" stroke="currentColor" stroke-width="1.5"/><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M95.4 88.1 L172 22.8 L196.7 131.1 L111.8 164.6 Z"/></g><g fill="var(--maths)"><circle cx="133.7" cy="55.5" r="3.4"/><circle cx="184.3" cy="77" r="3.4"/><circle cx="154.3" cy="147.9" r="3.4"/><circle cx="103.6" cy="126.4" r="3.4"/></g><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="80" y="92">A</text><text x="169" y="17">B</text><text x="202" y="135">C</text><text x="104" y="180">D</text><text x="120" y="51">P</text><text x="190" y="74">Q</text><text x="158" y="162">R</text><text x="86" y="131">S</text></g></svg>',
+      figCap:'The dashed segments are the diagonals AC and BD; the small square marks the right angle between them. P, Q, R and S are marked on the four sides &mdash; the quadrilateral PQRS itself is not drawn.',
+      options:['24 cm&sup2;','35 cm&sup2;','70 cm&sup2;','140 cm&sup2;'], answer:1,
+      sol:'<p><b>Step 1 &mdash; the midpoint theorem, twice.</b> In &#9651;ABC, P and Q are midpoints of AB and BC, so <b>PQ &#8741; AC and PQ = &frac12;AC = 5 cm</b>. In &#9651;ADC, S and R are midpoints of DA and DC, so SR &#8741; AC and SR = 5 cm too. The same argument in &#9651;ABD and &#9651;CBD gives <b>QR = PS = &frac12;BD = 7 cm</b>.</p><p><b>Step 2 &mdash; what shape is PQRS?</b> PQ &#8741; AC and QR &#8741; BD. Since AC &#8869; BD, we get PQ &#8869; QR, so PQRS is a <b>rectangle</b> with sides 5 cm and 7 cm.</p><p><b>Step 3.</b> Area = 5 &times; 7 = <b>35 cm&sup2;</b>.</p><p><b>Why the others tempt you.</b> <b>24 cm&sup2;</b> is the <i>perimeter</i> of PQRS, 2(5 + 7) &mdash; the right shape, the wrong quantity. <b>70 cm&sup2;</b> is the area of ABCD itself (&frac12; &times; 10 &times; 14 for perpendicular diagonals); PQRS is exactly half of it. <b>140 cm&sup2;</b> is 10 &times; 14, the product of the diagonals with the &frac12; forgotten.</p>' },
+
+    { n:24, section:'Mathematics', topic:'Quadrilaterals', fmt:'statement',
+      stem:'<p>Four claims about quadrilaterals are listed below.</p><ol class="roman"><li>Every rhombus is a parallelogram.</li><li>The diagonals of a rectangle bisect each other at right angles.</li><li>If the diagonals of a parallelogram are equal, then it is a rectangle.</li><li>In a parallelogram, the bisectors of two adjacent angles intersect at right angles.</li></ol><p><b>How many</b> of these claims are correct?</p>',
+      options:['One','Two','Three','Four'], answer:2,
+      sol:'<p><b>I &mdash; true.</b> A rhombus has both pairs of opposite sides parallel, which is the definition of a parallelogram; it simply has the extra property that all four sides are equal.</p><p><b>II &mdash; false.</b> The diagonals of a rectangle <i>do</i> bisect each other and <i>are</i> equal, but they meet at right angles only when the rectangle is a <b>square</b>. Take a 6 &times; 2 rectangle and the diagonals clearly cross obliquely.</p><p><b>III &mdash; true.</b> Equal diagonals in a parallelogram force each angle to be 90&deg; &mdash; this is the standard converse.</p><p><b>IV &mdash; true.</b> Two adjacent angles of a parallelogram are co-interior, so they add to 180&deg;. Their halves add to 90&deg;, and in the triangle formed by the two bisectors the third angle is 180&deg; &minus; 90&deg; = <b>90&deg;</b>.</p><p>Three of the four hold &rarr; <b>(3)</b>. The one to watch is II: &ldquo;bisect each other&rdquo; and &ldquo;at right angles&rdquo; are two separate claims, and rectangles satisfy only the first.</p>' },
+
+    /* ---------- Heron's Formula (Q25-Q26) ---------- */
+    { n:25, section:'Mathematics', topic:'Heron’s Formula', fmt:'plain',
+      stem:'<p>The sides of a triangular plot in a village are in the ratio <b>3 : 5 : 7</b> and its perimeter is <b>300 m</b>. What is the area of the plot?</p>',
+      options:['750&radic;3 m&sup2;','1500 m&sup2;','1500&radic;3 m&sup2;','3000 m&sup2;'], answer:2,
+      sol:'<p><b>Step 1 &mdash; the sides.</b> 3k + 5k + 7k = 300 &rarr; 15k = 300 &rarr; k = 20, so the sides are <b>60 m, 100 m and 140 m</b>.</p><p><b>Step 2 &mdash; Heron&rsquo;s formula.</b> s = 300/2 = 150, so s &minus; a = 90, s &minus; b = 50, s &minus; c = 10.</p><p style="text-align:center">Area = &radic;[150 &times; 90 &times; 50 &times; 10] = &radic;6750000</p><p><b>Step 3 &mdash; simplify by hand.</b> 6750000 = 675 &times; 10000, so &radic;6750000 = 100&radic;675 = 100 &times; &radic;(225 &times; 3) = 100 &times; 15&radic;3 = <b>1500&radic;3 m&sup2;</b> (&asymp; 2598 m&sup2;).</p><p><b>Why the others tempt you.</b> <b>3000 m&sup2;</b> is &frac12; &times; 60 &times; 100 &mdash; assuming the two shorter sides meet at a right angle, which they do not (60&sup2; + 100&sup2; = 13600, but 140&sup2; = 19600). <b>1500 m&sup2;</b> is &radic;6750000 simplified to 100 &times; 15 with the surviving &radic;3 dropped &mdash; always check nothing is left under the root before you stop. <b>750&radic;3</b> is the correct surd halved, from misremembering Heron&rsquo;s formula as needing a further &frac12; the way &frac12;bh does; it returns the area outright.</p>' },
+
+    { n:26, section:'Mathematics', topic:'Heron’s Formula', fmt:'diagram',
+      stem:'<p>A village park is the quadrilateral ABCD shown, with <b>&ang;C = 90&deg;</b>. How much area does it occupy? (Take &radic;35 &asymp; 5.92.)</p>',
+      fig:'<svg viewBox="0 0 280 205" width="280" height="205" role="img" aria-label="Quadrilateral park A B C D with a right angle at C, sides A B 9 metres, B C 12 metres, C D 5 metres and A D 8 metres"><path d="M97 88 L183 38 L183 170 L128 170 Z" fill="var(--maths)" opacity=".12"/><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M97 88 L183 38 L183 170 L128 170 Z"/></g><path d="M183 158 L171 158 L171 170" fill="none" stroke="currentColor" stroke-width="1.5"/><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="83" y="84">A</text><text x="189" y="34">B</text><text x="189" y="186">C</text><text x="112" y="187">D</text><text x="130" y="54">9 m</text><text x="190" y="108">12 m</text><text x="145" y="187">5 m</text><text x="74" y="136">8 m</text></g></svg>',
+      figCap:'The small square at C marks the right angle between BC and CD.',
+      options:['30.0 m&sup2;','35.5 m&sup2;','60.0 m&sup2;','65.5 m&sup2;'], answer:3,
+      sol:'<p><b>Step 1 &mdash; draw the diagonal BD.</b> It splits the park into &#9651;BCD (right-angled) and &#9651;ABD (no right angle, so Heron&rsquo;s formula).</p><p><b>Step 2 &mdash; the right triangle.</b> &ang;C = 90&deg;, so BD = &radic;(12&sup2; + 5&sup2;) = &radic;169 = <b>13 m</b>, and ar(BCD) = &frac12; &times; 12 &times; 5 = <b>30 m&sup2;</b>.</p><p><b>Step 3 &mdash; Heron on &#9651;ABD.</b> Sides 9, 8, 13 &rarr; s = 15, so s &minus; a = 6, s &minus; b = 7, s &minus; c = 2.</p><p style="text-align:center">ar(ABD) = &radic;(15 &times; 6 &times; 7 &times; 2) = &radic;1260 = &radic;(36 &times; 35) = 6&radic;35 &asymp; 6 &times; 5.92 = <b>35.5 m&sup2;</b></p><p><b>Step 4.</b> Total area &asymp; 30 + 35.5 = <b>65.5 m&sup2;</b>.</p><p><b>Why the others tempt you.</b> <b>30.0</b> and <b>35.5</b> are each one of the two triangles on its own &mdash; the answer with Step 3 or Step 2 missing. <b>60.0</b> is 2 &times; 30, from assuming the diagonal cuts the park into two equal halves, which it does not: the two triangles here have quite different shapes.</p>' },
+
+    /* ---------- Surface area and Volumes (Q27-Q28) ---------- */
+    { n:27, section:'Mathematics', topic:'Surface area and Volumes', fmt:'diagram',
+      stem:'<p>A conical tent for a village fair has <b>base radius 7 m</b> and <b>height 24 m</b>. Canvas for its <b>curved surface</b> costs <b>&#8377;70 per m&sup2;</b>. What does the canvas cost? (Take &pi; = 22/7.)</p>',
+      fig:'<svg viewBox="0 0 300 235" width="300" height="235" role="img" aria-label="A cone representing a conical tent, with its vertical height 24 metres marked by a dashed line and its base radius 7 metres marked"><path d="M88 190 L150 30 L212 190 Z" fill="var(--maths)" opacity=".12"/><ellipse cx="150" cy="190" rx="62" ry="16" fill="var(--maths)" opacity=".12"/><ellipse cx="150" cy="190" rx="62" ry="16" fill="none" stroke="currentColor" stroke-width="1.7" opacity=".8"/><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M88 190 L150 30 L212 190"/></g><line x1="150" y1="30" x2="150" y2="190" stroke="currentColor" stroke-width="1.6" stroke-dasharray="5 4"/><line x1="150" y1="190" x2="212" y2="190" stroke="var(--maths)" stroke-width="2.2"/><path d="M150 178 L162 178 L162 190" fill="none" stroke="currentColor" stroke-width="1.5"/><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="156" y="158">24 m</text><text x="170" y="218" fill="var(--maths)">7 m</text></g></svg>',
+      figCap:'The dashed line is the vertical height of the tent; the accented segment is the base radius. Not to scale.',
+      options:['&#8377;36,960','&#8377;38,500','&#8377;47,740','&#8377;49,280'], answer:1,
+      sol:'<p><b>Step 1 &mdash; the slant height (this is the step the question is really testing).</b> The canvas lies along the <i>slant</i>, not the vertical height: l = &radic;(r&sup2; + h&sup2;) = &radic;(49 + 576) = &radic;625 = <b>25 m</b>.</p><p><b>Step 2 &mdash; curved surface area.</b> CSA = &pi;rl = (22/7) &times; 7 &times; 25 = <b>550 m&sup2;</b>.</p><p><b>Step 3 &mdash; cost.</b> 550 &times; 70 = <b>&#8377;38,500</b>.</p><p><b>Why the others tempt you.</b> <b>&#8377;36,960</b> uses h = 24 in place of l, giving 528 m&sup2; &mdash; the single commonest error in cone questions. <b>&#8377;49,280</b> adds the base circle &pi;r&sup2; = 154 m&sup2;; a tent has no canvas floor, and the question says curved surface. <b>&#8377;47,740</b> comes from taking l = 7 + 24 = 31 instead of using Pythagoras.</p>' },
+
+    { n:28, section:'Mathematics', topic:'Surface area and Volumes', fmt:'diagram',
+      stem:'<p>A solid cone of <b>height 24 cm</b> and <b>base radius 6 cm</b> is made of modelling clay. A child reshapes the whole of it into a <b>sphere</b>. What is the radius of the sphere?</p>',
+      fig:'<svg viewBox="0 0 310 215" width="310" height="215" role="img" aria-label="A cone of height 24 centimetres and base radius 6 centimetres, an arrow, and a sphere of unknown radius"><path d="M24 170 L70 30 L116 170 Z" fill="var(--maths)" opacity=".12"/><ellipse cx="70" cy="170" rx="46" ry="11" fill="var(--maths)" opacity=".12"/><ellipse cx="70" cy="170" rx="46" ry="11" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".8"/><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M24 170 L70 30 L116 170"/></g><line x1="70" y1="30" x2="70" y2="170" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4"/><line x1="70" y1="170" x2="116" y2="170" stroke="var(--maths)" stroke-width="2.1"/><g stroke="var(--maths)" stroke-width="2.2" fill="none"><line x1="132" y1="108" x2="176" y2="108"/><path d="M169 102 L176 108 L169 114"/></g><circle cx="243" cy="112" r="42" fill="var(--maths)" opacity=".12"/><circle cx="243" cy="112" r="42" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="243" cy="112" rx="42" ry="12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-dasharray="4 4" opacity=".65"/><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="73" y="152" font-size="11">24 cm</text><text x="80" y="198" fill="var(--maths)">6 cm</text><text x="230" y="180">R = ?</text><text x="124" y="98" font-size="10">recast</text></g></svg>',
+      figCap:'The clay is reshaped, so the two solids have the same volume. Not drawn to scale.',
+      options:['6 cm','8.65 cm','12 cm','24 cm'], answer:0,
+      sol:'<p>Reshaping conserves <b>volume</b> &mdash; nothing else about the two solids is shared.</p><p><b>Cone:</b> V = &#8531;&pi;r&sup2;h = &#8531; &times; &pi; &times; 36 &times; 24 = <b>288&pi; cm&sup3;</b>.</p><p><b>Sphere:</b> V = (4/3)&pi;R&sup3;.</p><p>Set them equal: (4/3)&pi;R&sup3; = 288&pi; &rarr; R&sup3; = 288 &times; 3/4 = 216 &rarr; <b>R = 6 cm</b>.</p><p>The &pi; cancels on both sides, so no value of &pi; is needed &mdash; useful in a no-calculator paper.</p><p><b>Why the others tempt you.</b> <b>8.65 cm</b> is what you get by forgetting the &#8531; in the cone&rsquo;s volume: V would be 864&pi;, giving R&sup3; = 648 and R &asymp; 8.65. Its very untidiness is the warning sign &mdash; a recast question is almost always built to land on a whole number. <b>12 cm</b> is the <i>diameter</i> of the sphere, not its radius. <b>24 cm</b> is the cone&rsquo;s height, carried straight over.</p>' },
+
+    /* ---------- Statistics (Q29-Q30) ---------- */
+    { n:29, section:'Mathematics', topic:'Statistics', fmt:'plain',
+      stem:'<p>The mean of <b>20 observations</b> was found to be <b>15</b>. On checking, two of them had been copied as <b>3 and 6</b> instead of the correct values <b>8 and 4</b>, and a further observation of <b>33</b> had been left out of the list altogether. What is the correct mean of all <b>21</b> observations?</p>',
+      options:['14.43','15.15','15.86','16.00'], answer:3,
+      sol:'<p><b>Step 1 &mdash; the total as first computed.</b> 20 &times; 15 = <b>300</b>.</p><p><b>Step 2 &mdash; repair the two wrong entries.</b> Take out 3 and 6, put in 8 and 4: 300 &minus; 3 &minus; 6 + 8 + 4 = <b>303</b> (a net change of only +3).</p><p><b>Step 3 &mdash; add the missing observation.</b> 303 + 33 = <b>336</b>. Note this also changes the count: there are now <b>21</b> observations, not 20.</p><p><b>Step 4.</b> Correct mean = 336 &divide; 21 = <b>16.00</b>.</p><p><b>Why the others tempt you.</b> <b>15.15</b> = 303/20 is the answer with Step 3 missed entirely &mdash; the two copying errors repaired but the omitted value never added. <b>15.86</b> = 333/21 adds the 33 and updates the count but never repairs the copying errors. <b>14.43</b> = 303/21 is the opposite oversight: the count raised to 21 while the missing 33 itself is left out. The lesson is that an omitted observation changes <i>both</i> the total and the divisor.</p>' },
+
+    { n:30, section:'Mathematics', topic:'Statistics', fmt:'diagram',
+      stem:'<p>The bar graph shows the marks (out of 10) scored by a class in a short test. What is the <b>mean</b> mark of the class?</p>',
+      fig:'<svg viewBox="0 0 320 232" width="320" height="232" role="img" aria-label="Bar graph of marks against number of students: 3 students scored 4, 6 scored 5, 7 scored 6, 5 scored 7 and 4 scored 8"><g stroke="currentColor" stroke-width="1" opacity=".22"><line x1="48" y1="165" x2="300" y2="165"/><line x1="48" y1="145" x2="300" y2="145"/><line x1="48" y1="125" x2="300" y2="125"/><line x1="48" y1="105" x2="300" y2="105"/><line x1="48" y1="85" x2="300" y2="85"/><line x1="48" y1="65" x2="300" y2="65"/><line x1="48" y1="45" x2="300" y2="45"/></g><g fill="var(--maths)" opacity=".8"><rect x="60" y="125" width="34" height="60"/><rect x="106" y="65" width="34" height="120"/><rect x="152" y="45" width="34" height="140"/><rect x="198" y="85" width="34" height="100"/><rect x="244" y="105" width="34" height="80"/></g><g stroke="currentColor" stroke-width="1.7"><line x1="48" y1="25" x2="48" y2="185"/><line x1="48" y1="185" x2="300" y2="185"/></g><g fill="currentColor" font-family="Inter,sans-serif" font-size="10" text-anchor="end"><text x="42" y="189">0</text><text x="42" y="169">1</text><text x="42" y="149">2</text><text x="42" y="129">3</text><text x="42" y="109">4</text><text x="42" y="89">5</text><text x="42" y="69">6</text><text x="42" y="49">7</text></g><g fill="currentColor" font-family="Inter,sans-serif" font-size="12" text-anchor="middle"><text x="77" y="201">4</text><text x="123" y="201">5</text><text x="169" y="201">6</text><text x="215" y="201">7</text><text x="261" y="201">8</text><text x="174" y="222" font-size="11">Marks obtained</text></g><g fill="var(--maths)" font-family="Inter,sans-serif" font-size="11" font-weight="600" text-anchor="middle"><text x="77" y="118">3</text><text x="123" y="58">6</text><text x="169" y="38">7</text><text x="215" y="78">5</text><text x="261" y="98">4</text></g><text x="16" y="105" fill="currentColor" font-family="Inter,sans-serif" font-size="11" text-anchor="middle" transform="rotate(-90 16 105)">Number of students</text></svg>',
+      figCap:'Each bar is labelled with the number of students who scored that mark.',
+      options:['5.03','6.00','6.04','6.29'], answer:2,
+      sol:'<p><b>Step 1 &mdash; read the bars.</b> 3 students scored 4, 6 scored 5, 7 scored 6, 5 scored 7 and 4 scored 8. Total students = 3 + 6 + 7 + 5 + 4 = <b>25</b>.</p><p><b>Step 2 &mdash; total marks.</b> &Sigma;f<i>x</i> = 4(3) + 5(6) + 6(7) + 7(5) + 8(4) = 12 + 30 + 42 + 35 + 32 = <b>151</b>.</p><p><b>Step 3.</b> Mean = 151 &divide; 25 = <b>6.04</b>.</p><p><b>Why the others tempt you.</b> <b>6.00</b> is (4 + 5 + 6 + 7 + 8)/5 &mdash; the mean of the five <i>marks</i>, ignoring how many students scored each. That is the error this question exists to catch. <b>5.03</b> and <b>6.29</b> are 151 divided by 30 and by 24, i.e. the right total over a mis-added frequency count &mdash; always re-add the frequencies before dividing.</p>' }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b}. A mock also stores
+   its answers + flags so the frozen report can be replayed on any device;
+   the hub only ever reads m/mx. Written MERGE-ONLY. */
+function saveAttempt(sc, timeTaken){
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank };
+  if(IS_MOCK){ rec.a = answers.slice(); rec.f = flags.slice(); rec.md = mode; rec.tm = timeTaken; rec.v = 1; }
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function showFrozen(rec){
+  if(!rec || !IS_MOCK || submitted || !rec.a) return;
+  RESTORING = true;
+  answers = rec.a.slice();
+  flags   = (rec.f || new Array(NQ).fill(false)).slice();
+  mode    = rec.md || 'timed';
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
