@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · The Human Eye &amp; Colourful World — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+    </div>
+    <p class="startnote">Practice mode still marks you and still applies −1 — only the countdown is off.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  title: 'TALLENTEX · The Human Eye & Colourful World — Paper 1',
+  kind: 'topic',
+  duration: 20,
+  id: 'tx:phys-eye-colour:p1',
+  accent: 'physics',
+  sub: 'The human eye, defects of vision and their correction, refraction through a prism, dispersion, atmospheric refraction and scattering. <b>13 questions · 52 marks · 20 minutes · +4 / −1 / 0.</b> Both 2024 sittings put an eye-correction question at Q14 of the Physics section, and the official sample asked dispersion and the rainbow — this unit is worth about one Physics question in every paper, and it is one you have never met in IGCSE.',
+  sections: [ { name:'Physics', from:1, to:13 } ],
+  questions: [
+
+  { n:1, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'plain',
+    stem:'<p>Rohit is short-sighted. Without spectacles he can see clearly only between <b>10 cm</b> and <b>50 cm</b> from his eyes. He is given spectacles (worn close to the eyes) that let him see distant objects clearly. Wearing those spectacles, the <b>nearest</b> object he can now see clearly is at</p>',
+    options:['8.3 cm','10 cm','12.5 cm','25 cm'], answer:2,
+    sol:'<p><b>Step 1 — find the lens.</b> The spectacles must bring a distant object to his far point, 50 cm. So an object at infinity must image at 50 cm on the same side: <i>v</i> = −50 cm, <i>u</i> = ∞, giving <b><i>f</i> = −50 cm</b> (a concave lens, as short sight always needs).</p><p><b>Step 2 — push that lens back to the near point.</b> With the lens on, an object at distance <i>x</i> in front must be imaged at his unaided near point, 10 cm, on the same side: <i>v</i> = −10 cm, <i>u</i> = −<i>x</i>.</p><p style="text-align:center"><sup>1</sup>⁄<sub><i>v</i></sub> − <sup>1</sup>⁄<sub><i>u</i></sub> = <sup>1</sup>⁄<sub><i>f</i></sub> ⟹ −<sup>1</sup>⁄<sub>10</sub> + <sup>1</sup>⁄<sub><i>x</i></sub> = −<sup>1</sup>⁄<sub>50</sub> ⟹ <sup>1</sup>⁄<sub><i>x</i></sub> = <sup>1</sup>⁄<sub>10</sub> − <sup>1</sup>⁄<sub>50</sub> = <sup>4</sup>⁄<sub>50</sub></p><p>So <b><i>x</i> = 12.5 cm</b> — option <b>(3)</b>. Notice the direction of the change: a concave lens pushes the near point <i>further away</i> (10 cm → 12.5 cm). That is the price of correcting distance vision, and it is why the answer must be bigger than 10 cm.</p><p><b>Why the others are wrong.</b> <b>(1) 8.3 cm</b> comes from using <i>f</i> = +50 cm — a plus sign on a lens that must be diverging. It also fails the direction check above: a correcting lens cannot bring the near point <i>closer</i>. <b>(2) 10 cm</b> is his near point <i>without</i> the spectacles; it forgets that the lens in front of the eye moves the near point too. <b>(4) 25 cm</b> assumes that correcting the eye restores the normal near point of 25 cm. Spectacles correct one point of the range, not the whole eye.</p>' },
+
+  { n:2, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'diagram',
+    stem:'<p>A narrow beam of white light is sent through a glass prism, as shown. Two of the emergent rays are marked <b>P</b> and <b>Q</b>; the dashed line shows the direction the beam would have kept had the prism not been there. Which statement is correct?</p>',
+    fig:'<svg viewBox="0 0 410 265" width="410" height="265" role="img" aria-label="A triangular glass prism with its apex upwards and its base horizontal. A beam of white light enters the left face, travels through the prism and leaves the right face as two rays. A dashed line continues in the original direction of the beam. The ray marked P leaves closer to that dashed line; the ray marked Q leaves further from it, bent more towards the base of the prism."><polygon points="150,35 95,175 205,175" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><line x1="25" y1="96" x2="125.25" y2="98" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><polygon points="81.1,97.1 70.0,100.4 70.2,93.4" fill="currentColor"/><line x1="125.25" y1="98" x2="177.6" y2="105.4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><polygon points="157.3,102.5 146.0,104.5 146.9,97.5" fill="currentColor"/><line x1="177.6" y1="105.4" x2="353" y2="109" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 5" opacity=".7"/><line x1="177.6" y1="105.4" x2="344" y2="187" stroke="var(--physics)" stroke-width="2.6" stroke-linecap="round"/><polygon points="282.8,156.7 271.4,155.1 274.4,148.8" fill="var(--physics)"/><line x1="177.6" y1="105.4" x2="319" y2="224" stroke="var(--physics)" stroke-width="2.6" stroke-linecap="round"/><polygon points="267.2,180.6 256.5,176.2 261.0,170.8" fill="var(--physics)"/><text x="18" y="86" font-family="Inter,sans-serif" font-size="12.5" fill="currentColor">white light</text><text x="350" y="194" font-family="Inter,sans-serif" font-size="14" font-weight="600" fill="var(--physics)">P</text><text x="324" y="232" font-family="Inter,sans-serif" font-size="14" font-weight="600" fill="var(--physics)">Q</text><text x="288" y="99" font-family="Inter,sans-serif" font-size="11.5" fill="currentColor" opacity=".75">undeviated</text><text x="138" y="192" font-family="Inter,sans-serif" font-size="11.5" fill="currentColor" opacity=".8">base</text></svg>',
+    figCap:'Both emergent rays are drawn in the same colour on purpose — the figure tells you only how far each one has been bent away from the dashed undeviated direction. The gap between them is exaggerated; in a real prism it is a couple of degrees. The split is drawn at the exit face to keep the picture simple — in reality the colours begin to separate the moment they enter the glass.',
+    options:[
+      'P is violet, and inside the prism violet travels faster than the colour of Q.',
+      'Q is violet, and inside the prism violet travels more slowly than the colour of P.',
+      'Q is red, and red has the larger refractive index in glass.',
+      'P and Q travel at the same speed inside the prism; they leave in different directions only because they strike the second face at different points.'],
+    answer:1,
+    sol:'<p><b>Step 1 — read the figure.</b> Q is bent further from the dashed undeviated line than P, so <b>Q is deviated more</b>.</p><p><b>Step 2 — chain deviation to refractive index to speed.</b> The colour that is deviated most by a prism is the one for which the glass has the <b>largest refractive index</b>, and that colour is <b>violet</b>. So Q is violet. Since <i>v</i> = <i>c</i>/µ, a larger µ means a <b>smaller</b> speed inside the glass — violet is the slowest colour in the prism. Option <b>(2)</b>.</p><p>Both links matter: it is the same order every time — <i>violet → most deviated → largest µ → slowest in glass</i>, and red is the opposite at every step.</p><p><b>Why the others are wrong.</b> <b>(1)</b> gets the deviation order backwards and then the speed backwards as well — the two errors do not cancel, they compound. <b>(3)</b> calls the most-deviated ray red; red is the <i>least</i> deviated, which is exactly why red sits on the outside of a rainbow. <b>(4)</b> is the glass-slab intuition misapplied: if the colours really travelled at the same speed inside the prism they would have the same refractive index, and white light would come out of a prism still white. Dispersion happens because the speed in glass depends on colour.</p>' },
+
+  { n:3, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'statement',
+    stem:'<p>Read the following statements about light in the atmosphere.</p><ol class="roman"><li>The sun appears reddish at sunrise because red light is scattered the most by the particles of the atmosphere.</li><li>At noon the sun appears white because its light then travels a comparatively shorter distance through the atmosphere, so only a little of the blue and violet is scattered.</li><li>To an astronaut in space the sky appears dark instead of blue, because there is no atmosphere out there to scatter sunlight.</li><li>The Tyndall effect can be seen when sunlight passes through the canopy of a dense forest, where tiny water droplets in the mist scatter the light.</li><li>The clear sky is blue because blue light has a longer wavelength than red light and is therefore scattered more.</li></ol><p>Which of the statements are correct?</p>',
+    options:['II, III and IV only','I, II and IV only','II, III and V only','III, IV and V only'],
+    answer:0,
+    sol:'<p><b>I is false.</b> Red is scattered the <i>least</i>, not the most. That is precisely why it survives the long slanting path through the atmosphere at sunrise and sunset and reaches your eye, while the blue is scattered away.</p><p><b>II is true.</b> Overhead, the path through the atmosphere is shortest, least blue is scattered out, and the sun looks white.</p><p><b>III is true.</b> Scattering needs particles. With no atmosphere, sunlight passes without being scattered sideways into the observer\'s eye, so the sky is dark.</p><p><b>IV is true.</b> This is the standard example of the Tyndall effect — the mist droplets in a forest canopy scatter the beam and make its path visible.</p><p><b>V is false</b>, and it is false on the wavelength, not on the conclusion. Blue has the <i>shorter</i> wavelength; short wavelengths are scattered more. The sentence reaches the right sky but by a wrong route, so it is not a correct statement.</p><p>Correct set: <b>II, III and IV</b> — option <b>(1)</b>.</p><p><b>Read every clause.</b> Statements I and V are both about the same physics and both turn on a single word ("most", "longer"). In a +4/−1 paper one skimmed word here costs 5 marks against you.</p>' },
+
+  { n:4, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'diagram',
+    stem:'<p>The figure shows a horizontal section of the human eye with four parts marked <b>P</b>, <b>Q</b>, <b>R</b> and <b>S</b>. Which one of the following statements is correct?</p>',
+    fig:'<svg viewBox="0 0 400 270" width="400" height="270" role="img" aria-label="Horizontal section of the human eye, light entering from the left. P labels the transparent bulge at the front, Q labels the coloured diaphragm just behind it, R labels the lens inside the eye and S labels the layer lining the back wall, from which a nerve leaves."><circle cx="210" cy="130" r="88" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M 143 73 Q 85 130 143 187" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><g stroke="currentColor" stroke-width="5.5" stroke-linecap="round"><line x1="146" y1="85" x2="158" y2="112"/><line x1="146" y1="175" x2="158" y2="148"/></g><ellipse cx="184" cy="130" rx="15" ry="31" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M 259 57 A 88 88 0 0 1 259 203" fill="none" stroke="var(--physics)" stroke-width="4.5" stroke-linecap="round"/><line x1="274" y1="173" x2="334" y2="204" stroke="currentColor" stroke-width="7" opacity=".45" stroke-linecap="round"/><line x1="30" y1="130" x2="70" y2="130" stroke="currentColor" stroke-width="1.8" opacity=".6"/><polygon points="76,130 65,133.5 65,126.5" fill="currentColor" opacity=".6"/><g stroke="currentColor" stroke-width="1.2" opacity=".75"><line x1="56" y1="72" x2="117" y2="113"/><line x1="150" y1="44" x2="151" y2="96"/><line x1="183" y1="252" x2="184" y2="163"/><line x1="344" y1="84" x2="294" y2="105"/></g><text x="34" y="66" font-family="Inter,sans-serif" font-size="15" font-weight="600" fill="currentColor">P</text><text x="146" y="36" font-family="Inter,sans-serif" font-size="15" font-weight="600" fill="currentColor">Q</text><text x="177" y="264" font-family="Inter,sans-serif" font-size="15" font-weight="600" fill="currentColor">R</text><text x="348" y="80" font-family="Inter,sans-serif" font-size="15" font-weight="600" fill="currentColor">S</text><text x="296" y="222" font-family="Inter,sans-serif" font-size="11.5" fill="currentColor" opacity=".7">optic nerve</text></svg>',
+    figCap:'Light enters from the left, in the direction of the small arrow. Each of the four letters points at one part of the eye; the nerve leaving the back of the eye is named on the figure, and is not one of them.',
+    options:[
+      'Q is the ciliary muscle; it changes the curvature of the eye lens.',
+      'R is the retina; a real and inverted image of the object is formed on it.',
+      'S is the pupil; it controls the amount of light entering the eye.',
+      'P is the cornea; most of the refraction of the light entering the eye takes place at its outer surface.'],
+    answer:3,
+    sol:'<p>Reading the figure: <b>P</b> is the transparent bulge at the very front — the <b>cornea</b>. <b>Q</b> is the coloured diaphragm just behind it — the <b>iris</b> (the hole in it is the pupil). <b>R</b> is the <b>eye lens</b>. <b>S</b> is the light-sensitive layer lining the back wall — the <b>retina</b>.</p><p>Option <b>(4)</b> names P correctly <i>and</i> gives its correct job: most of the bending of the light entering the eye happens at the outer surface of the cornea, not at the eye lens. The lens only makes the fine adjustment — that is what accommodation is.</p><p><b>Why the others are wrong.</b> Each of them attaches a true description to the wrong letter, so the figure is what settles them. <b>(1)</b> describes the ciliary muscle correctly, but Q is the iris — the iris controls the size of the pupil, not the curvature of the lens. <b>(2)</b> describes the retina correctly, but R is the lens. <b>(3)</b> describes the pupil correctly, but S is the retina — and the pupil is a hole, not a layer at the back.</p>' },
+
+  { n:5, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'plain',
+    stem:'<p>Dadaji wears bifocal spectacles. The <b>upper</b> part has power <b>−1.0 D</b> and the <b>lower</b> part has power <b>+2.0 D</b>. Taking the normal reading distance as 25 cm, the range over which he can see clearly <b>without</b> his spectacles is</p>',
+    options:['25 cm to 50 cm','25 cm to 100 cm','50 cm to 100 cm','50 cm to infinity'],
+    answer:2,
+    sol:'<p>A bifocal does two separate jobs, so read the two powers as two separate questions.</p><p><b>Upper part — distance vision, so it fixes the far point.</b> <i>P</i> = −1.0 D gives <i>f</i> = −1.0 m = −100 cm. A distant object is brought to 100 cm in front of the eye, so his <b>far point is 100 cm</b>.</p><p><b>Lower part — reading, so it fixes the near point.</b> <i>P</i> = +2.0 D gives <i>f</i> = +50 cm. It must take a book at the normal reading distance, <i>u</i> = −25 cm, and place its image at his near point:</p><p style="text-align:center"><sup>1</sup>⁄<sub><i>v</i></sub> = <sup>1</sup>⁄<sub><i>f</i></sub> + <sup>1</sup>⁄<sub><i>u</i></sub> = <sup>1</sup>⁄<sub>50</sub> − <sup>1</sup>⁄<sub>25</sub> = −<sup>1</sup>⁄<sub>50</sub> ⟹ <i>v</i> = −50 cm</p><p>So his <b>near point is 50 cm</b>, and unaided he sees clearly from <b>50 cm to 100 cm</b> — option <b>(3)</b>. Sanity check: the near point must be nearer than the far point, and 50 &lt; 100 ✓. This is the ordinary bifocal case — short sight and old sight together.</p><p><b>Why the others are wrong.</b> <b>(1)</b> and <b>(2)</b> both take <b>25 cm</b> as his near point, which is the distance he <i>wants</i> to read at, not the nearest point he can actually focus. If 25 cm were already his near point he would not need the lower lens at all. <b>(1)</b> then reaches its 50 cm by using the focal length of the <i>lower</i>, +2.0 D lens as the far point — but that is the reading lens; the far point comes from the upper, −1.0 D one. <b>(4)</b> takes the far point as infinity — that is a normal eye; the −1.0 D upper lens is there precisely because his far point is <i>not</i> at infinity.</p>' },
+
+  { n:6, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'diagram',
+    stem:'<p>The figure shows what happens in Ravi\'s eye when he looks at a <b>distant</b> object. His far point is measured and found to be <b>80 cm</b>. The defect and the lens that corrects it are</p>',
+    fig:'<svg viewBox="0 0 400 230" width="400" height="230" role="img" aria-label="Section of an eye with three parallel rays from a distant object entering from the left. The rays are brought to a point F well in front of the light-sensitive layer at the back of the eye, and have spread apart again by the time they reach it."><circle cx="200" cy="115" r="80" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M 140 62 Q 95 115 140 168" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="165" cy="115" rx="12" ry="26" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M 245 49 A 80 80 0 0 1 245 181" fill="none" stroke="var(--physics)" stroke-width="4.2" stroke-linecap="round" opacity=".8"/><g stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="25" y1="95" x2="165" y2="95"/><line x1="25" y1="115" x2="165" y2="115"/><line x1="25" y1="135" x2="165" y2="135"/></g><g fill="currentColor"><polygon points="81,95 70,98.5 70,91.5"/><polygon points="81,115 70,118.5 70,111.5"/><polygon points="81,135 70,138.5 70,131.5"/></g><g stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="165" y1="95" x2="215" y2="115"/><line x1="165" y1="115" x2="215" y2="115"/><line x1="165" y1="135" x2="215" y2="115"/><line x1="215" y1="115" x2="276" y2="139.5"/><line x1="215" y1="115" x2="280" y2="115"/><line x1="215" y1="115" x2="276" y2="90.5"/></g><circle cx="215" cy="115" r="4" fill="var(--force)"/><text x="206" y="101" font-family="Inter,sans-serif" font-size="13" font-weight="600" fill="var(--force)">F</text><text x="296" y="48" font-family="Inter,sans-serif" font-size="11.5" fill="currentColor" opacity=".8">retina</text><line x1="294" y1="53" x2="268" y2="72" stroke="currentColor" stroke-width="1.2" opacity=".7"/><text x="20" y="58" font-family="Inter,sans-serif" font-size="11.5" fill="currentColor" opacity=".8">distant object</text></svg>',
+    figCap:'The rays come from an object so far away that they arrive parallel. F is the point where they actually meet. The thick curved layer at the back of the eye is the retina. All the bending is drawn at the lens alone, to keep the figure simple; in a real eye most of it happens at the cornea.',
+    options:[
+      'Myopia; a concave lens of power −1.25 D',
+      'Myopia; a concave lens of power −0.8 D',
+      'Hypermetropia; a convex lens of power +1.25 D',
+      'Presbyopia; a bifocal lens whose upper part has power −0.8 D'],
+    answer:0,
+    sol:'<p><b>Step 1 — name the defect from the figure.</b> Parallel rays from a distant object meet at F, which is <i>in front of</i> the retina, and have spread out again by the time they reach it. Converging too early is <b>myopia</b> (short sight), and it is corrected with a <b>concave</b> (diverging) lens.</p><p><b>Step 2 — compute the power from the far point.</b> The lens must take a distant object (<i>u</i> = ∞) and put its image at his far point, 80 cm in front. Power is in dioptres, so convert first: <i>v</i> = −80 cm = <b>−0.80 m</b>.</p><p style="text-align:center"><sup>1</sup>⁄<sub><i>f</i></sub> = <sup>1</sup>⁄<sub><i>v</i></sub> − <sup>1</sup>⁄<sub><i>u</i></sub> = −<sup>1</sup>⁄<sub>0.80</sub> − 0 ⟹ <i>f</i> = −0.80 m ⟹ <i>P</i> = <sup>1</sup>⁄<sub><i>f</i></sub> = −<sup>1</sup>⁄<sub>0.8</sub> = <b>−1.25 D</b></p><p>Option <b>(1)</b>.</p><p><b>Why the others are wrong.</b> <b>(2) −0.8 D</b> is the right defect with the focal length in metres written in place of the power. <i>f</i> = −0.8 m, but <i>P</i> = 1/<i>f</i> = −1.25 D; the two are reciprocals, and they are only equal when <i>f</i> = ±1 m — which is exactly why a far point of 1 m would have hidden this mistake. <b>(3)</b> reverses the defect: hypermetropia is the opposite picture, rays meeting <i>behind</i> the retina, and it needs a convex lens. <b>(4)</b> calls it presbyopia, which is a loss of the power of accommodation with age — it affects the near point, and would not show up as a distant object failing to focus; it also repeats the <i>f</i>-for-<i>P</i> slip.</p>' },
+
+  { n:7, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'diagram',
+    stem:'<p>The figure shows sunlight passing through one spherical raindrop in the way that produces a <b>primary rainbow</b>. Three points on the drop\'s surface are marked <b>A</b>, <b>B</b> and <b>C</b>. Which statement about the rainbow is correct?</p>',
+    fig:'<svg viewBox="0 0 300 300" width="300" height="300" role="img" aria-label="A circular raindrop. Sunlight arrives horizontally from the left and meets the drop at A on its upper left, where it is bent. It crosses the inside of the drop to B on the right, turns back at B towards C on the lower left, and leaves the drop at C as two rays fanned apart."><circle cx="170" cy="120" r="78" fill="none" stroke="var(--physics)" stroke-width="2.2" opacity=".85"/><line x1="36" y1="52.5" x2="131" y2="52.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><polygon points="89.5,52.5 78.5,56 78.5,49" fill="currentColor"/><line x1="131" y1="52.5" x2="242.8" y2="92" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><polygon points="198.2,76.2 186.6,75.8 189.0,69.2" fill="currentColor"/><line x1="242.8" y1="92" x2="186.2" y2="196.3" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><polygon points="211.6,149.5 213.8,138.1 220.0,141.5" fill="currentColor"/><line x1="186.2" y1="196.3" x2="108.2" y2="266.6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><polygon points="134.9,242.5 140.8,232.6 145.5,237.8" fill="currentColor"/><line x1="186.2" y1="196.3" x2="98.1" y2="253.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity=".75"/><circle cx="131" cy="52.5" r="3.4" fill="currentColor"/><circle cx="242.8" cy="92" r="3.4" fill="currentColor"/><circle cx="186.2" cy="196.3" r="3.4" fill="currentColor"/><text x="116" y="46" font-family="Inter,sans-serif" font-size="14" font-weight="600" fill="currentColor">A</text><text x="252" y="88" font-family="Inter,sans-serif" font-size="14" font-weight="600" fill="currentColor">B</text><text x="193" y="213" font-family="Inter,sans-serif" font-size="14" font-weight="600" fill="currentColor">C</text><text x="30" y="42" font-family="Inter,sans-serif" font-size="12" fill="currentColor">sunlight</text><text x="58" y="284" font-family="Inter,sans-serif" font-size="11.5" fill="currentColor" opacity=".75">to the eye</text></svg>',
+    figCap:'Drawn to scale for water: the sunlight strikes A at 60° to the normal there, and the ray finally leaves C at 42° to the direction back towards the sun — the angle at which a primary rainbow is seen. Only the gap between the two rays leaving C is exaggerated; in a real drop the colours differ by about two degrees.',
+    options:[
+      'The light is reflected at A, refracted at B and reflected again at C, and violet appears on the outer edge of the bow.',
+      'Dispersion takes place only at B, where the light is reflected inside the drop.',
+      'The light is refracted at A, reflected internally at B and refracted again at C; red leaves making the larger angle \u2014 about 42\u00b0 \u2014 with the direction back towards the sun, so red is on the outer edge of the bow.',
+      'The light is refracted at A and again at C, but the two refractions cancel, so the colours are produced by the reflection at B.'],
+    answer:2,
+    sol:'<p><b>The sequence.</b> At A the light passes from air into water — it is <b>refracted</b>, and because water bends the colours by different amounts it is <b>dispersed</b> here. At B it meets the back of the drop from the inside and is <b>reflected internally</b>, back into the drop. (That reflection is only a <i>partial</i> one — the ray meets the surface at about 40°, less than water\'s critical angle of about 49°, so most of the light escapes and only a fraction turns back. That is why a rainbow is faint. Critical angle is beyond your syllabus — it is here only to stop you writing “total internal reflection”, which is the usual slip.) At C it passes from water out into air — <b>refracted</b> again, which spreads the colours further. Refract, reflect, refract.</p><p><b>The order of the colours.</b> Red is deviated least at each refraction and emerges making the larger angle — about 42° — with the direction <i>back towards the sun</i>, while violet emerges at about 40°. Name that direction carefully: if you measure instead how far the ray has been <i>turned</i> from its original direction of travel, the order reverses (red 138°, violet 140°). The 42° is the angle you raise your eyes by, away from your own shadow, to see the bow. The larger angle puts <b>red on the outer (upper) edge</b> of the primary bow and violet on the inner edge. Option <b>(3)</b>.</p><p><b>Why the others are wrong.</b> <b>(1)</b> swaps the processes — it has the light bouncing off the front of the drop, which would never carry it round to C — and it puts violet on the outside, the wrong way round for a primary bow. <b>(2)</b> blames the dispersion on the reflection at B. Reflection does not separate colours: the angle of reflection is the same for every colour. Splitting happens only where the light changes medium, at A and at C. <b>(4)</b> is the glass-slab idea in the wrong place. In a parallel-sided slab the second refraction does undo the first, but a drop is curved, so the two surfaces are not parallel and the second refraction <i>adds</i> to the splitting instead of cancelling it.</p>' },
+
+  { n:8, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'plain',
+    stem:'<p>A beam of white light is passed through a beaker containing a very dilute suspension of extremely fine sulphur particles in water, and the beam is watched from the side. As the sulphur particles are slowly allowed to grow bigger, the light scattered sideways changes from <b>blue</b> to <b>white</b>. The best explanation is</p>',
+    options:[
+      'The sulphur absorbs blue light while the particles are small, and stops absorbing it as they grow.',
+      'As the particles grow they settle out of the beam, which then passes straight through and looks white.',
+      'Larger particles scatter the longer wavelengths more strongly, so the scattered light turns red first and then white.',
+      'Very fine particles scatter the shorter wavelengths most; once the particles are large enough they scatter all wavelengths almost equally.'],
+    answer:3,
+    sol:'<p>How much a particle scatters depends on its <b>size compared with the wavelength</b> of the light.</p><p>When the particles are much smaller than the wavelength, the short wavelengths — blue and violet — are scattered far more than the long ones, so the light seen from the side is blue. This is the same physics that makes the sky blue.</p><p>As the particles grow, they become comparable with, and then larger than, the wavelengths of visible light, and they scatter <b>all</b> colours by nearly the same amount. Light with all colours present in their original proportions is white — so the scattered light turns white. Option <b>(4)</b>.</p><p><b>Why the others are wrong.</b> <b>(1)</b> confuses <b>scattering</b> with <b>absorption</b>. An absorber would remove blue from the beam that goes <i>through</i>; here the blue is being thrown <i>sideways</i>, which is a different process — and the effect depends on particle size, not on any chemical change in the sulphur. <b>(2)</b> would make the sideways view go dark, not white: if nothing is left in the beam to scatter, you see nothing from the side. <b>(3)</b> half-remembers the size rule. Bigger particles do begin to scatter the longer wavelengths as well, but they do not stop scattering the short ones — that is why the result is white rather than red. Nothing in this experiment makes the scattered light red.</p>' },
+
+  { n:9, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'match',
+    stem:'<p>Match each condition of the eye in Column A with its description in Column B.</p><table><thead><tr><th style="text-align:left;padding:4px 14px 4px 0">Column A</th><th style="text-align:left;padding:4px 0">Column B</th></tr></thead><tbody><tr><td style="vertical-align:top;padding:3px 14px 3px 0">(a) Myopia</td><td style="padding:3px 0">(i) The crystalline lens turns milky and cloudy; sight is restored by surgery.</td></tr><tr><td style="vertical-align:top;padding:3px 14px 3px 0">(b) Hypermetropia</td><td style="padding:3px 0">(ii) The eyeball is too long, or the eye lens is too strongly curved; corrected by a concave lens.</td></tr><tr><td style="vertical-align:top;padding:3px 14px 3px 0">(c) Presbyopia</td><td style="padding:3px 0">(iii) The ciliary muscles weaken and the eye lens loses its flexibility with age; a bifocal is often needed.</td></tr><tr><td style="vertical-align:top;padding:3px 14px 3px 0">(d) Cataract</td><td style="padding:3px 0">(iv) The eyeball is too short, or the eye lens is too flat; corrected by a convex lens.</td></tr></tbody></table>',
+    options:[
+      '(a)-(iv), (b)-(ii), (c)-(iii), (d)-(i)',
+      '(a)-(ii), (b)-(iv), (c)-(i), (d)-(iii)',
+      '(a)-(iii), (b)-(iv), (c)-(ii), (d)-(i)',
+      '(a)-(ii), (b)-(iv), (c)-(iii), (d)-(i)'],
+    answer:3,
+    sol:'<p><b>(a) Myopia → (ii).</b> The image of a distant object falls in front of the retina, either because the eyeball is too long or because the eye lens converges too strongly. A concave lens diverges the light a little first, pushing the image back onto the retina.</p><p><b>(b) Hypermetropia → (iv).</b> The opposite picture: the eyeball is too short or the lens too flat, so the image would fall behind the retina. A convex lens adds the missing convergence.</p><p><b>(c) Presbyopia → (iii).</b> An ageing effect on the <i>power of accommodation</i>, not on the shape of the eyeball. The ciliary muscles weaken and the lens stiffens, so the near point drifts away. Someone who is also short-sighted then needs both corrections at once, which is what a bifocal is.</p><p><b>(d) Cataract → (i).</b> Not a focusing defect at all — the lens itself goes cloudy and blocks the light. No spectacle lens can help; the treatment is surgery.</p><p>So <b>(a)-(ii), (b)-(iv), (c)-(iii), (d)-(i)</b> — option <b>(4)</b>.</p><p><b>Why the others are wrong.</b> <b>(1)</b> swaps myopia and hypermetropia, the commonest slip here; remember that a <i>long</i> eyeball goes with the <i>short</i> sight. <b>(2)</b> swaps presbyopia and cataract — but only one of the two is an ageing change in the <i>transparency</i> of the lens, and only one is an ageing change in its <i>flexibility</i>. <b>(3)</b> attaches the ageing description to myopia, which occurs in young people too.</p>' },
+
+  { n:10, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'plain',
+    stem:'<p>In a normal eye the distance from the eye lens to the retina is fixed at <b>2.5 cm</b>. By how much does the <b>power</b> of the eye lens change when the eye switches from looking at a very distant object to looking at an object at the near point, 25 cm away?</p>',
+    options:['4 D','40 D','44 D','84 D'],
+    answer:0,
+    sol:'<p>The image always lands on the retina, so <i>v</i> = +2.5 cm in both cases. Only the object distance changes, so only the focal length — and hence the power — has to change. That is accommodation.</p><p><b>Distant object</b> (<i>u</i> = ∞):</p><p style="text-align:center"><sup>1</sup>⁄<sub><i>f</i></sub> = <sup>1</sup>⁄<sub><i>v</i></sub> − <sup>1</sup>⁄<sub><i>u</i></sub> = <sup>1</sup>⁄<sub>2.5</sub> − 0 = 0.4 cm<sup>−1</sup> ⟹ <i>P</i> = 0.4 × 100 = <b>40 D</b></p><p><b>Object at the near point</b> (<i>u</i> = −25 cm):</p><p style="text-align:center"><sup>1</sup>⁄<sub><i>f</i></sub> = <sup>1</sup>⁄<sub>2.5</sub> + <sup>1</sup>⁄<sub>25</sub> = 0.40 + 0.04 = 0.44 cm<sup>−1</sup> ⟹ <i>P</i> = <b>44 D</b></p><p>(Powers in dioptres need metres, and 1 cm<sup>−1</sup> = 100 m<sup>−1</sup>, so a focal length in cm converts straight across: 0.44 cm<sup>−1</sup> → 44 D.)</p><p><b>Change = 44 − 40 = 4 D</b> — option <b>(1)</b>. Four dioptres is the whole range of accommodation of a normal eye, and it is the loss of this range that is presbyopia.</p><p><b>Why the others are wrong.</b> All three are numbers that appear on the way to the answer, and each is what you get by stopping one step early or by combining the two powers wrongly. <b>(2) 40 D</b> is the power for distant vision alone, <b>(3) 44 D</b> the power at the near point alone — the question asked for the <i>change</i>, not either value. <b>(4) 84 D</b> adds the two powers instead of subtracting them. Before you bubble, re-read the last line of the stem and check which quantity it named.</p>' },
+
+  { n:11, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'ar',
+    stem:'<p><b>Assertion:</b> The stars twinkle, but the planets do not.</p><p><b>Reason:</b> A planet shines by reflecting sunlight, whereas a star gives out light of its own.</p>',
+    options:[
+      'Both assertion and reason are true and the reason is the correct explanation of the assertion.',
+      'Both assertion and reason are true but the reason is not the correct explanation of the assertion.',
+      'Assertion is true but reason is false.',
+      'Assertion is false but reason is true.'],
+    answer:1,
+    sol:'<p><b>The assertion is true.</b> Starlight is refracted continuously by an atmosphere whose refractive index keeps changing, so the apparent position of a star — and with it the amount of starlight reaching the eye — flickers. Planets do not flicker.</p><p><b>The reason is also true.</b> Planets are indeed seen by reflected sunlight; stars are self-luminous.</p><p><b>But it is not the explanation.</b> The reason planets do not twinkle is that a planet is close enough to be an <b>extended source</b> — effectively a large collection of point sources side by side. Each point flickers, but they do not flicker in step, and the variations average out over the whole disc, so the total light we receive stays steady. A star, however bright, is so distant that it acts as a single point source with nothing to average against. Note that it really is the planet\'s <i>nearness</i> that does the work — but only because nearness makes it an extended disc, not because it makes it bright.</p><p>So both statements are true and the second does not explain the first — option <b>(2)</b>.</p><p><b>The trap.</b> Where the light originally came from has nothing to do with whether it flickers on the way in. Twinkling is done to the light by the <i>atmosphere</i>, long after it left the star or bounced off the planet — so reflected light and emitted light are affected alike. An assertion–reason item is two judgements followed by a third — is this <i>why</i>? — and it is the third that is being tested here.</p>' },
+
+  { n:12, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'diagram',
+    stem:'<p>The figure shows the sun near sunset as seen by an observer <b>O</b> on the earth. <b>S<sub>1</sub></b> and <b>S<sub>2</sub></b> are two positions marked for the sun. Which statement is correct?</p>',
+    fig:'<svg viewBox="0 0 420 250" width="420" height="250" role="img" aria-label="An observer O stands on the curved surface of the earth, with the horizon drawn as a dashed horizontal line through O. A solid curved ray runs from a sun disc S2 below the horizon, bows above the horizon and comes down into O. A straight dashed line runs from O out to a second sun disc S1 above the horizon."><path d="M 70 190 A 340 340 0 0 1 350 190 L 350 240 L 70 240 Z" fill="currentColor" opacity=".09"/><path d="M 70 190 A 340 340 0 0 1 350 190" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M 90 134 A 385 385 0 0 1 330 134" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 6" opacity=".4"/><text x="172" y="108" font-family="Inter,sans-serif" font-size="11.5" fill="currentColor" opacity=".55">atmosphere</text><line x1="45" y1="160" x2="405" y2="160" stroke="currentColor" stroke-width="1.4" stroke-dasharray="7 5" opacity=".6"/><text x="46" y="153" font-family="Inter,sans-serif" font-size="11.5" fill="currentColor" opacity=".75">horizon</text><path d="M 357 175 Q 290 128 210 160" fill="none" stroke="var(--physics)" stroke-width="2.6" stroke-linecap="round"/><polygon points="280.8,147.1 292.1,144.8 291.4,151.7" fill="var(--physics)"/><line x1="210" y1="160" x2="337" y2="109" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 5" opacity=".85"/><circle cx="349" cy="104" r="13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="368" cy="182" r="13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="210" cy="160" r="4.5" fill="currentColor"/><text x="365" y="96" font-family="Inter,sans-serif" font-size="14" font-weight="600" fill="currentColor">S\u2081</text><text x="384" y="178" font-family="Inter,sans-serif" font-size="14" font-weight="600" fill="currentColor">S\u2082</text><text x="192" y="154" font-family="Inter,sans-serif" font-size="14" font-weight="600" fill="currentColor">O</text></svg>',
+    figCap:'The solid curve is the path the sunlight actually follows through the atmosphere, and the arrow shows which way it travels. The dashed line from O is a straight line, drawn with no bending at all. The bending is exaggerated — in reality it is about half a degree.',
+    options:[
+      'S₁ is the actual sun and S₂ the apparent sun; sunset is seen about 2 minutes earlier than it actually happens.',
+      'S₂ is the actual sun and S₁ the apparent sun; sunset is seen about 2 minutes earlier than it actually happens.',
+      'S₂ is the actual sun and S₁ the apparent sun; sunset is seen about 2 minutes later than it actually happens.',
+      'Both S₁ and S₂ are apparent positions; the actual sun is exactly on the horizon, so the time of sunset is not affected.'],
+    answer:2,
+    sol:'<p><b>Step 1 — which sun is real?</b> Follow the solid curve. The light starts at <b>S₂</b>, so that is where the sun really is — already <i>below</i> the horizon. The atmosphere gets denser closer to the ground, so the ray bends continuously on the way down and arrives at O travelling in a different direction from the one it set out in.</p><p><b>Step 2 — where does the observer think it is?</b> The eye has no way of knowing the light was bent; it traces what it receives straight back. That straight-back direction is the dashed line, which points at <b>S₁</b>, <i>above</i> the horizon. So S₁ is the apparent sun.</p><p><b>Step 3 — which way does the time go?</b> The observer still sees the sun after it has actually set, so sunset appears to happen <b>later</b> than it really does — by about 2 minutes. The same effect at the other end of the day makes the sun visible about 2 minutes <i>before</i> it really rises, so the apparent day is about <b>4 minutes</b> longer than the true one. Option <b>(3)</b>.</p><p><b>Why the others are wrong.</b> <b>(1)</b> swaps the two suns: the apparent sun is always the <i>higher</i> one, because bending towards the earth makes an object look higher than it is. <b>(2)</b> reads the figure correctly but then turns the time the wrong way: if you can still see a sun that has already set, you see sunset late, not early. <b>(4)</b> denies the effect altogether; if there were no bending the solid path would be a straight line and S₁ and S₂ would coincide.</p>' },
+
+  { n:13, section:'Physics', topic:'The Human Eye and Colourful World', fmt:'plain',
+    stem:'<p>A ray of light falls on one refracting face of a glass prism whose angle of prism is <b>60°</b>, at an angle of incidence of <b>50°</b>. It leaves the other face making an angle of <b>60°</b> with the normal there. The angle of deviation of the ray is</p>',
+    options:['10°','50°','70°','110°'],
+    answer:1,
+    sol:'<p>For refraction through a prism the angle of prism <i>A</i>, the angle of incidence <i>i</i>, the angle of emergence <i>e</i> and the angle of deviation <i>D</i> are tied together by</p><p style="text-align:center"><b><i>i</i> + <i>e</i> = <i>A</i> + <i>D</i></b></p><p>The ray is bent once on the way in and once on the way out, and those two bends add up to <i>D</i>; the relation above is just that statement with the geometry of the triangle folded in.</p><p style="text-align:center">50° + 60° = 60° + <i>D</i> ⟹ <b><i>D</i> = 50°</b></p><p>Option <b>(2)</b>.</p><p><b>Why the others are wrong.</b> <b>(1) 10°</b> is <i>e</i> − <i>i</i>, the reflex of subtracting the two given angles from each other; deviation is not the difference between the incidence and the emergence. <b>(3) 70°</b> comes from misremembering the relation as <i>D</i> = <i>A</i> + <i>e</i> − <i>i</i>, which moves <i>A</i> to the wrong side. Test the shape of a formula before you trust it: put <i>i</i> = <i>e</i> into this wrong version and it gives <i>D</i> = <i>A</i> — the deviation would then be fixed by the prism alone and would not depend at all on how you aimed the ray, which is plainly false. <b>(4) 110°</b> is simply <i>i</i> + <i>e</i>, forgetting to subtract the angle of the prism — a deviation larger than a right angle should have been rejected on sight.</p>' }
+
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b}. A mock also stores
+   its answers + flags so the frozen report can be replayed on any device;
+   the hub only ever reads m/mx. Written MERGE-ONLY. */
+function saveAttempt(sc, timeTaken){
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank };
+  if(IS_MOCK){ rec.a = answers.slice(); rec.f = flags.slice(); rec.md = mode; rec.tm = timeTaken; rec.v = 1; }
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function showFrozen(rec){
+  if(!rec || !IS_MOCK || submitted || !rec.a) return;
+  RESTORING = true;
+  answers = rec.a.slice();
+  flags   = (rec.f || new Array(NQ).fill(false)).slice();
+  mode    = rec.md || 'timed';
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
