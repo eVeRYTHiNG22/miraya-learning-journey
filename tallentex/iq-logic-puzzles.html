@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Syllogism, Puzzles &amp; Seating</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #2e246b30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--iq); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--iq); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--iq); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#2c2210,#241f4a); border:1px solid #4a3a1f;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--iq); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--iq); background:color-mix(in srgb,var(--iq) 14%,transparent); border:1px solid color-mix(in srgb,var(--iq) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+  ol.roman { list-style:upper-roman; }
+  ol.roman li { padding-left:4px; }
+  .st { margin:8px 0 10px; padding:9px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); font-size:14px; }
+  .st b { color:var(--bright); }
+  .st ol { margin-bottom:0; }
+  .st p { margin-bottom:6px; }
+  .st p:last-child { margin-bottom:0; }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child, .box .tablewrap:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--physics); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:var(--iq); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  td.nw { width:1%; white-space:nowrap; }
+  .tablewrap { overflow-x:auto; margin:12px 0; }
+  .tablewrap table { margin:0; }
+  .asktab { min-width:700px; }
+  .asktab th:nth-child(4), .asktab td:nth-child(4) { min-width:210px; }
+  .asktab th:nth-child(5), .asktab td:nth-child(5) { min-width:170px; }
+  .asktab th:nth-child(6), .asktab td:nth-child(6) { min-width:130px; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--iq); background:color-mix(in srgb,var(--iq) 13%,transparent); border:1px solid color-mix(in srgb,var(--iq) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--iq); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .we .work figure { margin:10px 0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--iq); background:color-mix(in srgb,var(--iq) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--iq) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5b40d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb.on { background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Mental Ability · Crash notes</div>
+    <h1>Syllogism, Puzzles &amp; Seating</h1>
+    <p class="sub">Official topics: <b>Syllogism</b>, <b>Puzzle Test</b> and <b>Sitting Arrangement</b>. None of
+    this is in your IGCSE course and none of it needs any maths. Each one is a <b>method you run on the
+    booklet</b> — circles for a syllogism, a ring of seats, a grid of ticks and crosses — because every
+    question is built so that doing it in your head drops exactly one link. A 30-minute read, then Paper 1.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Questions 61–80 of all five cached papers — the four real sittings and Allen's official sample — were
+      read page by page, the 2017 and 2018 booklets rendered from their image scans (a text search returns
+      nothing for them), and every item from these three topics re-solved against Allen's own key sheets.
+      <b>Seventeen items in five papers:</b></p>
+      <div class="tablewrap">
+      <table class="asktab">
+        <thead><tr><th class="nw">Paper</th><th class="nw">Q</th><th class="nw">Topic</th><th>What it gives you</th><th>What it wants</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td class="nw">2017 · E</td><td class="mono nw">66</td><td class="nw">Sitting</td><td>Six girls round a circle facing the centre; three clues</td><td>The statement that is <em>not</em> true</td><td class="mono">(3) — but see point 5</td></tr>
+          <tr><td class="nw">2017 · E</td><td class="mono nw">70</td><td class="nw">Syllogism</td><td>All / Some / No, three conclusions</td><td>Which follow</td><td class="mono">(4) only either I or III</td></tr>
+          <tr><td class="nw">2017 · E</td><td class="mono nw">71</td><td class="nw">Puzzle</td><td>Seven friends, three ladies and four men, seven professions, seven cars, eleven clues</td><td>Which car S owns</td><td class="mono">(4) Esteem</td></tr>
+          <tr><td class="nw">2017 · E</td><td class="mono nw">73</td><td class="nw">Syllogism</td><td>All / Some / All, three conclusions — one of them "… is a possibility"</td><td>Which follow</td><td class="mono">(4) all three</td></tr>
+          <tr><td class="nw">2018 · S</td><td class="mono nw">66</td><td class="nw">Sitting</td><td>Five round a table; one person is right of a second and second-left of a third; a fourth is "not between" two named ones</td><td>Who is second to the left of the first</td><td class="mono">(1) — "can't be determined" was offered and wrong</td></tr>
+          <tr><td class="nw">2018 · S</td><td class="mono nw">70</td><td class="nw">Syllogism</td><td>All / All / Some, two conclusions</td><td>Which follow</td><td class="mono">(1) only I</td></tr>
+          <tr><td class="nw">2018 · S</td><td class="mono nw">71</td><td class="nw">Puzzle</td><td>Five teachers, subjects taught in pairs</td><td>Who teaches the most subjects</td><td class="mono">(2) — two teachers tie; only one is an option</td></tr>
+          <tr><td class="nw">2018 · S</td><td class="mono nw">73</td><td class="nw">Syllogism</td><td>Four statements All / Some / All / No, three conclusions</td><td>Which follow</td><td class="mono">(3) only I and II</td></tr>
+          <tr><td class="nw">2024 · U</td><td class="mono nw">79</td><td class="nw">Sitting</td><td>Six friends in a row; one at an end, another third to that person's right, two between a pair, one "not adjacent"</td><td>Who sits between two named people</td><td class="mono">(1)</td></tr>
+          <tr><td class="nw">2024 · U</td><td class="mono nw">80</td><td class="nw">Syllogism</td><td>Two Some-statements sharing one term; conclusion I names a group that is in <em>neither</em> statement</td><td>Which follow</td><td class="mono">(4) neither</td></tr>
+          <tr><td class="nw">2024 · A</td><td class="mono nw">78</td><td class="nw">Puzzle</td><td>Six professors, each co-ordinating one course and supporting another; eight clues</td><td>Who co-ordinates IT</td><td class="mono">(3)</td></tr>
+          <tr><td class="nw">2024 · A</td><td class="mono nw">79</td><td class="nw">Sitting</td><td>Seven round a circle facing the centre; four clues</td><td>The statement that is <em>false</em></td><td class="mono">(3)</td></tr>
+          <tr><td class="nw">2024 · A</td><td class="mono nw">80</td><td class="nw">Syllogism</td><td>Two Some-statements sharing one term; four conclusions, two of them a No / Some pair</td><td>Which follow</td><td class="mono">(4) only either I or III</td></tr>
+          <tr><td class="nw">Sample</td><td class="mono nw">68</td><td class="nw">Syllogism</td><td>Some roads are city · All city are table; two conclusions</td><td>Which follow</td><td class="mono">(4) both</td></tr>
+          <tr><td class="nw">Sample</td><td class="mono nw">73</td><td class="nw">Sitting</td><td>Eight players standing to play Kho-Kho; five clues — the stem never says circle or row, and it solves the same either way</td><td>Who is fifth to the left of Geeta</td><td class="mono">(4) Radha</td></tr>
+          <tr><td class="nw">Sample</td><td class="mono nw">78</td><td class="nw">Puzzle</td><td>Seven kids, seven colours, three of them girls — the gender words carry half the clues</td><td>The colours J's and M's sisters wear</td><td class="mono">(4) white and pink</td></tr>
+          <tr><td class="nw">Sample</td><td class="mono nw">80</td><td class="nw">Syllogism</td><td>Some cars are trains · Some trains are cats; four conclusions</td><td>Which follow</td><td class="mono">(3) either 1 or 3, and 2</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>What that tells you:</p>
+      <ol>
+        <li><b>Two to four of the twenty Mental Ability questions a sitting — 8 to 16 marks — and both 2024
+        papers put them at the very end — Q78–80 in 2024-A, Q79–80 in 2024-U —</b> where you arrive with the
+        least clock. The 2017 and 2018
+        papers spread them through Q66–73 instead. The last question of both 2024 papers, and of the
+        sample, is a syllogism.</li>
+        <li><b>Syllogism is the big one: eight of the seventeen.</b> Three of the eight key to an "either … or …"
+        pair (2017-E Q70, 2024-A Q80, Sample Q80) and three more dangle "either/or" as a <em>wrong</em> option
+        (2017-E Q73, 2018-S Q70, 2024-U Q80) — and the two 2024/Sample items that key to a pair also offer
+        <em>fake</em> pairs among their wrong options. So six of the eight turn on knowing exactly which two
+        conclusions make a complementary pair (section 1.4). One asks a "… is a possibility" conclusion (2017-E Q73); one plants a conclusion about a
+        group that appears in neither statement (2024-U Q80); one runs four statements at once (2018-S Q73).</li>
+        <li><b>Sitting Arrangement is five items: three circular</b> (5, 6 and 7 seats), one row of six, and one
+        line-up of eight Kho-Kho players whose shape the stem never states. <b>None has a figure</b> — you draw the ring. Two are the "which statement is false?" form (2017-E
+        Q66, 2024-A Q79), which means solving the whole table and then testing four statements; one offers
+        "can't be determined" as an option (2018-S Q66) and the arrangement is in fact unique.</li>
+        <li><b>Puzzle Test is four items and every one is a matching table</b> — people against professions and
+        cars (2017-E Q71), teachers against subjects with a count at the end (2018-S Q71), professors against
+        courses in two roles (2024-A Q78), kids against colours with the gender words doing half the work
+        (Sample Q78). No floors, no days of the week: those forms appear in Paper 1 because other exams use
+        them, but Allen has not, in five papers.</li>
+        <li><b>A defect you should know about.</b> 2017-E Q66 has no arrangement in which only one statement is
+        false: in every arrangement that obeys its clues, statement (3) is false and so is at least one other
+        (under the natural reading, (1) and (3) both), and the key credits (3). When two statements look false, re-check your left/right once; if they stay false, pick
+        either and move on — it is one question, and time is what is being tested.</li>
+        <li><b>Nothing here needs a formula and nothing needs a calculator.</b> Every mark is for reading exactly:
+        "second to the left", "not between", "either … or", "is a possibility", "which is <em>false</em>".</li>
+      </ol>
+      <p><b>Budget accordingly.</b> An 8–16-mark unit. The method for each of the three topics fits on one
+      screen; what takes practice is running it in under two minutes on the booklet, with no second sheet of
+      paper.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 1. SYLLOGISM ========================= -->
+  <section>
+    <h2><span class="n">1</span>Syllogism — draw the least-assuming picture</h2>
+    <p class="lede">Allen's syllogisms are the bank-exam kind: two to four statements, two to four conclusions,
+    "take the statements to be true even if they seem to be at variance with commonly known facts". One skill is
+    being tested — telling <b>what must be true</b> from <b>what merely could be</b>.</p>
+
+    <h3>1.1 The four sentences and their pictures</h3>
+    <figure><svg viewBox='0 0 660 200' width='660' height='200' role='img' aria-label='Four Venn-circle pictures: All A are B draws circle A wholly inside circle B; No A is B draws two separate circles; Some A are B draws two overlapping circles with the overlap shaded; Some A are not B draws overlapping circles with the part of A outside B shaded.'><defs><clipPath id='lensA'><circle cx='392' cy='108' r='36'/></clipPath><mask id='cresA'><circle cx='557' cy='108' r='36' fill='white'/><circle cx='597' cy='108' r='36' fill='black'/></mask></defs><text x='82.0' y='22.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='700' text-anchor='middle' fill='currentColor' >All A are B</text><text x='247.0' y='22.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='700' text-anchor='middle' fill='currentColor' >No A is B</text><text x='412.0' y='22.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='700' text-anchor='middle' fill='currentColor' >Some A are B</text><text x='577.0' y='22.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='700' text-anchor='middle' fill='currentColor' >Some A are not B</text><circle cx='82.0' cy='108.0' r='58.0' fill='none' stroke='currentColor' stroke-width='2' /><circle cx='70.0' cy='116.0' r='27.0' fill='color-mix(in srgb,var(--iq) 22%,transparent)' stroke='var(--iq)' stroke-width='2.2' /><text x='70.0' y='120.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='var(--iq)' >A</text><text x='110.0' y='80.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='currentColor' >B</text><text x='82.0' y='178.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >A sits wholly</text><text x='82.0' y='191.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >inside B</text><circle cx='217.0' cy='108.0' r='30.0' fill='none' stroke='var(--iq)' stroke-width='2.2' /><circle cx='283.0' cy='108.0' r='30.0' fill='none' stroke='currentColor' stroke-width='2' /><text x='217.0' y='112.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='var(--iq)' >A</text><text x='283.0' y='112.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='currentColor' >B</text><text x='250.0' y='178.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >the circles</text><text x='250.0' y='191.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >never touch</text><circle cx='432' cy='108' r='36' fill='var(--iq)' opacity='.38' clip-path='url(#lensA)'/><circle cx='392.0' cy='108.0' r='36.0' fill='none' stroke='var(--iq)' stroke-width='2.2' /><circle cx='432.0' cy='108.0' r='36.0' fill='none' stroke='currentColor' stroke-width='2' /><text x='376.0' y='112.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='var(--iq)' >A</text><text x='448.0' y='112.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='currentColor' >B</text><text x='412.0' y='112.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='currentColor' >✓</text><text x='412.0' y='178.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >the lens is not empty;</text><text x='412.0' y='191.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >nothing else is known</text><circle cx='557' cy='108' r='36' fill='var(--iq)' opacity='.38' mask='url(#cresA)'/><circle cx='557.0' cy='108.0' r='36.0' fill='none' stroke='var(--iq)' stroke-width='2.2' /><circle cx='597.0' cy='108.0' r='36.0' fill='none' stroke='currentColor' stroke-width='2' /><text x='541.0' y='112.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='var(--iq)' >A</text><text x='613.0' y='112.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='currentColor' >B</text><text x='541.0' y='96.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >✓</text><text x='577.0' y='178.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >the A-only crescent</text><text x='577.0' y='191.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >is not empty</text></svg>
+      <figcaption>Every statement is one of these four. The picture to draw is the <b>least-assuming</b> one:
+      for "Some A are B", two circles that cross — not one inside the other, not the same circle.</figcaption>
+    </figure>
+    <div class="box def">
+      <h4>Definitions</h4>
+      <ul>
+        <li><b>All A are B</b> — every A is a B: circle A inside circle B. It also makes "Some A are B" and
+        "Some B are A" true — a pen inside the box means the box holds at least that pen.</li>
+        <li><b>No A is B</b> — the circles never touch. It reads the same both ways: No B is A.</li>
+        <li><b>Some A are B</b> — the lens where the circles cross is not empty. <b>"Some" means at least some,
+        possibly all.</b> It says nothing about the A's outside the lens — so it does <em>not</em> mean "some A
+        are not B".</li>
+        <li><b>Some A are not B</b> — the part of A outside B is not empty. Says nothing about the lens — so it
+        does <em>not</em> mean "some A are B".</li>
+      </ul>
+      <p style="margin-top:8px">The books letter them <b>A</b> (All), <b>E</b> (No), <b>I</b> (Some) and <b>O</b>
+      (Some … not); the fact bank uses those letters.</p>
+    </div>
+
+    <h3>1.2 Three rules of reading</h3>
+    <ol>
+      <li><b>Take the statements as true, however silly.</b> "All fruits are leaves" is true for the next ninety
+      seconds. Real-world knowledge about fruit is exactly what the question is baiting.</li>
+      <li><b>A conclusion may turn a statement around only when the statement allows it.</b>
+      "No A is B" ⇒ "No B is A". "Some A are B" ⇒ "Some B are A". "All A are B" ⇒ "Some B are A" — never
+      "All B are A". "Some A are not B" turns around into nothing at all. A conclusion that only restates a
+      statement, or turns it around legally, <b>follows</b> — Sample Q68's second conclusion was exactly that
+      (2018-S Q70's keyed conclusion needed a two-link chain first, and <em>then</em> a turn-round).</li>
+      <li><b>A conclusion that names a group in neither statement never follows.</b>
+      2024-U Q80's first conclusion was about a group no statement mentioned; the key was "neither". Scan
+      the nouns before you scan the logic.</li>
+    </ol>
+
+    <h3>1.3 Chaining two statements — the six links</h3>
+    <p>Two statements chain only when they <b>share a term</b>, and the shared term must sit at the end of one
+    and the start of the other — align them that way first ("All A are B · Some B are C"), turning a statement
+    around by rule 2 if you need to — turn the "Some" or the "No", never the "All" (an "All" turned round
+    weakens to a "Some" and the chain loses information). Then only six combinations give anything:</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>First statement</th><th>Second statement</th><th>Conclusion</th></tr></thead>
+      <tbody>
+        <tr><td>All A are B</td><td>All B are C</td><td><b>All A are C</b> (and so Some A are C, Some C are A)</td></tr>
+        <tr><td>All A are B</td><td>No B is C</td><td><b>No A is C</b></td></tr>
+        <tr><td>Some A are B</td><td>All B are C</td><td><b>Some A are C</b></td></tr>
+        <tr><td>Some A are B</td><td>No B is C</td><td><b>Some A are not C</b></td></tr>
+        <tr><td>No A is B</td><td>All B are C</td><td><b>Some C are not A</b> — note the turn-round</td></tr>
+        <tr><td>No A is B</td><td>Some B are C</td><td><b>Some C are not A</b> — note the turn-round</td></tr>
+        <tr><td colspan="2">Some + Some · No + No · All + Some (in that order) · anything with "Some … not" first</td><td><b>nothing follows</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <figure><svg viewBox='0 0 600 210' width='600' height='210' role='img' aria-label='Two pictures that both satisfy Some A are B and Some B are C. Left: A overlaps B and B overlaps C but A and C never touch. Right: all three circles overlap each other. Both are legal, so nothing definite follows about A and C.'><text x='150.0' y='20.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='700' text-anchor='middle' fill='currentColor' >Picture 1 — A and C never touch</text><text x='450.0' y='20.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='700' text-anchor='middle' fill='currentColor' >Picture 2 — A and C overlap</text><circle cx='85.0' cy='115.0' r='42.0' fill='none' stroke='var(--iq)' stroke-width='2.1' /><circle cx='150.0' cy='115.0' r='42.0' fill='none' stroke='currentColor' stroke-width='2.1' /><circle cx='215.0' cy='115.0' r='42.0' fill='none' stroke='var(--iq)' stroke-width='2.1' /><text x='60.0' y='119.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='var(--iq)' >A</text><text x='150.0' y='68.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='currentColor' >B</text><text x='240.0' y='119.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='var(--iq)' >C</text><text x='150.0' y='190.0' font-family='Inter, sans-serif' font-size='11' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.8' >here "No A is C" is true</text><circle cx='405.0' cy='100.0' r='42.0' fill='none' stroke='var(--iq)' stroke-width='2.1' /><circle cx='470.0' cy='100.0' r='42.0' fill='none' stroke='currentColor' stroke-width='2.1' /><circle cx='437.0' cy='145.0' r='42.0' fill='none' stroke='var(--iq)' stroke-width='2.1' /><text x='380.0' y='82.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='var(--iq)' >A</text><text x='495.0' y='82.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='currentColor' >B</text><text x='437.0' y='178.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='var(--iq)' >C</text><text x='560.0' y='150.0' font-family='Inter, sans-serif' font-size='11' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.8' >here "Some A</text><text x='560.0' y='165.0' font-family='Inter, sans-serif' font-size='11' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.8' >are C" is true</text></svg>
+      <figcaption>Why "Some A are B · Some B are C" gives nothing about A and C: both pictures obey the two
+      statements. (And notice that exactly one of "No A is C" and "Some A are C" is true in each picture —
+      that is the either/or of 1.4.)</figcaption>
+    </figure>
+    <p>Three or four statements chain the same way, two at a time. A conclusion about the two <em>outer</em>
+    terms of a chain is definite only when every link between them is definite: "All A are B" and "Some B are
+    C" do not put a single A among the C's — the B's that are C may all be non-A. (The third conclusion of
+    2018-S Q73 dies exactly there.)</p>
+    <div class="box trap">
+      <h4>The three slips that lose the most marks</h4>
+      <ul>
+        <li><b>"Some" read as "some but not all".</b> "Some flowers are red" allows every flower to be red. So
+        "Some flowers are not red" does <em>not</em> follow from it.</li>
+        <li><b>"All A are B" read backwards.</b> Every kite is a bird; not every bird is a kite.</li>
+        <li><b>Pushing a "No" down a chain that entered through "Some".</b> "Some cups are steel · All steel
+        things are magnetic · No magnetic thing is cheap" forbids "cheap" only to the cups that are steel.
+        The other cups are free — so "No cup is cheap" does not follow.</li>
+      </ul>
+    </div>
+
+    <h3>1.4 "Either I or II follows" — the complementary pair</h3>
+    <p>When two conclusions each fail on their own but <b>between them cover every possibility</b>, the answer
+    is "either … or …". Three pairs qualify, and the two conclusions must be about the <b>same two groups in
+    the same roles</b>:</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Pair</th><th>Why one of them must be true</th></tr></thead>
+      <tbody>
+        <tr><td><b>Some A are B</b> · <b>No A is B</b></td><td>either the circles touch or they do not</td></tr>
+        <tr><td><b>All A are B</b> · <b>Some A are not B</b></td><td>either every A is inside B or at least one is outside</td></tr>
+        <tr><td><b>Some A are B</b> · <b>Some A are not B</b></td><td>there is at least one A; it is either inside B or outside</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Because "Some A are B" and "No A is B" both turn around (rule 2), a "Some" or a "No" half may be
+    written either way round: "Some B are A · No A is B" is still the first pair — that is how 2024-A Q80
+    wrote its keyed pair ("No cloth is a bag" / "Some bags are clothes"; Sample Q80's pair was the plain
+    form). "All A are B" and "Some A are not B" do <em>not</em> turn around, so those halves must keep
+    their subject: "All A are B · Some B are not A" is <b>not</b> a pair.</p>
+    <p><b>Two checks before you write "either/or":</b> (i) neither conclusion follows by itself — if one does,
+    the answer is that one, not the pair; (ii) both conclusions use only the two groups in question. 2024-U Q80
+    offered "either I or II" where conclusion I was about a group in neither statement — a fake pair; the
+    answer was "neither".</p>
+    <div class="box exam">
+      <h4>How Allen writes the option — and the distractor</h4>
+      <p>The keyed forms in the five papers: "Only either I or III follows" (2017-E Q70, 2024-A Q80) and
+      "Either 1 or 3 follows and 2 follows" (Sample Q80). <b>The wrong options carry the same word "either"
+      with the wrong numbers</b> — 2024-A Q80 offers "Only either I or IV" and "Only either I or II" beside
+      the real pair, Sample Q80 offers "Either 1 or 2 and 3" and "Either 1 or 2 and 4" — plus "None of these"
+      / "Neither", and in 2017-E Q70 each half alone ("Only I follows", "Only III follows"). So the check is
+      never whether an option says "either"; it is <em>which two numbers</em> it pairs, and whether those two
+      are a genuine pair from the table above.</p>
+    </div>
+
+    <h3>1.5 "… is a possibility"</h3>
+    <p>A conclusion such as "All wheels being flowers is a possibility" asks a different question — <b>not
+    "must it be true?" but "could it be true?"</b> It follows if you can draw one picture in which every
+    statement and the possibility are true together. Test it by trying to draw it; if nothing forbids the
+    picture, it follows. 2017-E Q73 keyed one such conclusion as following. (If the statements already
+    <em>force</em> it, that is a certainty rather than a possibility — Allen has not asked that corner in five
+    papers, and the books disagree about it; do not lose sleep.)</p>
+
+    <h3>1.6 The ninety-second routine</h3>
+    <ol>
+      <li><b>Nouns first.</b> Underline every group named in a conclusion; a group missing from the statements
+      kills that conclusion at once.</li>
+      <li><b>Align and chain.</b> Rewrite the statements so the shared terms meet; apply the six links.</li>
+      <li><b>Draw the least-assuming picture</b> in the margin — small, two or three circles.</li>
+      <li><b>Test each conclusion</b> against the picture. For every "follows", ask "could I redraw the picture
+      legally so that it breaks?" If yes, it does not follow.</li>
+      <li><b>Pair up the leftovers.</b> A complementary pair among the conclusions that failed → either/or.</li>
+      <li><b>Only now read the options</b> — every word of them.</li>
+    </ol>
+  </section>
+
+  <!-- ========================= 2. SITTING ARRANGEMENT ========================= -->
+  <section>
+    <h2><span class="n">2</span>Sitting Arrangement — draw the ring, fix one seat, count the right way</h2>
+    <p class="lede">Five of the seventeen items, none with a figure. The whole skill is a convention (which way is
+    "left" for someone facing the centre?), a vocabulary ("second to the right", "between", "opposite") and a
+    routine that reaches one arrangement in under two minutes.</p>
+
+    <h3>2.1 The convention — a fact about hands, not a rule Allen chose</h3>
+    <figure><svg viewBox='0 0 540 362' width='540' height='362' role='img' aria-label='Eight seats around a round table, everyone facing the centre. The top seat is labelled YOU. Going clockwise the seats are labelled 1st left, 2nd left, 3rd left, opposite, then 3rd right, 2nd right, 1st right. A curved arrow shows that left means clockwise and right means anticlockwise.'><circle cx='270.0' cy='186.0' r='74.0' fill='none' stroke='currentColor' stroke-width='1.6' /><circle cx='270.0' cy='74.0' r='22.0' fill='color-mix(in srgb,var(--iq) 22%,transparent)' stroke='var(--iq)' stroke-width='2.4' /><line x1='270.0' y1='97.0' x2='270.0' y2='109.0' stroke='var(--iq)' stroke-width='2.2'/><text x='270.0' y='78.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='var(--iq)' >YOU</text><circle cx='349.2' cy='106.8' r='22.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='332.9' y1='123.1' x2='324.4' y2='131.6' stroke='var(--iq)' stroke-width='2.2'/><text x='349.2' y='110.8' font-family='Inter, sans-serif' font-size='9.5' font-weight='700' text-anchor='middle' fill='currentColor' >1st left</text><circle cx='382.0' cy='186.0' r='22.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='359.0' y1='186.0' x2='347.0' y2='186.0' stroke='var(--iq)' stroke-width='2.2'/><text x='382.0' y='190.0' font-family='Inter, sans-serif' font-size='9.5' font-weight='700' text-anchor='middle' fill='currentColor' >2nd left</text><circle cx='349.2' cy='265.2' r='22.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='332.9' y1='248.9' x2='324.4' y2='240.4' stroke='var(--iq)' stroke-width='2.2'/><text x='349.2' y='269.2' font-family='Inter, sans-serif' font-size='9.5' font-weight='700' text-anchor='middle' fill='currentColor' >3rd left</text><circle cx='270.0' cy='298.0' r='22.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='270.0' y1='275.0' x2='270.0' y2='263.0' stroke='var(--iq)' stroke-width='2.2'/><text x='270.0' y='302.0' font-family='Inter, sans-serif' font-size='9.5' font-weight='700' text-anchor='middle' fill='currentColor' >opposite</text><circle cx='190.8' cy='265.2' r='22.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='207.1' y1='248.9' x2='215.6' y2='240.4' stroke='var(--iq)' stroke-width='2.2'/><text x='190.8' y='269.2' font-family='Inter, sans-serif' font-size='9.5' font-weight='700' text-anchor='middle' fill='currentColor' >3rd right</text><circle cx='158.0' cy='186.0' r='22.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='181.0' y1='186.0' x2='193.0' y2='186.0' stroke='var(--iq)' stroke-width='2.2'/><text x='158.0' y='190.0' font-family='Inter, sans-serif' font-size='9.5' font-weight='700' text-anchor='middle' fill='currentColor' >2nd right</text><circle cx='190.8' cy='106.8' r='22.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='207.1' y1='123.1' x2='215.6' y2='131.6' stroke='var(--iq)' stroke-width='2.2'/><text x='190.8' y='110.8' font-family='Inter, sans-serif' font-size='9.5' font-weight='700' text-anchor='middle' fill='currentColor' >1st right</text><path d='M296.4,36.3 A152,152 0 0 1 410.9,129.1' fill='none' stroke='var(--iq)' stroke-width='2.4'/><polygon points='410.9,129.1 401.7,120.9 411.9,116.8' fill='var(--iq)'/><text x='420.0' y='120.0' font-family='Inter, sans-serif' font-size='12' font-weight='800' text-anchor='start' fill='var(--iq)' >LEFT</text><text x='420.0' y='136.0' font-family='Inter, sans-serif' font-size='11' font-weight='600' text-anchor='start' fill='var(--iq)' >= clockwise</text><path d='M243.6,36.3 A152,152 0 0 0 129.1,129.1' fill='none' stroke='var(--iq)' stroke-width='2.4'/><polygon points='129.1,129.1 128.1,116.8 138.3,120.9' fill='var(--iq)'/><text x='120.0' y='120.0' font-family='Inter, sans-serif' font-size='12' font-weight='800' text-anchor='end' fill='var(--iq)' >RIGHT</text><text x='120.0' y='136.0' font-family='Inter, sans-serif' font-size='11' font-weight='600' text-anchor='end' fill='var(--iq)' >= anticlockwise</text><text x='270.0' y='190.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.65' >all face the centre</text><text x='270.0' y='352.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >the short amber stroke on each seat points the way that person faces</text></svg>
+      <figcaption>Everyone facing the centre: <b>left = clockwise, right = anticlockwise</b>. Count seats from
+      the person named, the way that person's hand points.</figcaption>
+    </figure>
+    <p>Stand at the top of the table facing the centre — facing <em>down</em> the page. Your right hand points
+    to the page's left. From the top of a clock face, the page's left is towards 11 o'clock: <b>anticlockwise</b>.
+    So for anyone facing the centre, right is anticlockwise and left is clockwise. It is where your hands are.
+    (Facing <em>away</em> from the centre swaps both — Allen has not asked it in five papers, but read the first
+    line of every stem.)</p>
+    <figure><svg viewBox='0 0 600 240' width='600' height='240' role='img' aria-label='Two rows of six chairs. In the top row everyone faces north, up the page, and an arrow shows that the right of the person in seat 3 is towards the page right. In the bottom row everyone faces south, down the page, and the same persons right is now towards the page left.'><text x='20.0' y='24.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='start' fill='currentColor' >Row facing NORTH (up the page): right = east = page right</text><rect x='60' y='40' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='68' y='34' width='32' height='6' rx='2' fill='var(--iq)'/><text x='84.0' y='62.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.55' >1</text><rect x='126' y='40' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='134' y='34' width='32' height='6' rx='2' fill='var(--iq)'/><text x='150.0' y='62.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.55' >2</text><rect x='192' y='40' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='200' y='34' width='32' height='6' rx='2' fill='var(--iq)'/><text x='216.0' y='62.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='var(--iq)' >X</text><rect x='258' y='40' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='266' y='34' width='32' height='6' rx='2' fill='var(--iq)'/><text x='282.0' y='62.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.55' >4</text><rect x='324' y='40' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='332' y='34' width='32' height='6' rx='2' fill='var(--iq)'/><text x='348.0' y='62.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.55' >5</text><rect x='390' y='40' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='398' y='34' width='32' height='6' rx='2' fill='var(--iq)'/><text x='414.0' y='62.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.55' >6</text><line x1='216' y1='96' x2='328' y2='96' stroke='var(--iq)' stroke-width='2.4'/><polygon points='338,96 326,90.5 326,101.5' fill='var(--iq)'/><text x='282.0' y='112.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >1st right</text><text x='348.0' y='112.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >2nd right</text><text x='216.0' y='112.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='600' text-anchor='end' fill='var(--iq)' >X's right →</text><g stroke='var(--iq)' stroke-width='2' fill='var(--iq)'><line x1='520' y1='60' x2='520' y2='30'/><polygon points='520,24 515,34 525,34'/></g><text x='520.0' y='76.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='var(--iq)' >N</text><text x='20.0' y='142.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='start' fill='currentColor' >Same row facing SOUTH: right = west = page LEFT</text><rect x='60' y='158' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='68' y='192' width='32' height='6' rx='2' fill='var(--iq)'/><text x='84.0' y='180.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.55' >1</text><rect x='126' y='158' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='134' y='192' width='32' height='6' rx='2' fill='var(--iq)'/><text x='150.0' y='180.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.55' >2</text><rect x='192' y='158' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='200' y='192' width='32' height='6' rx='2' fill='var(--iq)'/><text x='216.0' y='180.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='var(--iq)' >X</text><rect x='258' y='158' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='266' y='192' width='32' height='6' rx='2' fill='var(--iq)'/><text x='282.0' y='180.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.55' >4</text><rect x='324' y='158' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='332' y='192' width='32' height='6' rx='2' fill='var(--iq)'/><text x='348.0' y='180.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.55' >5</text><rect x='390' y='158' width='48' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='398' y='192' width='32' height='6' rx='2' fill='var(--iq)'/><text x='414.0' y='180.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.55' >6</text><line x1='216' y1='214' x2='104' y2='214' stroke='var(--iq)' stroke-width='2.4'/><polygon points='94,214 106,208.5 106,219.5' fill='var(--iq)'/><text x='150.0' y='230.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >1st right</text><text x='84.0' y='230.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >2nd right</text><text x='216.0' y='230.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='600' text-anchor='start' fill='var(--iq)' >← X's right</text></svg>
+      <figcaption>In a row everyone faces the same way, and "right" is that person's right: facing north it is
+      east, the page's right; facing south it is the page's left.</figcaption>
+    </figure>
+    <p>If a row question does not say which way people face (2024-U Q79 did not), take the natural reading —
+    the way you would face to read the row, right = the page's right. Any answer about who is <em>between</em>
+    whom, or <em>how many</em> sit between two people, is the same either way (2.5).</p>
+    <figure><svg viewBox='0 0 340 234' width='340' height='234' role='img' aria-label='A rectangular table seen from above with six seats: two along the top edge, two along the bottom edge, one at each end. Dashed lines join the three pairs of seats that face each other across the table, and the seats are numbered 1 to 6 going clockwise from the left end.'><rect x='90' y='68' width='160' height='76' rx='8' fill='none' stroke='currentColor' stroke-width='1.6'/><line x1='130' y1='40' x2='130' y2='172' stroke='var(--iq)' stroke-width='1.6' stroke-dasharray='5 4' opacity='.7'/><line x1='210' y1='40' x2='210' y2='172' stroke='var(--iq)' stroke-width='1.6' stroke-dasharray='5 4' opacity='.7'/><line x1='62' y1='106' x2='278' y2='106' stroke='var(--iq)' stroke-width='1.6' stroke-dasharray='5 4' opacity='.7'/><circle cx='62.0' cy='106.0' r='16.0' fill='var(--surface)' stroke='currentColor' stroke-width='1.6' /><text x='62.0' y='110.5' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><line x1='79' y1='106' x2='88' y2='106' stroke='var(--iq)' stroke-width='2.2'/><circle cx='130.0' cy='40.0' r='16.0' fill='var(--surface)' stroke='currentColor' stroke-width='1.6' /><text x='130.0' y='44.5' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><line x1='130' y1='57' x2='130' y2='66' stroke='var(--iq)' stroke-width='2.2'/><circle cx='210.0' cy='40.0' r='16.0' fill='var(--surface)' stroke='currentColor' stroke-width='1.6' /><text x='210.0' y='44.5' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><line x1='210' y1='57' x2='210' y2='66' stroke='var(--iq)' stroke-width='2.2'/><circle cx='278.0' cy='106.0' r='16.0' fill='var(--surface)' stroke='currentColor' stroke-width='1.6' /><text x='278.0' y='110.5' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >4</text><line x1='261' y1='106' x2='252' y2='106' stroke='var(--iq)' stroke-width='2.2'/><circle cx='210.0' cy='172.0' r='16.0' fill='var(--surface)' stroke='currentColor' stroke-width='1.6' /><text x='210.0' y='176.5' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >5</text><line x1='210' y1='155' x2='210' y2='146' stroke='var(--iq)' stroke-width='2.2'/><circle cx='130.0' cy='172.0' r='16.0' fill='var(--surface)' stroke='currentColor' stroke-width='1.6' /><text x='130.0' y='176.5' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >6</text><line x1='130' y1='155' x2='130' y2='146' stroke='var(--iq)' stroke-width='2.2'/><path d='M150.9,95.0 A22,22 0 1 1 159.0,125.1' fill='none' stroke='var(--iq)' stroke-width='2.4'/><polygon points='159.0,125.1 171.3,125.8 165.8,135.3' fill='var(--iq)'/><text x='170.0' y='14.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >clockwise: 1 → 2 → 3 → 4 → 5 → 6 → 1</text><text x='170.0' y='212.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >dashed = opposite (across the table)</text><text x='170.0' y='226.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >left of any seat = next number clockwise · right = previous</text></svg>
+      <figcaption>A rectangular table with two on each long side and one at each end (Paper 1, Q12) works the
+      same way: number the seats clockwise, left = next number, right = previous. "Opposite" means across the
+      table.</figcaption>
+    </figure>
+
+    <h3>2.2 The vocabulary</h3>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Phrase</th><th>Means</th></tr></thead>
+      <tbody>
+        <tr><td>"X is to the immediate right of Y" · "X is next to Y, on the right"</td><td>one seat anticlockwise from Y (circle, facing the centre) — the same seat as "Y is to the immediate left of X"</td></tr>
+        <tr><td>"X is second to the left of Y"</td><td>two seats clockwise from Y; nothing is implied about who sits between</td></tr>
+        <tr><td>"exactly two people sit between X and Y"</td><td>X and Y are three seats apart — two branches, one each way round</td></tr>
+        <tr><td>"X sits between Y and Z"</td><td>X is next to both — unless the stem says "somewhere between"</td></tr>
+        <tr><td>"X sits opposite Y"</td><td>n/2 seats away; only possible when the seat count is even. In a circle of 8, opposite = 4th left = 4th right; a circle of 7 has no "opposite"</td></tr>
+        <tr><td>"X sits at one of the ends" (row)</td><td>two cases — but a later clue such as "Y is third to the right of X" settles the end, because there must be room on that side</td></tr>
+        <tr><td>"not necessarily in the same order"</td><td>the names are listed in no order; the listing is not a clue</td></tr>
+        <tr><td>"kth to the right" in a circle of n</td><td>the same seat as (n − k)th to the left: in a circle of 5, third right = second left</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>2.3 The routine</h3>
+    <ol>
+      <li><b>Draw the ring</b> (or the row) with the right number of seats, tick the facing, and write the seat
+      count beside it.</li>
+      <li><b>Put the first person named in a two-person clue at the top.</b> Everything is relative; where you
+      start does not matter.</li>
+      <li><b>Place every clue that pins a seat outright</b> — "second to the right of …", "third to the left of
+      …", "between … and …".</li>
+      <li><b>Then the loose clues</b> — "exactly two between", "next to". They branch; write both branches if
+      you must. The negative clues ("not next to", "not between") exist to kill one branch. <b>Use every
+      clue.</b> A clue you did not use is either redundant — Allen's items often carry one — or the one that
+      decides the answer, and you cannot tell which until you have used it.</li>
+      <li><b>Read the question again before you count</b> — left or right, second or third, "opposite",
+      "between".</li>
+      <li>If two arrangements survive and the answer differs between them, the answer is "cannot be
+      determined". 2018-S Q66 offered it; the arrangement was unique and the option was a trap.</li>
+    </ol>
+
+    <h3>2.4 "Which of the following is false?"</h3>
+    <p>Two of the five real items take this form. There is no shortcut: solve the whole table, then test all
+    four statements and mark each ✓ or ✗ in the margin. Three will be true. The false one is nearly always a
+    <b>left/right swap</b> or a <b>count-by-one</b> — "third" for "fourth", "immediate" for "second". Because
+    you check four statements, budget two minutes for this form, not one.</p>
+    <div class="box trap">
+      <h4>Two look false</h4>
+      <p>First re-check your convention on the pair — a left/right slip applied to the statements but not to the
+      table (or the other way round) flips the statements that mention left or right. If they stay false
+      after one re-check, the item is faulty (2017-E Q66 is): pick either and move on. It is four marks, and
+      the clock is the real opponent.</p>
+    </div>
+
+    <h3>2.5 Consistency — the one comfort</h3>
+    <p>Run a whole question with left and right swapped and you get the <b>mirror image</b> of the table.
+    Every question of the form "who is between", "who is opposite", "how many sit between", "who is second to
+    the left of" has the <b>same answer</b> in the mirror. A wrong convention costs marks only on
+    <em>absolute</em> questions — "who sits at the left end", "who faces east" — and on none of the five real
+    items. What matters is consistency: never switch convention halfway through a question.</p>
+  </section>
+
+  <!-- ========================= 3. PUZZLE TEST ========================= -->
+  <section>
+    <h2><span class="n">3</span>Puzzle Test — the grid of ticks and crosses</h2>
+    <p class="lede">Every real puzzle item is a <b>matching table</b>: people down the side, one or two attributes
+    across, and four to eleven clues — most of them either a tick ("T is an air-hostess") or a cross ("M is not
+    a doctor"), sometimes a pairing to tally ("A and B teach Hindi and English"). The exam is not whether you can do it; it is whether you can do it in two minutes with nowhere to
+    write except the margin.</p>
+
+    <h3>3.1 The grid</h3>
+    <figure><svg viewBox='0 0 524 234' width='524' height='234' role='img' aria-label='A five by five grid, people down the side and cities along the top, part-way through the elimination: ticks for Jai–Bhopal and Mohan–Dehradun, crosses filling the rest of those rows and columns, and three more crosses at Lata–Agra, Ira–Chennai and Lata–Chennai. The Chennai column has only Kunal left open.'><text x='138.0' y='24.0' font-family='JetBrains Mono, monospace' font-size='10.5' font-weight='600' text-anchor='middle' fill='currentColor' >Agra</text><text x='222.0' y='24.0' font-family='JetBrains Mono, monospace' font-size='10.5' font-weight='600' text-anchor='middle' fill='currentColor' >Bhopal</text><text x='306.0' y='24.0' font-family='JetBrains Mono, monospace' font-size='10.5' font-weight='600' text-anchor='middle' fill='currentColor' >Chennai</text><text x='390.0' y='24.0' font-family='JetBrains Mono, monospace' font-size='10.5' font-weight='600' text-anchor='middle' fill='currentColor' >Dehradun</text><text x='474.0' y='24.0' font-family='JetBrains Mono, monospace' font-size='10.5' font-weight='600' text-anchor='middle' fill='currentColor' >Ernakulam</text><text x='88.0' y='55.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='end' fill='currentColor' >Ira</text><rect x='96' y='34' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><rect x='180' y='34' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='222.0' y='56.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='264' y='34' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='306.0' y='56.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='348' y='34' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='390.0' y='56.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='432' y='34' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='88.0' y='89.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='end' fill='currentColor' >Jai</text><rect x='96' y='68' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='138.0' y='90.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='180' y='68' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='222.0' y='90.0' font-family='Inter, sans-serif' font-size='15' font-weight='700' text-anchor='middle' fill='var(--iq)' >✓</text><rect x='264' y='68' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='306.0' y='90.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='348' y='68' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='390.0' y='90.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='432' y='68' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='474.0' y='90.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><text x='88.0' y='123.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='end' fill='currentColor' >Kunal</text><rect x='96' y='102' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><rect x='180' y='102' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='222.0' y='124.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='264' y='102' width='84' height='34' fill='color-mix(in srgb,var(--iq) 16%,transparent)' stroke='currentColor' stroke-width='1' opacity='1'/><text x='306.0' y='123.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='var(--iq)' >?</text><rect x='348' y='102' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='390.0' y='124.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='432' y='102' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='88.0' y='157.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='end' fill='currentColor' >Lata</text><rect x='96' y='136' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='138.0' y='158.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='180' y='136' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='222.0' y='158.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='264' y='136' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='306.0' y='158.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='348' y='136' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='390.0' y='158.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='432' y='136' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='88.0' y='191.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='end' fill='currentColor' >Mohan</text><rect x='96' y='170' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='138.0' y='192.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='180' y='170' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='222.0' y='192.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='264' y='170' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='306.0' y='192.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><rect x='348' y='170' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='390.0' y='192.0' font-family='Inter, sans-serif' font-size='15' font-weight='700' text-anchor='middle' fill='var(--iq)' >✓</text><rect x='432' y='170' width='84' height='34' fill='none' stroke='currentColor' stroke-width='1' opacity='0.5'/><text x='474.0' y='192.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' opacity='0.55' >✗</text><text x='306.0' y='224.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >a tick empties its row and its column; the last open cell in a column is forced</text></svg>
+      <figcaption>Worked example 3, part-way through: two ticks have emptied their rows and columns, three
+      crosses have come from "is not" and link clues, and the Chennai column is down to one open cell.</figcaption>
+    </figure>
+    <ol>
+      <li><b>Draw the grid before you read the clues properly</b> — names down the side, the attribute across the
+      top. Two attributes (city <em>and</em> instrument)? Two grids, or one grid with two answer columns.</li>
+      <li><b>Ticks first.</b> Every "X is Y" is a tick, and a tick empties its whole row and column with
+      crosses.</li>
+      <li><b>Crosses second.</b> Every "X is not Y" is one cross.</li>
+      <li><b>Link clues third.</b> "The person from Chennai plays the veena" ties two attributes; it becomes a
+      tick only once one of them is placed — note it beside the grid and come back to it.</li>
+      <li>A row or column with <b>one open cell</b> is a tick. Repeat.</li>
+      <li><b>Answer the question asked.</b> Most stems want one cell; stop the moment it is forced.</li>
+    </ol>
+
+    <h3>3.2 The hidden clues</h3>
+    <ul>
+      <li><b>Gender words.</b> "M's sister L", "while <em>he</em> is wearing brown", "<em>his</em> best friend P
+      is a boy", "three of the seven are girls" — Sample Q78 turns on them: the two "sister" words are what
+      identify the girls the question asks about, and "no girl is wearing black, yellow or brown" is what then
+      places them. Every pronoun is a potential clue; underline them as you read.</li>
+      <li><b>Group-level clues.</b> "None of the ladies is a consultant or a lawyer", "none of the ladies owns a
+      Scorpio" (2017-E Q71) — one sentence, a cross in <em>several</em> rows. Apply them the moment you know
+      who the ladies are.</li>
+      <li><b>Two-role clues.</b> 2024-A Q78's professors each co-ordinate one course and support another, and
+      "L and O have the same subjects" says only that they share the same pair of courses — that their roles are
+      swapped is a deduction from another clue, not part of the sentence. Keep two columns — co-ordinates /
+      supports — and read "has X as one of their subjects" as "X is in one of the two".</li>
+      <li><b>Counting puzzles.</b> "A and B teach Hindi and English; C and D teach English and Geography …"
+      (2018-S Q71) is a <b>tally</b>: a name-by-subject table, a ✓ for each pairing, then a count per row.
+      Watch for a <b>tie</b>: in that item two teachers tied for the most and only one of them was among the
+      options — the option list settles it. If your answer is not among the options, count once more; if the
+      count stands, choose the option that shares the maximum.</li>
+    </ul>
+
+    <h3>3.3 The forms Allen has not asked (yet)</h3>
+    <p>Floors of a building, days of the week, months — the "linear ordering" puzzles common in other
+    exams. (Queue and row <em>position</em> questions — "Amrita is 10th from the front …" — do appear, but
+    they are counting, not clue puzzles, and belong to the Ranking unit.) They are Sitting Arrangement in disguise: a row with numbered seats ("floor 1 is the ground floor")
+    and clues like "only one person lives between K and L", "N lives immediately below L". Same routine as 2.3,
+    with two extra checks: <b>odd/even</b> clues ("an even-numbered floor below Rekha") and <b>midway</b>
+    questions (the floor midway between floors 2 and 6 is (2 + 6) ÷ 2 = 4). Paper 1 carries one of each so
+    you have met them; treat them as a bonus, not as the core.</p>
+    <div class="box exam">
+      <h4>What the stem looks like</h4>
+      <p>"Study the following information carefully and answer the question" · "Read the following information
+      and answer the question based on it" — a wall of text with one question at the end. <b>Read the question
+      first</b> (the last line), then the clues: you then know which cell you are hunting and can stop when it
+      fills.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 4. FACT BANK ========================= -->
+  <section>
+    <h2><span class="n">4</span>Fact bank — everything above on one screen</h2>
+    <div class="bank">
+      <div class="fx"><div class="eq">Some = at least some</div><div class="wh">possibly all. "Some A are B" never yields "Some A are not B" — and the other way round.</div></div>
+      <div class="fx"><div class="eq">All A are B ⇒ Some B are A</div><div class="wh">never "All B are A". A conclusion that restates or legally turns a statement <b>follows</b>.</div></div>
+      <div class="fx"><div class="eq">No A is B ⇔ No B is A</div><div class="wh">turns round at full strength, and so does "Some A are B". "All A are B" turns round only to "Some B are A"; "Some A are not B" turns round into nothing.</div></div>
+      <div class="fx"><div class="eq">A+A = A · A+E = E · I+A = I · I+E = O</div><div class="wh">All/All → All; All/No → No; Some/All → Some; Some/No → Some-not. Statements aligned so the shared term meets.</div></div>
+      <div class="fx"><div class="eq">E+A = O* · E+I = O*</div><div class="wh">No A is B + All (or Some) B are C → <b>Some C are not A</b>. The star: subject and predicate swap.</div></div>
+      <div class="fx"><div class="eq">Some+Some · No+No · All+Some = nothing</div><div class="wh">and anything with "Some … not" first. Nothing definite about the outer terms.</div></div>
+      <div class="fx"><div class="eq">either/or pairs</div><div class="wh">Some / No · All / Some-not · Some / Some-not — same two groups, each fails alone, together exhaustive. A "Some" or "No" half may be turned round; an "All" or "Some … not" half keeps its subject.</div></div>
+      <div class="fx"><div class="eq">"is a possibility"</div><div class="wh">follows if one legal picture makes it true. Try to draw it.</div></div>
+      <div class="fx"><div class="eq">foreign noun ⇒ never follows</div><div class="wh">a group named in no statement (2024-U Q80). Check the nouns first.</div></div>
+      <div class="fx"><div class="eq">facing centre: L = clockwise · R = anticlockwise</div><div class="wh">your right hand, at the top seat facing down the page, points to the page's left.</div></div>
+      <div class="fx"><div class="eq">row facing north: right = east</div><div class="wh">facing south: right = west. Facing away from the centre: swap both.</div></div>
+      <div class="fx"><div class="eq">opposite = n/2 seats away</div><div class="wh">8 seats → 4th left = 4th right. An odd ring has no opposite.</div></div>
+      <div class="fx"><div class="eq">kth right = (n − k)th left</div><div class="wh">in a circle of 5, third right = second left.</div></div>
+      <div class="fx"><div class="eq">"exactly two between" = 3 seats apart</div><div class="wh">two branches; the negative clues kill one.</div></div>
+      <div class="fx"><div class="eq">mirror rule</div><div class="wh">a swapped convention gives the mirror image: every <em>relative</em> answer unchanged. Only "left end" / "faces east" questions change.</div></div>
+      <div class="fx"><div class="eq">grid: tick ⇒ row and column crossed</div><div class="wh">one open cell in a line ⇒ tick. Pronouns are clues; "none of the ladies …" is several crosses at once.</div></div>
+    </div>
+  </section>
+
+  <!-- ========================= 5. WORKED ========================= -->
+  <section>
+    <h2><span class="n">5</span>Five worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">Try each before opening the working and give yourself <b>two minutes</b> — the real paper's
+    average is ninety seconds, and these three archetypes sit at the end of the section where you will have less.
+    The elimination reasoning is written out because ruling two options out is worth almost as much as solving.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">The Q80 machine — three statements, an either/or pair · ~2 minutes</span></div>
+      <p>Take the statements to be true even if they seem to be at variance with commonly known facts, and decide
+      which of the conclusions logically follow.</p>
+      <div class="st"><p><b>Statements:</b> All kites are birds. Some birds are eagles. No eagle is a fish.</p>
+      <p><b>Conclusions:</b></p><ol class="roman"><li>Some birds are not fish.</li><li>Some kites are eagles.</li><li>No kite is a fish.</li><li>Some kites are fish.</li></ol></div>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Only I follows</div>
+        <div class="we-opt"><span class="ob">2</span>Only I and II follow</div>
+        <div class="we-opt key"><span class="ob">3</span>Only I and either III or IV follow</div>
+        <div class="we-opt"><span class="ob">4</span>Only either III or IV follows</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Nouns:</b> kites, birds, eagles, fish — all four are in the statements. Nothing dies on rule 3.</p>
+        <p><b>Chain:</b> "Some birds are eagles · No eagle is a fish" is Some + No → <b>Some birds are not fish</b>.
+        Conclusion I follows. "All kites are birds · Some birds are eagles" is All + Some → nothing: the
+        eagle-birds need not include a single kite. Conclusion II does not follow.</p>
+        <figure><svg viewBox='0 0 420 240' width='420' height='240' role='img' aria-label='A large circle labelled birds contains a smaller circle labelled kites. A circle labelled eagles overlaps the birds circle on the right. A dashed circle labelled fish sits away from the eagles circle; it is drawn cutting the birds and kites circles to show that nothing stops fish from overlapping them.'><circle cx='150.0' cy='125.0' r='82.0' fill='none' stroke='currentColor' stroke-width='2.2' /><text x='150.0' y='60.0' font-family='Inter, sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='currentColor' >birds</text><circle cx='118.0' cy='140.0' r='32.0' fill='color-mix(in srgb,var(--iq) 20%,transparent)' stroke='var(--iq)' stroke-width='2.2' /><text x='118.0' y='144.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='var(--iq)' >kites</text><circle cx='246.0' cy='118.0' r='52.0' fill='none' stroke='currentColor' stroke-width='2.2' /><text x='262.0' y='122.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='700' text-anchor='middle' fill='currentColor' >eagles</text><circle cx='90' cy='86' r='40' fill='none' stroke='var(--iq)' stroke-width='2' stroke-dasharray='6 4'/><text x='82.0' y='68.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='var(--iq)' >fish?</text><text x='340.0' y='200.0' font-family='Inter, sans-serif' font-size='11' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.8' >fish must avoid eagles —</text><text x='340.0' y='215.0' font-family='Inter, sans-serif' font-size='11' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.8' >and may sit anywhere else</text><text x='210.0' y='236.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >the birds-and-eagles lens is not empty, and every eagle is a non-fish</text></svg>
+          <figcaption>The least-assuming picture. Kites sit inside birds; the birds–eagles lens is real; fish
+          must keep clear of eagles and may go anywhere else — including through kites.</figcaption>
+        </figure>
+        <p><b>Kites and fish:</b> kites are linked to fish only through the eagle lens, and the kites may sit
+        inside that lens or outside it — nothing definite. III fails alone and IV fails alone.</p>
+        <p><b>Pair them:</b> "No kite is a fish" and "Some kites are fish" are the Some/No pair on the same two
+        groups. <b>Either III or IV follows.</b> Answer (3).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> misses the pair.
+        <b>(2)</b> accepts II — "some birds are eagles" read as if it said <em>all</em>.
+        <b>(4)</b> throws away I, the one definite conclusion, because "some … are not" sounds weak. It is as
+        definite as any "No".</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">2024-A Q79's shape — seven round, which statement is false · ~2½ minutes</span></div>
+      <p>Seven friends — Aditi, Bhanu, Chetan, Divya, Eshan, Falak and Gauri — sit around a circular table at
+      equal distances, all facing the centre. Aditi sits where the figure shows.</p>
+      <ul>
+        <li>Chetan sits second to the right of Aditi.</li>
+        <li>Eshan sits third to the left of Chetan.</li>
+        <li>Only one person sits between Eshan and Bhanu.</li>
+        <li>Divya sits to the immediate right of Bhanu.</li>
+        <li>Gauri is not an immediate neighbour of Aditi.</li>
+      </ul>
+      <p>Which of the following statements is <b>false</b>?</p>
+      <figure><svg viewBox='0 0 300 300' width='300' height='300' role='img' aria-label='A round table with seven equally spaced seats, everyone facing the centre. The top seat is labelled Aditi; the other six are blank.'><circle cx='150.0' cy='150.0' r='69.0' fill='none' stroke='currentColor' stroke-width='1.6' /><circle cx='150.0' cy='46.0' r='19.0' fill='color-mix(in srgb,var(--iq) 22%,transparent)' stroke='var(--iq)' stroke-width='2.4' /><line x1='150.0' y1='66.0' x2='150.0' y2='78.0' stroke='var(--iq)' stroke-width='2.2'/><text x='150.0' y='50.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='700' text-anchor='middle' fill='var(--iq)' >Aditi</text><circle cx='231.3' cy='85.2' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='215.7' y1='97.6' x2='206.3' y2='105.1' stroke='var(--iq)' stroke-width='2.2'/><text x='231.3' y='89.2' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >?</text><circle cx='251.4' cy='173.1' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='231.9' y1='168.7' x2='220.2' y2='166.0' stroke='var(--iq)' stroke-width='2.2'/><text x='251.4' y='177.1' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >?</text><circle cx='195.1' cy='243.7' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='186.4' y1='225.7' x2='181.2' y2='214.9' stroke='var(--iq)' stroke-width='2.2'/><text x='195.1' y='247.7' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >?</text><circle cx='104.9' cy='243.7' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='113.6' y1='225.7' x2='118.8' y2='214.9' stroke='var(--iq)' stroke-width='2.2'/><text x='104.9' y='247.7' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >?</text><circle cx='48.6' cy='173.1' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='68.1' y1='168.7' x2='79.8' y2='166.0' stroke='var(--iq)' stroke-width='2.2'/><text x='48.6' y='177.1' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >?</text><circle cx='68.7' cy='85.2' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='84.3' y1='97.6' x2='93.7' y2='105.1' stroke='var(--iq)' stroke-width='2.2'/><text x='68.7' y='89.2' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' >?</text><text x='150.0' y='154.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.65' >all face the centre</text></svg></figure>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Gauri sits second to the left of Divya</div>
+        <div class="we-opt"><span class="ob">2</span>Falak sits to the immediate right of Aditi</div>
+        <div class="we-opt"><span class="ob">3</span>Bhanu sits third to the right of Falak</div>
+        <div class="we-opt key"><span class="ob">4</span>Divya sits second to the right of Eshan</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Number the seats 1–7 clockwise from Aditi (1). Facing the centre, <b>left = clockwise = up the
+        numbers, right = anticlockwise = down</b>.</p>
+        <p>Chetan second to the right of Aditi → two seats anticlockwise → <b>seat 6</b>. Eshan third to the left of
+        Chetan → three seats clockwise from 6 → 7, 1, 2 → <b>seat 2</b>. One person between Eshan and Bhanu →
+        Bhanu at seat 4 or seat 7. Divya immediately right of Bhanu → one seat anticlockwise: Bhanu 4 → Divya 3
+        ✓; Bhanu 7 → Divya 6, which is Chetan ✗. So <b>Bhanu 4, Divya 3</b>. Seats 5 and 7 remain for Falak and
+        Gauri; Gauri is not next to Aditi and seat 7 is → <b>Gauri 5, Falak 7</b>.</p>
+        <figure><svg viewBox='0 0 300 300' width='300' height='300' role='img' aria-label='The solved table: clockwise from the top, Aditi, Eshan, Divya, Bhanu, Gauri, Chetan, Falak.'><circle cx='150.0' cy='150.0' r='69.0' fill='none' stroke='currentColor' stroke-width='1.6' /><circle cx='150.0' cy='46.0' r='19.0' fill='color-mix(in srgb,var(--iq) 22%,transparent)' stroke='var(--iq)' stroke-width='2.4' /><line x1='150.0' y1='66.0' x2='150.0' y2='78.0' stroke='var(--iq)' stroke-width='2.2'/><text x='150.0' y='50.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='700' text-anchor='middle' fill='var(--iq)' >Aditi</text><circle cx='231.3' cy='85.2' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='215.7' y1='97.6' x2='206.3' y2='105.1' stroke='var(--iq)' stroke-width='2.2'/><text x='231.3' y='89.2' font-family='Inter, sans-serif' font-size='10.5' font-weight='700' text-anchor='middle' fill='currentColor' >Eshan</text><circle cx='251.4' cy='173.1' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='231.9' y1='168.7' x2='220.2' y2='166.0' stroke='var(--iq)' stroke-width='2.2'/><text x='251.4' y='177.1' font-family='Inter, sans-serif' font-size='10.5' font-weight='700' text-anchor='middle' fill='currentColor' >Divya</text><circle cx='195.1' cy='243.7' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='186.4' y1='225.7' x2='181.2' y2='214.9' stroke='var(--iq)' stroke-width='2.2'/><text x='195.1' y='247.7' font-family='Inter, sans-serif' font-size='10.5' font-weight='700' text-anchor='middle' fill='currentColor' >Bhanu</text><circle cx='104.9' cy='243.7' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='113.6' y1='225.7' x2='118.8' y2='214.9' stroke='var(--iq)' stroke-width='2.2'/><text x='104.9' y='247.7' font-family='Inter, sans-serif' font-size='10.5' font-weight='700' text-anchor='middle' fill='currentColor' >Gauri</text><circle cx='48.6' cy='173.1' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='68.1' y1='168.7' x2='79.8' y2='166.0' stroke='var(--iq)' stroke-width='2.2'/><text x='48.6' y='177.1' font-family='Inter, sans-serif' font-size='9.5' font-weight='700' text-anchor='middle' fill='currentColor' >Chetan</text><circle cx='68.7' cy='85.2' r='19.0' fill='none' stroke='currentColor' stroke-width='1.6' /><line x1='84.3' y1='97.6' x2='93.7' y2='105.1' stroke='var(--iq)' stroke-width='2.2'/><text x='68.7' y='89.2' font-family='Inter, sans-serif' font-size='10.5' font-weight='700' text-anchor='middle' fill='currentColor' >Falak</text><text x='150.0' y='154.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.65' >clockwise = left</text><path d='M169.5,11.4 A140,140 0 0 1 260.3,63.8' fill='none' stroke='var(--iq)' stroke-width='2.4'/><polygon points='260.3,63.8 249.2,58.5 257.9,51.8' fill='var(--iq)'/><text x='238.0' y='18.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='700' text-anchor='start' fill='var(--iq)' >left</text></svg>
+          <figcaption>Clockwise from Aditi: Eshan, Divya, Bhanu, Gauri, Chetan, Falak.</figcaption>
+        </figure>
+        <p><b>Test every statement.</b> (1) Second to the left of Divya (3) → seat 5 → Gauri — <b>true</b>. (2)
+        Immediate right of Aditi (1) → seat 7 → Falak — <b>true</b>. (3) Third to the right of Falak (7) → seat 4
+        → Bhanu — <b>true</b>. (4) Second to the right of Eshan (2) → seat 7 → Falak, not Divya. Divya is
+        <em>first to the left</em> of Eshan. <b>False</b> — answer (4).</p>
+        <div class="elim"><b>What to notice.</b> The false statement is a left/right swap plus a count-by-one — the
+        usual recipe. Mirror the convention and the whole table mirrors: all four statements keep their truth
+        values, so a student who uses the wrong convention <em>consistently</em> still gets (4). The last clue
+        decides the branch: skip it and Falak and Gauri are interchangeable, which makes (1), (2) and (3)
+        uncertain too — four candidates for "false" is the sign that a clue was left unused.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">Sample Q78's shape — five people, two attributes, which statements are correct · ~2½ minutes</span></div>
+      <p>Five friends — Ira, Jai, Kunal, Lata and Mohan — come from five different cities (Agra, Bhopal, Chennai,
+      Dehradun, Ernakulam) and each plays a different instrument (flute, guitar, sitar, tabla, veena).</p>
+      <ul>
+        <li>The one from Chennai plays the veena.</li>
+        <li>Jai is from Bhopal and does not play the flute.</li>
+        <li>Lata plays the sitar.</li>
+        <li>Lata is not from Agra.</li>
+        <li>Ira plays the tabla.</li>
+        <li>Mohan is from Dehradun.</li>
+      </ul>
+      <p>Which of the following statements are correct?</p>
+      <div class="st"><ol class="roman"><li>Kunal plays the veena.</li><li>Ira is from Ernakulam.</li><li>Jai plays the guitar.</li><li>Mohan plays the flute.</li></ol></div>
+      <div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>I, III and IV only</div>
+        <div class="we-opt"><span class="ob">2</span>I and III only</div>
+        <div class="we-opt"><span class="ob">3</span>III and IV only</div>
+        <div class="we-opt"><span class="ob">4</span>All four</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Ticks first:</b> Jai–Bhopal, Mohan–Dehradun, Lata–sitar, Ira–tabla. Cross out their rows and
+        columns (the figure in 3.1 shows this grid a moment later, once the "is not" and link crosses are in).</p>
+        <p><b>Link clue:</b> the Chennai person plays the veena. Ira (tabla) and Lata (sitar) cannot be that
+        person; Jai and Mohan already have cities → <b>Kunal is from Chennai and plays the veena</b>. I is
+        correct.</p>
+        <p><b>Cities left:</b> Agra and Ernakulam for Ira and Lata; Lata is not from Agra → Lata Ernakulam,
+        <b>Ira Agra</b>. II is false.</p>
+        <p><b>Instruments left:</b> flute and guitar for Jai and Mohan; Jai does not play the flute → <b>Jai
+        guitar</b>, <b>Mohan flute</b>. III and IV are correct.</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Person</th><th>City</th><th>Instrument</th></tr></thead>
+          <tbody><tr><td>Ira</td><td>Agra</td><td>tabla</td></tr><tr><td>Jai</td><td>Bhopal</td><td>guitar</td></tr><tr><td>Kunal</td><td>Chennai</td><td>veena</td></tr><tr><td>Lata</td><td>Ernakulam</td><td>sitar</td></tr><tr><td>Mohan</td><td>Dehradun</td><td>flute</td></tr></tbody>
+        </table></div>
+        <p>Answer <b>(1)</b>.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2)</b> stops before the last instrument column closes — Jai's guitar is found, Mohan's flute (the
+        one open cell left) is never ticked.
+        <b>(3)</b> applies the link clue only as crosses (Lata is not from Chennai, Jai does not play the veena)
+        and never closes the Chennai column, so Kunal's veena looks unforced: a <em>deduction</em> is not a
+        written fact, and the student who only ticks what is written misses it.
+        <b>(4)</b> accepts II — "Lata is not from Agra" was never applied, so Ira in Ernakulam looked as good
+        as Ira in Agra, and the tired reader ticks the first fit.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">2024-U Q80's trap, turned round — a real pair, a turned-round statement, a possibility · ~2 minutes</span></div>
+      <p>Take the statements to be true and decide which of the conclusions logically follow.</p>
+      <div class="st"><p><b>Statements:</b> Some doctors are singers. Some singers are dancers.</p>
+      <p><b>Conclusions:</b></p><ol class="roman"><li>Some doctors are dancers.</li><li>No doctor is a dancer.</li><li>Some dancers are singers.</li><li>All singers being doctors is a possibility.</li></ol></div>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Only III and IV follow</div>
+        <div class="we-opt"><span class="ob">2</span>Only either I or II follows</div>
+        <div class="we-opt key"><span class="ob">3</span>Either I or II, and III and IV follow</div>
+        <div class="we-opt"><span class="ob">4</span>Only I, III and IV follow</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Nouns:</b> doctors, singers, dancers — all present; nothing dies on rule 3.</p>
+        <p><b>Chain:</b> Some + Some → nothing definite about doctors and dancers. So I fails alone and II fails
+        alone — but they are the Some/No pair on the same two groups: <b>either I or II follows</b>.</p>
+        <p><b>III</b> turns "Some singers are dancers" around — <b>follows</b> (rule 2).</p>
+        <p><b>IV:</b> can every singer be a doctor? Draw singers wholly inside doctors: "some doctors are
+        singers" still holds, "some singers are dancers" still holds. Nothing forbids it — <b>the possibility
+        follows</b>.</p>
+        <p>Answer <b>(3)</b>.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2)</b> misses that III and IV are definite — the student who reads "Some + Some = nothing" as "nothing
+        at all follows".
+        <b>(1)</b> misses the pair: I and II each fail, so both are dropped, and the either/or is never
+        considered.
+        <b>(4)</b> accepts I outright — Some + Some read as a chain. That is the single most common syllogism
+        error, and 2024-U Q80's option (2) was built for it.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">2024-U Q79's shape — a row, one person at an end · ~2 minutes</span></div>
+      <p>Seven friends P, Q, R, S, T, U and V sit in a row of seven chairs, all facing north.</p>
+      <ul>
+        <li>R sits at one of the ends of the row.</li>
+        <li>T sits third to the right of R.</li>
+        <li>S sits second to the right of T.</li>
+        <li>U sits to the immediate left of S.</li>
+        <li>Q sits to the immediate left of V.</li>
+      </ul>
+      <p>Who sits third to the left of S?</p>
+      <figure><svg viewBox='0 0 500 110' width='500' height='110' role='img' aria-label='A row of seven chairs seen from above, all facing north, up the page, with a compass arrow marked N. All seven are blank.'><rect x='14' y='46' width='50' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='23' y='40' width='32' height='6' rx='2' fill='var(--iq)'/><text x='39.0' y='68.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.45' >?</text><rect x='76' y='46' width='50' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='85' y='40' width='32' height='6' rx='2' fill='var(--iq)'/><text x='101.0' y='68.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.45' >?</text><rect x='138' y='46' width='50' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='147' y='40' width='32' height='6' rx='2' fill='var(--iq)'/><text x='163.0' y='68.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.45' >?</text><rect x='200' y='46' width='50' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='209' y='40' width='32' height='6' rx='2' fill='var(--iq)'/><text x='225.0' y='68.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.45' >?</text><rect x='262' y='46' width='50' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='271' y='40' width='32' height='6' rx='2' fill='var(--iq)'/><text x='287.0' y='68.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.45' >?</text><rect x='324' y='46' width='50' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='333' y='40' width='32' height='6' rx='2' fill='var(--iq)'/><text x='349.0' y='68.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.45' >?</text><rect x='386' y='46' width='50' height='34' rx='5' fill='none' stroke='currentColor' stroke-width='1.6'/><rect x='395' y='40' width='32' height='6' rx='2' fill='var(--iq)'/><text x='411.0' y='68.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='currentColor' opacity='0.45' >?</text><g stroke='var(--iq)' stroke-width='2' fill='var(--iq)'><line x1='478' y1='34' x2='478' y2='8'/><polygon points='478,2 473,12 483,12'/></g><text x='478.0' y='50.0' font-family='Inter, sans-serif' font-size='12' font-weight='700' text-anchor='middle' fill='var(--iq)' >N</text><text x='230.0' y='102.0' font-family='Inter, sans-serif' font-size='10.5' font-weight='500' text-anchor='middle' fill='currentColor' opacity='0.75' >seven chairs, all facing north — the amber edge is the front of each chair</text></svg></figure>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Q</div>
+        <div class="we-opt"><span class="ob">2</span>T</div>
+        <div class="we-opt"><span class="ob">3</span>U</div>
+        <div class="we-opt key"><span class="ob">4</span>V</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Facing north, <b>right = east = the page's right</b>. Number the chairs 1–7 from the left.</p>
+        <p>R is at an end and T is three chairs to R's right — so R must be at the <b>left</b> end, chair 1: from
+        chair 7 there is nothing to the right. <b>T = chair 4.</b> S second to the right of T → <b>chair 6</b>. U
+        immediately left of S → <b>chair 5</b>. Chairs 2, 3 and 7 remain for P, Q and V; Q immediately left of V
+        needs two adjacent chairs → <b>Q 2, V 3</b>, and P takes chair 7.</p>
+        <p>Row: <b>R · Q · V · T · U · S · P</b>. Third to the left of S (chair 6) is chair 3 → <b>V</b>. Answer (4).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(3)</b> U is first to the left of S and <b>(2)</b> T is second — the count-by-one slips.
+        <b>(1)</b> Q is fourth.
+        The end clue fixes the arrangement, and it is the stem's way of telling you which end without saying so:
+        put R at the right end and there is no chair for T. 2024-U Q79 did exactly this. And if you had faced the row
+        south by mistake, the row mirrors and the third to the left of S is still V.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <!-- ========================= 6. CHECK YOURSELF ========================= -->
+  <section>
+    <h2><span class="n">6</span>Check yourself</h2>
+    <p class="lede">Five quick ones. <b>No negative marking here</b> — this is practice, not the exam.
+    Click an option to see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="iq-logic-puzzles-paper-1.html">📝 Paper 1 for this unit — 13 questions, 20 minutes</a>
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Mental Ability · <b>Syllogism</b>, <b>Puzzle Test</b> and <b>Sitting Arrangement</b> — the
+    official topic names from Allen's Class X syllabus.<br>
+    <b>Deliberately not here:</b> Logical Venn Diagrams as a question type (not on the 47-topic list — the circles
+    on this page are only the working method, and all eight real syllogisms are text); Blood Relation and
+    Direction Sense (their own unit); floors-and-days puzzles beyond the note in 3.3, which Allen has not asked in
+    five papers.<br>
+    Tip: press 🖨 (bottom-left) to print these as a revision sheet · 🏆 (top-left) goes back to the TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'Statement: <b>All tigers are cats.</b> Which conclusion follows?',
+    o:['All cats are tigers','Some cats are tigers','Some cats are not tigers','No cat is a tiger'], a:1,
+    fb:'<b>Some cats are tigers.</b> "All A are B" turns round only as "Some B are A". <b>All cats are tigers</b> is the backwards reading; <b>Some cats are not tigers</b> is possible but not forced (every cat could be a tiger); <b>No cat is a tiger</b> contradicts the statement.' },
+  { q:'Five friends sit around a circular table, all facing the centre. Q sits to the immediate <b>left</b> of P. Going round the table from P, which way is Q?',
+    o:['Clockwise','Anticlockwise','It depends where P sits','It depends on how many people there are'], a:0,
+    fb:'<b>Clockwise.</b> Facing the centre, your left hand points the clockwise way round — stand at the top facing down the page: your left is the page’s right, which from 12 o’clock is towards 1 o’clock. Where P sits and how many people there are change nothing, because every seat faces the centre.' },
+  { q:'Which pair of conclusions is a genuine <b>either/or</b> (complementary) pair?',
+    o:['All A are B · No A is B','Some A are B · No A is B','All A are B · Some B are not A','Some A are not B · Some B are not A'], a:1,
+    fb:'<b>Some A are B · No A is B.</b> Either the circles touch or they do not, so one of the two must hold. <b>All / No</b> can both be false (some A in B, some out). <b>All A are B / Some B are not A</b> swaps the roles of A and B — both are false when B sits wholly inside a larger A. <b>Some A are not B / Some B are not A</b> — both false when the two circles coincide.' },
+  { q:'Eight people sit at equal spaces around a round table. The person directly <b>opposite</b> you is',
+    o:['third to your left','fourth to your left','fifth to your left','second to your right'], a:1,
+    fb:'<b>Fourth to your left</b> — and equally fourth to your right: opposite in a circle of n is n/2 seats away either way. <b>Third left</b> and <b>fifth left</b> are the two seats beside the opposite one; <b>second right</b> is two seats away.' },
+  { q:'Statements: <b>Some cups are plates. All plates are bowls.</b> Conclusions: I. Some cups are bowls. II. Some bowls are spoons. III. All plates being cups is a possibility. Which follow?',
+    o:['Only I','Only I and II','Only I and III','All three'], a:2,
+    fb:'<b>Only I and III.</b> I is Some + All → Some: the cups that are plates are bowls. II names <b>spoons</b>, a group in neither statement — it can never follow, whatever it says. III: draw plates wholly inside cups (and inside bowls) — nothing forbids the picture, so the possibility follows.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. The methods have landed — sit Paper 1 for this unit now, under the clock.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed — 1.2 and 1.4 carry the syllogism rules, 2.1 the convention, 2.2 the vocabulary.'
+                        : 'Worth a second pass through sections 1 and 2 before the paper. It is a short page; one more read fixes it.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:iq-logic-puzzles:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- print: a closed details element never renders its contents, so open them for the printer ---------- */
+(function(){
+  var opened = [];
+  function before(){
+    opened = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+      if(!d.open){ d.open = true; opened.push(d); }
+      var box = d.closest('.we'); if(box) box.classList.add('revealed');
+    });
+  }
+  function after(){
+    opened.forEach(function(d){ d.open = false; var box = d.closest('.we'); if(box) box.classList.remove('revealed'); });
+    opened = [];
+  }
+  window.addEventListener('beforeprint', before);
+  window.addEventListener('afterprint', after);
+  if(window.matchMedia){
+    var mq = matchMedia('print');
+    var h = function(e){ if(e.matches) before(); else after(); };
+    if(mq.addEventListener) mq.addEventListener('change', h); else if(mq.addListener) mq.addListener(h);
+  }
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
