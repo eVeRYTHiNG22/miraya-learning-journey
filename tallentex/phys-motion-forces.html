@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Motion &amp; Forces</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2346a8ff'>P</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--physics);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #2e246b30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--physics); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--physics); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#241f4a); border:1px solid #2b3f63;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--physics); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--physics); background:color-mix(in srgb,var(--physics) 14%,transparent); border:1px solid color-mix(in srgb,var(--physics) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+  ol.roman { list-style:upper-roman; }
+  ol.roman li { padding-left:4px; }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child, .box .tablewrap:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--physics); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--physics); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; margin:12px 0; }
+  .tablewrap table { margin:0; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--physics); background:color-mix(in srgb,var(--physics) 13%,transparent); border:1px solid color-mix(in srgb,var(--physics) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--physics); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--physics); background:color-mix(in srgb,var(--physics) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--physics) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5b40d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#e2edfb,#e8f0fb); border-color:#c3d7f2; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb.on { background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Physics · Crash notes</div>
+    <h1>Motion &amp; Forces</h1>
+    <p class="sub">Official topics: <b>Motion</b> and <b>Force and Laws of Motion</b> (both Class 9) — two
+    topics, one card. Your IGCSE course already covers nearly all of the physics here — the kinematics, F = ma
+    and momentum (0625 sections 1.2, 1.5 and 1.6) — so this is a short page. What is new is the <b>NCERT framing Allen writes in</b> — the
+    three equations of motion as formulas, Newton's three laws by number, <em>inertia</em>,
+    action–reaction pairs, uniform circular motion — and the <b>word traps</b> the real papers set.
+    A 25-minute read, then the paper.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Every Physics question (Q1–15) in all five cached papers — four real sittings and Allen's official
+      sample — was read page by page, the 2017 and 2018 booklets rendered from their image scans (a text
+      search returns nothing for them), and every item from these two chapters re-solved against Allen's
+      own key sheets. <b>Sixteen items in five papers</b>, plus four free-fall and orbit items that sit
+      in Gravitation on paper but are solved with this unit's rules:</p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th>Paper</th><th>Q</th><th>What it gives you</th><th>What it wants</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td>2017 · E</td><td class="mono">2</td><td>Four velocity–time curves</td><td>Which can be realised in practice</td><td class="mono">(3) only the two without a vertical drop</td></tr>
+          <tr><td>2017 · E</td><td class="mono">8</td><td>A boatman's oar pushes the bank; a balloon fastened to a toy car, opening at the back</td><td>What the car does when the air escapes</td><td class="mono">(4) moves forward</td></tr>
+          <tr><td>2017 · E</td><td class="mono">12</td><td>A marble falling through water: A speeds up, B slows, C steady</td><td>Where the forces on it are unbalanced</td><td class="mono">(2) A and B only</td></tr>
+          <tr><td>2018 · S</td><td class="mono">8</td><td>An F–t graph: up to 4 N at 4 s, back to 0 at 9 s, down to −2 N at 11 s, flat to 13 s</td><td>Net change in momentum</td><td class="mono">(2) 12 kg m/s</td></tr>
+          <tr><td>2018 · S</td><td class="mono">12</td><td>Four statements on the third law, the normal force, friction, and friction on a walker's feet</td><td>The <em>incorrect</em> one</td><td class="mono">(4) "walking south, friction acts north"</td></tr>
+          <tr><td>2024 · U</td><td class="mono">1</td><td>Overhead view: 7 N, 4 N, 3 N, 2 N, 5 N on a mass on a frictionless floor</td><td>Its velocity–time graph</td><td class="mono">(4) a straight rising line</td></tr>
+          <tr><td>2024 · U</td><td class="mono">3</td><td>Assertion–Reason: a stone on a thread flies off straight when released / "direction stays the same round the circle"</td><td>Judge both</td><td class="mono">(3) A true, R false</td></tr>
+          <tr><td>2024 · U</td><td class="mono">8</td><td>Rohan pushes a wall: F₁ on the wall, F₂ on Rohan</td><td>The true statement</td><td class="mono">(4) equal, opposite</td></tr>
+          <tr><td>2024 · U</td><td class="mono">10</td><td>An IAF jet lands at 75 m/s and stops in 1000 m</td><td>The retardation</td><td class="mono">(1) −2.8125 m/s²</td></tr>
+          <tr><td>2024 · A</td><td class="mono">1</td><td>An a–t graph of a stopping car (a 5 × 5 square minus a quarter circle), mass 50 kg</td><td>The force</td><td class="mono">(1) 250(1 − π/4) N</td></tr>
+          <tr><td>2024 · A</td><td class="mono">3</td><td>Four velocity–time curves</td><td>The one that is <em>not</em> possible</td><td class="mono">(2) the circle</td></tr>
+          <tr><td>2024 · A</td><td class="mono">8</td><td>A train moving east at a constant 20 m/s</td><td>What is true of the forces on it</td><td class="mono">(4) resultant force zero</td></tr>
+          <tr><td>2024 · A</td><td class="mono">10</td><td>A mosquito goes 16 cm east, then 63 cm south</td><td>Its displacement</td><td class="mono">(4) 65 cm</td></tr>
+          <tr><td>Sample</td><td class="mono">3</td><td>100 m/s now, uniform retardation 5 m/s²</td><td>Velocity 7 s later</td><td class="mono">(3) 65 m/s</td></tr>
+          <tr><td>Sample</td><td class="mono">5</td><td>A child on a frictionless floor who cannot push on it sideways</td><td>How to get off</td><td class="mono">(4) by spitting or coughing</td></tr>
+          <tr><td>Sample</td><td class="mono">12</td><td>980 N acts for 0.1 s</td><td>Change in momentum</td><td class="mono">(1) 98 N s</td></tr>
+          <tr><td colspan="5" style="color:var(--muted);font-size:12.5px;padding-top:12px">Listed under <em>Gravitation</em> in the syllabus, solved with this page's rules:</td></tr>
+          <tr><td>2017 · E</td><td class="mono">11</td><td>Gravity on an orbiting satellite suddenly switches off</td><td>What it does</td><td class="mono">(2) moves off along the tangent at the same velocity</td></tr>
+          <tr><td>2018 · S</td><td class="mono">2</td><td>Balls released from h and from 2h</td><td>Ratio of fall times</td><td class="mono">(1) 1 : √2</td></tr>
+          <tr><td>2024 · A</td><td class="mono">7</td><td>The Moon orbiting Earth: X points at Earth, Y along the orbit</td><td>Name X and Y</td><td class="mono">(2) X centripetal force, Y velocity</td></tr>
+          <tr><td>Sample</td><td class="mono">11</td><td>20 kg iron and 12 kg aluminium spheres dropped together, no air</td><td>What they share 10 m up</td><td class="mono">(4) both acceleration and velocity</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>What that tells you:</p>
+      <ol>
+        <li><b>Two to four of the fifteen Physics questions a sitting (three to five counting the
+        free-fall and orbit items) — and both 2024 papers opened with it, in exactly the same four
+        slots:</b> <span class="m">Q1</span> a graph, <span class="m">Q3</span> a concept (circular
+        motion, or an impossible curve), <span class="m">Q8</span> a Newton's-law statement,
+        <span class="m">Q10</span> a one-formula number. The older papers and the sample open with
+        sound or waves instead, so treat the pattern as recent, not eternal.</li>
+        <li><b>Graph judgement is the signature.</b> "Which of these velocity–time curves can be
+        realised" (2017-E Q2), "which is not possible" (2024-A Q3) and "which graph will this set of
+        forces produce" (2024-U Q1) —
+        three of the sixteen. The rules are in section 2 and they are short: a vertical segment is
+        impossible, a curve that turns back in time is impossible, crossing the time axis is fine.</li>
+        <li><b>The numerical items are one formula each</b> — <span class="m">v² = u² + 2as</span> (2024-U
+        Q10), <span class="m">v = u + at</span> (Sample Q3), Pythagoras (2024-A Q10),
+        <span class="m">FΔt = Δp</span> (Sample Q12), area under an F–t graph (2018-S Q8), area under an
+        a–t graph (2024-A Q1). None of the arithmetic is hard. The marks go on the <em>wording</em>:
+        "retardation" is a negative acceleration, "displacement" is not distance, and "net change in
+        momentum" means the area below the axis counts against you.</li>
+        <li><b>The Newton's-law items are word traps, not physics traps.</b> "No force is acting" versus
+        "the resultant force is zero" (2024-A Q8); "F₁ and F₂ cancel each other" when they act on
+        different bodies (2024-U Q8); friction on a walking foot pointing <em>forward</em> (2018-S Q12); a
+        released stone going <em>straight</em>, not curving on (2024-U Q3, 2017-E Q11). Sections 5–7 name
+        every one of them.</li>
+        <li><b>Allen recycles the machine, not the numbers.</b> 2024-U Q10 and Sample Q3 are the same
+        uniform-retardation item; 2024-U Q3 and 2024-A Q7 are one circular-motion idea in two dresses;
+        2017-E Q8 and 2024-U Q8 are both third-law pictures; 2017-E Q2 and 2024-A Q3 are the same
+        impossible-graph question seven years apart.</li>
+      </ol>
+      <p><b>Budget accordingly.</b> This is a 12–16-mark unit — level with Mirrors &amp; Lenses as the
+      largest in Physics — and you have done all the physics before. Spend the time on the traps and on
+      the NCERT wording, not on re-learning kinematics.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">1</span>The words NCERT uses — and the four that cost marks</h2>
+    <p class="lede">Your IGCSE course says <em>resultant force</em> and <em>deceleration</em>; NCERT says
+    <b>unbalanced force</b> and <b>negative acceleration</b>; Allen's stems say <b>retardation</b>. Same
+    physics, three sets of labels — and some of the labels are traps in their own right.</p>
+
+    <div class="box def">
+      <h4>Definitions, NCERT wording</h4>
+      <ul>
+        <li><b>Distance</b> — the length of the path actually travelled. A scalar; it never decreases.</li>
+        <li><b>Displacement</b> — the shortest straight line from the starting point to the finishing
+        point, with its direction. A vector. It can be <b>zero</b> (one full lap of a track) and its
+        magnitude is <b>never more than the distance</b>.</li>
+        <li><b>Speed</b> = distance ÷ time (scalar). <b>Velocity</b> = displacement ÷ time (vector).
+        <b>Average speed</b> = total distance ÷ total time; <b>average velocity</b> = total displacement ÷
+        total time — and for uniform acceleration, average velocity = <span class="m">(u + v)/2</span>.</li>
+        <li><b>Uniform motion</b> — equal distances in equal intervals of time, <em>however small the
+        intervals</em>. <b>Non-uniform</b> otherwise.</li>
+        <li><b>Acceleration</b> = change in velocity ÷ time, in <span class="m">m/s²</span>; <b>uniform</b>
+        when the velocity changes by equal amounts in equal intervals. A negative acceleration is what
+        Allen's stems call <b>retardation</b> (IGCSE: deceleration).</li>
+      </ul>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 420 240" width="420" height="240" role="img" aria-label="A path 40 metres east then 30 metres south drawn as two solid arrows; the dashed straight line from start to finish is the displacement, 50 metres"><line x1="80" y1="48" x2="258.5" y2="48" stroke="var(--physics)" stroke-width="3"/><polygon points="264,48 254,53 254,43" fill="var(--physics)"/><line x1="264" y1="48" x2="264" y2="180.5" stroke="var(--physics)" stroke-width="3"/><polygon points="264,186 259,176 269,176" fill="var(--physics)"/><line x1="80" y1="48" x2="259.6" y2="182.7" stroke="var(--rose)" stroke-width="2.2" stroke-dasharray="6 5"/><polygon points="264,186 253,184 259,176" fill="var(--rose)"/><polyline points="252,48 252,60 264,60" fill="none" stroke="var(--muted)" stroke-width="1.2"/><circle cx="80" cy="48" r="5" fill="var(--bright)"/><circle cx="264" cy="186" r="5" fill="var(--bright)"/><text x="70" y="52" font-size="12" fill="var(--bright)" text-anchor="end" font-weight="600">start</text><text x="276" y="191" font-size="12" fill="var(--bright)" text-anchor="start" font-weight="600">finish</text><text x="172" y="36" font-size="12.5" fill="var(--physics)" text-anchor="middle" font-family="JetBrains Mono, monospace">40 m east (distance)</text><text x="278" y="121" font-size="12.5" fill="var(--physics)" text-anchor="start" font-family="JetBrains Mono, monospace">30 m south</text><text x="196" y="170" font-size="12.5" fill="var(--rose)" text-anchor="end" font-family="JetBrains Mono, monospace" font-weight="600">displacement 50 m</text><text x="196" y="186" font-size="11" fill="var(--muted)" text-anchor="end">√(40² + 30²), about 37° south of east</text><text x="80" y="226" font-size="11.5" fill="var(--muted)" text-anchor="start">distance walked = 40 + 30 = 70 m · displacement = 50 m</text></svg>
+      <figcaption>Two legs at right angles: distance adds the legs, displacement is the hypotenuse.
+      Allen picks the legs from Pythagorean triples — 3-4-5, 5-12-13, 8-15-17, 7-24-25, 16-63-65 — so the
+      square root comes out whole. If your root is not whole, you have mis-read the question.</figcaption>
+    </figure>
+
+    <div class="box trap">
+      <h4>The four wording traps</h4>
+      <ol>
+        <li><b>Distance ≠ displacement.</b> 2024-A Q10: 16 cm east then 63 cm south, and 79 cm — the
+        distance — sits there as option (2). The displacement is √(16² + 63²) = <b>65 cm</b>.</li>
+        <li><b>Retardation is quoted as a magnitude in words and as a negative number in the options.</b>
+        2024-U Q10 lists all four options with a minus sign: a = (0² − 75²)/(2 × 1000) = −5625/2000 =
+        <b>−2.8125 m/s²</b>. Do not "correct" the sign away.</li>
+        <li><b>km/h is not m/s.</b> Multiply by 5/18. NCERT's favourite four: 36 km/h = 10 m/s,
+        54 km/h = 15 m/s, 72 km/h = 20 m/s, 90 km/h = 25 m/s. Expect an option built on the unconverted
+        number.</li>
+        <li><b>"Speed" and "velocity" are different words on purpose.</b> A body on a circle at steady
+        speed has a changing velocity (section 4); a body that returns to its start has an average
+        velocity of zero however fast it went.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>Graphs — slope, area, and the shapes that cannot exist</h2>
+    <p class="lede">Three graphs describe one motion. Allen draws velocity–time graphs in nearly every
+    sitting and, once, an acceleration–time graph that NCERT never draws — and the whole game is knowing
+    what a slope and an area mean on each.</p>
+
+    <figure>
+      <svg viewBox="0 0 600 200" width="600" height="200" role="img" aria-label="Three graphs of the same journey: a distance-time graph curving up, then straight, then curving to flat; a velocity-time trapezium rising from 0 to 8 metres per second in 4 seconds, flat to 10 seconds, falling to 0 at 14 seconds; and an acceleration-time graph of steps at plus 2, zero and minus 2 metres per second squared"><g transform="translate(0,0)"><line x1="30" y1="150" x2="185.6" y2="150" stroke="currentColor" stroke-width="1.5"/><polygon points="190,150 182,153.5 182,146.5" fill="currentColor"/><line x1="30" y1="150" x2="30" y2="24.4" stroke="currentColor" stroke-width="1.5"/><polygon points="30,20 33.5,28 26.5,28" fill="currentColor"/><path d="M30,150 Q50,150 70,126 L130,54 Q150,30 170,30" fill="none" stroke="var(--physics)" stroke-width="3" stroke-linejoin="round"/><line x1="70" y1="150" x2="70" y2="154" stroke="currentColor" stroke-width="1.2"/><text x="70" y="166" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">4</text><line x1="130" y1="150" x2="130" y2="154" stroke="currentColor" stroke-width="1.2"/><text x="130" y="166" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">10</text><line x1="170" y1="150" x2="170" y2="154" stroke="currentColor" stroke-width="1.2"/><text x="170" y="166" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">14</text><text x="100" y="22" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">s – t</text><text x="12" y="30" font-size="11" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">s</text><text x="188" y="154" font-size="11" fill="currentColor" text-anchor="start" font-family="JetBrains Mono, monospace">t</text><text x="180" y="118" font-size="10" fill="var(--muted)" text-anchor="end">slope = speed</text><text x="180" y="131" font-size="10" fill="var(--muted)" text-anchor="end">curve = accelerating</text><text x="100" y="190" font-size="9.5" fill="var(--muted)" text-anchor="middle">0–4 s curving up · 4–10 s straight · 10–14 s flattening</text></g><g transform="translate(200,0)"><polygon points="30,150 70,54 130,54 170,150" fill="color-mix(in srgb,var(--physics) 16%,transparent)"/><line x1="30" y1="150" x2="185.6" y2="150" stroke="currentColor" stroke-width="1.5"/><polygon points="190,150 182,153.5 182,146.5" fill="currentColor"/><line x1="30" y1="150" x2="30" y2="24.4" stroke="currentColor" stroke-width="1.5"/><polygon points="30,20 33.5,28 26.5,28" fill="currentColor"/><polyline points="30,150 70,54 130,54 170,150" fill="none" stroke="var(--physics)" stroke-width="3" stroke-linejoin="round"/><line x1="70" y1="150" x2="70" y2="154" stroke="currentColor" stroke-width="1.2"/><text x="70" y="166" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">4</text><line x1="130" y1="150" x2="130" y2="154" stroke="currentColor" stroke-width="1.2"/><text x="130" y="166" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">10</text><line x1="170" y1="150" x2="170" y2="154" stroke="currentColor" stroke-width="1.2"/><text x="170" y="166" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">14</text><line x1="26" y1="54" x2="30" y2="54" stroke="currentColor" stroke-width="1.2"/><text x="22" y="58" font-size="10.5" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">8</text><text x="100" y="22" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">v – t</text><text x="12" y="30" font-size="11" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">v</text><text x="188" y="154" font-size="11" fill="currentColor" text-anchor="start" font-family="JetBrains Mono, monospace">t</text><text x="100" y="100" font-size="11" fill="var(--physics)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">area = 80 m</text><text x="100" y="116" font-size="10.5" fill="var(--muted)" text-anchor="middle">slope = a</text><text x="100" y="190" font-size="9.5" fill="var(--muted)" text-anchor="middle">½·4·8 + 6·8 + ½·4·8 = 16 + 48 + 16</text></g><g transform="translate(400,0)"><rect x="30" y="50" width="40" height="50" fill="color-mix(in srgb,var(--power) 18%,transparent)"/><rect x="130" y="100" width="40" height="50" fill="color-mix(in srgb,var(--force) 18%,transparent)"/><line x1="30" y1="100" x2="185.6" y2="100" stroke="currentColor" stroke-width="1.5"/><polygon points="190,100 182,103.5 182,96.5" fill="currentColor"/><line x1="30" y1="100" x2="30" y2="24.4" stroke="currentColor" stroke-width="1.5"/><polygon points="30,20 33.5,28 26.5,28" fill="currentColor"/><line x1="30" y1="100" x2="30" y2="165" stroke="currentColor" stroke-width="1.5"/><g stroke="var(--physics)" stroke-width="3"><line x1="30" y1="50" x2="70" y2="50"/><line x1="70" y1="100" x2="130" y2="100"/><line x1="130" y1="150" x2="170" y2="150"/></g><g stroke="var(--physics)" stroke-width="1.2" stroke-dasharray="3 3"><line x1="70" y1="50" x2="70" y2="100"/><line x1="130" y1="100" x2="130" y2="150"/></g><text x="70" y="178" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">4</text><line x1="70" y1="165" x2="70" y2="169" stroke="currentColor" stroke-width="1.2"/><text x="130" y="178" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">10</text><line x1="130" y1="165" x2="130" y2="169" stroke="currentColor" stroke-width="1.2"/><text x="170" y="178" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">14</text><line x1="170" y1="165" x2="170" y2="169" stroke="currentColor" stroke-width="1.2"/><line x1="30" y1="165" x2="170" y2="165" stroke="currentColor" stroke-width="1" opacity=".5"/><text x="22" y="54" font-size="10.5" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">+2</text><text x="22" y="104" font-size="10.5" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">0</text><text x="22" y="154" font-size="10.5" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">−2</text><text x="100" y="22" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">a – t</text><text x="12" y="30" font-size="11" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">a</text><text x="188" y="104" font-size="11" fill="currentColor" text-anchor="start" font-family="JetBrains Mono, monospace">t</text><text x="50" y="44" font-size="10" fill="var(--power)" text-anchor="middle" font-family="JetBrains Mono, monospace">+8</text><text x="150" y="144" font-size="10" fill="var(--force)" text-anchor="middle" font-family="JetBrains Mono, monospace">−8</text><text x="100" y="190" font-size="9.5" fill="var(--muted)" text-anchor="middle">area = Δv: +8 m/s then −8 m/s</text></g></svg>
+      <figcaption>One journey three ways: 0–4 s accelerating at +2 m/s², 4–10 s steady at 8 m/s,
+      10–14 s braking at −2 m/s². The s–t curve bends while the v–t line slopes; the a–t graph is steps.
+      Total distance 80 m from the area under the v–t trapezium.</figcaption>
+    </figure>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Graph</th><th>Slope means</th><th>Area under it means</th><th>Shapes to read</th></tr></thead>
+      <tbody>
+        <tr><td><b>distance–time</b></td><td>speed (velocity, if it is displacement–time)</td><td>—</td><td>horizontal = at rest · straight sloping = uniform motion · curving = accelerating</td></tr>
+        <tr><td><b>velocity–time</b></td><td>acceleration</td><td>displacement (distance, while v stays positive)</td><td>horizontal = uniform velocity, a = 0 · straight sloping = uniform acceleration · curving = changing acceleration</td></tr>
+        <tr><td><b>acceleration–time</b></td><td>(not asked)</td><td><b>change in velocity Δv</b> — beyond NCERT; 2024-A Q1</td><td>a constant unbalanced force gives a horizontal a–t line</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p><b>A constant force gives a straight v–t line.</b> 2024-U Q1 drew five forces on a mass on a
+    frictionless floor: 5 N right against 3 N + 2 N left (net zero), 7 N up the page against 4 N down (net
+    3 N). A net force that does not change gives an acceleration that does not change, and a constant
+    acceleration is a <em>straight</em> sloping line on a v–t graph — the key was the straight line, and the
+    three curves were there for anyone who thinks "several forces" means "complicated motion".</p>
+
+    <h3>The two shapes that cannot exist</h3>
+    <figure>
+      <svg viewBox="0 0 600 160" width="600" height="160" role="img" aria-label="Four velocity-time sketches: one with vertical segments marked impossible, one whose curve turns back in time marked impossible, one smooth curve crossing the time axis marked possible, and one with sharp corners marked possible"><g transform="translate(0,0)"><line x1="25" y1="120" x2="135.6" y2="120" stroke="currentColor" stroke-width="1.5"/><polygon points="140,120 132,123.5 132,116.5" fill="currentColor"/><line x1="25" y1="120" x2="25" y2="19.4" stroke="currentColor" stroke-width="1.5"/><polygon points="25,15 28.5,23 21.5,23" fill="currentColor"/><polyline points="25,120 55,70 55,45 95,45 95,90 125,90" fill="none" stroke="var(--physics)" stroke-width="2.8" stroke-linejoin="round"/><text x="128" y="30" font-size="20" fill="var(--force)" text-anchor="end" font-weight="700">✗</text><text x="75" y="143" font-size="11.5" fill="var(--bright)" text-anchor="middle" font-weight="600">vertical segments</text><text x="75" y="156" font-size="9.5" fill="var(--muted)" text-anchor="middle">a jump in v — impossible</text><text x="12" y="22" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">v</text><text x="139" y="124" font-size="10.5" fill="currentColor" text-anchor="start" font-family="JetBrains Mono, monospace">t</text></g><g transform="translate(150,0)"><line x1="25" y1="120" x2="135.6" y2="120" stroke="currentColor" stroke-width="1.5"/><polygon points="140,120 132,123.5 132,116.5" fill="currentColor"/><line x1="25" y1="120" x2="25" y2="19.4" stroke="currentColor" stroke-width="1.5"/><polygon points="25,15 28.5,23 21.5,23" fill="currentColor"/><path d="M25,115 C45,40 95,25 85,70 C78,95 105,110 130,45" fill="none" stroke="var(--physics)" stroke-width="2.8"/><text x="128" y="30" font-size="20" fill="var(--force)" text-anchor="end" font-weight="700">✗</text><text x="75" y="143" font-size="11.5" fill="var(--bright)" text-anchor="middle" font-weight="600">turns back in time</text><text x="75" y="156" font-size="9.5" fill="var(--muted)" text-anchor="middle">two v at one instant</text><text x="12" y="22" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">v</text><text x="139" y="124" font-size="10.5" fill="currentColor" text-anchor="start" font-family="JetBrains Mono, monospace">t</text></g><g transform="translate(300,0)"><line x1="25" y1="75" x2="135.6" y2="75" stroke="currentColor" stroke-width="1.5"/><polygon points="140,75 132,78.5 132,71.5" fill="currentColor"/><line x1="25" y1="75" x2="25" y2="19.4" stroke="currentColor" stroke-width="1.5"/><polygon points="25,15 28.5,23 21.5,23" fill="currentColor"/><path d="M25,40 C55,30 75,60 90,95 C100,118 115,120 130,110" fill="none" stroke="var(--physics)" stroke-width="2.8"/><text x="128" y="30" font-size="20" fill="var(--power)" text-anchor="end" font-weight="700">✓</text><text x="75" y="143" font-size="11.5" fill="var(--bright)" text-anchor="middle" font-weight="600">crosses the axis</text><text x="75" y="156" font-size="9.5" fill="var(--muted)" text-anchor="middle">the body just reversed</text><text x="12" y="22" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">v</text><text x="139" y="79" font-size="10.5" fill="currentColor" text-anchor="start" font-family="JetBrains Mono, monospace">t</text></g><g transform="translate(450,0)"><line x1="25" y1="120" x2="135.6" y2="120" stroke="currentColor" stroke-width="1.5"/><polygon points="140,120 132,123.5 132,116.5" fill="currentColor"/><line x1="25" y1="120" x2="25" y2="19.4" stroke="currentColor" stroke-width="1.5"/><polygon points="25,15 28.5,23 21.5,23" fill="currentColor"/><polyline points="25,115 60,40 95,90 130,60" fill="none" stroke="var(--physics)" stroke-width="2.8" stroke-linejoin="round"/><text x="128" y="30" font-size="20" fill="var(--power)" text-anchor="end" font-weight="700">✓</text><text x="75" y="143" font-size="11.5" fill="var(--bright)" text-anchor="middle" font-weight="600">sharp corners</text><text x="75" y="156" font-size="9.5" fill="var(--muted)" text-anchor="middle">a changed suddenly — fine</text><text x="12" y="22" font-size="10.5" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">v</text><text x="139" y="124" font-size="10.5" fill="currentColor" text-anchor="start" font-family="JetBrains Mono, monospace">t</text></g></svg>
+      <figcaption>A velocity–time graph may cross the axis, go negative, bend, or have corners. It may not
+      contain a vertical segment, and it may not turn back on itself in time.</figcaption>
+    </figure>
+    <p>A <b>vertical segment</b> would mean the velocity changed with no time passing — an infinite
+    acceleration, needing an infinite force. A curve that <b>turns back in time</b> would give the body two
+    velocities at one instant, and time does not run backwards. A closed loop (2024-A Q3's circle) breaks
+    both rules at once. Everything else is allowed: crossing the time axis just means the body reversed
+    (a ball thrown up); a sharp corner is a sudden change of <em>acceleration</em>, which a force can produce
+    instantly (a brake pressed); a horizontal line below the axis is a steady backward speed.</p>
+
+    <div class="box trap">
+      <h4>Read "nearly vertical" as vertical</h4>
+      <p>2017-E Q2's panel (iii) is a smooth hump whose drop is drawn <em>almost</em> vertical — steep enough
+      that the printed key treats it as a jump and rules the panel out, keeping only (ii) and (iv). Allen's
+      figures are hand-drawn: a segment that looks vertical is meant to be vertical. If you find yourself
+      arguing "but it slopes a little", you are answering a question the setter did not ask.</p>
+    </div>
+
+    <h3>The a–t graph — the 2024-A opener</h3>
+    <p>Area under an acceleration–time graph is the <b>change in velocity</b>. 2024-A Q1 shaded a 5 × 5
+    square minus a quarter circle on an a–t graph of a stopping car: <span class="m">Δv = 25(1 − π/4) m/s</span>
+    over 5 s. The key, <span class="m">250(1 − π/4) N</span>, is <span class="m">m × Δv ÷ 5 s</span> — the
+    <em>average</em> force on the 50 kg driver over the stop. The stem never said "average" and its hint
+    stopped at the area, so <span class="m">m × area = 1250(1 − π/4)</span>, which is not an option, was the
+    dead end. Clean version of the same machine: an a–t graph that is a straight line from −2 m/s² at
+    t = 0 to 0 at t = 8 s has area <span class="m">½ × 8 × (−2) = −8 m/s</span>; a train doing 20 m/s at
+    t = 0 is doing <b>12 m/s</b> at t = 8 s, and if its mass is 2 × 10⁵ kg the average braking force was
+    <span class="m">2 × 10⁵ × 8 / 8 = 2 × 10⁵ N</span>.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>The three equations of motion — and the three shortcuts Allen expects</h2>
+    <p class="lede">IGCSE let you do all of this from graphs. NCERT names the three equations and Allen
+    expects you to pick the one that skips the quantity you are not given.</p>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">v = u + at</div><div class="wh">No distance in it. <b>Sample Q3:</b> 100 − 5 × 7 = 65 m/s.</div></div>
+      <div class="fx"><div class="eq">s = ut + ½at²</div><div class="wh">No final velocity in it. From rest: s = ½at².</div></div>
+      <div class="fx"><div class="eq">v² = u² + 2as</div><div class="wh">No time in it. <b>2024-U Q10:</b> 0 = 75² + 2a(1000) → a = −2.8125 m/s².</div></div>
+      <div class="fx"><div class="eq">u, v, a, s, t</div><div class="wh">Take the direction of <b>u</b> as positive. Retardation → <b>a negative</b>. "Comes to rest" → <b>v = 0</b>. "Starts from rest" → <b>u = 0</b>.</div></div>
+    </div>
+
+    <h3>Three shortcuts</h3>
+    <ol>
+      <li><b>Average velocity for uniform acceleration is <span class="m">(u + v)/2</span></b>, so
+      <span class="m">s = (u + v)t/2</span>. "Stops in 600 m from 30 m/s — how long?" is 600 ÷ 15 =
+      <b>40 s</b> in one line, no acceleration needed.</li>
+      <li><b>Stopping</b> (v = 0): distance <span class="m">s = u²/2a</span>, time <span class="m">t = u/a</span>.
+      Double the speed → <em>four</em> times the stopping distance.</li>
+      <li><b>Free fall from rest</b> (u = 0, a = g): <span class="m">v = gt</span>, <span class="m">h = ½gt²</span>,
+      <span class="m">v² = 2gh</span>, so <span class="m">t = √(2h/g)</span>. Time goes as <b>√h</b>: from 2h the
+      fall takes √2 times as long (2018-S Q2, key 1 : √2), and it is the same for every mass — the 20 kg
+      iron sphere and the 12 kg aluminium one share their acceleration <em>and</em> their velocity at
+      every height (Sample Q11).</li>
+    </ol>
+
+    <div class="box exam">
+      <h4>Beyond NCERT, inside Allen's scope</h4>
+      <p><b>Distance covered in the n<sup>th</sup> second:</b> <span class="m">s<sub>n</sub> = u + a(2n − 1)/2</span>
+      — the difference between the whole-journey distances at n and at n − 1. Not in the Class 9 text;
+      Allen's Physics subject paper on the hub uses it. If you forget it, subtract the two
+      <span class="m">½at²</span> values by hand.</p>
+      <p><b>g:</b> use the value the question gives (Sample Q13 gives 9.8); when none is given, 10 m/s² —
+      and check that the options come out clean with it.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>Uniform circular motion — steady speed, changing velocity</h2>
+    <p class="lede">Two of the twenty items (2024-U Q3, 2024-A Q7) plus the switched-off satellite
+    (2017-E Q11) live here. The physics is one sentence; the traps are in the vocabulary.</p>
+
+    <figure>
+      <svg viewBox="0 0 470 292" width="470" height="292" role="img" aria-label="A body moving clockwise on a dashed circle. At two positions its velocity is drawn along the tangent and the centripetal force towards the centre. A dashed straight line shows the body flying off along the tangent when released"><circle cx="170" cy="150" r="85" fill="none" stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="5 5"/><circle cx="170" cy="150" r="3.5" fill="var(--bright)"/><text x="161" y="155" font-size="11.5" fill="var(--bright)" text-anchor="end" font-family="JetBrains Mono, monospace">O</text><line x1="240.3" y1="101.5" x2="346.3" y2="227.9" stroke="var(--iq)" stroke-width="1.8" stroke-dasharray="5 4"/><polygon points="349.5,231.7 340.7,227.4 346.8,222.3" fill="var(--iq)"/><circle cx="331.5" cy="210.3" r="7" fill="none" stroke="var(--iq)" stroke-width="1.6" stroke-dasharray="3 2"/><text x="458" y="252" font-size="11" fill="var(--iq)" text-anchor="end">released at the dot: it carries straight on</text><text x="458" y="266" font-size="11" fill="var(--iq)" text-anchor="end">along the tangent, at the same speed</text><line x1="240.3" y1="101.5" x2="277.9" y2="146.3" stroke="var(--physics)" stroke-width="2.6"/><polygon points="281.4,150.5 271.1,146.1 278.8,139.6" fill="var(--physics)"/><line x1="229" y1="100.5" x2="194.9" y2="129.1" stroke="var(--force)" stroke-width="2.6"/><polygon points="190.7,132.6 195.1,122.4 201.6,130" fill="var(--force)"/><circle cx="235.1" cy="95.4" r="7" fill="var(--bright)"/><text x="271" y="118.8" font-size="13" fill="var(--physics)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700">v</text><text x="202.5" y="107.2" font-size="13" fill="var(--force)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700">F</text><line x1="92.9" y1="113.4" x2="112.9" y2="58.4" stroke="var(--physics)" stroke-width="2.6"/><polygon points="114.8,53.3 116,64.4 106.6,61" fill="var(--physics)"/><line x1="97.6" y1="123.7" x2="139.5" y2="138.9" stroke="var(--force)" stroke-width="2.6"/><polygon points="144.6,140.8 133.5,142 136.9,132.6" fill="var(--force)"/><circle cx="90.1" cy="120.9" r="7" fill="var(--bright)"/><text x="89" y="84.1" font-size="13" fill="var(--physics)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700">v</text><text x="113.2" y="149.3" font-size="13" fill="var(--force)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700">F</text><text x="16" y="24" font-size="11.5" fill="var(--bright)" text-anchor="start" font-weight="600">speed constant · velocity changing</text><text x="16" y="40" font-size="11.5" fill="var(--muted)" text-anchor="start">F and a always point to the centre (centripetal)</text><text x="16" y="284" font-size="11" fill="var(--muted)" text-anchor="start">no outward force acts on the body — “centrifugal” is what inertia feels like</text></svg>
+      <figcaption>At every point the velocity is along the tangent and the unbalanced force — with the
+      acceleration it causes — points to the centre. Cut the string and the body keeps the velocity it had:
+      a straight line along the tangent (2024-U Q3, 2017-E Q11).</figcaption>
+    </figure>
+
+    <div class="box def">
+      <h4>NCERT wording</h4>
+      <p>When a body moves in a circular path with <b>uniform speed</b>, its motion is called <b>uniform
+      circular motion</b>. The <em>direction</em> of its velocity changes continuously, so the velocity
+      changes, so it is an <b>accelerated motion</b> even though the speed is constant. Speed on a circle of
+      radius r, one revolution in time t: <span class="m">v = 2πr / t</span>.</p>
+    </div>
+
+    <ul>
+      <li>The force that keeps a body on the circle acts <b>towards the centre</b> — <em>centripetal</em>,
+      "centre-seeking" (2024-A Q7's X). The velocity is along the tangent (its Y). A cornering car, a stone
+      on a string, the Moon round the Earth: one horizontal force each, all pointing inward.</li>
+      <li><b>Released, the body goes straight along the tangent</b> at the speed it had — that is the first
+      law (section 5), and it is why a hammer-thrower lets go at the right instant and why sparks fly off a
+      grinding wheel in straight lines.</li>
+      <li><b>"Centrifugal force" is not a force on the body.</b> The outward throw you feel on a turn is your
+      inertia carrying you straight while the vehicle turns underneath you. 2024-A Q7 offered it in two of
+      its four options as bait.</li>
+    </ul>
+
+    <div class="box trap">
+      <h4>Assertion–Reason: judge each sentence on its own</h4>
+      <p>2024-U Q3 — <em>Assertion:</em> a stone whirled on a thread moves in a straight line when
+      released (true). <em>Reason:</em> "along the circular path the direction of motion remains the same
+      at every point" (false — it changes at every point; that is the whole point of the chapter). So
+      option (3), <b>A true, R false</b>. Students who agree with the assertion and stop reading tick (1).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>Force, balanced and unbalanced — inertia and the first law</h2>
+    <p class="lede">NCERT's chapter opens with balanced versus unbalanced forces, then states the first law
+    and names <em>inertia</em>. Allen's Q8-type items test whether you can tell "no force" from "no
+    <em>net</em> force".</p>
+
+    <div class="box def">
+      <h4>NCERT wording</h4>
+      <ul>
+        <li>A <b>force</b> is a push or a pull. It can change the <b>speed</b> of a body, its <b>direction of
+        motion</b>, or its <b>shape</b>. SI unit: the <b>newton</b> (N).</li>
+        <li><b>Balanced forces</b> add to zero: they do not change the state of rest or of motion (they may
+        change the shape — the two sides of a stretched spring). An <b>unbalanced force</b> (net force,
+        resultant force) produces an <b>acceleration in its own direction</b>.</li>
+        <li><b>First law of motion:</b> an object remains in a state of rest, or of uniform motion in a
+        straight line, unless compelled to change that state by an applied force — an <em>unbalanced</em>
+        one, as the paragraph before it in NCERT makes clear.</li>
+        <li><b>Inertia</b> is the natural tendency of an object to resist a change in its state of rest or
+        of uniform motion. <b>Mass is the measure of inertia</b>: the heavier the body, the more force it takes
+        to change its motion.</li>
+      </ul>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 480 250" width="480" height="250" role="img" aria-label="A marble falling through a tall cylinder of water. Its positions are drawn at equal time intervals: spacing increases in region A, decreases in region B, and is constant in region C"><rect x="150" y="30" width="44" height="206" rx="3" fill="none" stroke="var(--bright)" stroke-width="2"/><rect x="152" y="52" width="40" height="182" fill="color-mix(in srgb,var(--chem) 16%,transparent)"/><line x1="152" y1="52" x2="192" y2="52" stroke="var(--chem)" stroke-width="1.6"/><circle cx="172" cy="36" r="3.2" fill="var(--iq)"/><circle cx="172" cy="43" r="3.2" fill="var(--iq)"/><circle cx="172" cy="52" r="3.2" fill="var(--iq)"/><circle cx="172" cy="63" r="3.2" fill="var(--iq)"/><circle cx="172" cy="76" r="3.2" fill="var(--iq)"/><circle cx="172" cy="91" r="3.2" fill="var(--iq)"/><circle cx="172" cy="108" r="3.2" fill="var(--iq)"/><circle cx="172" cy="123" r="3.2" fill="var(--iq)"/><circle cx="172" cy="136" r="3.2" fill="var(--iq)"/><circle cx="172" cy="147" r="3.2" fill="var(--iq)"/><circle cx="172" cy="156" r="3.2" fill="var(--iq)"/><circle cx="172" cy="165" r="3.2" fill="var(--iq)"/><circle cx="172" cy="174" r="3.2" fill="var(--iq)"/><circle cx="172" cy="183" r="3.2" fill="var(--iq)"/><circle cx="172" cy="192" r="3.2" fill="var(--iq)"/><circle cx="172" cy="201" r="3.2" fill="var(--iq)"/><circle cx="172" cy="210" r="3.2" fill="var(--iq)"/><circle cx="172" cy="219" r="3.2" fill="var(--iq)"/><circle cx="172" cy="228" r="3.2" fill="var(--iq)"/><path d="M204,33 h8 v63 h-8" fill="none" stroke="var(--force)" stroke-width="1.6"/><text x="224" y="60.5" font-size="12.5" fill="var(--force)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="700">A</text><text x="244" y="60.5" font-size="11.5" fill="var(--bright)" text-anchor="start" font-weight="600">speed increasing</text><text x="244" y="74.5" font-size="10.5" fill="var(--muted)" text-anchor="start">weight > drag: unbalanced, down</text><path d="M204,103 h8 v56 h-8" fill="none" stroke="var(--force)" stroke-width="1.6"/><text x="224" y="127" font-size="12.5" fill="var(--force)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="700">B</text><text x="244" y="127" font-size="11.5" fill="var(--bright)" text-anchor="start" font-weight="600">speed decreasing</text><text x="244" y="141" font-size="10.5" fill="var(--muted)" text-anchor="start">drag > weight: unbalanced, up</text><path d="M204,162 h8 v70 h-8" fill="none" stroke="var(--power)" stroke-width="1.6"/><text x="224" y="193" font-size="12.5" fill="var(--power)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="700">C</text><text x="244" y="193" font-size="11.5" fill="var(--bright)" text-anchor="start" font-weight="600">speed constant</text><text x="244" y="207" font-size="10.5" fill="var(--muted)" text-anchor="start">drag = weight: balanced, net force 0</text><text x="20" y="62" font-size="10.5" fill="var(--muted)" text-anchor="start">positions at</text><text x="20" y="76" font-size="10.5" fill="var(--muted)" text-anchor="start">equal time</text><text x="20" y="90" font-size="10.5" fill="var(--muted)" text-anchor="start">intervals</text><text x="140" y="246" font-size="10.5" fill="var(--muted)" text-anchor="middle">2017-E Q12: unbalanced in A and B only</text></svg>
+      <figcaption>2017-E Q12, redrawn. Equal time intervals between positions: the gaps grow while the marble
+      speeds up (weight exceeds the water's drag), shrink while it slows (drag exceeds weight), and stay
+      constant once drag equals weight. Only the constant-speed stretch has balanced forces — <b>balanced is
+      not force-free</b>: two forces act in C, they just cancel.</figcaption>
+    </figure>
+
+    <h3>Inertia in three everyday flavours</h3>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Inertia of…</th><th>What the body "wants"</th><th>The examples Allen uses</th></tr></thead>
+      <tbody>
+        <tr><td><b>rest</b></td><td>to stay put</td><td>passengers jerk <em>backward</em> when a bus starts; beating a carpet shakes the dust out; a coin on a card over a glass drops in when the card is flicked</td></tr>
+        <tr><td><b>motion</b></td><td>to keep going at the same speed</td><td>passengers lurch <em>forward</em> when the bus brakes (seat belts); a long-jumper's run-up; a stopped bus's luggage sliding on</td></tr>
+        <tr><td><b>direction</b></td><td>to keep going the same way</td><td>thrown outward on a sharp turn; sparks off a grinding wheel leave along tangents; mud flies off a spinning tyre</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="box trap">
+      <h4>"No force" is never the answer for a body at constant velocity</h4>
+      <p>2024-A Q8: a train moving east at a steady 20 m/s. Forces act on it all the time — its weight, the
+      track pushing up, the engine pulling, friction and air dragging back — and they <b>add to zero</b>.
+      The key is <b>(4) the resultant force is zero</b>; <em>"(1) no force is acting"</em> is the bait, and
+      so are the two options that put a net force east or west. Same idea in 2017-E Q12's region C: a
+      constant speed means the drag has grown to <em>equal</em> the weight, not that the forces have gone.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>The second law — momentum, F = ma, impulse</h2>
+    <p class="lede">NCERT states the second law through momentum, then derives F = ma from it. Allen asks
+    it both ways, and draws the F–t graph that IGCSE never drew.</p>
+
+    <div class="box def">
+      <h4>NCERT wording</h4>
+      <ul>
+        <li><b>Momentum</b> <span class="m">p = mv</span> — mass × velocity; a vector along the velocity;
+        SI unit <span class="m">kg m/s</span>.</li>
+        <li><b>Second law of motion:</b> the rate of change of momentum of a body is proportional to the
+        applied unbalanced force, and takes place in the direction of the force.
+        <span class="m">F = (mv − mu)/t = ma</span>. One newton is the force that gives 1 kg an acceleration
+        of 1 m/s²: <span class="m">1 N = 1 kg m/s²</span>.</li>
+        <li><b>Impulse</b> (Allen's word — NCERT Class 9 writes the equation without naming it):
+        <span class="m">F × t = mv − mu = Δp</span>. Unit <span class="m">N s</span>, which is the same thing
+        as kg m/s. <b>Sample Q12:</b> 980 N × 0.1 s = <b>98 N s</b>.</li>
+      </ul>
+    </div>
+
+    <p><b>The same Δp, spread over a longer time, needs a smaller force.</b> That one sentence explains the
+    cricketer drawing his hands back while catching, the high-jump pit's padding, a car's crumple zone,
+    the bent knees of a landing gymnast. Turned round — a karate chop, a hammer — a short time means a
+    large force.</p>
+
+    <figure>
+      <svg viewBox="0 0 595 154" width="595" height="154" role="img" aria-label="Force-time graph: force rises in a straight line from 0 to 6 newtons at 3 seconds, falls in a straight line back to 0 at 9 seconds, then drops to minus 3 newtons and stays there until 13 seconds"><polygon points="60,94 165,34 375,94" fill="color-mix(in srgb,var(--power) 18%,transparent)"/><polygon points="375,94 375,124 515,124 515,94" fill="color-mix(in srgb,var(--force) 18%,transparent)"/><g stroke="currentColor" stroke-width="1" opacity=".22"><line x1="95" y1="24" x2="95" y2="134"/><line x1="130" y1="24" x2="130" y2="134"/><line x1="165" y1="24" x2="165" y2="134"/><line x1="200" y1="24" x2="200" y2="134"/><line x1="235" y1="24" x2="235" y2="134"/><line x1="270" y1="24" x2="270" y2="134"/><line x1="305" y1="24" x2="305" y2="134"/><line x1="340" y1="24" x2="340" y2="134"/><line x1="375" y1="24" x2="375" y2="134"/><line x1="410" y1="24" x2="410" y2="134"/><line x1="445" y1="24" x2="445" y2="134"/><line x1="480" y1="24" x2="480" y2="134"/><line x1="515" y1="24" x2="515" y2="134"/><line x1="60" y1="134" x2="515" y2="134"/><line x1="60" y1="124" x2="515" y2="124"/><line x1="60" y1="114" x2="515" y2="114"/><line x1="60" y1="104" x2="515" y2="104"/><line x1="60" y1="94" x2="515" y2="94"/><line x1="60" y1="84" x2="515" y2="84"/><line x1="60" y1="74" x2="515" y2="74"/><line x1="60" y1="64" x2="515" y2="64"/><line x1="60" y1="54" x2="515" y2="54"/><line x1="60" y1="44" x2="515" y2="44"/><line x1="60" y1="34" x2="515" y2="34"/><line x1="60" y1="24" x2="515" y2="24"/></g><line x1="60" y1="94" x2="524.6" y2="94" stroke="currentColor" stroke-width="1.5"/><polygon points="529,94 521,97.5 521,90.5" fill="currentColor"/><line x1="60" y1="136" x2="60" y2="22.4" stroke="currentColor" stroke-width="1.5"/><polygon points="60,18 63.5,26 56.5,26" fill="currentColor"/><polyline points="60,94 165,34 375,94 375,124 515,124 515,94" fill="none" stroke="var(--physics)" stroke-width="3" stroke-linejoin="round"/><line x1="165" y1="90" x2="165" y2="98" stroke="currentColor" stroke-width="1.4"/><text x="165" y="142" font-size="11" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">3</text><line x1="375" y1="90" x2="375" y2="98" stroke="currentColor" stroke-width="1.4"/><text x="375" y="142" font-size="11" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">9</text><line x1="515" y1="90" x2="515" y2="98" stroke="currentColor" stroke-width="1.4"/><text x="515" y="142" font-size="11" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">13</text><text x="52" y="38" font-size="11" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">6</text><text x="52" y="68" font-size="11" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">3</text><text x="52" y="98" font-size="11" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">0</text><text x="52" y="128" font-size="11" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">−3</text><text x="52" y="20" font-size="11.5" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">F / N</text><text x="533" y="98" font-size="11.5" fill="currentColor" text-anchor="start" font-family="JetBrains Mono, monospace">t / s</text><text x="200" y="76" font-size="12" fill="var(--power)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700">+27</text><text x="445" y="111" font-size="12" fill="var(--force)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700">−12</text><text x="525.5" y="28" font-size="10.5" fill="var(--muted)" text-anchor="end">areas in N s</text></svg>
+      <figcaption>Area under a force–time graph is the change in momentum, <em>sign included</em>. Here the
+      triangle gives ½ × 9 × 6 = +27 N s and the strip below the axis gives 4 × (−3) = −12 N s, so
+      Δp = +15 kg m/s. 2018-S Q8 uses the same rule — its negative part is a small triangle (9–11 s) plus a
+      strip (11–13 s): 18 − 2 − 4 = 12 — a positive piece, then negative pieces that you must subtract, not
+      ignore.</figcaption>
+    </figure>
+
+    <h3>Conservation of momentum</h3>
+    <p>If no external unbalanced force acts on a system, its total momentum does not change:
+    <span class="m">m₁u₁ + m₂u₂ = m₁v₁ + m₂v₂</span>. Starting from rest, the two parts move off with
+    <em>equal and opposite</em> momenta — a gun and its bullet (<span class="m">m<sub>gun</sub>v<sub>gun</sub> =
+    m<sub>bullet</sub>v<sub>bullet</sub></span>), a rocket and its exhaust, and the balloon car of 2017-E Q8.
+    It is also the whole answer to Sample Q5: a child stuck on a frictionless floor cannot push on the
+    floor sideways, so running, rolling and jumping do nothing — but <b>throwing mass away</b> (spitting,
+    coughing, tossing a shoe) sends the child the other way.</p>
+
+    <div class="box exam">
+      <h4>Scope note</h4>
+      <p>The 2023 rationalised NCERT print dropped its conservation-of-momentum section; Allen has not —
+      the sample paper's Q5 is a conservation item, and the Physics subject paper on the hub asks a recoil
+      sum. Learn it as part of the third law (next section), which is where NCERT derived it from.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Δp carries direction</h4>
+      <p>A ball of mass m hitting a wall at speed v and bouncing straight back at v has
+      <span class="m">Δp = (−mv) − (+mv) = −2mv</span> — magnitude <b>2mv</b>, not zero, not mv. Take the
+      incoming direction as positive, give the return velocity a minus sign, then subtract final minus
+      initial. The forgotten sign turns 2mv into 0 and is the single most common momentum error on this
+      page.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">7</span>The third law — pairs act on <em>different</em> bodies</h2>
+    <p class="lede">Four of the sixteen items are third-law pictures or statements. Every one of them turns
+    on the same clause: the two forces of a pair act on two different objects.</p>
+
+    <div class="box def">
+      <h4>NCERT wording</h4>
+      <p><b>Third law of motion:</b> to every action there is an equal and opposite reaction — and the two
+      act on <b>two different objects</b>. They are equal in magnitude, opposite in direction, simultaneous,
+      and of the same kind (both contact forces, or both gravitational — the law holds for non-contact
+      forces too, 2018-S Q12).</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 690 232" width="690" height="232" role="img" aria-label="Three pictures of Newton's third law: a person pushing a wall, with the force on the wall drawn to the right and the equal force on the hands to the left; a toy car with a balloon whose air escapes backward while the car is pushed forward; and a walking foot pushing the ground backward while friction pushes the foot forward"><g transform="translate(0,0)"><rect x="120" y="24" width="26" height="166" fill="color-mix(in srgb,var(--muted) 30%,transparent)" stroke="currentColor" stroke-width="1.6"/><g stroke="currentColor" stroke-width="1" opacity=".55"><line x1="146" y1="40" x2="158" y2="30"/><line x1="146" y1="70" x2="158" y2="60"/><line x1="146" y1="100" x2="158" y2="90"/><line x1="146" y1="130" x2="158" y2="120"/><line x1="146" y1="160" x2="158" y2="150"/></g><circle cx="36" cy="58" r="9" fill="none" stroke="var(--bright)" stroke-width="2.2"/><g stroke="var(--bright)" stroke-width="2.4" stroke-linecap="round" fill="none"><line x1="40" y1="67" x2="52" y2="126"/><line x1="46" y1="96" x2="116" y2="96"/><line x1="52" y1="126" x2="32" y2="186"/><line x1="52" y1="126" x2="78" y2="186"/></g><line x1="14" y1="190" x2="120" y2="190" stroke="currentColor" stroke-width="1.6"/><line x1="122" y1="84" x2="170.5" y2="84" stroke="var(--force)" stroke-width="2.8"/><polygon points="176,84 166,89 166,79" fill="var(--force)"/><line x1="116" y1="84" x2="67.5" y2="84" stroke="var(--physics)" stroke-width="2.8"/><polygon points="62,84 72,79 72,89" fill="var(--physics)"/><text x="164" y="66" font-size="10.5" fill="var(--force)" text-anchor="start" font-weight="600">on the wall</text><text x="164" y="78" font-size="9.5" fill="var(--force)" text-anchor="start">by the hands</text><text x="82" y="66" font-size="10.5" fill="var(--physics)" text-anchor="middle" font-weight="600">on the hands</text><text x="82" y="78" font-size="9.5" fill="var(--physics)" text-anchor="middle">by the wall</text><text x="115" y="216" font-size="10.5" fill="var(--muted)" text-anchor="middle">equal · opposite · different bodies</text></g><g transform="translate(230,0)"><rect x="70" y="128" width="100" height="30" rx="5" fill="color-mix(in srgb,var(--physics) 14%,transparent)" stroke="var(--physics)" stroke-width="2"/><circle cx="92" cy="166" r="8" fill="none" stroke="var(--bright)" stroke-width="2"/><circle cx="148" cy="166" r="8" fill="none" stroke="var(--bright)" stroke-width="2"/><line x1="20" y1="175" x2="210" y2="175" stroke="currentColor" stroke-width="1.6"/><ellipse cx="120" cy="92" rx="32" ry="24" fill="color-mix(in srgb,var(--rose) 18%,transparent)" stroke="var(--rose)" stroke-width="2"/><path d="M90,96 L80,100 L80,92 Z" fill="var(--rose)"/><line x1="76" y1="96" x2="35.5" y2="96" stroke="var(--force)" stroke-width="2.6"/><polygon points="30,96 40,91 40,101" fill="var(--force)"/><text x="48" y="118" font-size="10.5" fill="var(--force)" text-anchor="middle" font-weight="600">air pushed back</text><line x1="172" y1="143" x2="212.5" y2="143" stroke="var(--physics)" stroke-width="2.6"/><polygon points="218,143 208,148 208,138" fill="var(--physics)"/><text x="196" y="196" font-size="10.5" fill="var(--physics)" text-anchor="end" font-weight="600">car pushed forward</text><text x="115" y="216" font-size="10.5" fill="var(--muted)" text-anchor="middle">2017-E Q8: the car moves forward</text></g><g transform="translate(460,0)"><line x1="20" y1="170" x2="205" y2="170" stroke="currentColor" stroke-width="1.6"/><g stroke="currentColor" stroke-width="1" opacity=".55"><line x1="30" y1="170" x2="22" y2="180"/><line x1="60" y1="170" x2="52" y2="180"/><line x1="90" y1="170" x2="82" y2="180"/><line x1="120" y1="170" x2="112" y2="180"/><line x1="150" y1="170" x2="142" y2="180"/><line x1="180" y1="170" x2="172" y2="180"/></g><line x1="104" y1="60" x2="92" y2="160" stroke="var(--bright)" stroke-width="2.6" stroke-linecap="round"/><path d="M78,160 L118,160 L122,168 L74,168 Z" fill="var(--bright)"/><line x1="96" y1="184" x2="57.5" y2="184" stroke="var(--force)" stroke-width="2.6"/><polygon points="52,184 62,179 62,189" fill="var(--force)"/><text x="80" y="200" font-size="10.5" fill="var(--force)" text-anchor="middle" font-weight="600">foot pushes ground back</text><line x1="100" y1="148" x2="138.5" y2="148" stroke="var(--physics)" stroke-width="2.6"/><polygon points="144,148 134,153 134,143" fill="var(--physics)"/><text x="106" y="136" font-size="10" fill="var(--physics)" text-anchor="start" font-weight="600">friction pushes foot on</text><line x1="130" y1="50" x2="167.6" y2="50" stroke="var(--muted)" stroke-width="1.6"/><polygon points="172,50 164,53.5 164,46.5" fill="var(--muted)"/><text x="118" y="40" font-size="10.5" fill="var(--muted)" text-anchor="start">walking this way</text><text x="115" y="216" font-size="10.5" fill="var(--muted)" text-anchor="middle">2018-S Q12: friction on the foot points forward</text></g></svg>
+      <figcaption>Three pairs. In each picture the two arrows are the same size and point opposite ways —
+      and each is drawn on a different object. That is why they never cancel.</figcaption>
+    </figure>
+
+    <ul>
+      <li><b>Find the pair by swapping the nouns.</b> "Hands push wall" ↔ "wall pushes hands". "Earth pulls
+      book down" ↔ "book pulls Earth up". If the swap gives the same object, it is not a pair.</li>
+      <li><b>Weight and the table's push on a resting book are <em>not</em> a pair.</b> Both act on the book;
+      they are equal because the book is not accelerating (first law), not because of the third law. The
+      partner of the table's push is the book's push on the table.</li>
+      <li><b>2024-U Q8:</b> Rohan pushes a wall; F₁ is the force on the wall, F₂ the force on Rohan. Key
+      (4): equal and opposite. Option (1), "F₁ and F₂ cancel each other", is the bait — forces on different
+      bodies cannot cancel; the wall does not move because <em>the ground</em> holds it.</li>
+      <li><b>Walking:</b> the foot pushes the ground backward; the ground's friction pushes the foot
+      <b>forward</b>. So friction on a walker's feet points the way they are walking — 2018-S Q12's
+      "walking south, friction acts north" is the incorrect statement. Rowing (oar pushes water back),
+      swimming, a rocket, a recoiling gun: the same sentence.</li>
+    </ul>
+
+    <div class="box exam">
+      <h4>The rest of 2018-S Q12, plus one more friction fact</h4>
+      <p>Its other two true statements: the <b>normal force</b> always acts perpendicular to the surfaces
+      in contact, and <b>friction is a dissipative force</b> — it turns kinetic energy into heat. (Its
+      third, that the third law holds for non-contact forces, is in the box above.) One more that Allen
+      asks: <b>static friction adjusts</b> — it matches your push up to a limit, and the object moves only
+      once the push exceeds it, so "friction always equals the applied force" is false once things are
+      sliding.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">8</span>Fact bank — everything above on one screen</h2>
+    <div class="bank">
+      <div class="fx"><div class="eq">|displacement| ≤ distance</div><div class="wh">Straight line start→finish, with direction. Right-angle legs → Pythagorean triple. A lap → zero.</div></div>
+      <div class="fx"><div class="eq">km/h × 5/18 = m/s</div><div class="wh">36 → 10 · 54 → 15 · 72 → 20 · 90 → 25.</div></div>
+      <div class="fx"><div class="eq">v = u + at · s = ut + ½at² · v² = u² + 2as</div><div class="wh">Pick the one without the quantity you lack. Retardation: <b>a &lt; 0</b>. Stops: v = 0.</div></div>
+      <div class="fx"><div class="eq">v<sub>avg</sub> = (u + v)/2</div><div class="wh">Uniform a only. s = (u + v)t/2. Stopping: s = u²/2a, t = u/a.</div></div>
+      <div class="fx"><div class="eq">Free fall: t = √(2h/g)</div><div class="wh">t ∝ √h → 2h takes √2 t. v = √(2gh). Same a and v for every mass.</div></div>
+      <div class="fx"><div class="eq">s–t slope = v · v–t slope = a</div><div class="wh">v–t area = s. <b>a–t area = Δv</b> (2024-A Q1). Constant force → straight v–t line.</div></div>
+      <div class="fx"><div class="eq">Impossible v–t: vertical · turns back</div><div class="wh">Fine: crosses the axis, sharp corners, below the axis. A circle breaks both rules.</div></div>
+      <div class="fx"><div class="eq">s<sub>n</sub> = u + a(2n − 1)/2</div><div class="wh">Distance in the n<sup>th</sup> second. Beyond NCERT; Allen uses it.</div></div>
+      <div class="fx"><div class="eq">Circle: v = 2πr/t</div><div class="wh">Speed constant, velocity changing, <b>accelerated</b>. F and a to the centre. Released → tangent. No "centrifugal" force on the body.</div></div>
+      <div class="fx"><div class="eq">First law · inertia</div><div class="wh">Mass measures inertia: rest / motion / direction. Constant velocity ⇒ <b>net force zero</b>, never "no force".</div></div>
+      <div class="fx"><div class="eq">F = ma = Δp/Δt · p = mv</div><div class="wh">1 N = 1 kg m/s². p in kg m/s. Impulse FΔt = Δp in N s (same unit).</div></div>
+      <div class="fx"><div class="eq">F–t area = Δp</div><div class="wh">Below the axis counts negative. Rebound at the same speed: Δp = 2mv.</div></div>
+      <div class="fx"><div class="eq">m₁u₁ + m₂u₂ = m₁v₁ + m₂v₂</div><div class="wh">No external force. From rest: m<sub>g</sub>v<sub>g</sub> = m<sub>b</sub>v<sub>b</sub>. Dropped from the rationalised print; Allen asks it.</div></div>
+      <div class="fx"><div class="eq">Third law: different bodies</div><div class="wh">Equal, opposite, simultaneous, never cancel; holds for non-contact forces. Walking: friction on the foot points <b>forward</b>. Normal ⟂ surface. Friction dissipates.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">9</span>Five worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">Try each before opening the working and give yourself <b>90 seconds</b> — the real
+    paper's average. The elimination reasoning is written out because on the day, ruling two options out
+    is worth almost as much as solving.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">2024-U Q1 archetype, carried one step on · ~90 seconds</span></div>
+      <p>A block of mass <span class="m">2 kg</span> lies on a frictionless floor and is pulled by the five
+      horizontal forces shown, viewed from above. It starts from rest. After <span class="m">3 s</span> its
+      speed and the distance it has moved are</p>
+      <figure><svg viewBox="0 0 340 280" width="340" height="280" role="img" aria-label="A 2 kilogram block seen from above with five forces drawn to scale: 10 newtons up the page, 6 newtons down, 5 newtons to the right, and 3 newtons and 2 newtons to the left"><rect x="145" y="120" width="50" height="40" rx="5" fill="color-mix(in srgb,var(--physics) 14%,transparent)" stroke="var(--physics)" stroke-width="2.2"/><text x="170" y="145" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">2 kg</text><line x1="170" y1="118" x2="170" y2="23.5" stroke="var(--force)" stroke-width="2.6"/><polygon points="170,18 175,28 165,28" fill="var(--force)"/><text x="178" y="30" font-size="12" fill="var(--force)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">10 N</text><line x1="170" y1="162" x2="170" y2="216.5" stroke="var(--force)" stroke-width="2.6"/><polygon points="170,222 165,212 175,212" fill="var(--force)"/><text x="178" y="220" font-size="12" fill="var(--force)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">6 N</text><line x1="197" y1="140" x2="241.5" y2="140" stroke="var(--force)" stroke-width="2.6"/><polygon points="247,140 237,145 237,135" fill="var(--force)"/><text x="222" y="132" font-size="12" fill="var(--force)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">5 N</text><line x1="143" y1="131" x2="118" y2="131" stroke="var(--force)" stroke-width="2.6"/><polygon points="113,131 122,126.5 122,135.5" fill="var(--force)"/><text x="128" y="123" font-size="12" fill="var(--force)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">3 N</text><line x1="143" y1="150" x2="127.4" y2="150" stroke="var(--force)" stroke-width="2.6"/><polygon points="123,150 131,146 131,154" fill="var(--force)"/><text x="133" y="168" font-size="12" fill="var(--force)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">2 N</text><line x1="30" y1="64" x2="65.6" y2="64" stroke="var(--muted)" stroke-width="1.5"/><polygon points="70,64 62,67.5 62,60.5" fill="var(--muted)"/><line x1="30" y1="64" x2="30" y2="28.4" stroke="var(--muted)" stroke-width="1.5"/><polygon points="30,24 33.5,32 26.5,32" fill="var(--muted)"/><text x="74" y="68" font-size="10.5" fill="var(--muted)" text-anchor="start" font-family="JetBrains Mono, monospace">x</text><text x="26" y="20" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace">y</text><text x="326" y="270" font-size="10.5" fill="var(--muted)" text-anchor="end">frictionless floor, seen from above · arrows to scale</text></svg></figure>
+      <div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>6 m/s and 9 m</div>
+        <div class="we-opt"><span class="ob">2</span>6 m/s and 18 m</div>
+        <div class="we-opt"><span class="ob">3</span>12 m/s and 18 m</div>
+        <div class="we-opt"><span class="ob">4</span>12 m/s and 36 m</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — net force, one axis at a time.</b> Along x: <span class="m">5 − 3 − 2 = 0</span>. Along y:
+        <span class="m">10 − 6 = 4 N</span>, up the page. A constant 4 N, so the motion is uniformly accelerated
+        along +y.</p>
+        <p><b>Step 2 —</b> <span class="m">a = F/m = 4/2 = 2 m/s²</span>.</p>
+        <p><b>Step 3 —</b> <span class="m">v = u + at = 0 + 2 × 3 = 6 m/s</span>; <span class="m">s = ut + ½at² =
+        ½ × 2 × 3² = 9 m</span>. Option (1).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2) 6 m/s, 18 m</b> — <span class="m">s = at²</span>, the ½ dropped.
+        <b>(3) 12 m/s, 18 m</b> — the 4 N net force used <em>as</em> the acceleration; the mass was never
+        divided in, then <span class="m">s = ½ × 4 × 9 = 18</span>.
+        <b>(4) 12 m/s, 36 m</b> — both slips at once.
+        <b>Elimination.</b> 4 N on 2 kg cannot give 4 m/s², so (3) and (4) go before any arithmetic; between
+        (1) and (2) it is only whether you remembered the ½.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">The 2024-U Q10 / Sample Q3 machine, with the km/h step · ~90 seconds</span></div>
+      <p>An auto-rickshaw travelling at <span class="m">54 km/h</span> on the Outer Ring Road brakes with a
+      uniform retardation of <span class="m">2.5 m/s²</span>. The distance it travels before stopping, and the
+      time it takes, are</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>45 m and 3 s</div>
+        <div class="we-opt key"><span class="ob">2</span>45 m and 6 s</div>
+        <div class="we-opt"><span class="ob">3</span>90 m and 6 s</div>
+        <div class="we-opt"><span class="ob">4</span>583 m and 21.6 s</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — units.</b> <span class="m">54 km/h × 5/18 = 15 m/s</span>.</p>
+        <p><b>Step 2 — distance,</b> no time given so <span class="m">v² = u² + 2as</span> with v = 0 and
+        a = −2.5: <span class="m">0 = 225 − 5s → s = 45 m</span>.</p>
+        <p><b>Step 3 — time,</b> <span class="m">v = u + at: 0 = 15 − 2.5t → t = 6 s</span>. Or the shortcut:
+        average velocity while braking is 7.5 m/s, and 45 ÷ 7.5 = 6 s. Option (2).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1) 45 m, 3 s</b> — <span class="m">t = s/u = 45/15</span>: treats the braking auto as if it kept
+        15 m/s throughout; while braking its average is half that.
+        <b>(3) 90 m, 6 s</b> — the 2 in <span class="m">2as</span> forgotten, <span class="m">s = u²/a</span>.
+        <b>(4) 583 m, 21.6 s</b> — 54 used as if it were m/s: <span class="m">54²/5 = 583.2</span> and
+        <span class="m">54/2.5 = 21.6</span>. The tell: an auto does not need half a kilometre to stop.
+        <b>Elimination.</b> Any option built on 54 as a speed in m/s is out at sight; then
+        <span class="m">s = u²/2a</span> decides 45 against 90, and only (1) and (2) remain.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">Multi-statement, five clauses · 2024-U Q8, 2024-A Q8 and 2018-S Q12 in one item · ~2 minutes</span></div>
+      <p>Consider the following statements.</p>
+      <ol class="roman">
+        <li>For a book lying at rest on a table, the weight of the book and the upward force of the table on
+        the book form an action–reaction pair.</li>
+        <li>When a stationary bus starts suddenly, the passengers fall backward because of the inertia of
+        rest.</li>
+        <li>A train moving along a straight track at a constant 20 m/s has no force acting on it.</li>
+        <li>The action and reaction of Newton's third law always act on two different bodies.</li>
+        <li>A fielder draws his hands back while catching a fast ball so that the ball's momentum is
+        brought to zero over a longer time and the force on his hands is smaller.</li>
+      </ol>
+      <p>Which of the statements are correct?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>I, II, IV and V only</div>
+        <div class="we-opt"><span class="ob">2</span>II, III, IV and V only</div>
+        <div class="we-opt key"><span class="ob">3</span>II, IV and V only</div>
+        <div class="we-opt"><span class="ob">4</span>I, IV and V only</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>I — false.</b> Both forces act on the <em>book</em>; a third-law pair never acts on one body. The
+        partner of the Earth's pull on the book is the book's pull on the Earth; the partner of the table's
+        push on the book is the book's push on the table.</p>
+        <p><b>II — true.</b> The lower body moves off with the bus; the upper body's inertia of rest keeps it
+        where it was, so the passenger tips backward.</p>
+        <p><b>III — false.</b> Weight, the track's push, the engine's pull, friction — plenty of forces act;
+        they add to zero.</p>
+        <p><b>IV — true.</b> By definition.</p>
+        <p><b>V — true.</b> <span class="m">F = Δp/Δt</span>: same Δp, longer Δt, smaller F.</p>
+        <p>So II, IV and V — option (3).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> accepts I — the commonest third-law error in the chapter: equal-and-opposite is necessary
+        for a pair but not sufficient; the two must be on different bodies.
+        <b>(2)</b> accepts III — the "no force" trap of 2024-A Q8.
+        <b>(4)</b> accepts I <em>and</em> rejects II — two slips at once: the pair error again, plus muddling
+        inertia of rest (lurch <em>backward</em> at a start) with inertia of motion (lurch <em>forward</em> at
+        a stop).
+        <b>Elimination.</b> I and III are each a named trap on this page; any option containing either goes.
+        That leaves (3) on its own — you never need to judge V.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">2018-S Q8 archetype, carried to the velocity · ~2 minutes</span></div>
+      <p>The graph shows the force acting on a <span class="m">4 kg</span> trolley along a straight track. At
+      <span class="m">t = 0</span> the trolley is already moving at <span class="m">3 m/s</span> in the direction
+      in which the positive force acts. Its velocity at <span class="m">t = 8 s</span> is</p>
+      <figure><svg viewBox="0 0 455 184" width="455" height="184" role="img" aria-label="Force-time graph: force rises in a straight line from 0 to 8 newtons over the first 2 seconds, stays at 8 newtons until 5 seconds, drops at once to minus 4 newtons and stays there until 8 seconds"><polygon points="60,114 130,34 235,34 235,114" fill="color-mix(in srgb,var(--power) 18%,transparent)"/><polygon points="235,114 235,154 340,154 340,114" fill="color-mix(in srgb,var(--force) 18%,transparent)"/><g stroke="currentColor" stroke-width="1" opacity=".22"><line x1="95" y1="24" x2="95" y2="164"/><line x1="130" y1="24" x2="130" y2="164"/><line x1="165" y1="24" x2="165" y2="164"/><line x1="200" y1="24" x2="200" y2="164"/><line x1="235" y1="24" x2="235" y2="164"/><line x1="270" y1="24" x2="270" y2="164"/><line x1="305" y1="24" x2="305" y2="164"/><line x1="340" y1="24" x2="340" y2="164"/><line x1="375" y1="24" x2="375" y2="164"/><line x1="60" y1="164" x2="375" y2="164"/><line x1="60" y1="154" x2="375" y2="154"/><line x1="60" y1="144" x2="375" y2="144"/><line x1="60" y1="134" x2="375" y2="134"/><line x1="60" y1="124" x2="375" y2="124"/><line x1="60" y1="114" x2="375" y2="114"/><line x1="60" y1="104" x2="375" y2="104"/><line x1="60" y1="94" x2="375" y2="94"/><line x1="60" y1="84" x2="375" y2="84"/><line x1="60" y1="74" x2="375" y2="74"/><line x1="60" y1="64" x2="375" y2="64"/><line x1="60" y1="54" x2="375" y2="54"/><line x1="60" y1="44" x2="375" y2="44"/><line x1="60" y1="34" x2="375" y2="34"/><line x1="60" y1="24" x2="375" y2="24"/></g><line x1="60" y1="114" x2="384.6" y2="114" stroke="currentColor" stroke-width="1.5"/><polygon points="389,114 381,117.5 381,110.5" fill="currentColor"/><line x1="60" y1="166" x2="60" y2="22.4" stroke="currentColor" stroke-width="1.5"/><polygon points="60,18 63.5,26 56.5,26" fill="currentColor"/><polyline points="60,114 130,34 235,34 235,154 340,154 340,114" fill="none" stroke="var(--physics)" stroke-width="3" stroke-linejoin="round"/><line x1="130" y1="110" x2="130" y2="118" stroke="currentColor" stroke-width="1.4"/><text x="130" y="172" font-size="11" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">2</text><line x1="235" y1="110" x2="235" y2="118" stroke="currentColor" stroke-width="1.4"/><text x="235" y="172" font-size="11" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">5</text><line x1="340" y1="110" x2="340" y2="118" stroke="currentColor" stroke-width="1.4"/><text x="340" y="172" font-size="11" fill="currentColor" text-anchor="middle" font-family="JetBrains Mono, monospace">8</text><text x="52" y="38" font-size="11" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">8</text><text x="52" y="78" font-size="11" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">4</text><text x="52" y="118" font-size="11" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">0</text><text x="52" y="158" font-size="11" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">−4</text><text x="52" y="20" font-size="11.5" fill="currentColor" text-anchor="end" font-family="JetBrains Mono, monospace">F / N</text><text x="393" y="118" font-size="11.5" fill="currentColor" text-anchor="start" font-family="JetBrains Mono, monospace">t / s</text></svg></figure>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>5 m/s</div>
+        <div class="we-opt key"><span class="ob">2</span>8 m/s</div>
+        <div class="we-opt"><span class="ob">3</span>10 m/s</div>
+        <div class="we-opt"><span class="ob">4</span>11 m/s</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Area under F–t = change in momentum, sign included.</b> 0–2 s: a triangle,
+        <span class="m">½ × 2 × 8 = 8 N s</span>. 2–5 s: a rectangle, <span class="m">3 × 8 = 24 N s</span>. 5–8 s:
+        a rectangle below the axis, <span class="m">3 × (−4) = −12 N s</span>.</p>
+        <p><span class="m">Δp = 8 + 24 − 12 = 20 kg m/s</span>, so <span class="m">Δv = Δp/m = 20/4 = 5 m/s</span>,
+        and <span class="m">v = 3 + 5 = 8 m/s</span>. Option (2).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1) 5 m/s</b> — the <em>change</em> reported as the velocity; the stem gave a starting speed for a
+        reason. (2018-S Q8 asked for the change in momentum; this one asks for the velocity — read which.)
+        <b>(3) 10 m/s</b> — the triangle counted as a rectangle: <span class="m">16 + 24 − 12 = 28</span>, 7 m/s,
+        then + 3.
+        <b>(4) 11 m/s</b> — the negative part ignored: <span class="m">(8 + 24)/4 = 8</span>, then + 3.
+        <b>Elimination.</b> The force is negative for the last three seconds, so the answer must be less than
+        what the positive part alone gives — (4) goes at once. (1) is only reachable by forgetting the 3 m/s
+        the stem opens with.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">Assertion–Reason · the 2024-U Q3 / 2024-A Q7 idea · ~60 seconds</span></div>
+      <p><b>Assertion (A):</b> When a car takes a sharp left turn at speed, the passengers are pushed to the
+      right by an outward (centrifugal) force acting on them.<br>
+      <b>Reason (R):</b> A body continues in its state of rest or of uniform motion in a straight line unless
+      an unbalanced external force acts on it.</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Both A and R are true, and R is the correct explanation of A</div>
+        <div class="we-opt"><span class="ob">2</span>Both A and R are true, but R is not the correct explanation of A</div>
+        <div class="we-opt"><span class="ob">3</span>A is true but R is false</div>
+        <div class="we-opt key"><span class="ob">4</span>A is false but R is true</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>R</b> is the first law of motion, in substance — true.</p>
+        <p><b>A</b> — no outward force acts on the passenger. The passenger's body keeps moving straight
+        (inertia of direction) while the seat and the door turn left underneath it, so the <em>door</em> ends up
+        pressing the passenger leftward. The feeling of being thrown right is the <em>absence</em> of a force,
+        not the presence of one. A is false. Option (4).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> is the everyday belief, and it is why 2024-A Q7 offered "centrifugal force" in two of its
+        four options. A stone on a string, an orbiting Moon and a cornering car each have one horizontal force
+        on the moving body, and it points to the centre.
+        <b>(2)</b> and <b>(3)</b> need A to be true.
+        <b>Elimination.</b> R is the first law, so (3) is gone at once; the whole question is
+        whether "a centrifugal force acting on them" is physics. It is not.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">10</span>Check yourself</h2>
+    <p class="lede">Five quick ones. <b>No negative marking here</b> — this is practice, not the exam.
+    Click an option to see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="subject-phys.html">📝 Physics subject paper — 30 questions, 45 minutes</a>
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Physics · <b>Motion</b> and <b>Force and Laws of Motion</b> — the official topic names
+    from Allen's Class X syllabus.<br>
+    <b>Deliberately not here:</b> g, weight, free fall as a topic, universal gravitation and buoyancy live in
+    the next unit, <em>Gravitation, Work &amp; Energy</em>; the two free-fall items above are solved here only
+    because they are equations-of-motion arithmetic. Work, energy and power likewise. <b>Friction</b> gets
+    only the facts Allen has actually asked (2018-S Q12) plus the static-friction rule — NCERT Class 9 has
+    no friction chapter.<br>
+    This unit's 20-minute paper appears on the hub card when it is built. Tip: press 🖨 (bottom-left) to
+    print these as a revision sheet · 🏆 (top-left) goes back to the TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'A courier walks <b>24 m east</b> and then <b>7 m north</b>. The magnitude of her displacement is',
+    o:['17 m','25 m','31 m','625 m'], a:1,
+    fb:'<b>25 m.</b> Displacement is the straight line from start to finish: √(24² + 7²) = √625 = 25 m — 7-24-25 is a Pythagorean triple, which is why Allen chose it. <b>31 m</b> is the distance walked; <b>17 m</b> subtracts the legs as if they pointed opposite ways; <b>625 m</b> forgot the square root.' },
+  { q:'Which of these velocity–time graphs <b>cannot</b> describe a real motion?',
+    o:['a line containing a vertical segment','a horizontal line below the time axis','a straight line sloping down through the time axis','a graph with a sharp corner'], a:0,
+    fb:'<b>The vertical segment.</b> It would mean the velocity changed with no time passing — an infinite acceleration, needing an infinite force. A horizontal line below the axis is a steady backward speed; a line sloping down through the axis is uniform retardation continuing into reversal (a ball thrown straight up); a sharp corner is a sudden change of <em>acceleration</em>, which a force can produce at once.' },
+  { q:'A car’s velocity falls from <b>20 m/s</b> to <b>5 m/s</b> in <b>5 s</b>. Its acceleration is',
+    o:['−15 m/s²','−5 m/s²','−3 m/s²','+3 m/s²'], a:2,
+    fb:'<b>−3 m/s².</b> a = (v − u)/t = (5 − 20)/5 = −3 m/s² — negative because the velocity is falling: a retardation of 3 m/s². <b>−15</b> is Δv with the ÷ 5 s forgotten; <b>−5</b> is (20 + 5)/5 — the velocities added instead of subtracted, with a minus sign stuck on for “slowing”; <b>+3</b> has the sign dropped, which a paper forgives only if it asked for the <em>retardation</em> rather than the acceleration.' },
+  { q:'A book lies on a table. The Earth pulls it down with a force W. The <b>reaction</b> to W, in the third-law sense, is',
+    o:['the upward push of the table on the book','the downward push of the book on the table','the weight of the table','the upward pull of the book on the Earth'], a:3,
+    fb:'<b>The book pulls the Earth up with W.</b> A third-law pair is one interaction seen from the other body — swap the nouns: Earth pulls book ↔ book pulls Earth. The table’s push on the book (1) is a <em>different</em> interaction (contact, not gravity) and acts on the same body as W: it balances W, which is a first-law statement, not a third-law pair. (2) is the partner of (1), not of W. (3) is unrelated.' },
+  { q:'A <b>60 kg</b> skater at rest on smooth ice throws a <b>3 kg</b> bag horizontally at <b>4 m/s</b>. She moves off at',
+    o:['0.05 m/s','0.2 m/s','4 m/s','80 m/s'], a:1,
+    fb:'<b>0.2 m/s</b>, opposite to the bag. Momentum is conserved from a total of zero: 60 × v = 3 × 4 = 12, so v = 0.2 m/s. <b>0.05</b> is 3/60 with the 4 m/s never used; <b>4 m/s</b> assumes she shares the bag’s <em>speed</em> — it is momentum that is shared, not velocity; <b>80 m/s</b> has the masses upside down. Same physics as a gun’s recoil and the child who coughs to get off a frictionless floor (Sample Q5).' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. The wording has landed — now sit the Physics subject paper for this unit’s eight questions under the clock.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed — sections 5–7 carry the word traps, section 2 the graph rules.'
+                        : 'Worth a second pass through sections 2 and 5–7 before the paper. It is a short page; one more read fixes it.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:phys-motion-forces:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- print: a closed details element never renders its contents, so open them for the printer ---------- */
+(function(){
+  var opened = [];
+  function before(){
+    opened = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+      if(!d.open){ d.open = true; opened.push(d); }
+      var box = d.closest('.we'); if(box) box.classList.add('revealed');
+    });
+  }
+  function after(){
+    opened.forEach(function(d){ d.open = false; var box = d.closest('.we'); if(box) box.classList.remove('revealed'); });
+    opened = [];
+  }
+  window.addEventListener('beforeprint', before);
+  window.addEventListener('afterprint', after);
+  if(window.matchMedia){
+    var mq = matchMedia('print');
+    var h = function(e){ if(e.matches) before(); else after(); };
+    if(mq.addEventListener) mq.addEventListener('change', h); else if(mq.addListener) mq.addListener(h);
+  }
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
