@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Series, Missing Characters &amp; Operations — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+  .sol table.mini { border-collapse:collapse; margin:8px 0; font-size:12.5px; }
+  .sol table.mini th, .sol table.mini td { border:1px solid var(--border); padding:3px 8px; text-align:left; }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+    </div>
+    <p class="startnote">Practice mode still marks you and still applies −1 — only the countdown is off.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+ "title": "TALLENTEX · Series, Missing Characters & Operations — Paper 1",
+ "kind": "topic",
+ "duration": 20,
+ "id": "tx:iq-series-operations:p1",
+ "accent": "iq",
+ "sub": "Thirteen questions on <b>Series (Verbal &amp; Non-Verbal)</b>, <b>Inserting the Missing Character</b>, <b>Mathematical Operations</b> and <b>Arithmetical Reasoning</b> — the four official topics of this unit, about four questions in every real sitting. Rewrite before you evaluate, test every rule on the second example, and read the last line of the question twice.",
+ "sections": [
+  {
+   "name": "Mental Ability",
+   "from": 1,
+   "to": 13
+  }
+ ],
+ "questions": [
+  {
+   "topic": "Series (Verbal & Non-Verbal)",
+   "fmt": "plain",
+   "stem": "<p>Find the next term of the series:</p><p><b>4, 7, 15, 29, 59, 117, ?</b></p>",
+   "options": [
+    "233",
+    "234",
+    "235",
+    "236"
+   ],
+   "answer": 2,
+   "sol": "<p><b>Differences first:</b> 3, 8, 14, 30, 58. Not constant, and their differences (5, 6, 16, 28) are no better — but each difference is roughly double the term before it, which is the tell for a <b>×2 + something</b> rule (check 4 of the list).</p><p>Test it: 4 × 2 − 1 = 7; 7 × 2 + 1 = 15; 15 × 2 − 1 = 29; 29 × 2 + 1 = 59; 59 × 2 − 1 = 117. The correction alternates −1, +1, −1, +1, −1, so the next step is +1: 117 × 2 + 1 = <b>235</b>, option (3).</p><p><b>Where the other options come from:</b> 233 is 117 × 2 − 1 — applying the correction that was used on the <i>last</i> step instead of the one that comes next; 234 is doubling with no correction at all; 236 is 117 × 2 + 2, from assuming the correction grows (+1, +2 …) instead of alternating.</p>",
+   "n": 1,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Inserting the Missing Character",
+   "fmt": "diagram",
+   "stem": "<p>Three of the circles below follow the same rule. Which number replaces the question mark in the fourth circle?</p>",
+   "fig": "<svg viewBox=\"0 0 440 104\" width=\"440\" height=\"104\" role=\"img\" aria-label=\"Four circles, each cut into four quarters by a horizontal and a vertical line, with a small centre circle. Circle 1: top-left 6, top-right 4, bottom-left 5, bottom-right 9, centre 34. Circle 2: 8, 3, 7, 6, centre 27. Circle 3: 7, 2, 3, 5, centre 29. Circle 4: 9, 5, 4, 8, centre a question mark.\"><circle cx=\"55\" cy=\"52\" r=\"40\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"/><line x1=\"15\" y1=\"52\" x2=\"95\" y2=\"52\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"55\" y1=\"12\" x2=\"55\" y2=\"92\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"55\" cy=\"52\" r=\"14\" fill=\"var(--surface)\" stroke=\"var(--iq)\" stroke-width=\"1.8\"/><text x=\"35.0\" y=\"38.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >6</text><text x=\"75.0\" y=\"38.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >4</text><text x=\"35.0\" y=\"78.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >5</text><text x=\"75.0\" y=\"78.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >9</text><text x=\"55.0\" y=\"56.5\" font-family=\"Inter, sans-serif\" font-size=\"12.5\" font-weight=\"700\" text-anchor=\"middle\" fill=\"var(--iq)\" >34</text><circle cx=\"165\" cy=\"52\" r=\"40\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"/><line x1=\"125\" y1=\"52\" x2=\"205\" y2=\"52\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"165\" y1=\"12\" x2=\"165\" y2=\"92\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"165\" cy=\"52\" r=\"14\" fill=\"var(--surface)\" stroke=\"var(--iq)\" stroke-width=\"1.8\"/><text x=\"145.0\" y=\"38.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >8</text><text x=\"185.0\" y=\"38.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >3</text><text x=\"145.0\" y=\"78.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >7</text><text x=\"185.0\" y=\"78.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >6</text><text x=\"165.0\" y=\"56.5\" font-family=\"Inter, sans-serif\" font-size=\"12.5\" font-weight=\"700\" text-anchor=\"middle\" fill=\"var(--iq)\" >27</text><circle cx=\"275\" cy=\"52\" r=\"40\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"/><line x1=\"235\" y1=\"52\" x2=\"315\" y2=\"52\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"275\" y1=\"12\" x2=\"275\" y2=\"92\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"275\" cy=\"52\" r=\"14\" fill=\"var(--surface)\" stroke=\"var(--iq)\" stroke-width=\"1.8\"/><text x=\"255.0\" y=\"38.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >7</text><text x=\"295.0\" y=\"38.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >2</text><text x=\"255.0\" y=\"78.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >3</text><text x=\"295.0\" y=\"78.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >5</text><text x=\"275.0\" y=\"56.5\" font-family=\"Inter, sans-serif\" font-size=\"12.5\" font-weight=\"700\" text-anchor=\"middle\" fill=\"var(--iq)\" >29</text><circle cx=\"385\" cy=\"52\" r=\"40\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"/><line x1=\"345\" y1=\"52\" x2=\"425\" y2=\"52\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"385\" y1=\"12\" x2=\"385\" y2=\"92\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"385\" cy=\"52\" r=\"14\" fill=\"var(--surface)\" stroke=\"var(--iq)\" stroke-width=\"1.8\"/><text x=\"365.0\" y=\"38.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >9</text><text x=\"405.0\" y=\"38.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >5</text><text x=\"365.0\" y=\"78.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >4</text><text x=\"405.0\" y=\"78.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >8</text><text x=\"385.0\" y=\"56.5\" font-family=\"Inter, sans-serif\" font-size=\"12.5\" font-weight=\"700\" text-anchor=\"middle\" fill=\"var(--iq)\" >?</text></svg>",
+   "figCap": "Each circle has four outer numbers (top-left, top-right, bottom-left, bottom-right) and one centre number.",
+   "options": [
+    "13",
+    "25",
+    "52",
+    "92"
+   ],
+   "answer": 2,
+   "sol": "<p><b>Label the slots</b> TL, TR, BL, BR and centre C. In circle 1 the centre (34) is bigger than any outer number but smaller than several of the pairwise products, so try a product minus something. The <b>diagonals</b>: TL × BR = 6 × 9 = 54 and TR × BL = 4 × 5 = 20, and 54 − 20 = 34 ✓.</p><p><b>Test on circle 2 before trusting it:</b> 8 × 6 − 3 × 7 = 48 − 21 = 27 ✓. Circle 3: 7 × 5 − 2 × 3 = 35 − 6 = 29 ✓. Three for three.</p><p>Circle 4: 9 × 8 − 5 × 4 = 72 − 20 = <b>52</b>, option (3).</p><p><b>Where the other options come from:</b> 92 is 72 + 20 — adding the two diagonal products instead of subtracting; 13 is 9 × 5 − 4 × 8 = 45 − 32, multiplying across the rows instead of along the diagonals (it fits none of the three worked circles, which is why testing on a second circle matters); 25 is 52 written backwards — the reversal reflex from the triangle-type items, applied where no reversal is in play.</p>",
+   "n": 2,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Mathematical Operations",
+   "fmt": "plain",
+   "stem": "<p>If <b>+</b> means <b>×</b>, <b>−</b> means <b>÷</b>, <b>×</b> means <b>+</b> and <b>÷</b> means <b>−</b>, then the value of</p><p><b>36 ÷ 6 + 4 × 18 − 3 + 2 × 5</b> is</p>",
+   "options": [
+    "20",
+    "29",
+    "85",
+    "97"
+   ],
+   "answer": 1,
+   "sol": "<p><b>Pass 1 — rewrite with every sign replaced, evaluate nothing:</b> 36 ÷ 6 + 4 × 18 − 3 + 2 × 5 becomes <b>36 − 6 × 4 + 18 ÷ 3 × 2 + 5</b>.</p><p><b>Pass 2 — BODMAS:</b> circle the × and ÷ and do them first, left to right: 6 × 4 = 24; then 18 ÷ 3 = 6 and 6 × 2 = 12 (division and multiplication have <i>equal</i> rank, so 18 ÷ 3 × 2 is worked left to right — it is not 18 ÷ 6). What is left is 36 − 24 + 12 + 5 = <b>29</b>, option (2).</p><p><b>Where the other options come from:</b> 97 is working the rewritten line straight across — 36 − 6 = 30, × 4 = 120, + 18 = 138, ÷ 3 = 46, × 2 = 92, + 5 = 97 — the classic trap; 85 is evaluating the line as printed, without swapping any sign (6 + 72 − 3 + 10); 20 is the second trap — reading 18 ÷ 3 × 2 as 18 ÷ (3 × 2) = 3, which gives 36 − 24 + 3 + 5.</p>",
+   "n": 3,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Series (Verbal & Non-Verbal)",
+   "fmt": "diagram",
+   "stem": "<p>Select the figure from the answer figures (1)–(4) that will continue the series of problem figures.</p>",
+   "fig": "<svg viewBox=\"0 0 468 200\" width=\"468\" height=\"200\" role=\"img\" aria-label=\"Problem figures: four squares in a row, then a dashed square with a question mark. In each square an arrow points from the centre outward, a row of small amber dots sits along the top edge, and a small amber triangle is tucked into one corner. Square 1: arrow up, 1 dot, triangle bottom-right. Square 2: arrow up-right, 2 dots, triangle bottom-left. Square 3: arrow right, 3 dots, triangle top-left. Square 4: arrow down-right, 4 dots, triangle top-right. Answer figures (1) to (4) below: (1) arrow down, 5 dots, triangle bottom-right. (2) arrow down, 5 dots, triangle top-right. (3) arrow down-left, 5 dots, triangle bottom-right. (4) arrow down, 4 dots, triangle bottom-right.\"><rect x=\"16\" y=\"12\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><g transform=\"rotate(0 48.0 44.0)\" stroke=\"currentColor\" stroke-width=\"2.2\" fill=\"currentColor\" stroke-linecap=\"round\"><line x1=\"48.0\" y1=\"52.0\" x2=\"48.0\" y2=\"34.0\"/><polygon points=\"48.0,27.0 43.0,37.0 53.0,37.0\"/></g><circle cx=\"48.0\" cy=\"19\" r=\"2.5\" fill=\"var(--iq)\"/><polygon points=\"77,73 77,61 65,73\" fill=\"var(--iq)\" opacity=\".85\"/><rect x=\"100\" y=\"12\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><g transform=\"rotate(45 132.0 44.0)\" stroke=\"currentColor\" stroke-width=\"2.2\" fill=\"currentColor\" stroke-linecap=\"round\"><line x1=\"132.0\" y1=\"52.0\" x2=\"132.0\" y2=\"34.0\"/><polygon points=\"132.0,27.0 127.0,37.0 137.0,37.0\"/></g><circle cx=\"128.8\" cy=\"19\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"135.2\" cy=\"19\" r=\"2.5\" fill=\"var(--iq)\"/><polygon points=\"103,73 103,61 115,73\" fill=\"var(--iq)\" opacity=\".85\"/><rect x=\"184\" y=\"12\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><g transform=\"rotate(90 216.0 44.0)\" stroke=\"currentColor\" stroke-width=\"2.2\" fill=\"currentColor\" stroke-linecap=\"round\"><line x1=\"216.0\" y1=\"52.0\" x2=\"216.0\" y2=\"34.0\"/><polygon points=\"216.0,27.0 211.0,37.0 221.0,37.0\"/></g><circle cx=\"209.5\" cy=\"19\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"216.0\" cy=\"19\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"222.5\" cy=\"19\" r=\"2.5\" fill=\"var(--iq)\"/><polygon points=\"187,15 187,27 199,15\" fill=\"var(--iq)\" opacity=\".85\"/><rect x=\"268\" y=\"12\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><g transform=\"rotate(135 300.0 44.0)\" stroke=\"currentColor\" stroke-width=\"2.2\" fill=\"currentColor\" stroke-linecap=\"round\"><line x1=\"300.0\" y1=\"52.0\" x2=\"300.0\" y2=\"34.0\"/><polygon points=\"300.0,27.0 295.0,37.0 305.0,37.0\"/></g><circle cx=\"290.2\" cy=\"19\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"296.8\" cy=\"19\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"303.2\" cy=\"19\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"309.8\" cy=\"19\" r=\"2.5\" fill=\"var(--iq)\"/><polygon points=\"329,15 329,27 317,15\" fill=\"var(--iq)\" opacity=\".85\"/><rect x=\"352\" y=\"12\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-dasharray=\"4 3\"/><text x=\"384.0\" y=\"54.0\" font-family=\"Inter, sans-serif\" font-size=\"26\" font-weight=\"700\" text-anchor=\"middle\" fill=\"var(--muted)\" >?</text><line x1=\"16\" y1=\"96\" x2=\"416\" y2=\"96\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".35\"/><rect x=\"16\" y=\"108\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><g transform=\"rotate(180 48.0 140.0)\" stroke=\"currentColor\" stroke-width=\"2.2\" fill=\"currentColor\" stroke-linecap=\"round\"><line x1=\"48.0\" y1=\"148.0\" x2=\"48.0\" y2=\"130.0\"/><polygon points=\"48.0,123.0 43.0,133.0 53.0,133.0\"/></g><circle cx=\"35.0\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"41.5\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"48.0\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"54.5\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"61.0\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><polygon points=\"77,169 77,157 65,169\" fill=\"var(--iq)\" opacity=\".85\"/><text x=\"48.0\" y=\"192.0\" font-family=\"Inter, sans-serif\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" fill=\"var(--iq)\" >(1)</text><rect x=\"128\" y=\"108\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><g transform=\"rotate(180 160.0 140.0)\" stroke=\"currentColor\" stroke-width=\"2.2\" fill=\"currentColor\" stroke-linecap=\"round\"><line x1=\"160.0\" y1=\"148.0\" x2=\"160.0\" y2=\"130.0\"/><polygon points=\"160.0,123.0 155.0,133.0 165.0,133.0\"/></g><circle cx=\"147.0\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"153.5\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"160.0\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"166.5\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"173.0\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><polygon points=\"189,111 189,123 177,111\" fill=\"var(--iq)\" opacity=\".85\"/><text x=\"160.0\" y=\"192.0\" font-family=\"Inter, sans-serif\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" fill=\"var(--iq)\" >(2)</text><rect x=\"240\" y=\"108\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><g transform=\"rotate(225 272.0 140.0)\" stroke=\"currentColor\" stroke-width=\"2.2\" fill=\"currentColor\" stroke-linecap=\"round\"><line x1=\"272.0\" y1=\"148.0\" x2=\"272.0\" y2=\"130.0\"/><polygon points=\"272.0,123.0 267.0,133.0 277.0,133.0\"/></g><circle cx=\"259.0\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"265.5\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"272.0\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"278.5\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"285.0\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><polygon points=\"301,169 301,157 289,169\" fill=\"var(--iq)\" opacity=\".85\"/><text x=\"272.0\" y=\"192.0\" font-family=\"Inter, sans-serif\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" fill=\"var(--iq)\" >(3)</text><rect x=\"352\" y=\"108\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><g transform=\"rotate(180 384.0 140.0)\" stroke=\"currentColor\" stroke-width=\"2.2\" fill=\"currentColor\" stroke-linecap=\"round\"><line x1=\"384.0\" y1=\"148.0\" x2=\"384.0\" y2=\"130.0\"/><polygon points=\"384.0,123.0 379.0,133.0 389.0,133.0\"/></g><circle cx=\"374.2\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"380.8\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"387.2\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><circle cx=\"393.8\" cy=\"115\" r=\"2.5\" fill=\"var(--iq)\"/><polygon points=\"413,169 413,157 401,169\" fill=\"var(--iq)\" opacity=\".85\"/><text x=\"384.0\" y=\"192.0\" font-family=\"Inter, sans-serif\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" fill=\"var(--iq)\" >(4)</text></svg>",
+   "figCap": "Problem figures are in the top row; answer figures (1)–(4) in the bottom row.",
+   "options": [
+    "Figure (1)",
+    "Figure (2)",
+    "Figure (3)",
+    "Figure (4)"
+   ],
+   "answer": 0,
+   "sol": "<p>Name the features and follow each one across on its own.</p><p><b>The arrow</b> turns 45° clockwise each step: up → up-right → right → down-right, so next it points straight <b>down</b>. That removes (3), whose arrow has turned 90° to point down-left.</p><p><b>The dots along the top</b> count 1, 2, 3, 4, so the next figure has <b>5</b>. That removes (4), which is stuck on 4.</p><p><b>The corner triangle</b> walks round the corners: bottom-right → bottom-left → top-left → top-right, one corner clockwise each step, so the fifth figure has it back at <b>bottom-right</b>. That removes (2), where it has stayed at top-right.</p><p>Only <b>(1)</b> survives all three checks: arrow down, five dots, triangle bottom-right — option (1).</p><p><b>Where the other options come from:</b> each wrong figure gets exactly one feature wrong, so a student who checks only one or two features is left with two or three candidates; (2) is the one you pick if you treat the triangle as fixed decoration and never track it, (3) if you assume the arrow turns 90° rather than 45°, and (4) if you count the dots in figure 4 and copy them across.</p>",
+   "n": 4,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Inserting the Missing Character",
+   "fmt": "diagram",
+   "stem": "<p>The two outer numbers of each group produce the bracketed number by the same rule. Which number replaces the question mark?</p>",
+   "fig": "<svg viewBox=\"0 0 440 50\" width=\"440\" height=\"50\" role=\"img\" aria-label=\"Three groups in a row. Group 1: 7, then 40 in brackets, then 3. Group 2: 10, then 84 in brackets, then 4. Group 3: 12, then a question mark in brackets, then 5.\"><text x=\"72.0\" y=\"32.0\" font-family=\"'JetBrains Mono', monospace\" font-size=\"17\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >7&#160;&#160;(&#160;40&#160;)&#160;&#160;3</text><text x=\"220.0\" y=\"32.0\" font-family=\"'JetBrains Mono', monospace\" font-size=\"17\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >10&#160;&#160;(&#160;84&#160;)&#160;&#160;4</text><text x=\"368.0\" y=\"32.0\" font-family=\"'JetBrains Mono', monospace\" font-size=\"17\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >12&#160;&#160;(&#160;?&#160;)&#160;&#160;5</text></svg>",
+   "figCap": "Three groups: the bracketed number in the middle comes from the two numbers either side of it.",
+   "options": [
+    "60",
+    "85",
+    "102",
+    "119"
+   ],
+   "answer": 3,
+   "sol": "<p>Group 1: 7 and 3 give 40. The product is 21 and the sum is 10, neither is 40 — but the sum × the difference is 10 × 4 = 40 ✓. (That is the same thing as 7² − 3² = 49 − 9.)</p><p><b>Test on group 2:</b> sum 14, difference 6, and 14 × 6 = 84 ✓ (or 100 − 16 = 84).</p><p>Group 3: 12 and 5 → sum 17, difference 7, so 17 × 7 = <b>119</b> (144 − 25), option (4).</p><p><b>Where the other options come from:</b> 60 is 12 × 5, the plain product; 85 is 17 × 5, multiplying the sum by the smaller number instead of by the difference; 102 is 17 × 6 — the trap for a student who noticed that group 2 used ×6 and assumed the multiplier stays 6 rather than being the difference of the two numbers. Group 1 used ×4, so the multiplier was never constant; a rule is only safe once it has been checked on <i>both</i> worked groups.</p>",
+   "n": 5,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Mathematical Operations",
+   "fmt": "plain",
+   "stem": "<p>In a certain code the symbol ⊕ stands for an operation such that</p><p><b>63 ⊕ 24 = 54, &nbsp; 82 ⊕ 15 = 60, &nbsp; 47 ⊕ 32 = 55.</b></p><p>Then <b>56 ⊕ 71</b> = ?</p>",
+   "options": [
+    "19",
+    "37",
+    "66",
+    "88"
+   ],
+   "answer": 3,
+   "sol": "<p>The ⊕ is not any arithmetic you know — 63 ⊕ 24 = 54 is a <i>definition</i>. Look at where the digits could come from. 63 − 24 = 39 and 63 + 24 = 87, so it is not the whole numbers. Try the digits: 6 + 3 = 9 and 2 + 4 = 6, and <b>9 × 6 = 54</b> ✓.</p><p><b>Test on the second example</b> — this is not optional: 8 + 2 = 10, 1 + 5 = 6, 10 × 6 = 60 ✓. Third: 4 + 7 = 11, 3 + 2 = 5, 11 × 5 = 55 ✓. Three for three, so the rule — <b>multiply the two digit-sums</b> — is safe.</p><p>56 ⊕ 71: 5 + 6 = 11, 7 + 1 = 8, 11 × 8 = <b>88</b>, option (4).</p><p><b>Where the other options come from:</b> 19 is 11 + 8, adding the digit-sums instead of multiplying them; 37 is 5 × 6 + 7 × 1 = 30 + 7, using digit <i>products</i> — it fits none of the three examples (6 × 3 + 2 × 4 = 26, not 54); 66 is 11 × 6, using the second number's digit <i>difference</i> (7 − 1) instead of its sum — a rule that fails the very first example (9 × 2 = 18, not 54), so it can only come from skipping the test.</p>",
+   "n": 6,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Series (Verbal & Non-Verbal)",
+   "fmt": "plain",
+   "stem": "<p>Which group of letters comes next in the series?</p><p><b>AYC, DUF, GQI, JML, ?</b></p>",
+   "options": [
+    "LIO",
+    "MHO",
+    "MIO",
+    "MJO"
+   ],
+   "answer": 2,
+   "sol": "<p>Number the letters A = 1 … Z = 26 and follow each position down its own column — the three columns do <i>not</i> share a step.</p><p><b>First letters:</b> A, D, G, J = 1, 4, 7, 10 — climbing by 3, so next is 13 = <b>M</b>.</p><p><b>Middle letters:</b> Y, U, Q, M = 25, 21, 17, 13 — falling by <b>4</b>, so next is 9 = <b>I</b>.</p><p><b>Last letters:</b> C, F, I, L = 3, 6, 9, 12 — climbing by 3, so next is 15 = <b>O</b>.</p><p>So the next group is <b>MIO</b>, option (3).</p><p><b>Where the other options come from:</b> MJO is the trap — assuming the middle column falls by the same 3 the outer columns climb by (M − 3 = J), when it actually falls by 4; MHO over-steps it by one (M − 5 = H, the slip of counting the letters inclusively); LIO moves the first letter by 2 instead of 3 (J + 2 = L).</p>",
+   "n": 7,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Inserting the Missing Character",
+   "fmt": "diagram",
+   "stem": "<p>The numbers in the grid follow a rule. Which number replaces the question mark?</p>",
+   "fig": "<svg viewBox=\"0 0 234 190\" width=\"234\" height=\"190\" role=\"img\" aria-label=\"A 3 by 3 grid of numbers. Top row: 4, 5, 7. Middle row: 6, 3, 4. Bottom row, separated from the rows above by a thicker line: 14, 7, question mark.\"><rect x=\"30\" y=\"8\" width=\"58\" height=\"58\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"59.0\" y=\"43.0\" font-family=\"Inter, sans-serif\" font-size=\"16\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >4</text><rect x=\"88\" y=\"8\" width=\"58\" height=\"58\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"117.0\" y=\"43.0\" font-family=\"Inter, sans-serif\" font-size=\"16\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >5</text><rect x=\"146\" y=\"8\" width=\"58\" height=\"58\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"175.0\" y=\"43.0\" font-family=\"Inter, sans-serif\" font-size=\"16\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >7</text><rect x=\"30\" y=\"66\" width=\"58\" height=\"58\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"59.0\" y=\"101.0\" font-family=\"Inter, sans-serif\" font-size=\"16\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >6</text><rect x=\"88\" y=\"66\" width=\"58\" height=\"58\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"117.0\" y=\"101.0\" font-family=\"Inter, sans-serif\" font-size=\"16\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >3</text><rect x=\"146\" y=\"66\" width=\"58\" height=\"58\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"175.0\" y=\"101.0\" font-family=\"Inter, sans-serif\" font-size=\"16\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >4</text><rect x=\"30\" y=\"124\" width=\"58\" height=\"58\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"59.0\" y=\"159.0\" font-family=\"Inter, sans-serif\" font-size=\"16\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >14</text><rect x=\"88\" y=\"124\" width=\"58\" height=\"58\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"117.0\" y=\"159.0\" font-family=\"Inter, sans-serif\" font-size=\"16\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >7</text><rect x=\"146\" y=\"124\" width=\"58\" height=\"58\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"175.0\" y=\"159.0\" font-family=\"Inter, sans-serif\" font-size=\"16\" font-weight=\"700\" text-anchor=\"middle\" fill=\"var(--iq)\" >?</text><line x1=\"30\" y1=\"124\" x2=\"204\" y2=\"124\" stroke=\"currentColor\" stroke-width=\"3.2\"/></svg>",
+   "figCap": "A 3 × 3 grid; the bottom row is set off by a thicker line.",
+   "options": [
+    "11",
+    "17",
+    "28",
+    "39"
+   ],
+   "answer": 1,
+   "sol": "<p>The thick line marks the bottom row as the one that is <i>made from</i> the two rows above — so read <b>down the columns</b>, not across the rows. Column 1: 4 and 6 give 14. Column 2: 5 and 3 give 7.</p><p>Guess from column 1: 4 × 6 = 24 and 4 + 6 = 10, and 24 − 10 = 14 ✓. <b>Test on column 2:</b> 5 × 3 = 15, 5 + 3 = 8, 15 − 8 = 7 ✓. The rule is <b>product minus sum</b>.</p><p>Column 3: 7 × 4 = 28, 7 + 4 = 11, 28 − 11 = <b>17</b>, option (2).</p><p><b>Where the other options come from:</b> 28 is the product alone; 11 is the sum alone; 39 is 28 + 11 — adding the product and the sum instead of subtracting. A student who tries rows first (4, 5, 7 and 6, 3, 4) finds no rule that fits both, which is the moment to switch direction rather than keep guessing.</p>",
+   "n": 8,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Arithmetical Reasoning",
+   "fmt": "plain",
+   "stem": "<p>In a school kho-kho league, the results were recorded as follows:</p><ul><li>Ashoka House beat Chanakya House twice.</li><li>Chanakya House beat Vivekananda House twice.</li><li>Ashoka House and Vivekananda House played twice and won one match each.</li><li>Bhagat Singh House lost both its matches against Vivekananda House and both against Chanakya House.</li></ul><p>A win earns 2 points and a loss earns nothing. Which house scored the <b>most points</b>?</p>",
+   "options": [
+    "Chanakya House",
+    "Ashoka House",
+    "Vivekananda House",
+    "Bhagat Singh House"
+   ],
+   "answer": 0,
+   "sol": "<p>Make the two-column tally — but this question asks for <b>points</b>, so it is the <i>won</i> column that matters, and the ten-second \"never appears as a winner\" shortcut only tells you who came last.</p><table class=\"mini\"><tr><th>House</th><th>Won</th><th>Lost</th><th>Points</th></tr><tr><td>Ashoka</td><td>2 (v Chanakya) + 1 (v Vivekananda) = 3</td><td>1</td><td>6</td></tr><tr><td>Chanakya</td><td>2 (v Vivekananda) + 2 (v Bhagat Singh) = 4</td><td>2</td><td><b>8</b></td></tr><tr><td>Vivekananda</td><td>1 (v Ashoka) + 2 (v Bhagat Singh) = 3</td><td>3</td><td>6</td></tr><tr><td>Bhagat Singh</td><td>0</td><td>4</td><td>0</td></tr></table><p>Chanakya House has 4 wins = 8 points, option (1) — even though it also lost twice.</p><p><b>Where the other options come from:</b> Ashoka is the answer if you count only the first line and assume the house that beat Chanakya twice must be on top; Vivekananda is the answer to a different question (\"which of the three winning houses lost most\"); Bhagat Singh is what you bubble if you run the \"who lost most\" tally out of habit — the question here is the reverse.</p>",
+   "n": 9,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Inserting the Missing Character",
+   "fmt": "diagram",
+   "stem": "<p>Which number replaces the question mark in the third triangle?</p>",
+   "fig": "<svg viewBox=\"0 0 420 112\" width=\"420\" height=\"112\" role=\"img\" aria-label=\"Three triangles in a row. Each has a number above its apex, a number below each bottom corner and a number inside near the base. Triangle 1: apex 4, bottom-left 6, bottom-right 10, inside 15. Triangle 2: apex 3, bottom-left 9, bottom-right 7, inside 21. Triangle 3: apex 6, bottom-left 8, bottom-right 15, inside a question mark.\"><polygon points=\"70,14 26,90 114,90\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><text x=\"70.0\" y=\"10.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >4</text><text x=\"22.0\" y=\"106.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >6</text><text x=\"118.0\" y=\"106.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >10</text><text x=\"70.0\" y=\"74.0\" font-family=\"Inter, sans-serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" fill=\"var(--iq)\" >15</text><polygon points=\"210,14 166,90 254,90\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><text x=\"210.0\" y=\"10.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >3</text><text x=\"162.0\" y=\"106.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >9</text><text x=\"258.0\" y=\"106.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >7</text><text x=\"210.0\" y=\"74.0\" font-family=\"Inter, sans-serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" fill=\"var(--iq)\" >21</text><polygon points=\"350,14 306,90 394,90\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><text x=\"350.0\" y=\"10.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >6</text><text x=\"302.0\" y=\"106.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >8</text><text x=\"398.0\" y=\"106.0\" font-family=\"Inter, sans-serif\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" fill=\"currentColor\" >15</text><text x=\"350.0\" y=\"74.0\" font-family=\"Inter, sans-serif\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\" fill=\"var(--iq)\" >?</text></svg>",
+   "figCap": "Each triangle carries a number at its apex, one at each bottom corner and one inside.",
+   "options": [
+    "20",
+    "29",
+    "90",
+    "120"
+   ],
+   "answer": 0,
+   "sol": "<p>Label the slots: apex A, feet L and R, inside C. Triangle 1: A = 4, L = 6, R = 10, C = 15. The inside number is smaller than the product of the feet (60) and 60 ÷ 4 = 15 ✓ — so try <b>C = (L × R) ÷ A</b>.</p><p><b>Test on triangle 2:</b> 9 × 7 = 63, 63 ÷ 3 = 21 ✓. (Notice 3 × 7 = 21 also fits triangle 2 — apex × right foot — but it gives 40 for triangle 1, so it dies on the test.)</p><p>Triangle 3: 8 × 15 = 120, 120 ÷ 6 = <b>20</b>, option (1).</p><p><b>Where the other options come from:</b> 120 is the product of the feet with the division forgotten; 90 is 6 × 15, the apex × right-foot rule that fitted only the second triangle; 29 is 6 + 8 + 15, the sum of the three outer numbers.</p>",
+   "n": 10,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Mathematical Operations",
+   "fmt": "statement",
+   "stem": "<p>In a certain code, all quantities are positive and</p><ul><li><b>P α Q</b> means P is greater than Q,</li><li><b>P β Q</b> means P is less than Q,</li><li><b>P γ Q</b> means P is equal to Q,</li><li><b>P δ Q</b> means P is not less than Q.</li></ul><p>Given: <b>2A γ 3B</b>, &nbsp; <b>B α C</b>, &nbsp; <b>C δ D</b>. Which of the following conclusions are <b>definitely</b> true?</p><ol class=\"roman\"><li>A α C</li><li>D β B</li><li>A α 2D</li></ol>",
+   "options": [
+    "I and III only",
+    "II and III only",
+    "I, II and III",
+    "I and II only"
+   ],
+   "answer": 3,
+   "sol": "<p>Rewrite in ordinary symbols: <b>2A = 3B</b>, <b>B &gt; C</b>, <b>C ≥ D</b>.</p><p><b>I. A &gt; C?</b> From 2A = 3B, A = 1·5B, which is more than B (quantities are positive), and B &gt; C. So A &gt; B &gt; C: <b>true</b>.</p><p><b>II. D &lt; B?</b> D ≤ C and C &lt; B, so D &lt; B: <b>true</b>.</p><p><b>III. A &gt; 2D?</b> A = 1·5B, and all we know about D is that it is at most C, which is less than B. If D is tiny the claim holds — but take B = 10, C = 9, D = 9: then A = 15 and 2D = 18, so A &lt; 2D. It <i>may</i> be true, so it is not <i>definitely</i> true.</p><p>Only I and II: option (4).</p><p><b>Where the other options come from:</b> (3) is what you pick if you read \"2D\" loosely as \"D is small, so anything beats it\" — the word <i>definitely</i> is doing real work; (1) keeps III and drops II, which usually comes from mis-reading δ — \"not less than\" is ≥, so C δ D gives D ≤ C, and II follows at once; (2) keeps III and drops I, which needs nothing but A = 1·5B (so A &gt; B for positive quantities) and B &gt; C. All three wrong options keep III — the one conclusion that fails.</p>",
+   "n": 11,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Series (Verbal & Non-Verbal)",
+   "fmt": "diagram",
+   "stem": "<p>Select the figure from the answer figures (1)–(4) that will continue the series of problem figures.</p>",
+   "fig": "<svg viewBox=\"0 0 468 200\" width=\"468\" height=\"200\" role=\"img\" aria-label=\"Problem figures: four squares in a row, then a dashed square with a question mark. Each square holds one regular polygon with small amber dots inside it. Square 1: a triangle with 5 filled dots. Square 2: a square with 4 hollow dots. Square 3: a pentagon with 3 filled dots. Square 4: a hexagon with 2 hollow dots. Answer figures (1) to (4) below: (1) a heptagon with 1 hollow dot. (2) a hexagon with 1 filled dot. (3) an octagon with 1 filled dot. (4) a heptagon with 1 filled dot.\"><rect x=\"16\" y=\"12\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><polygon points=\"48.0,19.0 69.7,56.5 26.3,56.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"48.0\" cy=\"35.0\" r=\"3\" fill=\"var(--iq)\"/><circle cx=\"56.6\" cy=\"41.2\" r=\"3\" fill=\"var(--iq)\"/><circle cx=\"53.3\" cy=\"51.3\" r=\"3\" fill=\"var(--iq)\"/><circle cx=\"42.7\" cy=\"51.3\" r=\"3\" fill=\"var(--iq)\"/><circle cx=\"39.4\" cy=\"41.2\" r=\"3\" fill=\"var(--iq)\"/><rect x=\"100\" y=\"12\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><polygon points=\"132.0,19.0 157.0,44.0 132.0,69.0 107.0,44.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"132.0\" cy=\"35.0\" r=\"3\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.6\"/><circle cx=\"141.0\" cy=\"44.0\" r=\"3\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.6\"/><circle cx=\"132.0\" cy=\"53.0\" r=\"3\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.6\"/><circle cx=\"123.0\" cy=\"44.0\" r=\"3\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.6\"/><rect x=\"184\" y=\"12\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><polygon points=\"216.0,19.0 239.8,36.3 230.7,64.2 201.3,64.2 192.2,36.3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"216.0\" cy=\"35.0\" r=\"3\" fill=\"var(--iq)\"/><circle cx=\"223.8\" cy=\"48.5\" r=\"3\" fill=\"var(--iq)\"/><circle cx=\"208.2\" cy=\"48.5\" r=\"3\" fill=\"var(--iq)\"/><rect x=\"268\" y=\"12\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><polygon points=\"300.0,19.0 321.7,31.5 321.7,56.5 300.0,69.0 278.3,56.5 278.3,31.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"300.0\" cy=\"35.0\" r=\"3\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.6\"/><circle cx=\"300.0\" cy=\"53.0\" r=\"3\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.6\"/><rect x=\"352\" y=\"12\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-dasharray=\"4 3\"/><text x=\"384.0\" y=\"54.0\" font-family=\"Inter, sans-serif\" font-size=\"26\" font-weight=\"700\" text-anchor=\"middle\" fill=\"var(--muted)\" >?</text><line x1=\"16\" y1=\"96\" x2=\"416\" y2=\"96\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".35\"/><rect x=\"16\" y=\"108\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><polygon points=\"48.0,115.0 67.5,124.4 72.4,145.6 58.8,162.5 37.2,162.5 23.6,145.6 28.5,124.4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"48.0\" cy=\"140.0\" r=\"3\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.6\"/><text x=\"48.0\" y=\"192.0\" font-family=\"Inter, sans-serif\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" fill=\"var(--iq)\" >(1)</text><rect x=\"128\" y=\"108\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><polygon points=\"160.0,115.0 181.7,127.5 181.7,152.5 160.0,165.0 138.3,152.5 138.3,127.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"160.0\" cy=\"140.0\" r=\"3\" fill=\"var(--iq)\"/><text x=\"160.0\" y=\"192.0\" font-family=\"Inter, sans-serif\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" fill=\"var(--iq)\" >(2)</text><rect x=\"240\" y=\"108\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><polygon points=\"272.0,115.0 289.7,122.3 297.0,140.0 289.7,157.7 272.0,165.0 254.3,157.7 247.0,140.0 254.3,122.3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"272.0\" cy=\"140.0\" r=\"3\" fill=\"var(--iq)\"/><text x=\"272.0\" y=\"192.0\" font-family=\"Inter, sans-serif\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" fill=\"var(--iq)\" >(3)</text><rect x=\"352\" y=\"108\" width=\"64\" height=\"64\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><polygon points=\"384.0,115.0 403.5,124.4 408.4,145.6 394.8,162.5 373.2,162.5 359.6,145.6 364.5,124.4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"384.0\" cy=\"140.0\" r=\"3\" fill=\"var(--iq)\"/><text x=\"384.0\" y=\"192.0\" font-family=\"Inter, sans-serif\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" fill=\"var(--iq)\" >(4)</text></svg>",
+   "figCap": "Problem figures are in the top row; answer figures (1)–(4) in the bottom row.",
+   "options": [
+    "Figure (1)",
+    "Figure (2)",
+    "Figure (3)",
+    "Figure (4)"
+   ],
+   "answer": 3,
+   "sol": "<p>Three features, each on its own schedule.</p><p><b>Sides of the polygon:</b> 3, 4, 5, 6 — one more each time, so the next is a <b>7-sided</b> figure. That removes (2), a hexagon, and (3), an octagon.</p><p><b>Number of dots:</b> 5, 4, 3, 2 — one fewer each time, so <b>1 dot</b>. Every answer figure has one dot, so this feature separates nothing here — which is itself worth noticing, so you do not waste time on it.</p><p><b>Style of the dots:</b> filled, hollow, filled, hollow — so the fifth figure has a <b>filled</b> dot. That removes (1).</p><p>A heptagon with one filled dot: <b>(4)</b>.</p><p><b>Where the other options come from:</b> (1) is right on the count and the sides but misses the filled/hollow alternation; (2) is the figure you pick if you think the polygon in figure 4 is repeated; (3) comes from counting the hexagon as 7-sided and adding one.</p>",
+   "n": 12,
+   "section": "Mental Ability"
+  },
+  {
+   "topic": "Arithmetical Reasoning",
+   "fmt": "plain",
+   "stem": "<p>How many leap years are there from 1897 to 2103, both years included?</p>",
+   "options": [
+    "48",
+    "49",
+    "50",
+    "51"
+   ],
+   "answer": 1,
+   "sol": "<p><b>Step 1 — count the multiples of 4 in the span.</b> The first is 1900 and the last is 2100: (2100 − 1900) ÷ 4 + 1 = 50 + 1 = <b>51</b>.</p><p><b>Step 2 — apply the century rule.</b> A century year is a leap year only if it is divisible by 400. The span contains three century years: 1900 (not a leap year), 2000 (divisible by 400 — a leap year) and 2100 (not a leap year). Remove two: 51 − 2 = <b>49</b>, option (2).</p><p><b>Where the other options come from:</b> 51 forgets the century rule altogether; 50 removes only one of the two non-leap centuries (usually 1900, because 2100 feels too far away to count); 48 removes all three century years, including 2000 — the very year the \"divisible by 400\" clause exists for.</p>",
+   "n": 13,
+   "section": "Mental Ability"
+  }
+ ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b}. A mock also stores
+   its answers + flags so the frozen report can be replayed on any device;
+   the hub only ever reads m/mx. Written MERGE-ONLY. */
+function saveAttempt(sc, timeTaken){
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank };
+  if(IS_MOCK){ rec.a = answers.slice(); rec.f = flags.slice(); rec.md = mode; rec.tm = timeTaken; rec.v = 1; }
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function showFrozen(rec){
+  if(!rec || !IS_MOCK || submitted || !rec.a) return;
+  RESTORING = true;
+  answers = rec.a.slice();
+  flags   = (rec.f || new Array(NQ).fill(false)).slice();
+  mode    = rec.md || 'timed';
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
