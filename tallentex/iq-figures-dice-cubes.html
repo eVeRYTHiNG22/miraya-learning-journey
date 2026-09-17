@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Figures, Dice &amp; Cubes</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #2e246b30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--iq); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--iq); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--iq); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#2c2210,#241f4a); border:1px solid #4a3a1f;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--iq); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--iq); background:color-mix(in srgb,var(--iq) 14%,transparent); border:1px solid color-mix(in srgb,var(--iq) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+  ol.roman { list-style:upper-roman; }
+  ol.roman li { padding-left:4px; }
+  .st { margin:8px 0 10px; padding:9px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); font-size:14px; }
+  .st b { color:var(--bright); }
+  .st ol { margin-bottom:0; }
+  .st p { margin-bottom:6px; }
+  .st p:last-child { margin-bottom:0; }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child, .box .tablewrap:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--physics); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:var(--iq); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  td.nw { width:1%; white-space:nowrap; }
+  .tablewrap { overflow-x:auto; margin:12px 0; }
+  .tablewrap table { margin:0; }
+  .asktab { min-width:700px; }
+  .asktab th:nth-child(4), .asktab td:nth-child(4) { min-width:210px; }
+  .asktab th:nth-child(5), .asktab td:nth-child(5) { min-width:170px; }
+  .asktab th:nth-child(6), .asktab td:nth-child(6) { min-width:130px; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--iq); background:color-mix(in srgb,var(--iq) 13%,transparent); border:1px solid color-mix(in srgb,var(--iq) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--iq); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .we .work figure { margin:10px 0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--iq); background:color-mix(in srgb,var(--iq) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--iq) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5b40d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb.on { background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Mental Ability · Crash notes</div>
+    <h1>Figures, Dice &amp; Cubes</h1>
+    <p class="sub">Official topics: <b>Counting of Figures</b>, <b>Embedded Figure</b>, <b>Dice</b> and <b>Cube</b>. None
+    of this is in your IGCSE course, and almost every question comes with a picture — <b>14 of the 17 that Allen has
+    set</b>. The mark is for reading the picture <b>exactly</b>: which lines really continue, which faces are really
+    opposite, which small cubes really exist. Every count on this page was checked by exhaustive enumeration, not by
+    eye. A 30-minute read, then Paper 1.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Questions 61–80 of all five cached papers — the four real sittings and Allen's official sample — were read
+      page by page, the 2017 and 2018 booklets rendered from their image scans (a text search returns nothing for
+      them), and every item from these four topics re-solved against Allen's own key sheets. <b>Seventeen items in five
+      papers:</b></p>
+      <div class="tablewrap">
+      <table class="asktab">
+        <thead><tr><th class="nw">Paper</th><th class="nw">Q</th><th class="nw">Topic</th><th>What it gives you</th><th>What it wants</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td class="nw">2017 · E</td><td class="mono nw">67</td><td class="nw">Cube</td><td>A 4 × 3 × 5 block, each pair of opposite faces a different colour, cut into 1-cm cubes</td><td>How many have no colour</td><td class="mono">(4) 6</td></tr>
+          <tr><td class="nw">2017 · E</td><td class="mono nw">69</td><td class="nw">Cube</td><td>729 unit cubes in one big cube, "cut along two diagonals"</td><td>How many small cubes are cut</td><td class="mono">(3) 153</td></tr>
+          <tr><td class="nw">2017 · E</td><td class="mono nw">72</td><td class="nw">Embedded</td><td>A notched horizontal figure (X); four figures built from hexagons and diamonds</td><td>Where (X) is hidden</td><td class="mono">(2) — see point 3</td></tr>
+          <tr><td class="nw">2017 · E</td><td class="mono nw">75</td><td class="nw">Counting</td><td>A square, sides cut in three, 45° lines both ways (a diamond lattice)</td><td>Number of triangles</td><td class="mono">(2) 36</td></tr>
+          <tr><td class="nw">2018 · S</td><td class="mono nw">67</td><td class="nw">Dice</td><td>A net with pips: a column of four squares with a flap on one side of the second and the other side of the fourth</td><td>What is opposite 5</td><td class="mono">(3) 3</td></tr>
+          <tr><td class="nw">2018 · S</td><td class="mono nw">69</td><td class="nw">Cube</td><td><b>The same 4 × 3 × 5 block</b> as 2017-E Q67, red / blue / green</td><td>"At most two faces coloured" — see point 5</td><td class="mono">(3) 46</td></tr>
+          <tr><td class="nw">2018 · S</td><td class="mono nw">72</td><td class="nw">Embedded</td><td>A staircase line (X); four boxed figures</td><td>Where (X) is hidden</td><td class="mono">(4)</td></tr>
+          <tr><td class="nw">2018 · S</td><td class="mono nw">75</td><td class="nw">Counting</td><td>A rectangle split unevenly — a full-height line, a top strip cut in two, a lower line on the right that does <em>not</em> line up</td><td>Number of rectangles</td><td class="mono">(4) 9</td></tr>
+          <tr><td class="nw">2024 · U</td><td class="mono nw">67</td><td class="nw">Counting</td><td>Overlapping triangles: a big one with an inverted V inside, two small ones at its sides, a big inverted one across, a small one below</td><td>Number of triangles</td><td class="mono">(2) 14</td></tr>
+          <tr><td class="nw">2024 · U</td><td class="mono nw">68</td><td class="nw">Dice</td><td>Five positions of a <em>standard</em> die, two faces visible in each; "an odd number is on the bottom"</td><td>Sum of the five top faces</td><td class="mono">(1) 20</td></tr>
+          <tr><td class="nw">2024 · U</td><td class="mono nw">70</td><td class="nw">Embedded</td><td>A curved figure (arcs); four circles with lens shapes inside</td><td>Where the question figure is hidden</td><td class="mono">(3)</td></tr>
+          <tr><td class="nw">2024 · A</td><td class="mono nw">67</td><td class="nw">Counting</td><td>A six-pointed star drawn inside a hexagon</td><td>Number of triangles</td><td class="mono">(3) 32</td></tr>
+          <tr><td class="nw">2024 · A</td><td class="mono nw">68</td><td class="nw">Cube</td><td>A drawn stack of identical cubes, irregular</td><td>Total number of cubes</td><td class="mono">(3) 49</td></tr>
+          <tr><td class="nw">2024 · A</td><td class="mono nw">70</td><td class="nw">Embedded</td><td><b>The reverse form</b>: a lattice of squares and diagonals; four small answer figures</td><td>Which answer figure is hidden in the big one</td><td class="mono">(2)</td></tr>
+          <tr><td class="nw">Sample</td><td class="mono nw">66</td><td class="nw">Counting</td><td><b>The same star-in-a-hexagon</b> as 2024-A Q67, same options</td><td>Number of triangles</td><td class="mono">(3) 32</td></tr>
+          <tr><td class="nw">Sample</td><td class="mono nw">70</td><td class="nw">Counting</td><td>A triangle with its midpoints joined, and a small upright triangle inside the middle one</td><td>Number of triangles</td><td class="mono">(4) 9</td></tr>
+          <tr><td class="nw">Sample</td><td class="mono nw">79</td><td class="nw">Embedded</td><td>A free-hand curved blob (X); four blobs with extra loops</td><td>Where (X) is hidden</td><td class="mono">(3)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>What that tells you:</p>
+      <ol>
+        <li><b>Three or four of the twenty Mental Ability questions every sitting — 12 to 16 marks</b> (2017-E 4,
+        2018-S 4, 2024-U 3, 2024-A 3, sample 3). Both 2024 papers put the counting item at <b>Q67</b>, the dice or
+        cube item at <b>Q68</b> and the embedded figure at <b>Q70</b>, so in a mock you meet all three inside four
+        questions.</li>
+        <li><b>Counting of Figures is the biggest share (six)</b>, and Allen recycles it: <b>2024-A Q67 is the sample's
+        Q66, figure and options included</b>. Five of the six ask for triangles, one for rectangles; every one has a
+        figure and the wrong options sit close to the right one (26 / 28 / 32, or 15 / 36 / 38 / 40), so a
+        "roughly" count scores −1.</li>
+        <li><b>Embedded Figure is five, always drawn, and 2024-A turned it round</b> — the big figure is given and you
+        find which small answer figure sits inside it. The textbook convention is that the hidden copy has the same
+        size and the same orientation; <b>2017-E Q72 breaks it</b> — no option contains (X) as drawn and the key
+        credits a copy turned through 90°. Section 2 says what to do about that.</li>
+        <li><b>Dice is two items in five papers, Cube is four.</b> No real paper draws a die with three numbered faces
+        showing: 2018-S gives a net, 2024-U numbers two side faces per position (top blank) and says the die is
+        <em>standard</em>. The cube
+        items are the painted-block count (asked twice with the same block), a stack to count and a cube cut by
+        planes — three different machines, section 4.</li>
+        <li><b>One key you should know about.</b> 2018-S Q69 asks how many cubes have "at most two faces coloured".
+        Read literally that is every cube except the 8 corners: 60 − 8 = 52 — and 52 is not offered. The key
+        credits <b>46</b>, the cubes with exactly one or exactly two coloured faces. One item only — but the lesson generalises: when your literal reading of a phrase
+        is not among the options, try the nearest listed reading before bubbling "None of these".</li>
+        <li><b>Nothing here needs a formula you cannot rebuild in ten seconds</b> — the pair-of-lines count, the
+        painted-cube classes and the two dice rules are the whole toolkit. What the paper is really buying is the
+        <em>discipline</em> of counting by classes and checking every edge, under the clock.</li>
+      </ol>
+      <p><b>Budget accordingly.</b> A 12–16-mark unit whose questions arrived in one cluster, Q67–70, in both 2024 sittings.
+      Everything below fits on a few screens; the practice is in doing it systematically on the booklet with no
+      second sheet of paper.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 1. COUNTING ========================= -->
+  <section>
+    <h2><span class="n">1</span>Counting of Figures — count by class, never by eye</h2>
+    <p class="lede">Every counting question is lost the same way: you scan the picture, spot the obvious shapes,
+    and stop. The fix is a <b>routine</b> — decide what family of shapes you are counting, list the classes that
+    family can come in, and count each class completely before moving to the next.</p>
+
+    <h3>1.1 Triangles made by lines through one point</h3>
+    <p>When several lines fan out from one vertex and other lines cut across them, every triangle with that vertex
+    as its apex is fixed by <b>which two of the fanning lines it uses</b> and <b>which crossing line is its base</b>.
+    So count points on each crossing line and pick pairs.</p>
+    <figure><svg viewBox='0 0 640 230' width='640' height='230' role='img' aria-label="A triangle with apex A: five lines run from A down to the base (the two sides and three inner lines), and two amber lines parallel to the base cut across them. Beside it: 5 lines through A cut by 3 horizontals; each horizontal has 5 points, pick 2 of 5 = 10; 3 times 10 = 30 triangles."><line x1='180.0' y1='26.0' x2='60.0' y2='200.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='180.0' y1='26.0' x2='120.0' y2='200.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='180.0' y1='26.0' x2='180.0' y2='200.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='180.0' y1='26.0' x2='240.0' y2='200.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='180.0' y1='26.0' x2='300.0' y2='200.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='60.0' y1='200.0' x2='300.0' y2='200.0' stroke='currentColor' stroke-width='2.4' stroke-linecap='round' /><line x1='129.6' y1='99.1' x2='230.4' y2='99.1' stroke='var(--iq)' stroke-width='2.2' stroke-linecap='round' /><line x1='94.8' y1='149.5' x2='265.2' y2='149.5' stroke='var(--iq)' stroke-width='2.2' stroke-linecap='round' /><text x='180.0' y='16.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='var(--muted)' >A</text><text x='470.0' y='60.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' >5 lines through A</text><text x='470.0' y='82.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='currentColor' >cut by 3 horizontals</text><text x='470.0' y='120.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >each horizontal: 5 points</text><text x='470.0' y='140.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >pick 2 of 5 = 4 + 3 + 2 + 1 = 10</text><text x='470.0' y='178.0' font-family='Inter, sans-serif' font-size='15' font-weight='600' text-anchor='middle' fill='var(--iq)' >3 × 10 = 30 triangles</text></svg>
+      <figcaption>Five lines through A (the two sides count) cut by three horizontals. On each horizontal there are 5
+      points; any 2 of them make one triangle with A: 4 + 3 + 2 + 1 = 10. Three horizontals: 30. A triangle cannot use two
+      horizontals as sides — they never meet.</figcaption>
+    </figure>
+    <div class="box def">
+      <h4>Pairs from n points</h4>
+      <p><b>ⁿC₂ = n(n − 1)/2</b>, or just add down: 4 points → 3 + 2 + 1 = 6; 5 points → 4 + 3 + 2 + 1 = 10; 6 points → 15.
+      The common slip is to count the <em>points</em> instead of the <em>pairs</em> (4 + 3 + 2 + 1 = 10 for four points
+      is wrong — there are only 3 + 2 + 1 = 6 pairs to choose from).</p>
+    </div>
+
+    <h3>1.2 Rectangles and squares in a grid</h3>
+    <p>A rectangle in a grid is fixed by choosing <b>two of the vertical lines and two of the horizontal lines</b> —
+    so long as those lines run the full way between each other. A square needs the two gaps equal, so count squares
+    <b>by size</b>.</p>
+    <figure><svg viewBox='0 0 640 230' width='640' height='230' role='img' aria-label="A 5 by 3 grid of squares with one 2 by 2 square highlighted in amber. Beside it: rectangles = 6C2 times 4C2 = 15 times 6 = 90; squares = 5·3 + 4·2 + 3·1 = 26."><line x1='30.0' y1='30.0' x2='30.0' y2='150.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='70.0' y1='30.0' x2='70.0' y2='150.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='110.0' y1='30.0' x2='110.0' y2='150.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='150.0' y1='30.0' x2='150.0' y2='150.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='190.0' y1='30.0' x2='190.0' y2='150.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='230.0' y1='30.0' x2='230.0' y2='150.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='30.0' y1='30.0' x2='230.0' y2='30.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='30.0' y1='70.0' x2='230.0' y2='70.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='30.0' y1='110.0' x2='230.0' y2='110.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='30.0' y1='150.0' x2='230.0' y2='150.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><rect x='70.0' y='30.0' width='80.0' height='80.0' rx='0' fill='color-mix(in srgb,var(--iq) 22%,transparent)' stroke='var(--iq)' stroke-width='2.5' /><text x='130.0' y='172.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >6 vertical lines · 4 horizontal lines</text><text x='440.0' y='52.0' font-family='Inter, sans-serif' font-size='14' font-weight='600' text-anchor='middle' fill='currentColor' >rectangles = ⁶C₂ × ⁴C₂</text><text x='440.0' y='74.0' font-family='Inter, sans-serif' font-size='14' font-weight='600' text-anchor='middle' fill='var(--iq)' >= 15 × 6 = 90</text><text x='440.0' y='116.0' font-family='Inter, sans-serif' font-size='14' font-weight='600' text-anchor='middle' fill='currentColor' >squares = 5·3 + 4·2 + 3·1</text><text x='440.0' y='138.0' font-family='Inter, sans-serif' font-size='14' font-weight='600' text-anchor='middle' fill='var(--iq)' >= 15 + 8 + 3 = 26</text><text x='440.0' y='178.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(1×1, then 2×2, then 3×3)</text></svg>
+      <figcaption>A 5-by-3 grid has 6 vertical and 4 horizontal lines: ⁶C₂ × ⁴C₂ = 15 × 6 = 90 rectangles (squares
+      included). Squares: 5 × 3 unit ones, 4 × 2 of size 2, 3 × 1 of size 3 — 26. "Rectangles that are not squares"
+      is 90 − 26 = 64 — read the stem for that word.</figcaption>
+    </figure>
+
+    <h3>1.3 The uneven split — does the line really continue?</h3>
+    <p>Allen's rectangle item (2018-S Q75) is not a grid: it is a rectangle cut unevenly, and <b>the whole question
+    is whether a divider on one side lines up with a divider on the other</b>. If it does, the two pieces make one
+    full-length line and every rectangle that uses it appears; if it does not, they are two separate lines and none
+    of those rectangles exist.</p>
+    <figure><svg viewBox='0 0 640 210' width='640' height='210' role='img' aria-label="Two rectangles each split by a full-height vertical line; the left part has a horizontal line with the top strip split in three, and the right column has a second horizontal lower down. Left panel: the amber horizontal in the right column lines up with the left one, giving 19 rectangles. Right panel: the amber line sits lower and does not line up, giving 15."><rect x='30.0' y='30.0' width='240.0' height='140.0' rx='0' fill='none' stroke='currentColor' stroke-width='2' /><line x1='190.0' y1='30.0' x2='190.0' y2='170.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='30.0' y1='80.0' x2='190.0' y2='80.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='83.0' y1='30.0' x2='83.0' y2='80.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='137.0' y1='30.0' x2='137.0' y2='80.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='190.0' y1='80.0' x2='270.0' y2='80.0' stroke='var(--iq)' stroke-width='3' stroke-linecap='round' /><line x1='190.0' y1='140.0' x2='270.0' y2='140.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><text x='150.0' y='190.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >amber line continues the left one</text><text x='150.0' y='20.0' font-family='Inter, sans-serif' font-size='14' font-weight='600' text-anchor='middle' fill='var(--iq)' >19 rectangles</text><rect x='370.0' y='30.0' width='240.0' height='140.0' rx='0' fill='none' stroke='currentColor' stroke-width='2' /><line x1='530.0' y1='30.0' x2='530.0' y2='170.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='370.0' y1='80.0' x2='530.0' y2='80.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='423.0' y1='30.0' x2='423.0' y2='80.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='477.0' y1='30.0' x2='477.0' y2='80.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='530.0' y1='105.0' x2='610.0' y2='105.0' stroke='var(--iq)' stroke-width='3' stroke-linecap='round' /><line x1='530.0' y1='140.0' x2='610.0' y2='140.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><text x='490.0' y='190.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >amber line does not line up</text><text x='490.0' y='20.0' font-family='Inter, sans-serif' font-size='14' font-weight='600' text-anchor='middle' fill='var(--iq)' >15 rectangles</text></svg>
+      <figcaption>Same figure, one line moved. Left: the amber line continues the left-hand one, so that horizontal runs the
+      full width — 19 rectangles. Right: it sits lower, the horizontals are separate — 15. (2018-S's own figure is
+      the unaligned kind and counts 9.) Count the pieces separately, then add the rectangles that <em>span</em> the
+      full-length lines.</figcaption>
+    </figure>
+    <div class="box trap">
+      <h4>Two traps in every counting figure</h4>
+      <ul>
+        <li><b>A line that stops.</b> A rectangle or triangle needs its whole side drawn. If a divider ends at a
+        crossing line, nothing beyond that crossing can use it. Before counting, trace each line with your pencil
+        and mark where it ends.</li>
+        <li><b>A shape that looks like a triangle and is not.</b> Four regions round a centre can be squares (when
+        the cutting lines are parallel to the diagonals) or triangles (when they pass through the corners). A square with an inner diamond whose sides are parallel to the diagonals is the classic case — the four middle
+        regions are <em>squares</em>, and counting them as triangles adds four that are not there.</li>
+      </ul>
+    </div>
+
+    <h3>1.4 The two figures Allen has set</h3>
+    <p>The star has been set twice, the lattice once. Learn both counts as <em>routines</em>, not as numbers — the options are built so that stopping one class
+    early lands on a wrong option.</p>
+    <figure><svg viewBox='0 0 640 270' width='640' height='270' role='img' aria-label="A regular hexagon with a six-pointed star (two amber triangles) inside it, the star's points at the hexagon's vertices. Beside it the count by size: 12 smallest, 12 tip-plus-neighbour, 6 corner regions, 2 big star triangles, total 32."><polygon points='140.0,240.0 49.1,187.5 49.1,82.5 140.0,30.0 230.9,82.5 230.9,187.5' fill='none' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='140.0,240.0 49.1,82.5 230.9,82.5' fill='none' stroke='var(--iq)' stroke-width='2' stroke-linejoin='round' /><polygon points='49.1,187.5 140.0,30.0 230.9,187.5' fill='none' stroke='var(--iq)' stroke-width='2' stroke-linejoin='round' /><text x='430.0' y='52.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >smallest: 6 star tips + 6 outside the star = 12</text><text x='430.0' y='80.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >tip + one neighbour: 2 per tip = 12</text><text x='430.0' y='108.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >each hexagon corner region (3 pieces) = 6</text><text x='430.0' y='136.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >the two big star triangles = 2</text><text x='430.0' y='180.0' font-family='Inter, sans-serif' font-size='17' font-weight='600' text-anchor='middle' fill='var(--iq)' >12 + 12 + 6 + 2 = 32</text><text x='430.0' y='212.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >Allen has set this exact figure twice</text><text x='430.0' y='230.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(2024-A Q67 and the sample, Q66) — key (3) 32</text></svg>
+      <figcaption>Star in a hexagon. Size 1: the six star tips and the six small triangles between the star and the
+      hexagon's sides — 12. Size 2: a tip joined to one of the two neighbouring outer triangles — 12. Size 3: each
+      hexagon corner region (outer + tip + outer) — 6. The two big star triangles — 2. Total 32. The star alone,
+      without the hexagon, has only 8: forgetting the outer 24 gives the paper's option "None of these" a customer.</figcaption>
+    </figure>
+    <figure><svg viewBox='0 0 640 270' width='640' height='270' role='img' aria-label="A square whose sides are cut in three, with 45-degree amber lines both ways through the cut points making a diamond lattice. Beside it the count by size: 12, 4, 8, 4, 4, 4 = 36 triangles."><rect x='40.0' y='30.0' width='204.0' height='204.0' rx='0' fill='none' stroke='currentColor' stroke-width='2.4' /><line x1='40.0' y1='166.0' x2='108.0' y2='234.0' stroke='var(--iq)' stroke-width='1.8' stroke-linecap='round' /><line x1='40.0' y1='98.0' x2='176.0' y2='234.0' stroke='var(--iq)' stroke-width='1.8' stroke-linecap='round' /><line x1='40.0' y1='30.0' x2='244.0' y2='234.0' stroke='var(--iq)' stroke-width='1.8' stroke-linecap='round' /><line x1='108.0' y1='30.0' x2='244.0' y2='166.0' stroke='var(--iq)' stroke-width='1.8' stroke-linecap='round' /><line x1='176.0' y1='30.0' x2='244.0' y2='98.0' stroke='var(--iq)' stroke-width='1.8' stroke-linecap='round' /><line x1='40.0' y1='98.0' x2='108.0' y2='30.0' stroke='var(--iq)' stroke-width='1.8' stroke-linecap='round' /><line x1='40.0' y1='166.0' x2='176.0' y2='30.0' stroke='var(--iq)' stroke-width='1.8' stroke-linecap='round' /><line x1='40.0' y1='234.0' x2='244.0' y2='30.0' stroke='var(--iq)' stroke-width='1.8' stroke-linecap='round' /><line x1='108.0' y1='234.0' x2='244.0' y2='98.0' stroke='var(--iq)' stroke-width='1.8' stroke-linecap='round' /><line x1='176.0' y1='234.0' x2='244.0' y2='166.0' stroke='var(--iq)' stroke-width='1.8' stroke-linecap='round' /><text x='142.0' y='258.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >sides cut in 3, diagonals both ways</text><text x='440.0' y='50.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >half-diamonds on the edges (base 1): 12</text><text x='440.0' y='76.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >corner triangles, side 1: 4</text><text x='440.0' y='102.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >on the edges, base 2: 8 · corners, side 2: 4</text><text x='440.0' y='128.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >base 3, apex at the centre: 4 · half the square: 4</text><text x='440.0' y='172.0' font-family='Inter, sans-serif' font-size='17' font-weight='600' text-anchor='middle' fill='var(--iq)' >12 + 4 + 8 + 4 + 4 + 4 = 36</text><text x='440.0' y='206.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >2017-E Q75 — key (2) 36; 15 / 38 / 40 offered</text><text x='440.0' y='226.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >checked here by exhaustive count, not by eye</text></svg>
+      <figcaption>The 2017-E lattice: a square with sides cut in three and 45° lines through the cut points both ways.
+      Six size classes, 36 in all. Stopping after 12 + 4 + 8 gives 24; adding only the four big half-squares gives
+      28 — neither is offered, which is the tell that a class is missing. 38 and 40 are the over-counts.</figcaption>
+    </figure>
+    <div class="box exam">
+      <h4>The 90-second routine for a counting question</h4>
+      <ol>
+        <li><b>Name the family</b> (triangles? rectangles? squares?) and re-read the stem for a qualifier — "not
+        squares", "at least", "in the whole figure".</li>
+        <li><b>Trace every line to its ends.</b> Mark which ones run the full way.</li>
+        <li><b>Count the smallest pieces</b> of the family, one per region.</li>
+        <li><b>Go up one size at a time</b>: shapes made of 2 pieces, then 3, then 4 … until the whole figure. In a
+        symmetric figure, count one corner or one side and multiply.</li>
+        <li><b>Add, then sanity-check against the options.</b> If your total sits between two listed options, you
+        have skipped a class — the options are built from the classes.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================= 2. EMBEDDED ========================= -->
+  <section>
+    <h2><span class="n">2</span>Embedded Figure — every edge, same shape, same way up</h2>
+    <p class="lede">A figure (X) is given and one of four answer figures contains it. The hidden copy must have
+    <b>every edge of (X) at the same angle and in the same proportion</b>. Other lines may cross it, touch it or continue
+    past it — that changes nothing. A mirror image, a copy with its proportions changed, or a copy with one corner moved
+    is <b>not</b> (X). (Allen's question figure may be printed at a different scale from the answer boxes — 2024-U Q70
+    is — so compare proportions, not millimetres.)</p>
+    <figure><svg viewBox='0 0 640 330' width='640' height='330' role='img' aria-label="Figure (X): a house-shaped pentagon with an off-centre roof peak and one diagonal from its top-left corner to its bottom-right corner. Four answer boxes: (1) a near miss with the roof peak moved; (2) the mirror image; (3) the exact figure with extra lines crossing through it; (4) a copy stretched sideways to 1.4 times its width, same height."><rect x='270.0' y='10.0' width='100.0' height='90.0' rx='6' fill='none' stroke='currentColor' stroke-width='2' /><line x1='285.0' y1='85.0' x2='355.0' y2='85.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='355.0' y1='85.0' x2='355.0' y2='45.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='355.0' y1='45.0' x2='330.0' y2='25.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='330.0' y1='25.0' x2='285.0' y2='45.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='285.0' y1='45.0' x2='285.0' y2='85.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='285.0' y1='45.0' x2='355.0' y2='85.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><text x='320.0' y='118.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(X)</text><rect x='30.0' y='140.0' width='130.0' height='110.0' rx='6' fill='none' stroke='currentColor' stroke-width='2' /><line x1='60.0' y1='225.0' x2='130.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='130.0' y1='225.0' x2='130.0' y2='185.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='130.0' y1='185.0' x2='85.0' y2='165.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='85.0' y1='165.0' x2='60.0' y2='185.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='60.0' y1='185.0' x2='60.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='60.0' y1='185.0' x2='130.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='45.0' y1='225.0' x2='155.0' y2='225.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><line x1='85.0' y1='153.0' x2='85.0' y2='237.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><text x='95.0' y='268.0' font-family='JetBrains Mono, monospace' font-size='11.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >(1) near miss</text><rect x='180.0' y='140.0' width='130.0' height='110.0' rx='6' fill='none' stroke='currentColor' stroke-width='2' /><line x1='280.0' y1='225.0' x2='210.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='210.0' y1='225.0' x2='210.0' y2='185.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='210.0' y1='185.0' x2='235.0' y2='165.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='235.0' y1='165.0' x2='280.0' y2='185.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='280.0' y1='185.0' x2='280.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='280.0' y1='185.0' x2='210.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='195.0' y1='185.0' x2='300.0' y2='185.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><line x1='280.0' y1='153.0' x2='280.0' y2='237.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><text x='245.0' y='268.0' font-family='JetBrains Mono, monospace' font-size='11.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >(2) mirror image</text><rect x='330.0' y='140.0' width='130.0' height='110.0' rx='6' fill='none' stroke='currentColor' stroke-width='2' /><line x1='360.0' y1='225.0' x2='430.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='430.0' y1='225.0' x2='430.0' y2='185.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='430.0' y1='185.0' x2='405.0' y2='165.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='405.0' y1='165.0' x2='360.0' y2='185.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='360.0' y1='185.0' x2='360.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='360.0' y1='185.0' x2='430.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='346.0' y1='245.0' x2='430.0' y2='225.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><line x1='390.0' y1='153.0' x2='390.0' y2='240.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><line x1='405.0' y1='165.0' x2='455.0' y2='183.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><line x1='346.0' y1='185.0' x2='360.0' y2='185.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><text x='395.0' y='268.0' font-family='JetBrains Mono, monospace' font-size='11.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >(3) hidden here</text><rect x='480.0' y='140.0' width='130.0' height='110.0' rx='6' fill='none' stroke='currentColor' stroke-width='2' /><line x1='500.0' y1='225.0' x2='598.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='598.0' y1='225.0' x2='598.0' y2='185.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='598.0' y1='185.0' x2='563.0' y2='165.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='563.0' y1='165.0' x2='500.0' y2='185.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='500.0' y1='185.0' x2='500.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='500.0' y1='185.0' x2='598.0' y2='225.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><text x='545.0' y='268.0' font-family='JetBrains Mono, monospace' font-size='11.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >(4) stretched</text><text x='320.0' y='305.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >Only (3) keeps every edge of (X) at the same angle and proportion. Lines crossing it change nothing.</text></svg>
+      <figcaption>The four ways an option can fail or pass. (1) looks right but the roof peak has moved — compare
+      edge lengths, not the overall look. (2) is the mirror image. (3) contains (X) exactly, with a vertical cutting
+      through it, a line off the peak and lines into two corners — none of which removes an edge. (4) is stretched sideways — every
+      slanted edge now sits at a different angle.</figcaption>
+    </figure>
+    <div class="box def">
+      <h4>The routine</h4>
+      <ol>
+        <li><b>Describe (X) before looking at the options</b> — count its edges and name its one odd feature (the
+        off-centre peak, the notch, the diagonal from <em>this</em> corner). The textbook distractors are the mirror, the
+        near miss and a re-proportioned copy, each changing one feature; Allen's real options are often four unrelated
+        drawings, which makes the odd-feature search faster still.</li>
+        <li><b>Search each option for the odd feature first.</b> That kills two options in ten seconds.</li>
+        <li><b>Then trace every edge of (X)</b> in the survivor. Lines crossing the figure are camouflage; a line that
+        <em>replaces</em> an edge at a different angle is a changed figure.</li>
+        <li><b>The reverse form</b> (2024-A Q70): the big figure is given, four small answer figures, "which is
+        embedded". Same test, run four times: pick the answer figure's most distinctive cell or corner, find where the
+        big figure has it, then check the rest cell by cell. Only one survives.</li>
+      </ol>
+    </div>
+    <div class="box trap">
+      <h4>When no option has it as drawn — the 2017-E exception</h4>
+      <p>The convention says same orientation, and the 2018, 2024 and sample items all match as drawn. <b>2017-E Q72 does
+      not</b>: (X) is a horizontal notched shape, no option contains it unturned, and the key credits the option
+      with the copy <b>turned through 90°</b>. So the order of preference is: <b>as drawn</b> first; if nothing
+      matches, <b>a turned copy</b>; a <b>mirror image never</b> — no Allen key has taken one. Do not go looking for
+      a turned copy while an unturned one is available: a turned copy planted beside an exact one is a distractor,
+      not a second answer.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 3. DICE ========================= -->
+  <section>
+    <h2><span class="n">3</span>Dice — opposite faces, then handedness</h2>
+    <p class="lede">A die has three pairs of opposite faces, and every dice question is one of three jobs: find the
+    pairs from what is shown, find them from a net, or — once the pairs are known — tell a die from its mirror
+    image. Faces that are opposite are <b>never seen together</b>; faces seen together are <b>adjacent</b>.</p>
+
+    <h3>3.1 The standard die — only when the stem says so</h3>
+    <figure><svg viewBox='0 0 640 234' width='640' height='234' role='img' aria-label="An isometric die showing 1 on top, 2 on the left face and 3 on the right face, captioned a standard die: 1 + 6 = 2 + 5 = 3 + 4 = 7. Beside it the opposite pairs 1–6, 2–5, 3–4, with the note that this holds only when the stem says standard or ordinary."><polygon points='150.0,22.0 226.2,66.0 150.0,110.0 73.8,66.0' fill='color-mix(in srgb,var(--iq) 14%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='73.8,154.0 150.0,198.0 150.0,110.0 73.8,66.0' fill='color-mix(in srgb,var(--iq) 28%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='226.2,154.0 150.0,198.0 150.0,110.0 226.2,66.0' fill='color-mix(in srgb,var(--iq) 42%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><text x='150.0' y='73.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><text x='111.9' y='139.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><text x='188.1' y='139.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><text x='150.0' y='220.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >a standard die: 1 + 6 = 2 + 5 = 3 + 4 = 7</text><text x='440.0' y='50.0' font-family='JetBrains Mono, monospace' font-size='11' font-weight='500' text-anchor='middle' fill='var(--muted)' >opposite pairs</text><text x='440.0' y='84.0' font-family='JetBrains Mono, monospace' font-size='18' font-weight='600' text-anchor='middle' fill='var(--iq)' >1 ↔ 6</text><text x='440.0' y='116.0' font-family='JetBrains Mono, monospace' font-size='18' font-weight='600' text-anchor='middle' fill='var(--iq)' >2 ↔ 5</text><text x='440.0' y='148.0' font-family='JetBrains Mono, monospace' font-size='18' font-weight='600' text-anchor='middle' fill='var(--iq)' >3 ↔ 4</text><text x='440.0' y='190.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >only when the stem says "standard" / "ordinary"</text></svg>
+      <figcaption>A standard (ordinary) die has opposite faces adding to 7. If the stem says "standard die" or
+      "ordinary die", use it without any figure — 2024-U Q68 turns entirely on it. If the stem says nothing, assume
+      <em>nothing</em>: the die in a two-positions question need not be standard, and "3 opposite 4" is then the planted
+      wrong option.</figcaption>
+    </figure>
+    <div class="box def">
+      <h4>The bottom-face question (2024-U Q68's machine)</h4>
+      <p>Each position shows two <em>side</em> faces of a standard die, the top left blank. The two faces shown and their two opposites are the four
+      side faces, so <b>the top and bottom are the remaining pair</b>. A condition on the bottom ("an odd number") then
+      fixes which of the pair is on top. Fresh numbers: positions showing (1, 2), (3, 5) and (4, 6) with "an even number
+      on the bottom": (1, 2) leaves the pair 3–4, bottom 4, top 3; (3, 5) leaves 1–6, bottom 6, top 1; (4, 6) leaves 2–5,
+      bottom 2, top 5. Sum of tops 3 + 1 + 5 = 9.</p>
+    </div>
+
+    <h3>3.2 Two positions shown — the two rules</h3>
+    <figure><svg viewBox='0 0 640 292' width='640' height='292' role='img' aria-label="Rule A: two dice (i) and (ii). Both show 2 on the left face; (i) has 1 on top and 3 on the right, (ii) has 4 on top and 5 on the right, so 1 is opposite 4 and 3 is opposite 5, leaving 2 opposite 6. Rule B: dice (i) and (iii) both show 1 and 3; (i) also shows 2 and (iii) shows 3 on top, 6 on the left and 1 on the right, so 2 is opposite 6."><polygon points='90.0,37.0 148.9,71.0 90.0,105.0 31.1,71.0' fill='color-mix(in srgb,var(--iq) 14%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='31.1,139.0 90.0,173.0 90.0,105.0 31.1,71.0' fill='color-mix(in srgb,var(--iq) 28%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='148.9,139.0 90.0,173.0 90.0,105.0 148.9,71.0' fill='color-mix(in srgb,var(--iq) 42%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><text x='90.0' y='78.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><text x='60.6' y='129.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><text x='119.4' y='129.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><polygon points='245.0,37.0 303.9,71.0 245.0,105.0 186.1,71.0' fill='color-mix(in srgb,var(--iq) 14%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='186.1,139.0 245.0,173.0 245.0,105.0 186.1,71.0' fill='color-mix(in srgb,var(--iq) 28%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='303.9,139.0 245.0,173.0 245.0,105.0 303.9,71.0' fill='color-mix(in srgb,var(--iq) 42%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><text x='245.0' y='78.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >4</text><text x='215.6' y='129.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><text x='274.4' y='129.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >5</text><text x='90.0' y='190.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(i)</text><text x='245.0' y='190.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(ii)</text><text x='165.0' y='18.0' font-family='JetBrains Mono, monospace' font-size='12.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >A · one face common, same place</text><text x='165.0' y='215.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='currentColor' >2 stays put, the other four differ</text><text x='165.0' y='235.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='currentColor' >⇒ tops opposite: 1 ↔ 4</text><text x='165.0' y='255.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='currentColor' >⇒ rights opposite: 3 ↔ 5</text><text x='165.0' y='275.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >left over: 2 ↔ 6</text><polygon points='405.0,37.0 463.9,71.0 405.0,105.0 346.1,71.0' fill='color-mix(in srgb,var(--iq) 14%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='346.1,139.0 405.0,173.0 405.0,105.0 346.1,71.0' fill='color-mix(in srgb,var(--iq) 28%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='463.9,139.0 405.0,173.0 405.0,105.0 463.9,71.0' fill='color-mix(in srgb,var(--iq) 42%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><text x='405.0' y='78.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><text x='375.6' y='129.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><text x='434.4' y='129.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><polygon points='560.0,37.0 618.9,71.0 560.0,105.0 501.1,71.0' fill='color-mix(in srgb,var(--iq) 14%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='501.1,139.0 560.0,173.0 560.0,105.0 501.1,71.0' fill='color-mix(in srgb,var(--iq) 28%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='618.9,139.0 560.0,173.0 560.0,105.0 618.9,71.0' fill='color-mix(in srgb,var(--iq) 42%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><text x='560.0' y='78.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><text x='530.6' y='129.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >6</text><text x='589.4' y='129.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><text x='405.0' y='190.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(i)</text><text x='560.0' y='190.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(iii)</text><text x='485.0' y='18.0' font-family='JetBrains Mono, monospace' font-size='12.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >B · two faces common</text><text x='485.0' y='215.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='currentColor' >1 and 3 appear in both</text><text x='485.0' y='235.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='currentColor' >⇒ the two odd ones out are opposite</text><text x='485.0' y='257.0' font-family='Inter, sans-serif' font-size='14' font-weight='600' text-anchor='middle' fill='var(--iq)' >2 ↔ 6</text><text x='485.0' y='275.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >(wherever they sit)</text></svg>
+      <figcaption>Rule A: one face common <em>and in the same place</em>, and the other four numbers all different —
+      the die has been turned half a revolution about that face, so the two tops are opposite and the two rights are
+      opposite. Rule B: two faces common — the third face is the same face or its opposite, and since the numbers
+      differ, they are opposite. Rule B works wherever the common faces sit.</figcaption>
+    </figure>
+    <div class="box trap">
+      <h4>Rule A has a condition — check it</h4>
+      <p>Rule A needs <b>five different numbers across the two positions</b>. If a second number repeats in a
+      different place, the die was turned a quarter, not a half, and the "opposite" reading is false. In that case
+      use rule B on the two shared faces instead. With three positions, the fastest check of any claimed pair is
+      the elimination test: <b>if the other four numbers all appear beside x somewhere, the one that never does is
+      opposite x</b>.</p>
+    </div>
+
+    <h3>3.3 Nets — which squares fold to opposite faces</h3>
+    <figure><svg viewBox='0 0 640 270' width='640' height='270' role='img' aria-label="Two dice nets. Left: a cross-shaped net with a straight column 1, 2, 4, 6 and flaps 3 beside 2 and 5 beside 6 — opposite pairs 1–4, 2–6, 3–5, colour-coded. Right: a staircase net 1, 2, 3, 4, 5, 6 stepping down — opposite pairs are three places along the chain: 1–4, 2–5, 3–6."><rect x='110.0' y='20.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--physics) 18%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='130.0' y='46.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><rect x='110.0' y='60.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--iq) 20%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='130.0' y='86.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><rect x='70.0' y='60.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--power) 18%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='90.0' y='86.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><rect x='110.0' y='100.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--physics) 18%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='130.0' y='126.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >4</text><rect x='110.0' y='140.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--iq) 20%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='130.0' y='166.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >6</text><rect x='150.0' y='140.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--power) 18%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='170.0' y='166.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >5</text><text x='130.0' y='202.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >a straight run of four</text><text x='130.0' y='220.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >1st ↔ 3rd · 2nd ↔ 4th · the two flaps</text><text x='130.0' y='240.0' font-family='Inter, sans-serif' font-size='13.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >1 ↔ 4 · 2 ↔ 6 · 3 ↔ 5</text><rect x='330.0' y='20.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--physics) 18%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='350.0' y='46.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><rect x='370.0' y='20.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--iq) 20%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='390.0' y='46.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><rect x='370.0' y='60.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--power) 18%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='390.0' y='86.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><rect x='410.0' y='60.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--physics) 18%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='430.0' y='86.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >4</text><rect x='410.0' y='100.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--iq) 20%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='430.0' y='126.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >5</text><rect x='450.0' y='100.0' width='40.0' height='40.0' rx='0' fill='color-mix(in srgb,var(--power) 18%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='470.0' y='126.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >6</text><text x='410.0' y='202.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >a staircase of six</text><text x='410.0' y='220.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >opposite = three places along the chain</text><text x='410.0' y='240.0' font-family='Inter, sans-serif' font-size='13.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >1 ↔ 4 · 2 ↔ 5 · 3 ↔ 6</text></svg>
+      <figcaption>Two shapes Allen and the textbooks use. In a straight run of four squares, the 1st and 3rd fold
+      opposite, the 2nd and 4th fold opposite, and the two side flaps are the third pair (2018-S Q67 is exactly this
+      net: 5 is a flap, 3 is the other flap, key 3). In a staircase of six that steps one square along and one square down each time (the 2-2-2 staircase drawn
+      here), each square is opposite the one <em>three places</em> along the chain — the ones two places apart are
+      adjacent. Other chain shapes pair up differently: use the "any net" rule below for those.</figcaption>
+    </figure>
+    <div class="box def">
+      <h4>Any net at all</h4>
+      <p>Two squares that sit <b>in the same row or column with exactly one square between them</b> fold to opposite
+      faces. Two squares that <b>share an edge</b> are adjacent. Use those two facts to pair up any net; whatever is
+      left over is the third pair.</p>
+    </div>
+
+    <h3>3.4 Handedness — a die and its mirror image</h3>
+    <figure><svg viewBox='0 0 640 240' width='640' height='240' role='img' aria-label="Two dice, each showing 1 on top with 2 and 3 on the side faces. On the left, 2 is on the left face and 3 on the right, so reading 1, 2, 3 round the shared corner runs anticlockwise. On the right, 2 and 3 are swapped and 1, 2, 3 run clockwise. Same opposite pairs, but a different die."><polygon points='160.0,30.0 236.2,74.0 160.0,118.0 83.8,74.0' fill='color-mix(in srgb,var(--iq) 14%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='83.8,162.0 160.0,206.0 160.0,118.0 83.8,74.0' fill='color-mix(in srgb,var(--iq) 28%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='236.2,162.0 160.0,206.0 160.0,118.0 236.2,74.0' fill='color-mix(in srgb,var(--iq) 42%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><text x='160.0' y='81.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><text x='121.9' y='147.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><text x='198.1' y='147.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><polygon points='480.0,30.0 556.2,74.0 480.0,118.0 403.8,74.0' fill='color-mix(in srgb,var(--iq) 14%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='403.8,162.0 480.0,206.0 480.0,118.0 403.8,74.0' fill='color-mix(in srgb,var(--iq) 28%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='556.2,162.0 480.0,206.0 480.0,118.0 556.2,74.0' fill='color-mix(in srgb,var(--iq) 42%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><text x='480.0' y='81.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><text x='441.9' y='147.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><text x='518.1' y='147.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><text x='160.0' y='16.0' font-family='JetBrains Mono, monospace' font-size='12.5' font-weight='600' text-anchor='middle' fill='var(--iq)' >the die</text><text x='480.0' y='16.0' font-family='JetBrains Mono, monospace' font-size='12.5' font-weight='600' text-anchor='middle' fill='var(--force)' >its mirror image</text><text x='160.0' y='228.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='currentColor' >round the corner: 1 → 2 → 3 runs anticlockwise</text><text x='480.0' y='228.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='currentColor' >1 → 2 → 3 runs clockwise — a different die</text></svg>
+      <figcaption>Both dice show 1, 2, 3 with the same opposite pairs, and they are different dice: read the three
+      faces round the corner where they meet and the order runs the other way. A net folds into one of these, never
+      the other.</figcaption>
+    </figure>
+    <div class="box exam">
+      <h4>"Which die can be made from this net?" — the two-step</h4>
+      <ol>
+        <li><b>Opposite pairs first.</b> Any option showing two opposite faces together is out. That usually removes
+        two.</li>
+        <li><b>Then handedness.</b> The two survivors show the same three faces, arranged as mirror images. Fold the
+        net in your head with one named face on top — "1 on top, 2 folds down to the right, so 3 wraps to the front" —
+        and read which way round the three faces sit. The survivor that passes every opposite-pair check but has two
+        faces swapped is the mirror die, and it is the planted wrong answer.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================= 4. CUBE ========================= -->
+  <section>
+    <h2><span class="n">4</span>Cube — three machines: painted, stacked, cut</h2>
+    <p class="lede">The Cube topic is three unrelated question types that share a word. Each has a five-second
+    formula, and each formula has one place the mark is lost.</p>
+
+    <h3>4.1 The painted cube and the painted cuboid</h3>
+    <figure><svg viewBox='0 0 640 330' width='640' height='330' role='img' aria-label="An isometric 4 by 4 by 4 cube built of small cubes, each visible small cube coloured by how many of its faces are painted: corners red (3 faces), edge cubes amber (2 faces), face-centre cubes blue (1 face). Legend: 8 corners, 12 × 2 = 24 edge cubes, 6 × 4 = 24 one-face cubes, 8 hidden inner cubes; 8 + 24 + 24 + 8 = 64."><polygon points='81.7,162.0 111.1,179.0 81.7,196.0 52.2,179.0' fill='color-mix(in srgb,var(--force) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='52.2,213.0 81.7,230.0 81.7,196.0 52.2,179.0' fill='color-mix(in srgb,var(--force) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,213.0 81.7,230.0 81.7,196.0 111.1,179.0' fill='color-mix(in srgb,var(--force) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='258.3,162.0 287.8,179.0 258.3,196.0 228.9,179.0' fill='color-mix(in srgb,var(--force) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,213.0 258.3,230.0 258.3,196.0 228.9,179.0' fill='color-mix(in srgb,var(--force) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='287.8,213.0 258.3,230.0 258.3,196.0 287.8,179.0' fill='color-mix(in srgb,var(--force) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,9.0 199.4,26.0 170.0,43.0 140.6,26.0' fill='color-mix(in srgb,var(--force) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,60.0 170.0,77.0 170.0,43.0 140.6,26.0' fill='color-mix(in srgb,var(--force) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,60.0 170.0,77.0 170.0,43.0 199.4,26.0' fill='color-mix(in srgb,var(--force) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,179.0 140.6,196.0 111.1,213.0 81.7,196.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='81.7,230.0 111.1,247.0 111.1,213.0 81.7,196.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,230.0 111.1,247.0 111.1,213.0 140.6,196.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,179.0 258.3,196.0 228.9,213.0 199.4,196.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,230.0 228.9,247.0 228.9,213.0 199.4,196.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='258.3,230.0 228.9,247.0 228.9,213.0 258.3,196.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='81.7,128.0 111.1,145.0 81.7,162.0 52.2,145.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='52.2,179.0 81.7,196.0 81.7,162.0 52.2,145.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,179.0 81.7,196.0 81.7,162.0 111.1,145.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='258.3,128.0 287.8,145.0 258.3,162.0 228.9,145.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,179.0 258.3,196.0 258.3,162.0 228.9,145.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='287.8,179.0 258.3,196.0 258.3,162.0 287.8,145.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,26.0 170.0,43.0 140.6,60.0 111.1,43.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,77.0 140.6,94.0 140.6,60.0 111.1,43.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,77.0 140.6,94.0 140.6,60.0 170.0,43.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,26.0 228.9,43.0 199.4,60.0 170.0,43.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,77.0 199.4,94.0 199.4,60.0 170.0,43.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,77.0 199.4,94.0 199.4,60.0 228.9,43.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,196.0 170.0,213.0 140.6,230.0 111.1,213.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,247.0 140.6,264.0 140.6,230.0 111.1,213.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,247.0 140.6,264.0 140.6,230.0 170.0,213.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,196.0 228.9,213.0 199.4,230.0 170.0,213.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,247.0 199.4,264.0 199.4,230.0 170.0,213.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,247.0 199.4,264.0 199.4,230.0 228.9,213.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,145.0 140.6,162.0 111.1,179.0 81.7,162.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='81.7,196.0 111.1,213.0 111.1,179.0 81.7,162.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,196.0 111.1,213.0 111.1,179.0 140.6,162.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,145.0 258.3,162.0 228.9,179.0 199.4,162.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,196.0 228.9,213.0 228.9,179.0 199.4,162.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='258.3,196.0 228.9,213.0 228.9,179.0 258.3,162.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='81.7,94.0 111.1,111.0 81.7,128.0 52.2,111.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='52.2,145.0 81.7,162.0 81.7,128.0 52.2,111.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,145.0 81.7,162.0 81.7,128.0 111.1,111.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='258.3,94.0 287.8,111.0 258.3,128.0 228.9,111.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,145.0 258.3,162.0 258.3,128.0 228.9,111.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='287.8,145.0 258.3,162.0 258.3,128.0 287.8,111.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,43.0 140.6,60.0 111.1,77.0 81.7,60.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='81.7,94.0 111.1,111.0 111.1,77.0 81.7,60.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,94.0 111.1,111.0 111.1,77.0 140.6,60.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,43.0 199.4,60.0 170.0,77.0 140.6,60.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,94.0 170.0,111.0 170.0,77.0 140.6,60.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,94.0 170.0,111.0 170.0,77.0 199.4,60.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,43.0 258.3,60.0 228.9,77.0 199.4,60.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,94.0 228.9,111.0 228.9,77.0 199.4,60.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='258.3,94.0 228.9,111.0 228.9,77.0 258.3,60.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,213.0 199.4,230.0 170.0,247.0 140.6,230.0' fill='color-mix(in srgb,var(--force) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,264.0 170.0,281.0 170.0,247.0 140.6,230.0' fill='color-mix(in srgb,var(--force) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,264.0 170.0,281.0 170.0,247.0 199.4,230.0' fill='color-mix(in srgb,var(--force) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,162.0 170.0,179.0 140.6,196.0 111.1,179.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,213.0 140.6,230.0 140.6,196.0 111.1,179.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,213.0 140.6,230.0 140.6,196.0 170.0,179.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,162.0 228.9,179.0 199.4,196.0 170.0,179.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,213.0 199.4,230.0 199.4,196.0 170.0,179.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,213.0 199.4,230.0 199.4,196.0 228.9,179.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,111.0 140.6,128.0 111.1,145.0 81.7,128.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='81.7,162.0 111.1,179.0 111.1,145.0 81.7,128.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,162.0 111.1,179.0 111.1,145.0 140.6,128.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,111.0 258.3,128.0 228.9,145.0 199.4,128.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,162.0 228.9,179.0 228.9,145.0 199.4,128.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='258.3,162.0 228.9,179.0 228.9,145.0 258.3,128.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='81.7,60.0 111.1,77.0 81.7,94.0 52.2,77.0' fill='color-mix(in srgb,var(--force) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='52.2,111.0 81.7,128.0 81.7,94.0 52.2,77.0' fill='color-mix(in srgb,var(--force) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,111.0 81.7,128.0 81.7,94.0 111.1,77.0' fill='color-mix(in srgb,var(--force) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,60.0 170.0,77.0 140.6,94.0 111.1,77.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,111.0 140.6,128.0 140.6,94.0 111.1,77.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,111.0 140.6,128.0 140.6,94.0 170.0,77.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,60.0 228.9,77.0 199.4,94.0 170.0,77.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,111.0 199.4,128.0 199.4,94.0 170.0,77.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,111.0 199.4,128.0 199.4,94.0 228.9,77.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='258.3,60.0 287.8,77.0 258.3,94.0 228.9,77.0' fill='color-mix(in srgb,var(--force) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,111.0 258.3,128.0 258.3,94.0 228.9,77.0' fill='color-mix(in srgb,var(--force) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='287.8,111.0 258.3,128.0 258.3,94.0 287.8,77.0' fill='color-mix(in srgb,var(--force) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,179.0 199.4,196.0 170.0,213.0 140.6,196.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,230.0 170.0,247.0 170.0,213.0 140.6,196.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,230.0 170.0,247.0 170.0,213.0 199.4,196.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,128.0 170.0,145.0 140.6,162.0 111.1,145.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,179.0 140.6,196.0 140.6,162.0 111.1,145.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,179.0 140.6,196.0 140.6,162.0 170.0,145.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,128.0 228.9,145.0 199.4,162.0 170.0,145.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,179.0 199.4,196.0 199.4,162.0 170.0,145.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,179.0 199.4,196.0 199.4,162.0 228.9,145.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,77.0 140.6,94.0 111.1,111.0 81.7,94.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='81.7,128.0 111.1,145.0 111.1,111.0 81.7,94.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,128.0 111.1,145.0 111.1,111.0 140.6,94.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,77.0 199.4,94.0 170.0,111.0 140.6,94.0' fill='color-mix(in srgb,var(--physics) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,128.0 170.0,145.0 170.0,111.0 140.6,94.0' fill='color-mix(in srgb,var(--physics) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,128.0 170.0,145.0 170.0,111.0 199.4,94.0' fill='color-mix(in srgb,var(--physics) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,77.0 258.3,94.0 228.9,111.0 199.4,94.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,128.0 228.9,145.0 228.9,111.0 199.4,94.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='258.3,128.0 228.9,145.0 228.9,111.0 258.3,94.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,145.0 199.4,162.0 170.0,179.0 140.6,162.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,196.0 170.0,213.0 170.0,179.0 140.6,162.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,196.0 170.0,213.0 170.0,179.0 199.4,162.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,94.0 170.0,111.0 140.6,128.0 111.1,111.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='111.1,145.0 140.6,162.0 140.6,128.0 111.1,111.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,145.0 140.6,162.0 140.6,128.0 170.0,111.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,94.0 228.9,111.0 199.4,128.0 170.0,111.0' fill='color-mix(in srgb,var(--iq) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,145.0 199.4,162.0 199.4,128.0 170.0,111.0' fill='color-mix(in srgb,var(--iq) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='228.9,145.0 199.4,162.0 199.4,128.0 228.9,111.0' fill='color-mix(in srgb,var(--iq) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='170.0,111.0 199.4,128.0 170.0,145.0 140.6,128.0' fill='color-mix(in srgb,var(--force) 55%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='140.6,162.0 170.0,179.0 170.0,145.0 140.6,128.0' fill='color-mix(in srgb,var(--force) 70%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><polygon points='199.4,162.0 170.0,179.0 170.0,145.0 199.4,128.0' fill='color-mix(in srgb,var(--force) 85%,var(--surface))' stroke='currentColor' stroke-width='1.2' stroke-linejoin='round' /><text x='170.0' y='314.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >4 × 4 × 4 painted — colour = painted faces</text><rect x='385.0' y='42.0' width='14.0' height='14.0' rx='0' fill='color-mix(in srgb,var(--force) 80%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='407.0' y='54.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='start' fill='currentColor' >3 faces · corners · 8</text><rect x='385.0' y='82.0' width='14.0' height='14.0' rx='0' fill='color-mix(in srgb,var(--iq) 80%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='407.0' y='94.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='start' fill='currentColor' >2 faces · edges · 12 × (4 − 2) = 24</text><rect x='385.0' y='122.0' width='14.0' height='14.0' rx='0' fill='color-mix(in srgb,var(--physics) 80%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='407.0' y='134.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='start' fill='currentColor' >1 face · faces · 6 × (4 − 2)² = 24</text><rect x='385.0' y='162.0' width='14.0' height='14.0' rx='0' fill='var(--surface2)' stroke='currentColor' stroke-width='2' /><text x='407.0' y='174.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='start' fill='currentColor' >0 faces · core · (4 − 2)³ = 8, hidden</text><text x='397.0' y='222.0' font-family='Inter, sans-serif' font-size='14' font-weight='600' text-anchor='start' fill='var(--iq)' >8 + 24 + 24 + 8 = 64 = 4³ ✓</text></svg>
+      <figcaption>An n × n × n cube painted on the outside and cut into n³ small cubes. Corners have 3 painted faces,
+      edge cubes 2, face cubes 1, inner cubes 0. Colour shows the class; the eight inner cubes of this 4 × 4 × 4 cannot
+      be seen. The four counts must add to n³ — always check.</figcaption>
+    </figure>
+    <div class="bank">
+      <div class="fx"><div class="eq">3 faces: 8</div><div class="wh">the corners, for any size of cube or cuboid.</div></div>
+      <div class="fx"><div class="eq">2 faces: 12 (n − 2)</div><div class="wh">the 12 edges, minus the corner at each end. Cuboid a × b × c: 4(a − 2) + 4(b − 2) + 4(c − 2).</div></div>
+      <div class="fx"><div class="eq">1 face: 6 (n − 2)²</div><div class="wh">the middle of each face. Cuboid: 2[(a−2)(b−2) + (b−2)(c−2) + (a−2)(c−2)].</div></div>
+      <div class="fx"><div class="eq">0 faces: (n − 2)³</div><div class="wh">the hidden core. Cuboid: (a − 2)(b − 2)(c − 2). A 1-cm-thick slab has none.</div></div>
+    </div>
+    <div class="box def">
+      <h4>Allen's block: 4 × 3 × 5, each pair of opposite faces a different colour</h4>
+      <p>Set in 2017-E Q67 and again in 2018-S Q69: red on the two 5 × 4 faces, blue on the two 4 × 3 faces, green on
+      the two 5 × 3 faces. Corners 8. Edges: four of length 4 → 4 × 2 = 8; four of length 3 →
+      4 × 1 = 4; four of length 5 → 4 × 3 = 12; two-face cubes <b>24</b>. One-face: 2 × (2 × 1 + 2 × 3 + 1 × 3) = 2 × 11 =
+      <b>22</b>. No face: 2 × 1 × 3 = <b>6</b>. Check: 8 + 24 + 22 + 6 = 60 = 4 × 3 × 5.</p>
+      <p><b>Colour questions are edge questions.</b> The cubes carrying exactly colours X and Y sit on the four edges
+      where face X meets face Y, and those edges have the length of the dimension the two faces <em>share</em>. On
+      Allen's block: green (5 × 3) meets red (5 × 4) along the four 5-cm edges → 4 × (5 − 2) = <b>12</b>; green meets
+      blue (4 × 3) along the four 3-cm edges → 4 × (3 − 2) = <b>4</b>; red meets blue along the four 4-cm edges → 4 ×
+      (4 − 2) = <b>8</b>. Check: 12 + 4 + 8 = 24, the two-face total.</p>
+      <p><b>Read which form is asked.</b> "Green and red" is one pair of faces: 12. "Exactly two colours, <em>one of
+      them green</em>" is <em>both</em> pairs that contain green: 12 + 4 = <b>16</b>. The planted wrong answer in the second
+      form is the first form's number — the second green pair forgotten.</p>
+    </div>
+    <div class="box trap">
+      <h4>Read the counting word</h4>
+      <ul>
+        <li><b>"Exactly two"</b> = edge cubes only. <b>"At least two"</b> = edges + corners. <b>"At least one"</b> =
+        everything except the core = n³ − (n − 2)³ (for 4³: 64 − 8 = <b>56</b>; check 8 + 24 + 24). The three classes
+        plus the core must add to n³ — a statement that is out by two is the usual trap.</li>
+        <li><b>"At most two"</b> should be everything except the corners — but 2018-S keyed it as "one or two"
+        (46, not 52) because 52 was not offered. If your literal reading is not on the list, it is the phrase that is
+        loose, not your count.</li>
+        <li><b>Only some faces painted.</b> "Painted on two opposite faces" or "on four side faces" — recount from
+        the definition, the formulas above assume all six.</li>
+      </ul>
+    </div>
+
+    <h3>4.2 A stack of cubes — count columns, not what you can see</h3>
+    <figure><svg viewBox='0 0 640 290' width='640' height='290' role='img' aria-label="An isometric stack of unit cubes on a 3 by 3 base with column heights 3, 2, 1 in the back row, 2, 2, 1 in the middle row and 1, 1, 1 in the front row. Beside it the height map seen from above and the count: 14 cubes; by layers 9 + 4 + 1."><polygon points='180.0,95.0 214.6,115.0 180.0,135.0 145.4,115.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='145.4,155.0 180.0,175.0 180.0,135.0 145.4,115.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='214.6,155.0 180.0,175.0 180.0,135.0 214.6,115.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='214.6,115.0 249.3,135.0 214.6,155.0 180.0,135.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,175.0 214.6,195.0 214.6,155.0 180.0,135.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='249.3,175.0 214.6,195.0 214.6,155.0 249.3,135.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='145.4,115.0 180.0,135.0 145.4,155.0 110.7,135.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='110.7,175.0 145.4,195.0 145.4,155.0 110.7,135.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,175.0 145.4,195.0 145.4,155.0 180.0,135.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,55.0 214.6,75.0 180.0,95.0 145.4,75.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='145.4,115.0 180.0,135.0 180.0,95.0 145.4,75.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='214.6,115.0 180.0,135.0 180.0,95.0 214.6,75.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='249.3,135.0 283.9,155.0 249.3,175.0 214.6,155.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='214.6,195.0 249.3,215.0 249.3,175.0 214.6,155.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='283.9,195.0 249.3,215.0 249.3,175.0 283.9,155.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,135.0 214.6,155.0 180.0,175.0 145.4,155.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='145.4,195.0 180.0,215.0 180.0,175.0 145.4,155.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='214.6,195.0 180.0,215.0 180.0,175.0 214.6,155.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='110.7,135.0 145.4,155.0 110.7,175.0 76.1,155.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='76.1,195.0 110.7,215.0 110.7,175.0 76.1,155.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='145.4,195.0 110.7,215.0 110.7,175.0 145.4,155.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='214.6,75.0 249.3,95.0 214.6,115.0 180.0,95.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,135.0 214.6,155.0 214.6,115.0 180.0,95.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='249.3,135.0 214.6,155.0 214.6,115.0 249.3,95.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='145.4,75.0 180.0,95.0 145.4,115.0 110.7,95.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='110.7,135.0 145.4,155.0 145.4,115.0 110.7,95.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,135.0 145.4,155.0 145.4,115.0 180.0,95.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,15.0 214.6,35.0 180.0,55.0 145.4,35.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='145.4,75.0 180.0,95.0 180.0,55.0 145.4,35.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='214.6,75.0 180.0,95.0 180.0,55.0 214.6,35.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='214.6,155.0 249.3,175.0 214.6,195.0 180.0,175.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,215.0 214.6,235.0 214.6,195.0 180.0,175.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='249.3,215.0 214.6,235.0 214.6,195.0 249.3,175.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='145.4,155.0 180.0,175.0 145.4,195.0 110.7,175.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='110.7,215.0 145.4,235.0 145.4,195.0 110.7,175.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,215.0 145.4,235.0 145.4,195.0 180.0,175.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,95.0 214.6,115.0 180.0,135.0 145.4,115.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='145.4,155.0 180.0,175.0 180.0,135.0 145.4,115.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='214.6,155.0 180.0,175.0 180.0,135.0 214.6,115.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='180.0,175.0 214.6,195.0 180.0,215.0 145.4,195.0' fill='color-mix(in srgb,var(--iq) 16%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='145.4,235.0 180.0,255.0 180.0,215.0 145.4,195.0' fill='color-mix(in srgb,var(--iq) 32%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><polygon points='214.6,235.0 180.0,255.0 180.0,215.0 214.6,195.0' fill='color-mix(in srgb,var(--iq) 48%,var(--surface))' stroke='currentColor' stroke-width='1.4' stroke-linejoin='round' /><text x='487.0' y='42.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >column heights, seen from above</text><rect x='430.0' y='60.0' width='38.0' height='38.0' rx='0' fill='color-mix(in srgb,var(--iq) 46%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='449.0' y='85.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><rect x='430.0' y='98.0' width='38.0' height='38.0' rx='0' fill='color-mix(in srgb,var(--iq) 34%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='449.0' y='123.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><rect x='430.0' y='136.0' width='38.0' height='38.0' rx='0' fill='color-mix(in srgb,var(--iq) 22%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='449.0' y='161.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><rect x='468.0' y='60.0' width='38.0' height='38.0' rx='0' fill='color-mix(in srgb,var(--iq) 34%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='487.0' y='85.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><rect x='468.0' y='98.0' width='38.0' height='38.0' rx='0' fill='color-mix(in srgb,var(--iq) 34%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='487.0' y='123.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><rect x='468.0' y='136.0' width='38.0' height='38.0' rx='0' fill='color-mix(in srgb,var(--iq) 22%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='487.0' y='161.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><rect x='506.0' y='60.0' width='38.0' height='38.0' rx='0' fill='color-mix(in srgb,var(--iq) 22%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='525.0' y='85.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><rect x='506.0' y='98.0' width='38.0' height='38.0' rx='0' fill='color-mix(in srgb,var(--iq) 22%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='525.0' y='123.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><rect x='506.0' y='136.0' width='38.0' height='38.0' rx='0' fill='color-mix(in srgb,var(--iq) 22%,var(--surface))' stroke='currentColor' stroke-width='2' /><text x='525.0' y='161.0' font-family='Inter, sans-serif' font-size='16' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><text x='487.0' y='198.0' font-family='Inter, sans-serif' font-size='13' font-weight='600' text-anchor='middle' fill='var(--iq)' >3+2+1 + 2+2+1 + 1+1+1 = 14 cubes</text><text x='487.0' y='220.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >by layers: 9 + 4 + 1 = 14</text><text x='487.0' y='240.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >visible in the drawing: 9 · hidden: 5</text><text x='180.0' y='272.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >nothing floats: every column stands on the ground</text></svg>
+      <figcaption>Unless the stem says otherwise, nothing floats: every cube rests on the ground or on another cube,
+      so every column is solid from the ground up. Write the column heights as a top-view grid and add them; or
+      count by layers (the bottom layer has a cube under every column, the next under every column at least 2 high,
+      and so on). Five of these fourteen cubes are invisible in the drawing.</figcaption>
+    </figure>
+    <div class="box def">
+      <h4>Two follow-ups Allen can bolt on</h4>
+      <p><b>"How many more to make a solid cube?"</b> — count what is there, subtract from n³ (14 here → 27 − 14 = 13 to
+      finish a 3 × 3 × 3). <b>"How many cubes are not visible?"</b> — a cube is hidden when its top, its front-left and
+      its front-right faces are all covered; count the columns from the back. The trap in both is counting only what
+      the drawing shows.</p>
+    </div>
+
+    <h3>4.3 A cube cut by planes</h3>
+    <figure><svg viewBox='0 0 640 230' width='640' height='230' role='img' aria-label="A 5 by 5 grid seen from above with both diagonals drawn in amber; the cells on the two diagonals are shaded and the central cell, on both, is red. Beside it: each diagonal plane cuts n cubes per layer, n squared per plane; two planes cut 2n² − n cubes when n is odd because the central column is counted twice; n = 5 gives 45, n = 9 gives 153; for even n the planes cross between cubes, giving 2n²."><rect x='60.0' y='20.0' width='36.0' height='36.0' rx='0' fill='color-mix(in srgb,var(--iq) 45%,var(--surface))' stroke='currentColor' stroke-width='1.2' /><rect x='60.0' y='56.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='60.0' y='92.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='60.0' y='128.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='60.0' y='164.0' width='36.0' height='36.0' rx='0' fill='color-mix(in srgb,var(--iq) 45%,var(--surface))' stroke='currentColor' stroke-width='1.2' /><rect x='96.0' y='20.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='96.0' y='56.0' width='36.0' height='36.0' rx='0' fill='color-mix(in srgb,var(--iq) 45%,var(--surface))' stroke='currentColor' stroke-width='1.2' /><rect x='96.0' y='92.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='96.0' y='128.0' width='36.0' height='36.0' rx='0' fill='color-mix(in srgb,var(--iq) 45%,var(--surface))' stroke='currentColor' stroke-width='1.2' /><rect x='96.0' y='164.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='132.0' y='20.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='132.0' y='56.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='132.0' y='92.0' width='36.0' height='36.0' rx='0' fill='color-mix(in srgb,var(--iq) 45%,var(--surface))' stroke='currentColor' stroke-width='1.2' /><rect x='132.0' y='128.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='132.0' y='164.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='168.0' y='20.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='168.0' y='56.0' width='36.0' height='36.0' rx='0' fill='color-mix(in srgb,var(--iq) 45%,var(--surface))' stroke='currentColor' stroke-width='1.2' /><rect x='168.0' y='92.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='168.0' y='128.0' width='36.0' height='36.0' rx='0' fill='color-mix(in srgb,var(--iq) 45%,var(--surface))' stroke='currentColor' stroke-width='1.2' /><rect x='168.0' y='164.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='204.0' y='20.0' width='36.0' height='36.0' rx='0' fill='color-mix(in srgb,var(--iq) 45%,var(--surface))' stroke='currentColor' stroke-width='1.2' /><rect x='204.0' y='56.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='204.0' y='92.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='204.0' y='128.0' width='36.0' height='36.0' rx='0' fill='var(--surface)' stroke='currentColor' stroke-width='1.2' /><rect x='204.0' y='164.0' width='36.0' height='36.0' rx='0' fill='color-mix(in srgb,var(--iq) 45%,var(--surface))' stroke='currentColor' stroke-width='1.2' /><rect x='132.0' y='92.0' width='36.0' height='36.0' rx='0' fill='color-mix(in srgb,var(--force) 60%,var(--surface))' stroke='currentColor' stroke-width='1.2' /><line x1='60.0' y1='20.0' x2='240.0' y2='200.0' stroke='var(--iq)' stroke-width='2.5' stroke-linecap='round' /><line x1='240.0' y1='20.0' x2='60.0' y2='200.0' stroke='var(--iq)' stroke-width='2.5' stroke-linecap='round' /><text x='150.0' y='222.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >one layer of a 5 × 5 × 5 cube, seen from above</text><text x='430.0' y='50.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >each diagonal plane cuts n cubes per layer</text><text x='430.0' y='72.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >× n layers = n² per plane</text><text x='430.0' y='108.0' font-family='Inter, sans-serif' font-size='15' font-weight='600' text-anchor='middle' fill='var(--iq)' >two planes: 2n² − n  (n odd)</text><text x='430.0' y='132.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >the central column is cut by both</text><text x='430.0' y='168.0' font-family='Inter, sans-serif' font-size='13' font-weight='500' text-anchor='middle' fill='currentColor' >n = 5: 50 − 5 = 45 · n = 9: 162 − 9 = 153</text><text x='430.0' y='192.0' font-family='Inter, sans-serif' font-size='12.5' font-weight='500' text-anchor='middle' fill='var(--muted)' >n even: the planes cross between cubes → 2n²</text></svg>
+      <figcaption>2017-E Q69: 729 = 9³ unit cubes glued into one cube, then "cut along two diagonals" — the two vertical
+      planes through opposite vertical edges. In each layer a diagonal plane passes through the n cubes on that
+      diagonal; n layers give n² per plane. The two planes share the central column (n cubes, when n is odd), so
+      2n² − n cubes are cut: 162 − 9 = 153, the key.</figcaption>
+    </figure>
+    <div class="box def">
+      <h4>Planes parallel to a face are simpler</h4>
+      <p>A plane parallel to a face, between two layers, cuts <b>nothing</b>; through the middle of a layer it cuts
+      the whole layer, n² cubes. A cut "into k slices" along one direction needs k − 1 planes. The paper's cut-planes
+      questions are counting questions — draw one layer from above and count what the line crosses.</p>
+    </div>
+  </section>
+
+  <!-- ========================= 5. FACT BANK ========================= -->
+  <section>
+    <h2><span class="n">5</span>Fact bank — everything above on one screen</h2>
+    <div class="bank">
+      <div class="fx"><div class="eq">n points on a line → ⁿC₂ triangles</div><div class="wh">with a fixed apex off the line. 4 → 6, 5 → 10, 6 → 15. Pairs, not points.</div></div>
+      <div class="fx"><div class="eq">grid: rectangles = ᴴC₂ × ⱽC₂</div><div class="wh">H horizontal lines, V vertical lines, all full length. 4 × 6 lines → 6 × 15 = 90.</div></div>
+      <div class="fx"><div class="eq">squares in m × n = Σ (m − k)(n − k)</div><div class="wh">k = 0, 1, 2 … : 5 × 3 → 15 + 8 + 3 = 26.</div></div>
+      <div class="fx"><div class="eq">count by size class</div><div class="wh">smallest pieces first, then shapes of 2, 3, 4 … pieces. A total between two options = a class missed.</div></div>
+      <div class="fx"><div class="eq">star in hexagon = 32 · star alone = 8</div><div class="wh">12 + 12 + 6 + 2. 2024-A Q67 ≡ Sample Q66.</div></div>
+      <div class="fx"><div class="eq">3 × 3 diamond lattice = 36</div><div class="wh">12 + 4 + 8 + 4 + 4 + 4. 2017-E Q75.</div></div>
+      <div class="fx"><div class="eq">does the line continue?</div><div class="wh">a divider that lines up across a full line makes one line; one that does not makes two. 2018-S Q75 = 9.</div></div>
+      <div class="fx"><div class="eq">embedded: same shape, same way up</div><div class="wh">lines may cross it. Mirror = never. Turned = only if nothing matches as drawn (2017-E Q72).</div></div>
+      <div class="fx"><div class="eq">standard die: opposite faces sum to 7</div><div class="wh">1–6, 2–5, 3–4. Only when the stem says standard / ordinary.</div></div>
+      <div class="fx"><div class="eq">one face common, same place, 5 numbers</div><div class="wh">tops opposite, rights opposite. Needs all five different.</div></div>
+      <div class="fx"><div class="eq">two faces common</div><div class="wh">the two odd ones out are opposite. Works wherever the faces sit.</div></div>
+      <div class="fx"><div class="eq">opposite = never seen together</div><div class="wh">if the other four numbers all appear beside x across the views, the one that never does is opposite x.</div></div>
+      <div class="fx"><div class="eq">net: one square between = opposite</div><div class="wh">run of four: 1st–3rd, 2nd–4th, flaps. Staircase: three along.</div></div>
+      <div class="fx"><div class="eq">mirror die = different die</div><div class="wh">same pairs, faces round the corner in the other order. Fold the net to decide.</div></div>
+      <div class="fx"><div class="eq">painted n³: 8 · 12(n−2) · 6(n−2)² · (n−2)³</div><div class="wh">3, 2, 1, 0 faces. Must add to n³.</div></div>
+      <div class="fx"><div class="eq">colours X + Y = the 4 edges where X meets Y</div><div class="wh">length = the dimension the two faces share, minus 2 corners. "One of them X" = both pairs containing X.</div></div>
+      <div class="fx"><div class="eq">stack: add the column heights</div><div class="wh">nothing floats. Hidden cubes exist. n³ − count = cubes to finish.</div></div>
+      <div class="fx"><div class="eq">two diagonal planes: 2n² − n (n odd)</div><div class="wh">n² each, central column shared. n even → 2n².</div></div>
+    </div>
+  </section>
+
+  <!-- ========================= 6. WORKED ========================= -->
+  <section>
+    <h2><span class="n">6</span>Five worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">Try each before opening the working and give yourself <b>ninety seconds</b> — the real paper's
+    average. The elimination reasoning is written out because knowing why 16 and 20 are wrong is what stops you
+    bubbling them under pressure.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">Counting of Figures — the spanning class · ~90 seconds</span></div>
+      <p>How many triangles are there in the given figure?</p>
+      <figure><svg viewBox='0 0 420 190' width='420' height='190' role='img' aria-label="A rectangle made of two equal squares side by side, with a vertical line between them and both diagonals drawn in each square."><rect x='130.0' y='30.0' width='160.0' height='80.0' rx='0' fill='none' stroke='currentColor' stroke-width='2.2' /><line x1='210.0' y1='30.0' x2='210.0' y2='110.0' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' /><line x1='130.0' y1='30.0' x2='210.0' y2='110.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='210.0' y1='30.0' x2='130.0' y2='110.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='210.0' y1='30.0' x2='290.0' y2='110.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='290.0' y1='30.0' x2='210.0' y2='110.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><text x='210.0' y='140.0' font-family='Inter, sans-serif' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >two squares side by side, both diagonals in each</text></svg></figure>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>8</div>
+        <div class="we-opt"><span class="ob">2</span>16</div>
+        <div class="we-opt key"><span class="ob">3</span>18</div>
+        <div class="we-opt"><span class="ob">4</span>20</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Classes.</b> Smallest pieces: each square's two diagonals cut it into 4 small triangles — <b>8</b>. Two
+        pieces: each half of a square along one of its sides — 4 per square, <b>8</b>. Then the class that is easy to miss:
+        <b>triangles that use both squares</b>. The two diagonals meeting at the top of the middle line, with the whole
+        base as third side, make one; the two meeting at the bottom, with the whole top edge, make another — <b>2</b>.
+        No other triangle spans both squares, because no line runs from one square's corner to the far corner of the
+        other.</p>
+        <p>8 + 8 + 2 = <b>18</b>. Answer (3).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> 8 counts only the smallest pieces.
+        <b>(2)</b> 16 is 2 × 8 — everything inside each square, and nothing across the middle line: the spanning
+        class skipped.
+        <b>(4)</b> 20 adds two more "big" triangles, the halves of the whole rectangle along a corner-to-corner diagonal
+        — but no such diagonal is drawn. A triangle needs all three sides on the paper.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">Embedded Figure — the four standard fakes · ~60 seconds</span></div>
+      <p>Figure (X) is embedded in one of the four answer figures. Find that figure.</p>
+      <figure><svg viewBox='0 0 640 300' width='640' height='300' role='img' aria-label="Figure (X): a pentagon pointing right — a rectangle whose right side is replaced by a point — with a triangular wedge drawn inside it against the left side, the wedge apex at the middle height. Four answer figures with extra lines: (1) the figure turned through 90 degrees; (2) the figure exactly as drawn with lines crossing it; (3) the figure with the wedge apex moved upward; (4) the mirror image pointing left."><rect x='265.0' y='8.0' width='110.0' height='92.0' rx='6' fill='none' stroke='currentColor' stroke-width='2' /><line x1='280.0' y1='19.0' x2='340.0' y2='19.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='340.0' y1='19.0' x2='360.0' y2='54.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='360.0' y1='54.0' x2='340.0' y2='89.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='340.0' y1='89.0' x2='280.0' y2='89.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='280.0' y1='89.0' x2='280.0' y2='19.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='280.0' y1='19.0' x2='310.0' y2='54.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='310.0' y1='54.0' x2='280.0' y2='89.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><text x='320.0' y='118.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(X)</text><rect x='30.0' y='140.0' width='130.0' height='110.0' rx='6' fill='none' stroke='currentColor' stroke-width='2' /><line x1='130.0' y1='158.0' x2='130.0' y2='218.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='130.0' y1='218.0' x2='95.0' y2='238.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='95.0' y1='238.0' x2='60.0' y2='218.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='60.0' y1='218.0' x2='60.0' y2='158.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='60.0' y1='158.0' x2='130.0' y2='158.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='130.0' y1='158.0' x2='95.0' y2='188.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='95.0' y1='188.0' x2='60.0' y2='158.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='45.0' y1='195.0' x2='155.0' y2='195.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><text x='95.0' y='268.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(1)</text><rect x='180.0' y='140.0' width='130.0' height='110.0' rx='6' fill='none' stroke='currentColor' stroke-width='2' /><line x1='205.0' y1='160.0' x2='265.0' y2='160.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='265.0' y1='160.0' x2='285.0' y2='195.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='285.0' y1='195.0' x2='265.0' y2='230.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='265.0' y1='230.0' x2='205.0' y2='230.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='205.0' y1='230.0' x2='205.0' y2='160.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='205.0' y1='160.0' x2='235.0' y2='195.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='235.0' y1='195.0' x2='205.0' y2='230.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='235.0' y1='150.0' x2='235.0' y2='245.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><line x1='193.0' y1='230.0' x2='300.0' y2='230.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><line x1='265.0' y1='160.0' x2='265.0' y2='230.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><line x1='285.0' y1='195.0' x2='305.0' y2='170.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><text x='245.0' y='268.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(2)</text><rect x='330.0' y='140.0' width='130.0' height='110.0' rx='6' fill='none' stroke='currentColor' stroke-width='2' /><line x1='355.0' y1='160.0' x2='415.0' y2='160.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='415.0' y1='160.0' x2='435.0' y2='195.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='435.0' y1='195.0' x2='415.0' y2='230.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='415.0' y1='230.0' x2='355.0' y2='230.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='355.0' y1='230.0' x2='355.0' y2='160.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='355.0' y1='160.0' x2='385.0' y2='180.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='385.0' y1='180.0' x2='355.0' y2='230.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='415.0' y1='160.0' x2='415.0' y2='230.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><line x1='343.0' y1='195.0' x2='385.0' y2='195.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><text x='395.0' y='268.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(3)</text><rect x='480.0' y='140.0' width='130.0' height='110.0' rx='6' fill='none' stroke='currentColor' stroke-width='2' /><line x1='585.0' y1='160.0' x2='525.0' y2='160.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='525.0' y1='160.0' x2='505.0' y2='195.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='505.0' y1='195.0' x2='525.0' y2='230.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='525.0' y1='230.0' x2='585.0' y2='230.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='585.0' y1='230.0' x2='585.0' y2='160.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='585.0' y1='160.0' x2='555.0' y2='195.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='555.0' y1='195.0' x2='585.0' y2='230.0' stroke='currentColor' stroke-width='2' stroke-linecap='round' /><line x1='555.0' y1='150.0' x2='555.0' y2='245.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><line x1='493.0' y1='160.0' x2='600.0' y2='160.0' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' /><text x='545.0' y='268.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(4)</text></svg></figure>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Figure (1)</div>
+        <div class="we-opt key"><span class="ob">2</span>Figure (2)</div>
+        <div class="we-opt"><span class="ob">3</span>Figure (3)</div>
+        <div class="we-opt"><span class="ob">4</span>Figure (4)</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Describe (X) first:</b> a five-sided shape pointing right — flat top and bottom, a point on the right at
+        mid-height — with a triangular wedge drawn inside it against the left side, its apex at the <em>middle</em> of
+        the height. Seven edges. The odd feature is the wedge: which side it sits on (the left) and where its apex
+        is (mid-height).</p>
+        <p><b>Kill by the odd feature.</b> (4) has its wedge on the right — the mirror image. (1) has the wedge at the
+        top — the figure turned through 90°. (3) has the wedge on the left but its apex is well above mid-height; the
+        two arms of the wedge are no longer equal, so an edge has changed.</p>
+        <p><b>Trace every edge in (2).</b> Top, right-hand point, bottom, the left side, both arms of the wedge — all seven are there at
+        the same lengths and angles. The vertical through the wedge apex, the long line along the bottom, the vertical
+        joining the two right-hand corners and the tail off the point are crossings, not changes. Answer (2).</p>
+        <div class="elim"><b>On the turned copy in (1).</b> A turned copy is only a candidate when <em>no</em> option has
+        the figure as drawn (2017-E Q72). Here (2) has it as drawn, so (1) is a distractor. The mirror in (4) is never
+        an answer.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">Dice — rule A, then the adjacent-faces sum · ~90 seconds</span></div>
+      <p>Two positions of the same die are shown. What is the sum of the numbers on the four faces adjacent to the
+      face numbered 4?</p>
+      <figure><svg viewBox='0 0 420 206' width='420' height='206' role='img' aria-label="Two positions of the same die. Position (i): 2 on top, 1 on the left face, 5 on the right face. Position (ii): 3 on top, 1 on the left face, 6 on the right face."><polygon points='110.0,20.0 179.3,60.0 110.0,100.0 40.7,60.0' fill='color-mix(in srgb,var(--iq) 14%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='40.7,140.0 110.0,180.0 110.0,100.0 40.7,60.0' fill='color-mix(in srgb,var(--iq) 28%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='179.3,140.0 110.0,180.0 110.0,100.0 179.3,60.0' fill='color-mix(in srgb,var(--iq) 42%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><text x='110.0' y='67.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >2</text><text x='75.4' y='127.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><text x='144.6' y='127.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >5</text><polygon points='300.0,20.0 369.3,60.0 300.0,100.0 230.7,60.0' fill='color-mix(in srgb,var(--iq) 14%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='230.7,140.0 300.0,180.0 300.0,100.0 230.7,60.0' fill='color-mix(in srgb,var(--iq) 28%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><polygon points='369.3,140.0 300.0,180.0 300.0,100.0 369.3,60.0' fill='color-mix(in srgb,var(--iq) 42%,var(--surface))' stroke='currentColor' stroke-width='2' stroke-linejoin='round' /><text x='300.0' y='67.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >3</text><text x='265.4' y='127.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >1</text><text x='334.6' y='127.0' font-family='Inter, sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='currentColor' >6</text><text x='110.0' y='196.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(i)</text><text x='300.0' y='196.0' font-family='JetBrains Mono, monospace' font-size='12' font-weight='500' text-anchor='middle' fill='var(--muted)' >(ii)</text></svg></figure>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>14</div>
+        <div class="we-opt key"><span class="ob">2</span>16</div>
+        <div class="we-opt"><span class="ob">3</span>17</div>
+        <div class="we-opt"><span class="ob">4</span>20</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Check rule A's condition.</b> 1 is common and in the same place (the left face); the other four numbers —
+        2, 5, 3, 6 — are all different. So the die was turned half a revolution about the 1: <b>the tops are opposite,
+        2 ↔ 3</b>, and <b>the rights are opposite, 5 ↔ 6</b>. The pair left over is <b>1 ↔ 4</b>.</p>
+        <p><b>Adjacent to 4</b> means every face except 4 itself and its opposite, 1: 2 + 3 + 5 + 6 = <b>16</b>. Answer (2).
+        Note that 4 never appears in either drawing — you find it by elimination.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> 14 assumes a standard die (4 opposite 3) and sums 1 + 2 + 5 + 6 — the stem never said standard, and
+        the drawings show 2 and 3 as tops of the same die turned over, i.e. opposite.
+        <b>(3)</b> 17 is 21 − 4: the opposite face was not removed.
+        <b>(4)</b> 20 is 21 − 1: the 4 itself was left in the sum.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">Cube — the painted cuboid, four statements · ~2 minutes</span></div>
+      <p>A solid cuboid measuring 5 cm × 4 cm × 3 cm is painted: both 5 cm × 4 cm faces red, both 5 cm × 3 cm faces
+      blue and both 4 cm × 3 cm faces green. It is then cut into 1-cm cubes. Consider the statements.</p>
+      <div class="st"><ol class="roman">
+        <li>24 small cubes have exactly two faces painted.</li>
+        <li>6 small cubes have no paint on them.</li>
+        <li>12 small cubes carry red and green but no blue.</li>
+        <li>22 small cubes have exactly one face painted.</li>
+      </ol><p>Which of the statements are correct?</p></div>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>I and II only</div>
+        <div class="we-opt"><span class="ob">2</span>I, III and IV only</div>
+        <div class="we-opt"><span class="ob">3</span>I, II, III and IV</div>
+        <div class="we-opt key"><span class="ob">4</span>I, II and IV only</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>I — edges.</b> Four edges of each length: 4 × (5 − 2) + 4 × (4 − 2) + 4 × (3 − 2) = 12 + 8 + 4 = 24. <b>Correct.</b></p>
+        <p><b>II — the core.</b> (5 − 2)(4 − 2)(3 − 2) = 3 × 2 × 1 = 6. <b>Correct.</b></p>
+        <p><b>III — red meets green.</b> Red is on the 5 × 4 faces, green on the 4 × 3 faces; they share the four edges
+        of length <b>4</b> (the dimension common to both faces). 4 × (4 − 2) = 8, not 12. <b>Wrong.</b> 12 is what you get
+        by taking the 5-cm edges, which are where red meets <em>blue</em>.</p>
+        <p><b>IV — one face.</b> 2 × [(3 × 2) + (2 × 1) + (3 × 1)] = 2 × 11 = 22. <b>Correct.</b> (Check: 8 + 24 + 22 + 6 =
+        60 = 5 × 4 × 3.)</p>
+        <p>I, II and IV — answer (4).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> leaves IV untested because 22 "looks odd" — it is the one that needs the three-term sum.
+        <b>(2)</b> accepts III on the wrong edge and rejects II by assuming a block only 3 cm thick has no unpainted
+        core — it has one layer of 3 × 2 = 6.
+        <b>(3)</b> waves III through: a two-colour count taken on the wrong edge is the standard slip in this item.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">Cube — cut by two diagonal planes · ~75 seconds</span></div>
+      <p>343 identical small cubes are glued together to form one large cube. The large cube is then cut by two
+      planes, each passing through a pair of opposite vertical edges. How many of the small cubes are cut?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>49</div>
+        <div class="we-opt"><span class="ob">2</span>84</div>
+        <div class="we-opt key"><span class="ob">3</span>91</div>
+        <div class="we-opt"><span class="ob">4</span>98</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>343 = 7³, so n = 7. Look at one horizontal layer from above: a 7 × 7 grid. A vertical plane through two opposite
+        vertical edges is a diagonal of that grid and passes through the 7 cubes on it; 7 layers → <b>49 per plane</b>.</p>
+        <p>The two diagonals cross at the centre cell, and n is odd, so the <b>central column of 7 cubes is cut by both
+        planes</b>. Counted once: 49 + 49 − 7 = <b>91</b>. Answer (3).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> 49 is one plane.
+        <b>(4)</b> 98 counts the central column twice.
+        <b>(2)</b> 84 subtracts the column twice (98 − 14), as if the overlap were 2n.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <!-- ========================= 7. CHECK YOURSELF ========================= -->
+  <section>
+    <h2><span class="n">7</span>Check yourself</h2>
+    <p class="lede">Five quick ones. <b>No negative marking here</b> — this is practice, not the exam.
+    Click an option to see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="iq-figures-dice-cubes-paper-1.html">📝 Paper 1 for this unit — 13 questions, 20 minutes</a>
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Mental Ability · <b>Counting of Figures</b>, <b>Embedded Figure</b>, <b>Dice</b> and <b>Cube</b> — the
+    official topic names from Allen's Class X syllabus.<br>
+    <b>Deliberately not here:</b> figure analogies and figure series (they sit next to these items in the booklets but
+    "Analogy" is not on the 47-topic list, and Series has its own unit); paper folding and mirror images (not on the
+    list); counting straight lines, which no cached paper has asked.<br>
+    Tip: press 🖨 (bottom-left) to print these as a revision sheet · 🏆 (top-left) goes back to the TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'A <b>standard</b> die is placed with 3 on top and 2 facing you. Which number is on the bottom face?',
+    o:['1','4','5','6'], a:1,
+    fb:'<b>4.</b> On a standard die opposite faces add to 7, so the face under the 3 is 7 − 3 = 4. <b>5</b> is opposite the 2 (the front), <b>6</b> is opposite 1, and <b>1</b> is adjacent to both 3 and 2 — it is on a side, not underneath.' },
+  { q:'A 4 × 4 × 4 cube is painted on all six faces and cut into 64 unit cubes. How many small cubes have paint on <b>exactly two</b> faces?',
+    o:['8','16','24','32'], a:2,
+    fb:'<b>24.</b> Exactly two painted faces means an edge cube that is not a corner: 12 edges × (4 − 2) = 24. <b>8</b> is the number of corners (three faces); <b>16</b> is 12 × (4 − 2) with four edges forgotten; <b>32</b> is 8 + 24, corners added in. Check: 8 + 24 + 24 + 8 = 64.' },
+  { q:'A rectangle is divided into a grid of <b>3 columns and 2 rows</b> of equal squares (all lines full length). How many rectangles does the figure contain in all?',
+    o:['6','11','18','24'], a:2,
+    fb:'<b>18.</b> Four vertical lines and three horizontal lines: ⁴C₂ × ³C₂ = 6 × 3 = 18. <b>6</b> counts only the unit squares; <b>11</b> is the 6 units plus 5 more found by eye — a class-by-class count finds 6 (1×1) + 4 (2×1) + 2 (3×1) + 3 (1×2) + 2 (2×2) + 1 (3×2) = 18; <b>24</b> is 4 × 3 × 2, a product of the wrong things.' },
+  { q:'Figure (X) must be found <b>embedded</b> in one of the answer figures. By the usual convention, which of these is allowed for the hidden copy of (X)?',
+    o:['Other lines may cross straight through it','It may be the mirror image of (X)','Its proportions may be stretched','One of its sides may be a little shorter'], a:0,
+    fb:'<b>Other lines may cross through it.</b> Camouflage lines do not remove any edge of (X). A <b>mirror image</b> is never accepted by an Allen key; a <b>stretched copy</b> is a different figure — the proportions are part of (X); a <b>shortened side</b> changes an edge, which is exactly the near-miss trap. (A copy turned round is the one exception, and only when nothing matches as drawn.)' },
+  { q:'A dice net has four squares in a straight column, labelled A, B, C, D from top to bottom, with E and F attached to the two sides of B. When it is folded, which face is <b>opposite D</b>?',
+    o:['A','B','C','E'], a:1,
+    fb:'<b>B.</b> In a straight run of four, the 1st and 3rd fold opposite (A–C) and the 2nd and 4th fold opposite (B–D); the two flaps E and F are the third pair. <b>A</b> is opposite C, not D; <b>C</b> shares an edge with D, so they are adjacent; <b>E</b> is a flap and is opposite F.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. The methods have landed — sit Paper 1 for this unit now, under the clock.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed — 1.2 carries the grid count, 3.1 and 3.3 the dice rules, 4.1 the painted-cube classes.'
+                        : 'Worth a second pass through sections 3 and 4 before the paper. It is a short page; one more read fixes it.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:iq-figures-dice-cubes:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- print: a closed details element never renders its contents, so open them for the printer ---------- */
+(function(){
+  var opened = [];
+  function before(){
+    opened = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+      if(!d.open){ d.open = true; opened.push(d); }
+      var box = d.closest('.we'); if(box) box.classList.add('revealed');
+    });
+  }
+  function after(){
+    opened.forEach(function(d){ d.open = false; var box = d.closest('.we'); if(box) box.classList.remove('revealed'); });
+    opened = [];
+  }
+  window.addEventListener('beforeprint', before);
+  window.addEventListener('afterprint', after);
+  if(window.matchMedia){
+    var mq = matchMedia('print');
+    var h = function(e){ if(e.matches) before(); else after(); };
+    if(mq.addEventListener) mq.addEventListener('change', h); else if(mq.addListener) mq.addListener(h);
+  }
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
