@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Real Numbers &amp; Polynomials</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%237c8cff'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--maths);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #2e246b30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--maths); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--maths); }
+  .toolbtn:focus-visible { outline:2px solid var(--maths); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#241f4a); border:1px solid #2b3f63;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--maths); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--maths); background:color-mix(in srgb,var(--maths) 14%,transparent); border:1px solid color-mix(in srgb,var(--maths) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+  ol.roman { list-style:upper-roman; }
+  ol.roman li { padding-left:4px; }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child, .box .tablewrap:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--physics); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--maths); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; margin:12px 0; }
+  .tablewrap table { margin:0; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--maths); background:color-mix(in srgb,var(--maths) 13%,transparent); border:1px solid color-mix(in srgb,var(--maths) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--maths); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--maths); background:color-mix(in srgb,var(--maths) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--maths) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5b40d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#e2edfb,#e8f0fb); border-color:#c3d7f2; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb.on { background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Mathematics · Crash notes</div>
+    <h1>Real Numbers &amp; Polynomials</h1>
+    <p class="sub">Official topics: <b>Real Numbers</b> and <b>Polynomials</b> (both Class 10) — two topics, one
+    card. Your IGCSE course already gives you prime factors, HCF and LCM, surds and factorising, so about half of
+    this page is revision in NCERT's words. The other half is genuinely new: <b>the zeroes of a polynomial and how they
+    are tied to its coefficients</b>, reading a polynomial off its graph, Euclid's division lemma and the remainder
+    puzzles built on it — and a set of Class-9 identities that Allen assumes you own. A 35-minute read, then the paper.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Every Mathematics question (Q46–60) in all five cached papers — four real sittings and Allen's official
+      sample — was read page by page, the 2017 and 2018 booklets rendered from their image scans (a text search
+      returns nothing for them), and every item from these two chapters re-solved against Allen's own key sheets.
+      <b>Eighteen items in five papers (by Allen's own topic labels — a few border items on averages and counting multiples are left out), three or four of the fifteen Maths questions in every sitting:</b></p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th>Paper</th><th>Q</th><th>What it gives you</th><th>What it wants</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td>2017 · E</td><td class="mono">46</td><td>Two whole numbers multiply to 1000; neither is a multiple of 10</td><td>Their sum</td><td class="mono">(4) 133 = 8 + 125</td></tr>
+          <tr><td>2017 · E</td><td class="mono">48</td><td>x² + x − 1 is a factor of x⁴ + px³ + qx² − 1</td><td>p and q</td><td class="mono">(1) 2, 1</td></tr>
+          <tr><td>2017 · E</td><td class="mono">60</td><td>(a+2b)³ + (2a−c)³ − (a+2c)³ + 3(a+2b)(2a−c)(a+2c)</td><td>One factor of it</td><td class="mono">(1) 2a + 2b − 3c</td></tr>
+          <tr><td>2018 · S</td><td class="mono">46</td><td>Four pairs: 51 &amp; 85, 26 &amp; 65, 57 &amp; 76, 29 &amp; 75</td><td>Which are relatively prime</td><td class="mono">(2) only 29 &amp; 75</td></tr>
+          <tr><td>2018 · S</td><td class="mono">48</td><td>2a + b = 12 and ab = 15</td><td>8a³ + b³</td><td class="mono">(4) 648</td></tr>
+          <tr><td>2018 · S</td><td class="mono">60</td><td>Two polynomials: GCD x − 1, LCM x⁶ − 1, one of them x³ − 1</td><td>The other</td><td class="mono">(2) x⁴ − x³ + x − 1</td></tr>
+          <tr><td>2024 · U</td><td class="mono">46</td><td>1/(1 + √3 + √5) = P + √3Q + √5R + √15S</td><td>P + Q + R + S</td><td class="mono">(4) 7/11</td></tr>
+          <tr><td>2024 · U</td><td class="mono">47</td><td>a + b + c = 8, Σa² = 26, Σa³ = 98</td><td>Σa⁴</td><td class="mono">(1) 402</td></tr>
+          <tr><td>2024 · U</td><td class="mono">53</td><td>Integers between 10 and 2023 with all digits the same</td><td>How many are divisible by 3</td><td class="mono">(2) 12</td></tr>
+          <tr><td>2024 · U</td><td class="mono">55</td><td>α, β, γ the zeroes of x³ − 7x + 2</td><td>Σ 1/(α + β)</td><td class="mono">(3) −7/2</td></tr>
+          <tr><td>2024 · A</td><td class="mono">46</td><td>x = 2 + √3, xy = 1</td><td>x/(√2 + √x) + y/(√2 − √y)</td><td class="mono">(2) √2</td></tr>
+          <tr><td>2024 · A</td><td class="mono">47</td><td>f(x) − m = x; an expression in f(x − m), f(x − 3) equals k</td><td>k² − 9</td><td class="mono">(4) 27</td></tr>
+          <tr><td>2024 · A</td><td class="mono">53</td><td>A gauge whose display skips the digit 5 reads 003016</td><td>The true reading</td><td class="mono">(1) 2201</td></tr>
+          <tr><td>2024 · A</td><td class="mono">55</td><td>4 − √2 is a zero of x³ − ax² + bx − 42, a and b rational</td><td>a + b</td><td class="mono">(1) 49</td></tr>
+          <tr><td>Sample</td><td class="mono">47</td><td>a² divided by 6</td><td>The remainder it can never leave</td><td class="mono">(3) 5</td></tr>
+          <tr><td>Sample</td><td class="mono">48</td><td>Divides 396, 434, 540 leaving 5, 9, 13</td><td>The largest such number</td><td class="mono">(3) 17</td></tr>
+          <tr><td>Sample</td><td class="mono">51</td><td>α, β, γ the zeroes of x³ − 7x + 2</td><td>Σ 1/(α + β) — the 2024-U Q55 stem again, same key</td><td class="mono">(3) −7/2</td></tr>
+          <tr><td>Sample</td><td class="mono">57</td><td>x + 8xy³</td><td>Its factorised form</td><td class="mono">(2) x(1 + 2y)(1 − 2y + 4y²)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>What that tells you:</p>
+      <ol>
+        <li><b>Three or four of the fifteen Maths questions a sitting — and the 2024 papers put them in fixed
+        slots:</b> <span class="m">Q46</span> a surd, <span class="m">Q47</span> a polynomial-algebra manipulation,
+        <span class="m">Q53</span> a number puzzle, <span class="m">Q55</span> a cubic-zeroes item, in both codes.
+        The 2017 and 2018 papers used their own fixed slots (Q46, Q48, Q60 in both); the sample scatters them — so expect fixed positions, but not necessarily these.</li>
+        <li><b>The Real Numbers side is number theory, not the textbook's proofs.</b> No paper asks you to prove
+        √2 irrational or to write a decimal expansion. It asks for the HCF that leaves given remainders (Sample
+        Q48), which pairs are coprime (2018-S Q46), what a square can leave on division by 6 (Sample Q47), how many
+        repeated-digit numbers a rule catches (2024-U Q53), a counting gauge in disguise (2024-A Q53), and a product
+        split so that neither piece is a multiple of 10 (2017-E Q46). Sections 1–2 carry every one of those machines.</li>
+        <li><b>The Polynomials side reaches past NCERT.</b> Power sums from three symmetric values (2024-U Q47), a
+        conjugate-surd zero forcing its twin (2024-A Q55), the GCD × LCM rule for polynomials (2018-S Q60), a quadratic
+        factor of a quartic found by comparing coefficients (2017-E Q48), the a³ + b³ + c³ − 3abc identity in
+        disguise (2017-E Q60), a functional substitution (2024-A Q47). Sections 5–6 teach each one, labelled where it
+        sits beyond the NCERT chapter.</li>
+        <li><b>Not one of the eighteen carries a figure</b> — yet the polynomial-graph question is NCERT's set
+        piece for this chapter and a topic paper can lean on it. Section 4 is that: read a, b, c, the zeroes and a
+        repeated zero straight off a curve.</li>
+        <li><b>Surds open the section.</b> Both 2024 codes start Maths with a surd item — a straight rationalisation in
+        code U, a nested root in code A.
+        Surds are Class 9 Number Systems, not on Allen's 2027 list, but the real paper asks them anyway — so
+        section 3 carries the two machines those items use.</li>
+        <li><b>Allen recycles.</b> Sample Q51 and 2024-U Q55 have the same stem, the same key and three of the four
+        options (only the last option differs). You have sat the sample; if the machine is automatic, that is four
+        marks in twenty seconds.</li>
+      </ol>
+      <p><b>Budget accordingly.</b> This is a 12–16-mark unit, one of the largest shares in Maths, and the items
+      run 60 s – 3 min each. The gains are in <em>machines</em> — HCF by lowest powers, remainders by the lemma,
+      symmetric functions from sum and product, conjugates — not in theory. Learn each machine to the point where
+      you do not have to think about it.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">1</span>Prime factorisation is the machine — HCF, LCM, factors, coprimes</h2>
+    <p class="lede">NCERT opens the chapter with one theorem and then builds everything on it. Every HCF, LCM and
+    "how many factors" question in this unit is that theorem applied once.</p>
+
+    <div class="box def">
+      <h4>Fundamental Theorem of Arithmetic — NCERT wording</h4>
+      <p>Every composite number can be expressed (factorised) as a product of primes, and this factorisation is
+      <b>unique, apart from the order</b> in which the prime factors occur.</p>
+      <p>So <span class="m">756 = 2² × 3³ × 7</span> and nothing else — however you draw the tree, the same primes
+      with the same powers come out at the leaves. A <b>prime</b> has exactly two factors (1 and itself); 1 is
+      neither prime nor composite; 2 is the only even prime.</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 330 350" width="330" height="350" role="img" aria-label="Factor tree of 756: 756 splits into 2 and 378, 378 into 2 and 189, 189 into 3 and 63, 63 into 3 and 21, 21 into 3 and 7; the prime leaves 2, 2, 3, 3, 3, 7 are circled"><line x1="130" y1="40" x2="70" y2="76" stroke="var(--border)" stroke-width="1.6"/><line x1="130" y1="40" x2="180" y2="76" stroke="var(--border)" stroke-width="1.6"/><line x1="180" y1="100" x2="120" y2="136" stroke="var(--border)" stroke-width="1.6"/><line x1="180" y1="100" x2="220" y2="136" stroke="var(--border)" stroke-width="1.6"/><line x1="220" y1="160" x2="160" y2="196" stroke="var(--border)" stroke-width="1.6"/><line x1="220" y1="160" x2="250" y2="196" stroke="var(--border)" stroke-width="1.6"/><line x1="250" y1="220" x2="200" y2="256" stroke="var(--border)" stroke-width="1.6"/><line x1="250" y1="220" x2="280" y2="256" stroke="var(--border)" stroke-width="1.6"/><line x1="280" y1="280" x2="245" y2="308" stroke="var(--border)" stroke-width="1.6"/><line x1="280" y1="280" x2="305" y2="308" stroke="var(--border)" stroke-width="1.6"/><rect x="108.0" y="16" width="44" height="24" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="130" y="32.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">756</text><circle cx="70" cy="88" r="13" fill="color-mix(in srgb,var(--maths) 16%,transparent)" stroke="var(--maths)" stroke-width="1.8"/><text x="70" y="92.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">2</text><rect x="158.0" y="76" width="44" height="24" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="180" y="92.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">378</text><circle cx="120" cy="148" r="13" fill="color-mix(in srgb,var(--maths) 16%,transparent)" stroke="var(--maths)" stroke-width="1.8"/><text x="120" y="152.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">2</text><rect x="198.0" y="136" width="44" height="24" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="220" y="152.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">189</text><circle cx="160" cy="208" r="13" fill="color-mix(in srgb,var(--maths) 16%,transparent)" stroke="var(--maths)" stroke-width="1.8"/><text x="160" y="212.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">3</text><rect x="233.0" y="196" width="34" height="24" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="250" y="212.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">63</text><circle cx="200" cy="268" r="13" fill="color-mix(in srgb,var(--maths) 16%,transparent)" stroke="var(--maths)" stroke-width="1.8"/><text x="200" y="272.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">3</text><rect x="263.0" y="256" width="34" height="24" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="280" y="272.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">21</text><circle cx="245" cy="320" r="13" fill="color-mix(in srgb,var(--maths) 16%,transparent)" stroke="var(--maths)" stroke-width="1.8"/><text x="245" y="324.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">3</text><circle cx="305" cy="320" r="13" fill="color-mix(in srgb,var(--maths) 16%,transparent)" stroke="var(--maths)" stroke-width="1.8"/><text x="305" y="324.5" font-size="12.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">7</text><text x="18" y="330" font-size="12.5" fill="var(--maths)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">756 = 2² × 3³ × 7</text></svg>
+      <figcaption>A factor tree: split any way you like, keep splitting until every leaf is prime. The circled leaves
+      are the factorisation. Write it with powers, primes in increasing order — that is the form every rule below reads.</figcaption>
+    </figure>
+
+    <h3>HCF and LCM — lowest powers, highest powers</h3>
+    <p>Line up the factorisations under matching primes. The <b>HCF</b> takes the <b>lower</b> power of each prime
+    that appears in <em>both</em>; the <b>LCM</b> takes the <b>higher</b> power of <em>every</em> prime that appears
+    in <em>either</em>.</p>
+
+    <figure>
+      <svg viewBox="0 0 470 214" width="470" height="214" role="img" aria-label="A grid with columns for the primes 2, 3 and 5. Row 360 shows 2 cubed, 3 squared, 5. Row 300 shows 2 squared, 3, 5 squared. The HCF row takes the lower power in each column: 2 squared times 3 times 5 = 60. The LCM row takes the higher power: 2 cubed times 3 squared times 5 squared = 1800."><text x="150" y="28" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">prime 2</text><text x="230" y="28" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">prime 3</text><text x="310" y="28" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">prime 5</text><line x1="40" y1="112" x2="430" y2="112" stroke="var(--border)" stroke-width="1.2" stroke-dasharray="4 4"/><text x="62" y="63" font-size="12.5" fill="var(--bright)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">360</text><rect x="126" y="45" width="48" height="28" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="150" y="63" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">2³</text><rect x="206" y="45" width="48" height="28" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="230" y="63" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">3²</text><rect x="286" y="45" width="48" height="28" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="310" y="63" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">5¹</text><text x="62" y="97" font-size="12.5" fill="var(--bright)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">300</text><rect x="126" y="79" width="48" height="28" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="150" y="97" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">2²</text><rect x="206" y="79" width="48" height="28" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="230" y="97" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">3¹</text><rect x="286" y="79" width="48" height="28" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.4"/><text x="310" y="97" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">5²</text><text x="62" y="143" font-size="12.5" fill="var(--power)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">HCF</text><rect x="126" y="125" width="48" height="28" rx="7" fill="color-mix(in srgb,var(--power) 14%,transparent)" stroke="var(--power)" stroke-width="1.4"/><text x="150" y="143" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">2²</text><rect x="206" y="125" width="48" height="28" rx="7" fill="color-mix(in srgb,var(--power) 14%,transparent)" stroke="var(--power)" stroke-width="1.4"/><text x="230" y="143" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">3¹</text><rect x="286" y="125" width="48" height="28" rx="7" fill="color-mix(in srgb,var(--power) 14%,transparent)" stroke="var(--power)" stroke-width="1.4"/><text x="310" y="143" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">5¹</text><text x="62" y="181" font-size="12.5" fill="var(--rose)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">LCM</text><rect x="126" y="163" width="48" height="28" rx="7" fill="color-mix(in srgb,var(--rose) 14%,transparent)" stroke="var(--rose)" stroke-width="1.4"/><text x="150" y="181" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">2³</text><rect x="206" y="163" width="48" height="28" rx="7" fill="color-mix(in srgb,var(--rose) 14%,transparent)" stroke="var(--rose)" stroke-width="1.4"/><text x="230" y="181" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">3²</text><rect x="286" y="163" width="48" height="28" rx="7" fill="color-mix(in srgb,var(--rose) 14%,transparent)" stroke="var(--rose)" stroke-width="1.4"/><text x="310" y="181" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">5²</text><text x="352" y="63" font-size="11.5" fill="var(--muted)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="500">= 2³·3²·5</text><text x="352" y="97" font-size="11.5" fill="var(--muted)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="500">= 2²·3·5²</text><text x="352" y="143" font-size="11.5" fill="var(--power)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">lower → 60</text><text x="352" y="181" font-size="11.5" fill="var(--rose)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">higher → 1800</text></svg>
+      <figcaption>360 and 300. HCF = 2² × 3 × 5 = 60 (lower powers); LCM = 2³ × 3² × 5² = 1800 (higher powers).
+      Check: 60 × 1800 = 108 000 = 360 × 300.</figcaption>
+    </figure>
+
+    <p><b>In words:</b> the largest tile, rod or measure that fits two lengths exactly is their HCF, and the number
+    of tiles is (length ÷ HCF) × (width ÷ HCF); the first moment two repeating events coincide again is their LCM.</p>
+
+    <div class="box">
+      <h4>The product rule — and its one condition</h4>
+      <p>For <b>two</b> numbers, <span class="m">HCF × LCM = a × b</span>. NCERT states it; the reason is in the powers — each
+      prime's lower power and higher power multiply to the same thing as its two original powers. So if you know
+      any three of HCF, LCM, a, b, you have the fourth: HCF 12, LCM 360, one number 72 → the other is
+      12 × 360 ÷ 72 = <b>60</b>.</p>
+      <p><b>It fails for three numbers.</b> 6, 10, 15: HCF 1, LCM 30, product 900 ≠ 30. Allen's stems say "two
+      numbers" when they mean the rule to apply; if three numbers appear, go back to the powers.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Four sanity checks that kill wrong options</h4>
+      <ol>
+        <li><b>HCF ≤ the smaller number; LCM ≥ the larger.</b> An "LCM" smaller than one of the numbers is a
+        mis-read.</li>
+        <li><b>The HCF divides the LCM.</b> An option pair that fails this is not a pair.</li>
+        <li><b>The bigger number is the LCM only if the smaller divides it.</b> LCM(84, 36) is not 84, because
+        36 does not go into 84. It is 2² × 3² × 7 = 252.</li>
+        <li><b>Raise the power already there, don't multiply it in again.</b> LCM(2 × 3, 3²) = 2 × 3² = 18, not
+        2 × 3 × 9 = 54.</li>
+      </ol>
+    </div>
+
+    <h3>Counting factors — an Allen-module rule, not in NCERT</h3>
+    <p>If <span class="m">N = p<sup>a</sup> q<sup>b</sup> r<sup>c</sup></span>, a factor of N is
+    <span class="m">p<sup>i</sup> q<sup>j</sup> r<sup>k</sup></span> with each exponent running from 0 up to its
+    maximum — so there are <b><span class="m">(a + 1)(b + 1)(c + 1)</span></b> factors. 300 = 2² × 3 × 5² has
+    3 × 2 × 3 = <b>18</b> factors (including 1 and 300).</p>
+    <p><b>Factors with a property</b> — restrict the exponents. Odd factors of 300: the 2 must be absent
+    (i = 0), so 1 × 2 × 3 = <b>6</b>. Factors that are multiples of 10: at least one 2 and at least one 5, so
+    i ∈ {1, 2}, j ∈ {0, 1}, k ∈ {1, 2} → 2 × 2 × 2 = <b>8</b>. The trap is counting the forbidden exponent value in
+    one prime while correctly excluding it in another.</p>
+
+    <h3>Coprime (relatively prime) — and the coprime split</h3>
+    <div class="box def">
+      <h4>Definition</h4>
+      <p>Two numbers are <b>coprime</b> (relatively prime) when their <b>HCF is 1</b> — they share no prime factor.
+      They need not be prime themselves: 8 and 15 are coprime; 51 and 85 are not (both have 17).</p>
+    </div>
+    <p><b>Testing a pair fast:</b> factorise the smaller and test its primes against the larger. 51 = 3 × 17 and
+    85 = 5 × 17 → share 17. 26 = 2 × 13, 65 = 5 × 13 → share 13. 57 = 3 × 19, 76 = 4 × 19 → share 19.
+    29 is prime and 75 = 3 × 5² → coprime. Allen writes the shared prime in the teens so a glance says "no common
+    factor" — factorise, do not glance.</p>
+    <p><b>The coprime split.</b> "The product of two whole numbers is 1000 and neither is a multiple of 10."
+    1000 = 2³ × 5³. A multiple of 10 contains both a 2 and a 5, so <em>all</em> the 2s must go to one number and
+    <em>all</em> the 5s to the other: <span class="m">8 × 125</span>, sum <b>133</b>. (1 × 1000 fails because 1000
+    is itself a multiple of 10.) The same move answers "split N into two coprime factors": each prime's whole
+    power goes to one side or the other.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>Remainders — Euclid's lemma and the three question shapes</h2>
+    <p class="lede">The rationalised NCERT print dropped Euclid's division lemma from Class 10, but Allen's remainder
+    items are built on it. Learn the lemma, then the three shapes the stems take.</p>
+
+    <div class="box def">
+      <h4>Euclid's division lemma <span style="font-weight:400;text-transform:none;letter-spacing:0">(removed from the rationalised print; Allen still asks it)</span></h4>
+      <p>Given positive integers a and b, there exist unique whole numbers q and r such that
+      <span class="m"><b>a = bq + r</b>, 0 ≤ r &lt; b</span>. In words: dividend = divisor × quotient + remainder,
+      and the remainder is strictly less than the divisor. "n leaves remainder 7 on division by 15" is the
+      sentence <span class="m">n = 15q + 7</span>.</p>
+    </div>
+
+    <p><b>Euclid's algorithm</b> finds an HCF without factorising — useful when the numbers are large or awkward.
+    Divide the larger by the smaller, then the divisor by the remainder, until the remainder is 0; the last
+    non-zero remainder is the HCF. NCERT's own example, 12576 and 4052:</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Step</th><th>Division</th><th>Remainder</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1</td><td class="mono">12576 = 4052 × 3 + 420</td><td class="mono">420</td></tr>
+        <tr><td class="mono">2</td><td class="mono">4052 = 420 × 9 + 272</td><td class="mono">272</td></tr>
+        <tr><td class="mono">3</td><td class="mono">420 = 272 × 1 + 148</td><td class="mono">148</td></tr>
+        <tr><td class="mono">4</td><td class="mono">272 = 148 × 1 + 124</td><td class="mono">124</td></tr>
+        <tr><td class="mono">5</td><td class="mono">148 = 124 × 1 + 24</td><td class="mono">24</td></tr>
+        <tr><td class="mono">6</td><td class="mono">124 = 24 × 5 + 4</td><td class="mono">4</td></tr>
+        <tr><td class="mono">7</td><td class="mono">24 = 4 × 6 + 0</td><td class="mono">0 → HCF = <b>4</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>The idea underneath is the one worth remembering: <b>HCF(a, b) = HCF(b, a − b)</b> — the HCF of two numbers
+    divides their difference. That single fact is shape C below.</p>
+
+    <h3>The three shapes a remainder stem takes</h3>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Shape</th><th>The stem says</th><th>Translate to</th><th>Then</th></tr></thead>
+      <tbody>
+        <tr><td><b>A</b></td><td>"a number which when divided by 8, 12 and 15 leaves remainder <b>r in each case</b>"</td><td>N − r is a common multiple</td><td class="mono">N = LCM · k + r</td></tr>
+        <tr><td><b>A′</b></td><td>"… leaves remainders 5, 9 and 12 respectively"</td><td>each divisor exceeds its remainder by the same 3, so N + 3 is a common multiple</td><td class="mono">N = LCM · k − 3</td></tr>
+        <tr><td><b>B</b></td><td>"the <b>largest number that divides</b> 396, 434, 540 leaving remainders 5, 9, 13"</td><td>it divides 391, 425, 527 exactly</td><td class="mono">HCF(391, 425, 527) = 17</td></tr>
+        <tr><td><b>C</b></td><td>"the largest number that divides 91, 127, 163 leaving the <b>same remainder</b>" (unknown)</td><td>it divides every difference</td><td class="mono">HCF(36, 36, 72) = 36; remainder 19</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p><b>The trap between A and B</b> is the direction of the remainder. In shape A the remainder is
+    <em>added</em> to a multiple of the LCM; in shape B the remainders are <em>subtracted</em> from the given numbers
+    before an HCF. Read whether the unknown is the <em>dividend</em> (A: "a number which when divided by …") or the
+    <em>divisor</em> (B: "a number that divides …"). Allen's option set often contains the other shape's answer.</p>
+    <p>Shape A worked: the smallest number leaving remainder 5, 9, 12 on division by 8, 12, 15 is
+    LCM(8, 12, 15) − 3 = 120 − 3 = <b>117</b>. Check: 117 = 14 × 8 + 5 = 9 × 12 + 9 = 7 × 15 + 12. ✓ For "the largest
+    four-digit / smallest five-digit such number", find the nearest multiple of the LCM first, then shift by r.</p>
+
+    <h3>Remainder arithmetic — the lemma as a calculator</h3>
+    <p>Write the number by the lemma, then simplify inside the multiple. "n leaves remainder 7 on division by 15;
+    what does 2n + 9 leave on division by 5?" — <span class="m">n = 15q + 7</span>, so
+    <span class="m">2n + 9 = 30q + 23</span>. 30q is a multiple of 5; 23 = 4 × 5 + 3 → remainder <b>3</b>. (Check
+    with n = 7: 2 × 7 + 9 = 23 = 20 + 3. ✓) Two things go wrong here: dividing 23 by the <em>original</em> 15 instead
+    of the 5 the question names, and forgetting that the remainder must be smaller than the divisor — a "remainder
+    17 on division by 7" is not a remainder.</p>
+
+    <div class="box">
+      <h4>What a square (or a cube) can leave — the table Sample Q47 tests</h4>
+      <p>A remainder question about <span class="m">a²</span> is answered by squaring each possible remainder of a.
+      Mod 6: a ∈ {0, 1, 2, 3, 4, 5} gives a² ∈ {0, 1, 4, 9, 16, 25} → remainders <b>{0, 1, 3, 4}</b>. So a square
+      can never leave 2 or 5 on division by 6. The table for the divisors Allen uses:</p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th>Divisor</th><th>a² can leave</th><th>a² never leaves</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">3</td><td class="mono">0, 1</td><td class="mono">2</td></tr>
+          <tr><td class="mono">4</td><td class="mono">0, 1</td><td class="mono">2, 3</td></tr>
+          <tr><td class="mono">5</td><td class="mono">0, 1, 4</td><td class="mono">2, 3</td></tr>
+          <tr><td class="mono">6</td><td class="mono">0, 1, 3, 4</td><td class="mono">2, 5</td></tr>
+          <tr><td class="mono">8</td><td class="mono">0, 1, 4</td><td class="mono">2, 3, 5, 6, 7</td></tr>
+          <tr><td class="mono">9</td><td class="mono">0, 1, 4, 7</td><td class="mono">2, 3, 5, 6, 8</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>Same method for cubes: mod 9 a cube leaves only 0, 1 or 8; mod 7 only 0, 1 or 6. Do not memorise the
+      table — rebuild it in 20 seconds by squaring 0 to n − 1.</p>
+    </div>
+
+    <h3>Digit sums, repeated digits, and a gauge that counts in base 9</h3>
+    <p><b>Divisibility by 3 and 9</b> is a digit-sum test. A number written with the same digit d repeated k times has
+    digit sum <span class="m">k · d</span>. So <em>every</em> three-digit repdigit 111, 222, …, 999 is a multiple of 3
+    (digit sum 3d), while a two-digit or four-digit one needs d ∈ {3, 6, 9}. Counting "repdigits between 10 and 2023
+    divisible by 3": two-digit 33, 66, 99 (3) + all nine three-digit ones (9) + 1111 (sum 4, no) = <b>12</b>. The
+    usual slip is testing the three-digit ones one at a time and "finding" only three. For divisibility by 9 a
+    three-digit repdigit needs 3d to be a multiple of 9 → d ∈ {3, 6, 9}.</p>
+    <p><b>A display that skips a digit is counting in a smaller base.</b> If a gauge never shows the digit 5 — it goes
+    …3, 4, 6, 7… — it has only nine symbols, so each place is worth 9 times the one to its right, not 10. Map each
+    shown digit to its rank (0–4 stay, 6→5, 7→6, 8→7, 9→8), then expand in powers of 9.</p>
+    <figure>
+      <svg viewBox="0 0 500 190" width="500" height="190" role="img" aria-label="Top row: the nine digits a faulty display can show, 0 1 2 3 4 6 7 8 9. Arrows down to the bottom row: their true values 0 to 8. The display therefore counts in base 9. Example: display 2073 means 2 times 729 plus 0 times 81 plus 6 times 9 plus 3 = 1515"><rect x="25" y="30" width="30" height="30" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.3"/><text x="40" y="50" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">0</text><line x1="40" y1="64" x2="40" y2="86" stroke="var(--muted)" stroke-width="1.2"/><polygon points="40,92 36,84 44,84" fill="var(--muted)"/><rect x="25" y="96" width="30" height="30" rx="6" fill="color-mix(in srgb,var(--maths) 14%,transparent)" stroke="var(--maths)" stroke-width="1.3"/><text x="40" y="116" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">0</text><rect x="65" y="30" width="30" height="30" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.3"/><text x="80" y="50" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">1</text><line x1="80" y1="64" x2="80" y2="86" stroke="var(--muted)" stroke-width="1.2"/><polygon points="80,92 76,84 84,84" fill="var(--muted)"/><rect x="65" y="96" width="30" height="30" rx="6" fill="color-mix(in srgb,var(--maths) 14%,transparent)" stroke="var(--maths)" stroke-width="1.3"/><text x="80" y="116" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">1</text><rect x="105" y="30" width="30" height="30" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.3"/><text x="120" y="50" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">2</text><line x1="120" y1="64" x2="120" y2="86" stroke="var(--muted)" stroke-width="1.2"/><polygon points="120,92 116,84 124,84" fill="var(--muted)"/><rect x="105" y="96" width="30" height="30" rx="6" fill="color-mix(in srgb,var(--maths) 14%,transparent)" stroke="var(--maths)" stroke-width="1.3"/><text x="120" y="116" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">2</text><rect x="145" y="30" width="30" height="30" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.3"/><text x="160" y="50" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">3</text><line x1="160" y1="64" x2="160" y2="86" stroke="var(--muted)" stroke-width="1.2"/><polygon points="160,92 156,84 164,84" fill="var(--muted)"/><rect x="145" y="96" width="30" height="30" rx="6" fill="color-mix(in srgb,var(--maths) 14%,transparent)" stroke="var(--maths)" stroke-width="1.3"/><text x="160" y="116" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">3</text><rect x="185" y="30" width="30" height="30" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.3"/><text x="200" y="50" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">4</text><line x1="200" y1="64" x2="200" y2="86" stroke="var(--muted)" stroke-width="1.2"/><polygon points="200,92 196,84 204,84" fill="var(--muted)"/><rect x="185" y="96" width="30" height="30" rx="6" fill="color-mix(in srgb,var(--maths) 14%,transparent)" stroke="var(--maths)" stroke-width="1.3"/><text x="200" y="116" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">4</text><rect x="225" y="30" width="30" height="30" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.3"/><text x="240" y="50" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">6</text><line x1="240" y1="64" x2="240" y2="86" stroke="var(--muted)" stroke-width="1.2"/><polygon points="240,92 236,84 244,84" fill="var(--muted)"/><rect x="225" y="96" width="30" height="30" rx="6" fill="color-mix(in srgb,var(--maths) 14%,transparent)" stroke="var(--maths)" stroke-width="1.3"/><text x="240" y="116" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">5</text><rect x="265" y="30" width="30" height="30" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.3"/><text x="280" y="50" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">7</text><line x1="280" y1="64" x2="280" y2="86" stroke="var(--muted)" stroke-width="1.2"/><polygon points="280,92 276,84 284,84" fill="var(--muted)"/><rect x="265" y="96" width="30" height="30" rx="6" fill="color-mix(in srgb,var(--maths) 14%,transparent)" stroke="var(--maths)" stroke-width="1.3"/><text x="280" y="116" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">6</text><rect x="305" y="30" width="30" height="30" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.3"/><text x="320" y="50" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">8</text><line x1="320" y1="64" x2="320" y2="86" stroke="var(--muted)" stroke-width="1.2"/><polygon points="320,92 316,84 324,84" fill="var(--muted)"/><rect x="305" y="96" width="30" height="30" rx="6" fill="color-mix(in srgb,var(--maths) 14%,transparent)" stroke="var(--maths)" stroke-width="1.3"/><text x="320" y="116" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">7</text><rect x="345" y="30" width="30" height="30" rx="6" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.3"/><text x="360" y="50" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">9</text><line x1="360" y1="64" x2="360" y2="86" stroke="var(--muted)" stroke-width="1.2"/><polygon points="360,92 356,84 364,84" fill="var(--muted)"/><rect x="345" y="96" width="30" height="30" rx="6" fill="color-mix(in srgb,var(--maths) 14%,transparent)" stroke="var(--maths)" stroke-width="1.3"/><text x="360" y="116" font-size="13" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">8</text><text x="400" y="50" font-size="10.5" fill="var(--muted)" text-anchor="start" font-family="Inter, sans-serif" font-weight="500">display shows</text><text x="400" y="116" font-size="10.5" fill="var(--maths)" text-anchor="start" font-family="Inter, sans-serif" font-weight="600">really means</text><text x="250" y="160" font-size="11.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">display 2073 → 2·9³ + 0·9² + 6·9 + 3 = 1458 + 0 + 54 + 3 = 1515</text><text x="250" y="178" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="Inter, sans-serif" font-weight="500">nine symbols → the display counts in base 9</text></svg>
+      <figcaption>The rank map, then powers of 9. Display 10 is really 9; display 100 is really 81. The trap is reading
+      the display as base 10 and "correcting" a single digit.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>Irrational numbers and surds — the rules, then the two machines</h2>
+    <p class="lede">NCERT's section is "Revisiting Irrational Numbers": two theorems, one proof, and the closure rules.
+    Allen's items are surd arithmetic from Class 9 — rationalising, nested roots, conjugates. Both halves here.</p>
+
+    <figure>
+      <svg viewBox="0 0 520 230" width="520" height="230" role="img" aria-label="Nested boxes: natural numbers inside whole numbers inside integers inside rational numbers; rational numbers and irrational numbers together fill the real numbers box"><rect x="8" y="8" width="504" height="214" rx="14" fill="none" stroke="var(--maths)" stroke-width="1.8"/><text x="20" y="30" font-size="11" fill="var(--maths)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">REAL NUMBERS ℝ</text><rect x="22" y="42" width="326" height="168" rx="12" fill="color-mix(in srgb,var(--maths) 7%,transparent)" stroke="var(--border)" stroke-width="1.4"/><text x="34" y="62" font-size="10.5" fill="var(--bright)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">RATIONAL ℚ  p/q, q ≠ 0</text><text x="34" y="78" font-size="10.5" fill="var(--muted)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="500">−7/2 · 0.75 · 0.333… · 2.7̅1̅</text><rect x="36" y="88" width="220" height="112" rx="10" fill="color-mix(in srgb,var(--maths) 9%,transparent)" stroke="var(--border)" stroke-width="1.4"/><text x="48" y="106" font-size="10.5" fill="var(--bright)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">INTEGERS ℤ  …, −2, −1, 0, 1, 2, …</text><rect x="50" y="116" width="160" height="74" rx="9" fill="color-mix(in srgb,var(--maths) 11%,transparent)" stroke="var(--border)" stroke-width="1.4"/><text x="62" y="134" font-size="10.5" fill="var(--bright)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">WHOLE  0, 1, 2, …</text><rect x="64" y="144" width="110" height="38" rx="8" fill="color-mix(in srgb,var(--maths) 14%,transparent)" stroke="var(--border)" stroke-width="1.4"/><text x="76" y="167" font-size="10" fill="var(--bright)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">NATURAL 1, 2, 3, …</text><rect x="360" y="42" width="140" height="168" rx="12" fill="color-mix(in srgb,var(--rose) 8%,transparent)" stroke="var(--rose)" stroke-width="1.4" stroke-dasharray="5 4"/><text x="430" y="64" font-size="10.5" fill="var(--rose)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">IRRATIONAL</text><text x="430" y="86" font-size="11" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">√2 · √3 · π</text><text x="430" y="106" font-size="11" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">2 + √3 · 3√2</text><text x="430" y="128" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">0.10110111…</text><text x="430" y="158" font-size="9.8" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">not p/q; decimal</text><text x="430" y="172" font-size="9.8" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">neither ends</text><text x="430" y="186" font-size="9.8" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">nor repeats</text></svg>
+      <figcaption>A rational number can be written p/q with integers p, q (q ≠ 0); its decimal terminates or recurs.
+      An irrational number cannot, and its decimal neither ends nor repeats. Together they are the real numbers.</figcaption>
+    </figure>
+
+    <div class="box def">
+      <h4>NCERT's two results</h4>
+      <ul>
+        <li><b>Theorem 1.2:</b> Let p be a prime number. If p divides a², then p divides a (a a positive integer). This
+        is what makes the next proof work.</li>
+        <li><b>Theorem 1.3: √2 is irrational.</b> Suppose √2 = a/b in lowest terms. Then 2b² = a², so 2 divides a²,
+        so 2 divides a; write a = 2c, then 2b² = 4c², so b² = 2c² and 2 divides b too — contradicting "lowest terms".
+        The same proof shows <b>√p is irrational for every prime p</b>; the same idea, applied to a prime with an odd
+        exponent, shows √n is irrational whenever n is not a perfect square.</li>
+      </ul>
+    </div>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Combine</th><th>Result</th><th>Why / example</th></tr></thead>
+      <tbody>
+        <tr><td>rational ± irrational</td><td><b>always irrational</b></td><td>if r + s were rational, s = (r + s) − r would be too. 2 + √3.</td></tr>
+        <tr><td>non-zero rational × irrational</td><td><b>always irrational</b></td><td>same argument with division. 3√2, √2/5.</td></tr>
+        <tr><td>irrational ± irrational</td><td><b>either</b></td><td>(2 + √3) + (2 − √3) = 4; √2 + √3 is irrational.</td></tr>
+        <tr><td>irrational × irrational</td><td><b>either</b></td><td>√3 × √12 = √36 = 6; √2 × √3 = √6 is irrational.</td></tr>
+        <tr><td>a conjugate pair multiplied</td><td><b>always rational</b></td><td>(2 + √5)(2 − √5) = 4 − 5 = −1. This is a² − b².</td></tr>
+        <tr><td>a surd squared</td><td><b>usually irrational</b></td><td>(√3 − 1)² = 4 − 2√3. Only a pure surd like (√3)² = 3 comes out rational.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="box trap">
+      <h4>The statement traps Allen writes</h4>
+      <ul>
+        <li><b>"The product of two irrational numbers is always irrational / always rational."</b> Both false —
+        "either" is the only true word. One example of each kills the "always".</li>
+        <li><b>"There are only finitely many irrationals between two numbers."</b> False: between any two reals there
+        are infinitely many rationals <em>and</em> infinitely many irrationals (1 + √2/2, 1 + √2/3, … all lie between
+        1 and 2).</li>
+        <li><b>A decimal like 0.10110111… is "recurring".</b> It is not — the blocks grow, so no fixed block repeats;
+        it is irrational. Recurring means the <em>same</em> block for ever.</li>
+        <li><b>A square looks like a conjugate product.</b> (√6 − 1)² = 7 − 2√6 is irrational; (√6 − 1)(√6 + 1) = 5
+        is rational. Check which one is on the page.</li>
+      </ul>
+    </div>
+
+    <h3>Machine 1 — rationalising the denominator</h3>
+    <p>Class 9 Number Systems, and the opening item of both 2024 codes. Multiply top and bottom by the
+    <b>conjugate</b> (the same two terms with the sign between them flipped), so the denominator becomes
+    a difference of squares:</p>
+    <ul>
+      <li><span class="m">1/(3 − √7) = (3 + √7)/(9 − 7) = (3 + √7)/2</span>.</li>
+      <li><b>Three terms:</b> group two of them as one. <span class="m">1/(1 + √2 − √3)</span> — treat (1 + √2) as
+      a block and multiply by (1 + √2 + √3): the denominator becomes (1 + √2)² − 3 = (3 + 2√2) − 3 = 2√2. So the fraction
+      is (1 + √2 + √3)/(2√2); one more step, multiply by √2/√2: (√2 + 2 + √6)/4. <b>Two rationalisations</b>, the
+      second a single surd. Then read off the coefficients the stem asks for.</li>
+    </ul>
+    <p>Simplify surds first (√50 = 5√2, √12 = 2√3) or the conjugate step leaves you with numbers you cannot
+    combine. And keep <em>signs</em> when you read coefficients: in (2 + √2 − √6)/4 the coefficient of √6 is −¼.</p>
+
+    <h3>Machine 2 — the square root of a surd</h3>
+    <p>To simplify <span class="m">√(a + 2√b)</span>, find two numbers p and q with <span class="m">p + q = a</span>
+    and <span class="m">pq = b</span>; then <span class="m">√(a + 2√b) = √p + √q</span> (and √(a − 2√b) = √p − √q,
+    larger root first), because (√p ± √q)² = p + q ± 2√(pq).</p>
+    <ul>
+      <li>√(7 + 2√10): p + q = 7, pq = 10 → 5 and 2 → <b>√5 + √2</b>.</li>
+      <li>√(5 − 2√6): 3 and 2 → <b>√3 − √2</b>.</li>
+      <li><b>When the surd has no 2 in front, make one.</b> 2 + √3 = (4 + 2√3)/2 = (√3 + 1)²/2, so
+      √(2 + √3) = <b>(√3 + 1)/√2</b>. This is exactly the step 2024-A Q46 hides behind "x = 2 + √3, find √x".</li>
+    </ul>
+
+    <div class="box">
+      <h4>Conjugate zeroes — the rule 2024-A Q55 turns on</h4>
+      <p>If a polynomial has <b>rational coefficients</b> and <span class="m">p + √q</span> is a zero (q not a perfect
+      square), then <span class="m">p − √q</span> is a zero too (p, q rational, √q irrational). So a cubic with rational coefficients and one zero
+      3 − √5 also has 3 + √5; their sum 6 and product 4 are rational, and the third zero follows from the product of
+      all three (section 5). The condition matters: <span class="m">x − √2</span> has the zero √2 alone — its
+      coefficients are not rational.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>Polynomials — the words, and reading one off its graph</h2>
+    <p class="lede">NCERT 2.1–2.2. The vocabulary is short; the skill is the graph — where it cuts, where it touches,
+    which way it opens, where it crosses the y-axis. Every one of those is a coefficient or a zero.</p>
+
+    <div class="box def">
+      <h4>Definitions, NCERT wording</h4>
+      <ul>
+        <li>A <b>polynomial in x</b> is a sum of terms <span class="m">a<sub>k</sub>x<sup>k</sup></span> with whole-number
+        powers; the highest power is its <b>degree</b>. Degree 1 <b>linear</b> (ax + b), 2 <b>quadratic</b> (ax² + bx + c),
+        3 <b>cubic</b> (ax³ + bx² + cx + d), a ≠ 0 each time. <span class="m">√x + 1</span> and
+        <span class="m">x + 1/x</span> are <em>not</em> polynomials.</li>
+        <li>The <b>value</b> of p(x) at x = k is p(k). A real number k is a <b>zero</b> of p(x) if
+        <span class="m">p(k) = 0</span>.</li>
+        <li>A polynomial of degree n has <b>at most n zeroes</b>. A non-zero constant has none; the zero polynomial has
+        every number as a zero.</li>
+        <li><b>Geometrically</b>, the zeroes are the x-coordinates of the points where the graph <b>meets the x-axis</b>.
+        A linear polynomial's graph is a straight line (one zero, −b/a); a quadratic's is a <b>parabola</b>, opening
+        <b>upward if a &gt; 0</b>, <b>downward if a &lt; 0</b>.</li>
+      </ul>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 540 230" width="540" height="230" role="img" aria-label="Three parabolas opening upward: the first cuts the x-axis at −1 and 3, so two zeroes; the second touches the x-axis at 2, so one repeated zero; the third stays above the axis, so no zero"><g transform="translate(0,0)"><line x1="10" y1="103.8" x2="160" y2="103.8" stroke="var(--muted)" stroke-width="1.2"/><polygon points="166,103.8 158,99.8 158,107.8" fill="var(--muted)"/><line x1="67.1" y1="168" x2="67.1" y2="14" stroke="var(--muted)" stroke-width="1.2"/><polygon points="67.1,8 63.1,16 71.1,16" fill="var(--muted)"/><line x1="49.3" y1="100.8" x2="49.3" y2="106.8" stroke="var(--muted)" stroke-width="1"/><line x1="120.7" y1="100.8" x2="120.7" y2="106.8" stroke="var(--muted)" stroke-width="1"/><path d="M25.4,12 Q85,298.3 144.6,12" fill="none" stroke="var(--maths)" stroke-width="2.4"/><circle cx="49.3" cy="103.8" r="4" fill="var(--rose)"/><circle cx="120.7" cy="103.8" r="4" fill="var(--rose)"/><text x="49.3" y="118.8" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">-1</text><text x="120.7" y="118.8" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">3</text><circle cx="67.1" cy="142.3" r="3.2" fill="var(--physics)"/><text x="85" y="206" font-size="10.8" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">two zeroes: −1 and 3</text><text x="85" y="221" font-size="10" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">cuts twice</text></g><g transform="translate(185,0)"><line x1="10" y1="103.8" x2="160" y2="103.8" stroke="var(--muted)" stroke-width="1.2"/><polygon points="166,103.8 158,99.8 158,107.8" fill="var(--muted)"/><line x1="67.1" y1="168" x2="67.1" y2="14" stroke="var(--muted)" stroke-width="1.2"/><polygon points="67.1,8 63.1,16 71.1,16" fill="var(--muted)"/><line x1="102.9" y1="100.8" x2="102.9" y2="106.8" stroke="var(--muted)" stroke-width="1"/><path d="M55,11.7 Q102.9,196 150.7,11.7" fill="none" stroke="var(--maths)" stroke-width="2.4"/><circle cx="102.9" cy="103.8" r="4" fill="var(--rose)"/><text x="102.9" y="118.8" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">2</text><circle cx="67.1" cy="52.5" r="3.2" fill="var(--physics)"/><text x="85" y="206" font-size="10.8" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">one zero: 2 (twice)</text><text x="85" y="221" font-size="10" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">touches</text></g><g transform="translate(370,0)"><line x1="10" y1="103.8" x2="160" y2="103.8" stroke="var(--muted)" stroke-width="1.2"/><polygon points="166,103.8 158,99.8 158,107.8" fill="var(--muted)"/><line x1="67.1" y1="168" x2="67.1" y2="14" stroke="var(--muted)" stroke-width="1.2"/><polygon points="67.1,8 63.1,16 71.1,16" fill="var(--muted)"/><path d="M26.4,11.5 Q67.1,144.9 107.9,11.5" fill="none" stroke="var(--maths)" stroke-width="2.4"/><circle cx="67.1" cy="78.2" r="3.2" fill="var(--physics)"/><text x="85" y="206" font-size="10.8" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">no zero</text><text x="85" y="221" font-size="10" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">never meets</text></g></svg>
+      <figcaption>The three cases NCERT draws for a quadratic (here x² − 2x − 3, x² − 4x + 4, x² + 2): two distinct
+      zeroes, one <em>repeated</em> zero where the curve only touches, or no zero at all. The blue dot is the y-intercept, (0, c).</figcaption>
+    </figure>
+
+    <div class="box">
+      <h4>Reading a, b and c off a parabola</h4>
+      <ul>
+        <li><b>a</b> — the opening. Upward ⇒ a &gt; 0; downward ⇒ a &lt; 0.</li>
+        <li><b>c</b> — the y-intercept, because p(0) = c. Above the origin ⇒ c &gt; 0; below ⇒ c &lt; 0.</li>
+        <li><b>b</b> — from the <b>axis of symmetry</b>, the vertical line through the vertex, at
+        <span class="m">x = −b/(2a)</span>. Vertex to the right of the y-axis ⇒ −b/(2a) &gt; 0 ⇒ b has the
+        <em>opposite</em> sign to a. Vertex to the left ⇒ b has the <em>same</em> sign as a. <b>b's sign depends on
+        a's</b> — the slip is to read the vertex side as the sign of b directly.</li>
+        <li><b>Cross-check with the zeroes:</b> sum = −b/a and product = c/a (section 5). Both zeroes positive ⇒
+        sum &gt; 0 and product &gt; 0.</li>
+      </ul>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 470 280" width="470" height="280" role="img" aria-label="An upward-opening parabola y = x squared plus 2x minus 3, cutting the x-axis at −3 and 1, the y-axis at −3, with its vertex at (−1, −4) to the left of the y-axis; annotations read a positive from the opening, c negative from the y-intercept, and b positive because the axis of symmetry is left of the y-axis while a is positive"><line x1="34" y1="149.1" x2="310" y2="149.1" stroke="var(--muted)" stroke-width="1.2"/><polygon points="316,149.1 308,145.1 308,153.1" fill="var(--muted)"/><line x1="200.9" y1="254" x2="200.9" y2="18" stroke="var(--muted)" stroke-width="1.2"/><polygon points="200.9,12 196.9,20 204.9,20" fill="var(--muted)"/><text x="312" y="163.1" font-size="11" fill="var(--muted)" font-family="JetBrains Mono, monospace">x</text><text x="206.9" y="22" font-size="11" fill="var(--muted)" font-family="JetBrains Mono, monospace">y</text><line x1="104.6" y1="146.1" x2="104.6" y2="152.1" stroke="var(--muted)" stroke-width="1"/><line x1="233" y1="146.1" x2="233" y2="152.1" stroke="var(--muted)" stroke-width="1"/><line x1="197.9" y1="209.6" x2="203.9" y2="209.6" stroke="var(--muted)" stroke-width="1"/><path d="M64.5,16.7 Q168.8,442.9 273.1,16.7" fill="none" stroke="var(--maths)" stroke-width="2.6"/><text x="104.6" y="164.1" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">-3</text><text x="233" y="164.1" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">1</text><text x="193.9" y="213.6" font-size="10.5" fill="var(--bright)" text-anchor="end" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">-3</text><line x1="168.8" y1="254" x2="168.8" y2="18" stroke="var(--rose)" stroke-width="1.3" stroke-dasharray="5 4"/><circle cx="168.8" cy="229.8" r="4" fill="var(--rose)"/><text x="160.8" y="245.8" font-size="10.5" fill="var(--rose)" text-anchor="end" font-family="JetBrains Mono, monospace" font-weight="500">V (−1, −4)</text><circle cx="200.9" cy="209.6" r="4" fill="var(--physics)"/><circle cx="104.6" cy="149.1" r="4" fill="var(--power)"/><circle cx="233" cy="149.1" r="4" fill="var(--power)"/><text x="336" y="50" font-size="13" fill="var(--maths)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">a > 0</text><text x="336" y="66" font-size="10.5" fill="var(--muted)" text-anchor="start" font-family="Inter, sans-serif" font-weight="500">opens upward</text><text x="336" y="100" font-size="13" fill="var(--physics)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">c = −3 < 0</text><text x="336" y="116" font-size="10.5" fill="var(--muted)" text-anchor="start" font-family="Inter, sans-serif" font-weight="500">cuts the y-axis below O</text><text x="336" y="150" font-size="13" fill="var(--rose)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">axis x = −b/2a</text><text x="336" y="166" font-size="10.5" fill="var(--muted)" text-anchor="start" font-family="Inter, sans-serif" font-weight="500">is left of O, so −b/2a < 0;</text><text x="336" y="181" font-size="10.5" fill="var(--muted)" text-anchor="start" font-family="Inter, sans-serif" font-weight="500">a > 0 forces b > 0</text><text x="336" y="215" font-size="13" fill="var(--power)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">zeroes −3, 1</text><text x="336" y="231" font-size="10.5" fill="var(--muted)" text-anchor="start" font-family="Inter, sans-serif" font-weight="500">sum −2 = −b/a ✓</text><text x="336" y="246" font-size="10.5" fill="var(--muted)" text-anchor="start" font-family="Inter, sans-serif" font-weight="500">product −3 = c/a ✓</text></svg>
+      <figcaption>y = x² + 2x − 3 read the exam way. The vertex is left of the y-axis, so −b/2a &lt; 0; with a &gt; 0 that
+      makes b &gt; 0 — and the zeroes −3 and 1 confirm it: sum −2 = −b/a, product −3 = c/a.</figcaption>
+    </figure>
+
+    <h3>Cubics — three crossings, or a crossing and a touch</h3>
+    <figure>
+      <svg viewBox="0 0 520 250" width="520" height="250" role="img" aria-label="Two cubic graphs. Left: y = one half of (x+2) x (x−2), crossing the x-axis at −2, 0 and 2 — three zeroes. Right: y = one half of (x+3)(x−1) squared, crossing at −3 and touching at 1 — the touch is a repeated zero; it cuts the y-axis at 1.5"><g transform="translate(0,0)"><line x1="26" y1="111.1" x2="233" y2="111.1" stroke="var(--muted)" stroke-width="1.2"/><polygon points="239,111.1 231,107.1 231,115.1" fill="var(--muted)"/><line x1="137.5" y1="183" x2="137.5" y2="14" stroke="var(--muted)" stroke-width="1.2"/><polygon points="137.5,8 133.5,16 141.5,16" fill="var(--muted)"/><text x="235" y="125.1" font-size="11" fill="var(--muted)" font-family="JetBrains Mono, monospace">x</text><text x="143.5" y="18" font-size="11" fill="var(--muted)" font-family="JetBrains Mono, monospace">y</text><line x1="84.4" y1="108.1" x2="84.4" y2="114.1" stroke="var(--muted)" stroke-width="1"/><line x1="137.5" y1="108.1" x2="137.5" y2="114.1" stroke="var(--muted)" stroke-width="1"/><line x1="190.5" y1="108.1" x2="190.5" y2="114.1" stroke="var(--muted)" stroke-width="1"/><path d="M66.9,184.6 C74.9,137.6 83,110.4 91.1,96.3 C99.1,82.1 107.2,81.1 115.3,86.3 C123.3,91.5 131.4,102.9 139.5,113.8 C147.5,124.7 155.6,135 163.6,137.9 C171.7,140.9 179.8,136.5 187.8,117.8 C195.9,99.2 204,66.5 212,12.7" fill="none" stroke="var(--maths)" stroke-width="2.4"/><circle cx="84.4" cy="111.1" r="4" fill="var(--rose)"/><circle cx="137.5" cy="111.1" r="4" fill="var(--rose)"/><circle cx="190.5" cy="111.1" r="4" fill="var(--rose)"/><text x="84.4" y="126.1" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">-2</text><text x="137.5" y="126.1" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">0</text><text x="190.5" y="126.1" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">2</text><circle cx="137.5" cy="111.1" r="3.2" fill="var(--physics)"/><text x="122.5" y="222" font-size="10.4" fill="var(--bright)" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">three crossings → three zeroes</text><text x="122.5" y="238" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">½(x+2)x(x−2)</text></g><g transform="translate(275,0)"><line x1="26" y1="111.1" x2="233" y2="111.1" stroke="var(--muted)" stroke-width="1.2"/><polygon points="239,111.1 231,107.1 231,115.1" fill="var(--muted)"/><line x1="137.5" y1="183" x2="137.5" y2="14" stroke="var(--muted)" stroke-width="1.2"/><polygon points="137.5,8 133.5,16 141.5,16" fill="var(--muted)"/><text x="235" y="125.1" font-size="11" fill="var(--muted)" font-family="JetBrains Mono, monospace">x</text><text x="143.5" y="18" font-size="11" fill="var(--muted)" font-family="JetBrains Mono, monospace">y</text><line x1="57.8" y1="108.1" x2="57.8" y2="114.1" stroke="var(--muted)" stroke-width="1"/><line x1="164" y1="108.1" x2="164" y2="114.1" stroke="var(--muted)" stroke-width="1"/><line x1="134.5" y1="84.1" x2="140.5" y2="84.1" stroke="var(--muted)" stroke-width="1"/><path d="M47,182.8 C55.6,115.6 64.2,74.6 72.8,51.4 C81.3,28.2 89.9,22.9 98.5,27.2 C107.1,31.5 115.7,45.5 124.3,60.8 C132.9,76.1 141.5,92.7 150.1,102.5 C158.7,112.3 167.3,115.2 175.9,103 C184.5,90.8 193.1,63.5 201.7,12.8" fill="none" stroke="var(--maths)" stroke-width="2.4"/><circle cx="57.8" cy="111.1" r="4" fill="var(--rose)"/><circle cx="164" cy="111.1" r="4" fill="var(--rose)"/><text x="57.8" y="126.1" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">-3</text><text x="164" y="126.1" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">1</text><text x="130.5" y="88.1" font-size="10.5" fill="var(--bright)" text-anchor="end" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">1.5</text><circle cx="137.5" cy="84.1" r="3.2" fill="var(--physics)"/><text x="122.5" y="222" font-size="10.4" fill="var(--bright)" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600">a crossing and a touch → 1 is a repeated zero</text><text x="122.5" y="238" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="500">½(x+3)(x−1)²</text></g></svg>
+      <figcaption>A cubic has at most three zeroes and its two ends go opposite ways (up on the right when a &gt; 0). A
+      touch without crossing is a <b>repeated zero</b> — the factor appears squared — so the right-hand curve is
+      k(x + 3)(x − 1)², not k(x + 3)(x − 1). Its y-intercept is d.</figcaption>
+    </figure>
+
+    <div class="box exam">
+      <h4>Rebuilding a polynomial from its graph — the routine</h4>
+      <ol>
+        <li>Write a factor <span class="m">(x − α)</span> for every crossing and <span class="m">(x − α)²</span> for every
+        touch: <span class="m">p(x) = k(x − α)(x − β)…</span></li>
+        <li><b>Find k from one more point</b> — almost always the y-intercept, p(0). A parabola through (−3, 0), (2, 0)
+        and (0, −12): p(x) = k(x + 3)(x − 2), p(0) = −6k = −12, k = 2, so p(x) = 2(x + 3)(x − 2) = 2x² + 2x − 12.</li>
+        <li>Only then evaluate what is asked (p(1) = 2 × 4 × (−1) = −8), or expand to read a coefficient.</li>
+      </ol>
+      <p>The two slips Allen prices in: <b>forgetting k</b> (taking k = 1 because the zeroes "looked enough"), and
+      <b>treating a touch as a single zero</b> — each gives a listed option.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>Zeroes ↔ coefficients — the core of the chapter, and the symmetric-function machine</h2>
+    <p class="lede">NCERT 2.3, and the part your IGCSE course does not have. Two relations for a quadratic, three for a
+    cubic; every "find α² + β²" item is those relations plus one identity.</p>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">ax² + bx + c, zeroes α, β</div><div class="wh"><b>α + β = −b/a</b> · <b>αβ = c/a</b>. Divide by a first; the sum carries the minus, the product does not.</div></div>
+      <div class="fx"><div class="eq">ax³ + bx² + cx + d, zeroes α, β, γ</div><div class="wh"><b>α + β + γ = −b/a</b> · <b>αβ + βγ + γα = c/a</b> · <b>αβγ = −d/a</b>. Signs alternate − + −.</div></div>
+      <div class="fx"><div class="eq">Forming: x² − Sx + P</div><div class="wh">A quadratic with zero-sum S and product P — or any non-zero multiple of it. Zeroes 2 ± √3 → S = 4, P = 1 → x² − 4x + 1.</div></div>
+    </div>
+
+    <p>Check the cubic relations on one you can factorise: <span class="m">x³ − 6x² + 11x − 6 = (x − 1)(x − 2)(x − 3)</span>:
+    sum 6 = −(−6), pairs 2 + 6 + 3 = 11, product 6 = −(−6). ✓ The sign pattern is the whole trap in a cubic item — the
+    product of the zeroes is <b>−d/a</b>, so for x³ − 7x + 2 it is −2, not 2.</p>
+
+    <h3>The symmetric-function machine — write S and P, then one line</h3>
+    <p>Anything symmetric in α and β is a function of <span class="m">S = α + β</span> and <span class="m">P = αβ</span>.
+    Learn these as reflexes; every one is an identity you already know, rearranged.</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Wanted</th><th>In S and P</th><th>For x² − 5x + 3 (S = 5, P = 3)</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">α² + β²</td><td class="mono">S² − 2P</td><td class="mono">25 − 6 = 19</td></tr>
+        <tr><td class="mono">(α − β)²</td><td class="mono">S² − 4P</td><td class="mono">25 − 12 = 13</td></tr>
+        <tr><td class="mono">α³ + β³</td><td class="mono">S³ − 3PS</td><td class="mono">125 − 45 = 80</td></tr>
+        <tr><td class="mono">α⁴ + β⁴</td><td class="mono">(α² + β²)² − 2P²</td><td class="mono">19² − 18 = 343</td></tr>
+        <tr><td class="mono">1/α + 1/β</td><td class="mono">S/P</td><td class="mono">5/3</td></tr>
+        <tr><td class="mono">α/β + β/α</td><td class="mono">(S² − 2P)/P</td><td class="mono">19/3</td></tr>
+        <tr><td class="mono">1/α² + 1/β²</td><td class="mono">(S² − 2P)/P²</td><td class="mono">19/9</td></tr>
+        <tr><td class="mono">α²β + αβ²</td><td class="mono">PS</td><td class="mono">15</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="box trap">
+      <h4>Where the marks go in this table</h4>
+      <ul>
+        <li><b>α⁴ + β⁴ is two steps</b> — α² + β² first, then square <em>that</em> and subtract 2P². Squaring S² straight
+        to S⁴ skips a step; subtracting 2PS (the cube habit) instead of 2P² is the other listed option.</li>
+        <li><b>A negative P flips the sign of the correction:</b> for x² + 2x − 5, S = −2, P = −5, so
+        α² + β² = 4 − 2(−5) = 14, not 4 − 10.</li>
+        <li><b>Divide by a before anything.</b> For 3x² − 6x + 2, S = 2 and P = ⅔ — not 6 and 2.</li>
+      </ul>
+    </div>
+
+    <h3>The cubic machine — and the e₁ = 0 shortcut Allen keeps recycling</h3>
+    <p>Write <span class="m">e₁ = α + β + γ</span>, <span class="m">e₂ = αβ + βγ + γα</span>,
+    <span class="m">e₃ = αβγ</span>. Then</p>
+    <ul>
+      <li><span class="m">α² + β² + γ² = e₁² − 2e₂</span>, and <span class="m">1/α + 1/β + 1/γ = e₂/e₃</span> (put over the common
+      denominator αβγ).</li>
+      <li><span class="m">(α + β)(β + γ)(γ + α) = e₁e₂ − e₃</span>.</li>
+      <li><b>The recycled item:</b> "α, β, γ are the zeroes of x³ − 7x + 2; find 1/(α + β) + 1/(β + γ) + 1/(γ + α)."
+      There is <em>no x² term</em>, so e₁ = 0 and <span class="m">α + β = −γ</span>, β + γ = −α, γ + α = −β. The sum is
+      <span class="m">−(1/α + 1/β + 1/γ) = −e₂/e₃ = −(−7)/(−2) = <b>−7/2</b></span>. Two signs to keep: e₂ = c/a = −7 and
+      e₃ = −d/a = −2. The options offered were 0, 7/2, −7/2 and 2/7 — three of them are numbers you write on the way.</li>
+    </ul>
+
+    <h3>Unknown coefficients — three routes</h3>
+    <ol>
+      <li><b>One zero is given:</b> substitute. If 2 is a zero of x² + kx + 6, then 4 + 2k + 6 = 0, k = −5; the other
+      zero is then 6/2 = 3 from the product.</li>
+      <li><b>Two zeroes of a cubic are given:</b> the third comes from the product −d/a, then the other two relations give the
+      unknown coefficients. Or substitute both zeroes and solve the pair of linear equations — either way <em>both</em>
+      zeroes are needed; one substitution alone leaves a and b unseparated.</li>
+      <li><b>A quadratic factor of a quartic is given:</b> write the quartic as (the factor) × (x² + ux + v), fix v from
+      the constant term, then compare the remaining coefficients. x² − x + 1 a factor of x⁴ + px² + q: the constant
+      forces v = q, and matching x³ and x gives u = 1, then q = 1 and p = 1 — i.e. x⁴ + x² + 1 = (x² − x + 1)(x² + x + 1).
+      Compare the <em>lowest</em>-power coefficients first; they carry the fewest unknowns.</li>
+    </ol>
+
+    <div class="box">
+      <h4>Power sums — beyond NCERT, asked as 2024-U Q47</h4>
+      <p>Given a + b + c, a² + b² + c² and a³ + b³ + c³, find a⁴ + b⁴ + c⁴. Two routes; both are Class-9 identities.</p>
+      <ol>
+        <li><b>Get e₂ and e₃:</b> <span class="m">e₂ = (e₁² − Σa²)/2</span>, and from
+        <span class="m">a³ + b³ + c³ − 3abc = e₁(Σa² − e₂)</span> read off <span class="m">e₃ = abc</span>.</li>
+        <li><b>Then square Σa²:</b> <span class="m">(Σa²)² = Σa⁴ + 2Σa²b²</span>, with
+        <span class="m">Σa²b² = e₂² − 2e₁e₃</span>. Solve for Σa⁴.</li>
+      </ol>
+      <p>The one-line shortcut (Newton's identity) is <span class="m">Σa⁴ = e₁Σa³ − e₂Σa² + e₃e₁</span>; it gives the same
+      number and saves a minute if you trust it. Worked example 2 below runs both routes on the same data.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>Class-9 tools Allen assumes — factor theorem, identities, GCD × LCM</h2>
+    <p class="lede">None of this is in the Class 10 chapter; all of it appears in the real items. Your IGCSE course has
+    the factor theorem and the square identities; the cube identities and the three-variable one are new.</p>
+
+    <div class="box def">
+      <h4>Remainder and factor theorems</h4>
+      <p><b>Remainder theorem:</b> dividing p(x) by (x − a) leaves the remainder <b>p(a)</b>. x³ − 2x + 5 divided by
+      (x + 2): p(−2) = −8 + 4 + 5 = <b>1</b>. <b>Factor theorem:</b> (x − a) is a factor of p(x) <b>if and only if
+      p(a) = 0</b> — the same sentence as "a is a zero". To test (2x − 1), use a = ½.</p>
+    </div>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">(a ± b)² = a² ± 2ab + b²</div><div class="wh">a² − b² = (a + b)(a − b) · (x + p)(x + q) = x² + (p + q)x + pq</div></div>
+      <div class="fx"><div class="eq">(a + b + c)² = Σa² + 2Σab</div><div class="wh">So <b>Σa² = e₁² − 2e₂</b> — the same line as section 5.</div></div>
+      <div class="fx"><div class="eq">(a ± b)³ = a³ ± b³ ± 3ab(a ± b)</div><div class="wh">Hence <b>a³ + b³ = (a + b)³ − 3ab(a + b)</b> and a³ − b³ = (a − b)³ + 3ab(a − b).</div></div>
+      <div class="fx"><div class="eq">a³ ± b³ = (a ± b)(a² ∓ ab + b²)</div><div class="wh">1 + 8y³ = (1 + 2y)(1 − 2y + 4y²). The middle sign is the <em>opposite</em> of the outer one; the last term is +.</div></div>
+      <div class="fx"><div class="eq">a³ + b³ + c³ − 3abc = (a + b + c)(a² + b² + c² − ab − bc − ca)</div><div class="wh">If a + b + c = 0 then a³ + b³ + c³ = 3abc. (−5)³ + 2³ + 3³ = −90 = 3(−5)(2)(3). ✓</div></div>
+    </div>
+
+    <div class="box trap">
+      <h4>How the identities are disguised on the paper</h4>
+      <ul>
+        <li><b>"2a + b = 12 and ab = 15, find 8a³ + b³."</b> Read 8a³ as (2a)³; then (2a)³ + b³ = (2a + b)³ − 3(2a)(b)(2a + b)
+        = 1728 − 3 × <b>30</b> × 12 = 648. The product in the identity is (2a)·b = 30, <em>not</em> ab = 15 — using 15 gives
+        1188, which is on the option list.</li>
+        <li><b>A three-cube expression with a plus in front of the triple product</b> — X³ + Y³ − Z³ + 3XYZ — is
+        <span class="m">X³ + Y³ + (−Z)³ − 3XY(−Z)</span>, so it factorises as <span class="m">(X + Y − Z)(…)</span>. Read the
+        signs off, add the three brackets: (a + 2b) + (2a − c) − (a + 2c) = 2a + 2b − 3c.</li>
+        <li><b>"Factorise x + 8xy³"</b> — take out x first, then 1 + 8y³ is a sum of cubes. Two of the four options have the
+        middle sign of the quadratic factor wrong.</li>
+        <li><b>A functional substitution</b> — "f(x) − m = x" just means f(t) = t + m for every t. So f(x − m) = x and
+        f(x − 3) = x − 3 + m; substitute mechanically and the x² and m terms cancel, leaving a constant.</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4>GCD × LCM for polynomials</h4>
+      <p>Exactly the number rule: for two polynomials, <span class="m"><b>GCD × LCM = p(x) × q(x)</b></span>. Given GCD
+      x − 1, LCM x⁶ − 1 and one polynomial x³ − 1, the other is (x − 1)(x⁶ − 1)/(x³ − 1). Since x⁶ − 1 = (x³ − 1)(x³ + 1),
+      that is (x − 1)(x³ + 1) = x⁴ − x³ + x − 1. The GCD of two polynomials is the product of their common factors to
+      the lower power; the LCM takes every factor to the higher power — the same lower/higher rule as section 1.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">7</span>Fact bank — everything above on one screen</h2>
+    <div class="bank">
+      <div class="fx"><div class="eq">N = p<sup>a</sup>q<sup>b</sup>r<sup>c</sup>, unique</div><div class="wh">Fundamental Theorem of Arithmetic. Factors: (a+1)(b+1)(c+1). Restrict exponents for "odd", "multiple of 6".</div></div>
+      <div class="fx"><div class="eq">HCF: lower powers · LCM: higher</div><div class="wh">HCF ≤ smaller, LCM ≥ larger, HCF | LCM. HCF × LCM = ab for <b>two</b> numbers only.</div></div>
+      <div class="fx"><div class="eq">Coprime ⇔ HCF = 1</div><div class="wh">Factorise, don't glance. Coprime split: each prime's whole power to one side (1000 → 8 × 125).</div></div>
+      <div class="fx"><div class="eq">a = bq + r, 0 ≤ r &lt; b</div><div class="wh">Euclid's lemma. Algorithm: divide, divide by the remainder, … last non-zero remainder = HCF. HCF(a, b) divides a − b.</div></div>
+      <div class="fx"><div class="eq">A: N = LCM·k + r · B: HCF(x − r)</div><div class="wh">"a number divided by … leaves r" ⇒ add r to an LCM multiple. "the largest number that divides … leaving r" ⇒ subtract, then HCF. Same unknown remainder ⇒ HCF of differences.</div></div>
+      <div class="fx"><div class="eq">n = 15q + 7 ⇒ 2n + 9 = 30q + 23</div><div class="wh">Simplify inside the multiple, reduce by the divisor <em>asked</em>. A remainder is smaller than its divisor.</div></div>
+      <div class="fx"><div class="eq">a² mod 6 ∈ {0, 1, 3, 4}</div><div class="wh">Square 0…n−1. mod 3: {0,1} · mod 4: {0,1} · mod 5: {0,1,4} · mod 8: {0,1,4} · mod 9: {0,1,4,7}.</div></div>
+      <div class="fx"><div class="eq">repdigit ddd: sum 3d</div><div class="wh">Every 3-digit repdigit is a multiple of 3; 2- and 4-digit ones need d ∈ {3, 6, 9}. Skip-a-digit display ⇒ base 9.</div></div>
+      <div class="fx"><div class="eq">p prime, p | a² ⇒ p | a · √p irrational</div><div class="wh">Rational ± irrational, rational × irrational: irrational. Irrational with irrational: either. Conjugates multiply to a rational.</div></div>
+      <div class="fx"><div class="eq">1/(a + √b) → conjugate</div><div class="wh">Three terms: group two, rationalise twice. Simplify √50 = 5√2 first. Read coefficients with their signs.</div></div>
+      <div class="fx"><div class="eq">√(a + 2√b) = √p + √q</div><div class="wh">p + q = a, pq = b. No 2 in front ⇒ 2 + √3 = (√3 + 1)²/2.</div></div>
+      <div class="fx"><div class="eq">p + √q a zero ⇒ p − √q too</div><div class="wh">Rational coefficients only. Their sum 2p and product p² − q are rational; the third zero from −d/a.</div></div>
+      <div class="fx"><div class="eq">zero: p(k) = 0 · graph meets x-axis</div><div class="wh">Degree n ⇒ at most n zeroes. Touch ⇒ repeated zero (squared factor). y-intercept = constant term.</div></div>
+      <div class="fx"><div class="eq">a: opening · c: p(0) · b: axis −b/2a</div><div class="wh">Vertex right of O ⇒ b opposite in sign to a; left ⇒ same sign. Rebuild: k(x − α)(x − β)², k from p(0).</div></div>
+      <div class="fx"><div class="eq">α + β = −b/a · αβ = c/a</div><div class="wh">Cubic: e₁ = −b/a, e₂ = c/a, e₃ = −d/a. Divide by a first. Form: x² − Sx + P.</div></div>
+      <div class="fx"><div class="eq">α² + β² = S² − 2P · α³ + β³ = S³ − 3PS</div><div class="wh">α⁴ + β⁴ = (S² − 2P)² − 2P² · 1/α + 1/β = S/P · (α − β)² = S² − 4P.</div></div>
+      <div class="fx"><div class="eq">e₁ = 0 ⇒ α + β = −γ</div><div class="wh">Σ 1/(α + β) = −e₂/e₃. Σ1/α = e₂/e₃ · Σα² = e₁² − 2e₂ · (α+β)(β+γ)(γ+α) = e₁e₂ − e₃.</div></div>
+      <div class="fx"><div class="eq">Σa⁴ = e₁Σa³ − e₂Σa² + e₃e₁</div><div class="wh">Or: e₂ from (Σa)², e₃ from the 3abc identity, Σa²b² = e₂² − 2e₁e₃, Σa⁴ = (Σa²)² − 2Σa²b². Beyond NCERT.</div></div>
+      <div class="fx"><div class="eq">a³ + b³ = (a + b)³ − 3ab(a + b)</div><div class="wh">8a³ + b³: the "a" is 2a, so the product is (2a)b. a³ ± b³ = (a ± b)(a² ∓ ab + b²).</div></div>
+      <div class="fx"><div class="eq">Σa³ − 3abc = (Σa)(Σa² − Σab)</div><div class="wh">Σa = 0 ⇒ Σa³ = 3abc. X³ + Y³ − Z³ + 3XYZ ⇒ factor X + Y − Z.</div></div>
+      <div class="fx"><div class="eq">p(x) ÷ (x − a) leaves p(a)</div><div class="wh">Factor ⇔ p(a) = 0. Quadratic factor of a quartic: compare coefficients, constant first. GCD × LCM = p × q.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">8</span>Five worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">Try each before opening the working and give yourself <b>90 seconds</b> — the real paper's
+    average. The elimination reasoning is written out because on the day, ruling two options out is worth almost as
+    much as solving.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">The 2024-U Q46 machine · ~2 minutes</span></div>
+      <p>If <span class="m">1/(1 + √2 + √3) = P + Q√2 + R√6</span> with P, Q, R rational, then P + Q + R is</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>0</div>
+        <div class="we-opt key"><span class="ob">2</span>1/2</div>
+        <div class="we-opt"><span class="ob">3</span>3/4</div>
+        <div class="we-opt"><span class="ob">4</span>1</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — group and rationalise once.</b> Treat (1 + √2) as one term and multiply top and bottom by
+        (1 + √2) − √3: the denominator is <span class="m">(1 + √2)² − 3 = 1 + 2√2 + 2 − 3 = 2√2</span>. The fraction is now
+        <span class="m">(1 + √2 − √3)/(2√2)</span>.</p>
+        <p><b>Step 2 — rationalise the single surd.</b> Multiply by √2/√2:
+        <span class="m">(√2 + 2 − √6)/4 = ½ + ¼√2 − ¼√6</span>. So P = ½, Q = ¼, R = −¼.</p>
+        <p><b>Step 3 —</b> P + Q + R = ½ + ¼ − ¼ = <b>½</b>. Option (2).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(4) 1</b> — every sign read as plus: ½ + ¼ + ¼.
+        <b>(3) 3/4</b> — R dropped (the √6 term "doesn't count").
+        <b>(1) 0</b> — P forgotten: Q + R = ¼ − ¼, the rational term not counted as a "coefficient".
+        <b>Elimination.</b> The √6 must appear with a minus (it comes from −√3 × √2), so the answer is less than P + Q —
+        that rules out (4) at once; then only whether R cancels Q.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">The 2024-U Q47 machine, both routes · ~3 minutes</span></div>
+      <p>If <span class="m">a + b + c = 4</span>, <span class="m">a² + b² + c² = 10</span> and
+      <span class="m">a³ + b³ + c³ = 22</span>, then a⁴ + b⁴ + c⁴ is</p>
+      <div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>50</div>
+        <div class="we-opt"><span class="ob">2</span>82</div>
+        <div class="we-opt"><span class="ob">3</span>100</div>
+        <div class="we-opt"><span class="ob">4</span>114</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — e₂.</b> (a + b + c)² = Σa² + 2e₂ → 16 = 10 + 2e₂ → <span class="m">e₂ = 3</span>.</p>
+        <p><b>Step 2 — e₃.</b> Σa³ − 3abc = (Σa)(Σa² − e₂) → 22 − 3e₃ = 4(10 − 3) = 28 → <span class="m">e₃ = −2</span>.</p>
+        <p><b>Step 3 — Σa²b².</b> <span class="m">e₂² − 2e₁e₃ = 9 − 2(4)(−2) = 9 + 16 = 25</span>.</p>
+        <p><b>Step 4 —</b> (Σa²)² = Σa⁴ + 2Σa²b² → 100 = Σa⁴ + 50 → <b>Σa⁴ = 50</b>. Option (1).</p>
+        <p><b>Newton's shortcut, same data:</b> Σa⁴ = e₁Σa³ − e₂Σa² + e₃e₁ = 4 × 22 − 3 × 10 + (−2) × 4 = 88 − 30 − 8 = 50. ✓
+        (The numbers are real: a, b, c are 2, 1 + √2, 1 − √2.)</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(3) 100</b> — squaring Σa² and stopping: the 2Σa²b² cross term forgotten.
+        <b>(2) 82</b> — Σa²b² taken as e₂² = 9 alone (the −2e₁e₃ term dropped): 100 − 18.
+        <b>(4) 114</b> — e₃ with the wrong sign (+2): Σa²b² = 9 − 16 = −7, then 100 + 14.
+        <b>Elimination.</b> Σa⁴ = (Σa²)² − 2Σa²b², and Σa²b² is a sum of squares — for real a, b, c it cannot be negative,
+        so the answer is at most 100 and (4) is dead before any arithmetic; (3) needs Σa²b² = 0, i.e. two of a, b, c zero,
+        which contradicts Σa³ ≠ Σa · Σa². Only (1) and (2) survive, and they differ by whether e₃ was used.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">The 2024-A Q55 machine · ~2 minutes</span></div>
+      <p>One zero of <span class="m">p(x) = x³ − ax² + bx − 20</span> is <span class="m">3 − √5</span>, and a, b are rational.
+      The value of a + b is</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>−25</div>
+        <div class="we-opt"><span class="ob">2</span>10</div>
+        <div class="we-opt"><span class="ob">3</span>15</div>
+        <div class="we-opt key"><span class="ob">4</span>45</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — the conjugate.</b> Rational coefficients, so 3 + √5 is a zero too. Their sum is 6 and their product
+        is 9 − 5 = 4.</p>
+        <p><b>Step 2 — the third zero from the product.</b> For x³ − ax² + bx − 20 the product of the zeroes is
+        −(−20)/1 = 20, so <span class="m">4γ = 20</span>, γ = 5.</p>
+        <p><b>Step 3 — read a and b.</b> Sum of zeroes = a (the x² coefficient is −a): a = 6 + 5 = <b>11</b>. Sum of
+        pair-products = b: b = 4 + 5 × 6 = <b>34</b>. So a + b = <b>45</b>. Option (4).</p>
+        <p>Check: (x − 5)(x² − 6x + 4) = x³ − 11x² + 34x − 20. ✓</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2) 10</b> — the conjugate pair treated as the whole polynomial: a = 6, b = 4.
+        <b>(3) 15</b> — a = 11 found, but b taken as the pair's product alone (4), the γ cross terms 5 × 6 forgotten.
+        <b>(1) −25</b> — the product of zeroes read as −20 (sign of −d/a slipped): γ = −5, a = 1, b = 4 − 30 = −26.
+        <b>Elimination.</b> b must exceed 4 because the third zero is positive and adds 5 × 6 — (2) and (3) go together.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">Graph → polynomial → five statements · ~2½ minutes</span></div>
+      <p>The graph of a cubic polynomial p(x) is shown. It crosses the x-axis at x = −2, touches it at x = 1, and cuts the
+      y-axis at 4.</p>
+      <figure><svg viewBox="0 0 340 240" width="340" height="240" role="img" aria-label="A cubic curve crossing the x-axis at −2, rising to a peak, coming down to touch the x-axis at 1 without crossing, then rising again; it cuts the y-axis at 4"><line x1="30" y1="166" x2="326" y2="166" stroke="var(--muted)" stroke-width="1.2"/><polygon points="332,166 324,162 324,170" fill="var(--muted)"/><line x1="197.7" y1="216" x2="197.7" y2="16" stroke="var(--muted)" stroke-width="1.2"/><polygon points="197.7,10 193.7,18 201.7,18" fill="var(--muted)"/><text x="328" y="180" font-size="11" fill="var(--muted)" font-family="JetBrains Mono, monospace">x</text><text x="203.7" y="20" font-size="11" fill="var(--muted)" font-family="JetBrains Mono, monospace">y</text><line x1="99.1" y1="163" x2="99.1" y2="169" stroke="var(--muted)" stroke-width="1"/><line x1="247.1" y1="163" x2="247.1" y2="169" stroke="var(--muted)" stroke-width="1"/><line x1="194.7" y1="99.3" x2="200.7" y2="99.3" stroke="var(--muted)" stroke-width="1"/><path d="M91.7,215.6 C103.2,131.1 114.7,81.7 126.2,56 C137.7,30.2 149.2,28.2 160.7,38.4 C172.2,48.6 183.8,71.1 195.3,94.3 C206.8,117.6 218.3,141.7 229.8,155.2 C241.3,168.7 252.8,171.5 264.3,152.3 C275.8,133.1 287.4,91.9 298.9,17.2" fill="none" stroke="var(--maths)" stroke-width="2.5"/><circle cx="99.1" cy="166" r="4" fill="var(--rose)"/><circle cx="247.1" cy="166" r="4" fill="var(--rose)"/><circle cx="197.7" cy="99.3" r="4" fill="var(--physics)"/><text x="99.1" y="181" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">-2</text><text x="247.1" y="181" font-size="10.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">1</text><text x="190.7" y="103.3" font-size="10.5" fill="var(--bright)" text-anchor="end" font-family="JetBrains Mono, monospace" paint-order="stroke" stroke="var(--surface)" stroke-width="3.5" stroke-linejoin="round">4</text><text x="269.1" y="194" font-size="10" fill="var(--rose)" text-anchor="middle" font-family="Inter, sans-serif" font-weight="500">touches, no crossing</text></svg><figcaption>Not to scale beyond the marked points; the curve only touches the axis at x = 1.</figcaption></figure>
+      <p>Consider the statements:</p>
+      <ol class="roman">
+        <li>The sum of the zeroes of p(x), a repeated zero counted twice, is 0.</li>
+        <li>The coefficient of x² in p(x) is 0.</li>
+        <li>p(x) has three distinct zeroes.</li>
+        <li>p(−1) = 8.</li>
+        <li>The product of the zeroes of p(x) is −2.</li>
+      </ol>
+      <p>How many of the statements are correct?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>One</div>
+        <div class="we-opt"><span class="ob">2</span>Three</div>
+        <div class="we-opt key"><span class="ob">3</span>Four</div>
+        <div class="we-opt"><span class="ob">4</span>Five</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — rebuild.</b> A crossing at −2 and a touch at 1: p(x) = k(x + 2)(x − 1)². The y-intercept fixes k:
+        p(0) = k × 2 × 1 = 2k = 4, so k = 2 and <span class="m">p(x) = 2(x + 2)(x − 1)² = 2x³ − 6x + 4</span>.</p>
+        <p><b>Step 2 — judge each clause.</b> I: zeroes −2, 1, 1 → sum 0 ✓ (and −b/a = 0/2 ✓). II: the expansion has no x²
+        term ✓ — the same fact as I. III: ✗ — 1 is a repeated zero, so only two <em>distinct</em> zeroes. IV: p(−1) =
+        2(1)(4) = 8 ✓. V: (−2)(1)(1) = −2 ✓ (and −d/a = −4/2 = −2 ✓).</p>
+        <p><b>Four</b> statements hold. Option (3).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2) Three</b> — k forgotten: p(x) = (x + 2)(x − 1)² = x³ − 3x + 2 gives p(−1) = 4, so IV fails while I, II
+        and V still hold.
+        <b>(4) Five</b> — the repeated zero counted as "three zeroes" and III passed.
+        <b>(1) One</b> — the touch read as an ordinary crossing: p(x) = k(x + 2)(x − 1), k = −2, and then only V survives
+        (sum −1, an x² term of −2, two zeroes, p(−1) = 4).
+        <b>Elimination.</b> I and II say the same thing, so they stand or fall together; III is the one clause written
+        to be false, which rules out Five at once. Decide IV — that is where k earns its place — and you are done.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">Remainder shape A with a second condition · ~90 seconds</span></div>
+      <p>The smallest positive integer which leaves a remainder of 3 when divided by each of 8, 12 and 15, and which
+      is exactly divisible by 7, is</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>123</div>
+        <div class="we-opt"><span class="ob">2</span>243</div>
+        <div class="we-opt key"><span class="ob">3</span>483</div>
+        <div class="we-opt"><span class="ob">4</span>603</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — shape A.</b> LCM(8, 12, 15) = 2³ × 3 × 5 = 120, so the number is <span class="m">120k + 3</span>.</p>
+        <p><b>Step 2 — the second condition, by remainders.</b> 120 = 17 × 7 + 1, so 120k + 3 leaves the same remainder as
+        k + 3 on division by 7. k + 3 is a multiple of 7 first at k = 4.</p>
+        <p><b>Step 3 —</b> 120 × 4 + 3 = <b>483</b> = 7 × 69. Option (3). Check: 483 = 60 × 8 + 3 = 40 × 12 + 3 = 32 × 15 + 3. ✓</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1) 123</b> — the first candidate, k = 1, taken without testing the 7 (123 = 7 × 17 + 4).
+        <b>(2) 243</b> — k = 2, a "looks divisible" guess (243 = 7 × 34 + 5).
+        <b>(4) 603</b> — k = 5, one step past the answer (603 = 7 × 86 + 1).
+        <b>Elimination.</b> All four are 120k + 3, so the LCM step separates nothing — the item is decided entirely by
+        the division by 7. Test the options directly if the remainder trick does not come: 483 ÷ 7 = 69 exactly.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">9</span>Check yourself</h2>
+    <p class="lede">Five quick ones. <b>No negative marking here</b> — this is practice, not the exam.
+    Click an option to see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="maths-numbers-polynomials-paper-1.html">📝 Paper 1 — 13 questions, 20 minutes</a>
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Mathematics · <b>Real Numbers</b> and <b>Polynomials</b> — the official topic names from Allen's
+    Class X syllabus.<br>
+    <b>Labelled as beyond the rationalised NCERT Class 10 chapters, because the real papers use them:</b> Euclid's
+    division lemma and algorithm (section 2), the divisor-count rule (section 1), surd rationalisation and nested roots
+    (Class 9 Number Systems, section 3), the remainder and factor theorems and the cube identities (Class 9
+    Polynomials, section 6), GCD × LCM of polynomials (section 6), power sums / Newton's identity (section 5). <b>Deliberately not here:</b> decimal
+    expansions of rationals as a topic, the division algorithm for polynomials, quadratic equations and the
+    discriminant (off the 2027 list — a "touch" is described as a repeated zero, never as D = 0).<br>
+    Next: this unit's 20-minute paper. Tip: press 🖨 (bottom-left) to print these as a revision sheet · 🏆 (top-left)
+    goes back to the TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'How many factors of <b>2 × 3² × 5²</b> are odd?',
+    o:['6','9','12','18'], a:1,
+    fb:'<b>9.</b> An odd factor contains no 2, so the exponent of 2 is fixed at 0 and the others run freely: 1 × (2 + 1) × (2 + 1) = 9. <b>18</b> is the total number of factors, odd and even; <b>12</b> keeps the 2 as a choice while cutting one of the other primes; <b>6</b> drops a power of 3. Restrict the exponent, then multiply.' },
+  { q:'Which of the following is an <b>irrational</b> number?',
+    o:['√2 × √32','(3 + √2)(3 − √2)','(√5 + 2)² − 4√5','(√7 − 1)(√7 + 2)'], a:3,
+    fb:'<b>(√7 − 1)(√7 + 2) = 7 + 2√7 − √7 − 2 = 5 + √7</b> — a rational plus an irrational, so irrational. The other three are traps that look irrational: √2 × √32 = √64 = 8; (3 + √2)(3 − √2) is a conjugate product, 9 − 2 = 7; (√5 + 2)² = 9 + 4√5 and the 4√5 is then taken away, leaving 9. A product keeps its surd unless it is a conjugate pair or the surds multiply to a perfect square; the third trap is a square whose surd term is then subtracted away.' },
+  { q:'If α and β are the zeroes of <b>2x² + 5x − 3</b>, the value of α/β + β/α is',
+    o:['−37/6','−25/6','−13/6','37/6'], a:0,
+    fb:'<b>−37/6.</b> Divide by 2 first: S = −5/2, P = −3/2. Then α/β + β/α = (α² + β²)/(αβ) = (S² − 2P)/P = (25/4 + 3)/(−3/2) = (37/4) × (−2/3) = −37/6. (The zeroes are ½ and −3, and ½/(−3) + (−3)/½ = −1/6 − 6 = −37/6. ✓) <b>−13/6</b> subtracts 2P as if P were positive; <b>−25/6</b> forgets the −2P altogether; <b>37/6</b> divides the correct 37/4 by +3/2 instead of −3/2.' },
+  { q:'A number leaves remainder <b>5</b> when divided by 9. The remainder when its <b>square</b> is divided by 9 is',
+    o:['1','4','5','7'], a:3,
+    fb:'<b>7.</b> Write the number as 9q + 5; its square is 81q² + 90q + 25, and everything but the 25 is a multiple of 9. 25 = 2 × 9 + 7. (Check with 14: 196 = 21 × 9 + 7. ✓) <b>5</b> assumes squaring keeps the remainder; <b>4</b> is 25 reduced by 7 instead of 9; <b>1</b> is 25 reduced by 8 or 4 — the wrong divisor every time. Reduce by the divisor the question names.' },
+  { q:'A quadratic polynomial whose zeroes are <b>2 + √3</b> and <b>2 − √3</b> is',
+    o:['x² + 4x + 1','x² − 4x − 1','x² − 4x + 1','x² − 2x + 1'], a:2,
+    fb:'<b>x² − 4x + 1.</b> Sum of zeroes S = 4, product P = (2 + √3)(2 − √3) = 4 − 3 = 1, and the polynomial is x² − Sx + P. <b>x² + 4x + 1</b> has the sign of S wrong (the x-coefficient is <em>minus</em> the sum); <b>x² − 4x − 1</b> computed the product as 3 − 4; <b>x² − 2x + 1</b> took one zero’s rational part as the sum. Conjugate zeroes always give rational S and P — that is the whole point of the pair.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. The machines are automatic — now sit Paper 1 under the clock.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed — section 5 is the symmetric-function machine, section 2 the remainder shapes.'
+                        : 'Worth a second pass through sections 1–2 and 5 before the paper. The fact bank in section 7 is the one-screen version.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:maths-numbers-polynomials:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- print: a closed details element never renders its contents, so open them for the printer ---------- */
+(function(){
+  var opened = [];
+  function before(){
+    opened = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+      if(!d.open){ d.open = true; opened.push(d); }
+      var box = d.closest('.we'); if(box) box.classList.add('revealed');
+    });
+  }
+  function after(){
+    opened.forEach(function(d){ d.open = false; var box = d.closest('.we'); if(box) box.classList.remove('revealed'); });
+    opened = [];
+  }
+  window.addEventListener('beforeprint', before);
+  window.addEventListener('afterprint', after);
+  if(window.matchMedia){
+    var mq = matchMedia('print');
+    var h = function(e){ if(e.matches) before(); else after(); };
+    if(mq.addEventListener) mq.addEventListener('change', h); else if(mq.addListener) mq.addListener(h);
+  }
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
