@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Real Numbers & Polynomials — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+    </div>
+    <p class="startnote">Practice mode still marks you and still applies −1 — only the countdown is off.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  title: 'TALLENTEX · Real Numbers & Polynomials — Paper 1',
+  kind: 'topic',
+  duration: 20,
+  id: 'tx:maths-numbers-polynomials:p1',
+  accent: 'maths',
+  sub: 'Real Numbers and Polynomials — HCF and LCM by prime factors, remainders, irrationals, zeroes and coefficients, graphs of polynomials. <b>13 questions · 52 marks · 20 minutes.</b> Pitched at the real TALLENTEX paper: most items need two steps, and the clock is meant to run short. Triage, do not grind.',
+  sections: [ { name:'Mathematics', from:1, to:13 } ],
+  questions: [
+
+    { n:1, section:'Mathematics', topic:'Real Numbers', fmt:'diagram',
+      stem:'<p>The factor tree of a number <b>N</b> is shown. The shaded boxes are not filled in. What is the <b>LCM of <i>y</i> and 90</b>?</p>',
+      fig:'<svg viewBox="0 0 340 258" width="340" height="258" role="img" aria-label="Factor tree: N splits into 2 and y; y splits into z and 2; z splits into 3 and w; w splits into 5 and 7"><g stroke="currentColor" stroke-width="1.5" opacity=".6"><line x1="170" y1="37" x2="110" y2="65"/><line x1="170" y1="37" x2="230" y2="65"/><line x1="230" y1="91" x2="170" y2="119"/><line x1="230" y1="91" x2="290" y2="119"/><line x1="170" y1="145" x2="110" y2="173"/><line x1="170" y1="145" x2="230" y2="173"/><line x1="230" y1="199" x2="170" y2="227"/><line x1="230" y1="199" x2="290" y2="227"/></g><rect x="150" y="11" width="40" height="26" rx="6" fill="var(--maths)" fill-opacity="0.18" stroke="var(--maths)" stroke-width="1.6"/><text x="170" y="29" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14" font-weight="700" font-style="italic">N</text><rect x="90" y="65" width="40" height="26" rx="6" fill="none" fill-opacity="0" stroke="currentColor" stroke-width="1.6"/><text x="110" y="83" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14" font-weight="500" font-style="normal">2</text><rect x="210" y="65" width="40" height="26" rx="6" fill="var(--maths)" fill-opacity="0.18" stroke="var(--maths)" stroke-width="1.6"/><text x="230" y="83" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14" font-weight="700" font-style="italic">y</text><rect x="150" y="119" width="40" height="26" rx="6" fill="var(--maths)" fill-opacity="0.18" stroke="var(--maths)" stroke-width="1.6"/><text x="170" y="137" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14" font-weight="700" font-style="italic">z</text><rect x="270" y="119" width="40" height="26" rx="6" fill="none" fill-opacity="0" stroke="currentColor" stroke-width="1.6"/><text x="290" y="137" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14" font-weight="500" font-style="normal">2</text><rect x="90" y="173" width="40" height="26" rx="6" fill="none" fill-opacity="0" stroke="currentColor" stroke-width="1.6"/><text x="110" y="191" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14" font-weight="500" font-style="normal">3</text><rect x="210" y="173" width="40" height="26" rx="6" fill="var(--maths)" fill-opacity="0.18" stroke="var(--maths)" stroke-width="1.6"/><text x="230" y="191" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14" font-weight="700" font-style="italic">w</text><rect x="150" y="227" width="40" height="26" rx="6" fill="none" fill-opacity="0" stroke="currentColor" stroke-width="1.6"/><text x="170" y="245" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14" font-weight="500" font-style="normal">5</text><rect x="270" y="227" width="40" height="26" rx="6" fill="none" fill-opacity="0" stroke="currentColor" stroke-width="1.6"/><text x="290" y="245" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14" font-weight="500" font-style="normal">7</text></svg>',
+      figCap:'Each box is the product of the two boxes hanging below it. Only the prime leaves 2, 2, 3, 5, 7 are printed.',
+      options:['210','630','1890','6300'], answer:1,
+      sol:'<p>Rebuild the tree upwards: <i>w</i> = 5 &times; 7 = 35, <i>z</i> = 3 &times; 35 = 105, <b><i>y</i> = 2 &times; 105 = 210</b> (and N = 420, which the question never needs).</p><p>Now 210 = 2 &times; 3 &times; 5 &times; 7 and 90 = 2 &times; 3&sup2; &times; 5. The LCM takes the <i>highest</i> power of each prime: 2 &times; 3&sup2; &times; 5 &times; 7 = <b>630</b>.</p><p><b>Where the other options come from.</b> (1) 210 &mdash; assuming the bigger number is automatically the LCM (it is not: 90 does not divide 210). (3) 1890 = 210 &times; 9 &mdash; multiplying in the whole 3&sup2; again instead of raising the 3 already present. (4) 6300 = 210 &times; 90 &divide; 3 &mdash; using the product-over-HCF rule with the HCF taken as 3 instead of 30.</p>' },
+
+    { n:2, section:'Mathematics', topic:'Real Numbers', fmt:'diagram',
+      stem:'<p>A rectangular courtyard is <b>15.75 m</b> long and <b>9.45 m</b> wide. It is to be paved completely with identical <b>square</b> tiles of the largest possible size, with no tile cut. How many tiles are needed?</p>',
+      fig:'<svg viewBox="0 0 300 190" width="300" height="190" role="img" aria-label="A rectangular courtyard 15.75 metres long and 9.45 metres wide, with one square tile of side s drawn in a corner"><rect x="30" y="18" width="240" height="144" fill="none" stroke="currentColor" stroke-width="2"/><rect x="30" y="18" width="36" height="36" fill="var(--maths)" fill-opacity=".22" stroke="var(--maths)" stroke-width="1.8"/><text x="48" y="41" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="12" font-style="italic">s</text><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="150" y="182" text-anchor="middle">15.75 m</text><text x="286" y="94" text-anchor="middle" transform="rotate(90 286 94)">9.45 m</text></g><g stroke="currentColor" stroke-width="1" opacity=".5"><line x1="30" y1="170" x2="30" y2="176"/><line x1="270" y1="170" x2="270" y2="176"/><line x1="30" y1="173" x2="100" y2="173"/><line x1="200" y1="173" x2="270" y2="173"/><line x1="275" y1="18" x2="281" y2="18"/><line x1="275" y1="162" x2="281" y2="162"/><line x1="278" y1="18" x2="278" y2="66"/><line x1="278" y1="122" x2="278" y2="162"/></g></svg>',
+      figCap:'One tile of side s is drawn in a corner; the tiles must fit both edges exactly.',
+      options:['15','135','315','1215'], answer:0,
+      sol:'<p>Work in centimetres so the numbers are whole: 1575 cm and 945 cm. The largest tile that fits both edges exactly has side <b>HCF(1575, 945)</b>.</p><p>1575 = 3&sup2; &times; 5&sup2; &times; 7 and 945 = 3&sup3; &times; 5 &times; 7, so the HCF = 3&sup2; &times; 5 &times; 7 = <b>315 cm</b>. (Or by Euclid: 1575 = 945 + 630; 945 = 630 + 315; 630 = 2 &times; 315.)</p><p>Along the length: 1575 &divide; 315 = 5 tiles; along the width: 945 &divide; 315 = 3 tiles. Total = 5 &times; 3 = <b>15</b>.</p><p><b>Where the other options come from.</b> (3) 315 &mdash; stopping at the HCF; the question asks for the <i>number</i> of tiles, not their side. (2) 135 = 15 &times; 9 &mdash; a tile of 105 cm (one factor of 3 dropped from the HCF). (4) 1215 = 45 &times; 27 &mdash; a 35 cm tile, i.e. only the 5 &times; 7 kept.</p>' },
+
+    { n:3, section:'Mathematics', topic:'Real Numbers', fmt:'plain',
+      stem:'<p>N = 2&sup3; &times; 3&sup2; &times; 5. How many <b>factors of N are multiples of 6</b>?</p>',
+      options:['12','18','24','60'], answer:0,
+      sol:'<p>A factor of N has the form 2<sup>i</sup> &middot; 3<sup>j</sup> &middot; 5<sup>k</sup> with 0 &le; i &le; 3, 0 &le; j &le; 2, 0 &le; k &le; 1. It is a multiple of 6 exactly when it contains at least one 2 <i>and</i> at least one 3: i &isin; {1, 2, 3} (3 choices), j &isin; {1, 2} (2 choices), k &isin; {0, 1} (2 choices).</p><p>3 &times; 2 &times; 2 = <b>12</b>.</p><p>Same thing seen another way: the factors of N that are multiples of 6 are exactly 6 &times; (a factor of N/6) = 6 &times; (a factor of 60), and 60 = 2&sup2; &times; 3 &times; 5 has (2+1)(1+1)(1+1) = 12 factors.</p><p><b>Where the other options come from.</b> (3) 24 = 4 &times; 3 &times; 2 &mdash; the total number of factors of N, ignoring the "multiple of 6" condition. (2) 18 = 3 &times; 3 &times; 2 &mdash; counting j = 0 as allowed while (correctly) excluding i = 0. (4) 60 &mdash; computing N/6 and stopping.</p>' },
+
+    { n:4, section:'Mathematics', topic:'Real Numbers', fmt:'plain',
+      stem:'<p>What is the <b>greatest four-digit number</b> which, when divided by 12, 15 and 18, leaves a remainder of <b>7</b> in each case?</p>',
+      options:['9893','9900','9907','9967'], answer:2,
+      sol:'<p>A number that leaves remainder 7 on division by 12, 15 and 18 is 7 more than a common multiple of 12, 15, 18 &mdash; so 7 more than a multiple of their LCM.</p><p>12 = 2&sup2; &times; 3, 15 = 3 &times; 5, 18 = 2 &times; 3&sup2;, so LCM = 2&sup2; &times; 3&sup2; &times; 5 = <b>180</b>.</p><p>The greatest four-digit multiple of 180: 9999 &divide; 180 = 55 remainder 99, so 55 &times; 180 = 9900. Add the remainder: 9900 + 7 = <b>9907</b>, which is still four digits.</p><p><b>Where the other options come from.</b> (2) 9900 &mdash; forgetting to add the 7. (1) 9893 = 9900 &minus; 7 &mdash; subtracting the remainder, the habit from "leaves remainder r" questions of the <i>other</i> kind (where you subtract r from the given numbers before taking an HCF). (4) 9967 = 9960 + 7 &mdash; an LCM of 60 (the 3&sup2; from 18 dropped); 9960 is divisible by 12 and 15 but not by 18.</p>' },
+
+    { n:5, section:'Mathematics', topic:'Real Numbers', fmt:'plain',
+      stem:'<p>When a positive integer <i>n</i> is divided by 21, the remainder is 11. What is the remainder when <b>3<i>n</i> + 5 is divided by 7</b>?</p>',
+      options:['0','2','3','17'], answer:2,
+      sol:'<p>By the division lemma, <i>n</i> = 21<i>q</i> + 11 for some whole number <i>q</i>. Then 3<i>n</i> + 5 = 63<i>q</i> + 33 + 5 = 63<i>q</i> + 38.</p><p>63<i>q</i> is a multiple of 7, so the remainder of 3<i>n</i> + 5 on division by 7 is the remainder of 38 on division by 7: 38 = 5 &times; 7 + 3, so the remainder is <b>3</b>.</p><p>Check with the smallest case, <i>n</i> = 11: 3 &times; 11 + 5 = 38 = 35 + 3. &#10003;</p><p><b>Where the other options come from.</b> (2) 2 &mdash; skipping the tripling: 11 + 5 = 16 = 14 + 2. (4) 17 &mdash; dividing 38 by <b>21</b> instead of 7 (38 = 21 + 17); a remainder on division by 7 can never be 17. (1) 0 &mdash; a sign slip, 3<i>n</i> &minus; 5 instead of 3<i>n</i> + 5: 33 &minus; 5 = 28 = 4 &times; 7, exactly divisible.</p>' },
+
+    { n:6, section:'Mathematics', topic:'Real Numbers', fmt:'statement',
+      stem:'<p>Consider the following five statements.</p><ol class="roman"><li>(3 + &radic;7)(3 &minus; &radic;7) is a rational number.</li><li>0.101001000100001&hellip; (one more zero before each successive 1) is a rational number.</li><li>The sum of a rational number and an irrational number is always irrational.</li><li>There are only finitely many irrational numbers between 1 and 2.</li><li>(&radic;5 &minus; 2)&sup2; is a rational number.</li></ol><p><b>How many</b> of the statements are correct?</p>',
+      options:['One','Two','Three','Four'], answer:1,
+      sol:'<p><b>I &mdash; correct.</b> (3 + &radic;7)(3 &minus; &radic;7) = 9 &minus; 7 = 2, a rational number: a conjugate pair always multiplies to a rational.</p><p><b>II &mdash; false.</b> The decimal 0.1010010001&hellip; never terminates and never settles into a repeating block (the runs of zeros keep growing), so it is <i>irrational</i>. Only terminating or recurring decimals are rational.</p><p><b>III &mdash; correct.</b> If <i>r</i> is rational and <i>r</i> + <i>s</i> were rational, then <i>s</i> = (<i>r</i> + <i>s</i>) &minus; <i>r</i> would be rational too. So a rational plus an irrational is always irrational.</p><p><b>IV &mdash; false.</b> Between any two real numbers there are infinitely many irrationals: 1 + &radic;2/2, 1 + &radic;2/3, 1 + &radic;2/4, &hellip; all lie between 1 and 2, and each is irrational by statement III.</p><p><b>V &mdash; false.</b> (&radic;5 &minus; 2)&sup2; = 5 &minus; 4&radic;5 + 4 = 9 &minus; 4&radic;5. The &radic;5 does not cancel, so it is irrational. (Squaring a surd does not make it rational unless it is a <i>pure</i> surd like &radic;5 alone.)</p><p>Two statements hold, so the answer is <b>(2)</b>. The trap in this item is V: it is written to look like I, but a square is not a conjugate product.</p>' },
+
+    { n:7, section:'Mathematics', topic:'Real Numbers', fmt:'ar',
+      stem:'<p>Read the two statements below.</p><p><b>Assertion (A):</b> &radic;8 &times; &radic;2 is a rational number.</p><p><b>Reason (R):</b> The product of two irrational numbers is always a rational number.</p><p>Which of the following is correct?</p>',
+      options:['Both A and R are true, and R is the correct explanation of A.','Both A and R are true, but R is not the correct explanation of A.','A is true but R is false.','A is false but R is true.'], answer:2,
+      sol:'<p><b>A is true.</b> &radic;8 &times; &radic;2 = &radic;16 = 4, a rational number.</p><p><b>R is false.</b> "Always" is the give-away: &radic;2 &times; &radic;3 = &radic;6 is irrational, and so is &radic;3 &times; &radic;6 = &radic;18 = 3&radic;2. The product of two irrationals <i>can</i> be rational (as in A) but need not be.</p><p>So <b>A is true but R is false</b> &mdash; option (3). Option (1) is the trap for a student who accepts a universal "always" because one example happens to fit it.</p>' },
+
+    { n:8, section:'Mathematics', topic:'Polynomials', fmt:'diagram',
+      stem:'<p>The graph of a cubic polynomial <b>p(x)</b> is shown. It crosses the x-axis at x = &minus;1, <b>touches</b> the x-axis at x = 2, and cuts the y-axis at &minus;4. What is the value of <b>p(&minus;2)</b>?</p>',
+      fig:'<svg viewBox="0 0 320 245" width="320" height="245" role="img" aria-label="Graph of a cubic polynomial crossing the x-axis at minus 1, touching it at 2, and cutting the y-axis at minus 4"><g stroke="currentColor" stroke-width="1.4" opacity=".55"><line x1="34" y1="110.4" x2="314" y2="110.4"/><line x1="145.2" y1="8" x2="145.2" y2="234"/></g><path d="M309 106.4 L314 110.4 L309 114.4" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M141.2 13 L145.2 8 L149.2 13" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M42.0 -144.1 L44.4 -127.2 L46.8 -110.9 L49.2 -95.2 L51.6 -80.1 L54.0 -65.5 L56.4 -51.5 L58.8 -38.1 L61.2 -25.1 L63.6 -12.8 L66.0 -0.9 L68.4 10.5 L70.8 21.3 L73.2 31.7 L75.6 41.5 L78.0 51.0 L80.4 59.9 L82.8 68.4 L85.2 76.4 L87.6 84.0 L90.0 91.2 L92.4 98.0 L94.8 104.4 L97.2 110.4 L99.6 116.0 L102.0 121.2 L104.4 126.0 L106.8 130.5 L109.2 134.7 L111.6 138.5 L114.0 141.9 L116.4 145.1 L118.8 148.0 L121.2 150.5 L123.6 152.8 L126.0 154.8 L128.4 156.5 L130.8 157.9 L133.2 159.1 L135.6 160.1 L138.0 160.8 L140.4 161.4 L142.8 161.7 L145.2 161.8 L147.6 161.7 L150.0 161.4 L152.4 160.9 L154.8 160.3 L157.2 159.5 L159.6 158.6 L162.0 157.6 L164.4 156.4 L166.8 155.1 L169.2 153.7 L171.6 152.2 L174.0 150.7 L176.4 149.0 L178.8 147.3 L181.2 145.5 L183.6 143.7 L186.0 141.8 L188.4 139.9 L190.8 138.0 L193.2 136.1 L195.6 134.1 L198.0 132.2 L200.4 130.3 L202.8 128.5 L205.2 126.6 L207.6 124.8 L210.0 123.1 L212.4 121.5 L214.8 119.9 L217.2 118.4 L219.6 117.0 L222.0 115.7 L224.4 114.5 L226.8 113.5 L229.2 112.6 L231.6 111.8 L234.0 111.2 L236.4 110.7 L238.8 110.5 L241.2 110.4 L243.6 110.5 L246.0 110.8 L248.4 111.3 L250.8 112.0 L253.2 113.0 L255.6 114.2 L258.0 115.6 L260.4 117.4 L262.8 119.3 L265.2 121.6 L267.6 124.2 L270.0 127.0 L272.4 130.2 L274.8 133.7 L277.2 137.5 L279.6 141.6 L282.0 146.1 L284.4 151.0 L286.8 156.2 L289.2 161.8 L291.6 167.7 L294.0 174.1 L296.4 180.9 L298.8 188.1 L301.2 195.7 L303.6 203.7 L306.0 212.2" fill="none" stroke="var(--maths)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><g fill="var(--maths)"><circle cx="97.2" cy="110.4" r="3.6"/><circle cx="241.2" cy="110.4" r="3.6"/><circle cx="145.2" cy="161.8" r="3.6"/></g><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="75.2" y="125.4">&#8722;1</text><text x="238.2" y="102.4">2</text><text x="153.2" y="177.8">&#8722;4</text><text x="302" y="104.4" font-size="11" font-style="italic">x</text><text x="131.2" y="16" font-size="11" font-style="italic">y</text><text x="150.2" y="124.4" font-size="11">O</text></g></svg>',
+      figCap:'The curve only touches the x-axis at x = 2 &mdash; it does not cross there.',
+      options:['&minus;16','&minus;4','8','16'], answer:3,
+      sol:'<p>A cubic that <i>touches</i> the x-axis at 2 has 2 as a <b>repeated</b> zero, so (x &minus; 2)&sup2; is a factor. With the crossing at &minus;1: p(x) = k(x + 1)(x &minus; 2)&sup2;.</p><p>Use the y-intercept to find k: p(0) = k(1)(4) = 4k = &minus;4, so k = &minus;1 and p(x) = &minus;(x + 1)(x &minus; 2)&sup2;.</p><p>Then p(&minus;2) = &minus;(&minus;1)(&minus;4)&sup2; = &minus;(&minus;1)(16) = <b>16</b>. (Check against the picture: at x = &minus;2 the curve is high above the axis, so a positive answer is right.)</p><p><b>Where the other options come from.</b> (3) 8 &mdash; reading the touch point as an ordinary zero: p(x) = k(x + 1)(x &minus; 2) gives k = 2 and p(&minus;2) = 2(&minus;1)(&minus;4) = 8. (1) &minus;16 &mdash; taking k = +1, i.e. not using the y-intercept at all. (2) &minus;4 &mdash; reading p(0) off the graph instead of p(&minus;2).</p>' },
+
+    { n:9, section:'Mathematics', topic:'Polynomials', fmt:'diagram',
+      stem:'<p>The figure shows the graph of <b>y = ax&sup2; + bx + c</b>. Its vertex V lies to the right of the y-axis. Which of the following is correct?</p>',
+      fig:'<svg viewBox="0 0 300 220" width="300" height="220" role="img" aria-label="A downward-opening parabola whose vertex lies to the right of the y-axis and above the x-axis, cutting the y-axis above the origin"><g stroke="currentColor" stroke-width="1.4" opacity=".55"><line x1="24" y1="116.0" x2="296" y2="116.0"/><line x1="121.1" y1="6" x2="121.1" y2="212"/></g><path d="M291 112.0 L296 116.0 L291 120.0" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M117.1 11 L121.1 6 L125.1 11" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/><path d="M30.0 267.2 L32.9 257.0 L35.7 247.1 L38.6 237.4 L41.5 227.9 L44.3 218.7 L47.2 209.7 L50.1 200.9 L52.9 192.3 L55.8 184.0 L58.7 175.9 L61.5 168.0 L64.4 160.3 L67.3 152.9 L70.1 145.7 L73.0 138.8 L75.9 132.0 L78.7 125.5 L81.6 119.2 L84.5 113.2 L87.3 107.4 L90.2 101.8 L93.1 96.4 L95.9 91.3 L98.8 86.4 L101.7 81.7 L104.5 77.2 L107.4 73.0 L110.3 69.0 L113.1 65.2 L116.0 61.7 L118.9 58.4 L121.7 55.3 L124.6 52.4 L127.5 49.8 L130.3 47.4 L133.2 45.2 L136.1 43.3 L138.9 41.6 L141.8 40.1 L144.7 38.9 L147.5 37.8 L150.4 37.0 L153.3 36.5 L156.1 36.1 L159.0 36.0 L161.9 36.1 L164.7 36.5 L167.6 37.0 L170.5 37.8 L173.3 38.9 L176.2 40.1 L179.1 41.6 L181.9 43.3 L184.8 45.2 L187.7 47.4 L190.5 49.8 L193.4 52.4 L196.3 55.3 L199.1 58.4 L202.0 61.7 L204.9 65.2 L207.7 69.0 L210.6 73.0 L213.5 77.2 L216.3 81.7 L219.2 86.4 L222.1 91.3 L224.9 96.4 L227.8 101.8 L230.7 107.4 L233.5 113.2 L236.4 119.2 L239.3 125.5 L242.1 132.0 L245.0 138.8 L247.9 145.7 L250.7 152.9 L253.6 160.3 L256.5 168.0 L259.3 175.9 L262.2 184.0 L265.1 192.3 L267.9 200.9 L270.8 209.7 L273.7 218.7 L276.5 227.9 L279.4 237.4 L282.3 247.1 L285.1 257.0 L288.0 267.2" fill="none" stroke="var(--maths)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><line x1="159.0" y1="36.0" x2="159.0" y2="116.0" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3" opacity=".6"/><g fill="var(--maths)"><circle cx="159.0" cy="36.0" r="3.4"/><circle cx="121.1" cy="56.0" r="3.4"/></g><g fill="currentColor" font-family="Inter,sans-serif" font-size="12"><text x="165.0" y="32.0">V</text><text x="284" y="110.0" font-size="11" font-style="italic">x</text><text x="107.1" y="14" font-size="11" font-style="italic">y</text><text x="109.1" y="130.0" font-size="11">O</text></g></svg>',
+      figCap:'No scale is given &mdash; only the shape and position matter.',
+      options:['a &lt; 0, b &gt; 0, c &gt; 0','a &gt; 0, b &gt; 0, c &gt; 0','a &lt; 0, b &lt; 0, c &gt; 0','a &lt; 0, b &gt; 0, c &lt; 0'], answer:0,
+      sol:'<p>Three separate reads.</p><p><b>a:</b> the parabola opens <i>downward</i>, so <b>a &lt; 0</b>.</p><p><b>c:</b> c = p(0) is where the curve cuts the y-axis &mdash; above the origin, so <b>c &gt; 0</b>.</p><p><b>b:</b> the axis of symmetry is x = &minus;b/(2a). The vertex is to the <i>right</i> of the y-axis, so &minus;b/(2a) &gt; 0. With a &lt; 0 this forces <b>b &gt; 0</b> (a negative over a negative is positive).</p><p>So a &lt; 0, b &gt; 0, c &gt; 0 &mdash; option (1).</p><p><b>Where the other options come from.</b> (3) b &lt; 0 &mdash; the usual slip: "vertex on the right, so b is &hellip; negative", forgetting that a is negative too. (2) a &gt; 0 &mdash; mis-reading the opening direction. (4) c &lt; 0 &mdash; confusing the y-intercept with the (negative) x-intercept on the left.</p>' },
+
+    { n:10, section:'Mathematics', topic:'Polynomials', fmt:'plain',
+      stem:'<p>Both (x &minus; 2) and (x + 3) are factors of the polynomial <b>p(x) = x&sup3; + ax&sup2; + bx &minus; 6</b>. What is the value of <b>a &minus; b</b>?</p>',
+      options:['&minus;7','&minus;3','2','7'], answer:3,
+      sol:'<p>Two zeroes are known: 2 and &minus;3. For a cubic x&sup3; + ax&sup2; + bx + c, the product of the zeroes is &minus;c = &minus;(&minus;6) = 6. So the third zero &gamma; satisfies 2 &times; (&minus;3) &times; &gamma; = 6, giving <b>&gamma; = &minus;1</b>.</p><p>Now the other two relations: sum of zeroes = 2 + (&minus;3) + (&minus;1) = &minus;2 = &minus;a, so <b>a = 2</b>; sum of products in pairs = (2)(&minus;3) + (&minus;3)(&minus;1) + (&minus;1)(2) = &minus;6 + 3 &minus; 2 = &minus;5 = b, so <b>b = &minus;5</b>.</p><p>a &minus; b = 2 &minus; (&minus;5) = <b>7</b>.</p><p>Check: p(x) = x&sup3; + 2x&sup2; &minus; 5x &minus; 6; p(2) = 8 + 8 &minus; 10 &minus; 6 = 0 &#10003;, p(&minus;3) = &minus;27 + 18 + 15 &minus; 6 = 0 &#10003;.</p><p>(The other route, p(2) = 0 and p(&minus;3) = 0 as two equations, gives 2a + b = &minus;1 and 3a &minus; b = 11; adding them, 5a = 10, so a = 2 and b = &minus;5. Either way both factors are needed.)</p><p><b>Where the other options come from.</b> (2) &minus;3 &mdash; a + b. (1) &minus;7 &mdash; b &minus; a. (3) 2 &mdash; the value of a alone, stopping after the first unknown.</p>' },
+
+    { n:11, section:'Mathematics', topic:'Polynomials', fmt:'plain',
+      stem:'<p>If &alpha; and &beta; are the zeroes of <b>x&sup2; &minus; 3x + 1</b>, what is the value of <b>&alpha;&#8308; + &beta;&#8308;</b>?</p>',
+      options:['43','47','49','79'], answer:1,
+      sol:'<p>&alpha; + &beta; = 3 and &alpha;&beta; = 1.</p><p>Step 1: &alpha;&sup2; + &beta;&sup2; = (&alpha; + &beta;)&sup2; &minus; 2&alpha;&beta; = 9 &minus; 2 = 7.</p><p>Step 2: &alpha;&#8308; + &beta;&#8308; = (&alpha;&sup2; + &beta;&sup2;)&sup2; &minus; 2(&alpha;&beta;)&sup2; = 49 &minus; 2 = <b>47</b>.</p><p><b>Where the other options come from.</b> (3) 49 &mdash; stopping at (&alpha;&sup2; + &beta;&sup2;)&sup2; and forgetting the &minus;2(&alpha;&beta;)&sup2;. (4) 79 = 81 &minus; 2 &mdash; squaring (&alpha; + &beta;)&sup2; = 9 straight to 81, skipping step 1. (1) 43 = 49 &minus; 6 &mdash; subtracting 2(&alpha; + &beta;)(&alpha;&beta;) = 6 instead of 2(&alpha;&beta;)&sup2;, the cube-formula habit carried into a fourth power.</p>' },
+
+    { n:12, section:'Mathematics', topic:'Polynomials', fmt:'plain',
+      stem:'<p>If &alpha;, &beta;, &gamma; are the zeroes of <b>2x&sup3; &minus; x&sup2; &minus; 5x &minus; 2</b>, what is the value of <b>1/&alpha; + 1/&beta; + 1/&gamma;</b>?</p>',
+      options:['&minus;5','&minus;5/2','1/2','5/2'], answer:1,
+      sol:'<p>For ax&sup3; + bx&sup2; + cx + d: &alpha; + &beta; + &gamma; = &minus;b/a = 1/2, &alpha;&beta; + &beta;&gamma; + &gamma;&alpha; = c/a = &minus;5/2, &alpha;&beta;&gamma; = &minus;d/a = 2/2 = 1.</p><p>1/&alpha; + 1/&beta; + 1/&gamma; = (&beta;&gamma; + &gamma;&alpha; + &alpha;&beta;) / (&alpha;&beta;&gamma;) = (&minus;5/2) &divide; 1 = <b>&minus;5/2</b>.</p><p>Check: the polynomial is (x &minus; 2)(x + 1)(2x + 1), so the zeroes are 2, &minus;1 and &minus;1/2, and 1/2 &minus; 1 &minus; 2 = &minus;5/2. &#10003;</p><p><b>Where the other options come from.</b> (4) 5/2 &mdash; a sign slip on either relation: reading the pair-sum as &minus;c/a, or the product as +d/a = &minus;1. (3) 1/2 &mdash; the sum of the zeroes, answered instead of the sum of their reciprocals. (1) &minus;5 = (&minus;5/2) &divide; (1/2) &mdash; dividing by the <i>sum</i> of the zeroes instead of their product.</p>' },
+
+    { n:13, section:'Mathematics', topic:'Polynomials', fmt:'match',
+      stem:'<p>For each polynomial in Column I, &alpha; and &beta; are its zeroes. Match it with the value of <b>&alpha;&sup2; + &beta;&sup2;</b> in Column II.</p><table><tr><th>Column I</th><th>Column II</th></tr><tr><td>(P)&nbsp; x&sup2; &minus; 3x + 2</td><td>(i)&nbsp; 3</td></tr><tr><td>(Q)&nbsp; x&sup2; + x &minus; 6</td><td>(ii)&nbsp; 5</td></tr><tr><td>(R)&nbsp; 2x&sup2; &minus; 4x + 1</td><td>(iii)&nbsp; 8</td></tr><tr><td>(S)&nbsp; x&sup2; &minus; 4</td><td>(iv)&nbsp; 13</td></tr></table>',
+      options:['P&ndash;ii, Q&ndash;iv, R&ndash;iii, S&ndash;i','P&ndash;i, Q&ndash;iv, R&ndash;ii, S&ndash;iii','P&ndash;ii, Q&ndash;i, R&ndash;iv, S&ndash;iii','P&ndash;ii, Q&ndash;iv, R&ndash;i, S&ndash;iii'], answer:3,
+      sol:'<p>Use &alpha;&sup2; + &beta;&sup2; = (&alpha; + &beta;)&sup2; &minus; 2&alpha;&beta; four times, watching the signs.</p><p><b>P:</b> &alpha; + &beta; = 3, &alpha;&beta; = 2 &rarr; 9 &minus; 4 = <b>5</b> &rarr; (ii). (Or just: the zeroes are 1 and 2, and 1 + 4 = 5.)</p><p><b>Q:</b> &alpha; + &beta; = &minus;1, &alpha;&beta; = &minus;6 &rarr; 1 &minus; 2(&minus;6) = 1 + 12 = <b>13</b> &rarr; (iv). The negative product makes the second term <i>add</i>.</p><p><b>R:</b> &alpha; + &beta; = 4/2 = 2, &alpha;&beta; = 1/2 &rarr; 4 &minus; 1 = <b>3</b> &rarr; (i). Both relations must be divided by the leading 2.</p><p><b>S:</b> &alpha; + &beta; = 0, &alpha;&beta; = &minus;4 &rarr; 0 + 8 = <b>8</b> &rarr; (iii). (Or: the zeroes are &plusmn;2, and 4 + 4 = 8.)</p><p>So P&ndash;ii, Q&ndash;iv, R&ndash;i, S&ndash;iii &mdash; option (4).</p><p><b>About the other options.</b> Every value in Column II is different, so one wrong pairing forces a second: options (1), (2) and (3) are the correct answer with one pair swapped (R&harr;S, P&harr;R and Q&harr;R respectively). Notice that (1), (3) and (4) all agree on P, so computing P alone eliminates only option (2) &mdash; the item is really decided by Q, R and S, which carry the three sign-and-scale traps.</p>' }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b}. A mock also stores
+   its answers + flags so the frozen report can be replayed on any device;
+   the hub only ever reads m/mx. Written MERGE-ONLY. */
+function saveAttempt(sc, timeTaken){
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank };
+  if(IS_MOCK){ rec.a = answers.slice(); rec.f = flags.slice(); rec.md = mode; rec.tm = timeTaken; rec.v = 1; }
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function showFrozen(rec){
+  if(!rec || !IS_MOCK || submitted || !rec.a) return;
+  RESTORING = true;
+  answers = rec.a.slice();
+  flags   = (rec.f || new Array(NQ).fill(false)).slice();
+  mode    = rec.md || 'timed';
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
