@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Control &amp; Coordination</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2343d98c'>B</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--bio);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #14563c30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #2e246b30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--bio); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--bio); }
+  .toolbtn:focus-visible { outline:2px solid var(--bio); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--bio); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e3a2c,#241f4a); border:1px solid #2b5a4a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--bio); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--bio); background:color-mix(in srgb,var(--bio) 14%,transparent); border:1px solid color-mix(in srgb,var(--bio) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+  .x { color:var(--iq); font-weight:600; }  /* "Allen asks this, NCERT does not say it" marker */
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child, .box .tablewrap:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--bio); }
+  .box.extra { --accent:var(--iq); }
+
+  /* numbered sequence */
+  .seq { counter-reset:step; list-style:none; margin:14px 0 16px 0; }
+  .seq li { counter-increment:step; position:relative; padding-left:44px; margin-bottom:10px; }
+  .seq li::before { content:counter(step); position:absolute; left:0; top:1px; width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--bio); background:color-mix(in srgb,var(--bio) 13%,transparent); border:1px solid color-mix(in srgb,var(--bio) 34%,transparent); }
+
+  /* fact bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:13.5px; font-weight:600; color:var(--bio); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; font-family:'Inter',sans-serif; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; margin:12px 0; }
+  .tablewrap table { margin:0; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--bio); background:color-mix(in srgb,var(--bio) 13%,transparent); border:1px solid color-mix(in srgb,var(--bio) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; margin:11px 0; }
+  .we-opts.one { grid-template-columns:1fr; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--bio); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+  .stmts { margin:8px 0 8px 21px; }
+  .stmts li { margin-bottom:4px; }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* glossary */
+  .gloss { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:8px 14px; margin:14px 0; }
+  .gloss div { font-size:13.4px; padding:8px 11px; border-radius:9px; background:var(--surface); border:1px solid var(--border); }
+  .gloss b { color:var(--bright); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--bio); background:color-mix(in srgb,var(--bio) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--bio) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #107a5014 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5b40d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#e0f2e8,#e8f0fb); border-color:#bcdccb; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy, .gloss div { background:#fff; border-color:#bbb; }
+    .cy-fb { display:block !important; background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Biology · Self-study notes</div>
+    <h1>Control &amp; Coordination</h1>
+    <p class="sub">Official topic: <b>Control and Coordination</b> — NCERT Class 10 Science, Chapter 6.
+    You have never been taught biology, so this page assumes <b>nothing</b>: it starts from why a body
+    needs a control system at all, draws each part before naming it, and walks every process as a
+    numbered sequence. It is one chapter with three halves — <b>nerves</b> (fast, electrical),
+    <b>hormones</b> (slow, chemical) and <b>how plants manage with hormones alone</b>. Budget
+    <b>35–40 minutes</b> for the read, then the worked questions and the ten-question check.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Every Biology question (Q31–45) in all five cached papers — four real sittings and Allen's
+      official sample — was read page by page (the 2017 and 2018 booklets are image scans, so they were
+      rendered and read as pictures) and every item from this chapter was matched to Allen's own key
+      sheet. <b>Seven items in five papers</b>, two of them shared with the Excretion topic:</p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th>Paper</th><th>Q</th><th>What it gives you</th><th>What it wants</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td>2017 · E</td><td class="mono">31</td><td>A picture of two neurons end to end</td><td>Why the impulse crosses from A to B</td><td class="mono">(2) chemicals called neurotransmitters</td></tr>
+          <tr><td>2017 · E</td><td class="mono">35</td><td>An earthquake; a scared person runs down seven floors</td><td>Which hormone starts this</td><td class="mono">(2) adrenaline</td></tr>
+          <tr><td>2017 · E</td><td class="mono">38</td><td>ADH secretion increases</td><td>What happens to the volume of urine (shared with Excretion)</td><td class="mono">(2) it decreases</td></tr>
+          <tr><td>2018 · S</td><td class="mono">31</td><td>Four part → fact pairs (brain <em>and</em> spinal cord)</td><td>The <em>mismatched</em> one</td><td class="mono">(2) hypothalamus → “voluntary movements”</td></tr>
+          <tr><td>2018 · S</td><td class="mono">35</td><td>“The cerebrum wraps around the thalamus, which is…”</td><td>Its job</td><td class="mono">(3) coordinating centre for sensory <em>and</em> motor signals</td></tr>
+          <tr><td>2018 · S</td><td class="mono">43</td><td>Rennin / renin / ADH / aldosterone</td><td>Which is produced <em>in the kidneys</em> (shared with Excretion)</td><td class="mono">(2) renin</td></tr>
+          <tr><td>Sample</td><td class="mono">45</td><td>“Structural and functional unit of the nervous system”</td><td>Its name</td><td class="mono">(2) neuron</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>What that tells you:</p>
+      <ol>
+        <li><b>Zero to three questions a sitting, and the two 2024 papers had none at all</b> — yet the
+        topic is on the 2027 list, so it can return. Treat it as 4–8 marks that cost one evening.</li>
+        <li><b>Every item so far is single-fact recall, and most are vocabulary tests</b>: the name of
+        the gap-crossing chemical, the name of the fear hormone, which brain part does which job. (The two
+        that are not: 2017-E Q38 is cause-and-effect — more ADH, then what? — and 2018-S Q31 is a
+        match-the-pairs.) There
+        is no calculation anywhere in this chapter. <b>Learn the words exactly</b> — “neurotransmitter”,
+        “medulla”, “cerebellum”, “hypothalamus” — because the distractors are always the neighbouring
+        word.</li>
+        <li><b>Allen reaches past the NCERT chapter.</b> NCERT never names the <em>thalamus</em>, gives the
+        hypothalamus no job beyond controlling the pituitary, and never mentions ADH, renin or aldosterone
+        — but 2018-S asked all four. Everything marked <span class="x">◆ beyond NCERT</span> on this page is
+        either something a cached paper actually asked or a standard coaching extra. Learn those rows too;
+        they are cheap. <b>Careful the other way too:</b> several things that <em>look</em> like coaching extras are
+        printed on NCERT’s own diagrams — the <b>hypothalamus</b> and the <b>pons</b> are labelled on Figure 6.3,
+        and <b>sensory</b>, <b>relay</b> and <b>motor neuron</b> are all labelled on the reflex-arc Figure 6.2 — so they are
+        fair game in the exam.</li>
+        <li><b>The “mismatched pair” and “which is NOT” formats are the traps</b> (2018-S Q31): three
+        true pairs and one that swaps two neighbours. Read every pair; the wrong word is usually one
+        the chapter attaches to a <em>different</em> part.</li>
+        <li><b>Plants have not been asked yet</b> in any cached paper — but tropisms and plant hormones are
+        the easiest part of the chapter to set a statement-type or match-the-following question on, and
+        they are squarely in scope. Sections 7–8 carry them at NCERT depth plus the standard coaching
+        extras.</li>
+      </ol>
+      <p><b>Attempt order on the day:</b> Biology is the section you bank first (strategy rule 2). Every
+      question from this chapter should take under 45 seconds — know it or eliminate to two and move on.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">1</span>Why a body needs a control system — and the two it uses</h2>
+    <p class="lede">Before any names: what problem is this chapter solving?</p>
+    <p>You touch a hot pan. Your hand is off it before you have <em>decided</em> anything. You see a
+    stray dog running at you and your heart is pounding before you have taken a step. A plant on a
+    windowsill slowly leans towards the glass. In each case, one part of a living thing has <b>detected
+    a change</b> (heat, a threat, light) and a <em>different</em> part has <b>responded</b> (a muscle,
+    the heart, a growing stem). Something had to carry the message from the detector to the responder,
+    and something had to decide how big the response should be. That carrying-and-deciding is
+    <b>control and coordination</b>.</p>
+    <div class="box def">
+      <h4>Three words you will use on every page</h4>
+      <p><b>Stimulus</b> — any change in the surroundings (or inside the body) that an organism can
+      detect: heat, light, touch, a chemical, gravity, a drop in blood sugar.<br>
+      <b>Receptor</b> — the part that <em>detects</em> the stimulus. In animals these are cells in the
+      sense organs: <b>gustatory receptors</b> in the tongue detect taste; <b>olfactory receptors</b> in
+      the nose detect smell; the skin has receptors for heat, pressure and pain; the eye for light.<br>
+      <b>Effector</b> — the part that <em>responds</em>. In animals, a <b>muscle</b> (it contracts) or a
+      <b>gland</b> (it secretes).</p>
+    </div>
+    <p>Animals have <b>two</b> systems doing this job, and the whole chapter is really a comparison of them:</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>Nervous system</th><th>Hormonal (endocrine) system</th></tr></thead>
+      <tbody>
+        <tr><td><b>Message is</b></td><td>an <b>electrical impulse</b> along a nerve cell, with a chemical hand-over at each junction</td><td>a <b>chemical</b> (a hormone) poured into the blood</td></tr>
+        <tr><td><b>Travels by</b></td><td>a fixed wire — the nerve fibre — to one exact place</td><td>the bloodstream, so it reaches <em>everywhere</em>; only the target organs respond</td></tr>
+        <tr><td><b>Speed</b></td><td>very fast — a fraction of a second</td><td>slow — seconds to minutes to reach, and effects last long</td></tr>
+        <tr><td><b>Effect lasts</b></td><td>briefly; stops when the impulse stops</td><td>a long time — growth, puberty, blood-sugar control</td></tr>
+        <tr><td><b>Good for</b></td><td>quick, precise actions: pulling a hand back, blinking, walking</td><td>slow, whole-body changes: growth, metabolism, the fear response, sugar balance</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p><b>Plants have no nerves at all.</b> They coordinate entirely with chemicals (plant hormones) and
+    with growth — which is why a plant can bend towards light but cannot pull a leaf away from a
+    flame. That is the third part of the chapter (sections 7–8).</p>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>The neuron — the wire, drawn first</h2>
+    <p class="lede">The nervous system is built from one kind of cell. The sample paper's Q45 asked
+    only its name; the real papers ask what its parts do.</p>
+    <figure>
+      <svg viewBox="0 0 700 250" width="700" height="250" role="img" aria-label="A neuron: dendrites at the left, cell body with its nucleus, a long axon wrapped in segments of myelin sheath with nodes of Ranvier between them, and nerve endings at the right; an arrow above shows the impulse travelling left to right">
+        <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--iq)"/></marker><marker id="arrm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker><marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--physics)"/></marker><marker id="arrr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--rose)"/></marker></defs>
+        <line x1="210" y1="34" x2="540" y2="34" stroke="var(--iq)" stroke-width="2" marker-end="url(#arr)"/>
+        <text x="375" y="24" text-anchor="middle" font-size="12" fill="var(--iq)" font-weight="600">direction of the impulse</text>
+        <g stroke="var(--bio)" stroke-width="3" fill="none" stroke-linecap="round">
+          <path d="M112,120 L66,86 M66,86 L40,72 M66,86 L50,102"/>
+          <path d="M108,140 L58,136 M58,136 L34,122 M58,136 L36,152"/>
+          <path d="M112,162 L68,192 M68,192 L44,204 M68,192 L62,216"/>
+        </g>
+        <circle cx="140" cy="140" r="32" fill="color-mix(in srgb,var(--bio) 18%,var(--surface))" stroke="var(--bio)" stroke-width="3"/>
+        <circle cx="140" cy="140" r="10" fill="var(--bio)"/>
+        <line x1="172" y1="140" x2="540" y2="140" stroke="var(--bio)" stroke-width="6" stroke-linecap="round"/>
+        <g fill="color-mix(in srgb,var(--iq) 30%,var(--surface))" stroke="var(--iq)" stroke-width="2">
+          <rect x="236" y="128" width="60" height="24" rx="12"/>
+          <rect x="308" y="128" width="60" height="24" rx="12"/>
+          <rect x="380" y="128" width="60" height="24" rx="12"/>
+          <rect x="452" y="128" width="60" height="24" rx="12"/>
+        </g>
+        <g stroke="var(--bio)" stroke-width="3" fill="none" stroke-linecap="round">
+          <path d="M540,140 L596,100 M540,140 L614,132 M540,140 L606,170 M540,140 L582,198"/>
+        </g>
+        <g fill="var(--bio)"><circle cx="596" cy="100" r="5"/><circle cx="614" cy="132" r="5"/><circle cx="606" cy="170" r="5"/><circle cx="582" cy="198" r="5"/></g>
+        <g stroke="var(--muted)" stroke-width="1.2" fill="none">
+          <line x1="44" y1="52" x2="54" y2="68"/>
+          <line x1="140" y1="214" x2="140" y2="176"/>
+          <line x1="188" y1="112" x2="188" y2="132"/>
+          <line x1="280" y1="112" x2="280" y2="130"/>
+          <line x1="398" y1="188" x2="374" y2="154"/>
+          <line x1="640" y1="212" x2="608" y2="180"/>
+        </g>
+        <g font-size="12.5" fill="var(--text)">
+          <text x="44" y="46" text-anchor="middle">Dendrites</text>
+          <text x="140" y="228" text-anchor="middle">Cell body</text>
+          <text x="188" y="106" text-anchor="middle">Axon</text>
+          <text x="280" y="106" text-anchor="middle">Myelin sheath</text>
+          <text x="404" y="200" text-anchor="middle">Node of Ranvier</text>
+          <text x="690" y="224" text-anchor="end">Nerve endings</text>
+        </g>
+      </svg>
+      <figcaption><b>Figure 1 — a neuron.</b> One cell, drawn as the message sees it: in at the dendrites, through the cell body, along the axon, out at the nerve endings. The myelin sheath and its gaps (nodes of Ranvier) are not in NCERT but are standard in coaching modules.</figcaption>
+    </figure>
+    <p>A <b>neuron</b> (nerve cell) is the <b>structural and functional unit of the nervous system</b> —
+    the phrase Allen's sample used. It is the longest cell in the body: a motor neuron running from your
+    spinal cord to your toe is about a metre long. It has three parts you must be able to name on a
+    labelled figure:</p>
+    <ul>
+      <li><b>Dendrites</b> — short, branched fibres that <em>receive</em> the message. (Greek <em>dendron</em> = tree.)</li>
+      <li><b>Cell body</b> (cyton) — holds the nucleus and most of the cytoplasm.</li>
+      <li><b>Axon</b> — one long fibre that carries the message <em>away</em> from the cell body to the
+      <b>nerve endings</b> (axon terminals). Many axons are wrapped in a fatty <b>myelin sheath</b> that
+      insulates them and speeds the impulse; the gaps in the sheath are <b>nodes of Ranvier</b>. <span class="x">◆ beyond NCERT</span></li>
+    </ul>
+    <h3>How a message travels along one neuron — the sequence</h3>
+    <ol class="seq">
+      <li>The stimulus is picked up at the <b>tip of a dendrite</b> (in a receptor, or from the previous neuron).</li>
+      <li>It sets off a <b>chemical reaction</b> there that creates an <b>electrical impulse</b>.</li>
+      <li>The impulse travels dendrite → <b>cell body</b> → along the <b>axon</b> to its end.</li>
+      <li>At the <b>nerve ending</b>, the electrical impulse triggers the release of <b>chemicals</b> — and that is where the next section starts.</li>
+    </ol>
+    <div class="box extra">
+      <h4>Three kinds of neuron — all three are labelled on NCERT’s reflex-arc figure</h4>
+      <p><b>Sensory neuron</b> — carries the impulse <em>from a receptor</em> (skin, eye, tongue) <em>to</em> the brain or spinal cord.<br>
+      <b>Relay neuron</b> (interneuron) — lies <em>inside</em> the brain or spinal cord and connects a sensory neuron to a motor neuron.<br>
+      <b>Motor neuron</b> — carries the impulse <em>from</em> the brain or spinal cord <em>to an effector</em> (a muscle or gland).<br>
+      A <b>nerve</b> is a bundle of many axons wrapped together, like a cable of wires. <span class="x">◆</span>
+      Only the word <em>interneuron</em> and the definition of a nerve are extras — NCERT’s Figure 6.2 prints
+      “Sensory neuron”, “Relay neuron” and “Motor neuron” on the diagram itself, so you can be asked them.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>The synapse — where two neurons meet without touching</h2>
+    <p class="lede">2017-E Q31 drew two neurons end to end and asked why the impulse crosses. This
+    is the single most-asked idea in the chapter.</p>
+    <figure>
+      <svg viewBox="0 0 620 220" width="620" height="220" role="img" aria-label="A synapse: the nerve ending of neuron A on the left holds vesicles of chemicals, a gap separates it from the dendrite of neuron B on the right, and chemical dots cross the gap from left to right">
+        <line x1="20" y1="112" x2="150" y2="112" stroke="var(--bio)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M150,84 Q240,62 240,112 Q240,162 150,140 Z" fill="color-mix(in srgb,var(--bio) 18%,var(--surface))" stroke="var(--bio)" stroke-width="3"/>
+        <g fill="none" stroke="var(--iq)" stroke-width="1.6">
+          <circle cx="190" cy="98" r="8"/><circle cx="208" cy="118" r="8"/><circle cx="188" cy="128" r="8"/><circle cx="214" cy="100" r="7"/>
+        </g>
+        <g fill="var(--iq)"><circle cx="190" cy="98" r="2"/><circle cx="208" cy="118" r="2"/><circle cx="188" cy="128" r="2"/><circle cx="214" cy="100" r="2"/></g>
+        <g fill="var(--iq)">
+          <circle cx="252" cy="100" r="2.6"/><circle cx="260" cy="114" r="2.6"/><circle cx="251" cy="126" r="2.6"/>
+          <circle cx="266" cy="104" r="2.6"/><circle cx="268" cy="122" r="2.6"/><circle cx="257" cy="136" r="2.6"/>
+        </g>
+        <path d="M284,80 Q266,112 284,144 L336,144 L336,80 Z" fill="color-mix(in srgb,var(--physics) 16%,var(--surface))" stroke="var(--physics)" stroke-width="3"/>
+        <line x1="336" y1="112" x2="470" y2="112" stroke="var(--physics)" stroke-width="6" stroke-linecap="round"/>
+        <line x1="40" y1="72" x2="126" y2="72" stroke="var(--iq)" stroke-width="2" marker-end="url(#arr)"/>
+        <line x1="360" y1="72" x2="452" y2="72" stroke="var(--iq)" stroke-width="2" marker-end="url(#arr)"/>
+        <g stroke="var(--muted)" stroke-width="1.2" fill="none">
+          <line x1="262" y1="58" x2="262" y2="88"/>
+          <line x1="190" y1="176" x2="196" y2="152"/>
+          <line x1="400" y1="176" x2="322" y2="152"/>
+        </g>
+        <g font-size="12.5" fill="var(--text)">
+          <text x="83" y="62" text-anchor="middle" fill="var(--iq)" font-weight="600">electrical</text>
+          <text x="406" y="62" text-anchor="middle" fill="var(--iq)" font-weight="600">electrical again</text>
+          <text x="262" y="50" text-anchor="middle">Synapse — the gap</text>
+          <text x="190" y="192" text-anchor="middle">Nerve ending, neuron A</text>
+          <text x="410" y="192" text-anchor="middle">Dendrite, neuron B</text>
+        </g>
+      </svg>
+      <figcaption><b>Figure 2 — a synapse.</b> Electrical along the fibre, chemical across the gap, electrical again. The chemicals (neurotransmitters) are made only at the nerve-ending side, which is why the message can cross in one direction only.</figcaption>
+    </figure>
+    <p>Two neurons do <b>not</b> touch. Between the nerve ending of one and the dendrite of the next there
+    is a tiny gap called a <b>synapse</b>. An electrical impulse cannot jump a gap — so the body converts it:</p>
+    <ol class="seq">
+      <li>The impulse arrives at the <b>nerve ending</b> of neuron A.</li>
+      <li>It makes the ending release <b>chemicals</b> — called <b>neurotransmitters</b> <span class="x">◆ the name Allen used; NCERT just says “chemicals”</span> — into the gap.</li>
+      <li>The chemicals <b>diffuse across</b> the gap and land on the <b>dendrite</b> of neuron B.</li>
+      <li>There they start a <b>fresh electrical impulse</b>, which now travels along neuron B.</li>
+    </ol>
+    <p>The same kind of junction delivers the message from the last neuron to the <b>effector</b> — a muscle
+    cell or a gland cell — which is how “decide to move” becomes “muscle contracts”.</p>
+    <div class="box trap">
+      <h4>The two things the distractors say</h4>
+      <p><b>“The dendrites are connected”</b> / <b>“Neuron A hits neuron B”</b> — no: there is a gap and no
+      contact; that is the whole point of the word <em>synapse</em>. <b>“Carbohydrates are released”</b> —
+      no: the chemicals are neurotransmitters, not food. And one more: the impulse crosses a synapse in
+      <b>one direction only</b> (nerve ending → dendrite), because only the nerve-ending side can release
+      the chemicals. <span class="x">◆ beyond NCERT</span></p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>Reflex action — the shortcut that skips the brain</h2>
+    <p class="lede">Why is your hand off the hot pan before you have thought about it? Because the
+    response did not <em>wait</em> for the thinking part of the brain — the message does reach it, at the same
+    time — but you become <em>aware</em> of the burn only after the hand has moved.</p>
+    <figure>
+      <svg viewBox="0 0 720 300" width="720" height="300" role="img" aria-label="A reflex arc drawn without crossings: a hot pan and a receptor at the top left, a sensory neuron running right into the spinal cord, a relay neuron inside the grey matter, a motor neuron running back left and down to the arm muscle, and a dashed arrow going up from the cord to the brain">
+        <ellipse cx="560" cy="150" rx="92" ry="74" fill="color-mix(in srgb,var(--muted) 12%,var(--surface))" stroke="var(--muted)" stroke-width="2"/>
+        <path d="M528,104 Q540,124 530,144 Q524,154 530,164 Q540,184 528,204 L548,198 Q560,182 572,198 L592,204 Q580,184 590,164 Q596,154 590,144 Q580,124 592,104 L572,110 Q560,126 548,110 Z" fill="color-mix(in srgb,var(--bio) 26%,var(--surface))" stroke="var(--bio)" stroke-width="1.6"/>
+        <path d="M58,102 Q44,80 62,58 Q64,76 74,72 Q72,60 82,48 Q92,70 84,88 Q82,104 58,102 Z" fill="var(--force)"/>
+        <rect x="46" y="104" width="50" height="8" rx="3" fill="var(--muted)"/>
+        <circle cx="150" cy="90" r="9" fill="var(--iq)" stroke="var(--bright)" stroke-width="1.5"/>
+        <path d="M159,94 C 260,100 360,104 462,112" fill="none" stroke="var(--iq)" stroke-width="3.5" marker-end="url(#arr)"/>
+        <path d="M528,118 C 540,136 540,160 530,180" fill="none" stroke="var(--rose)" stroke-width="3" marker-end="url(#arrr)"/>
+        <path d="M474,190 C 380,236 300,248 206,240" fill="none" stroke="var(--physics)" stroke-width="3.5" marker-end="url(#arrb)"/>
+        <ellipse cx="150" cy="240" rx="46" ry="18" fill="color-mix(in srgb,var(--physics) 22%,var(--surface))" stroke="var(--physics)" stroke-width="2.5"/>
+        <line x1="560" y1="76" x2="560" y2="36" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrm)"/>
+        <g font-size="12.5" fill="var(--text)">
+          <text x="70" y="132" text-anchor="middle">Hot pan</text>
+          <text x="186" y="64" text-anchor="start">Receptor in the skin</text>
+          <text x="300" y="86" text-anchor="middle" fill="var(--iq)" font-weight="600">Sensory neuron</text>
+          <text x="600" y="146" text-anchor="start" fill="var(--rose)" font-weight="600">relay</text>
+          <text x="600" y="162" text-anchor="start" fill="var(--rose)" font-weight="600">neuron</text>
+          <text x="330" y="276" text-anchor="middle" fill="var(--physics)" font-weight="600">Motor neuron</text>
+          <text x="150" y="206" text-anchor="middle">Effector</text>
+          <text x="560" y="26" text-anchor="middle" fill="var(--muted)">a copy also goes up to the brain</text>
+          <text x="560" y="254" text-anchor="middle">Spinal cord</text>
+        </g>
+        <text x="150" y="245" text-anchor="middle" font-size="11.5" fill="var(--text)">arm muscle</text>
+        <text x="560" y="270" text-anchor="middle" font-size="11" fill="var(--muted)">grey matter inside, butterfly-shaped</text>
+        <line x1="182" y1="68" x2="160" y2="82" stroke="var(--muted)" stroke-width="1.2"/>
+        <g font-size="11" font-weight="700" fill="var(--bright)">
+          <circle cx="112" cy="92" r="9" fill="var(--force)"/><text x="112" y="96" text-anchor="middle">1</text>
+          <circle cx="300" cy="100" r="9" fill="var(--iq)"/><text x="300" y="104" text-anchor="middle">2</text>
+          <circle cx="508" cy="150" r="9" fill="var(--rose)"/><text x="508" y="154" text-anchor="middle">3</text>
+          <circle cx="330" cy="242" r="9" fill="var(--physics)"/><text x="330" y="246" text-anchor="middle">4</text>
+          <circle cx="200" cy="216" r="9" fill="var(--physics)"/><text x="200" y="220" text-anchor="middle">5</text>
+        </g>
+      </svg>
+      <figcaption><b>Figure 3 — the reflex arc.</b> Receptor → sensory neuron → spinal cord (relay neuron, in the grey matter) → motor neuron → effector. The numbers are the five steps below. The brain is told, but only in parallel — it is not in the loop.</figcaption>
+    </figure>
+    <div class="box def">
+      <h4>Definitions</h4>
+      <p>A <b>reflex action</b> is a sudden, <b>involuntary</b> (not under your will), rapid response to a
+      stimulus, without the thinking part of the brain taking part.<br>
+      A <b>reflex arc</b> is the path the impulse takes in a reflex: <b>receptor → sensory neuron →
+      spinal cord → motor neuron → effector</b>.</p>
+    </div>
+    <ol class="seq">
+      <li><b>Stimulus and receptor.</b> Heat from the flame is detected by receptors in the skin of the finger.</li>
+      <li><b>Sensory neuron.</b> Carries the impulse from the receptor into the <b>spinal cord</b>.</li>
+      <li><b>Spinal cord.</b> Inside its grey matter a <b>relay neuron</b> passes the impulse straight across to a motor neuron — one synapse, no thinking.</li>
+      <li><b>Motor neuron.</b> Carries the impulse out to the muscles of the arm.</li>
+      <li><b>Effector.</b> The muscle contracts and the hand is pulled away. Meanwhile a copy of the message has travelled up the spinal cord to the brain — which is why you feel the pain and say “ouch” <em>after</em> the hand has already moved.</li>
+    </ol>
+    <p><b>Why bother with a shortcut?</b> Thinking is a complex job done by the fore-brain, and it takes time.
+    For a hot pan, time is damage. So the nerves that carry input from all over the body meet in a bundle
+    in the spinal cord on their way to the brain, and <b>reflex arcs are formed in the spinal cord</b> —
+    the response is sent back out before the information has even reached the brain. NCERT's phrase:
+    reflex arcs “have evolved in animals because the thinking process of the brain is not fast enough”.</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Kind of action</th><th>Controlled by</th><th>Under your will?</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td><b>Reflex</b></td><td>spinal cord (mostly); some by the <b>brain stem</b> — the mid-brain, pons and medulla together</td><td>No — and fast</td><td>hand off a hot object, knee jerk, blinking when something flies at the eye, sneezing, coughing, mouth watering at the smell of food</td></tr>
+        <tr><td><b>Voluntary</b></td><td>fore-brain (cerebrum)</td><td>Yes</td><td>writing, walking, talking, picking up a pencil</td></tr>
+        <tr><td><b>Involuntary</b></td><td>mid-brain and hind-brain (medulla)</td><td>No — and continuous</td><td>heartbeat, breathing, blood pressure, salivation, vomiting, movements of the gut. <em>Salivation is in
+        both rows on purpose: watering at the smell of food is a reflex, and salivation is also one of the
+        involuntary actions the medulla runs.</em></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="box extra">
+      <h4>◆ Conditioned reflexes — a coaching favourite</h4>
+      <p>Your mouth watering at the <em>sight</em> of a golgappa stall is a reflex you <em>learned</em> — a
+      <b>conditioned reflex</b>. The Russian scientist <b>Pavlov</b> rang a bell whenever he fed his dogs;
+      soon the bell alone made them salivate. Pulling your hand from a flame is an <b>unconditioned</b>
+      (inborn) reflex. Both are involuntary; only one needed practice.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>The brain — what each part does (the part Allen actually tests)</h2>
+    <p class="lede">2018-S asked two brain questions in one paper: a mismatched pair, and what the
+    thalamus does. Learn the table below like a phone number.</p>
+    <figure>
+      <svg viewBox="0 0 840 430" width="840" height="430" role="img" aria-label="The human brain from the side. The large folded cerebrum fills the top; the thalamus, hypothalamus and pituitary are marked deep inside it; the cerebellum sits at the lower back; the mid-brain, pons and medulla form the stem going down into the spinal cord. Labels run down the left and right margins">
+        <path d="M296,196 C 266,156 268,96 326,66 C 376,40 470,36 528,60 C 576,80 588,126 568,166 C 558,184 540,192 520,198 C 470,216 386,220 336,212 C 312,208 304,204 296,196 Z" fill="color-mix(in srgb,var(--bio) 22%,var(--surface))" stroke="var(--bio)" stroke-width="3"/>
+        <g fill="none" stroke="var(--bio)" stroke-width="1.4" opacity=".7">
+          <path d="M332,98 q20,-10 36,6 t36,-2 t34,8"/>
+          <path d="M320,140 q24,-12 44,2 t40,-4 t42,10"/>
+          <path d="M352,178 q22,-10 40,2 t42,-4 t48,6"/>
+          <path d="M456,74 q18,-8 34,4 t28,6"/>
+        </g>
+        <ellipse cx="542" cy="272" rx="52" ry="34" fill="color-mix(in srgb,var(--physics) 22%,var(--surface))" stroke="var(--physics)" stroke-width="3"/>
+        <g fill="none" stroke="var(--physics)" stroke-width="1.3" opacity=".8">
+          <path d="M498,272 q22,-12 44,0 t44,0"/><path d="M504,286 q19,-10 38,0 t38,0"/><path d="M506,258 q18,-9 36,0 t36,0"/>
+        </g>
+        <path d="M428,192 L468,192 L464,220 L424,220 Z" fill="color-mix(in srgb,var(--iq) 30%,var(--surface))" stroke="var(--iq)" stroke-width="2"/>
+        <path d="M420,220 L466,220 L464,252 L422,252 Z" fill="color-mix(in srgb,var(--iq) 18%,var(--surface))" stroke="var(--iq)" stroke-width="2"/>
+        <path d="M424,252 L462,252 L456,296 L430,296 Z" fill="color-mix(in srgb,var(--force) 26%,var(--surface))" stroke="var(--force)" stroke-width="2"/>
+        <path d="M432,296 L454,296 L452,364 L434,364 Z" fill="color-mix(in srgb,var(--muted) 20%,var(--surface))" stroke="var(--muted)" stroke-width="2"/>
+        <ellipse cx="404" cy="150" rx="24" ry="14" fill="var(--rose)" opacity=".85"/>
+        <ellipse cx="396" cy="176" rx="16" ry="8" fill="var(--rose)" opacity=".6"/>
+        <line x1="394" y1="184" x2="382" y2="204" stroke="var(--rose)" stroke-width="2"/>
+        <circle cx="380" cy="210" r="7" fill="var(--rose)"/>
+        <g stroke="var(--muted)" stroke-width="1" opacity=".85" fill="none">
+          <line x1="236" y1="74" x2="330" y2="90"/>
+          <line x1="236" y1="146" x2="380" y2="150"/>
+          <line x1="236" y1="196" x2="380" y2="178"/>
+          <line x1="236" y1="252" x2="372" y2="212"/>
+          <line x1="612" y1="196" x2="470" y2="200"/>
+          <line x1="612" y1="258" x2="596" y2="268"/>
+          <line x1="612" y1="316" x2="468" y2="236"/>
+          <line x1="612" y1="346" x2="460" y2="272"/>
+          <line x1="612" y1="392" x2="456" y2="340"/>
+        </g>
+        <g font-size="12.5" fill="var(--text)">
+          <text x="20" y="58" font-weight="700" fill="var(--bio)">FORE-BRAIN</text>
+          <text x="20" y="76">Cerebrum — thinking,</text>
+          <text x="20" y="90">memory, senses,</text>
+          <text x="20" y="104">voluntary movements</text>
+          <text x="20" y="144" font-weight="600" fill="var(--rose)">Thalamus ◆</text>
+          <text x="20" y="158" font-size="11" fill="var(--muted)">relay: sensory and motor</text>
+          <text x="20" y="194" font-weight="600" fill="var(--rose)">Hypothalamus</text>
+          <text x="20" y="208" font-size="11" fill="var(--muted)">◆ hunger, thirst, temperature,</text>
+          <text x="20" y="221" font-size="11" fill="var(--muted)">water; runs the pituitary</text>
+          <text x="20" y="250" font-weight="600" fill="var(--rose)">Pituitary gland</text>
+          <text x="20" y="264" font-size="11" fill="var(--muted)">hangs below — section 9</text>
+          <text x="620" y="190" font-weight="700" fill="var(--iq)">MID-BRAIN</text>
+          <text x="620" y="204" font-size="11" fill="var(--muted)">involuntary; eye and ear reflexes ◆</text>
+          <text x="620" y="252" font-weight="700" fill="var(--physics)">HIND-BRAIN</text>
+          <text x="620" y="266">Cerebellum — posture,</text>
+          <text x="620" y="280">balance, precision</text>
+          <text x="620" y="320" fill="var(--iq)">Pons — breathing ◆</text>
+          <text x="620" y="350" fill="var(--force)">Medulla — heartbeat,</text>
+          <text x="620" y="364" font-size="11" fill="var(--muted)">blood pressure, salivation,</text>
+          <text x="620" y="377" font-size="11" fill="var(--muted)">vomiting</text>
+          <text x="620" y="396" fill="var(--muted)">Spinal cord</text>
+        </g>
+      </svg>
+      <figcaption><b>Figure 4 — the brain from the side, with the three regions.</b> Green = fore-brain (cerebrum, and deep inside it the thalamus and hypothalamus); amber = mid-brain and pons; red = medulla; blue = cerebellum. ◆ marks what NCERT does not <em>explain</em>: it never names the thalamus at all, while it labels the hypothalamus and the pons on its own Figure 6.3 without saying what they do.</figcaption>
+    </figure>
+    <p>The brain and the spinal cord together are the <b>central nervous system (CNS)</b>. The nerves that
+    run out of them to the rest of the body — <b>cranial nerves</b> from the brain and <b>spinal nerves</b>
+    from the spinal cord — are the <b>peripheral nervous system (PNS)</b>. <span class="x">◆ 12 pairs of cranial
+    nerves, 31 pairs of spinal nerves.</span></p>
+    <p>The brain has <b>three regions</b>. NCERT names the fore-, mid- and hind-brain and gives jobs to the
+    cerebrum, cerebellum and medulla; the coaching modules (and 2018-S) add the thalamus, and the <em>jobs</em> of the
+    hypothalamus and the pons — both of which NCERT labels on its Figure 6.3 without explaining. All in one table:</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Region</th><th>Part</th><th>Job — the words to remember</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="3"><b>Fore-brain</b></td><td><b>Cerebrum</b> (largest part)</td><td>The <b>main thinking part</b>. Has separate <b>sensory areas</b> that receive impulses from the receptors (hearing, smell, sight…), <b>association areas</b> that interpret them alongside stored memory, and <b>motor areas</b> that control <b>voluntary</b> muscles. Intelligence, memory, thinking, speech.</td></tr>
+        <tr><td><b>Thalamus</b> <span class="x">◆</span></td><td>Deep inside; the cerebrum wraps around it. A <b>relay and coordinating centre for sensory <em>and</em> motor signals</b> on their way to and from the cerebrum. (2018-S Q35: “sensory <em>only</em>” and “motor only” were the traps.)</td></tr>
+        <tr><td><b>Hypothalamus</b></td><td>Below the thalamus. It makes the <b>releasing factors</b> that tell the pituitary when to release <em>its</em> hormones — the one job NCERT gives it, in a “Do you know?” box. <span class="x">◆</span> Beyond the chapter it also carries the centres for <b>hunger and satiety (fullness)</b>, <b>thirst</b>, <b>body temperature</b> and <b>water balance (osmoregulation)</b> — though NCERT does place the hunger centre “in a separate part of the fore-brain”, which is this. It does <b>not</b> control voluntary movements (the 2018-S mismatch).</td></tr>
+        <tr><td><b>Mid-brain</b></td><td>Mid-brain</td><td>Connects fore- and hind-brain. Controls some <b>involuntary</b> actions — <span class="x">◆ the reflex change in pupil size, and turning the head towards a sound.</span></td></tr>
+        <tr><td rowspan="3"><b>Hind-brain</b></td><td><b>Cerebellum</b></td><td><b>Precision of voluntary actions</b> and <b>maintaining posture and balance</b>: walking in a straight line, riding a bicycle, picking up a pencil. (You <em>decide</em> to walk with the cerebrum; the cerebellum makes it smooth.)</td></tr>
+        <tr><td><b>Pons</b></td><td>A “bridge” of fibres between the cerebellum and the rest of the brain. Labelled on NCERT’s Figure 6.3, inside the hind-brain brace with the medulla and cerebellum — but the chapter never says what it does. <span class="x">◆ It helps regulate <b>breathing</b>.</span></td></tr>
+        <tr><td><b>Medulla</b> (medulla oblongata)</td><td>Controls the <b>involuntary</b> actions that keep you alive: <b>blood pressure, heartbeat, breathing, salivation, vomiting</b>, swallowing. The lowest part of the brain; continues down as the spinal cord.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="box trap">
+      <h4>The swap the paper plays</h4>
+      <p>Cerebrum ↔ cerebellum ↔ medulla are the three that get swapped. Fix them with what they
+      <em>sound</em> like: <b>cere<u>brum</u></b> is the <em>big</em> thinking one; <b>cere<u>bellum</u></b> is
+      the small one at the back that keeps you <em>balanced</em> (“bell” — it hangs behind); <b>medulla</b>
+      sits on the spinal cord and does the <em>maintenance</em> jobs you never think about. And
+      <b>hypothalamus ≠ voluntary movements</b> — voluntary is always cerebrum.</p>
+    </div>
+    <h3>How the CNS is protected</h3>
+    <ul>
+      <li>The brain sits inside a <b>bony box, the skull</b> (cranium); the spinal cord runs inside the <b>vertebral column</b> (backbone).</li>
+      <li>Inside the skull the brain floats in fluid — the <b>cerebrospinal fluid (CSF)</b> — held in what NCERT calls a <b>fluid-filled balloon</b>, which absorbs shocks. <span class="x">◆ The “balloon” is a sac of three membranes called the <b>meninges</b>; the CSF is the fluid inside it.</span></li>
+    </ul>
+    <div class="box extra">
+      <h4>◆ Grey matter and white matter — the “butterfly” in 2018-S Q31</h4>
+      <p><b>Grey matter</b> is where the cell bodies are; <b>white matter</b> is the myelin-covered axons.
+      In the brain the grey matter is on the <em>outside</em> (the folded cortex). In the spinal cord it is
+      <em>inside</em>, and in cross-section it is shaped like a <b>butterfly</b> (or the letter H) with the
+      white matter around it — exactly as Figure 3 draws it. The 2018 paper listed “spinal cord →
+      butterfly-shaped grey matter” as a <em>true</em> pair.</p>
+    </div>
+    <h3>How does a nerve impulse become a movement?</h3>
+    <p>The last neuron ends on a <b>muscle cell</b>. Muscle cells contain <b>special proteins that change both
+    their shape and their arrangement</b> when the electrical impulse arrives — the cell becomes <b>shorter</b>,
+    and a muscle made of many such cells <b>contracts</b>. That is the entire mechanism of “nervous tissue
+    causes action”, and it is one line in NCERT that is easy to set as a “which statement is correct” item.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>Nerves are half the story — where hormones come in</h2>
+    <p class="lede">A neuron can only deliver a message to cells it is wired to. Two limits follow, and
+    hormones exist to get round them.</p>
+    <ol>
+      <li><b>Reach.</b> A nerve cannot reach every cell of the body, and it cannot keep firing forever.
+      Growth, puberty, keeping blood sugar steady — these need <em>every</em> relevant cell told, for
+      <em>months</em>.</li>
+      <li><b>Plants.</b> A plant has no nervous tissue at all, yet it bends towards light and its roots
+      grow downward. Something chemical is doing the coordinating.</li>
+    </ol>
+    <div class="box def">
+      <h4>Definition</h4>
+      <p>A <b>hormone</b> is a chemical messenger made in one part of an organism, carried (in animals, by
+      the <b>blood</b>) to another part, where it produces a specific effect. Animal hormones are made by
+      <b>endocrine glands</b> — glands with no duct, which pour their secretion <em>directly into the blood</em>.
+      (Ducted glands like the salivary glands and sweat glands are <em>exocrine</em>; the pancreas is both.)</p>
+    </div>
+    <p>Hormones are slow and long-lasting; nerves are fast and brief. The body uses <b>both</b>: when you are
+    frightened, nerves make you jump <em>now</em>, and the hormone adrenaline keeps your heart racing for
+    the next ten minutes. Sections 7–8 take the plant side first (it is simpler), section 9 the animal glands.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">7</span>Coordination in plants — two kinds of movement</h2>
+    <p class="lede">Plants move. Slowly, and never from place to place, but they move — and in two
+    completely different ways that a question will ask you to tell apart.</p>
+    <figure>
+      <svg viewBox="0 0 700 260" width="700" height="260" role="img" aria-label="Left panel: a touch-me-not plant with its leaflets spread, then after a touch with its leaflets folded together against the stalk. Right panel: a tendril growing from a leaf and coiling around a vertical stick">
+        <text x="190" y="22" text-anchor="middle" font-size="12.5" fill="var(--bright)" font-weight="600">(a) Touch-me-not — no growth</text>
+        <text x="540" y="22" text-anchor="middle" font-size="12.5" fill="var(--bright)" font-weight="600">(b) Tendril — growth</text>
+        <line x1="370" y1="40" x2="370" y2="240" stroke="var(--border)" stroke-width="1"/>
+        <line x1="90" y1="196" x2="90" y2="120" stroke="var(--bio)" stroke-width="3"/>
+        <line x1="90" y1="120" x2="56" y2="100" stroke="var(--bio)" stroke-width="2.5"/>
+        <line x1="90" y1="120" x2="124" y2="100" stroke="var(--bio)" stroke-width="2.5"/>
+        <g fill="color-mix(in srgb,var(--bio) 60%,var(--surface))" stroke="var(--bio)" stroke-width="1">
+          <ellipse cx="60" cy="90" rx="5" ry="10" transform="rotate(-30 60 90)"/><ellipse cx="70" cy="96" rx="5" ry="10" transform="rotate(-30 70 96)"/><ellipse cx="80" cy="102" rx="5" ry="10" transform="rotate(-30 80 102)"/>
+          <ellipse cx="120" cy="90" rx="5" ry="10" transform="rotate(30 120 90)"/><ellipse cx="110" cy="96" rx="5" ry="10" transform="rotate(30 110 96)"/><ellipse cx="100" cy="102" rx="5" ry="10" transform="rotate(30 100 102)"/>
+        </g>
+        <line x1="150" y1="150" x2="200" y2="150" stroke="var(--iq)" stroke-width="2" marker-end="url(#arr)"/>
+        <text x="175" y="140" text-anchor="middle" font-size="11.5" fill="var(--iq)" font-weight="600">touch</text>
+        <line x1="272" y1="196" x2="272" y2="146" stroke="var(--bio)" stroke-width="3"/>
+        <path d="M272,146 Q274,126 296,124" fill="none" stroke="var(--bio)" stroke-width="2.5"/>
+        <g fill="color-mix(in srgb,var(--bio) 60%,var(--surface))" stroke="var(--bio)" stroke-width="1">
+          <ellipse cx="284" cy="128" rx="4" ry="9" transform="rotate(72 284 128)"/><ellipse cx="290" cy="132" rx="4" ry="9" transform="rotate(78 290 132)"/><ellipse cx="296" cy="134" rx="4" ry="9" transform="rotate(84 296 134)"/>
+          <ellipse cx="284" cy="136" rx="4" ry="9" transform="rotate(72 284 136)"/><ellipse cx="290" cy="140" rx="4" ry="9" transform="rotate(78 290 140)"/><ellipse cx="296" cy="142" rx="4" ry="9" transform="rotate(84 296 142)"/>
+        </g>
+        <g font-size="12" fill="var(--text)">
+          <text x="90" y="216" text-anchor="middle">before</text>
+          <text x="276" y="216" text-anchor="middle">after a touch</text>
+        </g>
+        <text x="190" y="240" text-anchor="middle" font-size="11" fill="var(--muted)">water leaves the cells — seconds, no growth</text>
+        <line x1="648" y1="56" x2="648" y2="204" stroke="var(--muted)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M436,196 C 470,176 512,166 556,148 C 584,136 606,128 624,120" fill="none" stroke="var(--bio)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M624,120 C 642,112 660,122 648,132 C 636,142 636,152 650,156 C 664,160 664,172 650,176 C 638,180 638,190 650,194" fill="none" stroke="var(--bio)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="436" y1="196" x2="436" y2="152" stroke="var(--bio)" stroke-width="3"/>
+        <ellipse cx="436" cy="140" rx="9" ry="17" fill="color-mix(in srgb,var(--bio) 60%,var(--surface))" stroke="var(--bio)" stroke-width="1"/>
+        <g font-size="12" fill="var(--text)">
+          <text x="520" y="196" text-anchor="middle">tendril</text>
+          <text x="648" y="44" text-anchor="middle">stick</text>
+        </g>
+        <text x="540" y="240" text-anchor="middle" font-size="11" fill="var(--muted)">far side grows faster — days, growth</text>
+      </svg>
+      <figcaption><b>Figure 5 — the two kinds of plant movement.</b> (a) The touch-me-not folds in seconds by moving water out of cells — no growth, and it folds the same way whichever side you touch. (b) A tendril curls over days because the cells on the side <em>away</em> from the touch grow faster — growth, and in a definite direction.</figcaption>
+    </figure>
+    <h3>(a) Immediate response — no growth involved</h3>
+    <p>Touch the leaves of the <b>touch-me-not</b> (<em>Mimosa pudica</em>, chhui-mui) and they fold up and
+    droop within seconds. The plant has no nerves, so how?</p>
+    <ol class="seq">
+      <li>The touch is detected at the leaf; the plant uses <b>electrical–chemical means</b> to pass the information from cell to cell (not a nervous system — there is no specialised tissue for it).</li>
+      <li>Cells at the base of the leaflets and leaf-stalk <b>change shape by changing the amount of water in them</b> — water moves out, the cells go limp, the leaf folds. <span class="x">◆ The swollen base of the leaf-stalk that does this is called the <b>pulvinus</b>.</span></li>
+      <li>No growth has happened; when the cells refill, the leaf opens again.</li>
+    </ol>
+    <p>Such movements are <b>not in a particular direction</b> — the leaf folds the same way whichever side is
+    touched — and NCERT calls them the plant's <b>immediate response to stimulus</b>. <span class="x">◆ Coaching
+    name: <b>nastic</b> movement, and this one is <b>thigmonasty</b> (<em>thigmo</em> = touch); flowers opening
+    by day and closing at night are <b>photonasty</b>.</span></p>
+    <h3>(b) Movement due to growth — tropisms</h3>
+    <p>A pea tendril meets a stick and slowly coils round it; a seedling on a windowsill leans towards the
+    glass; roots go down and shoots go up however you plant the seed. These are slow, take hours or days,
+    and are <b>directional</b>: <em>towards</em> or <em>away from</em> the stimulus. They happen because
+    <b>one side of the organ grows faster than the other</b> — in the tendril, the cells on the side
+    <em>away</em> from the point of contact grow faster, so it bends around the support.</p>
+    <div class="box def">
+      <h4>Definition</h4>
+      <p>A <b>tropism</b> (tropic movement) is a growth movement of a plant part in a direction determined by
+      the stimulus. <b>Positive</b> = towards the stimulus; <b>negative</b> = away from it.</p>
+    </div>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Tropism</th><th>Stimulus</th><th>Shoot</th><th>Root</th><th>The example a question uses</th></tr></thead>
+      <tbody>
+        <tr><td><b>Phototropism</b></td><td>light</td><td><b>positive</b> (bends towards)</td><td>negative (grows away)</td><td>the flask of germinated beans in a cardboard box <em>open on one side</em>, facing a window (NCERT Activity 6.2) — the shoot finds the light, the root turns away</td></tr>
+        <tr><td><b>Geotropism</b> (gravitropism)</td><td>gravity (the earth)</td><td>negative (grows up)</td><td><b>positive</b> (grows down)</td><td>a seed germinates the right way up however it is sown</td></tr>
+        <tr><td><b>Hydrotropism</b></td><td>water</td><td>—</td><td><b>positive</b></td><td>roots grow towards a leaking pipe or a damp patch of soil</td></tr>
+        <tr><td><b>Chemotropism</b></td><td>a chemical</td><td colspan="2"><b>pollen tube</b> grows towards the ovule, guided by chemicals from it</td><td>the NCERT example — the only one that is neither shoot nor root</td></tr>
+        <tr><td><b>Thigmotropism</b> <span class="x">◆</span></td><td>touch</td><td colspan="2">tendrils coil round a support</td><td>pea, grapevine, bitter-gourd (karela) on a trellis</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="box trap">
+      <h4>Nastic vs tropic — the one distinction this section is for</h4>
+      <p>Ask two questions of any plant movement: <b>Is it growth?</b> and <b>Does its direction depend on
+      where the stimulus came from?</b> Touch-me-not: no and no — <em>not</em> a tropism, however much the
+      word “touch” tempts you. Tendril: yes and yes — a tropism (thigmotropism). A question that lists
+      “folding of Mimosa leaves” among tropisms is testing exactly this.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">8</span>Plant hormones — how a shoot knows which way the light is</h2>
+    <p class="lede">A tropism is a growth difference between two sides of a stem. Something must tell one
+    side to grow faster. That something is a hormone called auxin, and the experiment below is the one
+    that gets drawn in questions.</p>
+    <figure>
+      <svg viewBox="0 0 700 280" width="700" height="280" role="img" aria-label="Two seedlings. The left one is lit from all sides, its auxin dots spread evenly at the tip and the stem grows straight up. The right one is lit from the right by a sun; the auxin dots lie along its left shaded side and the stem bends to the right, towards the light">
+        <text x="20" y="26" font-size="11.5" fill="var(--iq)">● = auxin</text>
+        <text x="170" y="52" text-anchor="middle" font-size="12.5" fill="var(--text)">lit from all sides</text>
+        <text x="470" y="52" text-anchor="middle" font-size="12.5" fill="var(--text)">lit from the right</text>
+        <rect x="60" y="224" width="220" height="22" rx="4" fill="color-mix(in srgb,var(--muted) 30%,var(--surface))" stroke="var(--muted)" stroke-width="1"/>
+        <rect x="360" y="224" width="220" height="22" rx="4" fill="color-mix(in srgb,var(--muted) 30%,var(--surface))" stroke="var(--muted)" stroke-width="1"/>
+        <path d="M170,226 L170,84" stroke="var(--bio)" stroke-width="9" stroke-linecap="round"/>
+        <g fill="var(--iq)"><circle cx="163" cy="96" r="3"/><circle cx="177" cy="96" r="3"/><circle cx="163" cy="110" r="3"/><circle cx="177" cy="110" r="3"/><circle cx="170" cy="124" r="3"/></g>
+        <g stroke="var(--iq)" stroke-width="1.5" stroke-dasharray="4 3">
+          <line x1="76" y1="100" x2="140" y2="100"/><line x1="264" y1="100" x2="200" y2="100"/>
+          <line x1="76" y1="150" x2="140" y2="150"/><line x1="264" y1="150" x2="200" y2="150"/>
+        </g>
+        <path d="M470,226 L470,144 C470,114 492,100 518,88" fill="none" stroke="var(--bio)" stroke-width="9" stroke-linecap="round"/>
+        <g fill="var(--iq)"><circle cx="462" cy="144" r="3"/><circle cx="461" cy="130" r="3"/><circle cx="464" cy="116" r="3"/><circle cx="471" cy="104" r="3"/><circle cx="481" cy="94" r="3"/><circle cx="493" cy="86" r="3"/></g>
+        <circle cx="640" cy="80" r="16" fill="var(--iq)"/>
+        <g stroke="var(--iq)" stroke-width="2"><line x1="616" y1="80" x2="604" y2="80"/><line x1="628" y1="60" x2="620" y2="52"/><line x1="628" y1="100" x2="620" y2="108"/></g>
+        <g stroke="var(--iq)" stroke-width="1.5" stroke-dasharray="4 3">
+          <line x1="612" y1="120" x2="536" y2="120"/><line x1="612" y1="160" x2="512" y2="160"/>
+        </g>
+        <line x1="420" y1="128" x2="452" y2="124" stroke="var(--muted)" stroke-width="1.2"/>
+        <text x="416" y="124" text-anchor="end" font-size="11.5" fill="var(--muted)">shaded side</text>
+        <text x="170" y="266" text-anchor="middle" font-size="11" fill="var(--muted)">auxin even → grows straight</text>
+        <text x="470" y="266" text-anchor="middle" font-size="11" fill="var(--muted)">auxin on the shaded side → bends to the light</text>
+      </svg>
+      <figcaption><b>Figure 6 — phototropism explained by auxin.</b> Auxin is made at the shoot tip. Lit from one side, it moves to the shaded side; the cells there grow longer; the longer side pushes the tip over towards the light.</figcaption>
+    </figure>
+    <ol class="seq">
+      <li><b>Auxin</b> is synthesised at the <b>tip of the shoot</b>.</li>
+      <li>When light falls on one side, the auxin <b>diffuses towards the shady side</b> of the shoot.</li>
+      <li>Auxin makes cells <b>grow longer</b> — so the shaded side elongates more than the lit side.</li>
+      <li>A stem longer on one side <b>bends towards the other</b>: the shoot bends <b>towards the light</b>.</li>
+    </ol>
+    <div class="box trap">
+      <h4>Which part of the shoot actually <em>sees</em> the light?</h4>
+      <p><b>The tip — not the part that bends.</b> That is worth saying on its own, because it is the whole
+      content of the classic experiment (and of worked question 4). Cover the <em>tip</em> with a little opaque
+      cap and the shoot grows straight up even in one-sided light: auxin is still made, but nothing tells it
+      which side is dark. Leave the tip bare and wrap an opaque <em>sleeve</em> round the stem lower down, and
+      the shoot still bends — the bending region never needed to see anything. Cut the tip off altogether and
+      there is no auxin at all, so again no bend. <span class="x">◆ The experiment is Darwin’s; NCERT gives
+      the auxin mechanism but not the cap-and-sleeve test.</span></p>
+    </div>
+    <p>So a tropism is not the plant “sensing and deciding”; it is a hormone piling up on one side and
+    growth following it. <span class="x">◆ In roots the same auxin <em>inhibits</em> elongation, which is why a
+    root bends the other way (away from light, towards gravity).</span></p>
+    <h3>The plant hormones — NCERT names four</h3>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Hormone</th><th>What it does (NCERT wording)</th><th>The detail a question adds</th></tr></thead>
+      <tbody>
+        <tr><td><b>Auxin</b></td><td>Made at the shoot tip; makes cells grow longer; explains phototropism</td><td>“growth-promoting”; the tropism hormone</td></tr>
+        <tr><td><b>Gibberellins</b></td><td>Help the <b>growth of the stem</b></td><td><span class="x">◆</span> make dwarf plants tall; break seed dormancy; “bolting”</td></tr>
+        <tr><td><b>Cytokinins</b></td><td>Promote <b>cell division</b>; found in greatest concentration where cells divide rapidly — <b>fruits and seeds</b></td><td><span class="x">◆</span> named from <em>cytokinesis</em>, the division of a cell</td></tr>
+        <tr><td><b>Abscisic acid</b> (ABA)</td><td><b>Inhibits growth</b>; its effects include the <b>wilting of leaves</b></td><td><span class="x">◆</span> the “stress hormone”: closes stomata in drought, keeps buds and seeds dormant. The <em>only</em> growth-<em>inhibiting</em> one of the four</td></tr>
+        <tr><td><b>Ethylene</b> <span class="x">◆</span></td><td>Not in the rationalised NCERT chapter</td><td>a <em>gas</em>; ripens fruit — one ripe mango in a basket ripens the rest; leaf fall</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="box trap">
+      <h4>The “which one inhibits” question</h4>
+      <p>Auxin, gibberellin and cytokinin all <em>promote</em> something (elongation, stem growth, cell
+      division). <b>Abscisic acid is the odd one out</b> — it inhibits growth and causes wilting. If a
+      question says “growth inhibitor” or “wilting of leaves”, the answer is abscisic acid, and if it says
+      “cell division” it is cytokinin, not auxin.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">9</span>Hormones in animals — the glands, and the one story Allen asks</h2>
+    <p class="lede">Almost every hormone question so far has been “which hormone / which gland does this?” — the one exception, 2017-E Q38, asks what ADH <em>does</em>.
+    Map first, then the table, then the four stories NCERT tells (fear, growth, iodine, sugar).</p>
+    <figure>
+      <svg viewBox="0 0 840 450" width="840" height="450" role="img" aria-label="Outline of a human body with the endocrine glands marked: pineal, hypothalamus and pituitary stacked in the head; thyroid with the parathyroids in the neck; thymus in the upper chest; an adrenal gland capping each kidney; the pancreas below them; ovaries for a female and testes for a male lower down. Labels run down the left and right margins">
+        <circle cx="420" cy="62" r="38" fill="none" stroke="var(--muted)" stroke-width="2"/>
+        <path d="M402,98 L402,114 L354,132 C340,142 336,162 336,192 L336,302 C336,342 354,362 376,374 L376,422 L464,422 L464,374 C486,362 504,342 504,302 L504,192 C504,162 500,142 486,132 L438,114 L438,98" fill="none" stroke="var(--muted)" stroke-width="2"/>
+        <g fill="var(--rose)"><circle cx="434" cy="50" r="5"/><circle cx="420" cy="66" r="5"/><circle cx="420" cy="82" r="6"/></g>
+        <path d="M408,126 q12,-8 24,0 q-4,10 -12,10 q-8,0 -12,-10 z" fill="var(--iq)"/>
+        <g fill="var(--bright)"><circle cx="410" cy="124" r="2.4"/><circle cx="430" cy="124" r="2.4"/></g>
+        <ellipse cx="420" cy="160" rx="12" ry="18" fill="var(--physics)"/>
+        <g fill="var(--force)"><path d="M378,230 l16,-10 l10,12 l-24,6 z"/><path d="M462,230 l-16,-10 l-10,12 l24,6 z"/></g>
+        <g fill="none" stroke="var(--muted)" stroke-width="1.5" opacity=".7"><ellipse cx="386" cy="254" rx="14" ry="22"/><ellipse cx="454" cy="254" rx="14" ry="22"/></g>
+        <path d="M402,264 q28,-14 56,8 q-28,10 -56,-8 z" fill="var(--bio)"/>
+        <g fill="var(--chem)"><circle cx="392" cy="332" r="7"/><circle cx="448" cy="332" r="7"/></g>
+        <ellipse cx="420" cy="402" rx="16" ry="12" fill="var(--maths)"/>
+        <g stroke="var(--muted)" stroke-width="1" opacity=".85" fill="none">
+          <line x1="250" y1="40" x2="414" y2="66"/>
+          <line x1="250" y1="88" x2="414" y2="82"/>
+          <line x1="250" y1="156" x2="408" y2="160"/>
+          <line x1="250" y1="238" x2="372" y2="232"/>
+          <line x1="250" y1="336" x2="386" y2="332"/>
+          <line x1="556" y1="40" x2="440" y2="50"/>
+          <line x1="556" y1="120" x2="434" y2="126"/>
+          <line x1="556" y1="172" x2="436" y2="130"/>
+          <line x1="556" y1="270" x2="458" y2="268"/>
+          <line x1="556" y1="402" x2="436" y2="402"/>
+        </g>
+        <g font-size="12.5" fill="var(--text)">
+          <text x="20" y="44" font-weight="600" fill="var(--rose)">Hypothalamus</text>
+          <text x="20" y="58" font-size="11" fill="var(--muted)">releasing factors; ADH ◆</text>
+          <text x="20" y="92" font-weight="600" fill="var(--rose)">Pituitary</text>
+          <text x="20" y="106" font-size="11" fill="var(--muted)">growth hormone; “master gland”</text>
+          <text x="20" y="160" font-weight="600" fill="var(--physics)">Thymus</text>
+          <text x="20" y="174" font-size="11" fill="var(--muted)">immunity in childhood ◆</text>
+          <text x="20" y="242" font-weight="600" fill="var(--force)">Adrenal glands</text>
+          <text x="20" y="256" font-size="11" fill="var(--muted)">capping each kidney — adrenaline</text>
+          <text x="20" y="340" font-weight="600" fill="var(--chem)">Ovaries (female)</text>
+          <text x="20" y="354" font-size="11" fill="var(--muted)">oestrogen</text>
+          <text x="562" y="44" font-weight="600" fill="var(--rose)">Pineal</text>
+          <text x="562" y="58" font-size="11" fill="var(--muted)">melatonin — sleep rhythm ◆</text>
+          <text x="562" y="124" font-weight="600" fill="var(--iq)">Thyroid</text>
+          <text x="562" y="138" font-size="11" fill="var(--muted)">thyroxine — needs iodine</text>
+          <text x="562" y="176" font-weight="600" fill="var(--iq)">Parathyroid</text>
+          <text x="562" y="190" font-size="11" fill="var(--muted)">blood calcium ◆</text>
+          <text x="562" y="274" font-weight="600" fill="var(--bio)">Pancreas</text>
+          <text x="562" y="288" font-size="11" fill="var(--muted)">insulin — blood sugar</text>
+          <text x="562" y="406" font-weight="600" fill="var(--maths)">Testes (male)</text>
+          <text x="562" y="420" font-size="11" fill="var(--muted)">testosterone</text>
+        </g>
+      </svg>
+      <figcaption><b>Figure 7 — the endocrine glands</b> (NCERT Figure 6.7, both sexes drawn on one outline). The three head glands are drawn stacked — pineal, hypothalamus, and the pituitary hanging below the hypothalamus. The two small dots flanking the thyroid stand for the parathyroids (there are four of them, behind the thyroid). The adrenals cap the kidneys; the pancreas lies below the stomach.</figcaption>
+    </figure>
+    <h3>The table — gland, hormone, job, and what goes wrong</h3>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Gland</th><th>Hormone</th><th>What it does</th><th>Too little / too much</th></tr></thead>
+      <tbody>
+        <tr><td><b>Hypothalamus</b></td><td>releasing hormones</td><td>Tell the pituitary when to release <em>its</em> hormones — NCERT’s example is the <b>growth hormone releasing factor</b>, sent when the level of growth hormone is low. <span class="x">◆ It also makes <b>ADH</b>, which the pituitary stores and releases.</span></td><td>—</td></tr>
+        <tr><td><b>Pituitary</b> (“master gland”)</td><td><b>Growth hormone</b> (GH)</td><td>Regulates growth and development of the body</td><td>Too little in childhood → <b>dwarfism</b>. <span class="x">◆ Too much in childhood → gigantism</span> — NCERT raises “extremely tall (giants)” but explains only dwarfism.</td></tr>
+        <tr><td></td><td><b>ADH</b> (vasopressin) <span class="x">◆</span><br><span style="font-size:11.5px">made in the hypothalamus, released by the pituitary</span></td><td>Makes the kidney tubules reabsorb <b>more water</b> → <b>less, more concentrated urine</b> (2017-E Q38)</td><td>Too little → large volumes of dilute urine</td></tr>
+        <tr><td><b>Thyroid</b></td><td><b>Thyroxine</b></td><td>Regulates the metabolism of <b>carbohydrates, proteins and fats</b> — the body's “rate”. <b>Iodine is needed to make it</b> — hence iodised salt</td><td>Iodine deficiency → thyroid swells in the neck → <b>goitre</b>. <span class="x">◆ Too little in a child → cretinism.</span></td></tr>
+        <tr><td><b>Parathyroid</b></td><td>parathormone <span class="x">◆</span></td><td>Raises blood calcium</td><td>—</td></tr>
+        <tr><td><b>Thymus</b></td><td>thymosin <span class="x">◆</span></td><td>Develops immunity (T-cells) in childhood; shrinks in adults</td><td>—</td></tr>
+        <tr><td><b>Adrenal glands</b></td><td><b>Adrenaline</b></td><td>The <b>emergency (“fight or flight”) hormone</b> — the story below</td><td>—</td></tr>
+        <tr><td></td><td>aldosterone, cortisol <span class="x">◆</span></td><td>From the outer part (cortex): aldosterone keeps <b>sodium</b> (and so water) in the body; cortisol handles long-term stress</td><td>—</td></tr>
+        <tr><td><b>Pancreas</b></td><td><b>Insulin</b></td><td><b>Lowers</b> blood sugar: makes cells take up glucose and the liver store it as glycogen</td><td>Too little → <b>diabetes</b> (blood sugar stays high; treated with insulin injections)</td></tr>
+        <tr><td></td><td>glucagon <span class="x">◆</span></td><td><b>Raises</b> blood sugar between meals — insulin's opposite</td><td>—</td></tr>
+        <tr><td><b>Testes</b> (male)</td><td><b>Testosterone</b></td><td>Changes at <b>puberty</b> in boys</td><td>—</td></tr>
+        <tr><td><b>Ovaries</b> (female)</td><td><b>Oestrogen</b></td><td>Changes at <b>puberty</b> in girls. <span class="x">◆ Also progesterone.</span></td><td>—</td></tr>
+        <tr><td><b>Pineal</b></td><td>melatonin <span class="x">◆</span></td><td>Day–night (sleep) rhythm</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h3>Story 1 — adrenaline: the fear response as a sequence (2017-E Q35)</h3>
+    <p>A scared person on the seventh floor feels the tremors and runs down the stairs. Which hormone
+    started it? <b>Adrenaline</b>, from the <b>adrenal glands</b>, secreted <em>directly into the blood</em> and
+    carried to every part of the body. What it does, in order:</p>
+    <ol class="seq">
+      <li>The <b>heart beats faster</b> → more oxygen reaches the muscles.</li>
+      <li>Small arteries to the <b>digestive system and skin contract</b> → blood is <b>diverted away</b> from them and <b>towards the skeletal muscles</b>. (This is the “which does NOT happen” trap: blood to the gut goes <em>down</em>, not up.)</li>
+      <li>The <b>breathing rate rises</b> — the diaphragm and rib muscles contract faster.</li>
+      <li>Together the body is ready to <b>run or fight</b>; nerves made you jump in the first instant, adrenaline keeps you going for minutes.</li>
+    </ol>
+    <p>The distractors in 2017 were insulin, glucagon and gastrin — a sugar hormone, its opposite, and a
+    <span class="x">◆ digestive hormone from the stomach</span>. None has anything to do with fear.</p>
+    <h3>Story 2 — growth hormone</h3>
+    <p>The <b>pituitary</b>, a pea-sized gland hanging below the hypothalamus, secretes <b>growth hormone</b>,
+    which regulates growth and development. A child who makes too little of it grows up <b>very short</b> —
+    <b>dwarfism</b> — with a body that is small but in proportion.</p>
+    <h3>Story 3 — thyroxine and why salt has iodine in it</h3>
+    <p>The <b>thyroid</b>, in the front of the neck, makes <b>thyroxine</b>, which sets the rate at which the
+    body uses carbohydrates, proteins and fats (its metabolism). To <em>make</em> thyroxine the thyroid needs
+    <b>iodine</b>. If the diet has too little iodine, the gland cannot keep up, enlarges trying, and the neck
+    swells: <b>goitre</b>. That is why iodised salt is compulsory in India — about <span class="m">150 micrograms</span> a day is all an adult needs.</p>
+    <h3>Story 4 — insulin, and how a hormone knows when to stop (feedback)</h3>
+    <figure>
+      <svg viewBox="0 0 700 230" width="700" height="230" role="img" aria-label="A loop of four boxes: blood sugar rises after a meal; the pancreas detects it and secretes more insulin; cells take up glucose and the liver stores it; blood sugar falls and the pancreas secretes less insulin, which leads back to the first box">
+        <text x="350" y="36" text-anchor="middle" font-size="12.5" fill="var(--bright)" font-weight="600">Feedback — the result switches the hormone off</text>
+        <g font-size="12.5" fill="var(--text)">
+          <rect x="20" y="70" width="170" height="56" rx="10" fill="var(--surface)" stroke="var(--iq)" stroke-width="2"/>
+          <text x="105" y="94" text-anchor="middle">Blood sugar <tspan font-weight="700" fill="var(--iq)">rises</tspan></text>
+          <text x="105" y="112" text-anchor="middle" font-size="11" fill="var(--muted)">after a meal</text>
+          <rect x="250" y="70" width="170" height="56" rx="10" fill="var(--surface)" stroke="var(--bio)" stroke-width="2"/>
+          <text x="335" y="94" text-anchor="middle">Pancreas detects it</text>
+          <text x="335" y="112" text-anchor="middle" font-size="11" fill="var(--muted)">→ <tspan font-weight="700" fill="var(--bio)">more insulin</tspan></text>
+          <rect x="480" y="70" width="170" height="56" rx="10" fill="var(--surface)" stroke="var(--physics)" stroke-width="2"/>
+          <text x="565" y="94" text-anchor="middle">Cells take up glucose</text>
+          <text x="565" y="112" text-anchor="middle" font-size="11" fill="var(--muted)">liver stores it as glycogen</text>
+          <rect x="250" y="156" width="170" height="52" rx="10" fill="var(--surface)" stroke="var(--rose)" stroke-width="2"/>
+          <text x="335" y="178" text-anchor="middle">Blood sugar <tspan font-weight="700" fill="var(--rose)">falls</tspan></text>
+          <text x="335" y="196" text-anchor="middle" font-size="11" fill="var(--muted)">→ <tspan font-weight="700">less insulin</tspan></text>
+        </g>
+        <g stroke="var(--muted)" stroke-width="2" fill="none" marker-end="url(#arrm)">
+          <line x1="190" y1="98" x2="244" y2="98"/>
+          <line x1="420" y1="98" x2="474" y2="98"/>
+          <path d="M565,126 L565,182 L426,182"/>
+          <path d="M244,182 L105,182 L105,132"/>
+        </g>
+      </svg>
+      <figcaption><b>Figure 8 — the insulin feedback loop.</b> The timing and amount of a hormone are set by the very quantity it controls. High sugar → more insulin → sugar falls → less insulin. The same logic runs every hormone in the table.</figcaption>
+    </figure>
+    <p>Sugar arrives in the blood after a meal. <b>Insulin</b> from the <b>pancreas</b> makes the body's cells
+    take glucose in (and the liver store it), so the level falls back. If the pancreas makes too little insulin,
+    sugar stays high in the blood — <b>diabetes</b> — and the patient injects insulin instead. NCERT's point
+    is the <b>feedback</b>: a hormone must be released in exactly the right amount at exactly the right time,
+    and the way the body manages that is to let the <em>effect</em> of the hormone regulate its own release.</p>
+    <div class="box extra">
+      <h4>◆ The two “shared with Excretion” items — ADH and renin (2017-E Q38, 2018-S Q43)</h4>
+      <p><b>ADH</b> (anti-diuretic hormone; “diuretic” = something that makes you pass urine, so <em>anti</em>-
+      = the opposite) is made in the hypothalamus and released by the pituitary when the body is short of
+      water. It makes the kidney's collecting tubules reabsorb <b>more water</b> back into the blood, so
+      <b>less urine</b> is made. <em>More ADH → less urine.</em> Alcohol and cold weather suppress it — which is
+      why both send you to the toilet.<br>
+      <b>Renin</b> is an <em>enzyme made in the kidney</em> that helps raise blood pressure; <b>rennin</b> (two n's)
+      is a stomach enzyme that curdles milk in infants; <b>aldosterone</b> is an adrenal hormone; ADH is
+      hypothalamus/pituitary. So “produced in the kidneys” = renin, and nothing else on the list.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">10</span>Fact bank and glossary — everything above on one screen</h2>
+    <div class="bank">
+      <div class="fx"><div class="eq">neuron = unit of the nervous system</div><div class="wh">dendrite (in) → cell body → axon → nerve ending (out)</div></div>
+      <div class="fx"><div class="eq">synapse = gap; crossed by chemicals</div><div class="wh">electrical → <b>neurotransmitter</b> → electrical; one-way</div></div>
+      <div class="fx"><div class="eq">reflex arc: receptor → sensory → spinal cord → motor → effector</div><div class="wh">fast, involuntary, formed in the spinal cord; brain told afterwards</div></div>
+      <div class="fx"><div class="eq">cerebrum · cerebellum · medulla</div><div class="wh">thinking &amp; voluntary · balance &amp; precision · heartbeat, BP, breathing, salivation, vomiting</div></div>
+      <div class="fx"><div class="eq">thalamus ◆ · hypothalamus</div><div class="wh">relay for sensory &amp; motor · runs the pituitary (NCERT); ◆ hunger, thirst, temperature, water</div></div>
+      <div class="fx"><div class="eq">CNS = brain + spinal cord</div><div class="wh">PNS = cranial (12 pairs) + spinal (31 pairs) nerves ◆; skull, CSF, vertebral column protect</div></div>
+      <div class="fx"><div class="eq">nastic ≠ tropic</div><div class="wh">Mimosa: water leaves cells, no growth, non-directional · tendril / shoot: growth, directional</div></div>
+      <div class="fx"><div class="eq">photo · geo · hydro · chemo · thigmo</div><div class="wh">shoot +light −gravity; root +gravity +water; pollen tube = chemotropism; tendril = thigmotropism</div></div>
+      <div class="fx"><div class="eq">auxin → shaded side → grows longer</div><div class="wh">made at the shoot tip; shoot bends towards light</div></div>
+      <div class="fx"><div class="eq">gibberellin · cytokinin · abscisic acid</div><div class="wh">stem growth · cell division (fruits, seeds) · <b>inhibits</b> growth, wilting</div></div>
+      <div class="fx"><div class="eq">adrenaline = fear</div><div class="wh">heart ↑, breathing ↑, blood gut/skin → muscles; adrenal gland, straight into blood</div></div>
+      <div class="fx"><div class="eq">GH · thyroxine · insulin</div><div class="wh">pituitary → dwarfism · thyroid, iodine → goitre · pancreas → diabetes</div></div>
+      <div class="fx"><div class="eq">testosterone · oestrogen</div><div class="wh">testes · ovaries — puberty</div></div>
+      <div class="fx"><div class="eq">ADH ↑ → urine ↓ ◆</div><div class="wh">more water reabsorbed in the kidney; renin = kidney enzyme, rennin = stomach</div></div>
+      <div class="fx"><div class="eq">feedback</div><div class="wh">sugar ↑ → insulin ↑ → sugar ↓ → insulin ↓</div></div>
+    </div>
+    <h3>Glossary — every term the papers use</h3>
+    <div class="gloss">
+      <div><b>Stimulus</b> — a change the organism can detect.</div>
+      <div><b>Receptor</b> — the cell/organ that detects it (gustatory = taste, olfactory = smell).</div>
+      <div><b>Effector</b> — muscle or gland that responds.</div>
+      <div><b>Neuron</b> — nerve cell; the unit of the nervous system.</div>
+      <div><b>Dendrite / axon</b> — receiving branches / the long outgoing fibre.</div>
+      <div><b>Myelin sheath</b> ◆ — fatty insulation on the axon; gaps = nodes of Ranvier.</div>
+      <div><b>Synapse</b> — gap between two neurons.</div>
+      <div><b>Neurotransmitter</b> ◆ — chemical that carries the message across a synapse; NCERT says only “chemicals”, but Allen printed the word in 2017.</div>
+      <div><b>Sensory / relay / motor neuron</b> — into the CNS / inside it / out to an effector; all three are labelled on NCERT’s Figure 6.2. (◆ only the word <em>interneuron</em>.)</div>
+      <div><b>Reflex action</b> — sudden involuntary response; <b>reflex arc</b> = its path.</div>
+      <div><b>Conditioned reflex</b> ◆ — a learned reflex (Pavlov's dogs).</div>
+      <div><b>CNS / PNS</b> — brain + spinal cord / the nerves leaving them.</div>
+      <div><b>Cerebrum</b> — thinking, memory, senses, voluntary movement.</div>
+      <div><b>Cerebellum</b> — balance, posture, precision of voluntary actions.</div>
+      <div><b>Medulla</b> — involuntary vital actions: heartbeat, BP, breathing, salivation, vomiting.</div>
+      <div><b>Thalamus</b> ◆ — relay for sensory and motor signals.</div>
+      <div><b>Hypothalamus</b> — controls the pituitary (NCERT); ◆ hunger, thirst, temperature, water balance.</div>
+      <div><b>Pons</b> — labelled on NCERT’s Figure 6.3, under the hind-brain; ◆ a bridge of fibres, breathing rhythm.</div>
+      <div><b>Grey / white matter</b> ◆ — cell bodies / myelinated axons; butterfly in the spinal cord.</div>
+      <div><b>Meninges</b> ◆ <b>/ CSF</b> — membranes / fluid cushioning the brain; NCERT says only “fluid-filled balloon”.</div>
+      <div><b>Hormone</b> — chemical messenger carried in the blood.</div>
+      <div><b>Endocrine gland</b> — ductless; secretes straight into the blood.</div>
+      <div><b>Tropism</b> — directional growth movement; + towards, − away.</div>
+      <div><b>Nastic movement</b> ◆ — non-directional, no growth (touch-me-not).</div>
+      <div><b>Auxin, gibberellin, cytokinin, abscisic acid</b> — the four NCERT plant hormones.</div>
+      <div><b>Adrenaline</b> — emergency hormone from the adrenal glands.</div>
+      <div><b>Glucagon</b> ◆ — pancreatic hormone that <em>raises</em> blood sugar; insulin’s opposite.</div>
+      <div><b>Melatonin</b> ◆ — pineal hormone setting the day–night rhythm.</div>
+      <div><b>Pulvinus</b> ◆ — the swollen leaf-stalk base that folds the touch-me-not.</div>
+      <div><b>Cretinism</b> ◆ — thyroxine deficiency from infancy: stunted growth.</div>
+      <div><b>Gigantism</b> ◆ — too much growth hormone in childhood.</div>
+      <div><b>Goitre</b> — swollen thyroid from iodine deficiency.</div>
+      <div><b>Dwarfism</b> — growth-hormone deficiency in childhood.</div>
+      <div><b>Diabetes</b> — insulin deficiency; blood sugar stays high.</div>
+      <div><b>Feedback</b> — the hormone's effect controls its own release.</div>
+      <div><b>ADH</b> ◆ — anti-diuretic hormone; more ADH → less urine.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">11</span>Eight worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">Try each before opening the working; give yourself <b>60 seconds</b> — Biology should run
+    faster than the 90-second paper average. The elimination is written out because in this chapter the
+    wrong options are always the <em>neighbouring</em> word, and ruling two out is worth the guess.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">Diagram · reflex arc · ~60 s</span></div>
+      <p>The figure shows the path of a nerve impulse when a boy's finger touches a hot iron.</p>
+      <figure>
+        <svg viewBox="0 0 660 260" width="660" height="260" role="img" aria-label="A reflex arc with five parts lettered P to T and no crossing paths: P is a dot at the top left where the stimulus arrives, an arrow Q runs right into the spinal cord, R is an arrow inside the grey matter, an arrow S runs back to the left and down, and T is an oval at the lower left that S points into">
+        <ellipse cx="520" cy="130" rx="80" ry="64" fill="color-mix(in srgb,var(--muted) 12%,var(--surface))" stroke="var(--muted)" stroke-width="2"/>
+        <path d="M494,92 Q504,110 496,128 Q492,136 496,144 Q504,162 494,180 L510,175 Q520,161 530,175 L546,180 Q536,162 544,144 Q548,136 544,128 Q536,110 546,92 L530,97 Q520,111 510,97 Z" fill="color-mix(in srgb,var(--bio) 26%,var(--surface))" stroke="var(--bio)" stroke-width="1.4"/>
+        <circle cx="90" cy="84" r="9" fill="var(--iq)" stroke="var(--bright)" stroke-width="1.5"/>
+        <path d="M99,88 C 200,96 320,100 432,106" fill="none" stroke="var(--iq)" stroke-width="3.2" marker-end="url(#arr)"/>
+        <path d="M492,108 C 502,126 502,146 494,162" fill="none" stroke="var(--rose)" stroke-width="2.8" marker-end="url(#arrr)"/>
+        <path d="M436,172 C 330,212 240,222 158,212" fill="none" stroke="var(--physics)" stroke-width="3.2" marker-end="url(#arrb)"/>
+        <ellipse cx="110" cy="208" rx="42" ry="17" fill="color-mix(in srgb,var(--physics) 22%,var(--surface))" stroke="var(--physics)" stroke-width="2.5"/>
+        <g font-size="14" font-weight="700" fill="var(--bright)">
+          <text x="90" y="62" text-anchor="middle">P</text>
+          <text x="270" y="82" text-anchor="middle">Q</text>
+          <text x="548" y="140" text-anchor="middle">R</text>
+          <text x="300" y="240" text-anchor="middle">S</text>
+          <text x="110" y="180" text-anchor="middle">T</text>
+        </g>
+        <g stroke="var(--muted)" stroke-width="1" fill="none">
+          <line x1="270" y1="88" x2="270" y2="96"/>
+          <line x1="300" y1="228" x2="300" y2="216"/>
+          <line x1="540" y1="136" x2="524" y2="134"/>
+        </g>
+      </svg>
+      </figure>
+      <p>Which statement about the labelled parts is correct?</p>
+      <div class="we-opts one">
+        <div class="we-opt"><span class="ob">1</span>Q is a motor neuron and S is a sensory neuron.</div>
+        <div class="we-opt"><span class="ob">2</span>The impulse crosses from Q to S in the brain, after the brain has processed the information.</div>
+        <div class="we-opt key"><span class="ob">3</span>R is a relay neuron in the grey matter of the spinal cord, and the impulse crosses two synapses between Q and S.</div>
+        <div class="we-opt"><span class="ob">4</span>T is a receptor and P is an effector.</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Read the arrows before the letters: they run <b>P → Q → R → S → T</b>. So P (at the fingertip,
+        where the stimulus is) is the <b>receptor</b>, Q carries the impulse <em>towards</em> the cord — a
+        <b>sensory</b> neuron; R sits inside the butterfly-shaped grey matter — the <b>relay</b> neuron; S
+        carries it <em>away</em> to the muscle — a <b>motor</b> neuron; T is the muscle, the <b>effector</b>.
+        Q → R is one synapse and R → S is a second, both in the spinal cord. <b>Option (3).</b></p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> — the names swapped: sensory goes <em>in</em>, motor goes <em>out</em>; the arrows settle it.
+        <b>(2)</b> — the whole point of a reflex arc is that the crossing happens in the <em>spinal cord</em>,
+        before the brain has processed anything. <b>(4)</b> — P and T swapped; the stimulus is at P, so P
+        detects and T responds.
+        <b>Elimination.</b> (2) contradicts the definition of a reflex and goes first. (1) and (4) are each
+        a straight swap of a pair — check one arrow and both fall.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">Match the following · brain · ~75 s</span></div>
+      <p>Match Column I with Column II and choose the correct option.</p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th colspan="2">Column I</th><th colspan="2">Column II</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">A</td><td>Cerebellum</td><td class="mono">(i)</td><td>Blood pressure, salivation, vomiting</td></tr>
+          <tr><td class="mono">B</td><td>Medulla</td><td class="mono">(ii)</td><td>Hunger, thirst, body temperature</td></tr>
+          <tr><td class="mono">C</td><td>Hypothalamus</td><td class="mono">(iii)</td><td>Thinking, memory, voluntary actions</td></tr>
+          <tr><td class="mono">D</td><td>Cerebrum</td><td class="mono">(iv)</td><td>Posture, balance, precision of movements</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>A-(iii), B-(i), C-(ii), D-(iv)</div>
+        <div class="we-opt key"><span class="ob">2</span>A-(iv), B-(i), C-(ii), D-(iii)</div>
+        <div class="we-opt"><span class="ob">3</span>A-(iv), B-(ii), C-(i), D-(iii)</div>
+        <div class="we-opt"><span class="ob">4</span>A-(i), B-(iv), C-(ii), D-(iii)</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Cerebellum = balance and precision (iv); medulla = the involuntary maintenance jobs (i);
+        hypothalamus = hunger, thirst, temperature (ii); cerebrum = thinking (iii). <b>Option (2).</b></p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> — cerebrum and cerebellum swapped (the classic). <b>(3)</b> — medulla and hypothalamus
+        swapped: both are “involuntary”, but hunger and temperature are the hypothalamus, vomiting and
+        blood pressure the medulla. <b>(4)</b> — cerebellum and medulla swapped.
+        <b>Elimination.</b> Fix the one pair you are surest of — cerebrum = thinking (iii) — and (1) is gone.
+        Then medulla = (i) removes (3) and (4) together. You never needed the hypothalamus row.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">Three-student statement · synapse · ~90 s</span></div>
+      <p>Three students described what happens when a nerve impulse reaches the end of a neuron.</p>
+      <ul class="stmts">
+        <li><b>Aarav</b>: The electrical impulse jumps across the synapse directly, because the nerve ending of one neuron touches the dendrite of the next.</li>
+        <li><b>Bhavna</b>: The electrical impulse causes chemicals to be released at the nerve ending; these diffuse across the gap and start a new electrical impulse in the dendrite of the next neuron.</li>
+        <li><b>Chirag</b>: The same kind of junction is used to deliver the impulse from a neuron to a muscle cell, and the message can pass across a synapse in either direction.</li>
+      </ul>
+      <p>Which of the students is/are correct?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Only Aarav</div>
+        <div class="we-opt key"><span class="ob">2</span>Only Bhavna</div>
+        <div class="we-opt"><span class="ob">3</span>Bhavna and Chirag</div>
+        <div class="we-opt"><span class="ob">4</span>All three</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Bhavna has NCERT word for word. Aarav has two errors in one sentence — the neurons do not touch,
+        and an electrical impulse cannot cross a gap. Chirag's first half is true (neuron → muscle uses a
+        similar synapse) but his second half is false: the chemicals are made only at the nerve-ending side,
+        so the crossing is <b>one-way</b>. A statement with one false clause is a false statement.
+        <b>Option (2).</b></p>
+        <div class="elim"><b>The trap is Chirag.</b> A two-clause statement whose first clause is true lures
+        you into (3). Read every clause; in a statement question the paper is asking 4–6 small questions
+        for one 4-mark answer, and “either direction” is the one that costs you. (1) and (4) die with Aarav's
+        “touches”.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">Diagram · phototropism experiment · ~90 s</span></div>
+      <p>Four identical seedlings are lit from the right for two days.</p>
+      <figure>
+        <svg viewBox="0 0 660 240" width="660" height="240" role="img" aria-label="Four identical seedlings I to IV standing in soil, lit by a sun on the right. Seedling one is intact; seedling two has had its tip cut off; seedling three wears an opaque cap over its tip; seedling four has an opaque sleeve around the stem below the tip, with the tip left uncovered">
+        <rect x="60" y="182" width="460" height="18" rx="4" fill="color-mix(in srgb,var(--muted) 30%,var(--surface))" stroke="var(--muted)" stroke-width="1"/>
+        <path d="M110,184 L110,84" fill="none" stroke="var(--bio)" stroke-width="8" stroke-linecap="round"/>
+        <path d="M230,184 L230,104" fill="none" stroke="var(--bio)" stroke-width="8" stroke-linecap="butt"/>
+        <line x1="216" y1="100" x2="244" y2="94" stroke="var(--force)" stroke-width="2.2"/>
+        <path d="M350,184 L350,84" fill="none" stroke="var(--bio)" stroke-width="8" stroke-linecap="round"/>
+        <path d="M334,82 Q334,58 350,58 Q366,58 366,82 Z" fill="var(--muted)"/>
+        <path d="M470,184 L470,84" fill="none" stroke="var(--bio)" stroke-width="8" stroke-linecap="round"/>
+        <rect x="458" y="104" width="24" height="64" fill="var(--muted)"/>
+        <circle cx="606" cy="88" r="14" fill="var(--iq)"/>
+        <g stroke="var(--iq)" stroke-width="2"><line x1="586" y1="88" x2="576" y2="88"/><line x1="596" y1="70" x2="589" y2="63"/><line x1="596" y1="106" x2="589" y2="113"/></g>
+        <g stroke="var(--iq)" stroke-width="1.5" stroke-dasharray="4 3">
+          <line x1="580" y1="120" x2="500" y2="120"/><line x1="580" y1="152" x2="500" y2="152"/>
+        </g>
+        <g font-size="12" fill="var(--text)">
+          <text x="110" y="66" text-anchor="middle">intact</text>
+          <text x="230" y="76" text-anchor="middle">tip cut off</text>
+          <text x="350" y="42" text-anchor="middle">opaque cap on the tip</text>
+          <text x="470" y="66" text-anchor="middle">sleeve below the tip</text>
+        </g>
+        <g font-size="13" font-weight="700" fill="var(--bright)">
+          <text x="110" y="222" text-anchor="middle">I</text>
+          <text x="230" y="222" text-anchor="middle">II</text>
+          <text x="350" y="222" text-anchor="middle">III</text>
+          <text x="470" y="222" text-anchor="middle">IV</text>
+        </g>
+      </svg>
+      </figure>
+      <p>Which of the seedlings will bend towards the light?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>I only</div>
+        <div class="we-opt"><span class="ob">2</span>I and III</div>
+        <div class="we-opt key"><span class="ob">3</span>I and IV</div>
+        <div class="we-opt"><span class="ob">4</span>I, II and IV</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>Bending needs two things from section 8: auxin must be <em>made</em> (at the tip) and the tip must
+        <em>see</em> which side the light is on. <b>I</b> has both — it bends. <b>II</b> has no tip, so no auxin
+        — no bending. <b>III</b> has a tip but it is in the dark under the cap, so auxin is made but not
+        pushed to one side — it grows straight. <b>IV</b> has its tip exposed; the sleeve covers only the
+        region that <em>bends</em>, but the bending region does not need to see the light — the tip does. It
+        bends. <b>I and IV: option (3).</b></p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> — assuming any covering stops the response; the sleeve in IV is below the sensing region.
+        <b>(2)</b> — the mirror-image mistake: putting the light-detector in the wrong place, so that the part
+        which <em>bends</em> is the part that must see the light. Then IV’s sleeve blocks it and III’s cap does
+        not matter, because auxin is still made under the cap — which gives I and III. <b>(4)</b> — including
+        II: without a tip there is no auxin at all, and a stem with no auxin does not bend.
+        <b>Elimination.</b> II can never bend (no tip → no auxin), which kills (4) at once. Then the whole
+        question is III versus IV — “where is the light detected?” — and the answer is the tip.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">Assertion–Reason · plant movement · ~60 s</span></div>
+      <p><b>Assertion (A):</b> The folding of the leaves of the touch-me-not plant when touched is not a tropic movement.<br>
+      <b>Reason (R):</b> The folding is caused by cells changing the amount of water in them, involves no growth, and happens the same way whichever side of the leaf is touched.</p>
+      <div class="we-opts one">
+        <div class="we-opt key"><span class="ob">1</span>Both A and R are true, and R is the correct explanation of A.</div>
+        <div class="we-opt"><span class="ob">2</span>Both A and R are true, but R is not the correct explanation of A.</div>
+        <div class="we-opt"><span class="ob">3</span>A is true but R is false.</div>
+        <div class="we-opt"><span class="ob">4</span>A is false but R is true.</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>A tropism is a <em>growth</em> movement in a direction set by the stimulus. The touch-me-not's
+        response is neither growth nor directional, so A is true. R states exactly those two facts plus the
+        mechanism (water leaving cells), all correct — and those facts are <em>precisely why</em> it is not a
+        tropism. So R explains A. <b>Option (1).</b></p>
+        <div class="elim"><b>How to handle A–R in 60 s.</b> First decide A and R separately (both true here —
+        (3) and (4) go). Then ask “if I were explaining A to a friend, would I say R?” — yes, that is the
+        whole argument. (2) is the trap for a student who knows both facts but has not connected them: the
+        <em>definition</em> of a tropism is the link.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">6</span><span class="we-t">“Which does NOT happen” · adrenaline · ~60 s</span></div>
+      <p>While walking home, Riya sees a snake on the path and freezes, her heart thumping. Which of the
+      following is <b>not</b> true of the hormone responsible for her response?</p>
+      <div class="we-opts one">
+        <div class="we-opt"><span class="ob">1</span>Her heart beats faster, so more oxygen reaches her muscles.</div>
+        <div class="we-opt"><span class="ob">2</span>Her breathing rate increases because the diaphragm and rib muscles contract faster.</div>
+        <div class="we-opt key"><span class="ob">3</span>The small arteries to her digestive system and skin widen, so more blood flows to them.</div>
+        <div class="we-opt"><span class="ob">4</span>The hormone reaches her heart through the blood, having been secreted directly into it by the adrenal glands.</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>The hormone is adrenaline. Walk the sequence in section 9: heart faster (1 ✓), breathing faster
+        (2 ✓), secreted straight into the blood by the adrenals (4 ✓) — and the arteries to the gut and skin
+        <b>contract</b>, so blood is diverted <em>away</em> from them to the skeletal muscles. Option (3) says
+        the opposite. <b>Option (3).</b></p>
+        <div class="elim"><b>The trap.</b> Every option is written in the confident tone of a true fact, and
+        (3) even names the right organs. The single word that flips it is “widen”. In a NOT question, read
+        each option looking for the one verb that is reversed — that is where the paper hides it.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">7</span><span class="we-t">Three patients · hormone deficiencies · ~90 s</span></div>
+      <p>A doctor sees three patients on the same morning.</p>
+      <ul class="stmts">
+        <li><b>P</b> — a 14-year-old boy far shorter than his classmates, though his body is in proportion.</li>
+        <li><b>Q</b> — a woman from a hill village with a large, painless swelling at the front of her neck.</li>
+        <li><b>R</b> — a man whose blood sugar stays high after meals and who has been prescribed daily injections.</li>
+      </ul>
+      <p>The glands whose hormones are deficient in P, Q and R respectively are</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>thyroid, pituitary, pancreas</div>
+        <div class="we-opt"><span class="ob">2</span>pituitary, thyroid, adrenal</div>
+        <div class="we-opt"><span class="ob">3</span>adrenal, thyroid, pancreas</div>
+        <div class="we-opt key"><span class="ob">4</span>pituitary, thyroid, pancreas</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>P: short but in proportion = too little <b>growth hormone</b> in childhood → <b>pituitary</b>.
+        Q: swelling in the front of the neck from a hill region (where soil and food are low in iodine)
+        = <b>goitre</b> → <b>thyroid</b>. R: high blood sugar treated with injections = <b>diabetes</b>, too little
+        <b>insulin</b> → <b>pancreas</b>. <b>Option (4).</b></p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> — P and Q's glands swapped. <b>(2)</b> — R given to the adrenal gland (adrenaline is the
+        <em>fear</em> hormone, not the sugar one). <b>(3)</b> — P given to the adrenal gland.
+        <b>Elimination.</b> R is the surest: injections + sugar = insulin = pancreas, which removes (2). Then
+        Q's neck swelling = thyroid removes (1). Only (3) and (4) remain and they differ only on P — and
+        nothing about height has anything to do with the adrenals.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">8</span><span class="we-t">Correctly paired · tropisms and hormones · ~90 s</span></div>
+      <p>Consider the following pairs.</p>
+      <ol class="stmts" style="list-style:lower-alpha">
+        <li>A pollen tube growing towards the ovule — chemotropism</li>
+        <li>The root of a seedling growing downward — negative geotropism</li>
+        <li>A plant hormone that promotes cell division in fruits and seeds — cytokinin</li>
+        <li>The plant hormone responsible for the wilting of leaves — gibberellin</li>
+        <li>A tendril coiling around a support — cells on the side away from the support grow faster</li>
+      </ol>
+      <p>Which of the pairs are <b>correctly</b> matched?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>(a), (b) and (c)</div>
+        <div class="we-opt"><span class="ob">2</span>(a), (c) and (e)</div>
+        <div class="we-opt"><span class="ob">3</span>(b), (d) and (e)</div>
+        <div class="we-opt"><span class="ob">4</span>(a), (c), (d) and (e)</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p>(a) ✓ — NCERT's chemotropism example. (b) ✗ — a root growing <em>towards</em> gravity is
+        <b>positive</b> geotropism; the shoot is the negative one. (c) ✓ — cytokinins, greatest where cells
+        divide fastest. (d) ✗ — wilting is <b>abscisic acid</b>; gibberellins promote stem growth. (e) ✓ —
+        NCERT's own explanation of the tendril. So (a), (c), (e): <b>option (2).</b></p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> — accepting (b): the sign of a tropism is the most-flipped word in the chapter — say it
+        as “towards = positive” every time. <b>(3)</b> — accepting both (b) and (d). <b>(4)</b> — accepting (d),
+        i.e. attaching wilting to the wrong hormone.
+        <b>Elimination.</b> (d) is the quickest kill — the one inhibitor in the chapter is abscisic acid —
+        which removes (3) and (4). Between (1) and (2) the only difference is (b) vs (e); “root down =
+        positive” settles it.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">12</span>Check yourself — ten quick ones</h2>
+    <p class="lede">Ten quick recall questions. <b>No negative marking here</b> — this is practice, not the
+    exam. Click an option to see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the ten questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Biology · <b>Control and Coordination</b> — the official topic name from Allen's
+    Class X syllabus; NCERT Class 10 Science Chapter 6.<br>
+    <b>◆ marks what is beyond the NCERT chapter</b> — the thalamus, the hypothalamus’s other jobs, <em>what the
+    pons does</em>, the word <em>interneuron</em>, myelin, nodes of Ranvier, grey/white matter, the meninges,
+    conditioned reflexes, nastic movements, ethylene, ADH, glucagon, and the hormones of the parathyroid,
+    thymus and pineal. <b>Note what is NOT beyond it:</b> NCERT’s own diagrams label the hypothalamus and the
+    pons (Figure 6.3), the sensory, relay and motor neurons (Figure 6.2) and the pineal, parathyroid and
+    thymus (Figure 6.7) — it just never says what they do, so they are fair game in the exam. Every ◆ item is
+    there because a cached Allen paper or a standard coaching module asks it; none is needed to
+    <em>understand</em> the chapter.<br>
+    <b>Deliberately not here:</b> the structure of the eye and ear (the eye is its own Physics unit),
+    the kidney's tubule-by-tubule detail behind ADH (the Transportation &amp; Excretion unit), and
+    anything from <em>How do Organisms Reproduce</em> or <em>Heredity</em>, which are off the 2027 list.<br>
+    Tip: press 🖨 (bottom-left) to print these as a revision sheet · 🏆 (top-left) goes back to the
+    TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'The tiny gap between the nerve ending of one neuron and the dendrite of the next is called a',
+    o:['node of Ranvier','synapse','reflex arc','neurotransmitter'], a:1,
+    fb:'<b>Synapse.</b> The impulse crosses it as a chemical (a neurotransmitter), not as electricity — which is why option 4 is the <em>messenger</em>, not the gap. A node of Ranvier is a gap in the myelin sheath <em>along</em> one axon; a reflex arc is the whole path from receptor to effector.' },
+  { q:'Riding a bicycle in a straight line without wobbling depends mainly on the',
+    o:['cerebrum','medulla','cerebellum','spinal cord'], a:2,
+    fb:'<b>Cerebellum</b> — precision of voluntary actions, posture and balance; NCERT&rsquo;s own examples are walking in a straight line, riding a bicycle and picking up a pencil. You <em>decide</em> to ride with the cerebrum; the cerebellum makes it smooth. The medulla runs heartbeat and breathing.' },
+  { q:'In a reflex action such as pulling your hand off a hot pan, the reflex arc is formed in the',
+    o:['cerebrum','spinal cord','cerebellum','receptor'], a:1,
+    fb:'<b>Spinal cord.</b> The nerves from all over the body meet there on their way to the brain, and the sensory-to-motor connection is made there so the response goes out before the brain has processed anything. The brain is told in parallel — which is why you feel the pain a moment <em>after</em> the hand has moved.' },
+  { q:'The hormone that lowers the level of sugar in the blood, and the gland that makes it, are',
+    o:['glucagon, pancreas','insulin, pancreas','adrenaline, adrenal gland','thyroxine, thyroid'], a:1,
+    fb:'<b>Insulin from the pancreas.</b> It makes cells take glucose in and the liver store it; too little of it is diabetes. Glucagon is also from the pancreas but does the <em>opposite</em> (raises sugar). Adrenaline is the fear hormone; thyroxine sets the overall metabolic rate.' },
+  { q:'A swelling in the front of the neck caused by a shortage of iodine in the diet is called',
+    o:['dwarfism','diabetes','goitre','cretinism'], a:2,
+    fb:'<b>Goitre.</b> The thyroid needs iodine to make thyroxine; short of iodine it enlarges trying, and the neck swells. That is why table salt in India is iodised. Dwarfism is a growth-hormone (pituitary) deficiency, diabetes an insulin (pancreas) deficiency; cretinism is thyroxine deficiency from infancy — stunted physical and mental growth, and it often comes <em>with</em> a goitre rather than instead of one; “goitre” names the swelling itself.' },
+  { q:'Which plant hormone <b>inhibits</b> growth and causes the wilting of leaves?',
+    o:['auxin','gibberellin','cytokinin','abscisic acid'], a:3,
+    fb:'<b>Abscisic acid</b> — the one growth <em>inhibitor</em> among the four NCERT plant hormones. Auxin (cell elongation, tropisms), gibberellins (stem growth) and cytokinins (cell division) all <em>promote</em> growth.' },
+  { q:'The growth of a pollen tube towards the ovule is an example of',
+    o:['phototropism','geotropism','hydrotropism','chemotropism'], a:3,
+    fb:'<b>Chemotropism</b> — growth in response to a chemical, here released by the ovule. It is NCERT&rsquo;s standard example and the only tropism in the chapter that is about neither a shoot nor a root. Phototropism = light, geotropism = gravity, hydrotropism = water.' },
+  { q:'Which of the following is <b>not</b> a movement due to growth?',
+    o:['a shoot bending towards a window','a tendril coiling round a stick','the leaves of the touch-me-not folding when touched','a root growing towards a damp patch of soil'], a:2,
+    fb:'<b>The touch-me-not.</b> Its leaves fold within seconds because cells lose water and go limp — no growth, and the same response whichever side is touched. The other three are tropisms: slow, directional, and caused by one side of the organ growing faster than the other.' },
+  { q:'Involuntary actions such as blood pressure, salivation and vomiting are controlled by the',
+    o:['cerebrum','hypothalamus','medulla','cerebellum'], a:2,
+    fb:'<b>Medulla</b>, in the hind-brain — NCERT&rsquo;s exact list. The hypothalamus handles hunger, thirst and temperature (also involuntary, but a different list); the cerebrum is voluntary; the cerebellum is balance.' },
+  { q:'The receptors that detect smell are called',
+    o:['gustatory receptors','olfactory receptors','photoreceptors','thermoreceptors'], a:1,
+    fb:'<b>Olfactory receptors</b>, in the nose. Gustatory receptors (tongue) detect taste — the pair NCERT names, and the pair a question swaps. Photoreceptors detect light (the eye); thermoreceptors detect heat (the skin).' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. The vocabulary has landed — this chapter is banked; come back the week before the exam for one re-read of the two tables.'
+           : right >= 7 ? 'Re-read the section behind the ones you missed — section 5 carries the brain table, section 9 the hormones, sections 7&ndash;8 the plants.'
+                        : 'Worth a second pass through sections 2&ndash;5 and 9 before moving on. It is one chapter of names; one more slow read fixes it.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:bio-control-coordination:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
