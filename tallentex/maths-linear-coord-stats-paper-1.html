@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Linear Equations, Coordinates &amp; Statistics — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .viewonly .submitrow, .viewonly .q-flag { display:none !important; }
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP||location.protocol!=='https:'||navigator.webdriver)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+      <button class="bigbtn" id="viewOnly" type="button">👁 Just look at the questions</button>
+      <button class="bigbtn" id="lastAttempt" type="button" hidden>📋 See your last attempt</button>
+    </div>
+    <p class="startnote" id="startNote">Practice mode still marks you and still applies −1 — only the countdown is off. “Just look” shows the questions without marking or recording anything.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  title: 'TALLENTEX · Linear Equations, Coordinates & Statistics — Paper 1',
+  kind: 'topic',
+  duration: 20,
+  id: 'tx:maths-linear-coord-stats:p1',
+  accent: 'maths',
+  sub: "Pair of Linear Equations in Two Variables, Coordinate Geometry and Statistics — the three cases of a pair, story problems, the section formula, distances and areas on a grid, overlapping averages and unequal-width histograms. <b>13 questions · 52 marks · 20 minutes.</b> Pitched at the real TALLENTEX paper: most items need two steps, and the clock is meant to run short. Triage, do not grind.",
+  sections: [ { name:'Mathematics', from:1, to:13 } ],
+  questions: [
+    { n:1, section:'Mathematics', topic:"Pair of Linear Equations in Two Variables", fmt:"plain", 
+      stem:"<p>Seven years ago, Arjun’s mother was <b>five times</b> as old as Arjun. Three years from now, she will be <b>three times</b> as old as he will be then. After how many years from now will she be exactly <b>twice</b> as old as Arjun?</p>", 
+      options:["17", "23", "40", "74"], answer:1, 
+      sol:"<p>Let Arjun be <i>a</i> and his mother <i>m</i> years old now. Seven years ago: <i>m</i> − 7 = 5(<i>a</i> − 7), so <i>m</i> = 5<i>a</i> − 28. Three years on: <i>m</i> + 3 = 3(<i>a</i> + 3), so <i>m</i> = 3<i>a</i> + 6.</p><p>Equate: 5<i>a</i> − 28 = 3<i>a</i> + 6 → 2<i>a</i> = 34 → <b><i>a</i> = 17</b>, <b><i>m</i> = 57</b>. (Check: 50 = 5 × 10 ✓ and 60 = 3 × 20 ✓.)</p><p>Now the second step: 57 + <i>t</i> = 2(17 + <i>t</i>) → <i>t</i> = 57 − 34 = <b>23</b>. (She will be 80, he 40.)</p><p><b>Where the other options come from.</b> (1) 17 — Arjun’s present age: the pair solved, the question not read to the end. (3) 40 — the age gap <i>m</i> − <i>a</i>, which never changes and is not a number of years to wait. (4) 74 — the sum of the two present ages.</p>" },
+
+    { n:2, section:'Mathematics', topic:"Pair of Linear Equations in Two Variables", fmt:"diagram", 
+      stem:"<p>The figure shows the graphs of a pair of linear equations, the lines <i>ℓ</i><sub>1</sub> and <i>ℓ</i><sub>2</sub>, on a grid of unit squares. What is the area, in square units, of the triangle formed by the two lines and the <b><i>y</i>-axis</b>?</p>", 
+      fig:"<svg viewBox=\"0 0 220 264\" width=\"220\" height=\"264\" role=\"img\" aria-label=\"Grid of unit squares from x = -1 to 7 and y = -3 to 7 with two straight lines: l1 falling from upper left to lower right, l2 rising from lower left to upper right\"><g stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"><line x1=\"22\" y1=\"242\" x2=\"22\" y2=\"22\"/><line x1=\"44\" y1=\"242\" x2=\"44\" y2=\"22\"/><line x1=\"66\" y1=\"242\" x2=\"66\" y2=\"22\"/><line x1=\"88\" y1=\"242\" x2=\"88\" y2=\"22\"/><line x1=\"110\" y1=\"242\" x2=\"110\" y2=\"22\"/><line x1=\"132\" y1=\"242\" x2=\"132\" y2=\"22\"/><line x1=\"154\" y1=\"242\" x2=\"154\" y2=\"22\"/><line x1=\"176\" y1=\"242\" x2=\"176\" y2=\"22\"/><line x1=\"198\" y1=\"242\" x2=\"198\" y2=\"22\"/><line x1=\"22\" y1=\"242\" x2=\"198\" y2=\"242\"/><line x1=\"22\" y1=\"220\" x2=\"198\" y2=\"220\"/><line x1=\"22\" y1=\"198\" x2=\"198\" y2=\"198\"/><line x1=\"22\" y1=\"176\" x2=\"198\" y2=\"176\"/><line x1=\"22\" y1=\"154\" x2=\"198\" y2=\"154\"/><line x1=\"22\" y1=\"132\" x2=\"198\" y2=\"132\"/><line x1=\"22\" y1=\"110\" x2=\"198\" y2=\"110\"/><line x1=\"22\" y1=\"88\" x2=\"198\" y2=\"88\"/><line x1=\"22\" y1=\"66\" x2=\"198\" y2=\"66\"/><line x1=\"22\" y1=\"44\" x2=\"198\" y2=\"44\"/><line x1=\"22\" y1=\"22\" x2=\"198\" y2=\"22\"/></g><g stroke=\"currentColor\" stroke-width=\"1.6\"><line x1=\"22\" y1=\"176\" x2=\"198\" y2=\"176\"/><line x1=\"44\" y1=\"242\" x2=\"44\" y2=\"22\"/></g><g fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"10\" opacity=\".8\" stroke=\"var(--surface)\" stroke-width=\"3.5\" paint-order=\"stroke\"><text x=\"22\" y=\"189\" text-anchor=\"middle\">-1</text><text x=\"66\" y=\"189\" text-anchor=\"middle\">1</text><text x=\"88\" y=\"189\" text-anchor=\"middle\">2</text><text x=\"110\" y=\"189\" text-anchor=\"middle\">3</text><text x=\"132\" y=\"189\" text-anchor=\"middle\">4</text><text x=\"154\" y=\"189\" text-anchor=\"middle\">5</text><text x=\"176\" y=\"189\" text-anchor=\"middle\">6</text><text x=\"198\" y=\"189\" text-anchor=\"middle\">7</text><text x=\"39\" y=\"245.5\" text-anchor=\"end\">-3</text><text x=\"39\" y=\"223.5\" text-anchor=\"end\">-2</text><text x=\"39\" y=\"201.5\" text-anchor=\"end\">-1</text><text x=\"39\" y=\"157.5\" text-anchor=\"end\">1</text><text x=\"39\" y=\"135.5\" text-anchor=\"end\">2</text><text x=\"39\" y=\"113.5\" text-anchor=\"end\">3</text><text x=\"39\" y=\"91.5\" text-anchor=\"end\">4</text><text x=\"39\" y=\"69.5\" text-anchor=\"end\">5</text><text x=\"39\" y=\"47.5\" text-anchor=\"end\">6</text><text x=\"39\" y=\"25.5\" text-anchor=\"end\">7</text><text x=\"48\" y=\"172\" text-anchor=\"start\">O</text></g><g fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"12\" font-style=\"italic\"><text x=\"202\" y=\"180\">x</text><text x=\"48\" y=\"19\">y</text></g><line x1=\"22\" y1=\"22\" x2=\"198\" y2=\"198\" stroke=\"var(--maths)\" stroke-width=\"2.2\"/><line x1=\"22\" y1=\"242\" x2=\"198\" y2=\"66\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-dasharray=\"7 4\"/><g font-family=\"Inter,sans-serif\" font-size=\"13\" font-weight=\"700\" font-style=\"italic\"><text x=\"71.5\" y=\"47.30000000000001\" fill=\"var(--maths)\">ℓ<tspan font-size=\"9\" dy=\"3\">1</tspan></text><text x=\"182.6\" y=\"96.8\" fill=\"currentColor\">ℓ<tspan font-size=\"9\" dy=\"3\">2</tspan></text></g></svg>", 
+      figCap:"Read each line’s intercepts off the grid; the lines are not labelled with their equations.", 
+      options:["16", "4", "8", "32"], answer:0, 
+      sol:"<p><b>Read the lines.</b> <i>ℓ</i><sub>1</sub> passes through (0, 6) and (6, 0), so it is <i>x</i> + <i>y</i> = 6. <i>ℓ</i><sub>2</sub> passes through (2, 0) and (0, −2), so it is <i>x</i> − <i>y</i> = 2.</p><p><b>Solve the pair.</b> Adding: 2<i>x</i> = 8 → <i>x</i> = 4, <i>y</i> = 2. The lines meet at (4, 2).</p><p><b>The triangle.</b> Its vertices are (0, 6), (0, −2) and (4, 2). Take the side on the <i>y</i>-axis as the base: 6 − (−2) = 8. The height is the distance of (4, 2) from the <i>y</i>-axis, which is its <i>x</i>-coordinate, 4. Area = ½ × 8 × 4 = <b>16</b>.</p><p><b>Where the other options come from.</b> (2) 4 — the triangle with the <i>x</i>-axis instead: base from (2, 0) to (6, 0) is 4, height 2, area 4. (3) 8 — the right base but the <i>y</i>-coordinate 2 used as the height; the height to the <i>y</i>-axis is the <i>x</i>-coordinate. (4) 32 — base × height without the ½.</p>" },
+
+    { n:3, section:'Mathematics', topic:"Pair of Linear Equations in Two Variables", fmt:"statement", 
+      stem:"<p>Consider the following pairs of linear equations.</p><ol class=\"roman\"><li>2<i>x</i> + 3<i>y</i> = 7 and 6<i>x</i> + 9<i>y</i> = 21</li><li>3<i>x</i> − 5<i>y</i> = 4 and 9<i>x</i> − 15<i>y</i> = 10</li><li>4<i>x</i> + 6<i>y</i> = 5 and 6<i>x</i> + 9<i>y</i> = 7.5</li><li><i>x</i> − 2<i>y</i> = 3 and 2<i>x</i> − <i>y</i> = 3</li></ol><p>Which of these pairs are <b>consistent</b>?</p>", 
+      options:["I and IV only", "I, II and IV only", "I, III and IV only", "IV only"], answer:2, 
+      sol:"<p>A pair is <b>consistent</b> if it has at least one solution — a unique solution <i>or</i> infinitely many. Compare <i>a</i><sub>1</sub>/<i>a</i><sub>2</sub>, <i>b</i><sub>1</sub>/<i>b</i><sub>2</sub>, <i>c</i><sub>1</sub>/<i>c</i><sub>2</sub>.</p><p><b>I</b> — 2/6 = 3/9 = 7/21 = ⅓: coincident lines, infinitely many solutions → consistent.<br><b>II</b> — 3/9 = (−5)/(−15) = ⅓ but 4/10 = ⅖: parallel lines, no solution → <b>inconsistent</b>.<br><b>III</b> — 4/6 = 6/9 = ⅔ and 5/7.5 = 10/15 = ⅔: all three equal, coincident → consistent. The decimal is there to hide that.<br><b>IV</b> — 1/2 ≠ (−2)/(−1) = 2: the lines cross, unique solution → consistent.</p><p>So <b>I, III and IV</b>.</p><p><b>Where the other options come from.</b> (1) I and IV only — III written off because 7.5 “does not look like” the others; clear the decimal (×2: 8<i>x</i> + 12<i>y</i> = 10 against 12<i>x</i> + 18<i>y</i> = 15) and the ratios all come to ⅔. (2) I, II and IV only — the first two ratios of II are equal, and the third was never checked. (4) IV only — treating “consistent” as “exactly one solution”; infinitely many solutions is consistent too (NCERT calls it dependent and consistent).</p>" },
+
+    { n:4, section:'Mathematics', topic:"Pair of Linear Equations in Two Variables", fmt:"plain", 
+      stem:"<p>For which value of <i>k</i> does the pair of equations</p><p style=\"text-align:center\">(<i>k</i> − 1)<i>x</i> + 3<i>y</i> = 2 &nbsp;&nbsp;and&nbsp;&nbsp; 6<i>x</i> + (<i>k</i> + 2)<i>y</i> = 4</p><p>have <b>no solution</b>?</p>", 
+      options:["4", "−5", "4 or −5", "No real value of <i>k</i>"], answer:1, 
+      sol:"<p>No solution needs <i>a</i><sub>1</sub>/<i>a</i><sub>2</sub> = <i>b</i><sub>1</sub>/<i>b</i><sub>2</sub> ≠ <i>c</i><sub>1</sub>/<i>c</i><sub>2</sub>.</p><p><b>Step 1 — the first two ratios equal.</b> (<i>k</i> − 1)/6 = 3/(<i>k</i> + 2) → (<i>k</i> − 1)(<i>k</i> + 2) = 18 → <i>k</i>² + <i>k</i> − 20 = 0 → (<i>k</i> + 5)(<i>k</i> − 4) = 0 → <i>k</i> = 4 or −5.</p><p><b>Step 2 — test the third ratio, which is 2/4 = ½.</b> <i>k</i> = 4: the ratios are 3/6 = ½ and 3/6 = ½ — equal to ½, so the lines <i>coincide</i> (infinitely many solutions). Rejected. <i>k</i> = −5: the ratios are −6/6 = −1 and 3/(−3) = −1, which is not ½ → parallel lines, no solution. ✓</p><p>So <b><i>k</i> = −5</b> only. (Check: the pair becomes −6<i>x</i> + 3<i>y</i> = 2 and 6<i>x</i> − 3<i>y</i> = 4; adding gives 0 = 6, impossible.)</p><p><b>Where the other options come from.</b> (3) 4 or −5 — the “both values” trap: stopping at Step 1 without checking the constants. (1) 4 — the value that makes the lines coincide; it answers “infinitely many”. (4) No real value — finding that <i>k</i> = 4 gives coincident lines, then rejecting <i>k</i> = −5 as well by misreading its ratios: −6/6 and 3/(−3) are <i>both</i> −1, so the first two ratios are equal and only the third differs — exactly the no-solution condition.</p>" },
+
+    { n:5, section:'Mathematics', topic:"Pair of Linear Equations in Two Variables", fmt:"plain", 
+      stem:"<p>Two towns A and B on a highway are <b>120 km</b> apart. A car leaves A and another car leaves B at the same time; the car from A is the faster. If both drive in the direction from A towards B, the car from A catches the other in <b>6 hours</b>. If they drive towards each other, they meet in <b>1 hour 30 minutes</b>. When they drive towards each other, how far from A do they meet?</p>", 
+      options:["45 km", "50 km", "60 km", "75 km"], answer:3, 
+      sol:"<p>Let the speeds be <i>u</i> (from A) and <i>v</i> (from B) km/h.</p><p><b>Same direction</b> — A’s car gains 120 km in 6 h: <i>u</i> − <i>v</i> = 20. <b>Towards each other</b> — together they close 120 km in 1.5 h: <i>u</i> + <i>v</i> = 80.</p><p>Adding: 2<i>u</i> = 100 → <i>u</i> = 50, <i>v</i> = 30.</p><p><b>The second step.</b> In 1.5 h the car from A covers 50 × 1.5 = <b>75 km</b>, so they meet 75 km from A (and 45 km from B: 75 + 45 = 120 ✓).</p><p><b>Where the other options come from.</b> (1) 45 km — the distance from B, i.e. the slower car’s run of 30 × 1.5. (2) 50 km — the faster car’s speed, read as a distance. (3) 60 km — the midpoint, which is only where they meet if the speeds are equal.</p>" },
+
+    { n:6, section:'Mathematics', topic:"Coordinate Geometry", fmt:"diagram", 
+      stem:"<p>In the figure, the points <b>P</b> and <b>Q</b> trisect the line segment <b>AB</b>, in the order A, P, Q, B. A is (−3, 8) and Q is (3, 0). What is the length of <b>AB</b>?</p>", 
+      fig:"<svg viewBox=\"0 0 332 298\" width=\"332\" height=\"298\" role=\"img\" aria-label=\"Segment AB with points P and Q on it; A is (-3, 8) and Q is (3, 0)\"><g stroke=\"currentColor\" stroke-width=\"1.3\" opacity=\".55\"><line x1=\"30\" y1=\"183\" x2=\"302\" y2=\"183\"/><line x1=\"166\" y1=\"268\" x2=\"166\" y2=\"30\"/></g><g fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"12\" font-style=\"italic\" opacity=\".75\"><text x=\"306\" y=\"187\">x</text><text x=\"171\" y=\"32\">y</text><text x=\"153\" y=\"197\" font-style=\"normal\">O</text></g><line x1=\"115\" y1=\"47\" x2=\"268\" y2=\"251\" stroke=\"var(--maths)\" stroke-width=\"2.4\"/><line x1=\"134.2\" y1=\"82.6\" x2=\"143.8\" y2=\"75.4\" stroke=\"currentColor\" stroke-width=\"1.4\"/><line x1=\"137.2\" y1=\"86.6\" x2=\"146.8\" y2=\"79.4\" stroke=\"currentColor\" stroke-width=\"1.4\"/><line x1=\"185.2\" y1=\"150.6\" x2=\"194.8\" y2=\"143.4\" stroke=\"currentColor\" stroke-width=\"1.4\"/><line x1=\"188.2\" y1=\"154.6\" x2=\"197.8\" y2=\"147.4\" stroke=\"currentColor\" stroke-width=\"1.4\"/><line x1=\"236.2\" y1=\"218.6\" x2=\"245.8\" y2=\"211.4\" stroke=\"currentColor\" stroke-width=\"1.4\"/><line x1=\"239.2\" y1=\"222.6\" x2=\"248.8\" y2=\"215.4\" stroke=\"currentColor\" stroke-width=\"1.4\"/><circle cx=\"115\" cy=\"47\" r=\"4\" fill=\"currentColor\"/><text x=\"107\" y=\"39\" text-anchor=\"end\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"13\" font-weight=\"700\">A(−3, 8)</text><circle cx=\"166\" cy=\"115\" r=\"4\" fill=\"currentColor\"/><text x=\"176\" y=\"111\" text-anchor=\"start\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"13\" font-weight=\"700\">P</text><circle cx=\"217\" cy=\"183\" r=\"4\" fill=\"currentColor\"/><text x=\"227\" y=\"177\" text-anchor=\"start\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"13\" font-weight=\"700\">Q(3, 0)</text><circle cx=\"268\" cy=\"251\" r=\"4\" fill=\"currentColor\"/><text x=\"278\" y=\"255\" text-anchor=\"start\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"13\" font-weight=\"700\">B</text></svg>", 
+      figCap:"The three parts AP, PQ and QB are equal. Only A and Q are given coordinates.", 
+      options:["5", "10", "15", "30"], answer:2, 
+      sol:"<p>Q is two parts from A and one part from B, so Q divides AB in the ratio <b>2 : 1</b>. By the section formula, Q = (2·B + 1·A)/3, so B = (3Q − A)/2 = ((9 + 3)/2, (0 − 8)/2) = <b>(6, −4)</b>.</p><p>AB = √[(6 + 3)² + (−4 − 8)²] = √(81 + 144) = √225 = <b>15</b>.</p><p>Faster: AQ = √(6² + 8²) = 10 is two of the three equal parts, so AB = 10 × 3/2 = 15.</p><p><b>Where the other options come from.</b> (2) 10 — AQ, which is two thirds of AB, not all of it. (1) 5 — one part (AP), the length of each third. (4) 30 — the ratio taken as 1 : 2 (as if Q were next to A): B = 3Q − 2A = (15, −16) and AB = √(18² + 24²) = 30.</p>" },
+
+    { n:7, section:'Mathematics', topic:"Coordinate Geometry", fmt:"plain", 
+      stem:"<p>The line segment joining A(−3, 5) and B(6, −4) cuts the <i>x</i>-axis at P and the <i>y</i>-axis at Q. What is the length of <b>PQ</b>?</p>", 
+      options:["2", "√5", "4", "2√2"], answer:3, 
+      sol:"<p><b>Q, on the <i>y</i>-axis</b> — let it divide AB in the ratio <i>k</i> : 1. Its <i>x</i>-coordinate (6<i>k</i> − 3)/(<i>k</i> + 1) = 0 → <i>k</i> = ½, i.e. <b>1 : 2</b>. Then <i>y</i> = (1·(−4) + 2·5)/3 = 6/3 = 2 → Q(0, 2).</p><p><b>P, on the <i>x</i>-axis</b> — its <i>y</i>-coordinate (−4<i>k</i> + 5)/(<i>k</i> + 1) = 0 → <i>k</i> = 5/4, i.e. <b>5 : 4</b>. Then <i>x</i> = (5·6 + 4·(−3))/9 = 18/9 = 2 → P(2, 0).</p><p>PQ = √(2² + 2²) = <b>2√2</b>.</p><p><b>Faster:</b> in both A and B the coordinates add to 2 (−3 + 5 = 2, 6 − 4 = 2), so every point of AB satisfies <i>x</i> + <i>y</i> = 2, which meets the axes at (2, 0) and (0, 2). Thirty seconds — and that spotting is the skill the item rewards.</p><p><b>Where the other options come from.</b> (1) 2 — the distance OP (or OQ): one intercept found and taken as the answer. (3) 4 — OP + OQ, the two legs added instead of combined by Pythagoras. (2) √5 — the ratio for P written the wrong way round, 4 : 5 from A: <i>x</i> = (4·6 + 5·(−3))/9 = 1, so P(1, 0) and PQ = √(1 + 4). The check is that P’s <i>y</i>-coordinate must come out 0 — with 4 : 5 it does not.</p>" },
+
+    { n:8, section:'Mathematics', topic:"Coordinate Geometry", fmt:"plain", 
+      stem:"<p>P is the point on the <b><i>y</i>-axis</b> that is equidistant from A(−5, −2) and B(3, 2). What is the area of triangle <b>PAB</b>, in square units?</p>", 
+      options:["5", "6", "10", "20"], answer:2, 
+      sol:"<p><b>Find P.</b> Let P = (0, <i>y</i>). PA² = PB²: 25 + (<i>y</i> + 2)² = 9 + (<i>y</i> − 2)². Expand: 25 + <i>y</i>² + 4<i>y</i> + 4 = 9 + <i>y</i>² − 4<i>y</i> + 4 → 8<i>y</i> = −16 → <i>y</i> = −2. So <b>P(0, −2)</b> (check: PA = 5, PB = √(9 + 16) = 5 ✓).</p><p><b>The area.</b> P and A both have <i>y</i> = −2, so PA = 5 lies along a horizontal line; B is 2 − (−2) = 4 above it. Area = ½ × 5 × 4 = <b>10</b>. (The formula gives the same: ½|−5(−2 − 2) + 0 + 3(−2 + 2)| = ½ × 20 = 10.)</p><p><b>Where the other options come from.</b> (2) 6 — a sign slip in 8<i>y</i> = −16 giving P(0, 2); then PB = 3 is horizontal and the height to A is 4, so ½ × 3 × 4 = 6. (1) 5 — PA (= PB), the distance, not the area. (4) 20 — the ½ forgotten.</p>" },
+
+    { n:9, section:'Mathematics', topic:"Coordinate Geometry", fmt:"diagram", 
+      stem:"<p>The figure shows three villages P, Q and R on a grid of <b>1 km squares</b>, with the origin O marked. A water tank T is to be built so that it is at the <b>same distance from all three villages</b>. Where must T be built?</p>", 
+      fig:"<svg viewBox=\"0 0 268 212\" width=\"268\" height=\"212\" role=\"img\" aria-label=\"Grid of 1 km squares with villages P, Q and R marked at grid points\"><g stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"><line x1=\"22\" y1=\"190\" x2=\"22\" y2=\"22\"/><line x1=\"50\" y1=\"190\" x2=\"50\" y2=\"22\"/><line x1=\"78\" y1=\"190\" x2=\"78\" y2=\"22\"/><line x1=\"106\" y1=\"190\" x2=\"106\" y2=\"22\"/><line x1=\"134\" y1=\"190\" x2=\"134\" y2=\"22\"/><line x1=\"162\" y1=\"190\" x2=\"162\" y2=\"22\"/><line x1=\"190\" y1=\"190\" x2=\"190\" y2=\"22\"/><line x1=\"218\" y1=\"190\" x2=\"218\" y2=\"22\"/><line x1=\"246\" y1=\"190\" x2=\"246\" y2=\"22\"/><line x1=\"22\" y1=\"190\" x2=\"246\" y2=\"190\"/><line x1=\"22\" y1=\"162\" x2=\"246\" y2=\"162\"/><line x1=\"22\" y1=\"134\" x2=\"246\" y2=\"134\"/><line x1=\"22\" y1=\"106\" x2=\"246\" y2=\"106\"/><line x1=\"22\" y1=\"78\" x2=\"246\" y2=\"78\"/><line x1=\"22\" y1=\"50\" x2=\"246\" y2=\"50\"/><line x1=\"22\" y1=\"22\" x2=\"246\" y2=\"22\"/></g><g stroke=\"currentColor\" stroke-width=\"1.6\"><line x1=\"22\" y1=\"190\" x2=\"246\" y2=\"190\"/><line x1=\"22\" y1=\"190\" x2=\"22\" y2=\"22\"/></g><g fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"10\" opacity=\".8\" stroke=\"var(--surface)\" stroke-width=\"3.5\" paint-order=\"stroke\"><text x=\"50\" y=\"203\" text-anchor=\"middle\">1</text><text x=\"78\" y=\"203\" text-anchor=\"middle\">2</text><text x=\"106\" y=\"203\" text-anchor=\"middle\">3</text><text x=\"134\" y=\"203\" text-anchor=\"middle\">4</text><text x=\"162\" y=\"203\" text-anchor=\"middle\">5</text><text x=\"190\" y=\"203\" text-anchor=\"middle\">6</text><text x=\"218\" y=\"203\" text-anchor=\"middle\">7</text><text x=\"246\" y=\"203\" text-anchor=\"middle\">8</text><text x=\"17\" y=\"165.5\" text-anchor=\"end\">1</text><text x=\"17\" y=\"137.5\" text-anchor=\"end\">2</text><text x=\"17\" y=\"109.5\" text-anchor=\"end\">3</text><text x=\"17\" y=\"81.5\" text-anchor=\"end\">4</text><text x=\"17\" y=\"53.5\" text-anchor=\"end\">5</text><text x=\"17\" y=\"25.5\" text-anchor=\"end\">6</text><text x=\"17\" y=\"203\" text-anchor=\"end\">O</text></g><g fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"12\" font-style=\"italic\"><text x=\"250\" y=\"194\">x</text><text x=\"26\" y=\"19\">y</text></g><circle cx=\"50\" cy=\"162\" r=\"5\" fill=\"var(--maths)\" stroke=\"currentColor\" stroke-width=\"1\"/><text x=\"36\" y=\"156\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"13\" font-weight=\"700\">P</text><circle cx=\"218\" cy=\"162\" r=\"5\" fill=\"var(--maths)\" stroke=\"currentColor\" stroke-width=\"1\"/><text x=\"225\" y=\"156\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"13\" font-weight=\"700\">Q</text><circle cx=\"162\" cy=\"50\" r=\"5\" fill=\"var(--maths)\" stroke=\"currentColor\" stroke-width=\"1\"/><text x=\"169\" y=\"43\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"13\" font-weight=\"700\">R</text></svg>", 
+      figCap:"Villages sit exactly on grid points. Each square is 1 km × 1 km.", 
+      options:["(4, 2)", "(4, 3)", "(13/3, 7/3)", "(3, 3)"], answer:0, 
+      sol:"<p><b>Read the grid:</b> P(1, 1), Q(7, 1), R(5, 5).</p><p><b>TP = TQ.</b> P and Q are level, so T lies on the vertical line halfway between them: <i>x</i> = 4.</p><p><b>TP = TR</b> with T = (4, <i>y</i>): 9 + (<i>y</i> − 1)² = 1 + (<i>y</i> − 5)² → 9 + <i>y</i>² − 2<i>y</i> + 1 = 1 + <i>y</i>² − 10<i>y</i> + 25 → 8<i>y</i> = 16 → <i>y</i> = 2. So <b>T(4, 2)</b>.</p><p>Check: TP² = 9 + 1, TQ² = 9 + 1, TR² = 1 + 9 — all three are √10 km ≈ 3.2 km ✓.</p><p><b>Where the other options come from.</b> (3) (13/3, 7/3) — the centroid, ((1 + 7 + 5)/3, (1 + 1 + 5)/3). The centroid balances the triangle; it is not equidistant from the vertices unless the triangle is equilateral. (Its distance to R² is 4/9 + 64/9 = 68/9, to P² is 100/9 + 16/9 = 116/9 — unequal.) (2) (4, 3) — <i>x</i> = 4 correct, then <i>y</i> taken halfway up the triangle’s height of 4. TR² = 1 + 4 = 5 but TP² = 9 + 4 = 13. (4) (3, 3) — the midpoint of PR, as if the triangle were right-angled with PR as hypotenuse. It is not: TQ² = 16 + 4 = 20 against TP² = 8.</p>" },
+
+    { n:10, section:'Mathematics', topic:"Statistics", fmt:"plain", 
+      stem:"<p>The mean of <b>11</b> numbers is <b>30</b>. The mean of the first six of them is <b>28</b> and the mean of the last six is <b>34</b>. If the sixth number is removed, what is the mean of the remaining ten numbers?</p>", 
+      options:["28.8", "30", "31", "42"], answer:0, 
+      sol:"<p><b>The sixth number is counted in both groups of six.</b> First six sum to 6 × 28 = 168; last six to 6 × 34 = 204; together 372. All eleven sum to 11 × 30 = 330. The overlap is the sixth number: 372 − 330 = <b>42</b>.</p><p><b>Remove it.</b> The other ten sum to 330 − 42 = 288, so their mean is 288 ÷ 10 = <b>28.8</b>.</p><p><b>Where the other options come from.</b> (4) 42 — the sixth number itself: one step done, the question not finished. (2) 30 — assuming the mean is unchanged when a number is removed. It only stays 30 if the removed number is 30; 42 is above the mean, so the mean falls. (3) 31 — the average of the two averages, (28 + 34)/2. The two groups overlap and the whole set has its own mean given; averaging averages answers nothing here.</p>" },
+
+    { n:11, section:'Mathematics', topic:"Statistics", fmt:"diagram", 
+      stem:"<p>The histogram shows the marks scored by the students of a class in a test. The classes <b>do not have equal widths</b>, so each bar’s height has been adjusted to show the number of students <b>per 10 marks</b>. How many students scored <b>20 marks or more</b>?</p>", 
+      fig:"<svg viewBox=\"0 0 356 240\" width=\"356\" height=\"240\" role=\"img\" aria-label=\"Histogram with class boundaries 0, 10, 20, 40, 70 marks; bar heights 4, 7, 5 and 2 on a scale of frequency per 10 marks\"><g stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"><line x1=\"46\" y1=\"174\" x2=\"326\" y2=\"174\"/><line x1=\"46\" y1=\"152\" x2=\"326\" y2=\"152\"/><line x1=\"46\" y1=\"130\" x2=\"326\" y2=\"130\"/><line x1=\"46\" y1=\"108\" x2=\"326\" y2=\"108\"/><line x1=\"46\" y1=\"86\" x2=\"326\" y2=\"86\"/><line x1=\"46\" y1=\"64\" x2=\"326\" y2=\"64\"/><line x1=\"46\" y1=\"42\" x2=\"326\" y2=\"42\"/><line x1=\"46\" y1=\"20\" x2=\"326\" y2=\"20\"/></g><rect x=\"46\" y=\"108\" width=\"40\" height=\"88\" fill=\"var(--maths)\" fill-opacity=\".22\" stroke=\"var(--maths)\" stroke-width=\"1.8\"/><rect x=\"86\" y=\"42\" width=\"40\" height=\"154\" fill=\"var(--maths)\" fill-opacity=\".22\" stroke=\"var(--maths)\" stroke-width=\"1.8\"/><rect x=\"126\" y=\"86\" width=\"80\" height=\"110\" fill=\"var(--maths)\" fill-opacity=\".22\" stroke=\"var(--maths)\" stroke-width=\"1.8\"/><rect x=\"206\" y=\"152\" width=\"120\" height=\"44\" fill=\"var(--maths)\" fill-opacity=\".22\" stroke=\"var(--maths)\" stroke-width=\"1.8\"/><g stroke=\"currentColor\" stroke-width=\"1.6\"><line x1=\"46\" y1=\"196\" x2=\"338\" y2=\"196\"/><line x1=\"46\" y1=\"196\" x2=\"46\" y2=\"12\"/></g><g fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-size=\"11\"><text x=\"46\" y=\"211\" text-anchor=\"middle\">0</text><text x=\"86\" y=\"211\" text-anchor=\"middle\">10</text><text x=\"126\" y=\"211\" text-anchor=\"middle\">20</text><text x=\"206\" y=\"211\" text-anchor=\"middle\">40</text><text x=\"326\" y=\"211\" text-anchor=\"middle\">70</text><text x=\"40\" y=\"200\" text-anchor=\"end\">0</text><text x=\"40\" y=\"178\" text-anchor=\"end\">1</text><text x=\"40\" y=\"156\" text-anchor=\"end\">2</text><text x=\"40\" y=\"134\" text-anchor=\"end\">3</text><text x=\"40\" y=\"112\" text-anchor=\"end\">4</text><text x=\"40\" y=\"90\" text-anchor=\"end\">5</text><text x=\"40\" y=\"68\" text-anchor=\"end\">6</text><text x=\"40\" y=\"46\" text-anchor=\"end\">7</text><text x=\"40\" y=\"24\" text-anchor=\"end\">8</text><text x=\"186\" y=\"230\" text-anchor=\"middle\" font-style=\"italic\">Marks</text><text x=\"14\" y=\"108\" text-anchor=\"middle\" font-style=\"italic\" transform=\"rotate(-90 14 108)\">Students per 10 marks</text></g></svg>", 
+      figCap:"Classes 0–10, 10–20, 20–40 and 40–70. The vertical scale is students per 10 marks.", 
+      options:["7", "14", "27", "16"], answer:3, 
+      sol:"<p>Frequency = height × (class width ÷ 10).</p><p>20–40 is 20 marks wide: 5 × 2 = <b>10</b> students. 40–70 is 30 marks wide: 2 × 3 = <b>6</b> students.</p><p>20 marks or more: 10 + 6 = <b>16</b>.</p><p>(For the record, the whole class is 4 + 7 + 10 + 6 = 27.)</p><p><b>Where the other options come from.</b> (1) 7 — the two bar heights 5 + 2 added as if they were frequencies; that ignores the adjustment the stem warns about. (2) 14 — the 40–70 class taken as 20 marks wide (2 × 2 = 4, and 10 + 4 = 14): the width is 70 − 40 = 30. (3) 27 — the whole class, with the “20 or more” condition dropped.</p>" },
+
+    { n:12, section:'Mathematics', topic:"Statistics", fmt:"plain", 
+      stem:"<p>The mean weight of <b>10</b> bags of rice in a godown is <b>24 kg</b>. Two bags of equal weight, <i>w</i> kg each, are sent out, where <i>w</i> is a whole number with <b>20 &lt; <i>w</i> &lt; 40</b>. The mean weight of the remaining bags is now a <b>whole number</b> of kilograms and is <b>less than 24 kg</b>. How many values of <i>w</i> are possible?</p>", 
+      options:["1", "3", "4", "7"], answer:1, 
+      sol:"<p>Total = 10 × 24 = 240 kg. After two bags go, 8 remain, with mean (240 − 2<i>w</i>)/8.</p><p><b>Whole number.</b> 240 is a multiple of 8, so 2<i>w</i> must be too, which means <i>w</i> is a multiple of <b>4</b>. In 20 &lt; <i>w</i> &lt; 40 that gives 24, 28, 32, 36.</p><p><b>Less than 24.</b> The mean falls only if the bags removed are heavier than the mean, so <i>w</i> &gt; 24. That rules out 24, which leaves the mean at exactly 24.</p><p>So <i>w</i> = 28, 32 or 36, giving means 23, 22 and 21 → <b>3</b> values.</p><p><b>Where the other options come from.</b> (3) 4 — the “less than 24” clause skipped, so <i>w</i> = 24 is kept (its mean is 24, not less). (4) 7 — “2<i>w</i> divisible by 8” read as “<i>w</i> even”; with <i>w</i> &gt; 24 that keeps 26, 28, …, 38, seven values, but <i>w</i> = 26 gives 188/8 = 23.5. (1) 1 — “2<i>w</i> divisible by 8” read as “<i>w</i> divisible by 8”: 24 or 32, and with <i>w</i> &gt; 24 only 32; but 2 × 28 = 56 = 7 × 8 already works.</p>" },
+
+    { n:13, section:'Mathematics', topic:"Statistics", fmt:"statement", 
+      stem:"<p>Consider the following statements.</p><ol class=\"roman\"><li>If every observation in a data set is increased by 5, the mean increases by 5 and the range does not change.</li><li>If every observation is doubled, the range is doubled.</li><li>The mean of the first ten even natural numbers is 10.</li><li>If the mean of 6, 9, <i>x</i>, 12, 14 is 12, then the range of these five numbers is 13.</li></ol><p>Which of the statements are correct?</p>", 
+      options:["I and II only", "I, II and IV only", "I, III and IV only", "I, II, III and IV"], answer:1, 
+      sol:"<p><b>I</b> — correct. Adding 5 to each of <i>n</i> values adds 5<i>n</i> to the sum, so 5 to the mean; the largest and smallest both rise by 5, so their difference is unchanged.<br><b>II</b> — correct. Largest and smallest both double, so their difference doubles.<br><b>III</b> — <b>wrong</b>. 2 + 4 + … + 20 = 2(1 + 2 + … + 10) = 110, and 110 ÷ 10 = <b>11</b>, not 10.<br><b>IV</b> — correct. The sum must be 5 × 12 = 60, so <i>x</i> = 60 − 41 = 19. Now 19 is the largest value, so the range is 19 − 6 = 13.</p><p>So <b>I, II and IV</b>.</p><p><b>Where the other options come from.</b> (1) I and II only — IV rejected by reading the range off the printed numbers, 14 − 6 = 8, without finding <i>x</i>: at 19 it is the new largest value. (3) I, III and IV only — III accepted by taking the mean of the first ten even numbers as 20 ÷ 2 = 10 (the mean of 2 to 20 is (2 + 20)/2 = 11); and II rejected by thinking the range, a difference, is unaffected by scaling as it is by shifting. (4) All four — III accepted without doing the sum.</p>" }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+/* "👁 Just checking" (device-local hubPreview = the ms timestamp it was switched on; it lapses
+   after 2 hours). While on, Submit ASKS whether to save — so a forgotten switch can never
+   silently swallow a real attempt. */
+function isPreview(){ return (function(){ try { var v = +JSON.parse(localStorage.getItem('hubPreview') || '0'); return v > 1e12 && Date.now() - v < 7200000; } catch(e){ return false; } })(); }
+let NOT_SAVED = false;
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- just look: the questions, read-only; nothing marked, nothing recorded ---- */
+function viewOnly(){
+  if(started) return;
+  document.body.classList.add('viewonly');
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '👁 <b>Just looking.</b> Nothing is marked or recorded. To answer these, go back and start the paper.'
+                + '<button class="bigbtn" type="button" style="margin-left:auto" onclick="location.reload()">← Back to start</button>';
+  $('paperBody').insertBefore(bar, $('paperBody').firstChild);
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  if(!RESTORING && NOT_SAVED){ const rc = $('results').querySelector('.rcard');
+    if(rc) rc.insertAdjacentHTML('beforeend', '<div class="rnote">👁 <b>Just checking was on</b> — this attempt was marked but not recorded.</div>'); }
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b,a,md,tm,v:2} (+f only if a flag was set).
+   Every paper stores its answers so the marked review replays (a mock opens it automatically;
+   the others via "See your last attempt"); the hub only ever reads m/mx. Written MERGE-ONLY.
+   COMPACT on purpose: the whole shared record is ONE Apps Script property with a 9216-byte
+   ceiling, so answers are one character per question ('0'–'3', '-' = blank), not an array. */
+function saveAttempt(sc, timeTaken){
+  if(isPreview() && !confirm('👁 Just checking is on for this device.\n\nSave this attempt to your progress?\n\nOK = save it (a real attempt)\nCancel = don\'t record (only checking)')){ NOT_SAVED = true; return; }
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank,
+                a:answers.map(x => x === null ? '-' : x).join(''), md:mode === 'timed' ? 't' : 'p', tm:timeTaken, v:2 };
+  if(flags.some(Boolean)) rec.f = flags.map(x => x ? 1 : 0).join('');
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function decodeRec(rec){          /* v2 strings and v1 arrays both replay */
+  if(!rec || !rec.a) return null;
+  const a = typeof rec.a === 'string' ? rec.a.split('').map(c => c === '-' ? null : +c) : rec.a.slice();
+  if(a.length !== NQ) return null;                 /* the paper changed shape since — never mis-mark */
+  const f = typeof rec.f === 'string' ? rec.f.split('').map(c => c === '1')
+          : Array.isArray(rec.f) ? rec.f.slice() : new Array(NQ).fill(false);
+  const md = rec.md === 't' ? 'timed' : rec.md === 'p' ? 'practice' : (rec.md || 'timed');
+  return { a, f, md };
+}
+function showFrozen(rec){
+  const d = decodeRec(rec);
+  if(!d || submitted) return;
+  RESTORING = true;
+  answers = d.a;
+  flags   = d.f;
+  mode    = d.md;
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = !IS_MOCK
+    ? '📋 <b>Your last attempt — ' + String(rec.t || '').slice(0, 10) + '.</b> Your answers, what was right and wrong, and every worked solution. ↺ Retake starts a fresh attempt.'
+      + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>'
+    : '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('viewOnly').addEventListener('click', viewOnly);
+$('lastAttempt').addEventListener('click', () => { const r = progLoad()[REP_ID]; if(r && r.a) showFrozen(r); });
+if(IS_MOCK && !TEACHER && !isPreview()) $('viewOnly').hidden = true;   /* a one-shot mock is not previewed */
+if(isPreview()) $('startNote').insertAdjacentHTML('beforeend', ' <b>👁 Just checking is on</b> — when you submit, you will be asked whether to save the attempt.');
+function paintLast(){
+  if(IS_MOCK) return;
+  const r = progLoad()[REP_ID], b = $('lastAttempt');
+  const ok = !!decodeRec(r);
+  b.hidden = !ok;
+  if(ok) b.textContent = '📋 See your last attempt · ' + r.m + '/' + r.mx;
+}
+paintLast();
+window.addEventListener('miraya-progress-synced', paintLast);
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
