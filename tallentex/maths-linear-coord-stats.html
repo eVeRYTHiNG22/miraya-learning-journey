@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Linear Equations, Coordinates &amp; Statistics</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%237c8cff'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--maths);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #2e246b30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--maths); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--maths); }
+  .toolbtn:focus-visible { outline:2px solid var(--maths); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#241f4a); border:1px solid #332d5e;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--maths); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--maths); background:color-mix(in srgb,var(--maths) 14%,transparent); border:1px solid color-mix(in srgb,var(--maths) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child, .box .tablewrap:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--maths); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--maths); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+  svg text { font-family:'Inter',sans-serif; }
+  svg .mono { font-family:'JetBrains Mono',monospace; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; margin:12px 0; }
+  .tablewrap table { margin:0; }
+  .ask table { min-width:620px; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--maths); background:color-mix(in srgb,var(--maths) 13%,transparent); border:1px solid color-mix(in srgb,var(--maths) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--maths); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--maths); background:color-mix(in srgb,var(--maths) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--maths) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5b40d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#e9e6fb,#e8f0fb); border-color:#cfc7ee; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb.on { background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Maths · Crash notes</div>
+    <h1>Linear Equations, Coordinates &amp; Statistics</h1>
+    <p class="sub">Official topics: <b>Pair of Linear Equations in Two Variables</b> (Class 10), <b>Coordinate
+    Geometry</b> (Class 10) and <b>Statistics</b> (Class 9) — three topics, one card. Your IGCSE course already
+    solves simultaneous equations, finds lengths and midpoints, and works means and histograms, so most of this
+    page is NCERT's framing plus the five ways Allen dresses each topic up. <b>New to you:</b> the ratio test
+    for how many solutions a pair has, the <em>section formula</em> (a point dividing a segment in a given ratio)
+    and the centroid, and the unequal-width histogram. A 30-minute read, then the paper.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Every Maths question (Q46–60) in all five cached papers — four real sittings and Allen's official
+      sample — was read page by page, the 2017 and 2018 booklets rendered from their image scans (a text
+      search returns nothing for them), and every item from these three chapters re-solved against Allen's own
+      key sheets. <b>Twelve items in five papers:</b></p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th>Paper</th><th>Q</th><th>Topic</th><th>What it gives you</th><th>What it wants</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td>2017 · E</td><td class="mono">47</td><td>Linear equations</td><td>Two chairs per table leaves one chair spare; three per table leaves one table empty</td><td>Tables + chairs</td><td class="mono">(4) 13</td></tr>
+          <tr><td>2017 · E</td><td class="mono">58</td><td>Statistics</td><td>15 students average 12 books; exactly two got the same number, the other 13 average a whole number</td><td>What that shared number could be</td><td class="mono">(4) 25</td></tr>
+          <tr><td>2018 · S</td><td class="mono">47</td><td>Linear equations</td><td>Three equations in the ages of husband, wife and daughter (h + 2w + 3d = 85, 2h + 4w + 6d = 170, 5h + 10w + 15d = 450)</td><td>The <em>number</em> of solutions</td><td class="mono">(1) 0</td></tr>
+          <tr><td>2018 · S</td><td class="mono">58</td><td>Statistics</td><td>The mean of x, x + 2, x + 7, x + 11 and 2x is 16</td><td>The value of 2x</td><td class="mono">(2) 20</td></tr>
+          <tr><td>2024 · U</td><td class="mono">50</td><td>Statistics</td><td>Scores <em>in descending order</em> x, 76, 75, 73, 68, 66, 63, 61; range 39</td><td>√(digit sum of x)</td><td class="mono">(4) 1</td></tr>
+          <tr><td>2024 · U</td><td class="mono">54</td><td>Coordinate geometry</td><td>A rectangle ABCD drawn on axes (the only figure in the set): A(9, 2), B(15, b), C(a, 13), D(5, 5)</td><td>a − b</td><td class="mono">(4) 1</td></tr>
+          <tr><td>2024 · U</td><td class="mono">57</td><td>Linear equations</td><td>ax + by = a + b and bx + ay = ab(a + b)/(a² − ab + b²)</td><td>x and y, as formulas in a and b</td><td class="mono">(1) x = a²/(a² − ab + b²), y = b²/(a² − ab + b²)</td></tr>
+          <tr><td>2024 · A</td><td class="mono">50</td><td>Statistics</td><td>Five odd numbers in ascending order; the average of the first three is 10 less than that of the last three; the last two add to 42</td><td>Sum of the first two</td><td class="mono">(3) 12</td></tr>
+          <tr><td>2024 · A</td><td class="mono">54</td><td>Coordinate geometry</td><td>The midpoints of a triangle's sides are (2, −4), (5, 7) and (−7, 3)</td><td>The centroid</td><td class="mono">(1) (0, 2)</td></tr>
+          <tr><td>2024 · A</td><td class="mono">57</td><td>Linear equations</td><td>Two bag types, two machines, hours per bag and hours available, profit per bag; four production plans offered</td><td>Which plan fits the hours <em>and</em> earns most</td><td class="mono">(1) 75 standard, 80 deluxe</td></tr>
+          <tr><td>Sample</td><td class="mono">46</td><td>Linear equations</td><td>87x + 53y = 15 and 53x + 87y = −155</td><td>x − y</td><td class="mono">(2) 5</td></tr>
+          <tr><td>Sample</td><td class="mono">59</td><td>Statistics</td><td>30 students, mean weight 62.5 kg; one of 71.5 kg leaves, one of 53.5 kg joins</td><td>The new mean</td><td class="mono">(3) 61.9 kg</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>What that tells you:</p>
+      <ol>
+        <li><b>Two or three of the fifteen Maths questions a sitting</b> — 2017-E two, 2018-S two, 2024-U three,
+        2024-A three, the sample two — so 8–12 marks. <b>Both 2024 codes put the Statistics item at
+        <span class="m">Q50</span>, the coordinate-geometry item at <span class="m">Q54</span> and the
+        linear-equations item at <span class="m">Q57</span></b> — three fixed slots in the recent papers.</li>
+        <li><b>Only one of the twelve carries a figure</b> — 2024-U Q54's rectangle on axes, where the figure
+        <em>is</em> the data (four labelled vertices). No pair of lines is ever drawn for you, no histogram, no
+        frequency polygon. The <em>graphical</em> half of all three NCERT chapters was never asked in five
+        papers; the arithmetic half was asked every time.</li>
+        <li><b>Statistics is never a table.</b> No grouped data, no median or mode read off a list, no
+        histogram — all five items are <em>mean or range arithmetic wrapped in a puzzle</em>: a sum that must
+        divide exactly, a replaced student, the averages of overlapping subsets, an ordering clause that fixes
+        which end x is on. The rationalised Class 9 print dropped mean, median and mode altogether; Allen asks
+        them anyway, so section 4 carries them.</li>
+        <li><b>"How many solutions" beats "what is the solution".</b> Only one of the five linear-equation items
+        is a plain solve (Sample Q46), and even that is the add-and-subtract trick rather than elimination. The
+        others are a word problem, a consistency test with <em>three</em> unknowns, a system whose answer is a
+        formula, and a check of four candidate plans against two constraints. Section 2 has all five machines.</li>
+        <li><b>Coordinate geometry appeared twice in five papers, both times in 2024</b> — a rectangle on axes
+        whose unknown vertices fall out of "opposite sides are equal and parallel" (code U), and a centroid from
+        three midpoints (code A), which the rationalised NCERT chapter never states. Know the four formulas cold
+        (distance, section, midpoint, centroid) and expect one item a sitting; the hub's Maths subject paper
+        carries three.</li>
+        <li><b>Three of the twelve are fastest by testing the options</b> — 2024-U Q57 (substitute each formula
+        pair), 2024-A Q57 (check each plan against the hours) and 2017-E Q58 (which option makes the division
+        exact). When the options are candidates, verifying beats solving.</li>
+      </ol>
+      <p><b>Budget accordingly.</b> An 8–12-mark unit whose items run 45–120 s each once the machine is
+      recognised. The marks are lost on the <em>translation</em> — a sentence into an equation, an average into a
+      sum, "descending" into "x is the largest" — not on the arithmetic that follows.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">1</span>Pair of linear equations — one line each, three ways two lines can meet</h2>
+    <p class="lede">NCERT writes every equation as <b>a₁x + b₁y + c₁ = 0</b> and <b>a₂x + b₂y + c₂ = 0</b>. Each is a
+    straight line; a <em>solution</em> is a point on both. So the whole chapter is one picture: two lines cross
+    once, never, or lie on top of each other.</p>
+
+    <figure>
+      <div class="figrow">
+      <svg viewBox="0 0 200 182" width="200" height="182" role="img" aria-label="Two lines crossing at one point">
+        <path d="M30 120 H150 M30 120 V20" fill="none" stroke="var(--muted)" stroke-width="1"/>
+        <line x1="18" y1="36" x2="114" y2="132" stroke="var(--maths)" stroke-width="2.4"/>
+        <line x1="42" y1="132" x2="138" y2="36" stroke="var(--rose)" stroke-width="2.4"/>
+        <circle cx="78" cy="96" r="4.5" fill="var(--power)"/>
+        <text x="86" y="100" font-size="11" fill="var(--text)">(4, 2)</text>
+        <text x="90" y="160" font-size="12" font-weight="600" fill="var(--text)" text-anchor="middle">one solution</text>
+        <text x="90" y="174" font-size="10.5" fill="var(--muted)" text-anchor="middle" class="mono">a₁/a₂ ≠ b₁/b₂</text>
+      </svg>
+      <svg viewBox="0 0 200 182" width="200" height="182" role="img" aria-label="Two parallel lines">
+        <path d="M30 120 H150 M30 120 V20" fill="none" stroke="var(--muted)" stroke-width="1"/>
+        <line x1="18" y1="60" x2="90" y2="132" stroke="var(--maths)" stroke-width="2.4"/>
+        <line x1="18" y1="24" x2="126" y2="132" stroke="var(--rose)" stroke-width="2.4"/>
+        <text x="90" y="160" font-size="12" font-weight="600" fill="var(--text)" text-anchor="middle">no solution</text>
+        <text x="90" y="174" font-size="10.5" fill="var(--muted)" text-anchor="middle" class="mono">a₁/a₂ = b₁/b₂ ≠ c₁/c₂</text>
+      </svg>
+      <svg viewBox="0 0 200 182" width="200" height="182" role="img" aria-label="Two coincident lines">
+        <path d="M30 120 H150 M30 120 V20" fill="none" stroke="var(--muted)" stroke-width="1"/>
+        <line x1="18" y1="48" x2="102" y2="132" stroke="var(--maths)" stroke-width="5"/>
+        <line x1="18" y1="48" x2="102" y2="132" stroke="var(--rose)" stroke-width="2" stroke-dasharray="6 5"/>
+        <text x="90" y="160" font-size="12" font-weight="600" fill="var(--text)" text-anchor="middle">infinitely many</text>
+        <text x="90" y="174" font-size="10.5" fill="var(--muted)" text-anchor="middle" class="mono">a₁/a₂ = b₁/b₂ = c₁/c₂</text>
+      </svg>
+      </div>
+      <figcaption>Left: x + y = 6 and x − y = 2 cross at (4, 2) — <b>consistent</b>, one solution. Middle: x + y = 4 and
+      x + y = 7 are parallel — <b>inconsistent</b>, no solution. Right: x + y = 5 and 2x + 2y = 10 are the same line —
+      <b>dependent</b> (and consistent), infinitely many solutions.</figcaption>
+    </figure>
+
+    <div class="box def">
+      <h4>The ratio test — NCERT's table, one line</h4>
+      <p>Compare the coefficients of the two equations, both written in the <b>same form</b>:</p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th>Ratios</th><th>Lines</th><th>Solutions</th><th>NCERT's word</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">a₁/a₂ ≠ b₁/b₂</td><td>intersect</td><td><b>exactly one</b></td><td>consistent</td></tr>
+          <tr><td class="mono">a₁/a₂ = b₁/b₂ ≠ c₁/c₂</td><td>parallel</td><td><b>none</b></td><td>inconsistent</td></tr>
+          <tr><td class="mono">a₁/a₂ = b₁/b₂ = c₁/c₂</td><td>coincident</td><td><b>infinitely many</b></td><td>dependent (consistent)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>Try it: <span class="m">2x + 3y = 9</span> against <span class="m">4x + 6y = 18</span> — ratios ½, ½, ½ →
+      coincident. Against <span class="m">4x + 6y = 20</span> — ½, ½, 9/20 → parallel, no solution. Against
+      <span class="m">4x − 6y = 20</span> — ½ ≠ −½ → one solution, and only then is it worth solving.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Trap — the c-ratio only means something in one form</h4>
+      <p>NCERT's c is the constant in <span class="m">ax + by + c = 0</span>, so 2x + 3y = 9 has c = <b>−9</b>. If
+      you keep both equations as "= constant" instead, the test still works — what breaks it is comparing one
+      equation's "+ c = 0" constant with the other's "= c" constant. Pick one form for both, then compare.
+      The a and b ratios do not care which form you use.</p>
+    </div>
+
+    <h3>The parameter question — "for which k are there infinitely many / no solutions?"</h3>
+    <p>Set up the ratio chain and solve it <em>in two halves</em>. For infinitely many solutions of
+    <span class="m">x + (k + 1)y = 5</span> and <span class="m">(k + 1)x + 9y = 8k − 1</span>:</p>
+    <ul>
+      <li><b>a = b half:</b> 1/(k + 1) = (k + 1)/9 → (k + 1)² = 9 → k + 1 = ±3 → <b>k = 2 or k = −4</b>.</li>
+      <li><b>c half:</b> the constants' ratio must match the (now equal) coefficient ratio too. k = 2: a-ratio 1/3
+      and c-ratio 5/15 = 1/3 ✓. k = −4: 1/(−3) but 5/(−33) ✗. So <b>k = 2 only</b>.</li>
+    </ul>
+    <p>The wrong option Allen always plants is "both values" — the answer to the first half alone. For
+    <em>no</em> solution you want the first half to hold and the second to <em>fail</em>, so k = −4 would be the
+    no-solution answer here. Read which of the two the stem asks.</p>
+
+    <div class="box def">
+      <h4>Solving — NCERT keeps two methods; both are the ones you already use</h4>
+      <p><b>Substitution</b> (express one unknown from the easier equation, put it in the other) and
+      <b>elimination</b> (scale one or both so a coefficient matches, then add or subtract). The
+      cross-multiplication method and "equations reducible to a pair" were removed in the rationalised print
+      (from memory — no NCERT copy is cached in this project) and are not asked in five papers. Under the clock, <b>elimination on whichever unknown has the smaller lowest common
+      multiple</b>, and always substitute the answer back into the equation you did not use for the last step.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>The five linear-equation machines the real papers use</h2>
+    <p class="lede">Five items in five papers, five different machines. Recognise which one you are in before
+    you write a line — three of them are <b>not</b> "solve the pair".</p>
+
+    <h3>A · Swapped coefficients → add and subtract (Sample Q46)</h3>
+    <p>When the x-coefficient of one equation is the y-coefficient of the other, <b>adding</b> the two
+    gives (a + b)(x + y) and <b>subtracting</b> gives (a − b)(x − y). Fresh numbers:
+    <span class="m">73x + 29y = 175</span> and <span class="m">29x + 73y = 131</span>.</p>
+    <ul>
+      <li>Add: 102(x + y) = 306 → <b>x + y = 3</b>.</li>
+      <li>Subtract: 44(x − y) = 44 → <b>x − y = 1</b>.</li>
+      <li>So x = 2, y = 1 — but Allen usually stops at x − y or x + y and offers <em>"cannot be determined"</em>
+      as bait. It always can: two independent equations in two unknowns determine both.</li>
+    </ul>
+
+    <h3>B · A story → two equations (2017-E Q47)</h3>
+    <p>Name the two unknowns, translate <em>each sentence</em> into one equation, solve, then answer the
+    question that was actually asked. The 2017 item: tables t, chairs c. "Two chairs at each table leaves one
+    chair over" → c = 2t + 1. "Three at each table leaves one table with no chairs" → the chairs fill t − 1
+    tables: c = 3(t − 1). So 2t + 1 = 3t − 3 → t = 4, c = 9, and the question wanted the <em>sum</em>: 13.
+    Neither 4 nor 9 was an option — the wrong options (12, 7, 17) all imitate a sum, so finding t and stopping
+    earns nothing.</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>NCERT dressing</th><th>Unknowns</th><th>The translation to remember</th></tr></thead>
+      <tbody>
+        <tr><td>Two-digit number</td><td>tens t, units u</td><td>number = 10t + u; reversed = 10u + t; their difference is 9(u − t)</td></tr>
+        <tr><td>Ages</td><td>present ages</td><td>"n years ago" subtracts n from <em>both</em>; "n years hence" adds to both</td></tr>
+        <tr><td>Fixed + per-unit charge</td><td>fixed f, rate r</td><td>10 km costs ₹105, 15 km costs ₹155 → f + 10r = 105, f + 15r = 155 → r = 10, f = 5 → 25 km = ₹255</td></tr>
+        <tr><td>Boat in a stream</td><td>boat b, current c</td><td>downstream speed b + c, upstream b − c. 24 km in 2 h down, 3 h up → b + c = 12, b − c = 8 → b = 10, c = 2</td></tr>
+        <tr><td>Fraction</td><td>numerator n, denominator d</td><td>"becomes ½ when 1 is added to both" → (n + 1)/(d + 1) = ½ → 2n + 2 = d + 1</td></tr>
+        <tr><td>Coins / notes</td><td>counts</td><td>one equation counts pieces, the other counts rupees</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>C · "How many solutions?" with three unknowns (2018-S Q47)</h3>
+    <p>The 2018 item gave three equations in h, w and d and asked for the <em>number</em> of solutions. Do not
+    solve — <b>scale each equation to look like the first</b>: 2h + 4w + 6d = 170 is exactly 2 × (h + 2w + 3d = 85),
+    so it says nothing new; 5h + 10w + 15d = 450 divided by 5 is h + 2w + 3d = <b>90</b>, which contradicts the 85.
+    <b>Same left-hand side, different right-hand side ⇒ no solution</b>, whatever the number of unknowns. Had it
+    been 425 instead of 450, all three would say the same thing — one equation, three unknowns, infinitely
+    many. This is the ratio test in a bigger coat.</p>
+
+    <h3>D · Coefficients that are letters → verify the options (2024-U Q57)</h3>
+    <p><span class="m">ax + by = a + b</span> and <span class="m">bx + ay = ab(a + b)/(a² − ab + b²)</span>, options
+    given as formulas. Two tells: the denominator <b>a² − ab + b²</b> is the partner of (a + b) in
+    <b>a³ + b³ = (a + b)(a² − ab + b²)</b>, and the options are candidates. So <em>substitute</em> rather than
+    solve: with x = a²/D and y = b²/D (D = a² − ab + b²), the first equation gives (a³ + b³)/D = a + b ✓ and the
+    second gives (a²b + ab²)/D = ab(a + b)/D ✓. One option, two ticks, done in 40 seconds; eliminating by
+    hand is three minutes of algebra with the same answer. The reversed pair (x = b²/D, y = a²/D) fails the
+    first equation — that is the planted distractor.</p>
+
+    <h3>E · Four plans, two constraints (2024-A Q57)</h3>
+    <p>Hours per bag on machines A and B, hours available, profit per bag, and four production plans:
+    "which meets the constraints <em>and</em> maximises profit?" Each option is a point (standard, deluxe).
+    <b>Step 1 — kill the infeasible.</b> Plan (50, 100) needs 6·50 + 10·100 = 1300 h on B against 1250:
+    out. Plan (60, 90) needs 1260: out. <b>Step 2 — compare profit among the survivors only.</b> (75, 80) earns
+    20·75 + 30·80 = ₹3900; (100, 60) earns ₹3800. So (75, 80). The trap: the plan with the largest profit of all
+    four (₹4000 for (50, 100)) is the one that breaks a machine — profit is compared <em>after</em> the
+    feasibility cut, never before.</p>
+
+    <div class="box exam">
+      <h4>The 60-second triage for a linear-equations item</h4>
+      <ol>
+        <li>Coefficients <b>swapped</b>? → add and subtract (A).</li>
+        <li>Asked <b>how many</b> solutions, or for a parameter? → ratio test, scale to compare (§1, C).</li>
+        <li>Options are <b>formulas or plans</b>? → substitute or check; do not solve (D, E).</li>
+        <li>A story? → two unknowns, one equation per sentence, and re-read <em>what</em> is asked (B).</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>Coordinate geometry — four formulas and the tricks built on them</h2>
+    <p class="lede">The rationalised NCERT Class 10 chapter is two formulas long: <b>distance</b> and
+    <b>section</b> (with the midpoint as its special case). Allen's items add the centroid and, at subject level,
+    an area. There is no gradient and no y = mx + c here — that is your IGCSE chapter, and it is still legal to
+    use, but nothing on the 47-list needs it.</p>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">AB = √[(x₂ − x₁)² + (y₂ − y₁)²]</div><div class="wh"><b>Distance.</b> From the origin: √(x² + y²). Compare <em>squared</em> distances and take one root at the end.</div></div>
+      <div class="fx"><div class="eq">P = ( (m x₂ + n x₁)/(m + n), (m y₂ + n y₁)/(m + n) )</div><div class="wh"><b>Section</b> — P divides AB in the ratio m : n <em>from A</em>. The m multiplies the <b>far</b> point B.</div></div>
+      <div class="fx"><div class="eq">M = ( (x₁ + x₂)/2, (y₁ + y₂)/2 )</div><div class="wh"><b>Midpoint</b> = section with m = n. Parallelogram: the diagonals share a midpoint.</div></div>
+      <div class="fx"><div class="eq">G = ( (x₁ + x₂ + x₃)/3, (y₁ + y₂ + y₃)/3 )</div><div class="wh"><b>Centroid</b> — not in the rationalised print; Allen assumes it (2024-A Q54). Divides each median 2 : 1 from the vertex.</div></div>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 360 230" width="360" height="230" role="img" aria-label="Section formula: P divides AB in the ratio 1 to 2, with horizontal and vertical projections forming similar right triangles">
+        <g fill="none" stroke="var(--muted)" stroke-width="1"><path d="M40 200 H345 M40 200 V15"/></g>
+        <text x="335" y="214" font-size="11" fill="var(--muted)">x</text>
+        <text x="27" y="22" font-size="11" fill="var(--muted)">y</text>
+        <!-- projections -->
+        <path d="M80 160 H320 V40" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <path d="M160 160 V120" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <path d="M320 152 H312 V160" fill="none" stroke="var(--muted)" stroke-width="1"/>
+        <path d="M160 152 H152 V160" fill="none" stroke="var(--muted)" stroke-width="1"/>
+        <!-- AB -->
+        <line x1="80" y1="160" x2="320" y2="40" stroke="var(--maths)" stroke-width="2.6"/>
+        <circle cx="80" cy="160" r="4.5" fill="var(--maths)"/>
+        <circle cx="320" cy="40" r="4.5" fill="var(--maths)"/>
+        <circle cx="160" cy="120" r="5" fill="var(--rose)"/>
+        <text x="46" y="150" font-size="12.5" font-weight="600" fill="var(--text)">A(x₁, y₁)</text>
+        <text x="288" y="30" font-size="12.5" font-weight="600" fill="var(--text)">B(x₂, y₂)</text>
+        <text x="146" y="108" font-size="12.5" font-weight="600" fill="var(--rose)">P</text>
+        <text x="105" y="132" font-size="12" fill="var(--rose)" font-weight="600">m</text>
+        <text x="236" y="72" font-size="12" fill="var(--rose)" font-weight="600">n</text>
+        <text x="106" y="176" font-size="11" fill="var(--muted)">x − x₁</text>
+        <text x="204" y="176" font-size="11" fill="var(--muted)">x₂ − x</text>
+        <text x="326" y="104" font-size="11" fill="var(--muted)">y₂ − y₁</text>
+        <text x="166" y="144" font-size="11" fill="var(--muted)">y − y₁</text>
+      </svg>
+      <figcaption>The section formula is two similar right triangles: AP : PB = m : n, so the horizontal runs
+      split in the same ratio, (x − x₁) : (x₂ − x) = m : n, and so do the vertical rises. Here A(1, 1), B(7, 4),
+      m : n = 1 : 2 gives P = ((1·7 + 2·1)/3, (1·4 + 2·1)/3) = (3, 2).</figcaption>
+    </figure>
+
+    <div class="box trap">
+      <h4>Three traps in the section formula</h4>
+      <ul>
+        <li><b>Which point does m multiply?</b> The far one. P divides AB "in the ratio 2 : 3" means AP : PB = 2 : 3,
+        so x = (2x₂ + 3x₁)/5. Swap them and you get the point that divides it 3 : 2 — always an option.</li>
+        <li><b>"In what ratio does the x-axis divide the join of A and B?"</b> Put P = (x, 0), call the ratio k : 1,
+        and set the <em>y</em>-coordinate to zero: for A(2, −3), B(5, 6), (6k − 3)/(k + 1) = 0 → k = ½ → <b>1 : 2</b>,
+        and then the point is x = (1·5 + 2·2)/3 = 3, i.e. (3, 0). A point on the x-axis is (x, 0); on the y-axis it is
+        (0, y). Mixing these two is the commonest slip in the chapter.</li>
+        <li><b>A negative ratio</b> means P is outside the segment (external division). The 2027 list's chapter
+        does not use it; if a ratio comes out negative, you have almost certainly swapped the points.</li>
+      </ul>
+    </div>
+
+    <h3>Distance — and never taking the root early</h3>
+    <p>"A point on the x-axis equidistant from (2, −5) and (−2, 9)": the point is (x, 0), so
+    (x − 2)² + 25 = (x + 2)² + 81. The x² cancels: −4x + 29 = 4x + 85 → −8x = 56 → <b>x = −7</b>, the point (−7, 0).
+    No root was ever taken. The same habit settles "which of these points is nearest the origin" (compare
+    x² + y²) and "is the triangle right-angled" (check a² + b² = c² on the three squared lengths).</p>
+    <p><b>Collinear points:</b> A, B, C are in a line when AB + BC = AC with B between. For (1, 2), (3, 6), (5, 10):
+    AB = √20 = 2√5, BC = 2√5, AC = √80 = 4√5 ✓. The faster test is the area below coming out as zero.</p>
+
+    <h3>Midpoints — the parallelogram trick and the medial triangle</h3>
+    <p><b>Parallelogram ABCD (in order):</b> its diagonals bisect each other, so midpoint of AC = midpoint of BD.
+    For A(−2, 1), B(a, 0), C(4, b), D(1, 2): x gives (−2 + 4)/2 = (a + 1)/2 → a = 1; y gives (1 + b)/2 = (0 + 2)/2 →
+    b = 1. The unknowns come out one coordinate at a time — never set up four distances. <b>This is 2024-U
+    Q54:</b> a rectangle ABCD on axes with A(9, 2), B(15, b), C(a, 13), D(5, 5) — mid AC = mid BD gives
+    (9 + a)/2 = (15 + 5)/2 → a = 11 and (2 + 13)/2 = (b + 5)/2 → b = 10, so a − b = 1. Equivalently, the vector
+    from A to B equals the vector from D to C: (6, b − 2) = (a − 5, 8). The right angle was never used.</p>
+
+    <figure>
+      <svg viewBox="0 0 330 240" width="330" height="240" role="img" aria-label="Triangle ABC with the midpoints D, E, F of its sides, the medial triangle DEF, the three medians, and the shared centroid G">
+        <polygon points="134,22 38,214 278,214" fill="none" stroke="var(--maths)" stroke-width="2.4"/>
+        <polygon points="158,214 206,118 86,118" fill="none" stroke="var(--rose)" stroke-width="1.8" stroke-dasharray="6 4"/>
+        <g stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 4">
+          <line x1="134" y1="22" x2="158" y2="214"/>
+          <line x1="38" y1="214" x2="206" y2="118"/>
+          <line x1="278" y1="214" x2="86" y2="118"/>
+        </g>
+        <g fill="var(--maths)">
+          <circle cx="134" cy="22" r="4"/><circle cx="38" cy="214" r="4"/><circle cx="278" cy="214" r="4"/>
+        </g>
+        <g fill="var(--rose)">
+          <circle cx="158" cy="214" r="4"/><circle cx="206" cy="118" r="4"/><circle cx="86" cy="118" r="4"/>
+        </g>
+        <circle cx="150" cy="150" r="5.5" fill="var(--power)"/>
+        <text x="127" y="15" font-size="12.5" font-weight="600" fill="var(--text)">A(1, 7)</text>
+        <text x="8" y="232" font-size="12.5" font-weight="600" fill="var(--text)">B(−3, −1)</text>
+        <text x="258" y="232" font-size="12.5" font-weight="600" fill="var(--text)">C(7, −1)</text>
+        <text x="146" y="232" font-size="12" font-weight="600" fill="var(--rose)">D(2, −1)</text>
+        <text x="212" y="114" font-size="12" font-weight="600" fill="var(--rose)">E(4, 3)</text>
+        <text x="46" y="114" font-size="12" font-weight="600" fill="var(--rose)">F(−1, 3)</text>
+        <text x="136" y="146" font-size="12.5" font-weight="600" fill="var(--power)">G</text>
+      </svg>
+      <figcaption>D, E, F are the midpoints of BC, CA, AB. The centroid of △DEF is the centroid of △ABC — the same
+      point G = ((1 − 3 + 7)/3, (7 − 1 − 1)/3) = ((2 + 4 − 1)/3, (−1 + 3 + 3)/3). That single fact is all 2024-A Q54
+      needed: average the three midpoints. Each side of DEF is parallel to a side of ABC and <b>half</b> its
+      length (the midpoint theorem, Class 9 Quadrilaterals).</figcaption>
+    </figure>
+
+    <div class="box def">
+      <h4>From midpoints back to vertices</h4>
+      <p>If D, E, F are the midpoints of BC, CA, AB, then <b>A = E + F − D</b> (add the two midpoints on A's sides,
+      subtract the one opposite), and likewise B = F + D − E, C = D + E − F — coordinate by coordinate. Check with the
+      figure: E + F − D = (4 − 1 − 2, 3 + 3 + 1) = (1, 7) = A ✓. And a side is twice the midline opposite it:
+      BC = 2·EF. Either route answers "find the vertices / a side" in under a minute.</p>
+    </div>
+
+    <h3>Area of a triangle — dropped from the print, kept here for two reasons</h3>
+    <p>For vertices (x₁, y₁), (x₂, y₂), (x₃, y₃): <b>Area = ½ |x₁(y₂ − y₃) + x₂(y₃ − y₁) + x₃(y₁ − y₂)|</b>. For
+    (1, −1), (−4, 6), (−3, −5): ½ |1(6 + 5) + (−4)(−5 + 1) + (−3)(−1 − 6)| = ½ |11 + 16 + 21| = <b>24</b>. It was removed
+    from the rationalised Class 10 chapter, but (i) area = 0 is the quickest collinearity test, and (ii) it is how a
+    "perpendicular from the origin to a line" item goes — the hub's subject paper has one:</p>
+
+    <figure>
+      <svg viewBox="0 0 275 178" width="275" height="178" role="img" aria-label="Right triangle OAB with O at the origin, A on the x-axis, B on the y-axis, and the perpendicular d from O to AB">
+        <g fill="none" stroke="var(--muted)" stroke-width="1"><path d="M30 150 H262 M30 150 V15"/></g>
+        <polygon points="30,150 240,150 30,38" fill="color-mix(in srgb,var(--maths) 12%,transparent)" stroke="var(--maths)" stroke-width="2.4"/>
+        <line x1="30" y1="150" x2="76.5" y2="62.8" stroke="var(--rose)" stroke-width="2" stroke-dasharray="5 4"/>
+        <path d="M71.2 60.0 L68.4 65.3 L73.7 68.1" fill="none" stroke="var(--rose)" stroke-width="1.2"/>
+        <text x="16" y="166" font-size="12.5" font-weight="600" fill="var(--text)">O</text>
+        <text x="228" y="168" font-size="12.5" font-weight="600" fill="var(--text)">A(15, 0)</text>
+        <text x="36" y="34" font-size="12.5" font-weight="600" fill="var(--text)">B(0, 8)</text>
+        <text x="140" y="94" font-size="12" fill="var(--text)">AB = 17</text>
+        <text x="60" y="112" font-size="12.5" font-weight="600" fill="var(--rose)">d</text>
+      </svg>
+      <figcaption>The line 8x + 15y = 120 meets the axes at A(15, 0) and B(0, 8), so AB = 17. The triangle's area
+      two ways: ½ · 15 · 8 = ½ · 17 · d, so <b>d = 120/17 ≈ 7.06</b>. Same trick as the altitude to the hypotenuse:
+      d = (product of the legs)/(hypotenuse).</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>Statistics — what NCERT Class 9 keeps, and what Allen asks anyway</h2>
+    <p class="lede">The rationalised Class 9 chapter is <b>graphs only</b>: bar graph, histogram (including unequal
+    class widths) and frequency polygon. Mean, median and mode were cut from it. <b>Every Allen Statistics item in
+    five papers was a mean or a range</b> — so this section carries both halves, and marks which is which.</p>
+
+    <h3>In the print — the three pictures</h3>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Picture</th><th>For</th><th>The rule that gets tested</th></tr></thead>
+      <tbody>
+        <tr><td><b>Bar graph</b></td><td>categories (months, subjects)</td><td>bars of equal width with <em>gaps</em>; height = frequency. Mean from a bar graph = Σ(value × height) ÷ Σ(heights).</td></tr>
+        <tr><td><b>Histogram</b></td><td>continuous classes (0–10, 10–20 …)</td><td>no gaps; <em>area</em> ∝ frequency. Equal widths: height = frequency. <b>Unequal widths: height = frequency × (smallest width ÷ this width)</b> — NCERT's "adjusted frequency".</td></tr>
+        <tr><td><b>Frequency polygon</b></td><td>the same classes</td><td>plot (class mark, frequency), join with straight lines, and close it to the axis at an imagined empty class on each end. <b>Class mark = (lower + upper)/2.</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 400 240" width="400" height="240" role="img" aria-label="Histogram with unequal class widths: bars for 0–10, 10–20, 20–30, 30–50 and 50–80 drawn with adjusted heights, with the unadjusted heights of the two wide classes shown as dashed ghosts">
+        <g fill="none" stroke="var(--muted)" stroke-width="1"><path d="M50 200 H385 M50 200 V30"/></g>
+        <!-- y ticks -->
+        <g font-size="10" fill="var(--muted)" text-anchor="end" class="mono">
+          <text x="44" y="204">0</text><text x="44" y="176">2</text><text x="44" y="148">4</text><text x="44" y="120">6</text><text x="44" y="92">8</text><text x="44" y="64">10</text>
+        </g>
+        <g stroke="var(--muted)" stroke-width="1"><path d="M47 172 H50 M47 144 H50 M47 116 H50 M47 88 H50 M47 60 H50"/></g>
+        <!-- x labels -->
+        <g font-size="10.5" fill="var(--muted)" text-anchor="middle" class="mono">
+          <text x="50" y="216">0</text><text x="90" y="216">10</text><text x="130" y="216">20</text><text x="170" y="216">30</text><text x="250" y="216">50</text><text x="370" y="216">80</text>
+        </g>
+        <!-- ghost (unadjusted) bars for the wide classes -->
+        <rect x="170" y="60" width="80" height="140" fill="none" stroke="var(--force)" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <rect x="250" y="74" width="120" height="126" fill="none" stroke="var(--force)" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <!-- adjusted bars -->
+        <g fill="color-mix(in srgb,var(--maths) 28%,transparent)" stroke="var(--maths)" stroke-width="1.8">
+          <rect x="50" y="144" width="40" height="56"/>
+          <rect x="90" y="60" width="40" height="140"/>
+          <rect x="130" y="88" width="40" height="112"/>
+          <rect x="170" y="130" width="80" height="70"/>
+          <rect x="250" y="158" width="120" height="42"/>
+        </g>
+        <g font-size="10.5" fill="var(--text)" text-anchor="middle" class="mono">
+          <text x="70" y="138">f 4</text><text x="110" y="54">f 10</text><text x="150" y="82">f 8</text>
+          <text x="210" y="124">f 10 → 5</text><text x="310" y="152">f 9 → 3</text>
+        </g>
+        <text x="220" y="232" font-size="11" fill="var(--muted)" text-anchor="middle">class → &nbsp; dashed = the height a raw frequency would give</text>
+      </svg>
+      <figcaption>Classes 0–10, 10–20, 20–30 are 10 wide; 30–50 is 20 wide and 50–80 is 30 wide. Their bars are
+      drawn at 10 × (10/20) = <b>5</b> and 9 × (10/30) = <b>3</b>, not at 10 and 9 (dashed) — otherwise a wide class
+      looks more crowded than it is. The tallest bar belongs to 10–20 even though 30–50 has the same frequency.</figcaption>
+    </figure>
+
+    <h3>Not in the print, asked every year — the four numbers</h3>
+    <div class="bank">
+      <div class="fx"><div class="eq">Mean = Σx / n</div><div class="wh">From a frequency table: Σfx / Σf. <b>The moment a mean is stated, write the sum: Σx = n × mean.</b></div></div>
+      <div class="fx"><div class="eq">Median = middle of the sorted list</div><div class="wh">n odd: the ((n + 1)/2)th value. n even: the <b>average of the two middle</b> values — 3, 7, 8, 12, 15, 20 → (8 + 12)/2 = 10.</div></div>
+      <div class="fx"><div class="eq">Mode = most frequent value</div><div class="wh">2, 3, 3, 5, 5, 5, 8 → 5. A list can have two modes or none; the mode is a <em>value</em>, not a frequency.</div></div>
+      <div class="fx"><div class="eq">Range = largest − smallest</div><div class="wh">One subtraction — the whole trap is <em>which</em> value is the largest when one of them is x (2024-U Q50).</div></div>
+    </div>
+
+    <h3>The five statistics machines the real papers use</h3>
+    <p><b>A · Mean ⇄ sum (2018-S Q58, and the "corrected mean").</b> "The mean of x, x + 2, x + 7, x + 11 and 2x
+    is 16" → the sum is 80 → 6x + 20 = 80 → x = 10 — and the question asked for <em>2x</em>, 20. The corrected-mean
+    version: "the mean of 10 readings was 25; one reading of 51 had been copied as 15" → the sum 250 was short
+    by 36 → 286/10 = <b>28.6</b>. Fix the sum, then divide again.</p>
+    <p><b>B · One in, one out (Sample Q59).</b> The mean moves by (in − out)/n: 30 students, 71.5 kg out, 53.5 kg
+    in → the sum drops by 18 → the mean drops by 18/30 = 0.6 → 62.5 − 0.6 = <b>61.9</b>. No need to compute 1875 at
+    all. Removing an observation with nothing added: new mean = (sum − x)/(n − 1) — the n changes too.</p>
+    <p><b>C · Averages of overlapping groups (2024-A Q50).</b> Turn every average statement into a sum
+    statement, then subtract. "Average of the first three of five numbers is 10 less than the average of the
+    last three" → (a + b + c) = (c + d + e) − 30 → the shared c cancels: a + b = d + e − 30 = 42 − 30 = <b>12</b>. The
+    stem's "odd numbers, ascending" was decoration — the arithmetic never used it.</p>
+    <p><b>D · A range with an ordering clause (2024-U Q50).</b> "In descending order x, 76, …, 61; range 39." The
+    word <em>descending</em> makes x the largest, so x − 61 = 39 → x = 100 — not 76 − 39 = 37, which would put x at the
+    wrong end. Then the tail: digit sum of 100 is 1, √1 = <b>1</b>. One of the four options was 100 — x itself, offered to
+    anyone who stopped at the first rung.</p>
+    <p><b>E · A whole-number condition on the sum (2017-E Q58).</b> 15 students average 12 books → 180 books.
+    Two students got k each; the other 13 average a whole number → (180 − 2k)/13 must be an integer. Test the
+    options: k = 25 gives 130/13 = 10 ✓; 11, 15, 20 give 158, 150, 140, none divisible by 13. The options are the
+    method — do not solve a congruence.</p>
+
+    <div class="box def">
+      <h4>Six facts that shortcut the puzzles</h4>
+      <ul>
+        <li>Mean of 1, 2, …, n is <b>(n + 1)/2</b>; of any evenly spaced list (an AP) the mean <em>is</em> the middle term
+        (or the average of the two middle terms) — so mean = median there.</li>
+        <li>Add k to every observation: mean, median and mode all rise by k; the <b>range does not change</b>.</li>
+        <li>Multiply every observation by k: mean, median, mode and range all multiply by k (range by |k|).</li>
+        <li>Two groups combined: mean = (n₁m₁ + n₂m₂)/(n₁ + n₂) — <b>never the average of the two means</b> unless n₁ = n₂.</li>
+        <li>The median is unmoved by how extreme the end values are; the mean is not. "Which changes if the largest
+        value is doubled?" → the mean (and the range), not the median — nor the mode, unless that largest value
+        was itself the mode.</li>
+        <li>Class mark of 20–30 is 25; class width is 10; the "upper limit of the class 30–40" is 40 even though 40
+        is counted in the next class.</li>
+      </ul>
+    </div>
+
+    <div class="box trap">
+      <h4>Hand arithmetic without a calculator</h4>
+      <p>Dividing by 30: divide by 3, then move the point — 1857 ÷ 3 = 619, so 1857 ÷ 30 = 61.9. Dividing by 13 or 7:
+      check the options rather than divide. A mean stated to two decimals for n = 20 or n = 25 comes from a
+      whole-number sum (15.15 × 20 = 303; 12.36 × 25 = 309) — so if a mean of your own comes out with three
+      decimals, re-add the list.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>Fact bank — everything above on one screen</h2>
+    <div class="bank">
+      <div class="fx"><div class="eq">a₁/a₂ ≠ b₁/b₂</div><div class="wh">One solution — lines cross. Only now is solving worth the time.</div></div>
+      <div class="fx"><div class="eq">a₁/a₂ = b₁/b₂ ≠ c₁/c₂</div><div class="wh">No solution — parallel, <b>inconsistent</b>. Same left side, different right side.</div></div>
+      <div class="fx"><div class="eq">a₁/a₂ = b₁/b₂ = c₁/c₂</div><div class="wh">Infinitely many — one line twice, <b>dependent</b>. A parameter must satisfy <em>both</em> halves of the chain.</div></div>
+      <div class="fx"><div class="eq">Swapped coefficients → add, subtract</div><div class="wh">(a + b)(x + y) and (a − b)(x − y). "Cannot be determined" is bait.</div></div>
+      <div class="fx"><div class="eq">Options are candidates → verify</div><div class="wh">Formula answers, production plans, "which value of k": substitute each; stop at the first that fits every condition.</div></div>
+      <div class="fx"><div class="eq">Story → one equation per sentence</div><div class="wh">10t + u · ages ± n on both · fixed + rate · b ± c · then answer <em>what was asked</em>.</div></div>
+      <div class="fx"><div class="eq">√[(Δx)² + (Δy)²]</div><div class="wh">Distance. Compare squares; root once at the end. x-axis point is (x, 0), y-axis point is (0, y).</div></div>
+      <div class="fx"><div class="eq">(m x₂ + n x₁)/(m + n)</div><div class="wh">Section, m : n from A. m multiplies the far point. Ratio unknown → k : 1 and one coordinate you know.</div></div>
+      <div class="fx"><div class="eq">Midpoint = average</div><div class="wh">Parallelogram: mid AC = mid BD. Vertex from midpoints: A = E + F − D. Side = 2 × opposite midline.</div></div>
+      <div class="fx"><div class="eq">Centroid = average of three</div><div class="wh">Same for the triangle and its medial triangle. 2 : 1 along each median from the vertex.</div></div>
+      <div class="fx"><div class="eq">½ |x₁(y₂ − y₃) + x₂(y₃ − y₁) + x₃(y₁ − y₂)|</div><div class="wh">Area (off the print). Zero ⇔ collinear. Perpendicular from O to AB in a right triangle: d = OA·OB/AB.</div></div>
+      <div class="fx"><div class="eq">Σx = n × mean</div><div class="wh">First line of every mean puzzle. Corrected mean: fix the sum. In/out: shift by (in − out)/n.</div></div>
+      <div class="fx"><div class="eq">Group averages → sums, then subtract</div><div class="wh">Overlaps cancel. Decorations ("odd", "ascending") usually never enter the arithmetic.</div></div>
+      <div class="fx"><div class="eq">Range = max − min</div><div class="wh">"Descending / ascending" tells you which end the unknown sits at. Unchanged by adding a constant.</div></div>
+      <div class="fx"><div class="eq">Median: middle; even n → average of two</div><div class="wh">Sort first. Mode = most frequent <em>value</em>. Both ignore how big the extremes are.</div></div>
+      <div class="fx"><div class="eq">Unequal widths: f × (min width / width)</div><div class="wh">Histogram height. Frequency polygon through (class mark, f), closed to the axis both ends.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>Five worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">Try each before opening the working and give yourself <b>90 seconds</b> — the real paper's
+    average. The elimination reasoning is written out because on the day, ruling two options out is worth
+    almost as much as solving.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">Sample Q46 machine, carried one step on · ~60 seconds</span></div>
+      <p>If <span class="m">47x + 31y = 63</span> and <span class="m">31x + 47y = 15</span>, then <span class="m">x² − y²</span> equals</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>−3</div>
+        <div class="we-opt"><span class="ob">2</span>1</div>
+        <div class="we-opt key"><span class="ob">3</span>3</div>
+        <div class="we-opt"><span class="ob">4</span>4</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — swapped coefficients, so add and subtract.</b> Add: 78(x + y) = 78 → <b>x + y = 1</b>. Subtract
+        (first minus second): 16(x − y) = 48 → <b>x − y = 3</b>.</p>
+        <p><b>Step 2 — the thing asked is a product of exactly those two.</b> x² − y² = (x + y)(x − y) = 1 × 3 = <b>3</b>.
+        Option (3). (x = 2, y = −1 if you want them — but you never needed them.)</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1) −3</b> — subtracting the other way round (second minus first gives y − x = −3) and forgetting that the
+        product then needs (x + y)(y − x) = −(x² − y²).
+        <b>(2) 1</b> — stopping at x + y.
+        <b>(4) 4</b> — x², having solved fully and then read the question as x² alone.
+        <b>Elimination.</b> x + y = 1 comes in ten seconds and kills nothing on its own, but x − y = 3 with it gives
+        integer x, y at once — any option that is not a small integer product is suspect. Two of the four options
+        differ only by sign: decide the sign from which equation you subtracted.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">The parameter question, with two parameters · ~90 seconds</span></div>
+      <p>The pair <span class="m">2x + 5y = 9</span> and <span class="m">(a + b)x + (2a − b)y = 27</span> has infinitely many
+      solutions. The value of <span class="m">a − b</span> is</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>−1</div>
+        <div class="we-opt"><span class="ob">2</span>6</div>
+        <div class="we-opt"><span class="ob">3</span>7</div>
+        <div class="we-opt key"><span class="ob">4</span>8</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — infinitely many ⇒ all three ratios equal.</b> (a + b)/2 = (2a − b)/5 = 27/9 = 3. The constants
+        give the common ratio straight away, which is the setter's kindness: a + b = 6 and 2a − b = 15.</p>
+        <p><b>Step 2 — a new pair, in a and b.</b> Add: 3a = 21 → a = 7; then b = −1. So a − b = 7 − (−1) = <b>8</b>.
+        Option (4).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2) 6</b> — a + b, the first ratio's right-hand side, read as the answer.
+        <b>(3) 7</b> — a alone.
+        <b>(1) −1</b> — b alone.
+        <b>Elimination.</b> Three of the four options are intermediate values in the honest working — the classic
+        "stopped early" ladder. A negative b is the setter's twist: a − b then <em>exceeds</em> a, so once b &lt; 0 is
+        seen, every option ≤ a is out. Check the ratio if unsure: (7 − 1)/2 = 3 and (14 + 1)/5 = 3 ✓.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">2024-A Q54 machine, asked for a side instead of the centroid · ~2 minutes</span></div>
+      <p>D(−1, −1), E(5, 0) and F(2, 4) are the midpoints of the sides BC, CA and AB of △ABC. The length of
+      <span class="m">BC</span> is</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>5</div>
+        <div class="we-opt"><span class="ob">2</span>2√37</div>
+        <div class="we-opt key"><span class="ob">3</span>10</div>
+        <div class="we-opt"><span class="ob">4</span>20</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Fast route — the midline.</b> EF joins the midpoints of CA and AB, so EF is parallel to BC and half of
+        it. EF = √[(5 − 2)² + (0 − 4)²] = √(9 + 16) = 5, so <b>BC = 10</b>. Option (3). Thirty seconds.</p>
+        <p><b>Honest route — rebuild the vertices.</b> B = F + D − E = (2 − 1 − 5, 4 − 1 − 0) = (−4, 3);
+        C = D + E − F = (−1 + 5 − 2, −1 + 0 − 4) = (2, −5). Check: midpoint of BC = ((−4 + 2)/2, (3 − 5)/2) = (−1, −1) = D ✓.
+        BC = √[(2 + 4)² + (−5 − 3)²] = √(36 + 64) = <b>10</b>. Same answer, two minutes.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1) 5</b> — EF itself, the doubling forgotten.
+        <b>(2) 2√37</b> — doubling the <em>wrong</em> midline: DE = √37 is parallel to AB, so 2·DE is AB, not BC.
+        <b>(4) 20</b> — doubling twice, or 4·EF.
+        <b>Elimination.</b> BC must be twice a midline, so it is 2 × (one of DE, EF, FD) = 2√37, 10 or 2·√[(2 + 1)² + (4 + 1)²]
+        = 2√34. Only two options fit that shape; picking between them is only "which midline faces BC" — the one
+        that does <em>not</em> use D.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">A mean and a median together · ~2 minutes</span></div>
+      <p>Five <em>distinct</em> positive integers have mean 12 and median 15. The largest possible value of the
+      greatest of them is</p>
+      <div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>26</div>
+        <div class="we-opt"><span class="ob">2</span>28</div>
+        <div class="we-opt"><span class="ob">3</span>30</div>
+        <div class="we-opt"><span class="ob">4</span>42</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — both statements as constraints on a sorted list</b> a &lt; b &lt; c &lt; d &lt; e. Mean 12 → the sum is
+        <b>60</b>. Median 15 → <b>c = 15</b>, so a and b are below 15 and d, e above it.</p>
+        <p><b>Step 2 — to make e as large as possible, make everything else as small as possible.</b> a = 1, b = 2,
+        d = 16 (the smallest distinct integer above 15). Then e = 60 − 1 − 2 − 15 − 16 = <b>26</b>. Option (1). Check: 1, 2,
+        15, 16, 26 → sum 60 ✓, middle value 15 ✓, all distinct ✓.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(4) 42</b> — 60 − 1 − 2 − 15, forgetting that d exists at all.
+        <b>(2) 28</b> — allowing repeats: 1, 1, 15, 15, 28 (the stem said distinct).
+        <b>(3) 30</b> — 60 − 15 − 15, treating the median as if it were two of the numbers.
+        <b>Elimination.</b> e must leave room for four other numbers, three of them at least 1, 2, 15 and one more
+        above 15 — so e ≤ 60 − 18 − 16 = 26. Anything above 26 is impossible, which kills three options at once
+        without finding the list.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">The unequal-width histogram, NCERT's signature item · ~90 seconds</span></div>
+      <p>A histogram is drawn for the classes <span class="m">0–10</span> (frequency 6), <span class="m">10–20</span> (8),
+      <span class="m">20–40</span> (12) and <span class="m">40–70</span> (15). The tallest and the shortest bars belong,
+      respectively, to the classes</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>40–70 and 0–10</div>
+        <div class="we-opt key"><span class="ob">2</span>10–20 and 40–70</div>
+        <div class="we-opt"><span class="ob">3</span>10–20 and 0–10</div>
+        <div class="we-opt"><span class="ob">4</span>20–40 and 40–70</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — the widths are not equal, so heights are not frequencies.</b> Widths 10, 10, 20, 30; the
+        smallest is 10. Adjusted heights: 6 × 10/10 = <b>6</b>; 8 × 10/10 = <b>8</b>; 12 × 10/20 = <b>6</b>; 15 × 10/30 = <b>5</b>.</p>
+        <p><b>Step 2 — read the extremes off the adjusted list</b> 6, 8, 6, 5: tallest is <b>10–20</b> (8), shortest is
+        <b>40–70</b> (5). Option (2). The class with the largest frequency has the <em>shortest</em> bar — that is the
+        whole point of the adjustment.</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1) 40–70 and 0–10</b> — reading raw frequencies (15 tallest, 6 shortest), no adjustment.
+        <b>(3) 10–20 and 0–10</b> — miscounting the width of 40–70 as 20: 15 × 10/20 = 7.5, which leaves 0–10 and
+        20–40 tied for shortest at 6 and the first of them picked.
+        <b>(4) 20–40 and 40–70</b> — adjusting only the widest class: 6, 8, 12, 5 makes 20–40 the tallest.
+        <b>Elimination.</b> Any option naming 40–70 as tallest has ignored its width of 30 — it is out on sight. The
+        two 10-wide classes keep their raw heights, so 10–20 (8) beats 0–10 (6): the tallest must be 10–20 unless a
+        wide class beats 8 after adjustment, and 12/2 = 6 and 15/3 = 5 do not.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">7</span>Check yourself</h2>
+    <p class="lede">Five quick ones. <b>No negative marking here</b> — this is practice, not the exam.
+    Click an option to see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="subject-maths.html">📝 Maths subject paper — 30 questions, 45 minutes</a>
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Maths · <b>Pair of Linear Equations in Two Variables</b>, <b>Coordinate Geometry</b> (both
+    Class 10) and <b>Statistics</b> (Class 9) — the official topic names from Allen's Class X syllabus.<br>
+    <b>Deliberately not here:</b> the cross-multiplication method and equations reducible to a linear pair
+    (removed from the rationalised NCERT print, never asked); the graphical <em>solution</em> of a pair beyond the
+    three-cases picture (never drawn in five papers); external division and the equation of a line (not in the
+    Class 10 chapter); grouped-data mean, median and mode, cumulative frequency and the ogive (Class 10
+    Statistics, which is not on the 2027 list — only the Class 9 chapter is). The area-of-a-triangle formula and
+    the centroid are kept although the rationalised print drops them, because Allen's own items assume
+    them. NCERT wording and the rationalised chapter contents were checked from memory — no NCERT copy is
+    cached in this project.<br>
+    This unit's 20-minute paper appears on the hub card when it is built; until then the maths subject paper
+    carries eight questions from these three topics. Tip: press 🖨 (bottom-left) to print these as a revision
+    sheet · 🏆 (top-left) goes back to the TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'The pair <b>3x − y = 5</b> and <b>6x − 2y = 10</b> has',
+    o:['exactly one solution','no solution','infinitely many solutions','exactly two solutions'], a:2,
+    fb:'<b>Infinitely many.</b> Ratios 3/6 = ½, (−1)/(−2) = ½, 5/10 = ½ — all three equal, so the second equation is the first doubled: one line, every point on it a solution. <b>No solution</b> would need the first two ratios equal and the third different (6x − 2y = 12, say). A pair of straight lines can never have exactly two common points.' },
+  { q:'The point dividing the join of <b>(2, −3)</b> and <b>(7, 7)</b> in the ratio <b>2 : 3</b> is',
+    o:['(5, 3)','(4, 1)','(4.5, 2)','(4, −1)'], a:1,
+    fb:'<b>(4, 1).</b> m : n = 2 : 3 from the first point, so x = (2·7 + 3·2)/5 = 20/5 = 4 and y = (2·7 + 3·(−3))/5 = (14 − 9)/5 = 1. <b>(5, 3)</b> is the ratio taken the other way round (3 : 2) — m multiplied the near point. <b>(4.5, 2)</b> is the midpoint, which is what 1 : 1 would give. <b>(4, −1)</b> is a sign slip in 14 − 9.' },
+  { q:'The scores of five students <em>in descending order</em> are <b>y, 52, 47, 41, 38</b>, and their range is <b>20</b>. Their mean is',
+    o:['39.2','44.5','47','47.2'], a:3,
+    fb:'<b>47.2.</b> Descending, so y is the largest: y − 38 = 20 → y = 58. Mean = (58 + 52 + 47 + 41 + 38)/5 = 236/5 = 47.2. <b>39.2</b> comes from y = 38 − 20 = 18, which contradicts "descending" (18 would be the smallest, not the first). <b>44.5</b> is the mean of the four known scores with y dropped. <b>47</b> is the median, not the mean. The 2024-U Q50 machine: the ordering word tells you which end the unknown is at.' },
+  { q:'The digits of a two-digit number add to <b>9</b>. The number obtained by reversing the digits is <b>27 more</b> than the number. The number is',
+    o:['63','45','36','54'], a:2,
+    fb:'<b>36.</b> Tens t, units u: t + u = 9 and (10u + t) − (10t + u) = 27 → 9(u − t) = 27 → u − t = 3. Adding: 2u = 12 → u = 6, t = 3 → 36 (reversed 63, and 63 − 36 = 27 ✓). <b>63</b> is the reversed number — it is 27 <em>less</em> than its reverse, not more. <b>45</b> and <b>54</b> have digit sum 9 but differ from their reverses by 9, not 27.' },
+  { q:'Marks <b>2, 4, 6, 8</b> were scored by <b>3, 5, 7, 5</b> students respectively. The mean mark is',
+    o:['4.5','5','5.4','6'], a:2,
+    fb:'<b>5.4.</b> Σfx = 2·3 + 4·5 + 6·7 + 8·5 = 6 + 20 + 42 + 40 = 108; Σf = 20; mean = 108/20 = 5.4. <b>5</b> is the mean of the four mark values with the frequencies ignored. <b>6</b> is the mode (the mark with the largest frequency, 7). <b>4.5</b> is 108 ÷ 24 — the four mark values counted as four extra students, so the divisor became 20 + 4. The subject paper reads exactly this off a bar graph.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. The machines have landed — now sit the Maths subject paper for this unit’s eight questions under the clock.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed — section 2 carries the linear-equation machines, section 3 the coordinate formulas, section 4 the statistics puzzles.'
+                        : 'Worth a second pass through sections 1–4 before the paper. It is a short page; one more read fixes it.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:maths-linear-coord-stats:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- print: a closed details element never renders its contents, so open them for the printer ---------- */
+(function(){
+  var opened = [], printing = false;
+  function before(){
+    if(printing) return;
+    printing = true; opened = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+      if(!d.open){ d.open = true; opened.push(d); }
+      var box = d.closest('.we'); if(box) box.classList.add('revealed');
+    });
+  }
+  function after(){
+    if(!printing) return;
+    printing = false;
+    opened.forEach(function(d){ d.open = false; var box = d.closest('.we'); if(box) box.classList.remove('revealed'); });
+    opened = [];
+  }
+  window.addEventListener('beforeprint', before);
+  window.addEventListener('afterprint', after);
+  if(window.matchMedia){
+    var mq = matchMedia('print');
+    var h = function(e){ if(e.matches) before(); else after(); };
+    if(mq.addEventListener) mq.addEventListener('change', h); else if(mq.addListener) mq.addListener(h);
+  }
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
