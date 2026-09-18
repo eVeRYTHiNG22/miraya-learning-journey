@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Motion & Forces — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+    </div>
+    <p class="startnote">Practice mode still marks you and still applies −1 — only the countdown is off.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  title: "TALLENTEX · Motion & Forces — Paper 1",
+  kind: "topic",
+  duration: 20,
+  id: "tx:phys-motion-forces:p1",
+  accent: "physics",
+  sub: "Motion and Force & Laws of Motion — graphs and their areas, the equations of motion, displacement versus distance, resultant force, momentum and impulse, the three laws. <b>13 questions · 52 marks · 20 minutes · +4 / −1 / 0.</b> Pitched at the real TALLENTEX paper: in both 2024 sittings <b>four of the fifteen Physics questions</b> came from this unit — a graph, a concept, a Newton&rsquo;s-law statement and a one-formula number, at Q1, Q3, Q8 and Q10.",
+  sections: [ { name:"Physics", from:1, to:13 } ],
+  questions: [
+
+  { n:1, section:"Physics", topic:"Motion", fmt:"diagram",
+    stem:"<p>The velocity–time graph describes the complete journey of an auto-rickshaw along a straight road in Indore. Its <b>average speed</b> for the whole journey is</p>",
+    fig:"<svg viewBox=\"0 0 340 220\" width=\"340\" height=\"220\" role=\"img\" aria-label=\"Velocity-time graph. Velocity rises in a straight line from 0 at t equals 0 to 12 metres per second at t equals 6 seconds, stays at 12 until t equals 16 seconds, then falls in a straight line to 0 at t equals 20 seconds.\"><g stroke=\"currentColor\" stroke-width=\"1.8\" fill=\"none\" stroke-linecap=\"round\"><line x1=\"46\" y1=\"10\" x2=\"46\" y2=\"184\"/><line x1=\"42\" y1=\"180.0\" x2=\"330\" y2=\"180.0\"/></g><polygon points=\"46,4 42,12 50,12\" fill=\"currentColor\"/><polygon points=\"336,180.0 328,176.0 328,184.0\" fill=\"currentColor\"/><line x1=\"128.8\" y1=\"177.0\" x2=\"128.8\" y2=\"183.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"128.8\" y=\"196.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"currentColor\">6</text><line x1=\"266.8\" y1=\"177.0\" x2=\"266.8\" y2=\"183.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"266.8\" y=\"196.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"currentColor\">16</text><line x1=\"322.0\" y1=\"177.0\" x2=\"322.0\" y2=\"183.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"322.0\" y=\"196.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"currentColor\">20</text><line x1=\"43\" y1=\"34.2\" x2=\"49\" y2=\"34.2\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"39\" y=\"38.2\" font-size=\"12\" text-anchor=\"end\" fill=\"currentColor\">12</text><line x1=\"128.8\" y1=\"34.2\" x2=\"128.8\" y2=\"180.0\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/><line x1=\"46\" y1=\"34.2\" x2=\"128.8\" y2=\"34.2\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/><line x1=\"266.8\" y1=\"34.2\" x2=\"266.8\" y2=\"180.0\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/><line x1=\"46\" y1=\"34.2\" x2=\"266.8\" y2=\"34.2\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/><polyline points=\"46.0,180.0 128.8,34.2 266.8,34.2 322.0,180.0\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2.8\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"324\" y=\"214\" font-size=\"13\" text-anchor=\"end\" fill=\"currentColor\" font-style=\"italic\">t (s)</text><text x=\"54\" y=\"13\" font-size=\"13\" fill=\"currentColor\" font-style=\"italic\">v (m/s)</text></svg>",
+    figCap:"Velocity against time for the whole 20-second journey.",
+    options:["6 m/s", "7.8 m/s", "9 m/s", "12 m/s"], answer:2,
+    sol:"<p>Distance is the <b>area under a v–t graph</b>, so read all three pieces: triangle ½ × 6 × 12 = <b>36 m</b>; rectangle 10 × 12 = <b>120 m</b>; triangle ½ × 4 × 12 = <b>24 m</b>. Total 180 m in 20 s, so average speed = 180 ÷ 20 = <b>9 m/s</b> — option <b>(3)</b>.</p><p>The traps are the other three options: <b>12 m/s</b> is the <i>maximum</i> speed, not the average; <b>6 m/s</b> is (0 + 12)/2, which is the average only over a single straight segment, not over a journey that spends 10 s at full speed; <b>7.8 m/s</b> is what you get if you forget the last triangle (156 ÷ 20).</p>" },
+
+  { n:2, section:"Physics", topic:"Motion", fmt:"plain",
+    stem:"<p>A car travelling at <b>36 km/h</b> is brought to rest by its brakes in <b>20 m</b>. The same car is now travelling at <b>90 km/h</b> on the Mumbai–Pune expressway and the brakes produce the <b>same retardation</b>. The time it takes to stop is</p>",
+    options:["4 s", "5 s", "10 s", "25 s"], answer:2,
+    sol:"<p>Convert first: 36 km/h = 36 × 5/18 = <b>10 m/s</b>; 90 km/h = <b>25 m/s</b>.</p><p>Find the retardation from the first stop: v² = u² − 2as with v = 0 gives a = u²/2s = 100/40 = <b>2.5 m/s²</b>.</p><p>Now the second stop: v = u − at with v = 0 gives t = u/a = 25/2.5 = <b>10 s</b> — option <b>(3)</b>. (Check: the stopping distance would be u²/2a = 625/5 = 125 m, and 125 m at an average speed of 12.5 m/s does take 10 s.)</p><p><b>4 s</b> is the <i>first</i> car&rsquo;s stopping time (10/2.5) — or the time you get by scaling the distance in proportion to speed (50 m) and then using t = 2s/u; <b>5 s</b> divides the 125 m by 25 m/s as if the car kept its full speed all the way to the stop; <b>25 s</b> scales the first car&rsquo;s 4 s by (25/10)² = 6.25, applying the square law (which is for <i>distance</i>) to the time.</p>" },
+
+  { n:3, section:"Physics", topic:"Force and Laws of Motion", fmt:"diagram",
+    stem:"<p>The figure shows the <b>top view</b> of a box of mass <b>2.5 kg</b> resting on a smooth floor, with four horizontal forces acting on it as marked. The box starts from rest. The distance it moves in the first <b>3 s</b> is</p>",
+    fig:"<svg viewBox=\"0 0 330 232\" width=\"330\" height=\"232\" role=\"img\" aria-label=\"Top view of a box of mass 2.5 kilograms on a smooth floor. Four horizontal forces act on it: 8 newtons towards the east, 3 newtons towards the west, 4 newtons towards the north and 4 newtons towards the south. A compass arrow marks north as up the page.\"><rect x=\"129\" y=\"82\" width=\"72\" height=\"72\" rx=\"4\" fill=\"var(--physics)\" opacity=\".16\"/><rect x=\"129\" y=\"82\" width=\"72\" height=\"72\" rx=\"4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><text x=\"165\" y=\"123\" font-size=\"13\" text-anchor=\"middle\" fill=\"currentColor\" font-weight=\"600\">2.5 kg</text><line x1=\"201\" y1=\"118\" x2=\"289.0\" y2=\"118.0\" stroke=\"var(--physics)\" stroke-width=\"2.8\" stroke-linecap=\"round\"/><polygon points=\"297,118 286.0,113.0 286.0,123.0\" fill=\"var(--physics)\"/><text x=\"251\" y=\"109\" font-size=\"13\" text-anchor=\"middle\" fill=\"currentColor\" font-weight=\"600\">8 N</text><line x1=\"129\" y1=\"118\" x2=\"101.0\" y2=\"118.0\" stroke=\"var(--physics)\" stroke-width=\"2.8\" stroke-linecap=\"round\"/><polygon points=\"93,118 104.0,123.0 104.0,113.0\" fill=\"var(--physics)\"/><text x=\"109\" y=\"109\" font-size=\"13\" text-anchor=\"middle\" fill=\"currentColor\" font-weight=\"600\">3 N</text><line x1=\"165\" y1=\"82\" x2=\"165.0\" y2=\"42.0\" stroke=\"var(--physics)\" stroke-width=\"2.8\" stroke-linecap=\"round\"/><polygon points=\"165,34 160.0,45.0 170.0,45.0\" fill=\"var(--physics)\"/><text x=\"177\" y=\"52\" font-size=\"13\" text-anchor=\"start\" fill=\"currentColor\" font-weight=\"600\">4 N</text><line x1=\"165\" y1=\"154\" x2=\"165.0\" y2=\"194.0\" stroke=\"var(--physics)\" stroke-width=\"2.8\" stroke-linecap=\"round\"/><polygon points=\"165,202 170.0,191.0 160.0,191.0\" fill=\"var(--physics)\"/><text x=\"177\" y=\"194\" font-size=\"13\" text-anchor=\"start\" fill=\"currentColor\" font-weight=\"600\">4 N</text><line x1=\"296\" y1=\"82\" x2=\"296\" y2=\"52\" stroke=\"currentColor\" stroke-width=\"1.6\"/><polygon points=\"296,44 291,55 301,55\" fill=\"currentColor\"/><text x=\"296\" y=\"40\" font-size=\"12\" text-anchor=\"middle\" fill=\"currentColor\">N</text></svg>",
+    figCap:"Top view; the arrows are drawn to scale. North is up the page.",
+    options:["6 m", "9 m", "14.4 m", "18 m"], answer:1,
+    sol:"<p>First find the <b>resultant</b>. North–south: 4 N and 4 N are equal and opposite, so they cancel. East–west: 8 N − 3 N = <b>5 N towards the east</b>. Then a = F/m = 5/2.5 = <b>2 m/s²</b>, and from rest s = ½at² = ½ × 2 × 3² = <b>9 m</b> — option <b>(2)</b>.</p><p><b>18 m</b> drops the ½ (or takes s = vt with the final speed v = 6 m/s, as if the box moved at 6 m/s throughout); <b>6 m</b> is the final <i>speed</i>, 6 m/s, written down as a distance; <b>14.4 m</b> uses only the 8 N and forgets the 3 N pushing back (a = 3.2, then ½ × 3.2 × 9).</p>" },
+
+  { n:4, section:"Physics", topic:"Motion", fmt:"diagram",
+    stem:"<p>Four sketch graphs are drawn for bodies moving along a straight line: <b>P</b> and <b>Q</b> are velocity–time graphs, <b>R</b> and <b>S</b> are displacement–time graphs (displacement measured from a fixed point on the line). Which of them <b>cannot</b> represent the motion of any real body?</p>",
+    fig:"<svg viewBox=\"0 0 320 256\" width=\"320\" height=\"256\" role=\"img\" aria-label=\"Four sketch graphs against time: P, a velocity-time line with a sharp corner; Q, a velocity-time curve that rises and then bends back to the left; R, a displacement-time straight line sloping downwards; S, a displacement-time graph with a vertical step.\"><g transform=\"translate(0,0)\"><g transform=\"translate(0,0)\"><g stroke=\"currentColor\" stroke-width=\"1.6\" fill=\"none\"><line x1=\"26\" y1=\"12\" x2=\"26\" y2=\"98\"/><line x1=\"26\" y1=\"98\" x2=\"140\" y2=\"98\"/></g><polygon points=\"26,6 22.5,13 29.5,13\" fill=\"currentColor\"/><polygon points=\"146,98 139,94.5 139,101.5\" fill=\"currentColor\"/><text x=\"32\" y=\"16\" font-size=\"12\" font-style=\"italic\" fill=\"currentColor\">v</text><text x=\"138\" y=\"112\" font-size=\"12\" font-style=\"italic\" text-anchor=\"end\" fill=\"currentColor\">t</text><path d=\"M 30 80 L 70 30 L 136 60\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><text x=\"22\" y=\"114\" font-size=\"14\" font-weight=\"700\" fill=\"currentColor\">P</text></g></g><g transform=\"translate(170,0)\"><g transform=\"translate(0,0)\"><g stroke=\"currentColor\" stroke-width=\"1.6\" fill=\"none\"><line x1=\"26\" y1=\"12\" x2=\"26\" y2=\"98\"/><line x1=\"26\" y1=\"98\" x2=\"140\" y2=\"98\"/></g><polygon points=\"26,6 22.5,13 29.5,13\" fill=\"currentColor\"/><polygon points=\"146,98 139,94.5 139,101.5\" fill=\"currentColor\"/><text x=\"32\" y=\"16\" font-size=\"12\" font-style=\"italic\" fill=\"currentColor\">v</text><text x=\"138\" y=\"112\" font-size=\"12\" font-style=\"italic\" text-anchor=\"end\" fill=\"currentColor\">t</text><path d=\"M 34 84 C 60 84, 110 70, 118 40 C 122 22, 95 26, 82 50\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><text x=\"22\" y=\"114\" font-size=\"14\" font-weight=\"700\" fill=\"currentColor\">Q</text></g></g><g transform=\"translate(0,136)\"><g transform=\"translate(0,0)\"><g stroke=\"currentColor\" stroke-width=\"1.6\" fill=\"none\"><line x1=\"26\" y1=\"12\" x2=\"26\" y2=\"98\"/><line x1=\"26\" y1=\"98\" x2=\"140\" y2=\"98\"/></g><polygon points=\"26,6 22.5,13 29.5,13\" fill=\"currentColor\"/><polygon points=\"146,98 139,94.5 139,101.5\" fill=\"currentColor\"/><text x=\"32\" y=\"16\" font-size=\"12\" font-style=\"italic\" fill=\"currentColor\">x</text><text x=\"138\" y=\"112\" font-size=\"12\" font-style=\"italic\" text-anchor=\"end\" fill=\"currentColor\">t</text><path d=\"M 32 22 L 132 88\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><text x=\"22\" y=\"114\" font-size=\"14\" font-weight=\"700\" fill=\"currentColor\">R</text></g></g><g transform=\"translate(170,136)\"><g transform=\"translate(0,0)\"><g stroke=\"currentColor\" stroke-width=\"1.6\" fill=\"none\"><line x1=\"26\" y1=\"12\" x2=\"26\" y2=\"98\"/><line x1=\"26\" y1=\"98\" x2=\"140\" y2=\"98\"/></g><polygon points=\"26,6 22.5,13 29.5,13\" fill=\"currentColor\"/><polygon points=\"146,98 139,94.5 139,101.5\" fill=\"currentColor\"/><text x=\"32\" y=\"16\" font-size=\"12\" font-style=\"italic\" fill=\"currentColor\">x</text><text x=\"138\" y=\"112\" font-size=\"12\" font-style=\"italic\" text-anchor=\"end\" fill=\"currentColor\">t</text><path d=\"M 30 76 L 78 76 L 78 30 L 134 30\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><text x=\"22\" y=\"114\" font-size=\"14\" font-weight=\"700\" fill=\"currentColor\">S</text></g></g></svg>",
+    figCap:"P and Q: velocity against time. R and S: displacement against time.",
+    options:["P and Q only", "R and S only", "Q, R and S", "Q and S only"], answer:3,
+    sol:"<p>Test each graph against the two rules. A graph is impossible if it needs the body to have <b>two values at one instant</b> (the curve turns back on itself) or to change a quantity <b>instantly</b> (a vertical segment).</p><p><b>P</b> — a sharp corner on a v–t graph is only a sudden change of <i>acceleration</i> (foot moved from accelerator to brake); velocity itself stays single-valued and continuous. Possible. <b>Q</b> — the curve bends back to the left, so at one time it shows two velocities. <b>Impossible.</b> <b>R</b> — displacement falling in a straight line is a body moving back towards the reference point at constant velocity (velocity negative, but perfectly real). Possible. <b>S</b> — a vertical rise in displacement means the body jumped from one place to another in zero time, i.e. infinite speed. <b>Impossible.</b></p><p>So <b>Q and S</b> — option <b>(4)</b>. The common slip is to reject P for its corner (corners are fine; only <i>vertical</i> segments and turn-backs are not) or R for going downwards (a falling displacement–time line is simply motion back towards the reference point — it would be impossible only for a <i>distance</i>–time graph, since distance travelled can never decrease).</p>" },
+
+  { n:5, section:"Physics", topic:"Force and Laws of Motion", fmt:"statement",
+    stem:"<p>A boy starts walking towards the <b>north</b> along a rough road. Consider the following statements about the horizontal forces involved.</p><ol class=\"roman\"><li>The friction that the road exerts on his foot acts towards the north.</li><li>His foot pushes the road towards the south.</li><li>The friction that his foot exerts on the road acts towards the north.</li><li>The push of his foot on the road and the friction of the road on his foot are equal and opposite, so they cancel and cannot make him move.</li></ol><p>Which of the statements are correct?</p>",
+    options:["I and II only", "I and III only", "II and IV only", "I, II and III"], answer:0,
+    sol:"<p>Walking works by the <b>third law</b>: the foot pushes the road <b>backwards</b> (south), and the road pushes the foot <b>forwards</b> (north) by friction — that forward friction is what moves him. So <b>I</b> is correct and <b>II</b> is correct.</p><p><b>III</b> is wrong: the force the foot exerts <i>on the road</i> is the backward push, towards the south — statement III has it pointing the same way as the force on the foot. <b>IV</b> is the classic third-law trap: the two forces are indeed equal and opposite, but they act on <b>different bodies</b> (one on the road, one on the boy), so they never cancel each other. Only forces on the <i>same</i> body can cancel.</p><p>Hence <b>I and II only</b> — option <b>(1)</b>.</p>" },
+
+  { n:6, section:"Physics", topic:"Motion", fmt:"plain",
+    stem:"<p>A delivery rider in Kochi rides <b>800 m due north</b>, then <b>1200 m due east</b>, then <b>300 m due south</b> to reach a customer. By how much does the <b>distance</b> he travels exceed the magnitude of his <b>displacement</b>?</p>",
+    options:["600 m", "700 m", "1000 m", "1300 m"], answer:2,
+    sol:"<p><b>Distance</b> is simply the path length: 800 + 1200 + 300 = <b>2300 m</b>.</p><p><b>Displacement</b> is the straight line from start to finish. Net northward: 800 − 300 = <b>500 m</b>; eastward: <b>1200 m</b>. These are at right angles, and 500 : 1200 is the 5 : 12 : 13 triple, so the displacement is <b>1300 m</b>.</p><p>Difference: 2300 − 1300 = <b>1000 m</b> — option <b>(3)</b>.</p><p><b>1300 m</b> is the displacement itself, not the difference asked for; <b>600 m</b> adds the two net legs, 500 + 1200 = 1700 m, as the displacement instead of using Pythagoras (2300 − 1700); <b>700 m</b> forgets the 300 m southward leg in the distance (2000 − 1300).</p>" },
+
+  { n:7, section:"Physics", topic:"Force and Laws of Motion", fmt:"diagram",
+    stem:"<p>A block of mass <b>2 kg</b> is at rest on a smooth horizontal surface. From t = 0 a single horizontal force <b>F</b> acts on it, varying with time as shown. The velocity of the block at <b>t = 6 s</b> is</p>",
+    fig:"<svg viewBox=\"0 0 340 220\" width=\"340\" height=\"220\" role=\"img\" aria-label=\"Force-time graph. Force rises in a straight line from 0 at t equals 0 to 6 newtons at t equals 2 seconds, stays at 6 newtons until t equals 4 seconds, drops vertically to minus 3 newtons and stays at minus 3 newtons until t equals 6 seconds.\"><g stroke=\"currentColor\" stroke-width=\"1.8\" fill=\"none\" stroke-linecap=\"round\"><line x1=\"46\" y1=\"10\" x2=\"46\" y2=\"184\"/><line x1=\"42\" y1=\"118.5\" x2=\"330\" y2=\"118.5\"/></g><polygon points=\"46,4 42,12 50,12\" fill=\"currentColor\"/><polygon points=\"336,118.5 328,114.5 328,122.5\" fill=\"currentColor\"/><line x1=\"129.6\" y1=\"115.5\" x2=\"129.6\" y2=\"121.5\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"134.6\" y=\"134.5\" font-size=\"12\" text-anchor=\"start\" fill=\"currentColor\">2</text><line x1=\"213.3\" y1=\"115.5\" x2=\"213.3\" y2=\"121.5\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"218.3\" y=\"134.5\" font-size=\"12\" text-anchor=\"start\" fill=\"currentColor\">4</text><line x1=\"296.9\" y1=\"115.5\" x2=\"296.9\" y2=\"121.5\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"301.9\" y=\"134.5\" font-size=\"12\" text-anchor=\"start\" fill=\"currentColor\">6</text><line x1=\"43\" y1=\"36.5\" x2=\"49\" y2=\"36.5\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"39\" y=\"40.5\" font-size=\"12\" text-anchor=\"end\" fill=\"currentColor\">6</text><line x1=\"43\" y1=\"159.5\" x2=\"49\" y2=\"159.5\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"39\" y=\"163.5\" font-size=\"12\" text-anchor=\"end\" fill=\"currentColor\">−3</text><polyline points=\"46.0,118.5 129.6,36.5 213.3,36.5 213.3,159.5 296.9,159.5\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2.8\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"324\" y=\"214\" font-size=\"13\" text-anchor=\"end\" fill=\"currentColor\" font-style=\"italic\">t (s)</text><text x=\"54\" y=\"13\" font-size=\"13\" fill=\"currentColor\" font-style=\"italic\">F (N)</text><line x1=\"129.6\" y1=\"36.5\" x2=\"129.6\" y2=\"118.5\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/><line x1=\"213.3\" y1=\"36.5\" x2=\"213.3\" y2=\"118.5\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/><line x1=\"296.9\" y1=\"159.5\" x2=\"296.9\" y2=\"118.5\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/><line x1=\"46\" y1=\"36.5\" x2=\"129.6\" y2=\"36.5\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/><line x1=\"46\" y1=\"159.5\" x2=\"213.3\" y2=\"159.5\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/></svg>",
+    figCap:"Force against time. Below the axis the force acts in the opposite direction.",
+    options:["6 m/s", "9 m/s", "12 m/s", "24 m/s"], answer:0,
+    sol:"<p>The <b>area under an F–t graph is the change in momentum</b> (impulse), and area <b>below the axis counts negative</b>.</p><p>0–2 s: triangle ½ × 2 × 6 = <b>+6 N s</b>. 2–4 s: rectangle 2 × 6 = <b>+12 N s</b>. 4–6 s: rectangle 2 × 3 = <b>−6 N s</b> (force reversed). Net impulse = 6 + 12 − 6 = <b>12 N s</b>.</p><p>Δp = 12 kg m/s, and the block started from rest, so v = 12/2 = <b>6 m/s</b> — option <b>(1)</b>.</p><p><b>12 m/s</b> is either the impulse quoted as a velocity (mass forgotten) or the result of counting the negative area as positive (24/2); <b>24 m/s</b> makes both slips at once; <b>9 m/s</b> treats the first triangle as a rectangle (12 + 12 − 6 = 18, then ÷ 2).</p>" },
+
+  { n:8, section:"Physics", topic:"Motion", fmt:"plain",
+    stem:"<p>An athlete runs along a circular track of <b>diameter 70 m</b>. She starts at one point and runs <b>exactly half way round</b> the track in <b>20 s</b>. Taking π = 22/7, her <b>average speed</b> and the <b>magnitude of her average velocity</b> are, respectively,</p>",
+    options:["5.5 m/s and 5.5 m/s", "5.5 m/s and 0", "11 m/s and 7 m/s", "5.5 m/s and 3.5 m/s"], answer:3,
+    sol:"<p>Two different lengths are involved, and the question tests whether you keep them apart.</p><p>The radius is 70/2 = <b>35 m</b>. <b>Distance</b> = half the circumference = ½ × 2πr = πr = (22/7) × 35 = <b>110 m</b>. Average speed = 110/20 = <b>5.5 m/s</b>.</p><p><b>Displacement</b> = the straight line between two diametrically opposite points = the diameter = <b>70 m</b>. Magnitude of average velocity = 70/20 = <b>3.5 m/s</b>.</p><p>Option <b>(4)</b>. <b>(1)</b> assumes speed and velocity are the same number; <b>(2)</b> confuses half a lap with a full lap, where the displacement really would be zero; <b>(3)</b> takes the 70 m as the <i>radius</i>: half-circumference (22/7) × 70 = 220 m and displacement 140 m, so 11 m/s and 7 m/s — both numbers exactly double the right ones.</p>" },
+
+  { n:9, section:"Physics", topic:"Force and Laws of Motion", fmt:"ar",
+    stem:"<p>Read the assertion and the reason, then choose the correct option.</p><p><b>Assertion (A):</b> When a rifle is fired, the rifle recoils with a much smaller velocity than the bullet.</p><p><b>Reason (R):</b> The force that the exploding gases exert on the rifle is smaller than the force they exert on the bullet.</p>",
+    options:["Both A and R are true, and R is the correct explanation of A.", "Both A and R are true, but R is not the correct explanation of A.", "A is true, but R is false.", "A is false, but R is true."], answer:2,
+    sol:"<p><b>A is true</b> — the rifle does recoil, and far more slowly than the bullet moves. <b>R is false</b>: by the third law the two forces are <b>equal</b> in magnitude and opposite in direction. The velocities differ because the <b>masses</b> differ: the same impulse gives the light bullet a large velocity and the heavy rifle a small one (conservation of momentum, m<sub>rifle</sub>v<sub>rifle</sub> = m<sub>bullet</sub>v<sub>bullet</sub>).</p><p>So <b>A true, R false</b> — option <b>(3)</b>. Option (1) is the trap for anyone who reasons \"smaller velocity, so smaller force\"; in Newton's laws an equal force gives unequal accelerations to unequal masses.</p>" },
+
+  { n:10, section:"Physics", topic:"Force and Laws of Motion", fmt:"diagram",
+    stem:"<p>A trolley of mass <b>4 kg</b> starts from rest on a straight horizontal track. Its acceleration varies with time as shown in the graph. The <b>momentum</b> of the trolley at <b>t = 7 s</b> is</p>",
+    fig:"<svg viewBox=\"0 0 340 220\" width=\"340\" height=\"220\" role=\"img\" aria-label=\"Acceleration-time graph. Acceleration is a constant 3 metres per second squared from t equals 0 to t equals 4 seconds, then drops to a constant minus 2 metres per second squared from t equals 4 to t equals 7 seconds.\"><g stroke=\"currentColor\" stroke-width=\"1.8\" fill=\"none\" stroke-linecap=\"round\"><line x1=\"46\" y1=\"10\" x2=\"46\" y2=\"184\"/><line x1=\"42\" y1=\"109.1\" x2=\"330\" y2=\"109.1\"/></g><polygon points=\"46,4 42,12 50,12\" fill=\"currentColor\"/><polygon points=\"336,109.1 328,105.1 328,113.1\" fill=\"currentColor\"/><line x1=\"189.4\" y1=\"106.1\" x2=\"189.4\" y2=\"112.1\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"194.4\" y=\"125.1\" font-size=\"12\" text-anchor=\"start\" fill=\"currentColor\">4</text><line x1=\"296.9\" y1=\"106.1\" x2=\"296.9\" y2=\"112.1\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"301.9\" y=\"125.1\" font-size=\"12\" text-anchor=\"start\" fill=\"currentColor\">7</text><line x1=\"43\" y1=\"42.6\" x2=\"49\" y2=\"42.6\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"39\" y=\"46.6\" font-size=\"12\" text-anchor=\"end\" fill=\"currentColor\">3</text><line x1=\"43\" y1=\"153.4\" x2=\"49\" y2=\"153.4\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"39\" y=\"157.4\" font-size=\"12\" text-anchor=\"end\" fill=\"currentColor\">−2</text><polyline points=\"46.0,42.6 189.4,42.6 189.4,153.4 296.9,153.4\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2.8\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"324\" y=\"214\" font-size=\"13\" text-anchor=\"end\" fill=\"currentColor\" font-style=\"italic\">t (s)</text><text x=\"54\" y=\"13\" font-size=\"13\" fill=\"currentColor\" font-style=\"italic\">a (m/s²)</text><line x1=\"296.9\" y1=\"153.4\" x2=\"296.9\" y2=\"109.1\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/><line x1=\"46\" y1=\"153.4\" x2=\"189.4\" y2=\"153.4\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".55\"/></svg>",
+    figCap:"Acceleration against time. A negative value means the acceleration is directed opposite to the motion.",
+    options:["6 kg m/s", "24 kg m/s", "48 kg m/s", "72 kg m/s"], answer:1,
+    sol:"<p>The <b>area under an a–t graph is the change in velocity</b>, with area below the axis negative.</p><p>0–4 s: 3 × 4 = <b>+12 m/s</b>. 4–7 s: (−2) × 3 = <b>−6 m/s</b>. Starting from rest, v at 7 s = 12 − 6 = <b>6 m/s</b>. Momentum p = mv = 4 × 6 = <b>24 kg m/s</b> — option <b>(2)</b>.</p><p><b>6 kg m/s</b> reports the velocity as the momentum; <b>48 kg m/s</b> is the momentum at t = 4 s (the maximum, 4 × 12) — the trolley then slows for 3 s; <b>72 kg m/s</b> adds the second area as positive (12 + 6 = 18, then × 4).</p>" },
+
+  { n:11, section:"Physics", topic:"Force and Laws of Motion", fmt:"match",
+    stem:"<p>Match each observation in <b>Column I</b> with the idea in <b>Column II</b> that explains it.</p><table><thead><tr><th>Column I</th><th>Column II</th></tr></thead><tbody><tr><td>(A) A fielder draws his hands backwards while catching a fast cricket ball</td><td>(p) inertia of rest</td></tr><tr><td>(B) Dust flies off a carpet when it is beaten with a stick</td><td>(q) inertia of direction</td></tr><tr><td>(C) A rocket rises as hot gases rush out of its tail</td><td>(r) force equals the rate of change of momentum</td></tr><tr><td>(D) Passengers lean outwards when a bus takes a sharp turn</td><td>(s) action and reaction act on different bodies</td></tr></tbody></table>",
+    options:["A–r, B–p, C–s, D–q", "A–s, B–p, C–r, D–q", "A–r, B–q, C–s, D–p", "A–p, B–r, C–s, D–q"], answer:0,
+    sol:"<p><b>(A)</b> Drawing the hands back lengthens the time over which the ball's momentum falls to zero; F = Δp/Δt, so a longer Δt means a smaller force on the palms → <b>(r)</b>. <b>(B)</b> The stick moves the carpet suddenly while the dust particles, by their inertia, stay where they were and so separate from it → <b>(p)</b> inertia of rest. <b>(C)</b> The rocket pushes the gases down; the gases push the rocket up — a third-law pair acting on two different bodies → <b>(s)</b>. <b>(D)</b> The passengers' bodies tend to keep moving in a straight line while the bus turns → <b>(q)</b> inertia of direction.</p><p>So <b>A–r, B–p, C–s, D–q</b> — option <b>(1)</b>. Option (2) swaps the second-law and third-law items; (3) swaps the two kinds of inertia; (4) files the catch under inertia, when the point of pulling the hands back is the <i>time</i> over which momentum changes.</p>" },
+
+  { n:12, section:"Physics", topic:"Motion", fmt:"plain",
+    stem:"<p>A ball is projected <b>up</b> a long smooth slope with a speed of <b>8 m/s</b>. It moves up with uniform retardation, stops, and comes back down with uniform acceleration of the same magnitude, returning to the starting point <b>4 s</b> after it was projected. The distance it travelled <b>up the slope</b> before stopping was</p>",
+    options:["4 m", "8 m", "16 m", "32 m"], answer:1,
+    sol:"<p>The motion is symmetric: it takes as long to come back as to go up, so the ball reaches its highest point at <b>t = 2 s</b>, not 4 s. There v = 0, so from v = u − at: 0 = 8 − 2a, giving <b>a = 4 m/s²</b>.</p><p>Distance up the slope: s = u²/2a = 64/8 = <b>8 m</b>. (Or: average velocity going up is (8 + 0)/2 = 4 m/s for 2 s → 8 m.) Option <b>(2)</b>.</p><p><b>16 m</b> is the result of two common slips — using the whole 4 s to find a (a = 2, then 64/4), or writing s = ut with t = 2 as if there were no retardation; <b>32 m</b> is 8 m/s × 4 s, as if the ball travelled at 8 m/s the whole time; <b>4 m</b> is u²/2a with a wrongly doubled to 8.</p>" },
+
+  { n:13, section:"Physics", topic:"Force and Laws of Motion", fmt:"plain",
+    stem:"<p>A rubber ball of mass <b>250 g</b> moving at <b>8 m/s</b> strikes a wall perpendicularly and rebounds along the same line with <b>three-quarters</b> of its speed. The ball is in contact with the wall for <b>0.05 s</b>. The average force the wall exerts on the ball is</p>",
+    options:["3.5 N", "10 N", "40 N", "70 N"], answer:3,
+    sol:"<p>Rebound speed = ¾ × 8 = <b>6 m/s</b>. Take the direction <i>towards</i> the wall as positive. Initial momentum = 0.25 × 8 = <b>+2 kg m/s</b>; final momentum = 0.25 × (−6) = <b>−1.5 kg m/s</b>. Change in momentum = −1.5 − 2 = <b>−3.5 kg m/s</b>, i.e. 3.5 kg m/s away from the wall.</p><p>Average force = Δp/Δt = 3.5/0.05 = <b>70 N</b> — option <b>(4)</b>.</p><p><b>10 N</b> comes from subtracting the speeds as if the ball had not turned round (0.25 × 2 = 0.5, then ÷ 0.05); <b>40 N</b> uses only the incoming momentum (2 ÷ 0.05), as if the ball stopped dead; <b>3.5 N</b> is the change in momentum quoted as a force without dividing by the contact time.</p>" }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b}. A mock also stores
+   its answers + flags so the frozen report can be replayed on any device;
+   the hub only ever reads m/mx. Written MERGE-ONLY. */
+function saveAttempt(sc, timeTaken){
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank };
+  if(IS_MOCK){ rec.a = answers.slice(); rec.f = flags.slice(); rec.md = mode; rec.tm = timeTaken; rec.v = 1; }
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function showFrozen(rec){
+  if(!rec || !IS_MOCK || submitted || !rec.a) return;
+  RESTORING = true;
+  answers = rec.a.slice();
+  flags   = (rec.f || new Array(NQ).fill(false)).slice();
+  mode    = rec.md || 'timed';
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
