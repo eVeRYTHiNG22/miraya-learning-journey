@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Metals &amp; Non-metals</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>C</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--chem);
+    --cuso4:#4b8dff; --feso4:#6fcf87; --rust:#d0703a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #2e246b30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--chem); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--physics); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .toolbtn:focus-visible { outline:2px solid var(--chem); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--chem); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e3a35,#1a2a4a); border:1px solid #2b5a56;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--chem); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--chem); background:color-mix(in srgb,var(--chem) 14%,transparent); border:1px solid color-mix(in srgb,var(--chem) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+  ol.roman { list-style:upper-roman; }
+  ol.roman li { padding-left:4px; }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child, .box .tablewrap:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--chem); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--chem); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; margin:12px 0; }
+  .tablewrap table { margin:0; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--chem); background:color-mix(in srgb,var(--chem) 13%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--chem); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--chem); background:color-mix(in srgb,var(--chem) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--chem) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; --cuso4:#2a64c9; --feso4:#3f9a57; --rust:#a4481a; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5b40d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#dff3ef,#e6eefb); border-color:#b7dcd5; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; --cuso4:#2a64c9; --feso4:#3f9a57; --rust:#a4481a;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb.on { background:#f6f6f6; }
+  }
+  .traps { counter-reset:tr; list-style:none; margin-left:0; }
+  .traps li { counter-increment:tr; position:relative; padding-left:34px; margin-bottom:9px; }
+  .traps li::before { content:counter(tr); position:absolute; left:0; top:1px; width:23px; height:23px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  tr.shared td { color:var(--muted); }
+  @media (max-width:600px) { figure { overflow-x:auto; -webkit-overflow-scrolling:touch; } figure svg { min-width:500px; } figure figcaption { position:sticky; left:0; max-width:calc(100vw - 36px); margin-left:0; } }
+  @media print { figure svg { min-width:0 !important; } }
+  .tag { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.06em; padding:1px 6px; border-radius:5px; border:1px solid var(--border); color:var(--muted); white-space:nowrap; }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Chemistry · Crash notes</div>
+    <h1>Metals &amp; Non-metals</h1>
+    <p class="sub">Official topic: <b>Metals and non-metals</b> (Class 10, NCERT Chapter 3). Your IGCSE course
+    already covers most of the chemistry here — the reactivity series, displacement, ionic bonding, extraction
+    by electrolysis or carbon, rusting and its prevention, alloys (0620 sections 2.5, 9 and 10). What is new is
+    the <b>NCERT framing Allen writes in</b>: NCERT's exact order of the series (with [H] in it), the
+    <em>roasting / calcination</em> pair, the three-way <em>extraction flow chart</em>, amphoteric oxides by
+    name, aqua regia, anodising, the thermit reaction, the 22-carat rule, and the book's own activities and
+    figures — which Allen lifts almost word for word. A 30-minute read.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Every Chemistry question (Q16–30) in all five cached papers — four real sittings and Allen's official
+      sample — was read page by page, the 2017 and 2018 booklets rendered from their image scans (a text search
+      returns nothing for them), and every item on this chapter checked against Allen's own key sheets.
+      <b>Twenty items touch this unit</b>; seven of them (greyed) are shared with the neighbouring cards and
+      appear on those pages too:</p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th>Paper</th><th>Q</th><th>What it gives you</th><th>What it wants</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr class="shared"><td>2017 · E</td><td class="mono">20</td><td>Blue copper sulphate solution; Ag, Hg, Zn, Au offered <span class="tag">shared with Reactions</span></td><td>Which metal makes it colourless</td><td class="mono">(3) Zn</td></tr>
+          <tr><td>2017 · E</td><td class="mono">24</td><td>Mg, Cu, Zn in HCl — 16 bubbles, none, 7 bubbles in 10 s (figure)</td><td>Order from <em>least</em> to most reactive</td><td class="mono">(2) Cu, Zn, Mg</td></tr>
+          <tr><td>2017 · E</td><td class="mono">28</td><td>Four statements on extraction</td><td>The <em>incorrect</em> one</td><td class="mono">(3) "sulphide ore is concentrated by calcination"</td></tr>
+          <tr><td>2018 · S</td><td class="mono">20</td><td>Bauxite</td><td>Its composition</td><td class="mono">(3) Al₂O₃·2H₂O</td></tr>
+          <tr class="shared"><td>2018 · S</td><td class="mono">21</td><td>An oxide of a non-metal: proton donor and acceptor, reacts with acidic and basic oxides, oxidises iron at its boiling point <span class="tag">shared with Reactions</span></td><td>Which oxide</td><td class="mono">(1) H₂O</td></tr>
+          <tr><td>2018 · S</td><td class="mono">24</td><td>"Metallurgy is the process of…"</td><td>The definition</td><td class="mono">(4) extracting metal from ore</td></tr>
+          <tr class="shared"><td>2018 · S</td><td class="mono">29</td><td>2KI + Cl₂ · 2AgNO₃ + Cu → Cu(NO₃)₂ + 2Ag · BaSO₄ + NaCl · "both (1) &amp; (2)" <span class="tag">shared with Reactions</span></td><td>Which reaction is <em>not</em> possible</td><td class="mono">(3) BaSO₄ + NaCl — the Cu/Ag displacement does happen</td></tr>
+          <tr><td>2024 · U</td><td class="mono">20</td><td>Aluminium oxide + NaOH solution</td><td>What forms</td><td class="mono">(3) salt and water</td></tr>
+          <tr><td>2024 · U</td><td class="mono">24</td><td>Metals extracted by electrolytic reduction of their molten salts</td><td>Which pair</td><td class="mono">(4) Mg and Al</td></tr>
+          <tr><td>2024 · U</td><td class="mono">28</td><td>NCERT Fig 3.10 with its boxes blanked W, X, Y, Z — X used for both roasting boxes (figure)</td><td>Fill the gaps</td><td class="mono">(3) calcination, roasting, electrolysis of molten ore, reduction to metal</td></tr>
+          <tr><td>2024 · U</td><td class="mono">29</td><td>K, Fe, Cu, Zn, Ca, Mg, Ag</td><td>Decreasing reactivity</td><td class="mono">(4) K &gt; Ca &gt; Mg &gt; Zn &gt; Fe &gt; Cu &gt; Ag</td></tr>
+          <tr class="shared"><td>2024 · A</td><td class="mono">20</td><td>Sulphur burnt on a spatula, gas collected in an inverted tube (figure) <span class="tag">shared with Reactions</span></td><td>Its action on dry and on moist blue litmus</td><td class="mono">(3) dry: no change · moist: red</td></tr>
+          <tr><td>2024 · A</td><td class="mono">24</td><td>Metal X and chlorine form XCl₂; four statements</td><td>Which describe the bond</td><td class="mono">(1) X gives two electrons; each Cl receives one</td></tr>
+          <tr class="shared"><td>2024 · A</td><td class="mono">28</td><td>Four nails: oil-sealed boiled water · dry CaCl₂ · boiled water, no oil · salt solution (figure) <span class="tag">shared with Reactions</span></td><td>Where rusting takes place</td><td class="mono">(4) C and D</td></tr>
+          <tr class="shared"><td>Sample</td><td class="mono">16</td><td>Sodium, helium, sulphur, hydrogen gas ↔ soft metal, noble gas, yellow, diatomic <span class="tag">shared with Atoms</span></td><td>Match</td><td class="mono">(3) A-r, B-s, C-p, D-q</td></tr>
+          <tr><td>Sample</td><td class="mono">21</td><td>Four statements on extracting Al (oxide ore) and Cu (sulphide ore)</td><td>The correct ones</td><td class="mono">(1) I, II and IV</td></tr>
+          <tr><td>Sample</td><td class="mono">23</td><td>Calamine, siderite, argentite, cuprite, zinc blende, pyrites, malachite, azurite</td><td>The <em>incorrect</em> statement</td><td class="mono">(2) "argentite and cuprite are oxides"</td></tr>
+          <tr><td>Sample</td><td class="mono">26</td><td>Gold and platinum occur as the metal itself</td><td>Why</td><td class="mono">(4) they are relatively inert</td></tr>
+          <tr><td>Sample</td><td class="mono">27</td><td>Zn, Cu, Pb, Ag</td><td>Which can prevent the corrosion of iron</td><td class="mono">(1) Zn</td></tr>
+          <tr class="shared"><td>Sample</td><td class="mono">28</td><td>Tarnished silver shines again when rubbed with toothpaste <span class="tag">shared with Reactions</span></td><td>Why</td><td class="mono">(1) "H₂O₂ … gives silver sulphate" — see note</td></tr>
+          <tr><td colspan="5" style="color:var(--muted);font-size:12.5px;padding-top:12px"><b>About Sample Q28.</b> Silver tarnishes because it forms black <b>silver sulphide</b> (NCERT §3.5) — that part is solid. Allen's keyed reason, that hydrogen peroxide in toothpaste turns it into silver sulphate, is not NCERT chemistry and would not give back shiny silver anyway (silver sulphate is a white salt). The chemistry behind the key is not invented — hydrogen peroxide does oxidise sulphides to sulphates (it is how blackened lead-white on old paintings is restored) — but it is outside NCERT. <b>If this exact item comes round again, Allen's key is (1);</b> just do not carry it over as a rule about cleaning silver.</td></tr>
+          <tr><td colspan="5" style="color:var(--muted);font-size:12.5px">Next door, filed with the Reactions card: Sample Q30 (=3), a reaction-type match whose displacement row is Fe + CuSO₄ → FeSO₄ + Cu, and 2024-A Q25 (=3), a metal carbonate heated to its oxide and CO₂ — the calcination step of section 6.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>What that tells you:</p>
+      <ol>
+        <li><b>Three or four of the fifteen Chemistry questions in every real sitting</b> — 2017 three, 2018
+        four, 2024-U four, 2024-A three — and six in the sample. Call it 12–16 marks, and the questions are
+        short: most need one fact read correctly.</li>
+        <li><b>Six machines cover all twenty.</b> (a) <b>reactivity order and displacement</b> (2017-E Q20,
+        Q24; 2018-S Q29; 2024-U Q29; Sample Q27) — section 4; (b) <b>which extraction route</b> (2017-E Q28; 2018-S Q24;
+        2024-U Q24, Q28; Sample Q21) — section 6; (c) <b>what kind of oxide</b> (2024-U Q20; 2024-A Q20;
+        2018-S Q21) — section 2; (d) <b>the ionic bond</b> (2024-A Q24) — section 5; (e) <b>corrosion</b>
+        (2024-A Q28; Sample Q27, Q28) — section 7; (f) <b>named facts</b> — ores, native metals, physical
+        properties (2018-S Q20; Sample Q16, Q23, Q26) — sections 1 and 6.</li>
+        <li><b>Allen lifts from the textbook.</b> 2024-A Q20 is NCERT's Exercise 9 almost word for word ("Pratyush
+        took sulphur powder on a spatula…"); 2024-U Q28 is NCERT's Figure 3.10 with its step boxes blanked out;
+        2024-A Q28 is NCERT's rusting Activity 3.14 with an extra tube. <b>Know the chapter's figures,
+        activities and end-of-chapter exercises</b> — the three Allen has lifted so far are all drawn on this page.</li>
+        <li><b>Four of the twenty carry a figure</b> — a bubbles-in-acid diagram, the flow chart, the sulphur
+        spatula, the rusting tubes. All four are drawn below.</li>
+        <li><b>Allen reaches past the chapter.</b> Ore names and formulae (bauxite, argentite, cuprite, calamine
+        … in 2018-S Q20 and Sample Q23), water as a proton donor (2018-S Q21), salt water speeding rust (2024-A
+        Q28's tube D) — none is in NCERT Chapter 3. The ore table in section 6 is here for that reason, and
+        labelled as extra.</li>
+      </ol>
+      <p><b>Budget accordingly.</b> A 12–16-mark unit where you already know the chemistry. Spend the time on the
+      exact NCERT series (section 4), roasting versus calcination and the flow chart (section 6), the oxide
+      types (section 2), the rusting tubes (section 7) and the trap list in section 8.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">1</span>Physical properties — and the exceptions</h2>
+    <p class="lede">Metals and non-metals are opposites on almost every physical property — and NCERT's point is
+    that <b>the exceptions are why physical properties alone cannot classify an element</b>. The exceptions are
+    exactly what gets asked.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Property</th><th>Metals</th><th>Non-metals</th></tr></thead>
+      <tbody>
+        <tr><td><b>Lustre</b></td><td>Shining surface when pure / freshly cut (<em>metallic lustre</em>)</td><td>Dull — <b>except iodine</b>, which is lustrous</td></tr>
+        <tr><td><b>Hardness</b></td><td>Generally hard — <b>except Li, Na, K</b> (alkali metals), soft enough to cut with a knife</td><td>Varies — <b>diamond</b> (carbon) is the hardest natural substance</td></tr>
+        <tr><td><b>Malleable</b> (beaten into sheets)</td><td>Yes — <b>gold and silver</b> are the most malleable</td><td>No — brittle</td></tr>
+        <tr><td><b>Ductile</b> (drawn into wires)</td><td>Yes — <b>gold</b> is the most ductile: about <b>2 km</b> of wire from <b>1 g</b></td><td>No</td></tr>
+        <tr><td><b>Heat conduction</b></td><td>Good — <b>silver and copper best</b>; <b>lead and mercury</b> comparatively poor</td><td>Poor</td></tr>
+        <tr><td><b>Electrical conduction</b></td><td>Good</td><td>Poor — <b>except graphite</b> (carbon)</td></tr>
+        <tr><td><b>State at room temperature</b></td><td>Solid — <b>except mercury</b> (liquid)</td><td>Solid or gas — <b>except bromine</b> (liquid)</td></tr>
+        <tr><td><b>Melting point</b></td><td>High — <b>except gallium and caesium</b>, which melt on your palm</td><td>Low — except diamond (very high m.p. and b.p.)</td></tr>
+        <tr><td><b>Sonorous</b> (rings when struck)</td><td>Yes — why school bells are metal</td><td>No</td></tr>
+        <tr><td><b>Density</b></td><td>Generally high — <b>Li, Na, K</b> have low densities</td><td>— (NCERT gives no rule)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="box def">
+      <h4>Words NCERT uses</h4>
+      <p><b>Allotrope</b> — one of the different forms of the same element: diamond and graphite are allotropes of
+      carbon. <b>Sonorous</b> — produces a sound on striking. <b>Metallic lustre</b>
+      — the shine of a pure metal surface. Sample Q16 is this table as a match: sodium ↔ soft metal, helium ↔
+      noble gas, sulphur ↔ yellow, hydrogen ↔ diatomic.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>Burning in air — basic, amphoteric and acidic oxides</h2>
+    <p class="lede"><b>Metal + oxygen → metal oxide</b>, and metal oxides are <b>basic</b>. Non-metal oxides are
+    <b>acidic or neutral</b>. Two metal oxides break the rule — and 2024-U Q20 asked about one of them.</p>
+    <div class="bank">
+      <div class="fx"><div class="eq">2Cu + O₂ → 2CuO</div><div class="wh">Copper does not burn — the hot metal gets a <b>black</b> coat of copper(II) oxide.</div></div>
+      <div class="fx"><div class="eq">4Al + 3O₂ → 2Al₂O₃</div><div class="wh">Aluminium oxide — the one to know is <b>amphoteric</b>.</div></div>
+      <div class="fx"><div class="eq">Na₂O + H₂O → 2NaOH<br>K₂O + H₂O → 2KOH</div><div class="wh">Most metal oxides are insoluble; these two dissolve to give <b>alkalis</b>.</div></div>
+      <div class="fx"><div class="eq">Al₂O₃ + 6HCl → 2AlCl₃ + 3H₂O<br>Al₂O₃ + 2NaOH → 2NaAlO₂ + H₂O</div><div class="wh">Reacts with an acid <em>and</em> a base, giving <b>salt + water</b> both times (NaAlO₂ = sodium aluminate). That is 2024-U Q20's key.</div></div>
+    </div>
+    <div class="box def">
+      <h4>Amphoteric oxide</h4>
+      <p>A metal oxide that reacts with <b>both acids and bases</b> to produce salts and water. NCERT names two:
+      <b>aluminium oxide (Al₂O₃)</b> and <b>zinc oxide (ZnO)</b>. Both are <em>metal</em> oxides — an option that
+      calls an amphoteric oxide "acidic because it reacts with a base" is half-reading the definition.</p>
+    </div>
+    <h3>How readily each metal burns (NCERT's "Do you know?")</h3>
+    <ul>
+      <li><b>K and Na</b> react so vigorously they catch fire in the open — stored <b>under kerosene</b>.</li>
+      <li><b>Mg</b> burns with a <b>dazzling white flame</b>; its ash dissolved in water turns red litmus blue (basic).</li>
+      <li><b>Mg, Al, Zn, Pb</b> are covered by a thin <b>protective oxide layer</b> at ordinary temperature that stops
+      further oxidation — which is why aluminium, a reactive metal, still makes safe cooking pots.</li>
+      <li><b>Iron</b> does not burn as a lump, but <b>iron filings</b> burn vigorously when sprinkled in a flame.</li>
+      <li><b>Copper</b> does not burn — it gets the black CuO coat. <b>Silver and gold</b> do not react with oxygen even when hot.</li>
+    </ul>
+    <div class="box exam">
+      <h4>Anodising</h4>
+      <p>Making aluminium's oxide layer <b>thicker</b>. A clean aluminium article is made the <b>anode</b> and
+      electrolysed with <b>dilute sulphuric acid</b>; the oxygen released at the anode reacts with the aluminium
+      to thicken the protective oxide, which can then be dyed. (Anode, not cathode — oxygen comes off at the anode.)</p>
+    </div>
+    <h3>The non-metal side — NCERT Exercise 9, which Allen set as 2024-A Q20</h3>
+    <figure><svg viewBox="0 0 540 250" role="img" aria-label="Burning sulphur under an inverted test tube; dry blue litmus stays blue, moist blue litmus turns red"><line x1="40.0" y1="215.0" x2="140.0" y2="172.0" stroke="var(--muted)" stroke-width="3"/><ellipse cx="150" cy="168" rx="18" ry="6" fill="var(--iq)"/><path d="M150,160 C141,150 146,138 150,128 C154,138 159,150 150,160 Z" fill="var(--force)" opacity=".85"/><path d="M128,150 L128,62 A22,22 0 0 1 172,62 L172,150" fill="none" stroke="var(--text)" stroke-width="1.6"/><circle cx="140" cy="70" r="3" fill="var(--muted)" opacity=".7"/><circle cx="158" cy="82" r="3" fill="var(--muted)" opacity=".7"/><circle cx="146" cy="98" r="3" fill="var(--muted)" opacity=".7"/><circle cx="162" cy="108" r="3" fill="var(--muted)" opacity=".7"/><circle cx="138" cy="118" r="3" fill="var(--muted)" opacity=".7"/><circle cx="152" cy="130" r="3" fill="var(--muted)" opacity=".7"/><text x="186.0" y="82.0" font-size="12" fill="var(--text)" text-anchor="start" font-weight="600" font-family="Inter,sans-serif">SO₂ collects</text><text x="186.0" y="98.0" font-size="12" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">in the tube</text><text x="150.0" y="238.0" font-size="12" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">burning sulphur</text><text x="36.0" y="238.0" font-size="11" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">spatula</text><text x="150.0" y="24.0" font-size="13" fill="var(--chem)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">S + O₂ → SO₂</text><line x1="290.0" y1="30.0" x2="290.0" y2="230.0" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 4"/><rect x="330" y="70" width="28" height="100" rx="3" fill="var(--physics)"/><text x="344.0" y="190.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">dry blue</text><text x="344.0" y="206.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">litmus</text><text x="344.0" y="224.0" font-size="12" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">no change</text><rect x="440" y="70" width="28" height="100" rx="3" fill="var(--force)"/><circle cx="448" cy="88" r="2.5" fill="var(--bg)" opacity=".6"/><circle cx="460" cy="110" r="2.5" fill="var(--bg)" opacity=".6"/><circle cx="450" cy="134" r="2.5" fill="var(--bg)" opacity=".6"/><circle cx="461" cy="152" r="2.5" fill="var(--bg)" opacity=".6"/><text x="454.0" y="190.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">moist blue</text><text x="454.0" y="206.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">litmus</text><text x="454.0" y="224.0" font-size="12" fill="var(--force)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">turns red</text><text x="399.0" y="40.0" font-size="13" fill="var(--chem)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">SO₂ + H₂O → H₂SO₃</text><text x="399.0" y="57.0" font-size="11" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">(the acid needs the water)</text></svg>
+      <figcaption>Burning sulphur gives sulphur dioxide. The gas does nothing to <b>dry</b> blue litmus; on
+      <b>moist</b> blue litmus it dissolves to form sulphurous acid and turns it <b>red</b>. The acid only exists
+      once there is water — that is the whole question.</figcaption>
+    </figure>
+    <p>NCERT's summary of the non-metal side: non-metals form oxides that are <b>either acidic
+    or neutral</b> (NCERT names no example; carbon monoxide is the everyday neutral one); they <b>do not displace hydrogen</b> from
+    dilute acids; they react with hydrogen to form <b>hydrides</b>; and when they react with metals they
+    <b>gain</b> electrons to form negative ions.</p>
+    <div class="box">
+      <h4>One oxide that is neither — beyond NCERT, asked in 2018-S Q21</h4>
+      <p><b>Water, H₂O</b>, is an oxide of a non-metal (hydrogen) that behaves as both an acid and a base: it can
+      <b>give or take a proton (H⁺)</b>, so it reacts with acidic oxides <em>and</em> basic oxides (SO₂ + H₂O → H₂SO₃;
+      Na₂O + H₂O → 2NaOH). As steam it oxidises iron — 3Fe + 4H₂O → Fe₃O₄ + 4H₂ (section 3) — and it is a poor
+      conductor. That list of four properties was 2018-S Q21; its key was water.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>Water and dilute acids — the reactivity ladder, rung by rung</h2>
+    <p class="lede">NCERT builds the series from three tests. Learn the <b>rung</b> each metal sits on — questions
+    ask "reacts with hot water but not cold", "only with steam", "not at all".</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Metal</th><th>With water</th><th>What NCERT says happens</th></tr></thead>
+      <tbody>
+        <tr><td><b>K, Na</b></td><td>Cold water, <b>violently</b></td><td>So exothermic that the hydrogen <b>catches fire</b>. 2Na + 2H₂O → 2NaOH + H₂ + heat</td></tr>
+        <tr><td><b>Ca</b></td><td>Cold water, less violently</td><td>Heat not enough to ignite the H₂. Ca <b>floats</b> — H₂ bubbles stick to it. Ca + 2H₂O → Ca(OH)₂ + H₂</td></tr>
+        <tr><td><b>Mg</b></td><td><b>Hot</b> water only</td><td>Gives Mg(OH)₂ + H₂; also <b>floats</b>. No reaction with cold water.</td></tr>
+        <tr><td><b>Al, Zn, Fe</b></td><td><b>Steam</b> only</td><td>Metal oxide + H₂: 2Al + 3H₂O → Al₂O₃ + 3H₂ ; <b>3Fe + 4H₂O → Fe₃O₄ + 4H₂</b> (Fe₃O₄, not Fe₂O₃)</td></tr>
+        <tr><td><b>Pb, Cu, Ag, Au</b></td><td>No reaction at all</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+    <p><b>Dilute acids:</b> metal + dilute acid → <b>salt + hydrogen</b>, but only for metals <b>above hydrogen</b>
+    in the series. In NCERT's Activity 3.11 with dilute HCl, bubbling is fastest and warmest with magnesium, and the
+    order is <b>Mg &gt; Al &gt; Zn &gt; Fe</b>; <b>copper gives no bubbles and no temperature change</b>. (Sodium and
+    potassium are left out — they react violently with the water in the acid.)</p>
+    <figure><svg viewBox="0 0 540 250" role="img" aria-label="Magnesium, zinc, iron and copper in dilute hydrochloric acid: bubbles fastest with magnesium, fewer with zinc, fewer again with iron, none with copper"><path d="M61.5,80.0 L61.5,180.0 A18.5,18.5 0 0 0 98.5,180.0 L98.5,80.0 Z" fill="var(--muted)" opacity="0.28"/><path d="M60.0,40.0 L60.0,180.0 A20.0,20.0 0 0 0 100.0,180.0 L100.0,40.0" fill="none" stroke="var(--text)" stroke-width="1.6"/><rect x="71" y="162" width="18" height="18" rx="2" fill="var(--muted)"/><circle cx="76.1" cy="100.3" r="3.0" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="70.6" cy="126.4" r="2.5" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="70.3" cy="124.5" r="2.1" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="78.5" cy="94.8" r="2.1" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="78.3" cy="146.2" r="2.2" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="73.9" cy="132.7" r="3.4" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="81.7" cy="117.0" r="3.5" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="70.0" cy="148.4" r="2.4" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="72.2" cy="98.0" r="2.5" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="87.0" cy="102.3" r="2.9" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="83.1" cy="115.3" r="2.8" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="70.4" cy="94.1" r="2.3" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="84.0" cy="119.1" r="2.5" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="81.9" cy="120.8" r="2.4" fill="none" stroke="var(--text)" stroke-width="1"/><text x="80.0" y="224.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Mg</text><text x="80.0" y="242.0" font-size="11.5" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">fastest, warmest</text><path d="M186.5,80.0 L186.5,180.0 A18.5,18.5 0 0 0 223.5,180.0 L223.5,80.0 Z" fill="var(--muted)" opacity="0.28"/><path d="M185.0,40.0 L185.0,180.0 A20.0,20.0 0 0 0 225.0,180.0 L225.0,40.0" fill="none" stroke="var(--text)" stroke-width="1.6"/><rect x="196" y="162" width="18" height="18" rx="2" fill="var(--muted)"/><circle cx="211.5" cy="137.5" r="2.4" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="206.6" cy="125.7" r="3.3" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="210.0" cy="109.6" r="3.5" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="196.6" cy="118.4" r="3.1" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="197.3" cy="123.2" r="2.1" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="208.7" cy="142.0" r="2.9" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="213.3" cy="111.3" r="3.0" fill="none" stroke="var(--text)" stroke-width="1"/><text x="205.0" y="224.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Zn</text><text x="205.0" y="242.0" font-size="11.5" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">steady</text><path d="M311.5,80.0 L311.5,180.0 A18.5,18.5 0 0 0 348.5,180.0 L348.5,80.0 Z" fill="var(--muted)" opacity="0.28"/><path d="M310.0,40.0 L310.0,180.0 A20.0,20.0 0 0 0 350.0,180.0 L350.0,40.0" fill="none" stroke="var(--text)" stroke-width="1.6"/><rect x="321" y="162" width="18" height="18" rx="2" fill="var(--muted)"/><circle cx="332.1" cy="129.4" r="2.7" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="337.5" cy="154.2" r="2.7" fill="none" stroke="var(--text)" stroke-width="1"/><circle cx="333.6" cy="94.1" r="3.1" fill="none" stroke="var(--text)" stroke-width="1"/><text x="330.0" y="224.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Fe</text><text x="330.0" y="242.0" font-size="11.5" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">slow</text><path d="M436.5,80.0 L436.5,180.0 A18.5,18.5 0 0 0 473.5,180.0 L473.5,80.0 Z" fill="var(--muted)" opacity="0.28"/><path d="M435.0,40.0 L435.0,180.0 A20.0,20.0 0 0 0 475.0,180.0 L475.0,40.0" fill="none" stroke="var(--text)" stroke-width="1.6"/><rect x="446" y="162" width="18" height="18" rx="2" fill="var(--muted)"/><text x="455.0" y="224.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Cu</text><text x="455.0" y="242.0" font-size="11.5" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">no bubbles</text><text x="270.0" y="22.0" font-size="12" fill="var(--muted)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">same dilute HCl, same-size pieces — watch the rate of bubbling</text></svg>
+      <figcaption>The 2017-E Q24 machine: fewer bubbles in the same time means less reactive, none means below
+      hydrogen. The order <em>asked for</em> matters — that question wanted least → most (Cu, Zn, Mg), and the
+      most → least order was sitting among the options.</figcaption>
+    </figure>
+    <div class="box trap">
+      <h4>Two acid exceptions NCERT prints</h4>
+      <p><b>Nitric acid gives no hydrogen</b> with metals: HNO₃ is a strong oxidising agent, oxidises the H₂ to water
+      and is itself reduced to nitrogen oxides (N₂O, NO, NO₂). The exception to the exception: <b>magnesium and
+      manganese</b> do give H₂ with <b>very dilute</b> HNO₃.</p>
+      <p><b>Aqua regia</b> ("royal water") = freshly prepared <b>concentrated HCl : concentrated HNO₃ = 3 : 1</b>. It
+      dissolves <b>gold and platinum</b>, though neither acid can alone. (3 : 1 — hydrochloric is the bigger part.)</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>Displacement and the reactivity series</h2>
+    <p class="lede">The cleanest evidence for the order is <b>displacement</b>: if metal A pushes metal B out of a
+    solution of B's salt, A is more reactive than B.</p>
+    <div class="bank">
+      <div class="fx"><div class="eq">Metal A + salt solution of B → salt solution of A + metal B</div><div class="wh">Happens only if <b>A is above B</b> in the series. Works in solution or molten form.</div></div>
+      <div class="fx"><div class="eq">Fe + CuSO₄ → FeSO₄ + Cu</div><div class="wh">Blue solution fades to <b>pale green</b>; the nail gets a <b>reddish-brown</b> copper coat.</div></div>
+      <div class="fx"><div class="eq">Zn + CuSO₄ → ZnSO₄ + Cu</div><div class="wh">Blue fades to <b>colourless</b> — zinc sulphate has no colour. (2017-E Q20.)</div></div>
+      <div class="fx"><div class="eq">Cu + 2AgNO₃ → Cu(NO₃)₂ + 2Ag</div><div class="wh">Copper <em>does</em> displace silver — it is above Ag — and the solution turns <b>blue</b>.</div></div>
+    </div>
+    <figure><svg viewBox="0 0 540 250" role="img" aria-label="Iron nail in copper sulphate solution gets a brown coat and the blue solution turns pale green; copper wire in iron sulphate solution shows no change"><path d="M121.5,90.0 L121.5,190.0 A18.5,18.5 0 0 0 158.5,190.0 L158.5,90.0 Z" fill="var(--feso4)" opacity="0.55"/><path d="M120.0,50.0 L120.0,190.0 A20.0,20.0 0 0 0 160.0,190.0 L160.0,50.0" fill="none" stroke="var(--text)" stroke-width="1.6"/><text x="140.0" y="42.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">Iron nail in CuSO₄(aq)</text><rect x="138.0" y="72.0" width="4" height="124.0" fill="var(--muted)"/><rect x="134.0" y="69.0" width="12" height="4" fill="var(--muted)"/><rect x="139" y="100" width="5" height="9" fill="var(--rust)"/><rect x="137" y="116" width="5" height="9" fill="var(--rust)"/><rect x="139" y="132" width="5" height="9" fill="var(--rust)"/><rect x="137" y="148" width="5" height="9" fill="var(--rust)"/><rect x="139" y="164" width="5" height="9" fill="var(--rust)"/><rect x="137" y="180" width="5" height="9" fill="var(--rust)"/><line x1="200.0" y1="120.0" x2="165.0" y2="135.0" stroke="var(--muted)" stroke-width="1.2"/><path d="M165.0,135.0 L169.6,129.7 L172.0,135.3 Z" fill="var(--muted)"/><text x="204.0" y="112.0" font-size="11.5" fill="var(--text)" text-anchor="start" font-weight="600" font-family="Inter,sans-serif">reddish-brown</text><text x="204.0" y="126.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">copper coats the nail</text><line x1="204.0" y1="178.0" x2="164.0" y2="180.0" stroke="var(--muted)" stroke-width="1.2"/><path d="M164.0,180.0 L170.1,176.6 L170.4,182.7 Z" fill="var(--muted)"/><text x="208.0" y="176.0" font-size="11.5" fill="var(--text)" text-anchor="start" font-weight="600" font-family="Inter,sans-serif">blue fades to</text><text x="208.0" y="190.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">pale green (FeSO₄)</text><text x="140.0" y="238.0" font-size="12.5" fill="var(--power)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">reaction ✓</text><path d="M391.5,90.0 L391.5,190.0 A18.5,18.5 0 0 0 428.5,190.0 L428.5,90.0 Z" fill="var(--feso4)" opacity="0.55"/><path d="M390.0,50.0 L390.0,190.0 A20.0,20.0 0 0 0 430.0,190.0 L430.0,50.0" fill="none" stroke="var(--text)" stroke-width="1.6"/><text x="410.0" y="42.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">Copper wire in FeSO₄(aq)</text><path d="M410,66 C402,110 418,140 408,196" fill="none" stroke="var(--rust)" stroke-width="3"/><text x="410.0" y="238.0" font-size="12.5" fill="var(--force)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">no change ✗</text><line x1="275.0" y1="40.0" x2="275.0" y2="225.0" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 4"/></svg>
+      <figcaption>NCERT Activity 3.12 (Fig 3.4). Iron is above copper, so iron displaces copper; copper is below
+      iron, so nothing happens the other way round.</figcaption>
+    </figure>
+    <figure><svg viewBox="0 0 540 425" role="img" aria-label="The NCERT activity series, K to Au, with the three extraction bands of NCERT Figure 3.9"><text x="150.0" y="22.0" font-size="12" fill="var(--muted)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">NCERT Table 3.2 — activity series</text><text x="420.0" y="22.0" font-size="12" fill="var(--muted)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">Fig 3.9 — how it is extracted</text><line x1="34.0" y1="40.0" x2="34.0" y2="372.0" stroke="var(--muted)" stroke-width="1.6"/><path d="M34.0,372.0 L31.0,365.7 L37.0,365.7 Z" fill="var(--muted)"/><text x="22" y="206.0" font-size="11" fill="var(--muted)" text-anchor="middle" font-family="Inter,sans-serif" transform="rotate(-90 22 206.0)">reactivity decreases</text><text x="80.0" y="48.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">K</text><text x="118.0" y="48.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Potassium</text><text x="80.0" y="75.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Na</text><text x="118.0" y="75.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Sodium</text><text x="80.0" y="102.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Ca</text><text x="118.0" y="102.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Calcium</text><text x="80.0" y="129.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Mg</text><text x="118.0" y="129.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Magnesium</text><text x="80.0" y="156.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Al</text><text x="118.0" y="156.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Aluminium</text><text x="80.0" y="183.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Zn</text><text x="118.0" y="183.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Zinc</text><text x="80.0" y="210.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Fe</text><text x="118.0" y="210.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Iron</text><text x="80.0" y="237.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Pb</text><text x="118.0" y="237.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Lead</text><text x="80.0" y="264.0" font-size="14" fill="var(--muted)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">[H]</text><text x="80.0" y="291.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Cu</text><text x="118.0" y="291.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Copper</text><text x="80.0" y="318.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Hg</text><text x="118.0" y="318.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Mercury</text><text x="80.0" y="345.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Ag</text><text x="118.0" y="345.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Silver</text><text x="80.0" y="372.0" font-size="14" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">Au</text><text x="118.0" y="372.0" font-size="12.5" fill="var(--text)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Gold</text><line x1="56.0" y1="273.0" x2="300.0" y2="273.0" stroke="var(--force)" stroke-width="1.3" stroke-dasharray="5 4"/><line x1="56.0" y1="247.0" x2="300.0" y2="247.0" stroke="var(--force)" stroke-width="1.3" stroke-dasharray="5 4"/><text x="118.0" y="264.0" font-size="11" fill="var(--force)" text-anchor="start" font-weight="600" font-family="Inter,sans-serif">↑ displace H₂ from dilute acids</text><path d="M322,35 L330,35 L330,161 L322,161" fill="none" stroke="var(--physics)" stroke-width="2"/><text x="344.0" y="95.0" font-size="13" fill="var(--physics)" text-anchor="start" font-weight="700" font-family="Inter,sans-serif">Electrolysis</text><text x="344.0" y="112.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">of the molten ore</text><path d="M322,170 L330,170 L330,296 L322,296" fill="none" stroke="var(--iq)" stroke-width="2"/><text x="344.0" y="230.0" font-size="13" fill="var(--iq)" text-anchor="start" font-weight="700" font-family="Inter,sans-serif">Reduction using carbon</text><text x="344.0" y="247.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">(after roasting / calcination)</text><path d="M322,332 L330,332 L330,377 L322,377" fill="none" stroke="var(--power)" stroke-width="2"/><text x="344.0" y="351.5" font-size="13" fill="var(--power)" text-anchor="start" font-weight="700" font-family="Inter,sans-serif">Found in native state</text><text x="344.0" y="368.5" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">(gold, silver — free)</text><text x="344.0" y="318.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">Hg: HgS → heat alone (§3.4.3)</text></svg>
+      <figcaption>Learn this order <b>exactly</b> — 2024-U Q29 offered four orders of seven metals; the closest
+      wrong one differs from the key by a single swap (Mg above Ca), another by Zn above Mg with Fe dropped to
+      the bottom. Hydrogen is not a metal; it sits in the table only as the
+      dividing line for acids. The brackets are NCERT Fig 3.9 (section 6).</figcaption>
+    </figure>
+    <div class="box exam">
+      <h4>A way to hold the order</h4>
+      <p><span class="m">K Na Ca Mg Al | Zn Fe Pb | [H] | Cu Hg Ag Au</span> — "<b>K</b>ing <b>Na</b>poleon's
+      <b>Ca</b>t <b>M</b>ade <b>A</b>ll <b>Z</b>ebras <b>F</b>eel <b>P</b>roud; <b>H</b>e <b>C</b>arried
+      <b>H</b>is <b>S</b>ilver <b>G</b>old." The pairs to hold firm: <b>Ca above Mg</b> and <b>Mg above Zn</b>
+      — the two that 2024-U Q29's wrong options reversed.</p>
+    </div>
+    <h3>The displacement grid — NCERT's in-text question 3</h3>
+    <p>You get a table: metals down the side, salt solutions across, "displacement" or "no reaction" in the cells.
+    Rank the metals by <b>how many solutions they displace from</b>, then place each one between the metals whose
+    salts it can and cannot attack. Two rules close most options:</p>
+    <ol>
+      <li><b>A metal in a solution of its own salt shows "no reaction".</b> That cell tells you nothing — so a metal
+      with "no reaction" in iron(II) sulphate might still be iron.</li>
+      <li><b>A metal that displaces from none of the solutions</b> is at or below the lowest metal on the list —
+      if silver nitrate is there, it is silver itself or gold.</li>
+    </ol>
+    <div class="box">
+      <h4>Why food cans are tin-plated, not zinc-plated (NCERT Exercise 4)</h4>
+      <p><b>Zinc is more reactive than tin.</b> A zinc coat would react with the acids in food; tin, lower in the
+      series, does not. The same fact read the other way explains <b>galvanising</b> in section 7.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>How metals and non-metals combine — ionic compounds</h2>
+    <p class="lede">Noble gases have a full outer shell and barely react, so NCERT explains all of this chapter's
+    reactivity as <b>the drive to reach a full outer shell</b>. A metal gets there by <b>losing</b> electrons; a
+    non-metal by <b>gaining</b> them.</p>
+    <figure><svg viewBox="0 0 560 290" role="img" aria-label="Electron transfer: sodium gives one electron to chlorine forming Na+ and Cl-; magnesium gives one electron to each of two chlorine atoms forming Mg2+ and two Cl-"><text x="20.0" y="24.0" font-size="12" fill="var(--muted)" text-anchor="start" font-weight="600" font-family="Inter,sans-serif">Na loses 1, Cl gains 1  (NCERT Fig 3.5)</text><text x="50.0" y="79.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Na</text><circle cx="72.0" cy="74.0" r="3" fill="var(--iq)"/><text x="50.0" y="116.0" font-size="11" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">2,8,1</text><text x="100.0" y="79.0" font-size="16" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">+</text><text x="150.0" y="79.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Cl</text><line x1="142.0" y1="50.0" x2="148.0" y2="56.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="142.0" y1="56.0" x2="148.0" y2="50.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="152.0" y1="50.0" x2="158.0" y2="56.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="152.0" y1="56.0" x2="158.0" y2="50.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="168.0" y1="66.0" x2="174.0" y2="72.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="168.0" y1="72.0" x2="174.0" y2="66.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="168.0" y1="76.0" x2="174.0" y2="82.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="168.0" y1="82.0" x2="174.0" y2="76.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="152.0" y1="92.0" x2="158.0" y2="98.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="152.0" y1="98.0" x2="158.0" y2="92.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="142.0" y1="92.0" x2="148.0" y2="98.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="142.0" y1="98.0" x2="148.0" y2="92.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="126.0" y1="76.0" x2="132.0" y2="82.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="126.0" y1="82.0" x2="132.0" y2="76.0" stroke="var(--physics)" stroke-width="1.6"/><text x="150.0" y="116.0" font-size="11" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">2,8,7</text><path d="M75,68 C95,34 118,42 127,66" fill="none" stroke="var(--iq)" stroke-width="1.4" stroke-dasharray="3 3"/><line x1="200.0" y1="74.0" x2="245.0" y2="74.0" stroke="var(--muted)" stroke-width="1.6"/><path d="M245.0,74.0 L238.7,77.0 L238.7,71.0 Z" fill="var(--muted)"/><text x="285.0" y="79.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Na⁺</text><text x="285.0" y="116.0" font-size="11" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">2,8</text><text x="380.0" y="79.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Cl</text><line x1="372.0" y1="50.0" x2="378.0" y2="56.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="372.0" y1="56.0" x2="378.0" y2="50.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="382.0" y1="50.0" x2="388.0" y2="56.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="382.0" y1="56.0" x2="388.0" y2="50.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="398.0" y1="66.0" x2="404.0" y2="72.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="398.0" y1="72.0" x2="404.0" y2="66.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="398.0" y1="76.0" x2="404.0" y2="82.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="398.0" y1="82.0" x2="404.0" y2="76.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="382.0" y1="92.0" x2="388.0" y2="98.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="382.0" y1="98.0" x2="388.0" y2="92.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="372.0" y1="92.0" x2="378.0" y2="98.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="372.0" y1="98.0" x2="378.0" y2="92.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="356.0" y1="76.0" x2="362.0" y2="82.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="356.0" y1="82.0" x2="362.0" y2="76.0" stroke="var(--physics)" stroke-width="1.6"/><circle cx="359.0" cy="69.0" r="3" fill="var(--iq)"/><text x="346.0" y="84.0" font-size="40" fill="var(--muted)" text-anchor="middle" font-weight="300" font-family="Inter,sans-serif">[</text><text x="414.0" y="84.0" font-size="40" fill="var(--muted)" text-anchor="middle" font-weight="300" font-family="Inter,sans-serif">]</text><text x="428.0" y="58.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">−</text><text x="380.0" y="116.0" font-size="11" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">2,8,8</text><text x="470.0" y="68.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">held by strong</text><text x="470.0" y="83.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">electrostatic</text><text x="470.0" y="98.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">attraction</text><text x="20.0" y="150.0" font-size="12" fill="var(--muted)" text-anchor="start" font-weight="600" font-family="Inter,sans-serif">Mg loses 2 — one to each Cl  (NCERT Fig 3.6)</text><text x="150.0" y="215.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Mg</text><circle cx="171.0" cy="205.0" r="3" fill="var(--iq)"/><circle cx="129.0" cy="215.0" r="3" fill="var(--iq)"/><text x="150.0" y="252.0" font-size="11" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">2,8,2</text><text x="60.0" y="215.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Cl</text><line x1="52.0" y1="186.0" x2="58.0" y2="192.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="52.0" y1="192.0" x2="58.0" y2="186.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="62.0" y1="186.0" x2="68.0" y2="192.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="62.0" y1="192.0" x2="68.0" y2="186.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="78.0" y1="202.0" x2="84.0" y2="208.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="78.0" y1="208.0" x2="84.0" y2="202.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="62.0" y1="228.0" x2="68.0" y2="234.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="62.0" y1="234.0" x2="68.0" y2="228.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="52.0" y1="228.0" x2="58.0" y2="234.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="52.0" y1="234.0" x2="58.0" y2="228.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="36.0" y1="212.0" x2="42.0" y2="218.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="36.0" y1="218.0" x2="42.0" y2="212.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="36.0" y1="202.0" x2="42.0" y2="208.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="36.0" y1="208.0" x2="42.0" y2="202.0" stroke="var(--physics)" stroke-width="1.6"/><text x="240.0" y="215.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Cl</text><line x1="232.0" y1="186.0" x2="238.0" y2="192.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="232.0" y1="192.0" x2="238.0" y2="186.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="242.0" y1="186.0" x2="248.0" y2="192.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="242.0" y1="192.0" x2="248.0" y2="186.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="258.0" y1="202.0" x2="264.0" y2="208.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="258.0" y1="208.0" x2="264.0" y2="202.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="258.0" y1="212.0" x2="264.0" y2="218.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="258.0" y1="218.0" x2="264.0" y2="212.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="242.0" y1="228.0" x2="248.0" y2="234.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="242.0" y1="234.0" x2="248.0" y2="228.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="232.0" y1="228.0" x2="238.0" y2="234.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="232.0" y1="234.0" x2="238.0" y2="228.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="216.0" y1="212.0" x2="222.0" y2="218.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="216.0" y1="218.0" x2="222.0" y2="212.0" stroke="var(--physics)" stroke-width="1.6"/><text x="105.0" y="215.0" font-size="15" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">+</text><text x="195.0" y="215.0" font-size="15" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">+</text><line x1="280.0" y1="210.0" x2="318.0" y2="210.0" stroke="var(--muted)" stroke-width="1.6"/><path d="M318.0,210.0 L311.7,213.0 L311.7,207.0 Z" fill="var(--muted)"/><text x="348.0" y="215.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Mg²⁺</text><text x="428.0" y="215.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">2</text><text x="478.0" y="215.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Cl</text><line x1="470.0" y1="186.0" x2="476.0" y2="192.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="470.0" y1="192.0" x2="476.0" y2="186.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="480.0" y1="186.0" x2="486.0" y2="192.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="480.0" y1="192.0" x2="486.0" y2="186.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="496.0" y1="202.0" x2="502.0" y2="208.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="496.0" y1="208.0" x2="502.0" y2="202.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="496.0" y1="212.0" x2="502.0" y2="218.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="496.0" y1="218.0" x2="502.0" y2="212.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="480.0" y1="228.0" x2="486.0" y2="234.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="480.0" y1="234.0" x2="486.0" y2="228.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="470.0" y1="228.0" x2="476.0" y2="234.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="470.0" y1="234.0" x2="476.0" y2="228.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="454.0" y1="212.0" x2="460.0" y2="218.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="454.0" y1="218.0" x2="460.0" y2="212.0" stroke="var(--physics)" stroke-width="1.6"/><circle cx="457.0" cy="205.0" r="3" fill="var(--iq)"/><text x="444.0" y="220.0" font-size="40" fill="var(--muted)" text-anchor="middle" font-weight="300" font-family="Inter,sans-serif">[</text><text x="512.0" y="220.0" font-size="40" fill="var(--muted)" text-anchor="middle" font-weight="300" font-family="Inter,sans-serif">]</text><text x="524.0" y="194.0" font-size="15" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">−</text><text x="348.0" y="252.0" font-size="11" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">2,8</text><text x="478.0" y="252.0" font-size="11" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif" font-family="JetBrains Mono,monospace">2,8,8 each</text><circle cx="26.0" cy="276.0" r="3" fill="var(--iq)"/><text x="36.0" y="280.0" font-size="11" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">electron from the metal</text><line x1="193.0" y1="273.0" x2="199.0" y2="279.0" stroke="var(--physics)" stroke-width="1.6"/><line x1="193.0" y1="279.0" x2="199.0" y2="273.0" stroke="var(--physics)" stroke-width="1.6"/><text x="206.0" y="280.0" font-size="11" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">electron of chlorine   (outer shell only)</text></svg>
+      <figcaption>Na (2,8,1) → Na⁺ (2,8); Cl (2,8,7) → Cl⁻ (2,8,8). For MgCl₂ the magnesium atom gives <b>one</b>
+      electron to <b>each</b> of two chlorine atoms — which is exactly 2024-A Q24's statements (i) and (ii). Nothing
+      is shared and there is no double bond: that is covalent language, and it is the distractor.</figcaption>
+    </figure>
+    <div class="box def">
+      <h4>Ionic (electrovalent) compound</h4>
+      <p>A compound formed by the <b>transfer of electrons from a metal to a non-metal</b>. Sodium chloride does
+      <b>not exist as molecules</b> — it is an aggregate of oppositely charged ions held by strong electrostatic
+      attraction.</p>
+    </div>
+    <h3>The four properties of ionic compounds (NCERT §3.3.1)</h3>
+    <ol>
+      <li><b>Physical nature</b> — solids, somewhat hard (strong attraction between ions), <b>brittle</b>: break when pressure is applied.</li>
+      <li><b>High melting and boiling points</b> — a lot of energy is needed to break the strong inter-ionic attraction.</li>
+      <li><b>Solubility</b> — generally <b>soluble in water</b>, <b>insoluble in kerosene and petrol</b>.</li>
+      <li><b>Conduction</b> — <b>not</b> as a solid (the ions are held in a rigid structure and cannot move);
+      <b>yes when molten or dissolved in water</b>, because then the ions move to the opposite electrodes.</li>
+    </ol>
+    <div class="tablewrap"><table>
+      <thead><tr><th>NCERT Table 3.4</th><th>NaCl</th><th>LiCl</th><th>CaCl₂</th><th>CaO</th><th>MgCl₂</th></tr></thead>
+      <tbody>
+        <tr><td>Melting point (K)</td><td class="mono">1074</td><td class="mono">887</td><td class="mono">1045</td><td class="mono">2850</td><td class="mono">981</td></tr>
+        <tr><td>Boiling point (K)</td><td class="mono">1686</td><td class="mono">1600</td><td class="mono">1900</td><td class="mono">3120</td><td class="mono">1685</td></tr>
+      </tbody>
+    </table></div>
+    <p>The values are in <b>kelvin</b> — subtract 273 for °C (NaCl melts at about 801 °C). CaO, with ions of charge
+    2+ and 2−, has by far the highest.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>Getting metals out of the ground — extraction by reactivity</h2>
+    <div class="box def">
+      <h4>Three words, one sentence each</h4>
+      <p><b>Mineral</b> — an element or compound occurring naturally in the earth's crust. <b>Ore</b> — a mineral
+      from which the metal can be <b>profitably</b> extracted. <b>Gangue</b> — the soil, sand and other impurities
+      mixed with the mined ore. <b>Metallurgy</b> — extracting metals from their ores and refining them for use
+      (2018-S Q24's definition).</p>
+    </div>
+    <p><b>Where a metal sits in the series decides how it is found and how it is extracted.</b> The top metals
+    (K, Na, Ca, Mg, Al) are never found free; middle metals (Zn, Fe, Pb) occur as oxides, sulphides or carbonates;
+    the bottom ones are found free — NCERT names <b>gold, silver, platinum and copper</b>, adding that copper and
+    silver also occur as sulphide or oxide ores. Many ores are oxides because oxygen is reactive and abundant.</p>
+    <figure><svg viewBox="0 0 560 520" role="img" aria-label="Flow chart of the steps in extracting a metal from its ore by reactivity: high, medium and low"><rect x="255.2" y="13.5" width="39.6" height="25" rx="7" fill="var(--surface2)" stroke="var(--chem)" stroke-width="1.8"/><text x="275.0" y="31.5" font-size="12" fill="var(--chem)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Ore</text><rect x="194.0" y="56.0" width="162.0" height="40" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="275.0" y="74.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Concentration of ore</text><text x="275.0" y="89.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">(remove the gangue)</text><line x1="275.0" y1="38.5" x2="275.0" y2="54.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M275.0,54.0 L272.0,47.7 L278.0,47.7 Z" fill="var(--muted)"/><line x1="80.0" y1="116.0" x2="470.0" y2="116.0" stroke="var(--muted)" stroke-width="1.5"/><line x1="275.0" y1="96.0" x2="275.0" y2="116.0" stroke="var(--muted)" stroke-width="1.5"/><rect x="20.6" y="138.0" width="118.8" height="40" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="80.0" y="156.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Metals of high</text><text x="80.0" y="171.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">reactivity</text><line x1="80.0" y1="116.0" x2="80.0" y2="136.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M80.0,136.0 L77.0,129.7 L83.0,129.7 Z" fill="var(--muted)"/><rect x="208.4" y="138.0" width="133.2" height="40" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="275.0" y="156.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Metals of medium</text><text x="275.0" y="171.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">reactivity</text><line x1="275.0" y1="116.0" x2="275.0" y2="136.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M275.0,136.0 L272.0,129.7 L278.0,129.7 Z" fill="var(--muted)"/><rect x="414.2" y="138.0" width="111.6" height="40" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="470.0" y="156.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Metals of low</text><text x="470.0" y="171.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">reactivity</text><line x1="470.0" y1="116.0" x2="470.0" y2="136.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M470.0,136.0 L467.0,129.7 L473.0,129.7 Z" fill="var(--muted)"/><rect x="17.0" y="210.0" width="126.0" height="40" rx="7" fill="var(--surface2)" stroke="var(--physics)" stroke-width="1.8"/><text x="80.0" y="228.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Electrolysis of</text><text x="80.0" y="243.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">molten ore</text><line x1="80.0" y1="178.0" x2="80.0" y2="208.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M80.0,208.0 L77.0,201.7 L83.0,201.7 Z" fill="var(--muted)"/><rect x="35.0" y="281.5" width="90.0" height="25" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="80.0" y="299.5" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Pure metal</text><line x1="80.0" y1="250.0" x2="80.0" y2="279.5" stroke="var(--muted)" stroke-width="1.5"/><path d="M80.0,279.5 L77.0,273.2 L83.0,273.2 Z" fill="var(--muted)"/><line x1="275.0" y1="178.0" x2="275.0" y2="200.0" stroke="var(--muted)" stroke-width="1.5"/><line x1="205.0" y1="200.0" x2="345.0" y2="200.0" stroke="var(--muted)" stroke-width="1.5"/><rect x="163.6" y="216.0" width="82.8" height="40" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="205.0" y="234.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Carbonate</text><text x="205.0" y="249.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">ore</text><line x1="205.0" y1="200.0" x2="205.0" y2="214.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M205.0,214.0 L202.0,207.7 L208.0,207.7 Z" fill="var(--muted)"/><rect x="307.2" y="216.0" width="75.6" height="40" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="345.0" y="234.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Sulphide</text><text x="345.0" y="249.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">ore</text><line x1="345.0" y1="200.0" x2="345.0" y2="214.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M345.0,214.0 L342.0,207.7 L348.0,207.7 Z" fill="var(--muted)"/><rect x="149.2" y="276.0" width="111.6" height="40" rx="7" fill="var(--surface2)" stroke="var(--iq)" stroke-width="1.8"/><text x="205.0" y="294.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Calcination</text><text x="205.0" y="309.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">(limited air)</text><line x1="205.0" y1="256.0" x2="205.0" y2="274.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M205.0,274.0 L202.0,267.7 L208.0,267.7 Z" fill="var(--muted)"/><rect x="292.8" y="276.0" width="104.4" height="40" rx="7" fill="var(--surface2)" stroke="var(--iq)" stroke-width="1.8"/><text x="345.0" y="294.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Roasting</text><text x="345.0" y="309.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">(excess air)</text><line x1="345.0" y1="256.0" x2="345.0" y2="274.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M345.0,274.0 L342.0,267.7 L348.0,267.7 Z" fill="var(--muted)"/><line x1="205.0" y1="316.0" x2="205.0" y2="334.0" stroke="var(--muted)" stroke-width="1.5"/><line x1="345.0" y1="316.0" x2="345.0" y2="334.0" stroke="var(--muted)" stroke-width="1.5"/><line x1="205.0" y1="334.0" x2="345.0" y2="334.0" stroke="var(--muted)" stroke-width="1.5"/><rect x="215.6" y="357.5" width="118.8" height="25" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="275.0" y="375.5" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Oxide of metal</text><line x1="275.0" y1="334.0" x2="275.0" y2="355.5" stroke="var(--muted)" stroke-width="1.5"/><path d="M275.0,355.5 L272.0,349.2 L278.0,349.2 Z" fill="var(--muted)"/><rect x="201.2" y="410.0" width="147.6" height="25" rx="7" fill="var(--surface2)" stroke="var(--iq)" stroke-width="1.8"/><text x="275.0" y="428.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Reduction to metal</text><line x1="275.0" y1="382.5" x2="275.0" y2="408.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M275.0,408.0 L272.0,401.7 L278.0,401.7 Z" fill="var(--muted)"/><rect x="190.4" y="462.5" width="169.2" height="25" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="275.0" y="480.5" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Purification of metal</text><line x1="275.0" y1="435.0" x2="275.0" y2="460.5" stroke="var(--muted)" stroke-width="1.5"/><path d="M275.0,460.5 L272.0,454.2 L278.0,454.2 Z" fill="var(--muted)"/><rect x="432.2" y="206.0" width="75.6" height="40" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="470.0" y="224.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Sulphide</text><text x="470.0" y="239.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">ores</text><line x1="470.0" y1="178.0" x2="470.0" y2="204.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M470.0,204.0 L467.0,197.7 L473.0,197.7 Z" fill="var(--muted)"/><rect x="414.2" y="266.0" width="111.6" height="40" rx="7" fill="var(--surface2)" stroke="var(--power)" stroke-width="1.8"/><text x="470.0" y="284.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Roasting</text><text x="470.0" y="299.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">(heat in air)</text><line x1="470.0" y1="246.0" x2="470.0" y2="264.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M470.0,264.0 L467.0,257.7 L473.0,257.7 Z" fill="var(--muted)"/><rect x="443.0" y="333.5" width="54.0" height="25" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="470.0" y="351.5" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Metal</text><line x1="470.0" y1="306.0" x2="470.0" y2="331.5" stroke="var(--muted)" stroke-width="1.5"/><path d="M470.0,331.5 L467.0,325.2 L473.0,325.2 Z" fill="var(--muted)"/><rect x="432.2" y="386.0" width="75.6" height="25" rx="7" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.2"/><text x="470.0" y="404.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="500" font-family="Inter,sans-serif">Refining</text><line x1="470.0" y1="358.5" x2="470.0" y2="384.0" stroke="var(--muted)" stroke-width="1.5"/><path d="M470.0,384.0 L467.0,377.7 L473.0,377.7 Z" fill="var(--muted)"/></svg>
+      <figcaption>NCERT Figure 3.10 — 2024-U Q28 printed this chart with Calcination, both Roasting boxes (as the
+      same letter X), Electrolysis of molten ore and Reduction to metal blanked out. The air in the boxes is the whole distinction:
+      <b>carbonates are calcined</b> (heated strongly in <b>limited</b> air), <b>sulphides are roasted</b> (heated
+      strongly in <b>excess</b> air).</figcaption>
+    </figure>
+    <h3>Bottom of the series — heat alone (§3.4.3)</h3>
+    <div class="bank">
+      <div class="fx"><div class="eq">2HgS + 3O₂ → 2HgO + 2SO₂<br>2HgO → 2Hg + O₂</div><div class="wh"><b>Cinnabar</b> (HgS), heated in air, gives mercuric oxide; heated further, the oxide itself gives mercury.</div></div>
+      <div class="fx"><div class="eq">2Cu₂S + 3O₂ → 2Cu₂O + 2SO₂<br>2Cu₂O + Cu₂S → 6Cu + SO₂</div><div class="wh">Copper from Cu₂S by heating in air. In step 2 the <b>sulphide itself reduces</b> the oxide (Sample Q21 calls this <em>auto-reduction</em>; 2017-E Q28 says "sulphide may act as a reducing agent").</div></div>
+    </div>
+    <h3>Middle of the series — convert to the oxide, then reduce (§3.4.4)</h3>
+    <p>It is <b>easier to get a metal from its oxide</b> than from its sulphide or carbonate — so those are
+    turned into oxides first:</p>
+    <div class="bank">
+      <div class="fx"><div class="eq">2ZnS + 3O₂ → 2ZnO + 2SO₂</div><div class="wh"><b>Roasting</b> — a sulphide ore, excess air. Gives off SO₂.</div></div>
+      <div class="fx"><div class="eq">ZnCO₃ → ZnO + CO₂</div><div class="wh"><b>Calcination</b> — a carbonate ore, limited air. Gives off CO₂ (turns lime water milky).</div></div>
+      <div class="fx"><div class="eq">ZnO + C → Zn + CO</div><div class="wh"><b>Reduction</b> with carbon (coke). Extracting a metal from its compound is always a reduction.</div></div>
+      <div class="fx"><div class="eq">Fe₂O₃ + 2Al → 2Fe + Al₂O₃ + heat</div><div class="wh">The <b>thermit reaction</b> — so exothermic the iron comes out <b>molten</b>. Used to join <b>railway tracks</b> and cracked machine parts. Also 3MnO₂ + 4Al → 3Mn + 2Al₂O₃ + heat.</div></div>
+    </div>
+    <h3>Top of the series — electrolysis (§3.4.5)</h3>
+    <p>Carbon <b>cannot</b> reduce the oxides of Na, Mg, Ca or Al, because these metals have <b>more affinity for
+    oxygen than carbon</b> does. They are obtained by <b>electrolytic reduction</b>: Na, Mg and Ca from their
+    <b>molten chlorides</b>, aluminium from <b>aluminium oxide</b>. The metal is deposited at the <b>cathode</b>,
+    chlorine is liberated at the <b>anode</b>:</p>
+    <div class="bank">
+      <div class="fx"><div class="eq">Cathode (−): Na⁺ + e⁻ → Na</div><div class="wh">Metal ions gain electrons — reduction.</div></div>
+      <div class="fx"><div class="eq">Anode (+): 2Cl⁻ → Cl₂ + 2e⁻</div><div class="wh">Chloride ions lose electrons.</div></div>
+    </div>
+    <div class="box trap">
+      <h4>Copper sits on a border — read which part of NCERT the question means</h4>
+      <p>NCERT's Fig 3.9 puts copper in the <b>"reduction using carbon"</b> band, and §3.4.4 lists it among the
+      middle metals — yet §3.4.3 extracts copper from Cu₂S by <b>heating alone</b>, and the text says copper is
+      found free. All three are in the book. If a question gives you <b>Cu₂S heated in air</b>, it is the
+      heat-alone route; if it asks which band Fig 3.9 puts Cu in, it is carbon.</p>
+    </div>
+    <figure><svg viewBox="0 0 520 300" role="img" aria-label="Electrolytic refining of copper: impure copper anode connected to the positive terminal, thin pure copper cathode to the negative terminal, acidified copper sulphate electrolyte, anode mud below the anode"><rect x="120" y="110" width="280" height="150" fill="var(--cuso4)" opacity=".35"/><path d="M110,90 L110,262 L410,262 L410,90" fill="none" stroke="var(--text)" stroke-width="2"/><rect x="170" y="70" width="26" height="160" fill="var(--rust)"/><rect x="326" y="70" width="8" height="160" fill="var(--rust)"/><circle cx="165.7" cy="255.8" r="2.2" fill="var(--muted)"/><circle cx="174.4" cy="256.2" r="2.2" fill="var(--muted)"/><circle cx="191.3" cy="252.5" r="2.2" fill="var(--muted)"/><circle cx="150.9" cy="257.9" r="2.2" fill="var(--muted)"/><circle cx="167.1" cy="253.6" r="2.2" fill="var(--muted)"/><circle cx="215.7" cy="255.3" r="2.2" fill="var(--muted)"/><circle cx="205.2" cy="255.3" r="2.2" fill="var(--muted)"/><circle cx="192.2" cy="253.1" r="2.2" fill="var(--muted)"/><circle cx="191.9" cy="258.1" r="2.2" fill="var(--muted)"/><circle cx="184.5" cy="257.2" r="2.2" fill="var(--muted)"/><circle cx="194.3" cy="252.4" r="2.2" fill="var(--muted)"/><circle cx="200.0" cy="256.1" r="2.2" fill="var(--muted)"/><circle cx="169.9" cy="252.2" r="2.2" fill="var(--muted)"/><circle cx="207.1" cy="255.3" r="2.2" fill="var(--muted)"/><circle cx="197.4" cy="258.2" r="2.2" fill="var(--muted)"/><circle cx="197.1" cy="258.4" r="2.2" fill="var(--muted)"/><circle cx="176.1" cy="257.6" r="2.2" fill="var(--muted)"/><circle cx="179.3" cy="258.5" r="2.2" fill="var(--muted)"/><circle cx="208.0" cy="252.7" r="2.2" fill="var(--muted)"/><circle cx="159.0" cy="253.5" r="2.2" fill="var(--muted)"/><circle cx="213.7" cy="255.1" r="2.2" fill="var(--muted)"/><circle cx="191.4" cy="254.1" r="2.2" fill="var(--muted)"/><circle cx="183.5" cy="254.7" r="2.2" fill="var(--muted)"/><circle cx="173.2" cy="256.1" r="2.2" fill="var(--muted)"/><circle cx="188.6" cy="258.3" r="2.2" fill="var(--muted)"/><circle cx="195.0" cy="258.5" r="2.2" fill="var(--muted)"/><line x1="183.0" y1="70.0" x2="183.0" y2="30.0" stroke="var(--text)" stroke-width="1.6"/><line x1="183.0" y1="30.0" x2="238.0" y2="30.0" stroke="var(--text)" stroke-width="1.6"/><line x1="242.0" y1="16.0" x2="242.0" y2="44.0" stroke="var(--text)" stroke-width="2.2"/><line x1="252.0" y1="22.0" x2="252.0" y2="38.0" stroke="var(--text)" stroke-width="4"/><line x1="252.0" y1="30.0" x2="330.0" y2="30.0" stroke="var(--text)" stroke-width="1.6"/><line x1="330.0" y1="30.0" x2="330.0" y2="70.0" stroke="var(--text)" stroke-width="1.6"/><text x="240.0" y="12.0" font-size="14" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">+</text><text x="256.0" y="12.0" font-size="14" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">−</text><line x1="204.0" y1="125.0" x2="316.0" y2="125.0" stroke="var(--physics)" stroke-width="1.4"/><path d="M316.0,125.0 L309.7,128.0 L309.7,122.0 Z" fill="var(--physics)"/><line x1="204.0" y1="165.0" x2="316.0" y2="165.0" stroke="var(--physics)" stroke-width="1.4"/><path d="M316.0,165.0 L309.7,168.0 L309.7,162.0 Z" fill="var(--physics)"/><line x1="204.0" y1="205.0" x2="316.0" y2="205.0" stroke="var(--physics)" stroke-width="1.4"/><path d="M316.0,205.0 L309.7,208.0 L309.7,202.0 Z" fill="var(--physics)"/><text x="260.0" y="118.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="700" font-family="Inter,sans-serif">Cu²⁺</text><text x="98.0" y="78.0" font-size="12" fill="var(--text)" text-anchor="end" font-weight="700" font-family="Inter,sans-serif">Anode (+)</text><text x="98.0" y="94.0" font-size="11.5" fill="var(--muted)" text-anchor="end" font-weight="400" font-family="Inter,sans-serif">impure copper</text><line x1="100.0" y1="86.0" x2="168.0" y2="110.0" stroke="var(--muted)" stroke-width="1"/><text x="422.0" y="78.0" font-size="12" fill="var(--text)" text-anchor="start" font-weight="700" font-family="Inter,sans-serif">Cathode (−)</text><text x="422.0" y="94.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">thin strip of</text><text x="422.0" y="108.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">pure copper</text><line x1="420.0" y1="90.0" x2="336.0" y2="110.0" stroke="var(--muted)" stroke-width="1"/><text x="422.0" y="190.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">acidified</text><text x="422.0" y="204.0" font-size="11.5" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">CuSO₄ solution</text><text x="183.0" y="286.0" font-size="11.5" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">anode mud (insoluble impurities)</text><text x="98.0" y="236.0" font-size="11" fill="var(--muted)" text-anchor="end" font-weight="400" font-family="Inter,sans-serif">soluble</text><text x="98.0" y="250.0" font-size="11" fill="var(--muted)" text-anchor="end" font-weight="400" font-family="Inter,sans-serif">impurities stay</text><text x="98.0" y="264.0" font-size="11" fill="var(--muted)" text-anchor="end" font-weight="400" font-family="Inter,sans-serif">in solution</text></svg>
+      <figcaption>NCERT Figure 3.12 — <b>electrolytic refining</b>. Impure metal is the <b>anode</b>; a thin strip of
+      pure metal is the <b>cathode</b>; the electrolyte is a solution of the metal's salt (for copper, acidified
+      copper sulphate). Copper dissolves from the anode and an equal amount deposits on the cathode; soluble
+      impurities stay in solution, insoluble ones fall below the anode as <b>anode mud</b>. Copper, zinc, tin,
+      nickel, silver and gold are refined this way.</figcaption>
+    </figure>
+    <h3>Ore names — <em>not</em> in NCERT, but Allen asks them</h3>
+    <p class="lede">NCERT names one ore (cinnabar). 2018-S Q20 and Sample Q23 asked for more, so here is the short
+    list — metal, then formula.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Metal</th><th>Ore (formula)</th><th>Type</th></tr></thead>
+      <tbody>
+        <tr><td><b>Aluminium</b></td><td>Bauxite Al₂O₃·2H₂O · cryolite Na₃AlF₆</td><td>oxide · fluoride</td></tr>
+        <tr><td><b>Iron</b></td><td>Haematite Fe₂O₃ · magnetite Fe₃O₄ · siderite FeCO₃ · iron pyrites FeS₂</td><td>oxide · oxide · carbonate · sulphide</td></tr>
+        <tr><td><b>Zinc</b></td><td>Zinc blende ZnS · calamine ZnCO₃</td><td>sulphide · carbonate</td></tr>
+        <tr><td><b>Copper</b></td><td>Copper glance Cu₂S · copper pyrites CuFeS₂ · cuprite Cu₂O · malachite CuCO₃·Cu(OH)₂ · azurite 2CuCO₃·Cu(OH)₂</td><td>sulphide · sulphide · oxide · basic carbonate · basic carbonate</td></tr>
+        <tr><td><b>Lead</b></td><td>Galena PbS</td><td>sulphide</td></tr>
+        <tr><td><b>Mercury</b></td><td>Cinnabar HgS <span class="tag">NCERT</span></td><td>sulphide</td></tr>
+        <tr><td><b>Silver</b></td><td>Argentite Ag₂S · horn silver AgCl</td><td>sulphide · chloride</td></tr>
+      </tbody>
+    </table></div>
+    <p>Sample Q23's false statement was "argentite and cuprite are oxides" — cuprite is, but argentite is silver
+    <b>sulphide</b>. One wrong half makes the whole statement false.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">7</span>Corrosion — and the four-tube experiment</h2>
+    <p class="lede">NCERT recalls three corrosions from Chapter 1: <b>silver turns black</b> (silver
+    <b>sulphide</b>, from sulphur in the air); <b>copper turns green</b> (basic copper <b>carbonate</b>, from moist
+    CO₂); <b>iron gets a brown flaky coat</b> called <b>rust</b> when exposed to moist air.</p>
+    <figure><svg viewBox="0 0 560 280" role="img" aria-label="Four corked test tubes with clean iron nails: A water and air, B boiled distilled water under a layer of oil, C anhydrous calcium chloride and dry air, D salt water and air"><path d="M51.5,150.0 L51.5,206.0 A18.5,18.5 0 0 0 88.5,206.0 L88.5,150.0 Z" fill="var(--physics)" opacity="0.3"/><path d="M50.0,56.0 L50.0,206.0 A20.0,20.0 0 0 0 90.0,206.0 L90.0,56.0" fill="none" stroke="var(--text)" stroke-width="1.6"/><rect x="48.0" y="44.0" width="44.0" height="16" rx="3" fill="var(--muted)"/><text x="70.0" y="36.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">A</text><rect x="68.0" y="122.0" width="4" height="92.0" fill="var(--muted)"/><rect x="64.0" y="119.0" width="12" height="4" fill="var(--muted)"/><circle cx="67.0" cy="128.0" r="2.6" fill="var(--rust)"/><circle cx="73.0" cy="148.5" r="2.6" fill="var(--rust)"/><circle cx="67.0" cy="169.0" r="2.6" fill="var(--rust)"/><circle cx="73.0" cy="189.5" r="2.6" fill="var(--rust)"/><circle cx="67.0" cy="210.0" r="2.6" fill="var(--rust)"/><path d="M186.5,150.0 L186.5,206.0 A18.5,18.5 0 0 0 223.5,206.0 L223.5,150.0 Z" fill="var(--physics)" opacity="0.3"/><path d="M185.0,56.0 L185.0,206.0 A20.0,20.0 0 0 0 225.0,206.0 L225.0,56.0" fill="none" stroke="var(--text)" stroke-width="1.6"/><rect x="183.0" y="44.0" width="44.0" height="16" rx="3" fill="var(--muted)"/><text x="205.0" y="36.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">B</text><rect x="186.5" y="138" width="37" height="12" fill="var(--iq)" opacity=".75"/><rect x="203.0" y="168.0" width="4" height="46.0" fill="var(--muted)"/><rect x="199.0" y="165.0" width="12" height="4" fill="var(--muted)"/><path d="M320.0,56.0 L320.0,206.0 A20.0,20.0 0 0 0 360.0,206.0 L360.0,56.0" fill="none" stroke="var(--text)" stroke-width="1.6"/><rect x="318.0" y="44.0" width="44.0" height="16" rx="3" fill="var(--muted)"/><text x="340.0" y="36.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">C</text><rect x="326.0" y="214.0" width="5" height="5" fill="var(--muted)"/><rect x="332.0" y="214.0" width="5" height="5" fill="var(--muted)"/><rect x="338.0" y="214.0" width="5" height="5" fill="var(--muted)"/><rect x="344.0" y="214.0" width="5" height="5" fill="var(--muted)"/><rect x="350.0" y="214.0" width="5" height="5" fill="var(--muted)"/><rect x="326.0" y="208.0" width="5" height="5" fill="var(--muted)"/><rect x="332.0" y="208.0" width="5" height="5" fill="var(--muted)"/><rect x="338.0" y="208.0" width="5" height="5" fill="var(--muted)"/><rect x="344.0" y="208.0" width="5" height="5" fill="var(--muted)"/><rect x="350.0" y="208.0" width="5" height="5" fill="var(--muted)"/><rect x="326.0" y="202.0" width="5" height="5" fill="var(--muted)"/><rect x="332.0" y="202.0" width="5" height="5" fill="var(--muted)"/><rect x="338.0" y="202.0" width="5" height="5" fill="var(--muted)"/><rect x="344.0" y="202.0" width="5" height="5" fill="var(--muted)"/><rect x="338.0" y="150.0" width="4" height="46.0" fill="var(--muted)"/><rect x="334.0" y="147.0" width="12" height="4" fill="var(--muted)"/><path d="M456.5,150.0 L456.5,206.0 A18.5,18.5 0 0 0 493.5,206.0 L493.5,150.0 Z" fill="var(--physics)" opacity="0.3"/><path d="M455.0,56.0 L455.0,206.0 A20.0,20.0 0 0 0 495.0,206.0 L495.0,56.0" fill="none" stroke="var(--text)" stroke-width="1.6"/><rect x="453.0" y="44.0" width="44.0" height="16" rx="3" fill="var(--muted)"/><text x="475.0" y="36.0" font-size="12" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">D</text><rect x="473.0" y="122.0" width="4" height="92.0" fill="var(--muted)"/><rect x="469.0" y="119.0" width="12" height="4" fill="var(--muted)"/><circle cx="472.0" cy="128.0" r="2.6" fill="var(--rust)"/><circle cx="478.0" cy="148.5" r="2.6" fill="var(--rust)"/><circle cx="472.0" cy="169.0" r="2.6" fill="var(--rust)"/><circle cx="478.0" cy="189.5" r="2.6" fill="var(--rust)"/><circle cx="472.0" cy="210.0" r="2.6" fill="var(--rust)"/><text x="70.0" y="248.0" font-size="11.5" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">water + air</text><text x="70.0" y="265.0" font-size="11.5" fill="var(--force)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">rusts</text><text x="205.0" y="248.0" font-size="11.5" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">boiled water, oil seal</text><text x="205.0" y="265.0" font-size="11.5" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">no air → no rust</text><text x="340.0" y="248.0" font-size="11.5" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">anhydrous CaCl₂</text><text x="340.0" y="265.0" font-size="11.5" fill="var(--muted)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">dry air → no rust</text><text x="475.0" y="248.0" font-size="11.5" fill="var(--text)" text-anchor="middle" font-weight="600" font-family="Inter,sans-serif">salt water + air</text><text x="475.0" y="265.0" font-size="11.5" fill="var(--force)" text-anchor="middle" font-weight="400" font-family="Inter,sans-serif">rusts (faster)</text><text x="235.0" y="142.0" font-size="11" fill="var(--muted)" text-anchor="start" font-weight="400" font-family="Inter,sans-serif">oil</text></svg>
+      <figcaption>NCERT Activity 3.14 is tubes <b>A, B, C</b>: rust appears only in A, where the nail meets
+      <b>both air and water</b>. In B, boiling drove the air out and the oil stops it dissolving back; in C,
+      anhydrous calcium chloride keeps the air dry. 2024-A Q28 kept the oil-sealed and the dry tubes (as its A and B),
+      dropped the plain-water tube, and added two: boiled water <b>without</b> an oil layer (air dissolves back,
+      so the key counts it as rusting) and a <b>salt</b> solution (rusts, and faster — salt water speeds rusting,
+      a fact from outside the chapter). Its key was those two, C and D. Read what
+      each tube <em>contains</em>, not its letter.</figcaption>
+    </figure>
+    <h3>Prevention — NCERT's list, and the one reason it asks for</h3>
+    <p>Painting, oiling, greasing, <b>galvanising</b>, chrome plating, <b>anodising</b>, or making <b>alloys</b>.</p>
+    <div class="box def">
+      <h4>Galvanisation</h4>
+      <p>Coating steel or iron with a thin layer of <b>zinc</b>. The article stays protected <b>even if the zinc
+      coat is broken</b> — NCERT asks you to reason it out: zinc is <b>more reactive</b> than iron, so it reacts
+      (corrodes) in the iron's place. That is why Sample Q27's answer is zinc and not copper, lead or silver,
+      which all sit below iron.</p>
+    </div>
+    <h3>Alloys</h3>
+    <div class="bank">
+      <div class="fx"><div class="eq">Alloy</div><div class="wh">A <b>homogeneous mixture</b> of two or more metals, or a metal and a non-metal. Made by melting the main metal and dissolving the others in it in definite proportions.</div></div>
+      <div class="fx"><div class="eq">Steel = Fe + ~0.05% C</div><div class="wh">Pure iron is soft and stretches when hot; a little carbon makes it hard and strong. <b>Stainless steel</b> = iron + <b>nickel + chromium</b> — hard, does not rust.</div></div>
+      <div class="fx"><div class="eq">Brass = Cu + Zn<br>Bronze = Cu + Sn</div><div class="wh">Poorer conductors than copper — which is why wiring is pure copper.</div></div>
+      <div class="fx"><div class="eq">Solder = Pb + Sn</div><div class="wh">Low melting point — used to weld electrical wires together.</div></div>
+      <div class="fx"><div class="eq">Amalgam</div><div class="wh">Any alloy in which one metal is <b>mercury</b>.</div></div>
+      <div class="fx"><div class="eq">22 carat = 22 Au : 2 (Cu or Ag)</div><div class="wh">Pure gold is <b>24 carat</b> and too soft for jewellery. 22 carat is 22 parts gold in 24, i.e. <span class="m">22/24 ≈ 91.7 %</span> gold.</div></div>
+    </div>
+    <p><b>Rule NCERT states:</b> the <b>electrical conductivity and the melting point of an alloy are lower</b>
+    than those of the pure metals. And the Delhi <b>iron pillar</b> near the Qutub Minar — over <b>1600 years</b>
+    old, about <b>8 m</b> high, about <b>6 tonnes</b> — is NCERT's showcase of ancient Indian rust-resistant iron.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">8</span>Fact bank — the whole chapter on one screen</h2>
+    <div class="bank">
+      <div class="fx"><div class="eq">K Na Ca Mg Al Zn Fe Pb [H] Cu Hg Ag Au</div><div class="wh">NCERT's activity series, most → least reactive.</div></div>
+      <div class="fx"><div class="eq">Electrolysis · Carbon · Native</div><div class="wh">K–Al · Zn, Fe, Pb, Cu · Ag, Au (Fig 3.9). HgS: heat alone.</div></div>
+      <div class="fx"><div class="eq">Roast = sulphide, excess air<br>Calcine = carbonate, limited air</div><div class="wh">Both give the oxide; roasting releases SO₂, calcination CO₂.</div></div>
+      <div class="fx"><div class="eq">Al₂O₃, ZnO</div><div class="wh">Amphoteric: react with acids <em>and</em> bases → salt + water.</div></div>
+      <div class="fx"><div class="eq">Cold · hot · steam · none</div><div class="wh">K Na Ca · Mg · Al Zn Fe · Pb Cu Ag Au. Fe + steam → Fe₃O₄.</div></div>
+      <div class="fx"><div class="eq">HNO₃ ✗ H₂</div><div class="wh">Oxidising acid — except Mg and Mn with very dilute HNO₃.</div></div>
+      <div class="fx"><div class="eq">Aqua regia 3 : 1</div><div class="wh">Conc. HCl : conc. HNO₃. Dissolves Au and Pt.</div></div>
+      <div class="fx"><div class="eq">Fe₂O₃ + 2Al → 2Fe + Al₂O₃</div><div class="wh">Thermit — molten iron, railway tracks.</div></div>
+      <div class="fx"><div class="eq">Refining: impure = anode</div><div class="wh">Pure strip = cathode; salt solution electrolyte; anode mud.</div></div>
+      <div class="fx"><div class="eq">Rust needs air + water</div><div class="wh">Ag → black Ag₂S; Cu → green basic CuCO₃.</div></div>
+      <div class="fx"><div class="eq">Zn coat on Fe</div><div class="wh">Galvanising; works even when scratched (Zn above Fe).</div></div>
+      <div class="fx"><div class="eq">Ionic: conducts molten / aq</div><div class="wh">Not as a solid. High m.p., brittle, water-soluble, kerosene-insoluble.</div></div>
+    </div>
+    <h3>Ten traps from the papers and the chapter</h3>
+    <ol class="traps">
+      <li><b>Roasting ↔ calcination swapped.</b> 2017-E Q28's false statement concentrated a sulphide by calcination; 2024-U Q28's options swapped W and X. <b>S</b>ulphide ↔ <b>S</b>O₂ ↔ roasting in excess air.</li>
+      <li><b>"Least to most" read as "most to least".</b> 2017-E Q24 printed both orders among its options.</li>
+      <li><b>Mg put above Ca, or Zn above Mg</b> — the reversals in 2024-U Q29's wrong options.</li>
+      <li><b>A metal in its own salt solution "does not react"</b> — that proves nothing about its reactivity.</li>
+      <li><b>Dry versus moist litmus.</b> SO₂ (and CO₂) need water to form an acid; dry litmus shows no change.</li>
+      <li><b>Amphoteric oxides are metal oxides</b> (Al₂O₃, ZnO) — and they give salt + water with NaOH, not hydrogen.</li>
+      <li><b>Ionic bonding is transfer, not sharing.</b> "Share a pair" and "double bond" are covalent words (2024-A Q24).</li>
+      <li><b>Boiled water alone does not stop rust</b> — without the oil seal, air dissolves back in (2024-A Q28, tube C).</li>
+      <li><b>Iron with steam gives Fe₃O₄</b>, and aluminium is reactive but protected by its oxide layer — "unreactive" is the wrong reason it makes good pans.</li>
+      <li><b>Alloys conduct worse and melt lower</b> than their pure metals — the reverse of what "stronger" suggests.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="n">9</span>Five worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">Try each before opening the working and give yourself <b>90 seconds</b> — the real paper's
+    average. The elimination reasoning is written out because on the day, ruling two options out is worth almost
+    as much as solving.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">displacement grid, then a colour · ~2 minutes</span></div>
+      <p>Metals W, X, Y and Z were added, one at a time, to four solutions:</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Metal</th><th>ZnSO₄</th><th>FeSO₄</th><th>CuSO₄</th><th>AgNO₃</th></tr></thead>
+        <tbody>
+          <tr><td><b>W</b></td><td>no reaction</td><td>no reaction</td><td>displacement</td><td>displacement</td></tr>
+          <tr><td><b>X</b></td><td>displacement</td><td>displacement</td><td>displacement</td><td>displacement</td></tr>
+          <tr><td><b>Y</b></td><td>no reaction</td><td>no reaction</td><td>no reaction</td><td>displacement</td></tr>
+          <tr><td><b>Z</b></td><td>no reaction</td><td>no reaction</td><td>no reaction</td><td>no reaction</td></tr>
+        </tbody>
+      </table></div>
+      <p>Which statement is correct?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>The order is X &gt; W &gt; Y &gt; Z, and Y turns copper sulphate solution colourless</div>
+        <div class="we-opt key"><span class="ob">2</span>W could be iron, and the solution W leaves behind in the CuSO₄ tube would be pale green</div>
+        <div class="we-opt"><span class="ob">3</span>Z could be copper</div>
+        <div class="we-opt"><span class="ob">4</span>X could be zinc</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — rank.</b> X displaces from all four, W from two, Y from one, Z from none: <b>X &gt; W &gt; Y &gt; Z</b>.</p>
+        <p><b>Step 2 — place each metal between its "yes" and "no" salts.</b> W attacks Cu and Ag salts but not Zn or Fe
+        salts, so it sits below Zn and at or below Fe, above Cu — <b>iron fits</b>, because iron's "no reaction" in
+        iron(II) sulphate is just its own salt. Fe + CuSO₄ → FeSO₄ + Cu, and iron(II) sulphate solution is
+        <b>pale green</b>. Option (2).</p>
+        <div class="elim"><b>Where each wrong option goes wrong.</b>
+        <b>(1)</b> — the order is right, but Y shows "no reaction" with CuSO₄, so it changes nothing; one false half
+        kills the statement. <b>(3)</b> — copper displaces silver (Cu + 2AgNO₃ → Cu(NO₃)₂ + 2Ag), but Z displaced
+        nothing, so Z is below silver: silver itself, or gold. <b>(4)</b> — X displaced zinc from zinc sulphate,
+        and zinc cannot displace itself; X is above zinc (magnesium or aluminium, say). Options (2) and (4) are the
+        two halves of rule 1 in section 4 — a "no reaction" in a metal's own salt tells you nothing, but a
+        "displacement" there proves the metal is <em>not</em> that one.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">three clues, three eliminations · ~90 seconds</span></div>
+      <p>An ore R is heated strongly in a limited supply of air; the gas given off turns lime water milky. The
+      residue is heated with coke and gives a metal M. M reacts with dilute sulphuric acid, giving hydrogen and a
+      <b>pale green</b> solution. Which is correct?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>R is a sulphide ore; the first step is roasting; M is iron</div>
+        <div class="we-opt"><span class="ob">2</span>R is a carbonate ore; the first step is roasting; M is iron</div>
+        <div class="we-opt"><span class="ob">3</span>R is a carbonate ore; the first step is calcination; M is zinc</div>
+        <div class="we-opt key"><span class="ob">4</span>R is a carbonate ore; the first step is calcination; M is iron</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Clue 1 — the gas.</b> Lime water milky = CO₂, so R is a <b>carbonate</b>. A sulphide would give SO₂.</p>
+        <p><b>Clue 2 — the air.</b> Heating strongly in <b>limited</b> air is <b>calcination</b>; roasting is excess air
+        and is for sulphides.</p>
+        <p><b>Clue 3 — the colour.</b> M + H₂SO₄ → MSO₄ + H₂ with a <b>pale green</b> solution: iron(II) sulphate.
+        Siderite, FeCO₃, is exactly such an ore. Option (4).</p>
+        <div class="elim"><b>Elimination.</b> Every wrong option fails at least one clue: the CO₂ kills (1), "limited air"
+        kills (1) and (2), the pale green kills (3). Option (3) is the careful trap — zinc carbonate (calamine) really <em>is</em>
+        calcined and reduced with coke, NCERT's own example — but zinc sulphate solution is colourless. When every
+        option fits two clues, the third clue is where the marks are.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">five statements, from atomic numbers · ~2 minutes</span></div>
+      <p>Element X has atomic number 12 and element Y has atomic number 17. They combine to form a compound.</p>
+      <ol class="roman">
+        <li>The compound is XY₂, formed when each X atom loses two electrons.</li>
+        <li>The solid compound conducts electricity, because it is made of ions.</li>
+        <li>It dissolves in water but not in kerosene.</li>
+        <li>The ion of Y has the same electronic configuration as argon.</li>
+        <li>It has a low melting point, because it is made of small molecules.</li>
+      </ol>
+      <p>The correct statements are</p>
+      <div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>I, III and IV only</div>
+        <div class="we-opt"><span class="ob">2</span>I and IV only</div>
+        <div class="we-opt"><span class="ob">3</span>I, II, III and IV</div>
+        <div class="we-opt"><span class="ob">4</span>III, IV and V</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — configurations.</b> X = 2,8,2 (magnesium) loses 2 → X²⁺; Y = 2,8,7 (chlorine) gains 1 → Y⁻
+        = 2,8,8, argon's configuration. Charges balance as <b>XY₂</b> — MgCl₂. <b>I ✓, IV ✓.</b></p>
+        <p><b>Step 2 — properties of an ionic compound.</b> Solid ionic compounds do <b>not</b> conduct — the ions
+        cannot move (II ✗, and its "because" is the trap: being made of ions is not enough). Soluble in water,
+        insoluble in kerosene (III ✓). High melting point — MgCl₂ melts at 981 K (Table 3.4) — and there are no
+        molecules at all (V ✗ twice). Option (1).</p>
+        <div class="elim"><b>Elimination.</b> V is false, so (4) goes. II is false, so (3) goes. That leaves (1) and
+        (2), which differ only on III — the solubility line NCERT prints. Statements with a "because" are false if
+        <em>either</em> half is.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">oxide trail · ~90 seconds</span></div>
+      <p>Metal A does not react with cold water but reacts with hot water, and it floats as it reacts. The oxide
+      of metal B reacts both with hydrochloric acid and with sodium hydroxide solution, giving a salt and water
+      each time. Element C is a yellow solid whose oxide turns moist blue litmus red but leaves dry blue litmus
+      unchanged. A, B and C are</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Mg, Al, C (carbon)</div>
+        <div class="we-opt"><span class="ob">2</span>Mg, Cu, S</div>
+        <div class="we-opt key"><span class="ob">3</span>Mg, Al, S</div>
+        <div class="we-opt"><span class="ob">4</span>Ca, Al, S</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>A.</b> Hot water only, and floats: <b>magnesium</b> (section 3). Calcium also floats, but it reacts with
+        cold water.</p>
+        <p><b>B.</b> Oxide reacts with acid and base → amphoteric → <b>aluminium</b> (or zinc).</p>
+        <p><b>C.</b> Yellow solid with an acidic oxide that needs water to act: <b>sulphur</b> (SO₂). Option (3).</p>
+        <div class="elim"><b>Elimination.</b> (4) fails on A — calcium reacts with cold water. (2) fails on B — CuO is
+        basic, not amphoteric. (1) fails on C — carbon is black, even though CO₂ would also redden moist litmus.
+        Every wrong option fails exactly one clue, so check all three clues on your chosen option before bubbling.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">thermit, with the mole · ~2 minutes</span></div>
+      <p>A rail joint needs <span class="m">112 g</span> of molten iron from the thermit reaction. The least masses
+      of aluminium powder and of iron(III) oxide needed are (Fe = 56, Al = 27, O = 16)</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>27 g Al, 160 g Fe₂O₃</div>
+        <div class="we-opt key"><span class="ob">2</span>54 g Al, 160 g Fe₂O₃</div>
+        <div class="we-opt"><span class="ob">3</span>54 g Al, 320 g Fe₂O₃</div>
+        <div class="we-opt"><span class="ob">4</span>108 g Al, 320 g Fe₂O₃</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — balanced equation.</b> Fe₂O₃ + 2Al → 2Fe + Al₂O₃. Ratios: 1 Fe₂O₃ : 2 Al : 2 Fe.</p>
+        <p><b>Step 2 — moles of iron.</b> 112 ÷ 56 = <b>2 mol Fe</b>.</p>
+        <p><b>Step 3 — scale.</b> 2 mol Fe needs <b>2 mol Al = 54 g</b> and <b>1 mol Fe₂O₃</b> = 2(56) + 3(16) =
+        <b>160 g</b>. Option (2).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1) 27 g</b> — the skeleton equation Fe₂O₃ + Al → … used without its 2: one mole of aluminium.
+        <b>(3) 320 g</b> — "2 mol Fe" taken as 2 mol of Fe₂O₃, forgetting each Fe₂O₃ carries two iron atoms.
+        <b>(4)</b> — the same slip carried through consistently: 2 mol Fe₂O₃ then needs 4 mol Al = 108 g.
+        <b>Check.</b> Mass must balance: 54 + 160 = 214 g in; 112 g Fe + 102 g Al₂O₃ = 214 g out. Only (2) balances.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">10</span>Check yourself</h2>
+    <p class="lede">Five quick ones. <b>No negative marking here</b> — this is practice, not the exam.
+    Click an option to see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Chemistry · <b>Metals and non-metals</b> — the official topic name from Allen's Class X
+    syllabus; NCERT Class 10 Science, Chapter 3.<br>
+    <b>Checked against the book:</b> the equations, the activity series, Figures 3.9 and 3.10, the rusting activity,
+    Table 3.4 and the alloy facts were read from NCERT's current <em>Reprint 2026-27</em> of Chapter 3
+    (ncert.nic.in, <span class="m">jesc103.pdf</span>). <b>Beyond the chapter</b> and here only because Allen has asked
+    them: the ore names and formulae, salt water speeding rusting, and water as a proton donor.<br>
+    <b>Deliberately not here:</b> reaction types, balancing and the salts (the <em>Chemical Reactions; Acids, Bases
+    &amp; Salts</em> card), and the periodic table (not on the 2027 list). This unit's 20-minute paper appears on
+    the hub card when it is built. Tip: press 🖨 (bottom-left) to print these as a revision sheet.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'Which metal is found <b>free in nature</b> and dissolves in <b>aqua regia</b>, though neither concentrated HCl nor concentrated HNO₃ dissolves it alone?',
+    o:['Copper','Zinc','Iron','Gold'], a:3,
+    fb:'<b>Gold.</b> It sits at the very bottom of the series, so it is found native (Fig 3.9), and NCERT names aqua regia — 3 : 1 conc. HCl : conc. HNO₃ — as one of the few reagents that dissolve gold and platinum. <b>Copper</b> is also found free, but nitric acid alone does attack it. <b>Zinc</b> and <b>iron</b> are never found free and dissolve in dilute acid.' },
+  { q:'A <b>22-carat</b> gold chain has a mass of <b>36 g</b>. The mass of copper or silver in it is',
+    o:['1.5 g','2 g','3 g','33 g'], a:2,
+    fb:'<b>3 g.</b> 22 carat = 22 parts gold in 24, so 2/24 of the chain is the other metal: 36 × 2/24 = 3 g. <b>33 g</b> is the gold, the other part of the same sum — answering the wrong question. <b>2 g</b> reads "2 parts" as 2 grams. <b>1.5 g</b> is one part, 36/24, not two.' },
+  { q:'A galvanised iron bucket gets a deep scratch through its coating, yet the iron underneath does not rust. The reason is that',
+    o:['zinc is more reactive than iron, so the zinc reacts instead','zinc is less reactive than iron, so it never corrodes','the zinc forms an alloy with iron that cannot rust','iron is protected by its own oxide layer, as aluminium is'], a:0,
+    fb:'<b>Zinc is more reactive, so it corrodes in iron\'s place</b> — the "Can you reason this out?" line in NCERT §3.5.1. <b>Less reactive</b> reverses the series — that is tin on food cans, the other half of the same fact. <b>An alloy</b>: galvanising is a coating, not an alloy. <b>Iron\'s own oxide layer</b>: rust is flaky and does not protect; the protective-layer story belongs to Mg, Al, Zn and Pb.' },
+  { q:'In the <b>electrolytic refining of copper</b>, which statement is correct?',
+    o:['Impure copper is made the cathode','Pure copper is deposited at the anode','Insoluble impurities collect below the anode as anode mud','The electrolyte is molten copper'], a:2,
+    fb:'<b>Anode mud.</b> The <b>impure</b> metal is the <b>anode</b>; it dissolves, and an equal amount of pure copper deposits on the thin pure-copper <b>cathode</b>. Soluble impurities go into solution; insoluble ones settle below the anode (NCERT Fig 3.12). The electrolyte is a solution of a copper salt — acidified copper sulphate — not molten metal; molten electrolysis is how the top metals are <em>extracted</em>, a different process.' },
+  { q:'A metal reacts with neither cold nor hot water, but reacts with steam to form its oxide and hydrogen. Its oxide is <b>amphoteric</b>. The metal is',
+    o:['Magnesium','Aluminium','Iron','Copper'], a:1,
+    fb:'<b>Aluminium.</b> Steam only: Al, Zn or Fe. Amphoteric oxide: Al₂O₃ or ZnO. Both clues together: aluminium (2Al + 3H₂O → Al₂O₃ + 3H₂). <b>Magnesium</b> reacts with hot water already. <b>Iron</b> passes the steam test but its oxide is basic. <b>Copper</b> does not react with water at all.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. Sit this unit\'s 20-minute paper under the clock when it appears on the hub.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed — section 3 has the water ladder, section 6 extraction and refining, section 7 corrosion and alloys.'
+                        : 'Worth a second pass through sections 3–7 before the paper. It is a short page; one more read fixes it.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:chem-metals:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- print: a closed details element never renders its contents, so open them for the printer ---------- */
+(function(){
+  var opened = [];
+  function before(){
+    opened = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+      if(!d.open){ d.open = true; opened.push(d); }
+      var box = d.closest('.we'); if(box) box.classList.add('revealed');
+    });
+  }
+  function after(){
+    opened.forEach(function(d){ d.open = false; var box = d.closest('.we'); if(box) box.classList.remove('revealed'); });
+    opened = [];
+  }
+  window.addEventListener('beforeprint', before);
+  window.addEventListener('afterprint', after);
+  if(window.matchMedia){
+    var mq = matchMedia('print');
+    var h = function(e){ if(e.matches) before(); else after(); };
+    if(mq.addEventListener) mq.addEventListener('change', h); else if(mq.addListener) mq.addListener(h);
+  }
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
