@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Transportation &amp; Excretion</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2343d98c'>B</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--bio);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #14463e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #1d5c9e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #2e246b30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--bio); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--physics); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--bio); }
+  .toolbtn:focus-visible { outline:2px solid var(--bio); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--bio); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e3a2a,#14304a); border:1px solid #2b5a46;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--bio); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--bio); background:color-mix(in srgb,var(--bio) 14%,transparent); border:1px solid color-mix(in srgb,var(--bio) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+  ol.roman { list-style:upper-roman; }
+  ol.roman li { padding-left:4px; }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child, .box .tablewrap:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--bio); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--bio); }
+  .box.why { --accent:var(--physics); }
+
+  /* fact bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:var(--bio); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:660px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; margin:12px 0; }
+  .tablewrap table { margin:0; }
+
+  /* numbered process steps */
+  .steps { counter-reset:st; margin:16px 0; }
+  .step { position:relative; padding:12px 16px 12px 52px; background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:9px; font-size:14px; }
+  .step::before { counter-increment:st; content:counter(st); position:absolute; left:14px; top:12px; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--bio); background:color-mix(in srgb,var(--bio) 13%,transparent); border:1px solid color-mix(in srgb,var(--bio) 34%,transparent); }
+  .step b { color:var(--bright); }
+  .step .tag { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--bio); background:color-mix(in srgb,var(--bio) 13%,transparent); border:1px solid color-mix(in srgb,var(--bio) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--bio); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* glossary */
+  .gloss { display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:9px; margin:14px 0; }
+  .gl { background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:11px 14px; font-size:13.3px; color:var(--muted); line-height:1.6; }
+  .gl b { display:block; color:var(--bright); font-size:13.8px; font-weight:600; margin-bottom:2px; }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--bio); background:color-mix(in srgb,var(--bio) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--bio) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #107a5014 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #1769d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #5b40d612 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#ddf3e6,#e6eefb); border-color:#b2dcc4; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure, .step { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy, .step, .gl { background:#fff; border-color:#bbb; }
+    .cy-fb.on { background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Biology · Self-study notes</div>
+    <h1>Transportation &amp; Excretion</h1>
+    <p class="sub">Official topics: <b>Transportation</b> and <b>Excretion</b> — two of the four <em>Life
+    Processes</em> sub-topics Allen lists separately. This page assumes <b>you have never been taught any of
+    this</b>: nothing here depends on a lesson you have not had. Everything is built up from why a body needs
+    pipes at all, the picture comes before the word, every process is a numbered sequence, and every technical
+    term is defined in the glossary at the end. Read it in two sittings if you like — about 40 minutes in all,
+    then the eight worked questions and the ten-question check. Biology is the section you can bank fastest in
+    the real paper, and this unit is the biggest single slice of it.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Every Biology question (Q31–45) in all five cached papers — four real sittings and Allen's official
+      sample — was read page by page, the 2017 and 2018 booklets rendered from their image scans (a text search
+      returns nothing at all for those two), and every item from these two topics re-solved against Allen's own
+      key sheets. <b>Twenty-seven items in five papers</b> — between 4 and 7 of the 15 Biology questions in
+      every single sitting, the largest slice of the section:</p>
+      <div class="tablewrap">
+      <table>
+        <thead><tr><th>Paper</th><th>Q</th><th>What it gives you</th><th>What it wants</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td>2017 · E</td><td class="mono">33</td><td>White flowers in red water; cut stem shows red tubes</td><td>What the experiment shows</td><td class="mono">(4) water travels root → whole plant through the stem</td></tr>
+          <tr><td>2017 · E</td><td class="mono">34</td><td>Match: lymphatic system · pulmonary vein · thrombocytes · lymphocytes</td><td>Their four jobs</td><td class="mono">(2) drain tissue fluid · oxygenated blood · clotting · immunity</td></tr>
+          <tr><td>2017 · E</td><td class="mono">38</td><td>ADH secretion increases</td><td>What happens to urine volume</td><td class="mono">(2) it decreases</td></tr>
+          <tr><td>2017 · E</td><td class="mono">43</td><td>Match: PCT · DCT · loop of Henle · counter-current · renal corpuscle</td><td>Their five jobs</td><td class="mono">(1) III, IV, I, V, II</td></tr>
+          <tr><td>2018 · S</td><td class="mono">33</td><td>Three statements on stomata and guard cells</td><td>Which are correct</td><td class="mono">(3) only I and III</td></tr>
+          <tr><td>2018 · S</td><td class="mono">34</td><td>Vein from liver · superior vena cava · vein from muscles · vein from kidney</td><td>Which carries the most nutrients</td><td class="mono">(1) the vein arising from the liver</td></tr>
+          <tr><td>2018 · S</td><td class="mono">38</td><td>Glycogen · fats · urea · carbon dioxide</td><td>Which must be eliminated from the body</td><td class="mono">(3) urea and carbon dioxide</td></tr>
+          <tr><td>2018 · S</td><td class="mono">43</td><td>Rennin · renin · ADH · aldosterone</td><td>Which is produced in the kidneys</td><td class="mono">(2) renin</td></tr>
+          <tr><td>2024 · U</td><td class="mono">35</td><td>A nephron drawn with A, B, C, D on it</td><td>Name all four</td><td class="mono">(3) A duct, B glomerulus, C capsule, D tubule</td></tr>
+          <tr><td>2024 · U</td><td class="mono">38</td><td>A labelled heart</td><td>The wrongly-labelled part <em>and</em> the vessel taking oxygenated blood to the body</td><td class="mono">(2) left atrium; aorta</td></tr>
+          <tr><td>2024 · U</td><td class="mono">40</td><td>Four pairs of tissue elements</td><td>Which pair carries the ascent of sap</td><td class="mono">(1) tracheids and vessels</td></tr>
+          <tr><td>2024 · U</td><td class="mono">41</td><td>Three statements about phloem and translocation</td><td>Which are correct</td><td class="mono">(3) only statement 3</td></tr>
+          <tr><td>2024 · U</td><td class="mono">42</td><td>Six students' statements about the heart and vessels</td><td>Which three are right</td><td class="mono">(2) students 2, 3 and 4</td></tr>
+          <tr><td>2024 · U</td><td class="mono">45</td><td>Four statements about human excretion</td><td>The <em>incorrect</em> one</td><td class="mono">(4) "filtration units called neurons"</td></tr>
+          <tr><td>2024 · A</td><td class="mono">35</td><td>A photograph of a person wired to a machine</td><td>Name the procedure</td><td class="mono">(2) haemodialysis</td></tr>
+          <tr><td>2024 · A</td><td class="mono">38</td><td>A heart lettered A–F</td><td>Which parts hold oxygenated blood</td><td class="mono">(2) A, B, C and F only</td></tr>
+          <tr><td>2024 · A</td><td class="mono">40</td><td>"Translocation moves ___ into the phloem using energy"</td><td>The substance</td><td class="mono">(3) sucrose</td></tr>
+          <tr><td>2024 · A</td><td class="mono">41</td><td><em>Pinus</em> and <em>Cycas</em> carry minerals up</td><td>Which xylem element does it</td><td class="mono">(4) tracheids</td></tr>
+          <tr><td>2024 · A</td><td class="mono">42</td><td>The vessel taking deoxygenated blood from heart to lung</td><td>How its pressure compares</td><td class="mono">(3) more than in the vessel bringing oxygenated blood back</td></tr>
+          <tr><td>2024 · A</td><td class="mono">45</td><td>A nephron lettered A–G</td><td>Where ions, glucose, amino acids and salts are reabsorbed most</td><td class="mono">(2) G — the proximal convoluted tubule</td></tr>
+          <tr><td>Sample</td><td class="mono">31</td><td>"___ recovers water and sodium chloride from the urine"</td><td>The part</td><td class="mono">(3) loop of Henle</td></tr>
+          <tr><td>Sample</td><td class="mono">32</td><td>The same lettered heart as 2024-A Q38, word for word</td><td>Which parts hold oxygenated blood</td><td class="mono">(2) A, B, C and F only</td></tr>
+          <tr><td>Sample</td><td class="mono">33</td><td>PCT · DCT · loop of Henle · collecting duct</td><td>Where most of the filtrate is reabsorbed</td><td class="mono">(1) proximal convoluted tubule</td></tr>
+          <tr><td>Sample</td><td class="mono">34</td><td>Submerged · desert · rainforest · hill plants</td><td>Which has no transpiration</td><td class="mono">(1) the completely submerged one</td></tr>
+          <tr><td>Sample</td><td class="mono">35</td><td>Liver · kidney · lung · heart</td><td>Where urea is mainly formed</td><td class="mono">(1) liver</td></tr>
+          <tr><td>Sample</td><td class="mono">36</td><td>The same translocation sentence as 2024-A Q40, word for word</td><td>The substance</td><td class="mono">(3) sucrose</td></tr>
+          <tr><td>Sample</td><td class="mono">41</td><td>A nephron lettered D–I, plus three functions</td><td>Match them</td><td class="mono">(2) E · H and I · D</td></tr>
+          <tr><td colspan="5" style="color:var(--muted);font-size:12.5px;padding-top:12px">Next door, and worth a glance because the wording overlaps: <b>2017-E Q32</b> (=2, CPR on a collapsed person — the heart, but first aid rather than this topic) and <b>2024-U Q32</b> (=2, X and Y on a water-cycle diagram are <em>evaporation</em> and <em>transpiration</em> — the word is ours, the chapter is Natural Resources, which the 2027 list drops). <b>Sample Q45</b> (=2) asks for the structural and functional unit of the <em>nervous</em> system — <em>neuron</em> — which is exactly the word 2024-U Q45 plants as its wrong option about kidneys. Allen is using the pair deliberately.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>What that tells you, and what to do about it:</p>
+      <ol>
+        <li><b>Four to seven questions a sitting — 16 to 28 marks.</b> 2017 four, 2018 four, both 2024 codes
+        six, the sample seven. No other Biology unit gets near that.</li>
+        <li><b>The question numbers repeat.</b> The two old papers put this unit at <span class="m">Q33, Q34,
+        Q38, Q43</span> — the <em>same four slots in both</em>. Both 2024 sittings put it at <span class="m">Q35,
+        Q38, Q40, Q41, Q42, Q45</span> — again the same six slots in both. Expect this unit at roughly those
+        positions and budget for it.</li>
+        <li><b>Half the unit is one skill: reading a labelled diagram.</b> A heart lettered A–F, a nephron
+        lettered A–D or D–I, a person on a dialysis machine. Nine of the twenty-seven are label-or-match items.
+        That is why the two figures Allen letters most — the heart and the nephron — are drawn a second time
+        <em>with letters</em> in §13, exactly the way he prints them, so you can practise reading a diagram
+        that does not name anything.</li>
+        <li><b>The rest is word-precision, not knowledge.</b> <em>Neurons</em> for nephrons; <em>rennin</em>
+        for renin; <em>sink to source</em> for source to sink; <em>glucose</em> for sucrose. In every one of
+        those the biology is easy and the marks go on which word.</li>
+        <li><b>Allen recycles this unit more than any other.</b> Sample Q32 <em>is</em> 2024-A Q38 and Sample
+        Q36 <em>is</em> 2024-A Q40 — same words, same options, same keys. Sample Q33 and 2024-A Q45 ask the
+        same fact two ways. You have already sat the sample; if one of those comes round again it is four free
+        marks, so make sure you know exactly why the answers are what they are.</li>
+        <li><b>No numerical work at all.</b> Not one of the twenty-seven needs arithmetic. This is a reading
+        section: the whole game is not misreading the question.</li>
+      </ol>
+      <p><b>Budget accordingly.</b> Aim to clear the Biology section in about 12 minutes so the clock is free
+      for Maths. That is only possible if this unit is instant recall — hence the diagrams, the fact bank in
+      §11 and the trap wall in §12.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">1</span>Why a body needs pipes at all</h2>
+    <p class="lede">Start here even if it looks obvious. Almost every later answer falls out of this one idea,
+    and the paper's hardest items are the ones that test whether you understand it or just memorised it.</p>
+
+    <p>Every cell in you is doing the same shopping: it needs <b>glucose</b> for energy, <b>oxygen</b> to burn
+    it, and it needs to get rid of <b>carbon dioxide</b> and <b>nitrogen waste</b>. In a one-celled organism
+    like <em>Amoeba</em> the shopping is trivial — the cell is bathed in pond water, so everything it needs
+    simply <b>diffuses</b> in and everything it dumps diffuses out.</p>
+
+    <div class="box why">
+      <h4>The reason diffusion is not enough for you</h4>
+      <p>Diffusion is molecules spreading out on their own, by random movement, from where there are many of
+      them to where there are few. It is fast over very short distances and <b>catastrophically slow over long
+      ones</b> — doubling the distance more than doubles the time. Over a thousandth of a millimetre it takes a
+      fraction of a second; across a human body it would take years. A cell in your thumb cannot wait years for
+      the oxygen you breathed in this morning.</p>
+      <p>So any animal bigger than a few millimetres needs <b>bulk transport</b>: a liquid that actually flows,
+      pushed by a pump, along tubes that reach everywhere. Diffusion is still used — but only at the very
+      last step, across the thin wall of the smallest tube, where the distance is tiny again. <b>Remember that
+      division of labour.</b> Bulk flow covers the distance; diffusion does the final handover.</p>
+    </div>
+
+    <p>That gives every transport system the same three parts, in you and in a plant:</p>
+    <ul>
+      <li>a <b>fluid</b> that carries things (your blood; a plant's sap),</li>
+      <li><b>tubes</b> to keep the fluid on course (blood vessels; xylem and phloem),</li>
+      <li>and something to make it <b>move</b> (your heart; in a plant, no pump at all — evaporation pulls from
+      the top, as §6 explains).</li>
+    </ul>
+
+    <p>You actually have <em>two</em> circulating fluids. <b>Blood</b> goes round and round in closed tubes.
+    <b>Lymph</b> is the fluid that leaks out of the smallest blood vessels into the spaces between cells; it
+    bathes them, and is then drained back into the blood through its own one-way vessels. Lymph also carries
+    digested fat from the intestine and is part of the body's defence system. Allen has asked exactly one thing
+    about lymph — <em>what does the lymphatic system do?</em> — and the answer it wants is <b>"drains the tissue
+    fluid back to the circulatory system"</b> (2017-E Q34).</p>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>Blood — the four things in it, and what each does</h2>
+    <p class="lede">Blood looks like a red liquid. It is really a straw-coloured liquid with three kinds of
+    cell floating in it. Every "match the following" Allen sets on blood comes out of this table.</p>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Part</th><th>What it looks like</th><th>Its job</th><th>The exam line</th></tr></thead>
+      <tbody>
+        <tr><td><b>Plasma</b></td><td>The straw-coloured liquid — a bit more than half of blood, and mostly water</td><td>Carries everything dissolved: digested food, salts, hormones, <b>most of the carbon dioxide</b>, and <b>all of the urea</b></td><td>Urea travels in the plasma, not in the red cells</td></tr>
+        <tr><td><b>Red blood cells</b><br>(erythrocytes)</td><td>Tiny discs packed with the red pigment <b>haemoglobin</b></td><td>Carry <b>oxygen</b>. Haemoglobin grabs oxygen where there is a lot of it (lungs) and lets go where there is little (working muscle)</td><td>Oxygen needs haemoglobin; carbon dioxide mostly does not</td></tr>
+        <tr><td><b>White blood cells</b><br>(leucocytes)</td><td>Larger, fewer, colourless</td><td>Defence. <b>Lymphocytes</b> are the ones that make the <b>immune response</b></td><td>Lymphocytes ↔ immunity (2017-E Q34)</td></tr>
+        <tr><td><b>Platelets</b><br>(thrombocytes)</td><td>Cell fragments, no nucleus</td><td><b>Clotting</b> — they plug a cut so you do not bleed out</td><td>Thrombocytes ↔ coagulation (2017-E Q34)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="box trap">
+      <h4>The two names that get swapped</h4>
+      <p><b>Lympho</b>cytes are white blood <em>cells</em> that fight infection. <b>Thrombo</b>cytes are the
+      platelets that clot blood — think <em>thrombus</em>, a clot. Allen's 2017 match offered both in the same
+      question with "immune response" and "coagulation of blood" as two of the four jobs, and the only way to
+      lose that mark is to swap them.</p>
+      <p>Same question, a second trap worth knowing about: <b>two of its four options were printed
+      identically</b> — (1) and (4) were the same string. Both were wrong, so the item still works, but it is a
+      reminder to read all four options rather than assuming they must all differ.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>The heart — four rooms, one rule</h2>
+    <p class="lede">If you learn one diagram in Biology, learn this one. Allen has drawn it in three of the
+    five cached papers and asked you to read the labels every time.</p>
+
+    <p>The heart is a muscular pump with <b>four chambers</b>. The two on top are <b>atria</b> (singular:
+    atrium) — thin-walled rooms that <em>receive</em> blood arriving from veins. The two below are
+    <b>ventricles</b> — thick-walled rooms that <em>pump</em> blood out into arteries. A solid wall, the
+    <b>septum</b>, runs down the middle, and one-way <b>valves</b> sit between each atrium and its ventricle
+    and at the exit of each ventricle.</p>
+
+    <p>The one rule that answers most questions: <b>the right side of the heart handles used (deoxygenated)
+    blood, the left side handles fresh (oxygenated) blood, and the septum stops them ever mixing.</b></p>
+
+    <figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 470' width='700' role='img' font-family='Inter,sans-serif' font-size='12'><defs><marker id='aox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--force)'/></marker><marker id='adox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--physics)'/></marker><marker id='abio' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bio)'/></marker><marker id='atxt' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bright)'/></marker><marker id='amut' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--muted)'/></marker></defs><path d='M152,446 L152,196 L196,196' fill='none' stroke='var(--muted)' stroke-width='24' stroke-linejoin='round'/><path d='M152,446 L152,196 L196,196' fill='none' stroke='var(--physics)' stroke-width='20' stroke-linejoin='round' opacity='0.85'/><path d='M214,34 L214,140' fill='none' stroke='var(--muted)' stroke-width='24' stroke-linejoin='round'/><path d='M214,34 L214,140' fill='none' stroke='var(--physics)' stroke-width='20' stroke-linejoin='round' opacity='0.85'/><rect x='180' y='128' width='82' height='98' rx='20' fill='var(--physics)' fill-opacity='0.16' stroke='var(--physics)' stroke-width='2'/><rect x='190' y='246' width='98' height='136' rx='20' fill='var(--physics)' fill-opacity='0.16' stroke='var(--physics)' stroke-width='2.5'/><rect x='348' y='128' width='82' height='98' rx='20' fill='var(--force)' fill-opacity='0.16' stroke='var(--force)' stroke-width='2'/><rect x='318' y='246' width='106' height='152' rx='20' fill='var(--force)' fill-opacity='0.16' stroke='var(--force)' stroke-width='5.5'/><rect x='294' y='140' width='18' height='250' rx='6' fill='var(--muted)' opacity='0.5'/><path d='M215,228 L226,243 M245,228 L234,243' stroke='var(--physics)' stroke-width='2.5' fill='none'/><path d='M357,228 L368,243 M387,228 L376,243' stroke='var(--force)' stroke-width='2.5' fill='none'/><path d='M566,176 L420,176' fill='none' stroke='var(--muted)' stroke-width='19' stroke-linejoin='round'/><path d='M566,176 L420,176' fill='none' stroke='var(--force)' stroke-width='15' stroke-linejoin='round' opacity='0.85'/><path d='M566,208 L420,208' fill='none' stroke='var(--muted)' stroke-width='19' stroke-linejoin='round'/><path d='M566,208 L420,208' fill='none' stroke='var(--force)' stroke-width='15' stroke-linejoin='round' opacity='0.85'/><path d='M277,254 L277,26' fill='none' stroke='var(--muted)' stroke-width='23' stroke-linejoin='round'/><path d='M277,254 L277,26' fill='none' stroke='var(--physics)' stroke-width='19' stroke-linejoin='round' opacity='0.85'/><path d='M330,254 L330,92 Q330,38 382,38 L520,38 Q552,38 552,70 L552,150' fill='none' stroke='var(--muted)' stroke-width='25' stroke-linejoin='round'/><path d='M330,254 L330,92 Q330,38 382,38 L520,38 Q552,38 552,70 L552,150' fill='none' stroke='var(--force)' stroke-width='21' stroke-linejoin='round' opacity='0.85'/><path d='M400,40 L400,12' fill='none' stroke='var(--muted)' stroke-width='14' stroke-linejoin='round'/><path d='M400,40 L400,12' fill='none' stroke='var(--force)' stroke-width='10' stroke-linejoin='round' opacity='0.85'/><path d='M440,40 L440,12' fill='none' stroke='var(--muted)' stroke-width='14' stroke-linejoin='round'/><path d='M440,40 L440,12' fill='none' stroke='var(--force)' stroke-width='10' stroke-linejoin='round' opacity='0.85'/><path d='M480,40 L480,12' fill='none' stroke='var(--muted)' stroke-width='14' stroke-linejoin='round'/><path d='M480,40 L480,12' fill='none' stroke='var(--force)' stroke-width='10' stroke-linejoin='round' opacity='0.85'/><path d='M214,162 L214,214' stroke='var(--bright)' stroke-width='1.6' marker-end='url(#atxt)'/><path d='M228,352 L268,272' stroke='var(--bright)' stroke-width='1.6' fill='none' marker-end='url(#atxt)'/><path d='M388,162 L388,214' stroke='var(--bright)' stroke-width='1.6' marker-end='url(#atxt)'/><path d='M382,358 L340,274' stroke='var(--bright)' stroke-width='1.6' fill='none' marker-end='url(#atxt)'/><path d='M214,56 L214,110' stroke='var(--bright)' stroke-width='1.4' marker-end='url(#atxt)'/><path d='M152,420 L152,300' stroke='var(--bright)' stroke-width='1.4' marker-end='url(#atxt)'/><path d='M277,120 L277,44' stroke='var(--bright)' stroke-width='1.4' marker-end='url(#atxt)'/><path d='M420,38 L510,38' stroke='var(--bright)' stroke-width='1.4' marker-end='url(#atxt)'/><path d='M546,208 L450,208' stroke='var(--bright)' stroke-width='1.4' marker-end='url(#atxt)'/><line x1='129' y1='114' x2='214' y2='118' stroke='var(--muted)' stroke-width='1'/><circle cx='214' cy='118' r='2.2' fill='var(--muted)'/><text x='16' y='118' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Superior vena cava</text><line x1='129' y1='396' x2='152' y2='392' stroke='var(--muted)' stroke-width='1'/><circle cx='152' cy='392' r='2.2' fill='var(--muted)'/><text x='16' y='400' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Inferior vena cava</text><line x1='93' y1='154' x2='200' y2='152' stroke='var(--muted)' stroke-width='1'/><circle cx='200' cy='152' r='2.2' fill='var(--muted)'/><text x='16' y='158' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Right atrium</text><line x1='111' y1='326' x2='210' y2='330' stroke='var(--muted)' stroke-width='1'/><circle cx='210' cy='330' r='2.2' fill='var(--muted)'/><text x='16' y='330' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Right ventricle</text><line x1='251' y1='16' x2='277' y2='34' stroke='var(--muted)' stroke-width='1'/><circle cx='277' cy='34' r='2.2' fill='var(--muted)'/><text x='246' y='20' font-size='11.5' fill='var(--text)' text-anchor='end' font-weight='normal'>Pulmonary artery</text><line x1='595' y1='96' x2='552' y2='100' stroke='var(--muted)' stroke-width='1'/><circle cx='552' cy='100' r='2.2' fill='var(--muted)'/><text x='600' y='100' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Aorta</text><line x1='591' y1='246' x2='560' y2='208' stroke='var(--muted)' stroke-width='1'/><circle cx='560' cy='208' r='2.2' fill='var(--muted)'/><text x='596' y='250' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Pulmonary veins</text><line x1='465' y1='124' x2='418' y2='150' stroke='var(--muted)' stroke-width='1'/><circle cx='418' cy='150' r='2.2' fill='var(--muted)'/><text x='470' y='128' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Left atrium</text><line x1='465' y1='396' x2='410' y2='372' stroke='var(--muted)' stroke-width='1'/><circle cx='410' cy='372' r='2.2' fill='var(--muted)'/><text x='470' y='400' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Left ventricle</text><line x1='105' y1='242' x2='246' y2='236' stroke='var(--muted)' stroke-width='1'/><circle cx='246' cy='236' r='2.2' fill='var(--muted)'/><text x='16' y='246' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>One-way valves</text><line x1='595' y1='316' x2='303' y2='320' stroke='var(--muted)' stroke-width='1'/><circle cx='303' cy='320' r='2.2' fill='var(--muted)'/><text x='600' y='320' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Septum</text><text x='600' y='334' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>a solid wall:</text><text x='600' y='347' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>the two sides</text><text x='600' y='360' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>never mix</text><text x='470' y='420' font-size='10.5' fill='var(--force)' text-anchor='start' font-weight='normal'>thickest wall — it</text><text x='470' y='433' font-size='10.5' fill='var(--force)' text-anchor='start' font-weight='normal'>pumps to the whole body</text><text x='350' y='462' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>The heart faces you, so its LEFT side is drawn on YOUR RIGHT.</text><text x='600' y='60' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>to head</text><text x='600' y='73' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>and arms</text><text x='292' y='20' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>to BOTH lungs</text></svg><figcaption><b>Figure 1 — the human heart, drawn as the paper draws it.</b> Blue is deoxygenated blood,
+    red is oxygenated. Note that the heart is drawn facing you, so its own left side appears on <em>your</em>
+    right. The arrows show the direction blood is forced: atrium → ventricle → out.</figcaption></figure>
+
+    <h3>One full journey, in eight steps</h3>
+    <div class="steps">
+      <div class="step"><span class="tag">used blood arrives</span>Blood that has been round the body — low in oxygen, carrying carbon dioxide and urea — comes back through the two largest veins, the <b>superior vena cava</b> (from the head and arms) and the <b>inferior vena cava</b> (from everything below), into the <b>right atrium</b>.</div>
+      <div class="step"><span class="tag">down one floor</span>The right atrium contracts and squeezes the blood through a valve into the <b>right ventricle</b>.</div>
+      <div class="step"><span class="tag">out to the lungs</span>The right ventricle contracts and pushes the blood into the <b>pulmonary artery</b>, which carries it to both lungs.</div>
+      <div class="step"><span class="tag">the gas swap</span>In the lungs the blood runs through capillaries wrapped round the air sacs. Oxygen diffuses in, carbon dioxide diffuses out. The blood is now <b>oxygenated</b>.</div>
+      <div class="step"><span class="tag">fresh blood returns</span>It returns through the <b>pulmonary veins</b> into the <b>left atrium</b>.</div>
+      <div class="step"><span class="tag">down one floor</span>The left atrium contracts and squeezes it through a valve into the <b>left ventricle</b>.</div>
+      <div class="step"><span class="tag">out to the whole body</span>The left ventricle — the thickest-walled chamber in the heart — contracts hard and drives the blood into the <b>aorta</b>, the body's largest artery, which branches to every organ.</div>
+      <div class="step"><span class="tag">and round again</span>In the organs' capillaries the blood hands over oxygen and food and picks up carbon dioxide and urea, collects into veins, and arrives back at the vena cava. Step 1 again.</div>
+    </div>
+
+    <div class="box def">
+      <h4>Double circulation — and why "double"</h4>
+      <p>Count how many times the blood passed <em>through the heart</em> in those eight steps: twice. Once on
+      the way to the lungs (steps 1–3) and once on the way to the body (steps 5–7). That is what <b>double
+      circulation</b> means — one complete round of the body takes the blood through the heart <b>two</b>
+      times, through two separate loops:</p>
+      <ul>
+        <li><b>Pulmonary circulation</b> — heart → lungs → heart. Short, and at lower pressure, because lung
+        capillaries are delicate.</li>
+        <li><b>Systemic circulation</b> — heart → rest of the body → heart. Long, and at high pressure, because
+        it has to reach your toes and your brain.</li>
+      </ul>
+      <p>A fish has a two-chambered heart and <b>single</b> circulation: blood passes through the heart only
+      once per round. Amphibians and most reptiles have three chambers, so some mixing happens. Birds and
+      mammals have four chambers and no mixing at all — and that matters because they are warm-blooded: keeping
+      a body at a steady temperature burns a lot of energy, which needs a lot of oxygen, which needs blood that
+      is fully oxygenated rather than half-mixed.</p>
+    </div>
+
+    <figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 330' width='700' role='img' font-family='Inter,sans-serif' font-size='12'><defs><marker id='aox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--force)'/></marker><marker id='adox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--physics)'/></marker><marker id='abio' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bio)'/></marker><marker id='atxt' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bright)'/></marker><marker id='amut' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--muted)'/></marker></defs><rect x='270' y='16' width='160' height='54' rx='12' fill='var(--surface2)' stroke='var(--muted)'/><text x='350' y='40' font-size='13' fill='var(--bright)' text-anchor='middle' font-weight='bold'>LUNGS</text><text x='350' y='59' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>blood picks up O₂, drops CO₂</text><rect x='270' y='260' width='160' height='54' rx='12' fill='var(--surface2)' stroke='var(--muted)'/><text x='350' y='284' font-size='13' fill='var(--bright)' text-anchor='middle' font-weight='bold'>BODY TISSUES</text><text x='350' y='303' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>cells take O₂, give CO₂</text><rect x='130' y='116' width='172' height='98' rx='14' fill='var(--physics)' fill-opacity='0.13' stroke='var(--physics)'/><text x='216' y='141' font-size='12' fill='var(--bright)' text-anchor='middle' font-weight='bold'>RIGHT SIDE of heart</text><text x='216' y='161' font-size='11' fill='var(--text)' text-anchor='middle' font-weight='normal'>right atrium → right ventricle</text><text x='216' y='181' font-size='11' fill='var(--physics)' text-anchor='middle' font-weight='normal'>deoxygenated blood</text><text x='216' y='201' font-size='11' fill='var(--muted)' text-anchor='middle' font-weight='normal'>pumps to the LUNGS</text><rect x='398' y='116' width='172' height='98' rx='14' fill='var(--force)' fill-opacity='0.13' stroke='var(--force)'/><text x='484' y='141' font-size='12' fill='var(--bright)' text-anchor='middle' font-weight='bold'>LEFT SIDE of heart</text><text x='484' y='161' font-size='11' fill='var(--text)' text-anchor='middle' font-weight='normal'>left atrium → left ventricle</text><text x='484' y='181' font-size='11' fill='var(--force)' text-anchor='middle' font-weight='normal'>oxygenated blood</text><text x='484' y='201' font-size='11' fill='var(--muted)' text-anchor='middle' font-weight='normal'>pumps to the BODY</text><rect x='308' y='124' width='84' height='82' rx='10' fill='none' stroke='var(--muted)' stroke-dasharray='4 4'/><text x='350' y='158' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>septum</text><text x='350' y='176' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>no mixing</text><path d='M216,116 C216,80 250,68 272,54' fill='none' stroke='var(--physics)' stroke-width='3' marker-end='url(#adox)'/><text x='196' y='84' font-size='11' fill='var(--physics)' text-anchor='end' font-weight='normal'>pulmonary artery</text><text x='196' y='99' font-size='9.5' fill='var(--muted)' text-anchor='end' font-weight='normal'>the ONE artery carrying</text><text x='196' y='112' font-size='9.5' fill='var(--muted)' text-anchor='end' font-weight='normal'>deoxygenated blood</text><path d='M430,54 C452,68 484,80 484,116' fill='none' stroke='var(--force)' stroke-width='3' marker-end='url(#aox)'/><text x='506' y='84' font-size='11' fill='var(--force)' text-anchor='start' font-weight='normal'>pulmonary veins</text><text x='506' y='99' font-size='9.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>the ONLY veins carrying</text><text x='506' y='112' font-size='9.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>oxygenated blood</text><path d='M484,214 C484,250 452,262 430,276' fill='none' stroke='var(--force)' stroke-width='3' marker-end='url(#aox)'/><text x='506' y='238' font-size='11' fill='var(--force)' text-anchor='start' font-weight='normal'>aorta → arteries</text><text x='506' y='253' font-size='11' fill='var(--force)' text-anchor='start' font-weight='normal'>→ capillaries</text><path d='M272,276 C250,262 216,250 216,214' fill='none' stroke='var(--physics)' stroke-width='3' marker-end='url(#adox)'/><text x='196' y='238' font-size='11' fill='var(--physics)' text-anchor='end' font-weight='normal'>capillaries → veins</text><text x='196' y='253' font-size='11' fill='var(--physics)' text-anchor='end' font-weight='normal'>→ vena cavae</text><text x='350' y='240' font-size='10.5' fill='var(--bright)' text-anchor='middle' font-weight='bold'>one full round of the body =</text><text x='350' y='254' font-size='10.5' fill='var(--bright)' text-anchor='middle' font-weight='bold'>through the heart TWICE</text></svg><figcaption><b>Figure 2 — double circulation as a loop diagram.</b> The same eight steps with the anatomy
+    stripped out. If you can redraw this from memory you can answer any "which side / which vessel" question.</figcaption></figure>
+
+    <h3>The beat, and blood pressure</h3>
+    <p>The chambers do not contract at random. The two atria contract together, then the two ventricles
+    contract together, then everything relaxes — about <b>72 times a minute</b> at rest, which is a little over
+    4 300 beats an hour. Contraction is called <b>systole</b>, relaxation <b>diastole</b>. The "lub-dub" you
+    hear through a stethoscope is the valves slamming shut.</p>
+    <p>Each ventricle squirt sends blood into the arteries under pressure, and that pressure is what a doctor
+    measures with a cuff on your upper arm. A healthy young adult reads about <b>120/80 mm of mercury</b>: 120
+    during the ventricle's contraction (<b>systolic</b> pressure) and 80 while it refills (<b>diastolic</b>).
+    It is measured in a large artery precisely because that is where the pressure is highest and steadiest to
+    read.</p>
+
+    <div class="box trap">
+      <h4>Six students, three right — the 2024-U Q42 item</h4>
+      <p>Allen printed six one-line statements and asked which three were correct. It is the "multi-statement
+      judgement" format that catches more people than any other, so here is that exact item, decided line by
+      line:</p>
+      <ul>
+        <li><b>"The heart is the major pumping organ and it filters the blood also."</b> ✗ — the heart pumps,
+        the <em>kidney</em> filters. Never let one organ do two jobs.</li>
+        <li><b>"Arteries have thick walls and a narrow lumen."</b> ✓</li>
+        <li><b>"At the level of capillaries, gaseous exchange takes place."</b> ✓</li>
+        <li><b>"In arteries the pressure of the blood is very high."</b> ✓</li>
+        <li><b>"Veins have a narrow lumen and no valves."</b> ✗ — wide lumen, <em>and</em> they do have valves.
+        Two errors in one short sentence.</li>
+        <li><b>"A capillary has a wall thicker than a vein."</b> ✗ — a capillary wall is a single cell thick,
+        the thinnest wall in the body.</li>
+      </ul>
+      <p>So the answer is <b>students 2, 3 and 4</b> — option (2). Read every clause: statement 5 is only wrong
+      because of its second half.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>The three kinds of vessel</h2>
+    <p class="lede">Three tubes, one difference that explains all the others: <b>how much pressure the tube has
+    to survive.</b></p>
+
+    <figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 268' width='720' role='img' font-family='Inter,sans-serif' font-size='12'><defs><marker id='aox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--force)'/></marker><marker id='adox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--physics)'/></marker><marker id='abio' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bio)'/></marker><marker id='atxt' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bright)'/></marker><marker id='amut' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--muted)'/></marker></defs><text x='360' y='20' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>Cross-sections, not to scale — a real capillary is hundreds of times narrower than the aorta.</text><circle cx='120' cy='118' r='60' fill='var(--force)' fill-opacity='0.22' stroke='var(--force)' stroke-width='2'/><circle cx='120' cy='118' r='44' fill='none' stroke='var(--force)' stroke-width='1' stroke-dasharray='3 3'/><circle cx='120' cy='118' r='23' fill='var(--surface2)' stroke='var(--force)' stroke-width='1.5'/><text x='120' y='122' font-size='10' fill='var(--muted)' text-anchor='middle' font-weight='normal'>lumen</text><text x='120' y='206' font-size='12.5' fill='var(--bright)' text-anchor='middle' font-weight='bold'>ARTERY</text><text x='120' y='224' font-size='10.5' fill='var(--text)' text-anchor='middle' font-weight='normal'>thick elastic wall, narrow lumen</text><text x='120' y='240' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>no valves · HIGH pressure, in surges</text><text x='120' y='255' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>carries blood AWAY from the heart</text><circle cx='360' cy='118' r='60' fill='var(--physics)' fill-opacity='0.2' stroke='var(--physics)' stroke-width='2'/><circle cx='360' cy='118' r='51' fill='var(--surface2)' stroke='var(--physics)' stroke-width='1.5'/><path d='M328,126 Q354,114 360,88 M392,126 Q366,114 360,88' fill='none' stroke='var(--physics)' stroke-width='2.5'/><text x='360' y='144' font-size='10' fill='var(--physics)' text-anchor='middle' font-weight='normal'>valve</text><text x='360' y='206' font-size='12.5' fill='var(--bright)' text-anchor='middle' font-weight='bold'>VEIN</text><text x='360' y='224' font-size='10.5' fill='var(--text)' text-anchor='middle' font-weight='normal'>thin wall, wide lumen</text><text x='360' y='240' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>HAS valves · LOW, steady pressure</text><text x='360' y='255' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>carries blood BACK to the heart</text><circle cx='600' cy='118' r='33' fill='var(--bio)' fill-opacity='0.18' stroke='var(--bio)' stroke-width='1.5'/><circle cx='600' cy='118' r='26' fill='var(--surface2)' stroke='var(--bio)' stroke-width='1'/><ellipse cx='626.7' cy='130.5' rx='5' ry='3' fill='var(--bio)' opacity='0.85' transform='rotate(115 626.7 130.5)'/><ellipse cx='575.8' cy='134.9' rx='5' ry='3' fill='var(--bio)' opacity='0.85' transform='rotate(235 575.8 134.9)'/><ellipse cx='597.4' cy='88.6' rx='5' ry='3' fill='var(--bio)' opacity='0.85' transform='rotate(355 597.4 88.6)'/><circle cx='600' cy='118' r='11' fill='var(--force)' fill-opacity='0.55' stroke='var(--force)'/><text x='600' y='121.5' font-size='8.5' fill='var(--bright)' text-anchor='middle' font-weight='normal'>RBC</text><text x='600' y='70' font-size='10.5' fill='var(--bio)' text-anchor='middle' font-weight='normal'>one flat cell thick</text><text x='600' y='206' font-size='12.5' fill='var(--bright)' text-anchor='middle' font-weight='bold'>CAPILLARY</text><text x='600' y='224' font-size='10.5' fill='var(--text)' text-anchor='middle' font-weight='normal'>so narrow RBCs squeeze through</text><text x='600' y='240' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>wall ONE cell thick</text><text x='600' y='255' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>ALL exchange happens here</text></svg><figcaption><b>Figure 3 — artery, vein and capillary in cross-section.</b> The thick elastic artery wall is
+    built for pressure; the vein's valve stops backflow; the capillary is one cell thick so that diffusion can
+    finish the job. <b>The red and blue here are only the usual textbook colours for telling an artery from a
+    vein — they are not a rule about oxygen</b>, as §5 is about to show.</figcaption></figure>
+
+    <p>Blood leaves the left ventricle in violent surges, so an <b>artery</b> needs a thick, muscular, elastic
+    wall that stretches with each surge and springs back — that spring is what you feel as a pulse. By the time
+    the blood has trickled through millions of hair-thin <b>capillaries</b>, the pressure has almost gone, so a
+    <b>vein</b> needs only a thin wall. But low pressure brings a new problem: blood in your leg veins has to
+    get back up to your heart with almost nothing pushing it. That is why veins — and, among blood vessels, only veins — have
+    <b>valves</b>: flaps that let blood through towards the heart and slam shut if it tries to fall back. (The
+    heart has valves of its own, as §3 said; no artery has any.)</p>
+
+    <div class="box def">
+      <h4>The pressure ladder — learn the order, not the numbers</h4>
+      <p><b>aorta (highest) → arteries → arterioles → capillaries → veins → vena cava (lowest)</b></p>
+      <p>Pressure only ever <em>falls</em> as blood moves away from the heart, and it falls most sharply across
+      the capillaries. 2024-A Q42 is that single idea dressed up: <em>is the pressure in the pulmonary artery
+      more or less than in the pulmonary vein?</em> The pulmonary artery is before the lung capillaries, the
+      pulmonary vein after them — so the artery is <b>higher</b>. Option (3). You do not need a single number.</p>
+    </div>
+
+    <p>And the third vessel is where the whole system finally does its job. A capillary wall is <b>one cell
+    thick</b>, so oxygen, glucose, carbon dioxide and urea can diffuse straight across it between the blood and
+    the cells outside. Arteries and veins are merely plumbing; <b>every exchange in your body happens in a
+    capillary.</b></p>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>The named vessels — and the two that break the rule</h2>
+    <p class="lede">Allen's favourite trick in this unit is to name a vessel and ask what is in it. Learn this
+    table and the trick stops working.</p>
+
+    <div class="box trap">
+      <h4>The definition that is <em>not</em> about oxygen</h4>
+      <p>An <b>artery carries blood away from the heart</b>. A <b>vein carries blood towards the heart</b>. That
+      is the whole definition — direction, never oxygen. It is true that <em>most</em> arteries happen to carry
+      oxygenated blood, which is why the two exceptions are asked so often:</p>
+      <ul>
+        <li>the <b>pulmonary artery</b> carries <b>deoxygenated</b> blood (heart → lungs), and</li>
+        <li>the <b>pulmonary veins</b> carry <b>oxygenated</b> blood (lungs → heart).</li>
+      </ul>
+      <p>If a question says "the vessel that carries deoxygenated blood from the heart towards the lung", it is
+      simply naming the pulmonary artery the long way round. Translate first, then answer.</p>
+    </div>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Vessel</th><th>From → to</th><th>Blood in it</th><th>Known for</th></tr></thead>
+      <tbody>
+        <tr><td><b>Aorta</b></td><td>Left ventricle → the whole body</td><td>Oxygenated</td><td>The largest artery; highest pressure in the body</td></tr>
+        <tr><td><b>Vena cavae</b> (superior, inferior)</td><td>Body → right atrium</td><td>Deoxygenated</td><td>The largest veins; lowest pressure</td></tr>
+        <tr><td><b>Pulmonary artery</b></td><td>Right ventricle → lungs</td><td><b>Deoxygenated</b></td><td>The artery exception</td></tr>
+        <tr><td><b>Pulmonary veins</b></td><td>Lungs → left atrium</td><td><b>Oxygenated</b></td><td>The vein exception; the most oxygen-rich blood anywhere</td></tr>
+        <tr><td><b>Hepatic portal vein</b></td><td>Intestine → liver</td><td>Deoxygenated, but <b>loaded with digested food</b></td><td>Carries absorbed glucose and amino acids straight to the liver after a meal</td></tr>
+        <tr><td><b>Hepatic vein</b></td><td>Liver → inferior vena cava</td><td>Deoxygenated</td><td>Leaves the liver carrying the glucose the liver has just released — and the urea it has just made</td></tr>
+        <tr><td><b>Renal artery</b></td><td>Aorta → kidney</td><td>Oxygenated, carrying urea like every other artery</td><td>The blood going in to be cleaned — it is the vein leaving that is the special one</td></tr>
+        <tr><td><b>Renal vein</b></td><td>Kidney → inferior vena cava</td><td>Deoxygenated, <b>the least urea of any vein in the body</b></td><td>The clean blood coming out</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="box exam">
+      <h4>An honest note on 2018-S Q34</h4>
+      <p>The question: "Which of the following vessels has more nutrients than the others?" — (1) vein arising
+      from the liver, (2) superior vena cava, (3) vein arising from muscles, (4) vein arising from the kidney.
+      <b>Allen's key is (1).</b> The reasoning behind it: of those four, the vein leaving the <em>liver</em> is
+      the one that has just been loaded with glucose, since the liver is the organ that stores and releases it;
+      the other three drain organs that <em>consume</em> nutrients.</p>
+      <p>Be aware of a subtlety, because it is the kind of thing a sharper question could turn on: the vessel
+      with the very highest nutrient load after a meal is the <b>hepatic portal vein</b>, which runs
+      <em>intestine → liver</em>. It was not on Allen's option list. If a future question offers it, it is the
+      better answer; among these four options, (1) is right.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>Transport in plants — two pipes, no pump</h2>
+    <p class="lede">A tall tree lifts water ten storeys with no heart, no muscle and no energy spent on the
+    lifting. Understanding <em>how</em> is worth several marks, because Allen asks about the mechanism, not
+    just the names.</p>
+
+    <p>Plants move two quite different cargoes and use a separate pipe system for each:</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>XYLEM</th><th>PHLOEM</th></tr></thead>
+      <tbody>
+        <tr><td><b>Carries</b></td><td>Water and dissolved minerals</td><td>Food — <b>sucrose</b> — and amino acids</td></tr>
+        <tr><td><b>From → to</b></td><td>Roots → stem → leaves, <b>upward only</b></td><td>Wherever food is made or stored → wherever it is needed: <b>both directions</b></td></tr>
+        <tr><td><b>Made of</b></td><td><b>Vessels</b> — dead and hollow, with their <b>end walls dissolved away</b>, so a file of them forms one continuous drainpipe: wide and fast. <b>Tracheids</b> — also dead and hollow, but <b>their end walls stay</b>, so water seeps from one to the next through thin, unthickened patches of wall called <b>pits</b>: narrower and slower. Also xylem fibres and xylem parenchyma, which do not conduct at all</td><td><b>Sieve tubes and companion cells</b> — living. Also phloem fibres and phloem parenchyma</td></tr>
+        <tr><td><b>Energy used</b></td><td><b>None on the lifting itself</b> — the water is pulled from above, not pushed from below. (Energy <em>is</em> spent at the root, pumping minerals in; that is what creates root pressure)</td><td><b>ATP is used</b> to load sucrose into the sieve tubes</td></tr>
+        <tr><td><b>The name of the process</b></td><td>Ascent of sap</td><td><b>Translocation</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 450' width='700' role='img' font-family='Inter,sans-serif' font-size='12'><defs><marker id='aox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--force)'/></marker><marker id='adox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--physics)'/></marker><marker id='abio' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bio)'/></marker><marker id='atxt' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bright)'/></marker><marker id='amut' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--muted)'/></marker></defs><rect x='60' y='308' width='260' height='108' rx='10' fill='var(--muted)' fill-opacity='0.14'/><text x='76' y='402' font-size='11' fill='var(--muted)' text-anchor='start' font-weight='normal'>soil</text><path d='M210,304 L156,384' stroke='var(--bio)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M210,304 L210,398' stroke='var(--bio)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M210,304 L266,388' stroke='var(--bio)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M196,334 L126,364' stroke='var(--bio)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M224,334 L292,364' stroke='var(--bio)' stroke-width='3' fill='none' stroke-linecap='round'/><line x1='156' y1='384' x2='138' y2='396' stroke='var(--bio)' stroke-width='1'/><line x1='156' y1='384' x2='147' y2='396' stroke='var(--bio)' stroke-width='1'/><line x1='156' y1='384' x2='156' y2='396' stroke='var(--bio)' stroke-width='1'/><line x1='156' y1='384' x2='165' y2='396' stroke='var(--bio)' stroke-width='1'/><line x1='156' y1='384' x2='174' y2='396' stroke='var(--bio)' stroke-width='1'/><line x1='210' y1='398' x2='192' y2='410' stroke='var(--bio)' stroke-width='1'/><line x1='210' y1='398' x2='201' y2='410' stroke='var(--bio)' stroke-width='1'/><line x1='210' y1='398' x2='210' y2='410' stroke='var(--bio)' stroke-width='1'/><line x1='210' y1='398' x2='219' y2='410' stroke='var(--bio)' stroke-width='1'/><line x1='210' y1='398' x2='228' y2='410' stroke='var(--bio)' stroke-width='1'/><line x1='266' y1='388' x2='248' y2='400' stroke='var(--bio)' stroke-width='1'/><line x1='266' y1='388' x2='257' y2='400' stroke='var(--bio)' stroke-width='1'/><line x1='266' y1='388' x2='266' y2='400' stroke='var(--bio)' stroke-width='1'/><line x1='266' y1='388' x2='275' y2='400' stroke='var(--bio)' stroke-width='1'/><line x1='266' y1='388' x2='284' y2='400' stroke='var(--bio)' stroke-width='1'/><line x1='126' y1='364' x2='108' y2='376' stroke='var(--bio)' stroke-width='1'/><line x1='126' y1='364' x2='117' y2='376' stroke='var(--bio)' stroke-width='1'/><line x1='126' y1='364' x2='126' y2='376' stroke='var(--bio)' stroke-width='1'/><line x1='126' y1='364' x2='135' y2='376' stroke='var(--bio)' stroke-width='1'/><line x1='126' y1='364' x2='144' y2='376' stroke='var(--bio)' stroke-width='1'/><line x1='292' y1='364' x2='274' y2='376' stroke='var(--bio)' stroke-width='1'/><line x1='292' y1='364' x2='283' y2='376' stroke='var(--bio)' stroke-width='1'/><line x1='292' y1='364' x2='292' y2='376' stroke='var(--bio)' stroke-width='1'/><line x1='292' y1='364' x2='301' y2='376' stroke='var(--bio)' stroke-width='1'/><line x1='292' y1='364' x2='310' y2='376' stroke='var(--bio)' stroke-width='1'/><path d='M210,92 C176,44 194,14 210,8 C226,14 246,44 210,92 Z' fill='var(--bio)' fill-opacity='0.32' stroke='var(--bio)'/><path d='M186,140 C146,96 92,104 72,140 C116,170 164,162 186,140 Z' fill='var(--bio)' fill-opacity='0.32' stroke='var(--bio)'/><path d='M186,232 C146,188 92,196 72,232 C116,262 164,254 186,232 Z' fill='var(--bio)' fill-opacity='0.32' stroke='var(--bio)'/><rect x='186' y='92' width='48' height='214' rx='6' fill='var(--bio)' fill-opacity='0.12' stroke='var(--bio)'/><rect x='192' y='98' width='14' height='202' rx='4' fill='var(--physics)' fill-opacity='0.35' stroke='var(--physics)'/><rect x='214' y='98' width='14' height='202' rx='4' fill='var(--bio)' fill-opacity='0.45' stroke='var(--bio)'/><path d='M199,286 L199,124' stroke='var(--physics)' stroke-width='2.5' marker-end='url(#adox)'/><path d='M221,150 L221,206' stroke='var(--bio)' stroke-width='2.5' marker-end='url(#abio)'/><path d='M221,268 L221,222' stroke='var(--bio)' stroke-width='2.5' marker-end='url(#abio)'/><path d='M96,100 q4,-9 0,-17 q-4,-9 0,-17' stroke='var(--physics)' stroke-width='1.6' fill='none' opacity='0.85'/><path d='M120,96 q4,-9 0,-17 q-4,-9 0,-17' stroke='var(--physics)' stroke-width='1.6' fill='none' opacity='0.85'/><path d='M96,192 q4,-9 0,-17 q-4,-9 0,-17' stroke='var(--physics)' stroke-width='1.6' fill='none' opacity='0.85'/><circle cx='120' cy='40' r='18' fill='none' stroke='var(--iq)' stroke-width='2'/><line x1='143.0' y1='40.0' x2='150.0' y2='40.0' stroke='var(--iq)' stroke-width='2'/><line x1='136.3' y1='56.3' x2='141.2' y2='61.2' stroke='var(--iq)' stroke-width='2'/><line x1='120.0' y1='63.0' x2='120.0' y2='70.0' stroke='var(--iq)' stroke-width='2'/><line x1='103.7' y1='56.3' x2='98.8' y2='61.2' stroke='var(--iq)' stroke-width='2'/><line x1='97.0' y1='40.0' x2='90.0' y2='40.0' stroke='var(--iq)' stroke-width='2'/><line x1='103.7' y1='23.7' x2='98.8' y2='18.8' stroke='var(--iq)' stroke-width='2'/><line x1='120.0' y1='17.0' x2='120.0' y2='10.0' stroke='var(--iq)' stroke-width='2'/><line x1='136.3' y1='23.7' x2='141.2' y2='18.8' stroke='var(--iq)' stroke-width='2'/><line x1='257' y1='36' x2='124' y2='74' stroke='var(--muted)' stroke-width='1'/><circle cx='124' cy='74' r='2.2' fill='var(--muted)'/><text x='262' y='40' font-size='11.5' fill='var(--physics)' text-anchor='start' font-weight='normal'>Transpiration — water vapour out through the stomata</text><text x='262' y='55' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>the suction it creates (transpiration pull) drags</text><text x='262' y='68' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>the whole water column up the xylem</text><line x1='257' y1='146' x2='206' y2='168' stroke='var(--muted)' stroke-width='1'/><circle cx='206' cy='168' r='2.2' fill='var(--muted)'/><text x='262' y='150' font-size='11.5' fill='var(--physics)' text-anchor='start' font-weight='normal'>XYLEM — water + dissolved minerals, UPWARD only</text><text x='262' y='165' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>dead and hollow: vessels (end walls dissolved) and</text><text x='262' y='178' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>tracheids (end walls stay, water seeps through pits)</text><text x='262' y='191' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>no energy spent on the lifting — it is pulled from above</text><line x1='257' y1='230' x2='228' y2='250' stroke='var(--muted)' stroke-width='1'/><circle cx='228' cy='250' r='2.2' fill='var(--muted)'/><text x='262' y='234' font-size='11.5' fill='var(--bio)' text-anchor='start' font-weight='normal'>PHLOEM — sucrose + amino acids, BOTH ways</text><text x='262' y='249' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>living: sieve tubes + companion cells</text><text x='262' y='262' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>translocation USES ATP: source → sink</text><line x1='335' y1='326' x2='292' y2='370' stroke='var(--muted)' stroke-width='1'/><circle cx='292' cy='370' r='2.2' fill='var(--muted)'/><text x='340' y='330' font-size='11.5' fill='var(--bio)' text-anchor='start' font-weight='normal'>Root hairs — minerals in actively,</text><text x='340' y='345' font-size='11.5' fill='var(--bio)' text-anchor='start' font-weight='normal'>water follows by osmosis</text><text x='340' y='360' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>root pressure then pushes it into the xylem —</text><text x='340' y='373' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>it matters at night, when the stomata are shut</text><text x='340' y='386' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>and there is no pull from above</text><circle cx='596' cy='410' r='30' fill='var(--bio)' fill-opacity='0.12' stroke='var(--bio)'/><circle cx='596' cy='410' r='20' fill='var(--bio)' fill-opacity='0.38' stroke='var(--bio)'/><circle cx='596' cy='410' r='10' fill='var(--physics)' fill-opacity='0.4' stroke='var(--physics)'/><text x='452' y='406' font-size='10.5' fill='var(--muted)' text-anchor='end' font-weight='normal'>the stem cut across:</text><text x='452' y='420' font-size='10.5' fill='var(--muted)' text-anchor='end' font-weight='normal'>xylem inside, phloem outside</text><line x1='456' y1='412' x2='562' y2='412' stroke='var(--muted)' stroke-width='1'/></svg><figcaption><b>Figure 4 — the two pipe systems.</b> Water in blue goes one way, up. Food in green goes both
+    ways. In a stem cut across, the xylem sits inside and the phloem outside.</figcaption></figure>
+
+    <h3>How water gets to the top — the two forces</h3>
+    <div class="steps">
+      <div class="step"><span class="tag">at the root, mostly at night</span><b>Root pressure.</b> Root hair cells actively pump mineral ions in from the soil, which makes the cell contents more concentrated than the soil water — so water follows in by <b>osmosis</b>. More and more water pushing in creates a real pressure that shoves water up into the xylem. On its own this only lifts water a short way, and it matters most at night, when the leaves are not pulling.</div>
+      <div class="step"><span class="tag">at the leaf, all day</span><b>Transpiration pull.</b> Water evaporates from the leaves and escapes through the stomata. Every molecule that leaves tugs the next one along, because water molecules stick to each other — so an unbroken thread of water is dragged all the way up from the roots. <b>This is the main force</b>, and it costs the plant nothing: the sun does the work.</div>
+    </div>
+
+    <div class="box def">
+      <h4>Transpiration</h4>
+      <p><b>Transpiration</b> is the loss of water vapour from a plant, mainly through the stomata of leaves.
+      It sounds wasteful, and most of the water a plant absorbs does leave this way — but it buys three
+      things: the <b>pull</b> that lifts the whole water column, a <b>delivery service</b> for minerals (they
+      ride up in that stream), and <b>cooling</b>, exactly as sweat cools you.</p>
+      <p>Hence Allen's Sample Q34: in which plant is there <b>no</b> transpiration? In one that is
+      <b>completely submerged</b> — under water there is nowhere for vapour to go. Desert, rainforest and
+      hill plants all transpire; the desert one is built to lose as little as it can — thick waxy cuticle, few
+      and sunken stomata — and that is the trap, but <em>little</em> is not <em>none</em>.</p>
+    </div>
+
+    <figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 230' width='720' role='img' font-family='Inter,sans-serif' font-size='12'><defs><marker id='aox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--force)'/></marker><marker id='adox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--physics)'/></marker><marker id='abio' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bio)'/></marker><marker id='atxt' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bright)'/></marker><marker id='amut' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--muted)'/></marker></defs><path d='M240,48 C219,72 219,120 240,144 C261,120 261,72 240,48 Z' fill='var(--surface2)' stroke='var(--bio)' stroke-width='1' stroke-dasharray='3 3'/><path d='M240,48 C219,72 219,120 240,144 C189,130 189,62 240,48 Z' fill='var(--bio)' fill-opacity='0.3' stroke='var(--bio)' stroke-width='1.5'/><path d='M240,48 C219,72 219,120 240,144' fill='none' stroke='var(--bio)' stroke-width='4.5'/><circle cx='213.0' cy='72' r='3.2' fill='var(--bio)'/><circle cx='213.0' cy='94' r='3.2' fill='var(--bio)'/><circle cx='213.0' cy='116' r='3.2' fill='var(--bio)'/><path d='M240,48 C261,72 261,120 240,144 C291,130 291,62 240,48 Z' fill='var(--bio)' fill-opacity='0.3' stroke='var(--bio)' stroke-width='1.5'/><path d='M240,48 C261,72 261,120 240,144' fill='none' stroke='var(--bio)' stroke-width='4.5'/><circle cx='267.0' cy='72' r='3.2' fill='var(--bio)'/><circle cx='267.0' cy='94' r='3.2' fill='var(--bio)'/><circle cx='267.0' cy='116' r='3.2' fill='var(--bio)'/><path d='M566,48 C566,72 566,120 566,144 C540,130 540,62 566,48 Z' fill='var(--bio)' fill-opacity='0.3' stroke='var(--bio)' stroke-width='1.5'/><path d='M566,48 C566,72 566,120 566,144' fill='none' stroke='var(--bio)' stroke-width='4.5'/><circle cx='551.7' cy='72' r='3.2' fill='var(--bio)'/><circle cx='551.7' cy='94' r='3.2' fill='var(--bio)'/><circle cx='551.7' cy='116' r='3.2' fill='var(--bio)'/><path d='M566,48 C566,72 566,120 566,144 C592,130 592,62 566,48 Z' fill='var(--bio)' fill-opacity='0.3' stroke='var(--bio)' stroke-width='1.5'/><path d='M566,48 C566,72 566,120 566,144' fill='none' stroke='var(--bio)' stroke-width='4.5'/><circle cx='580.3' cy='72' r='3.2' fill='var(--bio)'/><circle cx='580.3' cy='94' r='3.2' fill='var(--bio)'/><circle cx='580.3' cy='116' r='3.2' fill='var(--bio)'/><text x='240' y='174' font-size='12' fill='var(--bright)' text-anchor='middle' font-weight='bold'>OPEN — guard cells turgid (swollen)</text><text x='240' y='192' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>water in → the thin outer wall stretches more than the</text><text x='240' y='206' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>thick inner one → the cells bow apart → pore opens (day)</text><text x='566' y='174' font-size='12' fill='var(--bright)' text-anchor='middle' font-weight='bold'>CLOSED — guard cells flaccid (limp)</text><text x='566' y='192' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>water out → the cells straighten → pore shuts</text><text x='566' y='206' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>(night, and in drought — water is saved)</text><line x1='145' y1='48' x2='224' y2='96' stroke='var(--muted)' stroke-width='1'/><circle cx='224' cy='96' r='2.2' fill='var(--muted)'/><text x='140' y='52' font-size='11' fill='var(--text)' text-anchor='end' font-weight='normal'>thick inner wall</text><line x1='145' y1='70' x2='202' y2='96' stroke='var(--muted)' stroke-width='1'/><circle cx='202' cy='96' r='2.2' fill='var(--muted)'/><text x='140' y='74' font-size='11' fill='var(--text)' text-anchor='end' font-weight='normal'>thin outer wall</text><line x1='145' y1='92' x2='213' y2='94' stroke='var(--muted)' stroke-width='1'/><circle cx='213' cy='94' r='2.2' fill='var(--muted)'/><text x='140' y='96' font-size='11' fill='var(--text)' text-anchor='end' font-weight='normal'>chloroplast</text><line x1='145' y1='114' x2='240' y2='96' stroke='var(--muted)' stroke-width='1'/><circle cx='240' cy='96' r='2.2' fill='var(--muted)'/><text x='140' y='118' font-size='11' fill='var(--text)' text-anchor='end' font-weight='normal'>pore (the stoma itself)</text><text x='566' y='30' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>one stoma, seen from the leaf surface</text></svg><figcaption><b>Figure 5 — one stoma, open and closed.</b> A stoma is a pore between two bean-shaped
+    <b>guard cells</b>. Their inner walls (facing the pore) are thick and stiff; their outer walls are thin.
+    When water flows in the cells swell, the thin outer wall stretches more than the stiff inner one, so each
+    cell bows outwards and the pore opens. Lose the water and the cells straighten and the pore shuts.</figcaption></figure>
+
+    <p>Allen printed three statements about stomata and asked which are correct (2018-S Q33). In his order:
+    <b>I — transpiration and gas exchange both happen mainly through the stomata</b> ✓;
+    <b>II — "the cell wall of guard cells is homogeneous"</b> ✗, because it is <em>not</em> uniform, and that
+    unevenness (thick inside, thin outside) is precisely what makes the pore work;
+    <b>III — guard cells are bean-shaped in dicot plants</b> ✓ (in grasses and other monocots they are
+    dumb-bell shaped, which is why he wrote "in dicots"). So the answer is <b>only I and III</b>.</p>
+
+    <h3>Translocation — food moves both ways</h3>
+    <p>The leaf makes sugar. But the root, a growing bud, a developing fruit and a potato tuber all need it,
+    and they are in different directions. So phloem cannot be one-way. The rule is:</p>
+    <div class="box def">
+      <h4>Source → sink</h4>
+      <p>A <b>source</b> is anywhere food is made or released (usually a leaf; in spring, a storage root).
+      A <b>sink</b> is anywhere food is used or stored (a growing tip, a fruit, a root). <b>Translocation always
+      moves food from source to sink</b> — which can be up the plant in spring and down it in summer.</p>
+      <p>How it works: sucrose is loaded into the sieve tube <b>using energy from ATP</b>. That makes the
+      contents of the sieve tube concentrated, so water rushes in by osmosis, and the extra water builds up
+      pressure inside the tube. The contents are then pushed along from the high-pressure end towards the
+      low-pressure end, where the sucrose is being removed. NCERT puts it in one sentence: "Material like sucrose is
+      transferred into phloem tissue using energy from ATP. This increases the osmotic pressure of the tissue
+      causing water to move into it. This pressure moves the material in the phloem to tissues which have less
+      pressure." Allen's own wording for the same idea — the one he credits as correct in 2024-U Q41 — is that
+      soluble material is transferred "from high osmotic pressure to low osmotic pressure areas".</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Three translocation traps, all of which Allen has actually printed</h4>
+      <ul>
+        <li><b>"from sink to source"</b> — backwards; it is source to sink. This was statement 1 of 2024-U
+        Q41 — but that item needs care, because <b>Allen counts two of its three statements false</b> and the
+        key is "only statement 3 is correct". Statement 2 reads "translocation… occurs with the consumption of
+        ATP <em>which takes place in the companion cell with the help of sieve tube</em>", and Allen marks it
+        wrong: the ATP is not in dispute, the roles are. NCERT's sentence runs the other way round — the transfer
+        takes place <em>in the sieve tubes, with the help of the adjacent companion cells</em> — so <b>the food
+        travels in the sieve tube and the companion cell is the helper</b>, and Allen's statement has the two
+        swapped.
+        Statement 3, the one Allen credits, is the osmotic-pressure sentence above. The lesson: judge each
+        statement on its own, and never assume one is correct just because a clause of it (here, "uses ATP")
+        is.</li>
+        <li><b>"transport of glucose into the phloem"</b> — the sugar in phloem is <b>sucrose</b>, not glucose,
+        not starch, not fructose. Asked twice, word for word: Sample Q36 and 2024-A Q40.</li>
+        <li><b>"tracheids and vessels"</b> vs "sieve tubes" — the ascent of sap is <em>xylem</em>, so the
+        answer is tracheids and vessels (2024-U Q40). And when the question names <b><em>Pinus</em> or
+        <em>Cycas</em></b> — cone-bearing plants (gymnosperms), which <b>have no vessels at all</b> and manage
+        with tracheids only — the answer narrows to <b>tracheids</b> alone (2024-A Q41). That is the one place
+        the difference between the two xylem elements has mattered, so keep it straight: <em>vessels lose their
+        end walls, tracheids keep theirs.</em></li>
+      </ul>
+    </div>
+
+    <div class="box exam">
+      <h4>The red-water experiment (2017-E Q33)</h4>
+      <p>A white flower stands in red-dyed water; hours later the petals and leaves are tinged red, and cutting
+      the stem shows red <em>tubes</em> inside. What does it show? Not that the plant is alive, not that water
+      goes only to the flower — it shows that <b>water is carried from the roots to all parts of the plant
+      through the stem</b>, in specific tubes. Option (4). The dye is a tracer: it makes the xylem visible.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">7</span>Excretion — the word, and what actually counts</h2>
+    <p class="lede">Excretion has a narrower meaning in biology than in ordinary speech, and one Allen question
+    turns entirely on that.</p>
+
+    <div class="box def">
+      <h4>Excretion</h4>
+      <p><b>Excretion is the removal of the harmful or surplus products of the body's own chemistry.</b> Two
+      things matter: it is <em>waste or excess</em> (not something useful being stored), and it comes from
+      <em>the body's own chemistry</em> (not from food that was never absorbed in the first place). "Surplus"
+      is in there because excess water and excess salt are excreted too, and neither is a poison — you simply
+      have more of them than you need.</p>
+      <p>So undigested food leaving as faeces is <b>egestion</b>, not excretion — it was never part of your
+      chemistry. And glycogen and fat are not excreted at all: they are <b>stores</b>, saved for later.</p>
+    </div>
+
+    <p>That is exactly 2018-S Q38: of glycogen, fats, urea and carbon dioxide, which must be eliminated? Only
+    <b>urea and carbon dioxide</b> — option (3). Glycogen and fat are the body's savings account.</p>
+
+    <h3>Where the nitrogen waste comes from — and where it is made</h3>
+    <p>Your body can store extra sugar and extra fat, but it cannot store extra protein. Surplus amino acids
+    are therefore broken down, and that breakdown releases <b>ammonia</b>, which is very poisonous. The
+    <b>liver</b> immediately converts ammonia into the far safer <b>urea</b>, and dumps the urea into the
+    blood. The kidney's job is only to take it out again.</p>
+
+    <div class="box trap">
+      <h4>Urea is MADE in the liver and REMOVED by the kidney</h4>
+      <p>Sample Q35 asks "urea is mainly formed in ___" and the answer is <b>the liver</b>, not the kidney.
+      Getting this backwards is the single most common error in the topic. The sentence to keep: <b>the liver
+      makes it, the blood carries it, the kidney removes it, the bladder stores it.</b></p>
+    </div>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Organ</th><th>What it excretes</th></tr></thead>
+      <tbody>
+        <tr><td><b>Kidneys</b></td><td>Urea, excess water, excess salts — as urine. The main excretory organs</td></tr>
+        <tr><td><b>Lungs</b></td><td><b>Carbon dioxide</b>, and some water vapour. Yes — breathing out is excretion</td></tr>
+        <tr><td><b>Skin</b></td><td>Sweat: water, salts, a little urea. Its main job is cooling, excretion is a side effect</td></tr>
+        <tr><td><b>Liver</b></td><td>Bile pigments, from broken-down red cells — they leave with the faeces</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">8</span>The kidney and the nephron — three steps, one great trick</h2>
+    <p class="lede">This is the densest figure in the topic and the one Allen letters most often. Take the
+    overview first, then the close-up.</p>
+
+    <figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 460' width='760' role='img' font-family='Inter,sans-serif' font-size='12'><defs><marker id='aox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--force)'/></marker><marker id='adox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--physics)'/></marker><marker id='abio' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bio)'/></marker><marker id='atxt' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bright)'/></marker><marker id='amut' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--muted)'/></marker></defs><path d='M330,20 L330,300' fill='none' stroke='var(--muted)' stroke-width='18' stroke-linejoin='round'/><path d='M330,20 L330,300' fill='none' stroke='var(--force)' stroke-width='14' stroke-linejoin='round' opacity='0.85'/><path d='M356,20 L356,300' fill='none' stroke='var(--muted)' stroke-width='18' stroke-linejoin='round'/><path d='M356,20 L356,300' fill='none' stroke='var(--physics)' stroke-width='14' stroke-linejoin='round' opacity='0.85'/><path d='M278,140 C204,140 204,280 278,280 C318,278 322,240 282,212 C322,182 318,142 278,140 Z' fill='var(--bio)' fill-opacity='0.25' stroke='var(--bio)' stroke-width='2'/><path d='M408,140 C482,140 482,280 408,280 C368,278 364,240 404,212 C364,182 368,142 408,140 Z' fill='var(--bio)' fill-opacity='0.25' stroke='var(--bio)' stroke-width='2'/><path d='M330,180 L284,180' fill='none' stroke='var(--muted)' stroke-width='13' stroke-linejoin='round'/><path d='M330,180 L284,180' fill='none' stroke='var(--force)' stroke-width='9' stroke-linejoin='round' opacity='0.85'/><path d='M356,206 L284,206' fill='none' stroke='var(--muted)' stroke-width='13' stroke-linejoin='round'/><path d='M356,206 L284,206' fill='none' stroke='var(--physics)' stroke-width='9' stroke-linejoin='round' opacity='0.85'/><path d='M330,180 L402,180' fill='none' stroke='var(--muted)' stroke-width='13' stroke-linejoin='round'/><path d='M330,180 L402,180' fill='none' stroke='var(--force)' stroke-width='9' stroke-linejoin='round' opacity='0.85'/><path d='M356,206 L402,206' fill='none' stroke='var(--muted)' stroke-width='13' stroke-linejoin='round'/><path d='M356,206 L402,206' fill='none' stroke='var(--physics)' stroke-width='9' stroke-linejoin='round' opacity='0.85'/><path d='M284,222 Q276,300 336,352' fill='none' stroke='var(--muted)' stroke-width='11' stroke-linejoin='round'/><path d='M284,222 Q276,300 336,352' fill='none' stroke='var(--bio)' stroke-width='7' stroke-linejoin='round' opacity='0.85'/><path d='M402,222 Q410,300 350,352' fill='none' stroke='var(--muted)' stroke-width='11' stroke-linejoin='round'/><path d='M402,222 Q410,300 350,352' fill='none' stroke='var(--bio)' stroke-width='7' stroke-linejoin='round' opacity='0.85'/><ellipse cx='343' cy='372' rx='48' ry='28' fill='var(--bio)' fill-opacity='0.22' stroke='var(--bio)' stroke-width='2'/><path d='M343,398 L343,430' fill='none' stroke='var(--muted)' stroke-width='12' stroke-linejoin='round'/><path d='M343,398 L343,430' fill='none' stroke='var(--bio)' stroke-width='8' stroke-linejoin='round' opacity='0.85'/><line x1='301' y1='12' x2='330' y2='30' stroke='var(--muted)' stroke-width='1'/><circle cx='330' cy='30' r='2.2' fill='var(--muted)'/><text x='296' y='16' font-size='11.5' fill='var(--force)' text-anchor='end' font-weight='normal'>Aorta</text><line x1='387' y1='12' x2='356' y2='30' stroke='var(--muted)' stroke-width='1'/><circle cx='356' cy='30' r='2.2' fill='var(--muted)'/><text x='392' y='16' font-size='11.5' fill='var(--physics)' text-anchor='start' font-weight='normal'>Vena cava</text><line x1='278' y1='40' x2='240' y2='170' stroke='var(--muted)' stroke-width='1'/><circle cx='240' cy='170' r='2.2' fill='var(--muted)'/><text x='16' y='44' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Kidney — one on either side of the backbone</text><text x='16' y='59' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>dark red, bean-shaped, about 10 cm long;</text><text x='16' y='72' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>the notch on the inner side is where the</text><text x='16' y='85' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>vessels and the ureter join it</text><line x1='290' y1='98' x2='310' y2='180' stroke='var(--muted)' stroke-width='1'/><circle cx='310' cy='180' r='2.2' fill='var(--muted)'/><text x='16' y='102' font-size='11.5' fill='var(--force)' text-anchor='start' font-weight='normal'>Renal artery — blood in, with the body’s urea</text><line x1='212' y1='113' x2='318' y2='206' stroke='var(--muted)' stroke-width='1'/><circle cx='318' cy='206' r='2.2' fill='var(--muted)'/><text x='16' y='117' font-size='11.5' fill='var(--physics)' text-anchor='start' font-weight='normal'>Renal vein — blood out, carrying</text><text x='16' y='130' font-size='11.5' fill='var(--physics)' text-anchor='start' font-weight='normal'>the least urea of any vein in the</text><text x='16' y='145' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>body: the kidney just cleaned it</text><line x1='224' y1='326' x2='282' y2='270' stroke='var(--muted)' stroke-width='1'/><circle cx='282' cy='270' r='2.2' fill='var(--muted)'/><text x='16' y='330' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Ureter — urine down to the bladder</text><text x='16' y='345' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>a muscular tube: urine is pushed</text><text x='16' y='358' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>along it, not dripped</text><line x1='224' y1='382' x2='298' y2='372' stroke='var(--muted)' stroke-width='1'/><circle cx='298' cy='372' r='2.2' fill='var(--muted)'/><text x='16' y='386' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Urinary bladder — stores the urine</text><text x='16' y='401' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>muscular and under nervous control — which is why</text><text x='16' y='414' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>the urge to go can be held for a while</text><line x1='435' y1='424' x2='349' y2='424' stroke='var(--muted)' stroke-width='1'/><circle cx='349' cy='424' r='2.2' fill='var(--muted)'/><text x='440' y='428' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Urethra — urine leaves the body</text><text x='520' y='180' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>Each kidney holds about</text><text x='520' y='194' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>a MILLION nephrons —</text><text x='520' y='208' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>the filter on the next</text><text x='520' y='222' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>figure. Blood is cleaned</text><text x='520' y='236' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>there, not in the bladder.</text></svg><figcaption><b>Figure 6 — the human excretory system.</b> Two kidneys, one ureter from each, one bladder,
+    one urethra. Blood arrives dirty through the renal artery and leaves clean through the renal vein.</figcaption></figure>
+
+    <p>Each kidney holds about <b>a million</b> microscopic filters called <b>nephrons</b> — the structural and
+    functional unit of the kidney, in the same way that the neuron is the unit of the nervous system. Everything
+    below happens in one nephron, a million times over, in each kidney.</p>
+
+    <figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 492' width='760' role='img' font-family='Inter,sans-serif' font-size='12'><defs><marker id='aox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--force)'/></marker><marker id='adox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--physics)'/></marker><marker id='abio' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bio)'/></marker><marker id='atxt' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bright)'/></marker><marker id='amut' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--muted)'/></marker></defs><path d='M204,106 A64,64 0 1 1 204,186' fill='var(--bio)' fill-opacity='0.10' stroke='var(--bio)' stroke-width='4'/><circle cx='250' cy='146' r='36' fill='var(--force)' fill-opacity='0.13'/><polyline points='276.0,146.0 279.6,148.4 282.3,151.2 283.4,154.2 282.6,156.9 280.1,158.9 276.3,160.0 271.9,160.1 267.6,159.6 264.0,158.8 261.4,158.5 259.9,159.0 259.2,160.6 258.8,163.5 258.4,167.2 257.3,171.1 255.5,174.7 253.0,177.2 250.0,178.1 247.0,177.2 244.5,174.7 242.7,171.1 241.6,167.2 241.2,163.5 240.8,160.6 240.1,159.0 238.6,158.5 236.0,158.8 232.4,159.6 228.1,160.1 223.7,160.0 219.9,158.9 217.4,156.9 216.6,154.2 217.7,151.2 220.4,148.4 224.0,146.0 227.8,144.2 231.1,142.9 233.1,141.8 233.7,140.6 233.0,138.7 231.3,136.1 229.3,132.7 227.8,128.8 227.2,125.0 227.9,121.8 230.0,119.8 233.2,119.2 236.9,120.1 240.6,122.2 243.9,124.9 246.5,127.6 248.4,129.5 250.0,130.2 251.6,129.5 253.5,127.6 256.1,124.9 259.4,122.2 263.1,120.1 266.8,119.2 270.0,119.8 272.1,121.8 272.8,125.0 272.2,128.8 270.7,132.7 268.7,136.1 267.0,138.7 266.3,140.6 266.9,141.8 268.9,142.9 272.2,144.2 276.0,146.0' fill='none' stroke='var(--force)' stroke-width='2.6' opacity='0.9'/><polyline points='276.1,146.0 276.7,148.1 275.9,150.2 273.7,151.8 270.7,152.9 267.3,153.4 264.1,153.5 261.7,153.5 260.2,153.8 259.6,154.8 259.7,156.6 260.0,159.2 260.2,162.2 259.8,165.3 258.7,168.0 256.9,169.7 254.6,170.1 252.2,169.2 250.0,167.2 248.2,164.5 247.0,161.7 246.1,159.3 245.4,157.7 244.4,157.1 242.9,157.4 240.6,158.4 237.7,159.5 234.4,160.4 231.1,160.6 228.5,159.9 226.8,158.3 226.4,156.1 227.4,153.6 229.3,151.1 231.8,149.0 234.2,147.3 236.1,146.0 236.8,144.9 236.5,143.8 235.1,142.3 233.1,140.3 231.0,137.9 229.5,135.1 228.9,132.4 229.5,130.2 231.3,128.8 233.9,128.4 237.1,129.0 240.2,130.4 242.9,132.0 245.0,133.4 246.5,134.1 247.7,133.9 248.7,132.6 250.0,130.4 251.7,127.9 253.9,125.5 256.5,123.7 259.1,123.1 261.3,123.7 262.9,125.5 263.5,128.2 263.4,131.3 262.7,134.4 261.8,136.9 261.2,138.8 261.4,139.9 262.7,140.6 265.0,141.0 268.0,141.6 271.2,142.6 274.1,144.1 276.1,146.0' fill='none' stroke='var(--force)' stroke-width='2.6' opacity='0.9'/><polyline points='267.8,146.0 266.2,147.3 264.1,148.3 261.9,148.9 259.9,149.3 258.6,149.7 258.0,150.3 258.1,151.2 258.7,152.7 259.4,154.6 259.8,156.8 259.8,158.9 259.2,160.6 257.9,161.6 256.3,161.8 254.4,161.1 252.6,159.7 251.1,158.0 250.0,156.3 249.1,155.0 248.4,154.4 247.5,154.5 246.3,155.2 244.7,156.4 242.7,157.6 240.6,158.4 238.5,158.6 236.8,158.2 235.8,157.0 235.6,155.3 236.2,153.3 237.4,151.4 238.8,149.7 240.1,148.5 240.8,147.5 240.7,146.7 239.8,146.0 238.3,145.1 236.5,143.8 234.8,142.3 233.6,140.5 233.2,138.8 233.8,137.4 235.2,136.5 237.2,136.1 239.6,136.4 241.8,137.1 243.8,137.8 245.2,138.3 246.1,138.3 246.7,137.6 247.2,136.2 247.8,134.4 248.7,132.3 250.0,130.5 251.6,129.4 253.3,129.0 254.8,129.6 255.9,131.0 256.6,133.0 256.7,135.2 256.6,137.3 256.5,138.9 256.6,140.0 257.2,140.4 258.5,140.5 260.5,140.4 262.8,140.5 265.1,140.9 267.1,141.8 268.3,143.0 268.6,144.5 267.8,146.0' fill='none' stroke='var(--force)' stroke-width='2.6' opacity='0.9'/><path d='M116,130 L222,132' fill='none' stroke='var(--muted)' stroke-width='15' stroke-linejoin='round'/><path d='M116,130 L222,132' fill='none' stroke='var(--force)' stroke-width='11' stroke-linejoin='round' opacity='0.85'/><path d='M222,162 L116,164' fill='none' stroke='var(--muted)' stroke-width='10' stroke-linejoin='round'/><path d='M222,162 L116,164' fill='none' stroke='var(--force)' stroke-width='6' stroke-linejoin='round' opacity='0.85'/><path d='M134,130 L192,131' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><path d='M202,163 L144,164' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><path d='M268,192 C282,214 246,224 256,244 C266,264 296,254 301,274 C306,294 276,302 286,320 L286,338 L344,338 L344,352' fill='none' stroke='var(--muted)' stroke-width='17' stroke-linejoin='round' stroke-linecap='round'/><path d='M268,192 C282,214 246,224 256,244 C266,264 296,254 301,274 C306,294 276,302 286,320 L286,338 L344,338 L344,352' fill='none' stroke='var(--bio)' stroke-width='13' stroke-linejoin='round' stroke-linecap='round' opacity='0.9'/><path d='M344,352 L344,436 L362,436' fill='none' stroke='var(--muted)' stroke-width='11' stroke-linejoin='round' stroke-linecap='round'/><path d='M344,352 L344,436 L362,436' fill='none' stroke='var(--bio)' stroke-width='7' stroke-linejoin='round' stroke-linecap='round' opacity='0.9'/><path d='M362,436 L376,436 L376,338 L434,338 C434,308 466,314 474,294 C482,274 456,260 466,244 C476,226 504,234 504,214 L504,200 L562,200' fill='none' stroke='var(--muted)' stroke-width='17' stroke-linejoin='round' stroke-linecap='round'/><path d='M362,436 L376,436 L376,338 L434,338 C434,308 466,314 474,294 C482,274 456,260 466,244 C476,226 504,234 504,214 L504,200 L562,200' fill='none' stroke='var(--bio)' stroke-width='13' stroke-linejoin='round' stroke-linecap='round' opacity='0.9'/><path d='M150,166 C158,196 186,204 216,212 C246,220 236,244 258,256 C288,272 268,296 296,310 C328,326 306,352 320,380 C330,402 350,420 372,410 C398,398 386,360 404,344 C428,322 412,298 438,284 C466,268 458,240 482,232 C498,226 508,242 512,262' fill='none' stroke='var(--force)' stroke-width='3' opacity='0.75' stroke-linecap='round'/><path d='M512,262 C524,274 536,278 550,276' fill='none' stroke='var(--physics)' stroke-width='5' opacity='0.8'/><path d='M570,40 L570,452' fill='none' stroke='var(--muted)' stroke-width='22' stroke-linejoin='round'/><path d='M570,40 L570,452' fill='none' stroke='var(--bio)' stroke-width='18' stroke-linejoin='round' opacity='0.85'/><path d='M570,372 L570,438' stroke='var(--bright)' stroke-width='1.5' marker-end='url(#atxt)'/><path d='M296,338 L330,338' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><path d='M390,338 L422,338' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><path d='M514,200 L554,200' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><line x1='253' y1='36' x2='246' y2='86' stroke='var(--muted)' stroke-width='1'/><circle cx='246' cy='86' r='2.2' fill='var(--muted)'/><text x='152' y='40' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Bowman's capsule</text><line x1='176' y1='258' x2='270' y2='268' stroke='var(--muted)' stroke-width='1'/><circle cx='270' cy='268' r='2.2' fill='var(--muted)'/><text x='16' y='262' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Proximal convoluted tubule</text><line x1='360' y1='458' x2='360' y2='440' stroke='var(--muted)' stroke-width='1'/><circle cx='360' cy='440' r='2.2' fill='var(--muted)'/><text x='360' y='462' font-size='11.5' fill='var(--text)' text-anchor='middle' font-weight='normal'>Loop of Henle</text><line x1='399' y1='164' x2='470' y2='268' stroke='var(--muted)' stroke-width='1'/><circle cx='470' cy='268' r='2.2' fill='var(--muted)'/><text x='548' y='168' font-size='11.5' fill='var(--text)' text-anchor='end' font-weight='normal'>Distal convoluted tubule</text><line x1='611' y1='116' x2='572' y2='120' stroke='var(--muted)' stroke-width='1'/><circle cx='572' cy='120' r='2.2' fill='var(--muted)'/><text x='616' y='120' font-size='11.5' fill='var(--text)' text-anchor='start' font-weight='normal'>Collecting duct</text><line x1='325' y1='62' x2='252' y2='132' stroke='var(--muted)' stroke-width='1'/><circle cx='252' cy='132' r='2.2' fill='var(--muted)'/><text x='330' y='66' font-size='11.5' fill='var(--force)' text-anchor='start' font-weight='normal'>Glomerulus</text><text x='330' y='81' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>a knot of capillaries</text><text x='330' y='94' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>under high pressure</text><line x1='164' y1='106' x2='150' y2='130' stroke='var(--muted)' stroke-width='1'/><circle cx='150' cy='130' r='2.2' fill='var(--muted)'/><text x='16' y='110' font-size='11' fill='var(--force)' text-anchor='start' font-weight='normal'>Afferent arteriole — WIDE</text><line x1='175' y1='188' x2='150' y2='164' stroke='var(--muted)' stroke-width='1'/><circle cx='150' cy='164' r='2.2' fill='var(--muted)'/><text x='16' y='192' font-size='11' fill='var(--force)' text-anchor='start' font-weight='normal'>Efferent arteriole — NARROW</text><text x='16' y='207' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>wide in, narrow out → pressure</text><text x='16' y='220' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>builds up inside the knot →</text><text x='16' y='233' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>water and small solutes are</text><text x='16' y='246' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>squeezed out: FILTRATION</text><text x='16' y='277' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>takes back glucose, amino acids,</text><text x='16' y='290' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>salts and most of the water</text><text x='16' y='303' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>(~70–80 %), by ACTIVE</text><text x='16' y='316' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>transport and osmosis</text><text x='548' y='140' font-size='10.5' fill='var(--muted)' text-anchor='end' font-weight='normal'>fine tuning: ions and pH;</text><text x='548' y='153' font-size='10.5' fill='var(--muted)' text-anchor='end' font-weight='normal'>water under ADH</text><text x='616' y='136' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>still more water taken</text><text x='616' y='149' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>back under ADH; what</text><text x='616' y='162' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>is left is urine → ureter</text><text x='16' y='424' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>thin descending limb, thick ascending limb:</text><text x='16' y='437' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>the thick one pumps salt out, making the</text><text x='16' y='450' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>medulla — the kidney’s inner layer — salty.</text><text x='16' y='463' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>That is what lets the collecting duct pull</text><text x='16' y='476' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>yet more water out of the urine.</text><text x='570' y='28' font-size='10' fill='var(--muted)' text-anchor='middle' font-weight='normal'>from other nephrons</text><line x1='204' y1='336' x2='300' y2='314' stroke='var(--muted)' stroke-width='1'/><circle cx='300' cy='314' r='2.2' fill='var(--muted)'/><text x='16' y='340' font-size='11' fill='var(--force)' text-anchor='start' font-weight='normal'>The capillaries round the tubule</text><line x1='587' y1='297' x2='548' y2='277' stroke='var(--muted)' stroke-width='1'/><circle cx='548' cy='277' r='2.2' fill='var(--muted)'/><text x='592' y='300' font-size='10.5' fill='var(--physics)' text-anchor='start' font-weight='normal'>and on to the renal vein</text><text x='16' y='355' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>everything reabsorbed goes back</text><text x='16' y='368' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>into this blood — it is where the</text><text x='16' y='381' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>efferent arteriole goes next, and</text><text x='16' y='394' font-size='10' fill='var(--muted)' text-anchor='start' font-weight='normal'>it drains into the renal vein</text></svg><figcaption><b>Figure 7 — one nephron.</b> Blood comes in at the left under pressure, gets squeezed in the
+    capsule, and the filtrate then travels the length of the green tubule while the useful parts are taken back
+    out of it. What still remains at the far right is urine.</figcaption></figure>
+
+    <div class="steps">
+      <div class="step"><span class="tag">step 1 · ultrafiltration · in the glomerulus</span>The artery branch entering the capsule (the <b>afferent arteriole</b>) is <b>wider</b> than the one leaving it (the <b>efferent arteriole</b>). Squeezing the same blood out through a narrower exit builds up high pressure inside the capillary knot, the <b>glomerulus</b>. That pressure forces water and every small dissolved thing — glucose, amino acids, salts, <b>and the urea</b> — straight out through the capillary wall into the cup around it, <b>Bowman's capsule</b>. (The capsule and the glomerulus together are the <b>renal corpuscle</b> — Allen's name for the filtering unit when he sets a match-the-following, as in 2017-E Q43.) Blood cells and plasma proteins are too big and stay behind. The liquid collected is the <b>glomerular filtrate</b>, and about <b>180 litres</b> of it is made every day. It is a physical squeeze — no energy is spent and nothing is chosen.</div>
+      <div class="step"><span class="tag">step 2 · selective reabsorption · along the tubule</span>180 litres is roughly forty buckets, and it contains all your glucose. Clearly almost everything must come back. Back into <em>what</em>, though? The efferent arteriole does not simply leave: it breaks up into a net of capillaries that wraps round the whole length of the tubule, and everything reabsorbed passes into that blood, which drains onward into the renal vein. (That is why the renal vein carries the least urea of any vein — it is taking back everything worth keeping and none of the waste.) As the filtrate flows along the tubule, the body takes back what it wants:<br>• <b>Proximal convoluted tubule (PCT)</b> — <b>all</b> the glucose, <b>all</b> the amino acids, most of the salts and about <b>70–80 % of the water</b>. This is where most reabsorption happens, and it needs energy: glucose is pulled back by <b>active transport</b>, water follows by osmosis.<br>• <b>Loop of Henle</b> — the long U-shaped dip into the kidney's inner layer. It pumps salt out into the surrounding tissue, making that tissue very salty — which is what later lets the collecting duct pull yet more water out of the urine. Allen describes its effect as the <b>counter-current mechanism</b> that <em>maintains the concentration gradient in the medulla</em>, and describes the loop itself simply as <b>"the U-shaped portion of the tubule"</b>.<br>• <b>Distal convoluted tubule (DCT)</b> — fine tuning: <b>ionic balance</b> and acidity.<br>• <b>Collecting duct</b> — the last chance to take water back, controlled by a hormone (step 4).</div>
+      <div class="step"><span class="tag">step 3 · tubular secretion</span>The reverse of reabsorption: a few unwanted things still left in the blood of those surrounding capillaries — extra potassium ions, extra hydrogen ions, some drugs — are actively <b>added</b> into the tubule. This is how the kidney fine-tunes the blood's composition rather than only filtering it.</div>
+      <div class="step"><span class="tag">step 4 · how much water to keep · ADH</span>If you are short of water, the pituitary gland releases more <b>ADH</b> (antidiuretic hormone, also called <b>vasopressin</b> — it is made in the hypothalamus just above the pituitary, and released by the pituitary). ADH makes the DCT and the collecting duct take back <b>more</b> water — so the urine is small in volume and concentrated. Drink a lot of water and ADH falls, less is reabsorbed, and you produce a lot of dilute urine.</div>
+      <div class="step"><span class="tag">step 5 · out</span>What is left — water, urea, excess salts — is <b>urine</b>. Out of the 180 litres filtered, NCERT says "the volume actually excreted is only <b>a litre or two a day</b>" — which means roughly <b>99 % of the water was taken back</b>. It trickles down the <b>ureter</b> to the <b>urinary bladder</b>, which is muscular and under nervous control — which is why the urge can be held — and leaves through the <b>urethra</b>.</div>
+    </div>
+
+    <div class="box why">
+      <h4>Why filter everything and then take almost all of it back?</h4>
+      <p>It looks absurdly wasteful, and it is the question that shows whether you have understood the kidney.
+      The answer: <b>filtering is blind but easy; choosing is hard but precise.</b> A blind squeeze needs no
+      machinery to recognise anything — it just pushes out everything small, including whatever new poison you
+      swallowed this morning that the body has never met before. Then the body brings back a short, fixed list
+      of things it knows it wants: glucose, amino acids, salt, water. Anything not on the list — urea, drugs,
+      excess salt — is left behind and leaves. It is far safer than trying to recognise every possible waste.</p>
+    </div>
+
+    <div class="box exam">
+      <h4>ADH in one line — 2017-E Q38</h4>
+      <p>"What will happen if ADH secretion increases?" More ADH → more water reabsorbed → <b>the volume of
+      urine decreases</b>. Option (2). The letter A in ADH is <em>anti</em>-diuretic, and a diuretic is
+      something that makes you produce more urine — so ADH is the anti-more-urine hormone.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Renin is not rennin, and a nephron is not a neuron</h4>
+      <p><b>Renin</b> (one n in the middle) is a substance <b>produced in the kidney</b> that helps control
+      blood pressure — 2018-S Q43's answer. <b>Rennin</b> (two n's) is a digestive enzyme in the stomach of
+      young mammals that curdles milk. The same question offered <b>ADH</b> (released by the pituitary, and only
+      <em>acting</em> on the kidney) and <b>aldosterone</b> (from the adrenal gland) as the other two traps —
+      both hormones that work on the kidney but are not <em>made</em> there.</p>
+      <p>And 2024-U Q45's incorrect statement is "each kidney has large numbers of filtration units called
+      <b>neurons</b>" — which is NCERT's own sentence, "each kidney has large numbers of these filtration units
+      called <b>nephrons</b>", with one letter changed. Nephron = kidney. Neuron = nerve. Allen asked for the neuron by name in the sample paper
+      and then planted it as the wrong word in a kidney question a year later.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">9</span>When the kidneys fail — dialysis</h2>
+    <p class="lede">Allen has asked this once, as a photograph: <em>a person sits beside a machine with tubes
+    of blood running into it — name the procedure.</em> The answer is haemodialysis, and it is worth knowing
+    how the machine differs from a real kidney, because that is the obvious next question.</p>
+
+    <figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 660 300' width='660' role='img' font-family='Inter,sans-serif' font-size='12'><defs><marker id='aox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--force)'/></marker><marker id='adox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--physics)'/></marker><marker id='abio' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bio)'/></marker><marker id='atxt' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bright)'/></marker><marker id='amut' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--muted)'/></marker></defs><rect x='24' y='72' width='86' height='120' rx='14' fill='var(--surface2)' stroke='var(--muted)'/><text x='67' y='126' font-size='12' fill='var(--bright)' text-anchor='middle' font-weight='bold'>PATIENT</text><text x='67' y='144' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>arm</text><rect x='262' y='52' width='230' height='166' rx='10' fill='var(--physics)' fill-opacity='0.08' stroke='var(--muted)'/><text x='377' y='40' font-size='11.5' fill='var(--bright)' text-anchor='middle' font-weight='bold'>TANK of dialysing fluid</text><path d='M276,82 L302,162 L328,82 L354,162 L380,82 L406,162 L432,82 L458,162' fill='none' stroke='var(--muted)' stroke-width='13' stroke-linejoin='round'/><path d='M276,82 L302,162 L328,82 L354,162 L380,82 L406,162 L432,82 L458,162' fill='none' stroke='var(--force)' stroke-width='8' stroke-linejoin='round' opacity='0.9'/><path d='M110,100 L176,100 L176,82 L276,82' fill='none' stroke='var(--muted)' stroke-width='12' stroke-linejoin='round'/><path d='M110,100 L176,100 L176,82 L276,82' fill='none' stroke='var(--force)' stroke-width='8' stroke-linejoin='round' opacity='0.85'/><path d='M458,162 L502,162 L502,232 L176,232 L176,162 L110,162' fill='none' stroke='var(--muted)' stroke-width='12' stroke-linejoin='round'/><path d='M458,162 L502,162 L502,232 L176,232 L176,162 L110,162' fill='none' stroke='var(--physics)' stroke-width='8' stroke-linejoin='round' opacity='0.85'/><circle cx='176' cy='100' r='15' fill='var(--surface2)' stroke='var(--muted)' stroke-width='2'/><text x='176' y='104' font-size='9' fill='var(--text)' text-anchor='middle' font-weight='normal'>pump</text><path d='M120,100 L154,100' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><path d='M320,232 L220,232' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><path d='M534,66 L500,66' stroke='var(--physics)' stroke-width='3' marker-end='url(#adox)'/><text x='538' y='70' font-size='10.5' fill='var(--physics)' text-anchor='start' font-weight='normal'>fresh fluid in</text><path d='M500,200 L534,200' stroke='var(--muted)' stroke-width='3' marker-end='url(#amut)'/><text x='538' y='204' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>used fluid out,</text><text x='538' y='217' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>carrying the urea</text><path d='M316,120 L332,132' stroke='var(--bio)' stroke-width='1.6' marker-end='url(#abio)'/><path d='M368,120 L384,132' stroke='var(--bio)' stroke-width='1.6' marker-end='url(#abio)'/><path d='M420,120 L436,132' stroke='var(--bio)' stroke-width='1.6' marker-end='url(#abio)'/><text x='377' y='186' font-size='10' fill='var(--bio)' text-anchor='middle' font-weight='normal'>urea diffuses OUT (high → low)</text><text x='118' y='60' font-size='10' fill='var(--force)' text-anchor='start' font-weight='normal'>from an artery</text><text x='196' y='254' font-size='10' fill='var(--physics)' text-anchor='start' font-weight='normal'>back into a vein</text><text x='330' y='278' font-size='9.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>Tubes of semi-permeable membrane. The fluid has the same glucose and salts as blood but NO nitrogenous waste,</text><text x='330' y='292' font-size='9.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>so urea leaves and useful things do not. There is no reabsorption step — that is what makes it a machine, not a kidney.</text></svg><figcaption><b>Figure 8 — an artificial kidney (dialysis machine).</b> Blood is drawn from an artery,
+    pumped through coiled tubes of semi-permeable membrane sitting in a tank of dialysing fluid, and returned
+    to a vein.</figcaption></figure>
+
+    <p>The trick is the <b>dialysing fluid</b>. It is made with <b>the same concentration of glucose and salts
+    as normal blood, but with no nitrogenous waste in it at all</b>. So across the membrane:</p>
+    <ul>
+      <li><b>Urea</b> — plenty in the blood, none in the fluid — <b>diffuses out</b> down its concentration
+      gradient and is carried away.</li>
+      <li><b>Glucose and salts</b> — equal on both sides — have no gradient, so on balance they <b>stay</b>.</li>
+    </ul>
+    <p>That is the whole design: choose the fluid so that only the waste has anywhere to go. 2024-U Q45 states
+    it as a fact you are expected to accept — "dialysing fluid has the same osmotic pressure as blood, except
+    that it is devoid of nitrogenous wastes."</p>
+
+    <div class="box trap">
+      <h4>A machine is not a kidney</h4>
+      <p>The one difference worth a mark, and NCERT says it in as many words — dialysis "is similar to the
+      function of the kidney, but it is different since there is no re-absorption involved": <b>there is no
+      reabsorption step.</b> A nephron filters everything out
+      and then carefully brings the useful things back. A dialysis machine never lets the useful things leave in
+      the first place — it has no way of choosing, so it relies on the fluid's composition instead. It also
+      makes no hormones, which a kidney does.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">10</span>Excretion in plants — the lazy version</h2>
+    <p class="lede">Short section, occasionally worth a mark, and it makes a nice contrast with the elaborate
+    human kidney.</p>
+    <p>Plants have no kidney, no blood and no urine — and they need none, because their waste problem is far
+    smaller and they are in no hurry. Their methods:</p>
+    <ul>
+      <li><b>Oxygen</b> — a waste product of photosynthesis, and simply diffuses out of the stomata.</li>
+      <li><b>Carbon dioxide</b> from respiration — out through the stomata too (and much of it is re-used by
+      photosynthesis during the day).</li>
+      <li><b>Excess water</b> — lost by <b>transpiration</b>, the same process that lifts the water column.</li>
+      <li><b>Other wastes</b> — stored rather than removed: in the <b>vacuoles</b> of cells, as resins and gums
+      in old xylem (the dark heartwood in the middle of a tree trunk), or shunted into <b>leaves that are about
+      to fall off</b>. Some waste is released straight into the soil around the roots.</li>
+    </ul>
+    <p>The principle to carry away: <b>a plant can afford to store its waste rather than remove it.</b> It
+    makes nitrogenous waste far more slowly than an animal does — it does not eat protein — and nothing inside
+    it has to move quickly, so there is never any hurry to clear anything out of the way.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">11</span>Fact bank — the whole unit on one screen</h2>
+    <p class="lede">Everything above, in the form the paper will use it. Cover the right-hand side and test
+    yourself the night before.</p>
+    <div class="bank">
+      <div class="fx"><div class="eq">Right = used, Left = fresh</div><div class="wh">Right side of the heart carries <b>deoxygenated</b> blood, left side <b>oxygenated</b>; the septum keeps them apart</div></div>
+      <div class="fx"><div class="eq">Artery = away, Vein = towards</div><div class="wh">Defined by <b>direction</b>, never by oxygen. Exceptions: <b>pulmonary artery</b> (deoxygenated), <b>pulmonary veins</b> (oxygenated)</div></div>
+      <div class="fx"><div class="eq">Double circulation = 2</div><div class="wh">Blood passes through the heart <b>twice</b> in one complete round — lung loop and body loop. Fish: once (single)</div></div>
+      <div class="fx"><div class="eq">Thickest wall = left ventricle</div><div class="wh">Because it pumps to the whole body; the right ventricle only reaches the lungs</div></div>
+      <div class="fx"><div class="eq">Pressure ladder</div><div class="wh">aorta &gt; arteries &gt; capillaries &gt; veins &gt; vena cava. It only ever falls</div></div>
+      <div class="fx"><div class="eq">120 / 80 mm Hg · ~72 beats/min</div><div class="wh">Systolic / diastolic, measured in a large artery. Systole = contraction, diastole = relaxation</div></div>
+      <div class="fx"><div class="eq">Exchange happens only in capillaries</div><div class="wh">Wall <b>one cell thick</b>; arteries and veins are only plumbing</div></div>
+      <div class="fx"><div class="eq">Valves = veins only</div><div class="wh">Low pressure needs a no-backflow device; arteries do not need one (heart valves are separate)</div></div>
+      <div class="fx"><div class="eq">Plasma carries urea</div><div class="wh">RBC ↔ oxygen (haemoglobin) · lymphocytes ↔ immunity · thrombocytes ↔ clotting · lymph ↔ drains tissue fluid back</div></div>
+      <div class="fx"><div class="eq">Xylem: up only, no energy</div><div class="wh"><b>Vessels</b> (end walls gone) + <b>tracheids</b> (end walls kept, water through pits), both dead. Water and minerals. <em>Pinus</em>/<em>Cycas</em>: tracheids only</div></div>
+      <div class="fx"><div class="eq">Phloem: both ways, uses ATP</div><div class="wh"><b>Sieve tubes + companion cells</b>, living. <b>Sucrose</b>, source → sink. Called <b>translocation</b></div></div>
+      <div class="fx"><div class="eq">Transpiration pull &gt; root pressure</div><div class="wh">The pull from evaporating leaves is the main lifting force by day; root pressure matters at night</div></div>
+      <div class="fx"><div class="eq">Turgid guard cells = open stoma</div><div class="wh">Thick inner wall + thin outer wall makes the cells bow apart. Submerged plant = <b>no</b> transpiration</div></div>
+      <div class="fx"><div class="eq">Urea: liver makes, kidney removes</div><div class="wh">From surplus amino acids, via ammonia. Excreted: urea, CO₂, excess salts/water. <b>Not</b> glycogen or fat</div></div>
+      <div class="fx"><div class="eq">Nephron = 1 million per kidney</div><div class="wh">The structural and functional unit of the kidney. <b>Neuron</b> is the nerve one</div></div>
+      <div class="fx"><div class="eq">180 L filtered → a litre or two of urine</div><div class="wh">About <b>99 %</b> of the water goes back. NCERT's own wording: the initial filtrate is "about 180 L daily", of which "the volume actually excreted is only <b>a litre or two a day</b>". Filtration is blind; reabsorption is selective</div></div>
+      <div class="fx"><div class="eq">Reabsorbed → the capillaries round the tubule</div><div class="wh">The efferent arteriole becomes that net; it drains to the renal vein, which is why that vein has the least urea</div></div>
+      <div class="fx"><div class="eq">Wide in, narrow out = pressure</div><div class="wh">Afferent arteriole wider than efferent → high pressure in the glomerulus → <b>ultrafiltration</b></div></div>
+      <div class="fx"><div class="eq">PCT does most of it</div><div class="wh">All glucose, all amino acids, 70–80 % of water and electrolytes. Loop of Henle: water + NaCl, makes the medulla salty</div></div>
+      <div class="fx"><div class="eq">More ADH → less urine</div><div class="wh">ADH (vasopressin) is released by the pituitary and acts on DCT + collecting duct. <b>Renin</b> is made in the kidney</div></div>
+      <div class="fx"><div class="eq">Dialysis fluid = blood minus waste</div><div class="wh">Same glucose and salts, <b>no</b> nitrogenous waste — so only urea has a gradient. <b>No reabsorption step</b></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">12</span>The trap wall — every wrong word Allen has actually printed</h2>
+    <p class="lede">Each row is a real distractor from a cached paper, or the exact confusion one is built on.
+    In this unit the marks are lost on words, not on biology.</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>The trap</th><th>What is actually true</th><th>Where it appeared</th></tr></thead>
+      <tbody>
+        <tr><td>"filtration units called <b>neurons</b>"</td><td><b>Nephrons</b>. A neuron is a nerve cell</td><td>2024-U Q45 (the incorrect statement)</td></tr>
+        <tr><td><b>Rennin</b> is produced in the kidney</td><td><b>Renin</b> is. Rennin is a milk-curdling enzyme in the stomach</td><td>2018-S Q43</td></tr>
+        <tr><td>Phloem moves food <b>sink → source</b></td><td><b>Source → sink</b></td><td>2024-U Q41, statement 1</td></tr>
+        <tr><td>Phloem carries <b>glucose</b> (or starch, or fructose)</td><td><b>Sucrose</b></td><td>Sample Q36 and 2024-A Q40, verbatim twins</td></tr>
+        <tr><td>Urea is made in the <b>kidney</b></td><td>Made in the <b>liver</b>; the kidney only removes it</td><td>Sample Q35</td></tr>
+        <tr><td>The heart <b>filters</b> blood as well as pumping it</td><td>The kidney filters. One organ, one job</td><td>2024-U Q42, student 1</td></tr>
+        <tr><td>Veins have a <b>narrow lumen and no valves</b></td><td>Wide lumen, <b>and</b> valves</td><td>2024-U Q42, student 5</td></tr>
+        <tr><td>A capillary wall is <b>thicker</b> than a vein's</td><td>One cell thick — the thinnest in the body</td><td>2024-U Q42, student 6</td></tr>
+        <tr><td>Guard-cell walls are <b>homogeneous</b></td><td>Thick on the inner side, thin on the outer — that is what opens the pore</td><td>2018-S Q33, statement II</td></tr>
+        <tr><td>Putting <b>glycogen</b> on the list of things to be eliminated</td><td>Glycogen and fat are <b>stores</b>. Excreted: urea and CO₂ — two of 2018-S Q38's three wrong options pair glycogen with one of them</td><td>2018-S Q38</td></tr>
+        <tr><td>A desert plant has <b>no</b> transpiration</td><td>It has the <em>least</em> of the options — only a <b>fully submerged</b> plant has none</td><td>Sample Q34</td></tr>
+        <tr><td>Swapping <b>B and C</b> on a nephron figure</td><td>The <b>glomerulus</b> is the knot of capillaries; <b>Bowman's capsule</b> is the cup around it</td><td>2024-U Q35 — options (1) and (3) differ only in this swap</td></tr>
+        <tr><td>Swapping <b>thrombocytes and lymphocytes</b></td><td>Thrombo → clot. Lympho → immunity</td><td>2017-E Q34</td></tr>
+        <tr><td>Reading the heart figure's left side as "left"</td><td>The heart faces you: its <b>left</b> is drawn on <b>your right</b></td><td>2024-U Q38, 2024-A Q38, Sample Q32</td></tr>
+        <tr><td>ADH increases → <b>more</b> urine</td><td><b>Less.</b> Anti-diuretic = anti-more-urine</td><td>2017-E Q38</td></tr>
+        <tr><td>Dialysis fluid <b>reabsorbs</b> the useful substances back</td><td>There is no reabsorption step — the fluid already contains them, so they have no gradient to leave down</td><td>Not printed as a distractor: it is the confusion behind worked question 8. 2024-U Q45's statement 2 is the <em>true</em> line it distorts</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">13</span>Eight worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">Try each one before opening the working, and give yourself <b>90 seconds</b> — the real
+    paper's average. The elimination reasoning is written out every time, because on the day, ruling two
+    options out is worth almost as much as knowing the answer.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">2024-A Q38 / Sample Q32 machine, relettered · ~90 seconds</span></div>
+      <p>In the heart below, which of the lettered parts contain <b>oxygenated</b> blood?</p>
+      <figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 470' width='700' role='img' font-family='Inter,sans-serif' font-size='12'><defs><marker id='aox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--force)'/></marker><marker id='adox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--physics)'/></marker><marker id='abio' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bio)'/></marker><marker id='atxt' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bright)'/></marker><marker id='amut' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--muted)'/></marker></defs><path d='M152,446 L152,196 L196,196' fill='none' stroke='var(--muted)' stroke-width='24' stroke-linejoin='round'/><path d='M152,446 L152,196 L196,196' fill='none' stroke='var(--physics)' stroke-width='20' stroke-linejoin='round' opacity='0.85'/><path d='M214,34 L214,140' fill='none' stroke='var(--muted)' stroke-width='24' stroke-linejoin='round'/><path d='M214,34 L214,140' fill='none' stroke='var(--physics)' stroke-width='20' stroke-linejoin='round' opacity='0.85'/><rect x='180' y='128' width='82' height='98' rx='20' fill='var(--physics)' fill-opacity='0.16' stroke='var(--physics)' stroke-width='2'/><rect x='190' y='246' width='98' height='136' rx='20' fill='var(--physics)' fill-opacity='0.16' stroke='var(--physics)' stroke-width='2.5'/><rect x='348' y='128' width='82' height='98' rx='20' fill='var(--force)' fill-opacity='0.16' stroke='var(--force)' stroke-width='2'/><rect x='318' y='246' width='106' height='152' rx='20' fill='var(--force)' fill-opacity='0.16' stroke='var(--force)' stroke-width='5.5'/><rect x='294' y='140' width='18' height='250' rx='6' fill='var(--muted)' opacity='0.5'/><path d='M215,228 L226,243 M245,228 L234,243' stroke='var(--physics)' stroke-width='2.5' fill='none'/><path d='M357,228 L368,243 M387,228 L376,243' stroke='var(--force)' stroke-width='2.5' fill='none'/><path d='M566,176 L420,176' fill='none' stroke='var(--muted)' stroke-width='19' stroke-linejoin='round'/><path d='M566,176 L420,176' fill='none' stroke='var(--force)' stroke-width='15' stroke-linejoin='round' opacity='0.85'/><path d='M566,208 L420,208' fill='none' stroke='var(--muted)' stroke-width='19' stroke-linejoin='round'/><path d='M566,208 L420,208' fill='none' stroke='var(--force)' stroke-width='15' stroke-linejoin='round' opacity='0.85'/><path d='M277,254 L277,26' fill='none' stroke='var(--muted)' stroke-width='23' stroke-linejoin='round'/><path d='M277,254 L277,26' fill='none' stroke='var(--physics)' stroke-width='19' stroke-linejoin='round' opacity='0.85'/><path d='M330,254 L330,92 Q330,38 382,38 L520,38 Q552,38 552,70 L552,150' fill='none' stroke='var(--muted)' stroke-width='25' stroke-linejoin='round'/><path d='M330,254 L330,92 Q330,38 382,38 L520,38 Q552,38 552,70 L552,150' fill='none' stroke='var(--force)' stroke-width='21' stroke-linejoin='round' opacity='0.85'/><path d='M400,40 L400,12' fill='none' stroke='var(--muted)' stroke-width='14' stroke-linejoin='round'/><path d='M400,40 L400,12' fill='none' stroke='var(--force)' stroke-width='10' stroke-linejoin='round' opacity='0.85'/><path d='M440,40 L440,12' fill='none' stroke='var(--muted)' stroke-width='14' stroke-linejoin='round'/><path d='M440,40 L440,12' fill='none' stroke='var(--force)' stroke-width='10' stroke-linejoin='round' opacity='0.85'/><path d='M480,40 L480,12' fill='none' stroke='var(--muted)' stroke-width='14' stroke-linejoin='round'/><path d='M480,40 L480,12' fill='none' stroke='var(--force)' stroke-width='10' stroke-linejoin='round' opacity='0.85'/><path d='M214,162 L214,214' stroke='var(--bright)' stroke-width='1.6' marker-end='url(#atxt)'/><path d='M228,352 L268,272' stroke='var(--bright)' stroke-width='1.6' fill='none' marker-end='url(#atxt)'/><path d='M388,162 L388,214' stroke='var(--bright)' stroke-width='1.6' marker-end='url(#atxt)'/><path d='M382,358 L340,274' stroke='var(--bright)' stroke-width='1.6' fill='none' marker-end='url(#atxt)'/><path d='M214,56 L214,110' stroke='var(--bright)' stroke-width='1.4' marker-end='url(#atxt)'/><path d='M152,420 L152,300' stroke='var(--bright)' stroke-width='1.4' marker-end='url(#atxt)'/><path d='M277,120 L277,44' stroke='var(--bright)' stroke-width='1.4' marker-end='url(#atxt)'/><path d='M420,38 L510,38' stroke='var(--bright)' stroke-width='1.4' marker-end='url(#atxt)'/><path d='M546,208 L450,208' stroke='var(--bright)' stroke-width='1.4' marker-end='url(#atxt)'/><line x1='28' y1='114' x2='214' y2='118' stroke='var(--muted)' stroke-width='1'/><circle cx='214' cy='118' r='2.2' fill='var(--muted)'/><text x='16' y='118' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>C</text><line x1='28' y1='396' x2='152' y2='392' stroke='var(--muted)' stroke-width='1'/><circle cx='152' cy='392' r='2.2' fill='var(--muted)'/><text x='16' y='400' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>G</text><line x1='28' y1='154' x2='200' y2='152' stroke='var(--muted)' stroke-width='1'/><circle cx='200' cy='152' r='2.2' fill='var(--muted)'/><text x='16' y='158' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>D</text><line x1='28' y1='326' x2='210' y2='330' stroke='var(--muted)' stroke-width='1'/><circle cx='210' cy='330' r='2.2' fill='var(--muted)'/><text x='16' y='330' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>H</text><line x1='251' y1='16' x2='277' y2='34' stroke='var(--muted)' stroke-width='1'/><circle cx='277' cy='34' r='2.2' fill='var(--muted)'/><text x='246' y='20' font-size='13' fill='var(--text)' text-anchor='end' font-weight='bold'>B</text><line x1='595' y1='96' x2='552' y2='100' stroke='var(--muted)' stroke-width='1'/><circle cx='552' cy='100' r='2.2' fill='var(--muted)'/><text x='600' y='100' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>A</text><line x1='591' y1='246' x2='560' y2='208' stroke='var(--muted)' stroke-width='1'/><circle cx='560' cy='208' r='2.2' fill='var(--muted)'/><text x='596' y='250' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>F</text><line x1='465' y1='124' x2='418' y2='150' stroke='var(--muted)' stroke-width='1'/><circle cx='418' cy='150' r='2.2' fill='var(--muted)'/><text x='470' y='128' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>E</text><line x1='465' y1='396' x2='410' y2='372' stroke='var(--muted)' stroke-width='1'/><circle cx='410' cy='372' r='2.2' fill='var(--muted)'/><text x='470' y='400' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>I</text><text x='350' y='462' font-size='10.5' fill='var(--muted)' text-anchor='middle' font-weight='normal'>Label-the-figure is the commonest biology question format Allen uses.</text></svg></figure><div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>A, E, F and I</div>
+        <div class="we-opt"><span class="ob">2</span>A, B, E and I</div>
+        <div class="we-opt"><span class="ob">3</span>B, C, D, G and H</div>
+        <div class="we-opt"><span class="ob">4</span>E, F and I only</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — name the letters.</b> A is the big arched vessel leaving the lower chamber on the
+        <em>right of the drawing</em> — which, because the heart faces you, is the heart's own <b>left</b>
+        ventricle. So A is the <b>aorta</b>. B rises from the other lower chamber and heads off to the lungs: the <b>pulmonary
+        artery</b>. C comes down from above and G comes up from below into the same upper chamber: the
+        <b>superior</b> and <b>inferior vena cava</b>. D is that upper chamber, the <b>right atrium</b>; H is the
+        chamber beneath it, the <b>right ventricle</b>. F is the pair of vessels entering the other upper
+        chamber from the side: the <b>pulmonary veins</b>. E is that chamber, the <b>left atrium</b>, and I is
+        the thick-walled one beneath it, the <b>left ventricle</b>.</p>
+        <p><b>Step 2 — sort them.</b> Oxygenated blood exists only from the lungs onwards: pulmonary veins (F)
+        → left atrium (E) → left ventricle (I) → aorta (A). Everything else — B, C, D, G, H — is carrying used
+        blood back towards the lungs. So the answer is <b>A, E, F and I</b>, option (1).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2) A, B, E and I</b> — the "all arteries carry oxygenated blood" rule: it swaps the pulmonary
+        artery (B) in and the pulmonary veins (F) out. Allen's own printings of this question do not letter
+        the pulmonary artery at all, so this distractor is one this page adds — because that rule is exactly
+        the misconception the two exceptions exist to break.
+        <b>(3) B, C, D, G and H</b> — the complete <em>de</em>oxygenated set: the answer to the opposite
+        question, offered to catch a misread stem.
+        <b>(4) E, F and I only</b> — the left side of the heart correctly identified, but the aorta forgotten
+        because it is a vessel rather than a chamber.
+        <b>Elimination.</b> The two exceptions do most of the work: any option containing B is wrong, and any
+        option missing F is wrong, which kills (2) and (3) at sight. Option (4) survives both rules — it falls
+        to the third thing to remember, that the answer is not only chambers: <b>A, the aorta, is carrying
+        oxygenated blood too.</b> Two rules and one extra check, instead of nine letters examined one by
+        one.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">a two-step journey · ~2 minutes</span></div>
+      <p>A molecule of urea is made in a liver cell and enters the blood there. Before it is filtered out in a
+      kidney, <b>how many heart chambers</b> does it pass through, and which vessel is it in <b>immediately
+      before</b> it reaches the kidney?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>2 chambers; renal vein</div>
+        <div class="we-opt key"><span class="ob">2</span>4 chambers; renal artery</div>
+        <div class="we-opt"><span class="ob">3</span>4 chambers; renal vein</div>
+        <div class="we-opt"><span class="ob">4</span>2 chambers; renal artery</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — trace it.</b> Liver → hepatic vein → inferior vena cava → <b>right atrium</b> →
+        <b>right ventricle</b> → pulmonary artery → lungs (a lung can only excrete something that leaves as a
+        <em>gas</em>, and urea is a dissolved solid, so it sails straight through) → pulmonary veins → <b>left atrium</b> → <b>left ventricle</b> → aorta → renal
+        artery → the kidney.</p>
+        <p><b>Step 2 — count and name.</b> Four chambers, in that order, and the last vessel before the kidney
+        is the <b>renal artery</b> — blood going <em>in</em>. Option (2).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1) and (4), "2 chambers"</b> — forgetting that the blood must go through the lungs first. There is
+        no shortcut from a vein to an artery: everything arriving in the right atrium is sent to the lungs
+        before it can be pumped to any organ. That is the whole point of double circulation.
+        <b>(1) and (3), "renal vein"</b> — the renal vein carries blood <em>away</em> from the kidney, and it
+        is the one with the <em>least</em> urea in the body. Naming it here reverses the direction.
+        <b>Elimination.</b> Answer the vessel half first: "before it reaches the kidney" must be an artery, so
+        (1) and (3) die instantly and the count decides the rest.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">2024-A Q45 / Sample Q41 machine, relettered · ~90 seconds</span></div>
+      <p>In the nephron below, in which lettered part is <b>glucose</b> reabsorbed, and in which is the
+      <b>last</b> water taken back under the control of ADH?</p>
+      <figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 492' width='760' role='img' font-family='Inter,sans-serif' font-size='12'><defs><marker id='aox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--force)'/></marker><marker id='adox' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--physics)'/></marker><marker id='abio' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bio)'/></marker><marker id='atxt' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--bright)'/></marker><marker id='amut' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='var(--muted)'/></marker></defs><path d='M204,106 A64,64 0 1 1 204,186' fill='var(--bio)' fill-opacity='0.10' stroke='var(--bio)' stroke-width='4'/><circle cx='250' cy='146' r='36' fill='var(--force)' fill-opacity='0.13'/><polyline points='276.0,146.0 279.6,148.4 282.3,151.2 283.4,154.2 282.6,156.9 280.1,158.9 276.3,160.0 271.9,160.1 267.6,159.6 264.0,158.8 261.4,158.5 259.9,159.0 259.2,160.6 258.8,163.5 258.4,167.2 257.3,171.1 255.5,174.7 253.0,177.2 250.0,178.1 247.0,177.2 244.5,174.7 242.7,171.1 241.6,167.2 241.2,163.5 240.8,160.6 240.1,159.0 238.6,158.5 236.0,158.8 232.4,159.6 228.1,160.1 223.7,160.0 219.9,158.9 217.4,156.9 216.6,154.2 217.7,151.2 220.4,148.4 224.0,146.0 227.8,144.2 231.1,142.9 233.1,141.8 233.7,140.6 233.0,138.7 231.3,136.1 229.3,132.7 227.8,128.8 227.2,125.0 227.9,121.8 230.0,119.8 233.2,119.2 236.9,120.1 240.6,122.2 243.9,124.9 246.5,127.6 248.4,129.5 250.0,130.2 251.6,129.5 253.5,127.6 256.1,124.9 259.4,122.2 263.1,120.1 266.8,119.2 270.0,119.8 272.1,121.8 272.8,125.0 272.2,128.8 270.7,132.7 268.7,136.1 267.0,138.7 266.3,140.6 266.9,141.8 268.9,142.9 272.2,144.2 276.0,146.0' fill='none' stroke='var(--force)' stroke-width='2.6' opacity='0.9'/><polyline points='276.1,146.0 276.7,148.1 275.9,150.2 273.7,151.8 270.7,152.9 267.3,153.4 264.1,153.5 261.7,153.5 260.2,153.8 259.6,154.8 259.7,156.6 260.0,159.2 260.2,162.2 259.8,165.3 258.7,168.0 256.9,169.7 254.6,170.1 252.2,169.2 250.0,167.2 248.2,164.5 247.0,161.7 246.1,159.3 245.4,157.7 244.4,157.1 242.9,157.4 240.6,158.4 237.7,159.5 234.4,160.4 231.1,160.6 228.5,159.9 226.8,158.3 226.4,156.1 227.4,153.6 229.3,151.1 231.8,149.0 234.2,147.3 236.1,146.0 236.8,144.9 236.5,143.8 235.1,142.3 233.1,140.3 231.0,137.9 229.5,135.1 228.9,132.4 229.5,130.2 231.3,128.8 233.9,128.4 237.1,129.0 240.2,130.4 242.9,132.0 245.0,133.4 246.5,134.1 247.7,133.9 248.7,132.6 250.0,130.4 251.7,127.9 253.9,125.5 256.5,123.7 259.1,123.1 261.3,123.7 262.9,125.5 263.5,128.2 263.4,131.3 262.7,134.4 261.8,136.9 261.2,138.8 261.4,139.9 262.7,140.6 265.0,141.0 268.0,141.6 271.2,142.6 274.1,144.1 276.1,146.0' fill='none' stroke='var(--force)' stroke-width='2.6' opacity='0.9'/><polyline points='267.8,146.0 266.2,147.3 264.1,148.3 261.9,148.9 259.9,149.3 258.6,149.7 258.0,150.3 258.1,151.2 258.7,152.7 259.4,154.6 259.8,156.8 259.8,158.9 259.2,160.6 257.9,161.6 256.3,161.8 254.4,161.1 252.6,159.7 251.1,158.0 250.0,156.3 249.1,155.0 248.4,154.4 247.5,154.5 246.3,155.2 244.7,156.4 242.7,157.6 240.6,158.4 238.5,158.6 236.8,158.2 235.8,157.0 235.6,155.3 236.2,153.3 237.4,151.4 238.8,149.7 240.1,148.5 240.8,147.5 240.7,146.7 239.8,146.0 238.3,145.1 236.5,143.8 234.8,142.3 233.6,140.5 233.2,138.8 233.8,137.4 235.2,136.5 237.2,136.1 239.6,136.4 241.8,137.1 243.8,137.8 245.2,138.3 246.1,138.3 246.7,137.6 247.2,136.2 247.8,134.4 248.7,132.3 250.0,130.5 251.6,129.4 253.3,129.0 254.8,129.6 255.9,131.0 256.6,133.0 256.7,135.2 256.6,137.3 256.5,138.9 256.6,140.0 257.2,140.4 258.5,140.5 260.5,140.4 262.8,140.5 265.1,140.9 267.1,141.8 268.3,143.0 268.6,144.5 267.8,146.0' fill='none' stroke='var(--force)' stroke-width='2.6' opacity='0.9'/><path d='M116,130 L222,132' fill='none' stroke='var(--muted)' stroke-width='15' stroke-linejoin='round'/><path d='M116,130 L222,132' fill='none' stroke='var(--force)' stroke-width='11' stroke-linejoin='round' opacity='0.85'/><path d='M222,162 L116,164' fill='none' stroke='var(--muted)' stroke-width='10' stroke-linejoin='round'/><path d='M222,162 L116,164' fill='none' stroke='var(--force)' stroke-width='6' stroke-linejoin='round' opacity='0.85'/><path d='M134,130 L192,131' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><path d='M202,163 L144,164' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><path d='M268,192 C282,214 246,224 256,244 C266,264 296,254 301,274 C306,294 276,302 286,320 L286,338 L344,338 L344,352' fill='none' stroke='var(--muted)' stroke-width='17' stroke-linejoin='round' stroke-linecap='round'/><path d='M268,192 C282,214 246,224 256,244 C266,264 296,254 301,274 C306,294 276,302 286,320 L286,338 L344,338 L344,352' fill='none' stroke='var(--bio)' stroke-width='13' stroke-linejoin='round' stroke-linecap='round' opacity='0.9'/><path d='M344,352 L344,436 L362,436' fill='none' stroke='var(--muted)' stroke-width='11' stroke-linejoin='round' stroke-linecap='round'/><path d='M344,352 L344,436 L362,436' fill='none' stroke='var(--bio)' stroke-width='7' stroke-linejoin='round' stroke-linecap='round' opacity='0.9'/><path d='M362,436 L376,436 L376,338 L434,338 C434,308 466,314 474,294 C482,274 456,260 466,244 C476,226 504,234 504,214 L504,200 L562,200' fill='none' stroke='var(--muted)' stroke-width='17' stroke-linejoin='round' stroke-linecap='round'/><path d='M362,436 L376,436 L376,338 L434,338 C434,308 466,314 474,294 C482,274 456,260 466,244 C476,226 504,234 504,214 L504,200 L562,200' fill='none' stroke='var(--bio)' stroke-width='13' stroke-linejoin='round' stroke-linecap='round' opacity='0.9'/><path d='M150,166 C158,196 186,204 216,212 C246,220 236,244 258,256 C288,272 268,296 296,310 C328,326 306,352 320,380 C330,402 350,420 372,410 C398,398 386,360 404,344 C428,322 412,298 438,284 C466,268 458,240 482,232 C498,226 508,242 512,262' fill='none' stroke='var(--force)' stroke-width='3' opacity='0.75' stroke-linecap='round'/><path d='M512,262 C524,274 536,278 550,276' fill='none' stroke='var(--physics)' stroke-width='5' opacity='0.8'/><path d='M570,40 L570,452' fill='none' stroke='var(--muted)' stroke-width='22' stroke-linejoin='round'/><path d='M570,40 L570,452' fill='none' stroke='var(--bio)' stroke-width='18' stroke-linejoin='round' opacity='0.85'/><path d='M570,372 L570,438' stroke='var(--bright)' stroke-width='1.5' marker-end='url(#atxt)'/><path d='M296,338 L330,338' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><path d='M390,338 L422,338' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><path d='M514,200 L554,200' stroke='var(--bright)' stroke-width='1.3' marker-end='url(#atxt)'/><line x1='164' y1='36' x2='246' y2='86' stroke='var(--muted)' stroke-width='1'/><circle cx='246' cy='86' r='2.2' fill='var(--muted)'/><text x='152' y='40' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>A</text><line x1='28' y1='258' x2='270' y2='268' stroke='var(--muted)' stroke-width='1'/><circle cx='270' cy='268' r='2.2' fill='var(--muted)'/><text x='16' y='262' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>B</text><line x1='360' y1='458' x2='360' y2='440' stroke='var(--muted)' stroke-width='1'/><circle cx='360' cy='440' r='2.2' fill='var(--muted)'/><text x='360' y='462' font-size='13' fill='var(--text)' text-anchor='middle' font-weight='bold'>C</text><line x1='536' y1='164' x2='470' y2='268' stroke='var(--muted)' stroke-width='1'/><circle cx='470' cy='268' r='2.2' fill='var(--muted)'/><text x='548' y='168' font-size='13' fill='var(--text)' text-anchor='end' font-weight='bold'>D</text><line x1='611' y1='116' x2='572' y2='120' stroke='var(--muted)' stroke-width='1'/><circle cx='572' cy='120' r='2.2' fill='var(--muted)'/><text x='616' y='120' font-size='13' fill='var(--text)' text-anchor='start' font-weight='bold'>E</text><text x='16' y='20' font-size='10.5' fill='var(--muted)' text-anchor='start' font-weight='normal'>Allen letters a nephron like this and asks where each step happens.</text></svg></figure><div class="we-opts">
+        <div class="we-opt key"><span class="ob">1</span>B and E</div>
+        <div class="we-opt"><span class="ob">2</span>A and E</div>
+        <div class="we-opt"><span class="ob">3</span>B and C</div>
+        <div class="we-opt"><span class="ob">4</span>C and E</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — name the letters.</b> A is the cup at the start with the capillary knot inside:
+        <b>Bowman's capsule</b>. B is the coiled tube leading out of it: the <b>proximal convoluted tubule</b>.
+        C is the long U-shaped dip: the <b>loop of Henle</b>. D is the second coil: the <b>distal convoluted
+        tubule</b>. E is the wide vertical tube everything drains into: the <b>collecting duct</b>.</p>
+        <p><b>Step 2 — place the two events.</b> <em>All</em> the glucose is reabsorbed in the PCT, <b>B</b> —
+        by active transport, and none should be left by the time the filtrate reaches the loop. ADH acts on the
+        DCT and the collecting duct, so the <em>last</em> water reabsorption is in <b>E</b>. Option (1).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2) A and E</b> — thinking reabsorption happens where filtration happened. Nothing is taken back in
+        the capsule: A is a blind squeeze, and the filtrate leaves it complete.
+        <b>(3) B and C</b> — right about glucose, but names the loop for ADH. The loop does move water and salt,
+        but it is not hormone-controlled; it is what makes the surrounding tissue salty so that E <em>can</em>
+        pull water out.
+        <b>(4) C and E</b> — from Sample Q31, "the loop of Henle recovers water and sodium chloride". True, but
+        the question here says <em>glucose</em>, and glucose is a PCT job every time.
+        <b>Elimination.</b> Glucose is always PCT, so anything without B is out — (2) and (4) go at once.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">the only arithmetic in the unit · ~2 minutes</span></div>
+      <p>A healthy pair of kidneys forms glomerular filtrate at about <span class="m">125 mL per minute</span>,
+      and about <span class="m">99 %</span> of it is reabsorbed. Roughly how much urine is produced in a day?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>0.18 L</div>
+        <div class="we-opt key"><span class="ob">2</span>1.8 L</div>
+        <div class="we-opt"><span class="ob">3</span>18 L</div>
+        <div class="we-opt"><span class="ob">4</span>180 L</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — filtrate per day.</b> A day is 24 × 60 = <b>1440 minutes</b>, so 125 × 1440 =
+        <b>180 000 mL = 180 litres</b>. (That is the familiar 180 L figure — worth recognising, since it tells
+        you the first step was right.)</p>
+        <p><b>Step 2 — what is left.</b> If 99 % goes back, 1 % comes out: 180 × 0.01 = <b>1.8 litres</b>.
+        Option (2) — and it sits right inside NCERT's own figure, "a litre or two a day". (You will also see
+        1.5 L quoted; nothing turns on it, because only one option here is anywhere near the right size.)</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(4) 180 L</b> — stopping after step 1 and quoting the filtrate as the urine. This is the answer to
+        a different question.
+        <b>(3) 18 L</b> — taking 10 % rather than 1 %, an easy slip when converting a percentage this close
+        to 100.
+        <b>(1) 0.18 L</b> — taking 0.1 %, the same slip in the other direction.
+        <b>Elimination.</b> You can bracket the answer before any arithmetic: you know a person passes roughly
+        one to two litres of urine a day, which rules out three of the four options at sight. Use that as a
+        sanity check on your working, not as a substitute for it.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">the multi-statement judgement — Allen's signature trap · ~2 minutes</span></div>
+      <p>Consider the following statements.</p>
+      <ol class="roman">
+        <li>The pulmonary vein carries blood at a higher pressure than the pulmonary artery.</li>
+        <li>All of the glucose in the filtrate is reabsorbed in the proximal convoluted tubule.</li>
+        <li>Translocation moves sucrose from source to sink and uses energy from ATP.</li>
+        <li>The ascent of sap in a tall tree is driven mainly by root pressure.</li>
+        <li>The wall of a capillary is one cell thick.</li>
+      </ol>
+      <p>Which statements are <b>correct</b>?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>I, II and V</div>
+        <div class="we-opt key"><span class="ob">2</span>II, III and V</div>
+        <div class="we-opt"><span class="ob">3</span>II, IV and V</div>
+        <div class="we-opt"><span class="ob">4</span>III, IV and V</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Take them one at a time — that is the only safe method.</b></p>
+        <p><b>I ✗.</b> Pressure always falls as blood moves away from the heart, and it falls hardest across
+        capillaries. The pulmonary artery comes <em>before</em> the lung capillaries and the pulmonary vein
+        <em>after</em> them, so the artery is higher. (This is 2024-A Q42, printed the other way up.)</p>
+        <p><b>II ✓.</b> All of it, by active transport, in the PCT. Glucose appearing in urine means the system
+        has been overwhelmed, not that some is normally left.</p>
+        <p><b>III ✓.</b> Both halves are right: source → sink, and loading the sieve tube costs ATP.</p>
+        <p><b>IV ✗.</b> Root pressure is real but weak and mostly nocturnal; the main force is the
+        <b>transpiration pull</b> from the leaves.</p>
+        <p><b>V ✓.</b> One cell thick — which is exactly why exchange happens there.</p>
+        <p>Correct: <b>II, III and V</b> — option (2).</p>
+        <div class="elim"><b>How to shorten it under the clock.</b> Find one statement you are certain about
+        and use it to cut the options. Statement IV is the easiest certainty here — root pressure is not the
+        main force — and that single call removes (3) and (4). Then decide between I and III: an artery before
+        the capillaries must be at higher pressure, so I is out, and only (2) survives. Two decisions instead
+        of five.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">6</span><span class="we-t">assertion–reason — at most one per real paper · ~60 seconds</span></div>
+      <p><b>Assertion (A):</b> Veins have valves along their length.<br>
+      <b>Reason (R):</b> Blood in the veins flows at high pressure.</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Both A and R are true, and R is the correct explanation of A</div>
+        <div class="we-opt"><span class="ob">2</span>Both A and R are true, but R is not the correct explanation of A</div>
+        <div class="we-opt key"><span class="ob">3</span>A is true but R is false</div>
+        <div class="we-opt"><span class="ob">4</span>A is false but R is true</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — judge A on its own.</b> Veins do have valves. <b>A is true.</b></p>
+        <p><b>Step 2 — judge R on its own, ignoring A completely.</b> Blood in veins is at the <em>lowest</em>
+        pressure in the circulation — almost all of it was lost crossing the capillaries. <b>R is false.</b></p>
+        <p>So the answer is <b>(3)</b>. Note the sting: the real reason veins need valves is the exact
+        <em>opposite</em> of what R claims — the pressure is so low that blood would fall back down your legs
+        without them.</p>
+        <div class="elim"><b>The method, which is worth more than this one item.</b> Always judge the two
+        statements <em>separately</em> before you think about whether one explains the other. Most lost marks in
+        assertion–reason come from reading a true-sounding Reason next to a true Assertion and choosing (1)
+        without testing R by itself. And the moment R is false, options (1) and (2) are dead however good the
+        Reason sounds.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">7</span><span class="we-t">two-step: what changes at night · ~90 seconds</span></div>
+      <p>A well-watered potted plant is left in complete darkness all night. Compared with the same plant at
+      midday, which pair correctly describes it?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>Stomata open; water still lifted mainly by transpiration pull</div>
+        <div class="we-opt"><span class="ob">2</span>Stomata open; water now lifted mainly by root pressure</div>
+        <div class="we-opt"><span class="ob">3</span>Stomata closed; water now lifted mainly by transpiration pull</div>
+        <div class="we-opt key"><span class="ob">4</span>Stomata closed; water now lifted mainly by root pressure</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — the stomata.</b> In darkness the guard cells lose water, go flaccid, straighten, and the
+        pore <b>closes</b>. (Closing at night is useful: no photosynthesis is happening, so there is nothing to
+        be gained by letting carbon dioxide in, and water would be lost for nothing.)</p>
+        <p><b>Step 2 — so what still lifts the water?</b> Closed stomata means almost no evaporation from the
+        leaf, which means <b>no transpiration pull</b>. What is left is the push from below —
+        <b>root pressure</b> — which is exactly why it is described as mattering most at night. Option (4).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(3)</b> — gets the stomata right, then keeps the daytime force anyway; it is the answer of someone
+        who has learned "transpiration pull is the main force" as an unconditional fact rather than as a
+        daytime one.
+        <b>(1) and (2)</b> — both need the stomata open at night, which is the wrong way round.
+        <b>Elimination.</b> Decide the stomata first: that one call is certain and removes half the options
+        immediately. Never start with the half of the question you are less sure of.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">8</span><span class="we-t">2024-A Q35 machine, carried one step on · ~90 seconds</span></div>
+      <p>Which one of these statements about an artificial kidney (dialysis) machine is <b>FALSE</b>?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>The dialysing fluid has the same glucose and salt concentration as normal blood, but contains no nitrogenous waste.</div>
+        <div class="we-opt"><span class="ob">2</span>Urea leaves the blood by diffusion, because there is none of it in the fluid.</div>
+        <div class="we-opt key"><span class="ob">3</span>The machine selectively reabsorbs the useful substances back into the blood, exactly as a nephron does.</div>
+        <div class="we-opt"><span class="ob">4</span>Blood is taken from an artery, driven through the machine by a pump and returned to a vein.</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — read the demand.</b> The question wants the <b>FALSE</b> statement. Three of these are
+        true; you are hunting the odd one.</p>
+        <p><b>Step 2 — test each.</b> (1) is true, and it is the machine's whole design. (2) is true and
+        follows from (1): a substance diffuses from where there is more of it to where there is less, and there
+        is none in the fluid. (4) is true — artery out, vein back, with a pump doing the heart's job for that
+        stretch. (3) is <b>false</b>: a dialysis machine has no reabsorption step at all. It cannot select
+        anything. It keeps the useful substances only by never giving them a gradient to leave down.</p>
+        <p>So the answer is <b>(3)</b>.</p>
+        <div class="elim"><b>The reading discipline this item is really testing.</b> In a "which is NOT
+        correct" item, tick each statement you judge true as you go and circle the one you judge false —
+        physically, on the booklet. One common way to lose this mark is not misjudging a statement at all, but
+        finding the false one and then bubbling the option number of the last <em>true</em> one you read. Allen sets
+        negative-demand items in <b>three of the five cached papers</b> — one to three per section in 2024-U,
+        2018-S and the sample, and none at all in 2024-A or 2017-E — so expect one, but do not assume it.
+        2024-U Q45 and 2018-S Q31 are two more of them.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">14</span>Check yourself — ten quick ones</h2>
+    <p class="lede"><b>No negative marking here</b> — this is practice, not the exam. Click an option to see
+    straight away whether it holds, and read the explanation even when you were right.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the ten questions above — your score appears here.</div>
+  </section>
+
+  <section>
+    <h2><span class="n">15</span>Glossary — every term the real papers use</h2>
+    <p class="lede">If any word on this page was new, it is defined here in one line. These are the exact terms
+    the five cached papers print.</p>
+    <div class="gloss">
+      <div class="gl"><b>Diffusion</b>Molecules spreading from where they are crowded to where they are not, with no energy spent. Fast over microscopic distances, hopeless over long ones.</div>
+      <div class="gl"><b>Osmosis</b>The diffusion of <em>water</em> across a <em>selectively permeable</em> membrane — one that lets water through but holds the dissolved substances back — from the more watery side to the less watery (more concentrated) side.</div>
+      <div class="gl"><b>Active transport</b>Moving a substance against its gradient — from where there is less to where there is more — which costs energy (ATP). How glucose is reabsorbed and how root hairs take up minerals.</div>
+      <div class="gl"><b>Plasma</b>The straw-coloured liquid part of blood. Carries dissolved food, salts, hormones, most carbon dioxide and all the urea.</div>
+      <div class="gl"><b>Haemoglobin</b>The red, iron-containing pigment inside red blood cells that carries oxygen.</div>
+      <div class="gl"><b>Lymphocyte</b>A white blood cell responsible for the immune response.</div>
+      <div class="gl"><b>Thrombocyte (platelet)</b>A cell fragment in blood that makes blood clot at a wound.</div>
+      <div class="gl"><b>Lymph</b>The fluid that leaks out of capillaries and bathes the cells; drained back to the blood by lymph vessels. Also carries digested fat and takes part in defence.</div>
+      <div class="gl"><b>Atrium</b>An upper chamber of the heart. It <em>receives</em> blood from a vein. Plural: atria.</div>
+      <div class="gl"><b>Ventricle</b>A lower chamber of the heart. It <em>pumps</em> blood out into an artery; the left one has the thickest wall.</div>
+      <div class="gl"><b>Septum</b>The solid muscular wall between the right and left sides of the heart, which stops oxygenated and deoxygenated blood mixing.</div>
+      <div class="gl"><b>Systole / diastole</b>Contraction of a heart chamber / its relaxation. The two numbers in a blood-pressure reading, e.g. 120/80 mm Hg.</div>
+      <div class="gl"><b>Double circulation</b>Blood passing through the heart <em>twice</em> in one complete circuit of the body — once for the lung loop, once for the body loop.</div>
+      <div class="gl"><b>Pulmonary</b>"To do with the lungs". Pulmonary artery: heart → lungs (deoxygenated). Pulmonary veins: lungs → heart (oxygenated).</div>
+      <div class="gl"><b>Hepatic</b>"To do with the liver". The hepatic portal vein carries digested food from the intestine to the liver.</div>
+      <div class="gl"><b>Renal</b>"To do with the kidney". Renal artery in (with urea), renal vein out (with the least urea of any vein).</div>
+      <div class="gl"><b>Capillary</b>The smallest blood vessel, one cell thick, where all exchange between blood and cells happens.</div>
+      <div class="gl"><b>Xylem</b>The plant tissue that carries water and minerals upward. Made of dead, hollow <em>vessels</em> (end walls dissolved away, so they form a continuous pipe) and <em>tracheids</em> (end walls kept, so water seeps through pits). Gymnosperms such as <em>Pinus</em> and <em>Cycas</em> have tracheids only.</div>
+      <div class="gl"><b>Phloem</b>The living plant tissue that carries food. Made of <em>sieve tubes</em> and <em>companion cells</em>.</div>
+      <div class="gl"><b>Ascent of sap</b>The upward movement of water and minerals through the xylem, from root to leaf.</div>
+      <div class="gl"><b>Transpiration</b>The loss of water vapour from a plant, mainly through the stomata of leaves. Creates the pull that lifts the water column.</div>
+      <div class="gl"><b>Root pressure</b>The push generated at the root when ions are actively taken in and water follows by osmosis. Matters most at night.</div>
+      <div class="gl"><b>Stoma (plural stomata)</b>A pore in a leaf surface, between two guard cells, through which water vapour and gases pass.</div>
+      <div class="gl"><b>Guard cells</b>The two cells around a stoma — <em>bean-shaped in dicots</em>, dumb-bell shaped in grasses and other monocots. Turgid (swollen) → pore open; flaccid (limp) → pore closed.</div>
+      <div class="gl"><b>Turgid / flaccid</b>A cell swollen with water and pressing on its wall / a cell that has lost water and gone limp.</div>
+      <div class="gl"><b>Translocation</b>The transport of food (sucrose) in the phloem, from source to sink, using ATP.</div>
+      <div class="gl"><b>Source / sink</b>Where food is made or released (a leaf, a storage root in spring) / where it is used or stored (a growing tip, a fruit, a root).</div>
+      <div class="gl"><b>Excretion</b>The removal of the harmful waste products of the body's own chemistry. Not the same as egestion, which is the removal of undigested food.</div>
+      <div class="gl"><b>Urea</b>The main nitrogenous waste in humans. Made in the <em>liver</em> from surplus amino acids (via ammonia), removed by the kidneys.</div>
+      <div class="gl"><b>Nephron</b>The structural and functional unit of the kidney — about a million in each. Not to be confused with a <em>neuron</em>, the unit of the nervous system.</div>
+      <div class="gl"><b>Selectively (semi-) permeable membrane</b>A membrane with holes small enough to stop some substances crossing while letting others through. A cell membrane is one; so are the tubes in a dialysis machine.</div>
+      <div class="gl"><b>Osmotic pressure</b>A measure of how strongly a solution pulls water in by osmosis. The more dissolved material it holds, the higher its osmotic pressure — which is why loading sucrose into a sieve tube makes water follow.</div>
+      <div class="gl"><b>Electrolytes</b>The dissolved salts of the body — sodium, potassium, chloride and the rest — so called because they carry an electric charge in solution.</div>
+      <div class="gl"><b>Nitrogenous waste</b>Waste containing nitrogen. In us it is ammonia, made when surplus amino acids are broken down, and the urea the liver makes from it. (Uric acid is the equivalent waste in birds and reptiles, which pass it as a paste rather than in water.)</div>
+      <div class="gl"><b>Cortex and medulla</b>The two layers of a kidney. The <em>cortex</em> is the outer layer, where every Bowman's capsule sits; the <em>medulla</em> is the inner layer that the loops of Henle dip down into, and which the loop keeps salty.</div>
+      <div class="gl"><b>Peritubular capillaries</b>The net of capillaries wrapped round a nephron's tubule, formed by the efferent arteriole. Everything reabsorbed goes into this blood, which drains into the renal vein.</div>
+      <div class="gl"><b>Vacuole</b>A fluid-filled bag inside a cell. Plant cells have a large one, and it is where a plant parks waste it has no intention of removing.</div>
+      <div class="gl"><b>Aldosterone</b>A hormone from the adrenal gland that acts on the kidney to control salt and water balance. It is made outside the kidney — which is why it is the wrong answer to "what is produced <em>in</em> the kidney".</div>
+      <div class="gl"><b>Pits</b>Thin, unthickened patches in the wall of a tracheid. Water seeps through them from one tracheid to the next, because a tracheid's end walls are never dissolved away as a vessel's are.</div>
+      <div class="gl"><b>Glomerulus</b>The knot of capillaries inside Bowman's capsule where the blood is filtered under pressure.</div>
+      <div class="gl"><b>Bowman's capsule</b>The cup-shaped start of a nephron that surrounds the glomerulus and collects the filtrate.</div>
+      <div class="gl"><b>Renal corpuscle</b>The glomerulus and Bowman's capsule together — the filtering unit, as Allen names it in its 2017 match item.</div>
+      <div class="gl"><b>Ultrafiltration</b>Filtering under pressure: everything small enough is squeezed out of the blood into the capsule. Blood cells and proteins stay behind.</div>
+      <div class="gl"><b>Glomerular filtrate</b>The liquid collected in Bowman's capsule — about 180 litres a day. Blood minus its cells and proteins.</div>
+      <div class="gl"><b>Selective reabsorption</b>Taking back from the filtrate the things the body wants: all glucose and amino acids, most salts and water.</div>
+      <div class="gl"><b>PCT</b>Proximal convoluted tubule — the first coil, where most reabsorption happens (all glucose, 70–80 % of water and electrolytes).</div>
+      <div class="gl"><b>Loop of Henle</b>The U-shaped portion of the tubule. Recovers water and sodium chloride and makes the medulla salty.</div>
+      <div class="gl"><b>Counter-current mechanism</b>The loop's trick of running its two limbs in opposite directions, which maintains the salt concentration gradient in the medulla.</div>
+      <div class="gl"><b>DCT</b>Distal convoluted tubule — the second coil, which fine-tunes ionic balance and pH.</div>
+      <div class="gl"><b>Collecting duct</b>The wide tube that several nephrons drain into; the last place water is reabsorbed, under ADH. What leaves it is urine.</div>
+      <div class="gl"><b>Tubular secretion</b>The opposite of reabsorption — unwanted ions and substances are actively added from the blood into the tubule.</div>
+      <div class="gl"><b>ADH (vasopressin)</b>The antidiuretic hormone — made in the hypothalamus and released by the pituitary. More ADH → more water reabsorbed → less urine, and more concentrated.</div>
+      <div class="gl"><b>Renin</b>A substance produced <em>in the kidney</em> that helps regulate blood pressure. Not <em>rennin</em>, the milk-curdling stomach enzyme.</div>
+      <div class="gl"><b>Ureter / urethra</b>The tube from each kidney to the bladder / the single tube from the bladder to the outside.</div>
+      <div class="gl"><b>Dialysis</b>Cleaning blood with a machine: it flows past a semi-permeable membrane bathed in fluid that contains no nitrogenous waste, so urea diffuses out.</div>
+    </div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Biology · <b>Transportation</b> and <b>Excretion</b> — the official topic names from
+    Allen's Class X syllabus, where they are listed as two of the four separate <em>Life Processes</em> topics.<br>
+    <b>Deliberately not here:</b> nutrition and digestion, and respiration and breathing — they are the other
+    two Life Processes topics and have their own card; control and coordination (nerves and hormones) has its
+    own card too, which is where the neuron belongs. Blood groups, the immune system in detail and the
+    physiology of blood pressure are beyond the syllabus and are not on this page.<br>
+    Every past-paper citation here was read off the booklets and checked against Allen's own key sheets in the
+    session that built this page, and every quotation from NCERT was checked against Class 10 Chapter 5,
+    <em>Life Processes</em> (Reprint 2026-27), fetched and read in that same session.<br>
+    Tip: press 🖨 (bottom-left) to print these as a revision sheet · 🏆 (top-left) goes back to the TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q: 'A fish has a <b>two-chambered</b> heart. In one complete round of its body, blood passes through its heart',
+    o: ['once', 'twice', 'four times', 'it does not pass through the heart at all'], a: 0,
+    fb: '<b>Once — that is single circulation.</b> Blood is pumped from the heart to the gills, where it picks up oxygen, and then goes straight on to the rest of the body before returning. A bird or a mammal has four chambers and <b>double</b> circulation: blood comes back to the heart after the lungs and is pumped a second time, which is what keeps oxygenated and deoxygenated blood completely separate. <b>Twice</b> is the answer for us, not for a fish.' },
+  { q: 'Which vessel carries blood with the <b>least urea</b> in it?',
+    o: ['Renal artery', 'Hepatic vein', 'Pulmonary vein', 'Renal vein'], a: 3,
+    fb: '<b>The renal vein.</b> It is the blood that has just come out of the kidney, which is the organ that removes urea — so it is the cleanest blood in the body by that measure. The <b>renal artery</b> is the same blood going <em>in</em>, still full of urea. The <b>hepatic vein</b> leaves the liver, which is where urea is <em>made</em>, so it is one of the richest in urea. The <b>pulmonary vein</b> is the most oxygen-rich, which is a different question.' },
+  { q: 'Urea is mainly formed in the',
+    o: ['kidney', 'liver', 'lungs', 'urinary bladder'], a: 1,
+    fb: '<b>The liver.</b> Surplus amino acids cannot be stored, so the liver breaks them down; that releases poisonous ammonia, which the liver immediately converts into the much safer urea and releases into the blood. The <b>kidney</b> only removes urea — a favourite trap, and the exact question Allen set in the sample paper. The <b>bladder</b> merely stores what the kidney has already made into urine.' },
+  { q: 'In which part of the blood is urea carried?',
+    o: ['Inside red blood cells, on haemoglobin', 'Inside white blood cells', 'Attached to platelets', 'Dissolved in the plasma'], a: 3,
+    fb: '<b>Dissolved in the plasma.</b> Plasma is the liquid part of blood and it carries everything that dissolves: digested food, salts, hormones, most of the carbon dioxide, and all the urea. <b>Haemoglobin</b> inside red cells is for oxygen only. White cells fight infection and platelets clot blood — neither is a transport container.' },
+  { q: 'Translocation in the phloem moves',
+    o: ['glucose, from sink to source', 'sucrose, from sink to source', 'sucrose, from source to sink', 'starch, from source to sink'], a: 2,
+    fb: '<b>Sucrose, from source to sink.</b> Both halves are asked as traps, and Allen has printed both: the sugar is <em>sucrose</em> (Sample Q36 and 2024-A Q40, the same question twice), and the direction is <em>source → sink</em> (2024-U Q41 offered "sink to source" as its false statement 1). Starch is a storage form and is far too big to move; it is broken down before transport.' },
+  { q: 'A guard cell takes in water and becomes turgid. The stoma it borders will',
+    o: ['open, because the thin outer wall stretches more than the thick inner wall', 'close, because the swollen cells press against each other', 'open, because the thick inner wall stretches more than the thin outer wall', 'stay unchanged — water has no effect on the pore'], a: 0,
+    fb: '<b>It opens, and the reason is the uneven wall.</b> The wall facing the pore is thick and stiff; the outer wall is thin. Swelling stretches the thin wall much more, so each bean-shaped cell bows outwards and a gap appears between them. <b>"The cells press against each other"</b> sounds plausible but describes the closed state, which is what happens when they lose water and straighten. The third option has the two walls the wrong way round — and the claim that guard-cell walls are uniform is the exact false statement Allen planted in 2018-S Q33.' },
+  { q: 'The filtration units of the kidney are called',
+    o: ['neurons', 'nephrons', 'nephrites', 'glomeruli'], a: 1,
+    fb: '<b>Nephrons</b> — about a million in each kidney. <b>Neuron</b> is the unit of the <em>nervous</em> system, and Allen uses exactly that swap as the incorrect statement in 2024-U Q45, having asked for the neuron by name in the sample paper. <b>Glomerulus</b> is only one part of a nephron — the knot of capillaries where filtration happens — not the whole unit.' },
+  { q: 'Match each part with its job. <b>A</b> proximal convoluted tubule · <b>B</b> distal convoluted tubule · <b>C</b> loop of Henle · <b>D</b> renal corpuscle<br><span class="m">(i)</span> filtration of blood · <span class="m">(ii)</span> U-shaped portion that recovers water and salt · <span class="m">(iii)</span> reabsorbs 70–80 % of the filtrate · <span class="m">(iv)</span> ionic balance',
+    o: ['A-iii, B-iv, C-ii, D-i', 'A-i, B-iv, C-ii, D-iii', 'A-iii, B-ii, C-iv, D-i', 'A-iv, B-iii, C-i, D-ii'], a: 0,
+    fb: '<b>A-iii, B-iv, C-ii, D-i.</b> This is 2017-E Q43 in miniature. The <b>renal corpuscle</b> (glomerulus + Bowman’s capsule) is where blood is filtered; the <b>PCT</b> immediately after it does the bulk of the reabsorption; the <b>loop of Henle</b> is the U that recovers water and sodium chloride and makes the medulla salty; the <b>DCT</b> does the fine tuning of ions and pH. If you can place just the corpuscle and the PCT with confidence, only one option survives.' },
+  { q: 'On a hot day you drink very little water. Your pituitary releases <b>more ADH</b>. The urine you produce will be',
+    o: ['larger in volume and more dilute', 'smaller in volume and more concentrated', 'unchanged in volume but more concentrated', 'larger in volume and more concentrated'], a: 1,
+    fb: '<b>Smaller and more concentrated.</b> ADH makes the DCT and the collecting duct take <em>more</em> water back into the blood — which is exactly what you want when you are short of water. Less water left in the tubule means less urine, and the urea in it is less diluted. The name is the mnemonic: <b>anti-diuretic</b>, and a diuretic is something that makes you pass more urine. 2017-E Q38 asks this in one line.' },
+  { q: 'In which of these is the blood pressure <b>highest</b>?',
+    o: ['A capillary in the finger', 'The inferior vena cava', 'The aorta', 'A vein in the leg'], a: 2,
+    fb: '<b>The aorta.</b> It takes the full force of the left ventricle’s contraction, so it has the highest pressure anywhere in the body — which is also why its wall is the thickest and most elastic. Pressure then only ever falls: arteries → capillaries (where most of it is lost) → veins → vena cava, which is the lowest of all. A leg vein is the hardest case: the little push that is left has to move blood <b>upwards against gravity</b>, which is exactly why the valves matter most there.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one, with no teacher — that is exactly what this page was for. This unit is worth four to seven questions a sitting, so sit its paper under the clock when it appears on the hub.'
+           : right >= 7 ? 'Solid. Re-read the section behind the ones you missed — §3 and §5 carry the heart and the named vessels, §6 the plant, §8 the nephron — then come back to this set tomorrow.'
+           : right >= 4 ? 'Worth a second pass. Read §3, §6 and §8 again with the figures beside you, then the trap wall in §12, and retry this set.'
+                        : 'Do not be put off — this is a lot of new vocabulary in one go. Read §1 to §3 again slowly, then come back and do just the first five. The glossary in §15 defines every word on the page.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:bio-transport-excretion:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- print: a closed details element never renders its contents, so open them for the printer ---------- */
+(function(){
+  var opened = [];
+  function before(){
+    opened = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+      if(!d.open){ d.open = true; opened.push(d); }
+      var box = d.closest('.we'); if(box) box.classList.add('revealed');
+    });
+  }
+  function after(){
+    opened.forEach(function(d){ d.open = false; var box = d.closest('.we'); if(box) box.classList.remove('revealed'); });
+    opened = [];
+  }
+  window.addEventListener('beforeprint', before);
+  window.addEventListener('afterprint', after);
+  if(window.matchMedia){
+    var mq = matchMedia('print');
+    var h = function(e){ if(e.matches) before(); else after(); };
+    if(mq.addEventListener) mq.addEventListener('change', h); else if(mq.addListener) mq.addListener(h);
+  }
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
