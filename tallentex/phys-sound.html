@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Sound</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2346a8ff'>P</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--physics);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.72; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #2e246b30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:860px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* fixed controls */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--physics); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--physics); }
+
+  /* header */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#241f4a); border:1px solid #2b3f63;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--physics); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(2rem,4.8vw,2.9rem); font-weight:800; color:var(--bright); line-height:1.05; letter-spacing:-.015em; margin-bottom:13px; }
+  .sub { color:var(--muted); font-size:15px; max-width:660px; margin-bottom:24px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  section { margin-bottom:44px; }
+  h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); line-height:1.15; margin-bottom:6px; display:flex; align-items:center; gap:11px; }
+  h2 .n { flex-shrink:0; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--physics); background:color-mix(in srgb,var(--physics) 14%,transparent); border:1px solid color-mix(in srgb,var(--physics) 36%,transparent); }
+  h3 { font-family:'Fraunces',serif; font-size:1.12rem; font-weight:700; color:var(--bright); margin:20px 0 7px; }
+  .lede { color:var(--muted); font-size:14px; margin-bottom:17px; max-width:690px; }
+  .lede b { color:var(--text); font-weight:600; }
+  p { margin-bottom:12px; }
+  p b { color:var(--bright); font-weight:600; }
+  ul, ol { margin:0 0 12px 21px; }
+  li { margin-bottom:6px; }
+  li b { color:var(--bright); font-weight:600; }
+  code { font-family:'JetBrains Mono',monospace; font-size:.9em; padding:1px 6px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--bright); }
+  .m { font-family:'JetBrains Mono',monospace; }
+  ol.roman { list-style:upper-roman; }
+  ol.roman li { padding-left:4px; }
+
+  /* callouts */
+  .box { border-radius:12px; padding:14px 17px; margin:14px 0; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); }
+  .box h4 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:7px; font-weight:600; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child, .box table:last-child, .box .tablewrap:last-child { margin-bottom:0; }
+  .box b { color:var(--bright); }
+  .box.def { --accent:var(--chem); }
+  .box.trap { --accent:var(--force); }
+  .box.exam { --accent:var(--rose); }
+  .box.ask { --accent:var(--physics); }
+
+  /* formula bank */
+  .bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:10px; margin:16px 0; }
+  .fx { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .fx .eq { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--physics); margin-bottom:5px; line-height:1.45; }
+  .fx .wh { font-size:12.8px; color:var(--muted); line-height:1.55; }
+  .fx .wh b { color:var(--text); font-weight:600; }
+
+  /* figures */
+  figure { margin:18px 0; text-align:center; }
+  figure svg { max-width:100%; height:auto; }
+  figcaption { font-size:12.5px; color:var(--muted); margin-top:8px; max-width:640px; margin-left:auto; margin-right:auto; }
+  .figrow { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13.6px; margin:12px 0; }
+  th, td { text-align:left; padding:8px 11px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  td.mono, th.mono { font-family:'JetBrains Mono',monospace; }
+  td b { color:var(--bright); }
+  .tablewrap { overflow-x:auto; margin:12px 0; }
+  .tablewrap table { margin:0; }
+  .sweep table { min-width:640px; }
+  .sweep td:first-child, .sweep th:first-child, .sweep td:nth-child(2) { white-space:nowrap; }
+
+  /* worked examples */
+  .we { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:13px; }
+  .we-h { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .we-n { flex-shrink:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--physics); background:color-mix(in srgb,var(--physics) 13%,transparent); border:1px solid color-mix(in srgb,var(--physics) 34%,transparent); }
+  .we-t { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .we-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; margin:11px 0; }
+  .we-opt { display:flex; align-items:center; gap:8px; padding:7px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; }
+  .we-opt .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .we.revealed .we-opt.key { border-color:var(--power); background:color-mix(in srgb,var(--power) 12%,transparent); }
+  .we.revealed .we-opt.key .ob { border-color:var(--power); color:var(--power); }
+  .we details { margin-top:4px; }
+  .we summary { cursor:pointer; font-size:13px; font-weight:600; color:var(--physics); list-style:none; padding:7px 0 3px; }
+  .we summary::-webkit-details-marker { display:none; }
+  .we summary::before { content:'▸ '; }
+  .we details[open] summary::before { content:'▾ '; }
+  .we .work { font-size:14px; padding-top:6px; }
+  .we .work p { margin-bottom:8px; }
+  .we .work p:last-child { margin-bottom:0; }
+  .elim { font-size:13.4px; color:var(--muted); border-left:2px solid var(--border); padding-left:12px; margin-top:9px; }
+  .elim b { color:var(--text); }
+
+  /* check yourself */
+  .cy { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 26%,var(--border)); border-radius:14px; padding:16px 18px; margin-bottom:11px; }
+  .cy-q { margin-bottom:10px; }
+  .cy-q b { color:var(--bright); }
+  .cy-opts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:7px; }
+  .cyo { display:flex; align-items:center; gap:8px; padding:8px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); font-size:13.5px; cursor:pointer; text-align:left; font-family:inherit; color:var(--text); transition:border-color .15s, background .15s; }
+  .cyo:hover { border-color:var(--power); }
+  .cyo .ob { flex-shrink:0; width:21px; height:21px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); }
+  .cyo:focus-visible { outline:2px solid var(--power); outline-offset:2px; }
+  .cyo.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 14%,transparent); }
+  .cyo.right .ob { border-color:var(--power); color:var(--power); }
+  .cyo.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .cyo.wrong .ob { border-color:var(--force); color:var(--force); }
+  .cy-fb { display:none; margin-top:10px; font-size:13.6px; padding:10px 13px; border-radius:9px; background:var(--surface2); border:1px solid var(--border); }
+  .cy-fb.on { display:block; }
+  .cy-fb b { color:var(--bright); }
+  .cy-score { background:var(--surface); border:1px solid color-mix(in srgb,var(--power) 30%,var(--border)); border-radius:13px; padding:14px 17px; font-size:14px; }
+  .cy-score b { font-family:'Fraunces',serif; font-size:1.5rem; color:var(--power); }
+
+  /* mark complete */
+  .done-row { margin-top:40px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .done-btn { font:inherit; font-size:14px; font-weight:600; padding:12px 22px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .done-btn:hover { transform:translateY(-2px); border-color:var(--power); }
+  .done-btn.on { border-color:var(--power); background:color-mix(in srgb,var(--power) 16%,transparent); color:var(--bright); }
+  .done-btn:focus-visible { outline:2px solid var(--power); outline-offset:3px; }
+  .done-note { font-size:12.8px; color:var(--muted); }
+  .nextrow { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .nextbtn { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:12px 20px; border-radius:12px; text-decoration:none; border:1px solid var(--physics); background:color-mix(in srgb,var(--physics) 15%,transparent); color:var(--bright); transition:transform .18s, background .18s; }
+  .nextbtn:hover { transform:translateY(-2px); background:color-mix(in srgb,var(--physics) 24%,transparent); }
+
+  .foot { margin-top:50px; padding-top:26px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* light theme */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5b40d612 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#e2edfb,#e8f0fb); border-color:#c3d7f2; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 92px; }
+    h2 { font-size:1.3rem; }
+  }
+
+  @media print {
+    @page { margin:14mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#f6f6f6; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .done-row, .nextrow { display:none !important; }
+    .page { max-width:none; padding:0; }
+    section, .we, .cy, figure { break-inside:avoid; }
+    .we details { display:block; }
+    .we details > *:not(summary) { display:block !important; }
+    .we-opt.key { border-color:var(--power) !important; background:#eef8f2 !important; }
+    .we-opt.key .ob { border-color:var(--power) !important; color:var(--power) !important; }
+    h1, h2, h3, .fx .eq { color:#111 !important; }
+    .box, .fx, .we, .cy { background:#fff; border-color:#bbb; }
+    .cy-fb.on { background:#f6f6f6; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP||location.protocol!=='https:'||navigator.webdriver)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print these notes">🖨 <span>Print</span></button>
+
+<div class="page">
+
+
+  <header>
+    <div class="eyebrow"><span class="pulse"></span>TALLENTEX 2027 · Physics · Crash notes</div>
+    <h1>Sound</h1>
+    <p class="sub">Official topic: <b>Sound</b> (Class 9) — one topic, one card. Your IGCSE course already has most
+    of it (0625 §3.4): vibrating sources, longitudinal waves, compressions and rarefactions, the need for a medium,
+    solid &gt; liquid &gt; gas, the 20 Hz – 20 kHz range, pitch and loudness, echoes, ultrasound and sonar. What this page
+    adds is the <b>NCERT framing</b> Allen writes in — the wave drawn as a pressure graph with a sign to read,
+    <b>mechanical</b> waves, quality, tone and note, the <b>0.1 s / 17.2 m echo rule</b>, reverberation and the uses of
+    multiple reflection, infrasound and its named animals — plus the two counting traps and the one humidity fact the
+    real papers have used. Four things marked <b>“cut from NCERT”</b> below were dropped from the rationalised NCERT
+    book in 2022; they stay here, briefly, because the official topic is simply “Sound” and your IGCSE course and the
+    hub's Physics paper use them. A 25-minute read; the paper is the point.</p>
+  </header>
+
+  <section>
+    <div class="box ask">
+      <h4>What the paper actually asks here</h4>
+      <p>Every Physics question (Q1–15) in all five cached papers — four real sittings and Allen's official sample —
+      was read page by page, the 2017 and 2018 booklets rendered from their image scans (a text search returns nothing
+      for them), and every Sound item re-solved against Allen's own key sheets. <b>Seven items in five papers — one or
+      two a sitting</b>, never none:</p>
+      <div class="tablewrap sweep">
+      <table>
+        <thead><tr><th>Paper</th><th>Q</th><th>What it gives you</th><th>What it wants</th><th>Key</th></tr></thead>
+        <tbody>
+          <tr><td>2017 · E</td><td class="mono">1</td><td>Four pairings: (non-)mechanical × longitudinal / transverse</td><td>The characteristic of a sound wave</td><td class="mono">(4) mechanical and longitudinal</td></tr>
+          <tr><td>2018 · S</td><td class="mono">1</td><td>Assertion: 54 waves reach a sea bank <em>per minute</em>, λ = 10 m, so v = 9 m/s. Reason: v = λf</td><td>Assertion–reason judgement</td><td class="mono">(1) both true, R explains A — 54/60 = 0.9 Hz</td></tr>
+          <tr><td>2024 · U</td><td class="mono">6</td><td>Four pairs of wave graphs</td><td>The pair with the same amplitude, different frequency</td><td class="mono">(1) equal heights, different numbers of waves</td></tr>
+          <tr><td>2024 · U</td><td class="mono">13</td><td>NCERT's wave picture: a curve over a dashed mean line, with C and R strips; A at a crest, B on the mean line, C at a trough (B's arrow is printed above a trough but ends on the dashed line — read the arrow tip)</td><td>The pressure at A, B, C</td><td class="mono">(4) increased · atmospheric · decreased</td></tr>
+          <tr><td>2024 · A</td><td class="mono">6</td><td>"The distance travelled by a sound wave per unit time is"</td><td>Name it</td><td class="mono">(2) speed of sound</td></tr>
+          <tr><td>2024 · A</td><td class="mono">13</td><td>V<sub>r</sub> on a rainy day, V<sub>d</sub> on a dry day</td><td>Compare them</td><td class="mono">(4) V<sub>r</sub> &gt; V<sub>d</sub></td></tr>
+          <tr><td>Sample</td><td class="mono">1</td><td>Three consecutive troughs of a string wave span 4 cm; 2.5 cycles pass each second</td><td>The wave's speed</td><td class="mono">(4) 5 cm/s — three troughs span 2λ</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>What that tells you:</p>
+      <ol>
+        <li><b>Both 2024 papers put Sound in the same two slots, Q6 and Q13</b>; 2017, 2018 and the sample opened the paper
+        with it at Q1. Mostly definitions and concepts (what a sound wave is, what "speed" means, rainy versus dry air); 2024-U
+        added two read-the-wave-picture items.</li>
+        <li><b>The whole of the real record is sections 1–3 of this page.</b> What a wave is (mechanical, longitudinal),
+        what λ, f, A and v mean, how to read a wave drawn as a graph, and v = fλ with a <b>counting trap</b> — "per
+        minute" (divide by 60) and "three consecutive troughs" (that is <b>2λ</b>, not 3λ).</li>
+        <li><b>Two of the seven carry a figure</b>, both in 2024-U: the amplitude-versus-frequency graphs and the
+        pressure picture. The trap in both is reading the <em>sign</em> or the <em>property</em> — a crest is increased
+        pressure, the mean line is atmospheric, a trough is decreased; taller is amplitude, more waves is frequency.</li>
+        <li><b>No cached paper has yet asked an echo, reverberation, ultrasound, SONAR, the range of hearing, the sonic
+        boom or the ear.</b> Four of those — the sonic boom, “sound needs a medium”, SONAR and the ear — were
+        <b>cut from the NCERT book in its 2022 rationalisation</b> (NCERT's own list), which fits their absence from both
+        2024 papers. Echoes, reverberation and ultrasound are still in the book; the hub's Physics subject paper asks echoes and
+        SONAR, and a new sitting may ask them — sections 4–6 cover them in a few screens. Do not skip them, but do not
+        spend your revision time there first.</li>
+        <li><b>One item reaches past the NCERT text:</b> 2024-A Q13 needs the fact that <b>humid air carries sound faster</b>
+        than dry air — section 3 has it.</li>
+      </ol>
+      <p><b>Budget accordingly.</b> One or two questions is 4–8 marks a sitting, and every one so far has been a
+      30-second item <em>if</em> you read the stem exactly. This is a precision unit: learn the definitions, the graph
+      reading and the two counting traps, then sit the paper.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">1</span>How sound is made, and how it travels</h2>
+    <p class="lede">Two sentences carry the whole chapter: <b>sound is produced by vibrating objects</b>, and <b>sound
+    needs a medium</b> — it travels as a chain of pushes from particle to particle.</p>
+
+    <div class="box def">
+      <h4>NCERT's words</h4>
+      <p><b>Sound is a form of energy which produces a sensation of hearing in our ears.</b> It is produced by
+      <b>vibration</b> — a rapid to-and-fro motion of an object: a struck tuning fork, a plucked string, the stretched
+      skin of a drum, our vocal cords, the wings of a bee.</p>
+      <p><b>The matter or substance through which sound is transmitted is called a medium.</b> It can be a solid, a
+      liquid or a gas. <b>Sound cannot travel through a vacuum</b> — the bell-jar experiment: pump the air out of a
+      jar with an electric bell ringing inside and the sound fades although you can still see the hammer striking.
+      That is also why astronauts on the Moon talk by radio. <em>(NCERT's “Sound needs a medium to travel” section was
+      cut from the book in 2022 — but the fact is in your IGCSE syllabus, and it is exactly what 2017-E Q1's
+      “mechanical” means.)</em></p>
+    </div>
+
+    <p>The particles of the medium <b>do not travel</b> from the source to your ear. Each one vibrates about its own
+    resting place and pushes its neighbour; it is the <b>disturbance</b> that travels. When the prong of a tuning fork
+    moves forward it squashes the air in front into a region of <b>high pressure and high density — a compression
+    (C)</b>; when it moves back it leaves a region of <b>low pressure and low density — a rarefaction (R)</b>. The fork
+    keeps vibrating, so a train of C, R, C, R … moves out through the air.</p>
+
+    <figure><svg viewBox="0 0 520 266" width="520" height="266" role="img" aria-label="A tuning fork sends a sound wave through air: vertical lines show layers of air crowded together at compressions C and spread apart at rarefactions R; below, a graph of air density against distance peaks at each C and dips at each R, and one wavelength is marked from one C to the next"><rect x="64" y="30" width="412" height="70" rx="6" fill="color-mix(in srgb,var(--physics) 6%,transparent)" stroke="var(--border)"/><line x1="82" y1="36" x2="82" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="89.4127" y1="36" x2="89.4127" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="95.7082" y1="36" x2="95.7082" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="101.053" y1="36" x2="101.053" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="105.708" y1="36" x2="105.708" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="110" y1="36" x2="110" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="114.292" y1="36" x2="114.292" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="118.947" y1="36" x2="118.947" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="124.292" y1="36" x2="124.292" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="130.587" y1="36" x2="130.587" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="138" y1="36" x2="138" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="146.587" y1="36" x2="146.587" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="156.292" y1="36" x2="156.292" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="166.947" y1="36" x2="166.947" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="178.292" y1="36" x2="178.292" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="190" y1="36" x2="190" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="201.708" y1="36" x2="201.708" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="213.053" y1="36" x2="213.053" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="223.708" y1="36" x2="223.708" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="233.413" y1="36" x2="233.413" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="242" y1="36" x2="242" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="249.413" y1="36" x2="249.413" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="255.708" y1="36" x2="255.708" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="261.053" y1="36" x2="261.053" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="265.708" y1="36" x2="265.708" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="270" y1="36" x2="270" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="274.292" y1="36" x2="274.292" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="278.947" y1="36" x2="278.947" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="284.292" y1="36" x2="284.292" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="290.587" y1="36" x2="290.587" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="298" y1="36" x2="298" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="306.587" y1="36" x2="306.587" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="316.292" y1="36" x2="316.292" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="326.947" y1="36" x2="326.947" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="338.292" y1="36" x2="338.292" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="350" y1="36" x2="350" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="361.708" y1="36" x2="361.708" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="373.053" y1="36" x2="373.053" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="383.708" y1="36" x2="383.708" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="393.413" y1="36" x2="393.413" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="402" y1="36" x2="402" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="409.413" y1="36" x2="409.413" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="415.708" y1="36" x2="415.708" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="421.053" y1="36" x2="421.053" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="425.708" y1="36" x2="425.708" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="430" y1="36" x2="430" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="434.292" y1="36" x2="434.292" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="438.947" y1="36" x2="438.947" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="444.292" y1="36" x2="444.292" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="450.587" y1="36" x2="450.587" y2="94" stroke="var(--physics)" stroke-width="1.6"/><line x1="458" y1="36" x2="458" y2="94" stroke="var(--physics)" stroke-width="1.6"/><text x="110" y="24" font-size="12" fill="var(--force)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">C</text><text x="270" y="24" font-size="12" fill="var(--force)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">C</text><text x="430" y="24" font-size="12" fill="var(--force)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">C</text><text x="190" y="24" font-size="12" fill="var(--chem)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">R</text><text x="350" y="24" font-size="12" fill="var(--chem)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">R</text><path d="M40 45 L40 88 M52 45 L52 88 M40 88 Q46 98 52 88 M46 96 L46 118" fill="none" stroke="var(--muted)" stroke-width="3"/><line x1="64" y1="180" x2="482" y2="180" stroke="var(--muted)" stroke-width="1.4"/><text x="60" y="184" font-size="10" fill="var(--muted)" text-anchor="end" font-family="JetBrains Mono, monospace">normal</text><text x="60" y="158" font-size="10" fill="var(--muted)" text-anchor="end" font-family="JetBrains Mono, monospace">high</text><text x="60" y="210" font-size="10" fill="var(--muted)" text-anchor="end" font-family="JetBrains Mono, monospace">low</text><polyline points="70.0,180.0 72.0,178.0 74.0,175.9 76.0,173.9 78.0,172.0 80.0,170.1 82.0,168.2 84.0,166.4 86.0,164.7 88.0,163.1 90.0,161.6 92.0,160.2 94.0,159.0 96.0,157.8 98.0,156.8 100.0,156.0 102.0,155.3 104.0,154.7 106.0,154.3 108.0,154.1 110.0,154.0 112.0,154.1 114.0,154.3 116.0,154.7 118.0,155.3 120.0,156.0 122.0,156.8 124.0,157.8 126.0,159.0 128.0,160.2 130.0,161.6 132.0,163.1 134.0,164.7 136.0,166.4 138.0,168.2 140.0,170.1 142.0,172.0 144.0,173.9 146.0,175.9 148.0,178.0 150.0,180.0 152.0,182.0 154.0,184.1 156.0,186.1 158.0,188.0 160.0,189.9 162.0,191.8 164.0,193.6 166.0,195.3 168.0,196.9 170.0,198.4 172.0,199.8 174.0,201.0 176.0,202.2 178.0,203.2 180.0,204.0 182.0,204.7 184.0,205.3 186.0,205.7 188.0,205.9 190.0,206.0 192.0,205.9 194.0,205.7 196.0,205.3 198.0,204.7 200.0,204.0 202.0,203.2 204.0,202.2 206.0,201.0 208.0,199.8 210.0,198.4 212.0,196.9 214.0,195.3 216.0,193.6 218.0,191.8 220.0,189.9 222.0,188.0 224.0,186.1 226.0,184.1 228.0,182.0 230.0,180.0 232.0,178.0 234.0,175.9 236.0,173.9 238.0,172.0 240.0,170.1 242.0,168.2 244.0,166.4 246.0,164.7 248.0,163.1 250.0,161.6 252.0,160.2 254.0,159.0 256.0,157.8 258.0,156.8 260.0,156.0 262.0,155.3 264.0,154.7 266.0,154.3 268.0,154.1 270.0,154.0 272.0,154.1 274.0,154.3 276.0,154.7 278.0,155.3 280.0,156.0 282.0,156.8 284.0,157.8 286.0,159.0 288.0,160.2 290.0,161.6 292.0,163.1 294.0,164.7 296.0,166.4 298.0,168.2 300.0,170.1 302.0,172.0 304.0,173.9 306.0,175.9 308.0,178.0 310.0,180.0 312.0,182.0 314.0,184.1 316.0,186.1 318.0,188.0 320.0,189.9 322.0,191.8 324.0,193.6 326.0,195.3 328.0,196.9 330.0,198.4 332.0,199.8 334.0,201.0 336.0,202.2 338.0,203.2 340.0,204.0 342.0,204.7 344.0,205.3 346.0,205.7 348.0,205.9 350.0,206.0 352.0,205.9 354.0,205.7 356.0,205.3 358.0,204.7 360.0,204.0 362.0,203.2 364.0,202.2 366.0,201.0 368.0,199.8 370.0,198.4 372.0,196.9 374.0,195.3 376.0,193.6 378.0,191.8 380.0,189.9 382.0,188.0 384.0,186.1 386.0,184.1 388.0,182.0 390.0,180.0 392.0,178.0 394.0,175.9 396.0,173.9 398.0,172.0 400.0,170.1 402.0,168.2 404.0,166.4 406.0,164.7 408.0,163.1 410.0,161.6 412.0,160.2 414.0,159.0 416.0,157.8 418.0,156.8 420.0,156.0 422.0,155.3 424.0,154.7 426.0,154.3 428.0,154.1 430.0,154.0 432.0,154.1 434.0,154.3 436.0,154.7 438.0,155.3 440.0,156.0 442.0,156.8 444.0,157.8 446.0,159.0 448.0,160.2 450.0,161.6 452.0,163.1 454.0,164.7 456.0,166.4 458.0,168.2 460.0,170.1 462.0,172.0 464.0,173.9 466.0,175.9 468.0,178.0 470.0,180.0" fill="none" stroke="var(--physics)" stroke-width="2.4"/><line x1="110" y1="100" x2="110" y2="154" stroke="var(--force)" stroke-width="1" stroke-dasharray="3 3"/><line x1="270" y1="100" x2="270" y2="154" stroke="var(--force)" stroke-width="1" stroke-dasharray="3 3"/><line x1="430" y1="100" x2="430" y2="154" stroke="var(--force)" stroke-width="1" stroke-dasharray="3 3"/><line x1="190" y1="228" x2="116" y2="228" stroke="var(--bright)" stroke-width="1.2"/><polygon points="110.0,228.0 116.0,224.7 116.0,231.3" fill="var(--bright)"/><line x1="190" y1="228" x2="264" y2="228" stroke="var(--bright)" stroke-width="1.2"/><polygon points="270.0,228.0 264.0,231.3 264.0,224.7" fill="var(--bright)"/><text x="190" y="222" font-size="11" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace">λ  (C to next C)</text><line x1="400" y1="228" x2="455" y2="228" stroke="var(--bright)" stroke-width="1.6"/><polygon points="462.0,228.0 455.0,231.8 455.0,224.2" fill="var(--bright)"/><text x="392" y="232" font-size="10.5" fill="var(--muted)" text-anchor="end" font-family="JetBrains Mono, monospace">wave travels</text><text x="270" y="258" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace">density (or pressure) of the air along the wave</text></svg><figcaption>The top strip is air: each line is a layer of particles. They crowd together at each
+    <b>C</b> and spread out at each <b>R</b>. The graph under it is the same wave drawn as <b>density (or pressure)
+    against distance</b> — the way NCERT draws it — with its peaks at the compressions and its troughs at the rarefactions.
+    One wavelength λ is the distance from one C to the next C (or one R to the next R). <b>C to the nearest R is only
+    λ/2.</b></figcaption></figure>
+
+    <div class="box def">
+      <h4>Mechanical — and reading the wave picture (2024-U Q13)</h4>
+      <p>A wave that needs a material medium is a <b>mechanical wave</b>. Sound is <b>mechanical and longitudinal</b> —
+      2017-E Q1's answer, word for word. Light is <em>non</em>-mechanical (it crosses the vacuum of space) and transverse.</p>
+      <p>When the wave is drawn as a curve over a <b>dashed mean line</b>, the mean line is the <b>undisturbed
+      (atmospheric) pressure</b>. A point <b>above</b> it — a crest — is <b>increased pressure</b>, a compression; a point
+      <b>below</b> it — a trough — is <b>decreased pressure</b>, a rarefaction. A point on the line itself is at
+      atmospheric pressure. Read the side of the line, not just the distance from it.</p>
+    </div>
+
+    <div class="box def">
+      <h4>Longitudinal and transverse</h4>
+      <p><b>Longitudinal wave</b>: the particles of the medium move <b>parallel</b> to the direction in which the
+      disturbance travels. Sound in air (and in any fluid) is longitudinal.</p>
+      <p><b>Transverse wave</b>: the particles move <b>perpendicular</b> to the direction of travel — a ripple on water,
+      a wave along a shaken rope. <b>Light is a transverse wave</b>, but it is not mechanical: it needs no medium.</p>
+    </div>
+
+    <div class="box trap">
+      <h4>Three slips Allen plants here</h4>
+      <ul>
+        <li>"The air particles travel from the source to the ear" — <b>false</b>; only the disturbance (and the energy)
+        travels.</li>
+        <li>"Sound can travel through vacuum, only more slowly" — <b>false</b>; it cannot travel at all.</li>
+        <li>"The distance between a compression and the next rarefaction is one wavelength" — <b>false</b>; it is
+        <b>half</b> a wavelength. This single slip doubles or halves every number that follows from it.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>Describing a wave: λ, f, T, A — and v = fλ</h2>
+    <p class="lede">Five quantities and one equation. Learn which property of the <em>sound you hear</em> each one
+    controls — that pairing is the statement item Allen sets most.</p>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Quantity</th><th>Meaning (NCERT)</th><th>Unit</th><th>What you hear</th></tr></thead>
+      <tbody>
+        <tr><td><b>Wavelength</b> λ</td><td>distance between two consecutive compressions (or rarefactions)</td><td class="mono">m</td><td>—</td></tr>
+        <tr><td><b>Frequency</b> f<br><span style="font-size:12px;color:var(--muted)">NCERT writes ν (nu); this page writes f so it never looks like v</span></td><td>number of oscillations (of the density) per unit time — the number of compressions passing a point each second</td><td class="mono">Hz</td><td><b>pitch</b></td></tr>
+        <tr><td><b>Time period</b> T</td><td>time for one complete oscillation; the time between two consecutive compressions passing a point</td><td class="mono">s</td><td>—</td></tr>
+        <tr><td><b>Amplitude</b> A</td><td>the magnitude of the maximum disturbance in the medium on either side of the mean value</td><td class="mono">(of density, pressure or displacement)</td><td><b>loudness</b></td></tr>
+        <tr><td><b>Speed</b> v</td><td>distance travelled by a point on the wave (a compression, say) per unit time</td><td class="mono">m/s</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">f = 1 / T</div><div class="wh">T = 2 ms → f = 500 Hz. T = 1/340 s → 340 Hz.</div></div>
+      <div class="fx"><div class="eq">v = f λ = λ / T</div><div class="wh">The wave moves one wavelength in one time period. <b>Holds for every wave</b>, sound or light.</div></div>
+    </div>
+
+    <div class="box trap">
+      <h4>The two counting traps (2018-S Q1, Sample Q1)</h4>
+      <ul>
+        <li><b>"Per minute."</b> Frequency is per <em>second</em>. 54 waves a minute is 54/60 = 0.9 Hz, not 54 Hz — with λ = 10 m,
+        v = 9 m/s, not 540 m/s.</li>
+        <li><b>"Three consecutive troughs."</b> Count the <em>gaps</em>, not the troughs: three troughs have two gaps between
+        them, so they span <b>2λ</b>. Four consecutive compressions span 3λ. n crests span (n − 1)λ.</li>
+        <li><b>A snapshot with a marked span.</b> Count the complete waves (one crest + one trough each) inside the span:
+        <b>λ = span ÷ number of complete waves</b>. Three waves in 1.5 m → λ = 0.5 m.</li>
+      </ul>
+      <p>v = fλ holds for <b>every</b> wave — Allen set both of these on water and string waves, inside the Sound topic.</p>
+    </div>
+
+    <figure><svg viewBox="0 0 480 228" width="480" height="228" role="img" aria-label="A wave graph against time: the curve rises and falls about the zero line; the height from the zero line to a crest is marked A for amplitude, and the time between two neighbouring crests is marked T for one full oscillation, the time period"><line x1="60" y1="218" x2="60" y2="31" stroke="var(--muted)" stroke-width="1.4"/><polygon points="60.0,24.0 63.9,31.0 56.1,31.0" fill="var(--muted)"/><line x1="60" y1="128" x2="459" y2="128" stroke="var(--muted)" stroke-width="1.4"/><polygon points="466.0,128.0 459.0,131.8 459.0,124.2" fill="var(--muted)"/><text x="68" y="16" font-size="10.5" fill="var(--muted)" text-anchor="start" font-family="JetBrains Mono, monospace">density / pressure (or displacement)</text><text x="464" y="146" font-size="10.5" fill="var(--muted)" text-anchor="end" font-family="JetBrains Mono, monospace">time</text><polyline points="60.0,128.0 61.0,125.5 62.0,123.0 63.0,120.5 64.0,118.0 65.0,115.5 66.0,113.1 67.0,110.7 68.0,108.3 69.0,105.9 70.0,103.6 71.0,101.3 72.0,99.1 73.0,96.9 74.0,94.8 75.0,92.7 76.0,90.7 77.0,88.8 78.0,86.9 79.0,85.1 80.0,83.4 81.0,81.8 82.0,80.2 83.0,78.7 84.0,77.3 85.0,76.0 86.0,74.8 87.0,73.7 88.0,72.7 89.0,71.8 90.0,70.9 91.0,70.2 92.0,69.6 93.0,69.1 94.0,68.6 95.0,68.3 96.0,68.1 97.0,68.0 98.0,68.0 99.0,68.1 100.0,68.3 101.0,68.6 102.0,69.1 103.0,69.6 104.0,70.2 105.0,70.9 106.0,71.8 107.0,72.7 108.0,73.7 109.0,74.8 110.0,76.0 111.0,77.3 112.0,78.7 113.0,80.2 114.0,81.8 115.0,83.4 116.0,85.1 117.0,86.9 118.0,88.8 119.0,90.7 120.0,92.7 121.0,94.8 122.0,96.9 123.0,99.1 124.0,101.3 125.0,103.6 126.0,105.9 127.0,108.3 128.0,110.7 129.0,113.1 130.0,115.5 131.0,118.0 132.0,120.5 133.0,123.0 134.0,125.5 135.0,128.0 136.0,130.5 137.0,133.0 138.0,135.5 139.0,138.0 140.0,140.5 141.0,142.9 142.0,145.3 143.0,147.7 144.0,150.1 145.0,152.4 146.0,154.7 147.0,156.9 148.0,159.1 149.0,161.2 150.0,163.3 151.0,165.3 152.0,167.2 153.0,169.1 154.0,170.9 155.0,172.6 156.0,174.2 157.0,175.8 158.0,177.3 159.0,178.7 160.0,180.0 161.0,181.2 162.0,182.3 163.0,183.3 164.0,184.2 165.0,185.1 166.0,185.8 167.0,186.4 168.0,186.9 169.0,187.4 170.0,187.7 171.0,187.9 172.0,188.0 173.0,188.0 174.0,187.9 175.0,187.7 176.0,187.4 177.0,186.9 178.0,186.4 179.0,185.8 180.0,185.1 181.0,184.2 182.0,183.3 183.0,182.3 184.0,181.2 185.0,180.0 186.0,178.7 187.0,177.3 188.0,175.8 189.0,174.2 190.0,172.6 191.0,170.9 192.0,169.1 193.0,167.2 194.0,165.3 195.0,163.3 196.0,161.2 197.0,159.1 198.0,156.9 199.0,154.7 200.0,152.4 201.0,150.1 202.0,147.7 203.0,145.3 204.0,142.9 205.0,140.5 206.0,138.0 207.0,135.5 208.0,133.0 209.0,130.5 210.0,128.0 211.0,125.5 212.0,123.0 213.0,120.5 214.0,118.0 215.0,115.5 216.0,113.1 217.0,110.7 218.0,108.3 219.0,105.9 220.0,103.6 221.0,101.3 222.0,99.1 223.0,96.9 224.0,94.8 225.0,92.7 226.0,90.7 227.0,88.8 228.0,86.9 229.0,85.1 230.0,83.4 231.0,81.8 232.0,80.2 233.0,78.7 234.0,77.3 235.0,76.0 236.0,74.8 237.0,73.7 238.0,72.7 239.0,71.8 240.0,70.9 241.0,70.2 242.0,69.6 243.0,69.1 244.0,68.6 245.0,68.3 246.0,68.1 247.0,68.0 248.0,68.0 249.0,68.1 250.0,68.3 251.0,68.6 252.0,69.1 253.0,69.6 254.0,70.2 255.0,70.9 256.0,71.8 257.0,72.7 258.0,73.7 259.0,74.8 260.0,76.0 261.0,77.3 262.0,78.7 263.0,80.2 264.0,81.8 265.0,83.4 266.0,85.1 267.0,86.9 268.0,88.8 269.0,90.7 270.0,92.7 271.0,94.8 272.0,96.9 273.0,99.1 274.0,101.3 275.0,103.6 276.0,105.9 277.0,108.3 278.0,110.7 279.0,113.1 280.0,115.5 281.0,118.0 282.0,120.5 283.0,123.0 284.0,125.5 285.0,128.0 286.0,130.5 287.0,133.0 288.0,135.5 289.0,138.0 290.0,140.5 291.0,142.9 292.0,145.3 293.0,147.7 294.0,150.1 295.0,152.4 296.0,154.7 297.0,156.9 298.0,159.1 299.0,161.2 300.0,163.3 301.0,165.3 302.0,167.2 303.0,169.1 304.0,170.9 305.0,172.6 306.0,174.2 307.0,175.8 308.0,177.3 309.0,178.7 310.0,180.0 311.0,181.2 312.0,182.3 313.0,183.3 314.0,184.2 315.0,185.1 316.0,185.8 317.0,186.4 318.0,186.9 319.0,187.4 320.0,187.7 321.0,187.9 322.0,188.0 323.0,188.0 324.0,187.9 325.0,187.7 326.0,187.4 327.0,186.9 328.0,186.4 329.0,185.8 330.0,185.1 331.0,184.2 332.0,183.3 333.0,182.3 334.0,181.2 335.0,180.0 336.0,178.7 337.0,177.3 338.0,175.8 339.0,174.2 340.0,172.6 341.0,170.9 342.0,169.1 343.0,167.2 344.0,165.3 345.0,163.3 346.0,161.2 347.0,159.1 348.0,156.9 349.0,154.7 350.0,152.4 351.0,150.1 352.0,147.7 353.0,145.3 354.0,142.9 355.0,140.5 356.0,138.0 357.0,135.5 358.0,133.0 359.0,130.5 360.0,128.0 361.0,125.5 362.0,123.0 363.0,120.5 364.0,118.0 365.0,115.5 366.0,113.1 367.0,110.7 368.0,108.3 369.0,105.9 370.0,103.6 371.0,101.3 372.0,99.1 373.0,96.9 374.0,94.8 375.0,92.7 376.0,90.7 377.0,88.8 378.0,86.9 379.0,85.1 380.0,83.4 381.0,81.8 382.0,80.2 383.0,78.7 384.0,77.3 385.0,76.0 386.0,74.8 387.0,73.7 388.0,72.7 389.0,71.8 390.0,70.9 391.0,70.2 392.0,69.6 393.0,69.1 394.0,68.6 395.0,68.3 396.0,68.1 397.0,68.0 398.0,68.0 399.0,68.1 400.0,68.3 401.0,68.6 402.0,69.1 403.0,69.6 404.0,70.2 405.0,70.9 406.0,71.8 407.0,72.7 408.0,73.7 409.0,74.8 410.0,76.0 411.0,77.3 412.0,78.7 413.0,80.2 414.0,81.8 415.0,83.4" fill="none" stroke="var(--physics)" stroke-width="2.6"/><line x1="97.5" y1="68" x2="97.5" y2="50" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/><line x1="247.5" y1="68" x2="247.5" y2="50" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/><line x1="172.5" y1="56" x2="103.5" y2="56" stroke="var(--bright)" stroke-width="1.2"/><polygon points="97.5,56.0 103.5,52.7 103.5,59.3" fill="var(--bright)"/><line x1="172.5" y1="56" x2="241.5" y2="56" stroke="var(--bright)" stroke-width="1.2"/><polygon points="247.5,56.0 241.5,59.3 241.5,52.7" fill="var(--bright)"/><text x="172.5" y="50" font-size="11" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace">T  (one full oscillation)</text><line x1="97.5" y1="128" x2="97.5" y2="68" stroke="var(--force)" stroke-width="1.2"/><line x1="97.5" y1="98" x2="97.5" y2="75" stroke="var(--force)" stroke-width="1.4"/><polygon points="97.5,69.0 100.8,75.0 94.2,75.0" fill="var(--force)"/><line x1="97.5" y1="98" x2="97.5" y2="121" stroke="var(--force)" stroke-width="1.4"/><polygon points="97.5,127.0 94.2,121.0 100.8,121.0" fill="var(--force)"/><text x="105.5" y="102" font-size="12" fill="var(--force)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">A</text><text x="54" y="132" font-size="10" fill="var(--muted)" text-anchor="end" font-family="JetBrains Mono, monospace">0</text></svg><figcaption>The same shape drawn against <b>time</b> at one place. Now the horizontal gap between
+    two crests is the <b>time period T</b>, not the wavelength. <b>Read the axis label before you read the graph</b>: against
+    distance, crest-to-crest is λ; against time, it is T.</figcaption></figure>
+
+    <h3>Pitch, loudness and quality</h3>
+    <ul>
+      <li><b>Pitch</b> is how the brain reads <b>frequency</b>: faster vibration → higher frequency → higher pitch. A
+      woman's or a child's voice is usually higher-pitched than a man's; a bird's note higher than a lion's roar.</li>
+      <li><b>Loudness</b> is how the ear senses the <b>amplitude</b>: a harder strike moves more energy, gives a larger
+      amplitude and a louder sound. NCERT: loudness is a measure of the response of the ear to the sound. Loudness is
+      usually expressed in <b>decibels (dB)</b>. As a sound travels away from its source, its amplitude — and loudness —
+      falls.</li>
+      <li><b>Quality or timbre</b> is what lets you tell two sources apart when they play the <b>same pitch at the same
+      loudness</b> — a sitar and a flute on the same note. It depends on the <b>shape of the wave</b>.</li>
+      <li>A sound of a <b>single frequency</b> is a <b>tone</b>; a sound made of <b>several frequencies</b> is a
+      <b>note</b> and is pleasant to listen to. <b>Noise</b> is unpleasant to the ear. <b>Music</b> is pleasant to hear
+      and of rich quality.</li>
+    </ul>
+    <figure><svg viewBox="0 0 470 302" width="470" height="302" role="img" aria-label="Four wave traces over the same time window: the two on the right have more waves than those on the left, which means higher frequency and higher pitch; the two on the bottom are taller than those on top, which means larger amplitude and a louder sound"><rect x="20" y="30" width="200" height="80" rx="6" fill="none" stroke="var(--border)"/><line x1="26" y1="70" x2="214" y2="70" stroke="var(--border)" stroke-width="1"/><polyline points="28.0,70.0 29.0,69.0 30.0,68.1 31.0,67.2 32.0,66.2 33.0,65.3 34.0,64.4 35.0,63.6 36.0,62.7 37.0,61.9 38.0,61.2 39.0,60.4 40.0,59.8 41.0,59.1 42.0,58.6 43.0,58.0 44.0,57.6 45.0,57.2 46.0,56.8 47.0,56.5 48.0,56.3 49.0,56.1 50.0,56.0 51.0,56.0 52.0,56.0 53.0,56.1 54.0,56.3 55.0,56.5 56.0,56.8 57.0,57.2 58.0,57.6 59.0,58.0 60.0,58.6 61.0,59.1 62.0,59.8 63.0,60.4 64.0,61.2 65.0,61.9 66.0,62.7 67.0,63.6 68.0,64.4 69.0,65.3 70.0,66.2 71.0,67.2 72.0,68.1 73.0,69.0 74.0,70.0 75.0,71.0 76.0,71.9 77.0,72.8 78.0,73.8 79.0,74.7 80.0,75.6 81.0,76.4 82.0,77.3 83.0,78.1 84.0,78.8 85.0,79.6 86.0,80.2 87.0,80.9 88.0,81.4 89.0,82.0 90.0,82.4 91.0,82.8 92.0,83.2 93.0,83.5 94.0,83.7 95.0,83.9 96.0,84.0 97.0,84.0 98.0,84.0 99.0,83.9 100.0,83.7 101.0,83.5 102.0,83.2 103.0,82.8 104.0,82.4 105.0,82.0 106.0,81.4 107.0,80.9 108.0,80.2 109.0,79.6 110.0,78.8 111.0,78.1 112.0,77.3 113.0,76.4 114.0,75.6 115.0,74.7 116.0,73.8 117.0,72.8 118.0,71.9 119.0,71.0 120.0,70.0 121.0,69.0 122.0,68.1 123.0,67.2 124.0,66.2 125.0,65.3 126.0,64.4 127.0,63.6 128.0,62.7 129.0,61.9 130.0,61.2 131.0,60.4 132.0,59.8 133.0,59.1 134.0,58.6 135.0,58.0 136.0,57.6 137.0,57.2 138.0,56.8 139.0,56.5 140.0,56.3 141.0,56.1 142.0,56.0 143.0,56.0 144.0,56.0 145.0,56.1 146.0,56.3 147.0,56.5 148.0,56.8 149.0,57.2 150.0,57.6 151.0,58.0 152.0,58.6 153.0,59.1 154.0,59.8 155.0,60.4 156.0,61.2 157.0,61.9 158.0,62.7 159.0,63.6 160.0,64.4 161.0,65.3 162.0,66.2 163.0,67.2 164.0,68.1 165.0,69.0 166.0,70.0 167.0,71.0 168.0,71.9 169.0,72.8 170.0,73.8 171.0,74.7 172.0,75.6 173.0,76.4 174.0,77.3 175.0,78.1 176.0,78.8 177.0,79.6 178.0,80.2 179.0,80.9 180.0,81.4 181.0,82.0 182.0,82.4 183.0,82.8 184.0,83.2 185.0,83.5 186.0,83.7 187.0,83.9 188.0,84.0 189.0,84.0 190.0,84.0 191.0,83.9 192.0,83.7 193.0,83.5 194.0,83.2 195.0,82.8 196.0,82.4 197.0,82.0 198.0,81.4 199.0,80.9 200.0,80.2 201.0,79.6 202.0,78.8 203.0,78.1 204.0,77.3 205.0,76.4 206.0,75.6 207.0,74.7 208.0,73.8 209.0,72.8 210.0,71.9 211.0,71.0 212.0,70.0" fill="none" stroke="var(--physics)" stroke-width="2.2"/><text x="120" y="22" font-size="11.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">low pitch, soft</text><text x="120" y="126" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace">2 waves · small A</text><rect x="250" y="30" width="200" height="80" rx="6" fill="none" stroke="var(--border)"/><line x1="256" y1="70" x2="444" y2="70" stroke="var(--border)" stroke-width="1"/><polyline points="258.0,70.0 259.0,67.6 260.0,65.3 261.0,63.1 262.0,61.2 263.0,59.4 264.0,58.0 265.0,57.0 266.0,56.3 267.0,56.0 268.0,56.1 269.0,56.7 270.0,57.6 271.0,58.8 272.0,60.4 273.0,62.3 274.0,64.4 275.0,66.7 276.0,69.0 277.0,71.4 278.0,73.8 279.0,76.0 280.0,78.1 281.0,79.9 282.0,81.4 283.0,82.6 284.0,83.5 285.0,83.9 286.0,84.0 287.0,83.6 288.0,82.8 289.0,81.7 290.0,80.2 291.0,78.5 292.0,76.4 293.0,74.2 294.0,71.9 295.0,69.5 296.0,67.2 297.0,64.9 298.0,62.7 299.0,60.8 300.0,59.1 301.0,57.8 302.0,56.8 303.0,56.2 304.0,56.0 305.0,56.2 306.0,56.8 307.0,57.8 308.0,59.1 309.0,60.8 310.0,62.7 311.0,64.9 312.0,67.2 313.0,69.5 314.0,71.9 315.0,74.2 316.0,76.4 317.0,78.5 318.0,80.2 319.0,81.7 320.0,82.8 321.0,83.6 322.0,84.0 323.0,83.9 324.0,83.5 325.0,82.6 326.0,81.4 327.0,79.9 328.0,78.1 329.0,76.0 330.0,73.8 331.0,71.4 332.0,69.0 333.0,66.7 334.0,64.4 335.0,62.3 336.0,60.4 337.0,58.8 338.0,57.6 339.0,56.7 340.0,56.1 341.0,56.0 342.0,56.3 343.0,57.0 344.0,58.0 345.0,59.4 346.0,61.2 347.0,63.1 348.0,65.3 349.0,67.6 350.0,70.0 351.0,72.4 352.0,74.7 353.0,76.9 354.0,78.8 355.0,80.6 356.0,82.0 357.0,83.0 358.0,83.7 359.0,84.0 360.0,83.9 361.0,83.3 362.0,82.4 363.0,81.2 364.0,79.6 365.0,77.7 366.0,75.6 367.0,73.3 368.0,71.0 369.0,68.6 370.0,66.2 371.0,64.0 372.0,61.9 373.0,60.1 374.0,58.6 375.0,57.4 376.0,56.5 377.0,56.1 378.0,56.0 379.0,56.4 380.0,57.2 381.0,58.3 382.0,59.8 383.0,61.5 384.0,63.6 385.0,65.8 386.0,68.1 387.0,70.5 388.0,72.8 389.0,75.1 390.0,77.3 391.0,79.2 392.0,80.9 393.0,82.2 394.0,83.2 395.0,83.8 396.0,84.0 397.0,83.8 398.0,83.2 399.0,82.2 400.0,80.9 401.0,79.2 402.0,77.3 403.0,75.1 404.0,72.8 405.0,70.5 406.0,68.1 407.0,65.8 408.0,63.6 409.0,61.5 410.0,59.8 411.0,58.3 412.0,57.2 413.0,56.4 414.0,56.0 415.0,56.1 416.0,56.5 417.0,57.4 418.0,58.6 419.0,60.1 420.0,61.9 421.0,64.0 422.0,66.2 423.0,68.6 424.0,71.0 425.0,73.3 426.0,75.6 427.0,77.7 428.0,79.6 429.0,81.2 430.0,82.4 431.0,83.3 432.0,83.9 433.0,84.0 434.0,83.7 435.0,83.0 436.0,82.0 437.0,80.6 438.0,78.8 439.0,76.9 440.0,74.7 441.0,72.4 442.0,70.0" fill="none" stroke="var(--physics)" stroke-width="2.2"/><text x="350" y="22" font-size="11.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">HIGH pitch, soft</text><text x="350" y="126" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace">5 waves · same A</text><rect x="20" y="170" width="200" height="80" rx="6" fill="none" stroke="var(--border)"/><line x1="26" y1="210" x2="214" y2="210" stroke="var(--border)" stroke-width="1"/><polyline points="28.0,210.0 29.0,207.8 30.0,205.6 31.0,203.5 32.0,201.4 33.0,199.3 34.0,197.3 35.0,195.3 36.0,193.4 37.0,191.5 38.0,189.8 39.0,188.2 40.0,186.6 41.0,185.2 42.0,183.9 43.0,182.7 44.0,181.6 45.0,180.6 46.0,179.8 47.0,179.2 48.0,178.7 49.0,178.3 50.0,178.1 51.0,178.0 52.0,178.1 53.0,178.3 54.0,178.7 55.0,179.2 56.0,179.8 57.0,180.6 58.0,181.6 59.0,182.7 60.0,183.9 61.0,185.2 62.0,186.6 63.0,188.2 64.0,189.8 65.0,191.5 66.0,193.4 67.0,195.3 68.0,197.3 69.0,199.3 70.0,201.4 71.0,203.5 72.0,205.6 73.0,207.8 74.0,210.0 75.0,212.2 76.0,214.4 77.0,216.5 78.0,218.6 79.0,220.7 80.0,222.7 81.0,224.7 82.0,226.6 83.0,228.5 84.0,230.2 85.0,231.8 86.0,233.4 87.0,234.8 88.0,236.1 89.0,237.3 90.0,238.4 91.0,239.4 92.0,240.2 93.0,240.8 94.0,241.3 95.0,241.7 96.0,241.9 97.0,242.0 98.0,241.9 99.0,241.7 100.0,241.3 101.0,240.8 102.0,240.2 103.0,239.4 104.0,238.4 105.0,237.3 106.0,236.1 107.0,234.8 108.0,233.4 109.0,231.8 110.0,230.2 111.0,228.5 112.0,226.6 113.0,224.7 114.0,222.7 115.0,220.7 116.0,218.6 117.0,216.5 118.0,214.4 119.0,212.2 120.0,210.0 121.0,207.8 122.0,205.6 123.0,203.5 124.0,201.4 125.0,199.3 126.0,197.3 127.0,195.3 128.0,193.4 129.0,191.5 130.0,189.8 131.0,188.2 132.0,186.6 133.0,185.2 134.0,183.9 135.0,182.7 136.0,181.6 137.0,180.6 138.0,179.8 139.0,179.2 140.0,178.7 141.0,178.3 142.0,178.1 143.0,178.0 144.0,178.1 145.0,178.3 146.0,178.7 147.0,179.2 148.0,179.8 149.0,180.6 150.0,181.6 151.0,182.7 152.0,183.9 153.0,185.2 154.0,186.6 155.0,188.2 156.0,189.8 157.0,191.5 158.0,193.4 159.0,195.3 160.0,197.3 161.0,199.3 162.0,201.4 163.0,203.5 164.0,205.6 165.0,207.8 166.0,210.0 167.0,212.2 168.0,214.4 169.0,216.5 170.0,218.6 171.0,220.7 172.0,222.7 173.0,224.7 174.0,226.6 175.0,228.5 176.0,230.2 177.0,231.8 178.0,233.4 179.0,234.8 180.0,236.1 181.0,237.3 182.0,238.4 183.0,239.4 184.0,240.2 185.0,240.8 186.0,241.3 187.0,241.7 188.0,241.9 189.0,242.0 190.0,241.9 191.0,241.7 192.0,241.3 193.0,240.8 194.0,240.2 195.0,239.4 196.0,238.4 197.0,237.3 198.0,236.1 199.0,234.8 200.0,233.4 201.0,231.8 202.0,230.2 203.0,228.5 204.0,226.6 205.0,224.7 206.0,222.7 207.0,220.7 208.0,218.6 209.0,216.5 210.0,214.4 211.0,212.2 212.0,210.0" fill="none" stroke="var(--physics)" stroke-width="2.2"/><text x="120" y="162" font-size="11.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">low pitch, LOUD</text><text x="120" y="266" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace">2 waves · big A</text><rect x="250" y="170" width="200" height="80" rx="6" fill="none" stroke="var(--border)"/><line x1="256" y1="210" x2="444" y2="210" stroke="var(--border)" stroke-width="1"/><polyline points="258.0,210.0 259.0,204.6 260.0,199.3 261.0,194.3 262.0,189.8 263.0,185.9 264.0,182.7 265.0,180.2 266.0,178.7 267.0,178.0 268.0,178.3 269.0,179.5 270.0,181.6 271.0,184.5 272.0,188.2 273.0,192.4 274.0,197.3 275.0,202.4 276.0,207.8 277.0,213.3 278.0,218.6 279.0,223.7 280.0,228.5 281.0,232.6 282.0,236.1 283.0,238.9 284.0,240.8 285.0,241.8 286.0,241.9 287.0,241.1 288.0,239.4 289.0,236.8 290.0,233.4 291.0,229.3 292.0,224.7 293.0,219.7 294.0,214.4 295.0,208.9 296.0,203.5 297.0,198.3 298.0,193.4 299.0,189.0 300.0,185.2 301.0,182.1 302.0,179.8 303.0,178.5 304.0,178.0 305.0,178.5 306.0,179.8 307.0,182.1 308.0,185.2 309.0,189.0 310.0,193.4 311.0,198.3 312.0,203.5 313.0,208.9 314.0,214.4 315.0,219.7 316.0,224.7 317.0,229.3 318.0,233.4 319.0,236.8 320.0,239.4 321.0,241.1 322.0,241.9 323.0,241.8 324.0,240.8 325.0,238.9 326.0,236.1 327.0,232.6 328.0,228.5 329.0,223.7 330.0,218.6 331.0,213.3 332.0,207.8 333.0,202.4 334.0,197.3 335.0,192.4 336.0,188.2 337.0,184.5 338.0,181.6 339.0,179.5 340.0,178.3 341.0,178.0 342.0,178.7 343.0,180.2 344.0,182.7 345.0,185.9 346.0,189.8 347.0,194.3 348.0,199.3 349.0,204.6 350.0,210.0 351.0,215.4 352.0,220.7 353.0,225.7 354.0,230.2 355.0,234.1 356.0,237.3 357.0,239.8 358.0,241.3 359.0,242.0 360.0,241.7 361.0,240.5 362.0,238.4 363.0,235.5 364.0,231.8 365.0,227.6 366.0,222.7 367.0,217.6 368.0,212.2 369.0,206.7 370.0,201.4 371.0,196.3 372.0,191.5 373.0,187.4 374.0,183.9 375.0,181.1 376.0,179.2 377.0,178.2 378.0,178.1 379.0,178.9 380.0,180.6 381.0,183.2 382.0,186.6 383.0,190.7 384.0,195.3 385.0,200.3 386.0,205.6 387.0,211.1 388.0,216.5 389.0,221.7 390.0,226.6 391.0,231.0 392.0,234.8 393.0,237.9 394.0,240.2 395.0,241.5 396.0,242.0 397.0,241.5 398.0,240.2 399.0,237.9 400.0,234.8 401.0,231.0 402.0,226.6 403.0,221.7 404.0,216.5 405.0,211.1 406.0,205.6 407.0,200.3 408.0,195.3 409.0,190.7 410.0,186.6 411.0,183.2 412.0,180.6 413.0,178.9 414.0,178.1 415.0,178.2 416.0,179.2 417.0,181.1 418.0,183.9 419.0,187.4 420.0,191.5 421.0,196.3 422.0,201.4 423.0,206.7 424.0,212.2 425.0,217.6 426.0,222.7 427.0,227.6 428.0,231.8 429.0,235.5 430.0,238.4 431.0,240.5 432.0,241.7 433.0,242.0 434.0,241.3 435.0,239.8 436.0,237.3 437.0,234.1 438.0,230.2 439.0,225.7 440.0,220.7 441.0,215.4 442.0,210.0" fill="none" stroke="var(--physics)" stroke-width="2.2"/><text x="350" y="162" font-size="11.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">HIGH pitch, LOUD</text><text x="350" y="266" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace">5 waves · big A</text><text x="235" y="292" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace">across → frequency (pitch) · down → amplitude (loudness)</text></svg><figcaption>Pitch and loudness are independent. Across: same height, more waves in the same time →
+    higher frequency → higher pitch. Down: same number of waves, taller → larger amplitude → louder. Neither changes the
+    speed — in air all four travel at the same v.</figcaption></figure>
+
+    <div class="box trap">
+      <h4>The pairing Allen tests — and swaps</h4>
+      <p><b>Pitch ↔ frequency. Loudness ↔ amplitude. Quality ↔ waveform.</b> "Loudness depends on frequency" and
+      "pitch depends on amplitude" are the planted false statements. And <b>none of the three changes the speed</b>:
+      the speed of sound is set by the <em>medium</em>, so a high note and a low note from the same band reach you
+      together. If f goes up in the same medium, λ goes <em>down</em> — v = fλ stays fixed.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>Speed of sound — the medium decides it</h2>
+    <p class="lede">Sound travels fastest in solids, slower in liquids, slowest in gases — and faster in warmer air.
+    When sound changes medium, <b>the frequency stays</b>; the speed and the wavelength change.</p>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>State</th><th>Substance</th><th class="mono">Speed (m/s)</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="3">Solids</td><td>Aluminium</td><td class="mono">6420</td></tr>
+        <tr><td>Steel</td><td class="mono">5960</td></tr>
+        <tr><td>Glass (flint)</td><td class="mono">3980</td></tr>
+        <tr><td rowspan="2">Liquids</td><td>Water (sea)</td><td class="mono">1531</td></tr>
+        <tr><td>Water (distilled)</td><td class="mono">1498</td></tr>
+        <tr><td rowspan="3">Gases</td><td>Hydrogen</td><td class="mono">1284</td></tr>
+        <tr><td>Air at 25 °C</td><td class="mono">346</td></tr>
+        <tr><td>Air at 0 °C</td><td class="mono">331</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Values from NCERT's table of speeds (at 25 °C unless stated). Papers round them: <b>air ≈ 340 m/s, water ≈
+    1500 m/s</b> — always use the value the question gives. Notice hydrogen: still slower than any solid or liquid in the
+    table, but about 3.7 times faster than air — a lighter gas carries sound faster. The ordering to remember is <b>solid &gt; liquid &gt; gas</b>, and <b>the speed in a gas rises with
+    temperature</b> (331 → 346 m/s from 0 °C to 25 °C).</p>
+    <div class="box trap">
+      <h4>Rainy day or dry day? (2024-A Q13)</h4>
+      <p><b>At the same temperature, sound travels faster in humid air than in dry air.</b> Water vapour molecules
+      (molar mass 18) are lighter than the nitrogen and oxygen they replace (about 29 on average), so moist air is
+      <em>less dense</em>, and a lighter gas carries sound faster — the same reason hydrogen beats air in the table. So
+      V<sub>rainy</sub> &gt; V<sub>dry</sub>. This is beyond NCERT's text, which names only the medium and the temperature; Allen
+      asked it anyway. The trap is "wet air feels heavier, so it must be slower".</p>
+    </div>
+
+    <div class="box def">
+      <h4>Crossing into a new medium — the rule every two-medium item turns on</h4>
+      <p>The <b>frequency is fixed by the source</b>: the source makes a set number of compressions each second, and the
+      boundary cannot create or destroy any of them. So when sound passes from air into water, <b>f stays the same, v
+      rises, and λ = v/f rises in the same ratio</b>.</p>
+      <p class="m" style="color:var(--bright)">680 Hz in air (340 m/s): λ = 0.5 m &nbsp;→&nbsp; in water (1500 m/s): λ = 1500/680 ≈ 2.2 m, still 680 Hz</p>
+      <p>The planted slip is to keep λ and change f (1500/0.5 = 3000 Hz). A frequency never changes with the medium; the
+      pitch you hear under water is the pitch of the source.</p>
+    </div>
+
+    <h3>Light first, sound later</h3>
+    <p>Light travels at 3 × 10⁸ m/s — practically instantly over any distance on Earth — so you see lightning before
+    you hear thunder, and the delay is the sound's travel time: <span class="m">distance = v<sub>sound</sub> × delay</span>.
+    A 3 s delay in 340 m/s air puts the storm about 1 km away.</p>
+
+    <h3>Sonic boom <span style="font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace">· cut from NCERT</span></h3>
+    <p>An object moving faster than sound is travelling at a <b>supersonic</b> speed. Bullets and jet aircraft often do.
+    It produces <b>shock waves</b> in air, which carry a large amount of energy; the sharp, loud sound they cause is a
+    <b>sonic boom</b> — strong enough to shatter glass and damage buildings.</p>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>Reflection, echo and reverberation</h2>
+    <p class="lede">Sound reflects off a solid or liquid surface by the same laws as light. An echo is a reflection you
+    can hear separately — which needs a gap of 0.1 s, and so a distance of about 17 m.</p>
+
+    <div class="box def">
+      <h4>Laws of reflection of sound (NCERT)</h4>
+      <p>The directions in which the sound is incident and reflected make <b>equal angles with the normal</b> to the
+      reflecting surface at the point of incidence, and the three are in the <b>same plane</b>. NCERT's reflector is
+      "an obstacle of large size which may be polished or rough" — large, that is, compared with the wavelength.</p>
+    </div>
+
+    <div class="box def">
+      <h4>Echo — the 0.1 s rule</h4>
+      <p>The sensation of a sound persists in our brain for about <b>0.1 s</b>. To hear a distinct echo the reflected
+      sound must arrive <b>at least 0.1 s</b> after the original. In that 0.1 s the sound makes a round trip, so at
+      <span class="m">344 m/s</span> (air at 22 °C, NCERT's figure):</p>
+      <p class="m" style="color:var(--bright)">total path = 344 × 0.1 = 34.4 m → minimum distance of the obstacle = 34.4 / 2 = <b>17.2 m</b></p>
+      <p>The minimum distance changes with temperature, because the speed does: warmer air, faster sound, a
+      <em>larger</em> minimum distance (at 340 m/s it is 17 m; at 350 m/s, 17.5 m).</p>
+    </div>
+
+    <div class="bank">
+      <div class="fx"><div class="eq">d = v t / 2</div><div class="wh">t is the time from the sound to its echo — a <b>round trip</b>. The single most-missed halving in the chapter.</div></div>
+      <div class="fx"><div class="eq">d<sub>min</sub> = v × 0.1 / 2</div><div class="wh">= 17.2 m at 344 m/s. Scales with v.</div></div>
+    </div>
+
+    <figure><svg viewBox="0 0 480 212" width="480" height="212" role="img" aria-label="A person stands between two cliffs, nearer the left one, and claps; arrows show the sound going out to each cliff and coming back; the distance to the left cliff is d1 equals v t1 over 2, to the right cliff d2 equals v t2 over 2, and the cliffs are d1 plus d2 apart"><path d="M20 40 L60 40 L66 150 L20 150 Z" fill="color-mix(in srgb,var(--muted) 22%,transparent)" stroke="var(--muted)"/><path d="M460 40 L420 40 L414 150 L460 150 Z" fill="color-mix(in srgb,var(--muted) 22%,transparent)" stroke="var(--muted)"/><line x1="20" y1="150" x2="460" y2="150" stroke="var(--muted)" stroke-width="1.4"/><circle cx="180" cy="112" r="7" fill="none" stroke="var(--bright)" stroke-width="2"/><line x1="180" y1="119" x2="180" y2="140" stroke="var(--bright)" stroke-width="2"/><line x1="180" y1="140" x2="173" y2="150" stroke="var(--bright)" stroke-width="2"/><line x1="180" y1="140" x2="187" y2="150" stroke="var(--bright)" stroke-width="2"/><line x1="171" y1="126" x2="189" y2="126" stroke="var(--bright)" stroke-width="2"/><text x="193" y="116" font-size="11" fill="var(--force)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">clap</text><line x1="168" y1="80" x2="77" y2="80" stroke="var(--physics)" stroke-width="1.8"/><polygon points="70.0,80.0 77.0,76.2 77.0,83.8" fill="var(--physics)"/><line x1="70" y1="90" x2="161" y2="90" stroke="var(--chem)" stroke-width="1.8"/><polygon points="168.0,90.0 161.0,93.8 161.0,86.2" fill="var(--chem)"/><line x1="192" y1="80" x2="403" y2="80" stroke="var(--physics)" stroke-width="1.8"/><polygon points="410.0,80.0 403.0,83.8 403.0,76.2" fill="var(--physics)"/><line x1="410" y1="90" x2="199" y2="90" stroke="var(--chem)" stroke-width="1.8"/><polygon points="192.0,90.0 199.0,86.2 199.0,93.8" fill="var(--chem)"/><line x1="123" y1="172" x2="72" y2="172" stroke="var(--bright)" stroke-width="1.2"/><polygon points="66.0,172.0 72.0,168.7 72.0,175.3" fill="var(--bright)"/><line x1="123" y1="172" x2="174" y2="172" stroke="var(--bright)" stroke-width="1.2"/><polygon points="180.0,172.0 174.0,175.3 174.0,168.7" fill="var(--bright)"/><text x="123" y="166" font-size="11" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace">d₁ = v t₁ / 2</text><line x1="297" y1="172" x2="186" y2="172" stroke="var(--bright)" stroke-width="1.2"/><polygon points="180.0,172.0 186.0,168.7 186.0,175.3" fill="var(--bright)"/><line x1="297" y1="172" x2="408" y2="172" stroke="var(--bright)" stroke-width="1.2"/><polygon points="414.0,172.0 408.0,175.3 408.0,168.7" fill="var(--bright)"/><text x="297" y="166" font-size="11" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace">d₂ = v t₂ / 2</text><text x="240" y="200" font-size="11.5" fill="var(--bright)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="600">cliffs apart = d₁ + d₂ = v (t₁ + t₂) / 2</text><text x="240" y="26" font-size="10.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace">out (blue) and back (green): every echo is a ROUND trip</text></svg><figcaption>Between two cliffs you hear <b>two</b> echoes: the nearer cliff's after
+    <span class="m">t₁</span>, the farther cliff's after <span class="m">t₂</span>, both measured <b>from the clap</b>. The
+    cliffs are <span class="m">v(t₁ + t₂)/2</span> apart. If a question gives the second echo as "a further 1 s <em>after
+    the first</em>", then <span class="m">t₂ = t₁ + 1</span> — convert a gap into a time-from-the-clap before halving.
+    Sound that has bounced off <b>both</b> cliffs comes back later still, at <span class="m">t₁ + t₂</span>.</figcaption></figure>
+
+    <div class="box def">
+      <h4>Reverberation</h4>
+      <p>In a big hall, repeated reflections from the walls, ceiling and floor make a sound <b>persist</b> after the
+      source has stopped. This persistence by repeated reflection is <b>reverberation</b>; too much of it makes speech
+      blurred. It is reduced by covering the roof and walls with <b>sound-absorbent material</b> — compressed fibreboard,
+      rough plaster, draperies — and by seats made of materials that absorb sound.</p>
+    </div>
+
+    <h3>Uses of multiple reflection of sound</h3>
+    <ul>
+      <li><b>Megaphones, loudhailers, horns, trumpets and shehanais</b> are shaped as a tube with a flared (conical)
+      opening, so that sound is reflected successively and sent forward <b>in one direction</b> instead of spreading out.</li>
+      <li><b>Stethoscope</b>: the sound of the patient's heartbeat reaches the doctor's ears by <b>multiple reflection</b>
+      along the tube.</li>
+      <li><b>Curved ceilings</b> of concert halls and auditoriums send the reflected sound to every corner of the hall.</li>
+      <li>A <b>soundboard</b> — a curved board placed behind the stage — reflects the speaker's sound evenly across the
+      hall.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>Range of hearing — infrasound, ultrasound and SONAR</h2>
+    <p class="lede">Humans hear from about 20 Hz to 20 kHz. Everything below is infrasound, everything above is
+    ultrasound — and NCERT names the animals and the machines, which is what a recall item would ask.</p>
+
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>Range</th><th>Frequency</th><th>Who / what</th></tr></thead>
+      <tbody>
+        <tr><td><b>Infrasonic</b> (infrasound)</td><td class="mono">below 20 Hz</td><td>a vibrating simple pendulum; <b>rhinoceroses</b> communicate using infrasound as low as 5 Hz; <b>whales and elephants</b> produce it; <b>earthquakes</b> produce low-frequency infrasound before the main shock waves begin, which may alert animals</td></tr>
+        <tr><td><b>Audible</b></td><td class="mono">20 Hz – 20 kHz</td><td>the normal human ear</td></tr>
+        <tr><td><b>Ultrasonic</b> (ultrasound)</td><td class="mono">above 20 kHz</td><td><b>dolphins, bats and porpoises</b> produce it; some <b>moths</b> can hear it — which helps them escape a hunting bat; <b>rats</b> play games using ultrasound. <b>Children under five</b> and some animals, such as <b>dogs</b>, can hear up to 25 kHz — into this range</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="box def">
+      <h4>Why ultrasound is useful — and what it is used for (NCERT's list)</h4>
+      <p>Ultrasound has a high frequency and so a short wavelength, so it can travel along well-defined paths even in the
+      presence of obstacles. Its uses:</p>
+      <ul>
+        <li><b>cleaning</b> parts in hard-to-reach places — spiral tubes, odd-shaped parts, electronic components — dipped in a
+        cleaning solution through which ultrasound is sent;</li>
+        <li><b>detecting cracks and flaws in metal blocks</b> used in bridges and buildings — the ultrasound is reflected back
+        from a defect instead of passing through;</li>
+        <li><b>echocardiography</b> — ultrasound reflected from parts of the heart forms an image of the heart;</li>
+        <li><b>ultrasonography</b> — imaging the liver, gall bladder, uterus, kidney, and a foetus during pregnancy;</li>
+        <li><b>breaking small stones formed in the kidney</b> into fine grains that are flushed out with urine.</li>
+      </ul>
+    </div>
+
+    <div class="box def">
+      <h4>SONAR — SOund Navigation And Ranging · cut from NCERT, in your IGCSE</h4>
+      <p>A <b>transmitter</b> on the ship sends pulses of ultrasound down; a <b>detector</b> picks up the echo from the
+      seabed or an underwater object and converts it to an electrical signal. From the speed of sound in water and the
+      echo time: <span class="m">2d = v × t</span>. Uses: finding the <b>depth of the sea</b> and locating underwater hills,
+      valleys, submarines, icebergs and sunken ships. <b>Bats</b> find their prey the same way: they emit ultrasonic
+      squeaks and locate an object from the reflection. This measuring-by-echo is called <b>echo-ranging</b>.</p>
+    </div>
+    <figure><svg viewBox="0 0 480 214" width="480" height="214" role="img" aria-label="A ship with a transmitter and a detector on its hull; an ultrasonic pulse goes straight down through the water to the seabed and its echo comes straight back up to the detector; the depth d satisfies 2d equals v times t"><rect x="10" y="44" width="460" height="150" fill="color-mix(in srgb,var(--physics) 9%,transparent)"/><line x1="10" y1="44" x2="470" y2="44" stroke="var(--physics)" stroke-width="1.4"/><path d="M150 44 L170 30 L290 30 L310 44 Z" fill="color-mix(in srgb,var(--muted) 30%,transparent)" stroke="var(--muted)" stroke-width="1.4"/><rect x="200" y="16" width="40" height="14" fill="none" stroke="var(--muted)" stroke-width="1.4"/><path d="M10 194 Q120 184 240 196 T470 190 L470 210 L10 210 Z" fill="color-mix(in srgb,var(--iq) 26%,transparent)" stroke="var(--iq)" stroke-width="1.4"/><rect x="206" y="44" width="10" height="8" fill="var(--force)"/><rect x="226" y="44" width="10" height="8" fill="var(--chem)"/><text x="186" y="64" font-size="10" fill="var(--force)" text-anchor="end" font-family="JetBrains Mono, monospace">transmitter</text><text x="256" y="64" font-size="10" fill="var(--chem)" text-anchor="start" font-family="JetBrains Mono, monospace">detector</text><line x1="211" y1="54" x2="211" y2="179" stroke="var(--force)" stroke-width="2"/><polygon points="211.0,186.0 207.2,179.0 214.8,179.0" fill="var(--force)"/><line x1="231" y1="186" x2="231" y2="63" stroke="var(--chem)" stroke-width="2"/><polygon points="231.0,56.0 234.8,63.0 227.2,63.0" fill="var(--chem)"/><text x="200" y="128" font-size="10.5" fill="var(--force)" text-anchor="end" font-family="JetBrains Mono, monospace">pulse</text><text x="242" y="128" font-size="10.5" fill="var(--chem)" text-anchor="start" font-family="JetBrains Mono, monospace">echo</text><line x1="330" y1="44" x2="330" y2="194" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 3"/><line x1="330" y1="119" x2="330" y2="54" stroke="var(--muted)" stroke-width="1.2"/><polygon points="330.0,48.0 333.3,54.0 326.7,54.0" fill="var(--muted)"/><line x1="330" y1="119" x2="330" y2="184" stroke="var(--muted)" stroke-width="1.2"/><polygon points="330.0,190.0 326.7,184.0 333.3,184.0" fill="var(--muted)"/><text x="340" y="114" font-size="11" fill="var(--bright)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">depth d</text><text x="340" y="130" font-size="11" fill="var(--bright)" text-anchor="start" font-family="JetBrains Mono, monospace" font-weight="600">2d = v × t</text><text x="90" y="206" font-size="10" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace">seabed</text></svg><figcaption>SONAR is an echo in water. The pulse goes down and back, so the echo time covers
+    <b>twice</b> the depth. With v = 1500 m/s, an echo after 1.2 s means 2d = 1800 m, d = 900 m.</figcaption></figure>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>The human ear — the one-line chain</h2>
+    <p class="lede">The pre-2022 NCERT book described how the ear turns pressure variations into electrical signals; the
+    section was <b>cut from NCERT</b> in the rationalisation and no cached paper asks it. One minute: learn the order of
+    the parts, nothing more.</p>
+    <ol>
+      <li><b>Outer ear (pinna)</b> collects sound; it passes down the <b>auditory canal</b>.</li>
+      <li>At the end of the canal the <b>eardrum</b> (tympanic membrane), a thin membrane, is pushed in by each
+      compression and out by each rarefaction — it vibrates.</li>
+      <li>Three bones in the <b>middle ear</b> — <b>hammer, anvil and stirrup</b> — amplify the vibrations several times
+      and pass them to the inner ear.</li>
+      <li>In the <b>inner ear</b> the <b>cochlea</b> converts the pressure variations into <b>electrical signals</b>, which
+      the <b>auditory nerve</b> carries to the brain, where they are interpreted as sound.</li>
+    </ol>
+    <p class="m" style="color:var(--bright)">pinna → auditory canal → eardrum → hammer → anvil → stirrup → cochlea → auditory nerve → brain</p>
+  </section>
+
+  <section>
+    <h2><span class="n">7</span>Fact bank — everything above on one screen</h2>
+    <div class="bank">
+      <div class="fx"><div class="eq">vibration → sound → needs a medium</div><div class="wh">No sound in vacuum (bell jar; the Moon). Particles vibrate in place; the disturbance travels.</div></div>
+      <div class="fx"><div class="eq">longitudinal: C and R</div><div class="wh">C = high density/pressure, R = low. C to next C = λ; C to nearest R = λ/2.</div></div>
+      <div class="fx"><div class="eq">v = fλ · f = 1/T</div><div class="wh">Against distance crest-to-crest is λ; against time it is T.</div></div>
+      <div class="fx"><div class="eq">pitch ↔ f · loudness ↔ A · quality ↔ shape</div><div class="wh">Loudness in dB. Tone = one frequency; note = a mix. None of them changes v.</div></div>
+      <div class="fx"><div class="eq">solid &gt; liquid &gt; gas</div><div class="wh">Steel 5960 · water 1498–1531 · air 331 (0 °C), 346 (25 °C). Warmer gas → faster.</div></div>
+      <div class="fx"><div class="eq">new medium: f fixed</div><div class="wh">v and λ change together; λ₂/λ₁ = v₂/v₁.</div></div>
+      <div class="fx"><div class="eq">echo: d = v t / 2</div><div class="wh">0.1 s persistence → d<sub>min</sub> = 17.2 m at 344 m/s. Between cliffs: apart = v(t₁ + t₂)/2.</div></div>
+      <div class="fx"><div class="eq">reverberation ↓ with absorbers</div><div class="wh">Fibreboard, rough plaster, draperies. Multiple reflection: megaphone, horn, stethoscope, curved ceiling, soundboard.</div></div>
+      <div class="fx"><div class="eq">20 Hz – 20 kHz</div><div class="wh">Below: infrasound (rhino 5 Hz, whale, elephant, earthquake). Above: ultrasound (bat, dolphin, porpoise). Dogs and under-fives hear up to 25 kHz.</div></div>
+      <div class="fx"><div class="eq">ultrasound uses</div><div class="wh">Cleaning, flaws in metal, echocardiography, ultrasonography, kidney stones, SONAR (2d = vt). Bats echo-range the same way.</div></div>
+      <div class="fx"><div class="eq">supersonic → shock waves</div><div class="wh">Sonic boom: loud, carries energy, can shatter glass. (Cut from NCERT.)</div></div>
+      <div class="fx"><div class="eq">ear: pinna → drum → 3 bones → cochlea</div><div class="wh">Hammer, anvil, stirrup amplify; cochlea makes electrical signals; auditory nerve to brain. (Cut from NCERT.)</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">8</span>Five worked questions — at TALLENTEX pitch</h2>
+    <p class="lede">Try each before opening the working and give yourself <b>90 seconds</b> — the real paper's average.
+    The elimination reasoning is written out because on the day, ruling two options out is worth almost as much as
+    solving.</p>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">1</span><span class="we-t">C-to-R, then v = fλ, then count · ~60 seconds</span></div>
+      <p>In a sound wave travelling through air at <span class="m">340 m/s</span>, the distance between a compression and
+      the <b>nearest rarefaction</b> is <span class="m">0.5 m</span>. How many compressions pass a fixed point in
+      <span class="m">0.25 s</span>?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>42.5</div>
+        <div class="we-opt key"><span class="ob">2</span>85</div>
+        <div class="we-opt"><span class="ob">3</span>170</div>
+        <div class="we-opt"><span class="ob">4</span>1360</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — the wavelength.</b> C to the nearest R is half a wave, so <span class="m">λ = 2 × 0.5 = 1.0 m</span>.</p>
+        <p><b>Step 2 — the frequency.</b> <span class="m">f = v/λ = 340/1.0 = 340 Hz</span>: 340 compressions pass each second.</p>
+        <p><b>Step 3 — in 0.25 s.</b> <span class="m">340 × 0.25 = 85</span>. Option (2).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(3) 170</b> — 0.5 m taken as the whole wavelength: f = 680 Hz, × 0.25.
+        <b>(1) 42.5</b> — C to R taken as a quarter wave: λ = 2 m, f = 170 Hz, × 0.25.
+        <b>(4) 1360</b> — the right frequency divided by 0.25 instead of multiplied by it.
+        <b>Elimination.</b> In a quarter of a second you must count <em>fewer</em> compressions than pass in a whole second —
+        so the answer is below f, whatever f is. That kills (4) on sight; the C-to-R step decides the rest.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">2</span><span class="we-t">Free fall, then the sound comes back up · ~60 seconds</span></div>
+      <p>A stone is dropped from rest into a well. The water surface is <span class="m">45 m</span> below the top. Taking
+      <span class="m">g = 10 m/s²</span> and the speed of sound in air as <span class="m">340 m/s</span>, the splash is heard at
+      the top of the well after about</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>0.13 s</div>
+        <div class="we-opt"><span class="ob">2</span>3.00 s</div>
+        <div class="we-opt key"><span class="ob">3</span>3.13 s</div>
+        <div class="we-opt"><span class="ob">4</span>3.26 s</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — the fall.</b> <span class="m">h = ½ g t²</span> → <span class="m">45 = 5t²</span> → <span class="m">t = 3 s</span>.</p>
+        <p><b>Step 2 — the sound, one way only.</b> The splash is made at the water and travels <b>up</b> 45 m:
+        <span class="m">45/340 ≈ 0.13 s</span>.</p>
+        <p><b>Step 3 —</b> <span class="m">3 + 0.13 = 3.13 s</span>. Option (3).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2) 3.00 s</b> — the sound treated as instantaneous (the "light" habit).
+        <b>(4) 3.26 s</b> — the sound's path doubled as if it were an echo: 90/340 ≈ 0.26 s. There is no round trip here — the
+        stone carried the "down" leg.
+        <b>(1) 0.13 s</b> — only the sound's time, the fall forgotten.
+        <b>Elimination.</b> The answer must be a little more than the fall time: (1) and (2) go at once. Then ask "who travels
+        down?" — the stone, not the sound — and (4) goes too.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">3</span><span class="we-t">The five-statement judgement · ~90 seconds</span></div>
+      <p>Consider the following statements.</p>
+      <ol class="roman">
+        <li>When a sound passes from air into water, its frequency stays the same and its wavelength increases.</li>
+        <li>Two sounds of the same loudness and the same pitch from a sitar and a flute can be told apart because they differ in quality.</li>
+        <li>Doubling the frequency of a sound in air doubles its speed.</li>
+        <li>An echo can be heard from a wall 10 m away if the speed of sound is 344 m/s.</li>
+        <li>Ultrasound is used to detect cracks in metal blocks and to break stones formed in the kidney.</li>
+      </ol>
+      <p>Which of the statements are correct?</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>I and V only</div>
+        <div class="we-opt key"><span class="ob">2</span>I, II and V only</div>
+        <div class="we-opt"><span class="ob">3</span>II, III and V only</div>
+        <div class="we-opt"><span class="ob">4</span>I, II, IV and V only</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>I — true.</b> f is fixed by the source; v rises in water, so λ = v/f rises.</p>
+        <p><b>II — true.</b> Same pitch and loudness, different waveform: that is quality (timbre).</p>
+        <p><b>III — false.</b> The speed is set by the medium. Doubling f in the same air halves λ; v = fλ is unchanged.</p>
+        <p><b>IV — false.</b> A distinct echo needs the wall at least 344 × 0.1 / 2 = 17.2 m away. At 10 m the echo returns
+        after 20/344 ≈ 0.058 s — inside the 0.1 s the ear still holds the original, so it merges with it.</p>
+        <p><b>V — true.</b> Both are on NCERT's list of ultrasound uses.</p>
+        <p>True: I, II, V — option (2).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(1)</b> — II rejected: "same pitch, same loudness, so they must sound the same" — quality forgotten.
+        <b>(3)</b> — I rejected (wavelength kept, frequency changed) and III believed (speed ∝ frequency, a v = fλ misreading).
+        <b>(4)</b> — everything right except IV (the halving in 17.2 m forgotten, or 10 m simply "felt far enough").
+        <b>Elimination.</b> III removes (3); IV removes (4). That still leaves (1) against (2), and only statement II
+        separates them — so you <em>must</em> know what quality is. Two quick kills get you to a coin-toss, not to the mark.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">4</span><span class="we-t">SONAR — wavelength and depth together · ~60 seconds</span></div>
+      <p>A ship's SONAR sends ultrasonic pulses of frequency <span class="m">40 kHz</span> straight down. The echo from the
+      seabed is received <span class="m">1.2 s</span> after a pulse is sent. The speed of sound in sea water is
+      <span class="m">1500 m/s</span>. The wavelength of the pulse in the water and the depth of the sea are</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>0.85 cm and 900 m</div>
+        <div class="we-opt key"><span class="ob">2</span>3.75 cm and 900 m</div>
+        <div class="we-opt"><span class="ob">3</span>3.75 cm and 1800 m</div>
+        <div class="we-opt"><span class="ob">4</span>37.5 cm and 900 m</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — wavelength.</b> <span class="m">λ = v/f = 1500/40 000 = 0.0375 m = 3.75 cm</span>.</p>
+        <p><b>Step 2 — depth.</b> Round trip: <span class="m">2d = 1500 × 1.2 = 1800 m</span> → <span class="m">d = 900 m</span>.
+        Option (2).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(3)</b> — the echo time not halved.
+        <b>(1)</b> — the speed of sound in <em>air</em> (340 m/s) used for the wavelength: 340/40 000 = 0.85 cm. The pulse
+        is in the water.
+        <b>(4)</b> — 40 kHz read as 4000 Hz: 1500/4000 = 0.375 m.
+        <b>Elimination.</b> The depth half splits the options 3–1: anyone who halves has (1), (2) or (4). Then 1500/40 000 —
+        count the zeros carefully; it is the unit slip, not the physics, that loses this mark.</div>
+      </div></details>
+    </div>
+
+    <div class="we">
+      <div class="we-h"><span class="we-n">5</span><span class="we-t">Two cliffs, then the echo off both · ~90 seconds · the third echo is reasoning, not an NCERT rule</span></div>
+      <p>A man standing between two parallel cliffs fires a gun. He hears the first echo <span class="m">2 s</span> after
+      the shot and the second echo <span class="m">3 s</span> after the shot. After how long does he hear the <b>third</b>
+      echo, and how far apart are the cliffs? (Speed of sound = <span class="m">340 m/s</span>.)</p>
+      <div class="we-opts">
+        <div class="we-opt"><span class="ob">1</span>1 s and 850 m</div>
+        <div class="we-opt"><span class="ob">2</span>4 s and 850 m</div>
+        <div class="we-opt key"><span class="ob">3</span>5 s and 850 m</div>
+        <div class="we-opt"><span class="ob">4</span>5 s and 1700 m</div>
+      </div>
+      <details><summary>Working</summary><div class="work">
+        <p><b>Step 1 — distances.</b> Nearer cliff: <span class="m">340 × 2/2 = 340 m</span>. Farther cliff:
+        <span class="m">340 × 3/2 = 510 m</span>. He stands between them, so they are <span class="m">340 + 510 = 850 m</span>
+        apart.</p>
+        <p><b>Step 2 — the third echo.</b> The first echo does not stop at the man: it passes him, reaches the far cliff and
+        comes back. Its extra journey is exactly the far cliff's round trip, 3 s, so it arrives at <span class="m">2 + 3 =
+        5 s</span>. (The sound that hit the far cliff first and then the near one takes the same path in reverse, so it
+        arrives at 5 s too.) Option (3).</p>
+        <div class="elim"><b>Where each wrong option comes from.</b>
+        <b>(2)</b> — the third echo taken as the near cliff's echo "again", 2 × 2 s. A second bounce off the <em>same</em>
+        cliff is impossible without the far cliff in between.
+        <b>(1)</b> — the third echo taken as the <em>gap</em> between the first two, 3 − 2 = 1 s: a time that has already
+        gone by before the second echo arrived.
+        <b>(4)</b> — the timing right, the distances not halved: 680 + 1020.
+        <b>Elimination.</b> Distance first — it is the certain half. v(t₁ + t₂)/2 = 340 × 5/2 = 850 m removes (4). Every
+        echo comes <em>after</em> the ones before it, so the third is later than 3 s — (1) goes. Then ask what the third echo
+        <em>is</em>: a sound that has touched both cliffs. Its path is one near-cliff round trip plus one far-cliff round trip,
+        2 + 3 = 5 s; (2)'s 4 s would need two bounces off the same cliff in a row, which cannot happen.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">9</span>Check yourself</h2>
+    <p class="lede">Five quick ones. <b>No negative marking here</b> — this is practice, not the exam. Click an option to
+    see straight away whether it holds.</p>
+    <div id="cyHost"></div>
+    <div class="cy-score" id="cyScore">Answer the five questions above — your score appears here.</div>
+  </section>
+
+  <div class="done-row">
+    <button class="done-btn" id="markDone" type="button">✓ Mark as complete</button>
+    <span class="done-note" id="doneNote">Marks this unit done on your hub.</span>
+  </div>
+  <div class="nextrow">
+    <a class="nextbtn" href="subject-phys.html">📝 Physics subject paper — 30 questions, 45 minutes (four are Sound)</a>
+    <a class="nextbtn" href="../tallentex.html">🏆 Back to the TALLENTEX hub</a>
+  </div>
+
+  <footer class="foot">
+    TALLENTEX 2027 · Physics · <b>Sound</b> — the official topic name from Allen's Class X syllabus (NCERT Class 9).<br>
+    <b>Beyond NCERT's text, labelled where used:</b> humid air carries sound faster than dry air (section 3 — Allen asked
+    it in 2024-A Q13); the third echo between two cliffs (worked question 5 — reasoning from the echo rule, not a rule
+    of its own).<br>
+    <b>A note on textbooks:</b> NCERT's new Grade 9 science book (April 2026, NCF-based) files this as
+    <em>Sound Waves</em>. Allen's 2027 list uses the older chapter name, and the wording on this page follows that older
+    (2023, rationalised) NCERT print, checked from memory — no copy is cached in the repo. <b>NCERT's own list of
+    rationalised content</b> (ncert.nic.in, <em>BookletClass9.pdf</em>) drops four things from this chapter: the Sonic Boom
+    box, “Sound needs a medium to travel”, SONAR and the structure of the human ear. They are marked “cut from NCERT”
+    where they appear; Allen's list says only “Sound”, so they stay here, briefly.<br>
+    <b>Deliberately not here:</b> the Doppler effect, beats, resonance, standing waves, and the speed-of-sound formula in
+    terms of pressure and density (none on the 2027 list).<br>
+    Tip: press 🖨 (bottom-left) to print these as a revision sheet · 🏆 (top-left) goes back to the TALLENTEX hub.
+  </footer>
+</div>
+
+<script>
+/* ---------- Check yourself ---------- */
+var CY = [
+  { q:'In a sound wave in air (speed <b>340 m/s</b>), the distance from the first to the third of <b>three consecutive compressions</b> is <b>3.4 m</b>. The frequency of the sound is',
+    o:['100 Hz','200 Hz','300 Hz','400 Hz'], a:1,
+    fb:'<b>200 Hz.</b> Three compressions have two gaps between them, so 3.4 m = 2λ and λ = 1.7 m; f = 340/1.7 = 200 Hz. <b>100 Hz</b> takes 3.4 m as one wavelength; <b>300 Hz</b> divides by three (one λ per compression): 3.4/3 ≈ 1.13 m; <b>400 Hz</b> treats each compression-to-rarefaction half as a whole wave (λ = 0.85 m). Same trap as Sample Q1.' },
+  { q:'On two days the air temperature is the same, but one day is rainy and humid and the other dry. The speed of sound is',
+    o:['the same on both days','greater on the dry day','greater on the rainy day','greater on the rainy day only if it is also colder'], a:2,
+    fb:'<b>Greater on the rainy day.</b> Water vapour (molar mass 18) is lighter than the nitrogen and oxygen it replaces (about 29), so humid air is less dense and carries sound faster at the same temperature. <b>Colder</b> air would make sound <em>slower</em>, not faster — and the stem fixes the temperature anyway. This is 2024-A Q13.' },
+  { q:'On a day when the speed of sound in air is <b>350 m/s</b>, the minimum distance of a reflecting wall for a distinct echo to be heard is',
+    o:['1.75 m','17.2 m','17.5 m','35 m'], a:2,
+    fb:'<b>17.5 m.</b> The echo must arrive at least 0.1 s after the sound; in 0.1 s sound goes 35 m, which is a round trip, so the wall is 35/2 = 17.5 m away. <b>35 m</b> forgets the round trip; <b>17.2 m</b> is NCERT\'s number for 344 m/s, recalled instead of worked out; <b>1.75 m</b> uses 0.01 s instead of 0.1 s.' },
+  { q:'Which of these is <b>not</b> a use of ultrasound?',
+    o:['detecting cracks and flaws in metal blocks','echocardiography','the doctor\'s stethoscope','breaking small stones formed in the kidney'], a:2,
+    fb:'<b>The stethoscope.</b> It carries the <em>audible</em> sound of the heartbeat to the doctor\'s ears by <b>multiple reflection</b> along its tube — it is in NCERT\'s list of uses of multiple reflection, alongside the megaphone and the curved ceiling. The other three are all on NCERT\'s ultrasound list.' },
+  { q:'A sound in air has its <b>frequency doubled</b> and its <b>amplitude halved</b>. Its speed, pitch and loudness now are',
+    o:['speed doubled, pitch higher, softer','speed unchanged, pitch higher, softer','speed unchanged, pitch lower, louder','speed unchanged, pitch higher, louder'], a:1,
+    fb:'<b>Speed unchanged, pitch higher, softer.</b> The medium sets the speed (so λ halves as f doubles); pitch follows frequency; loudness follows amplitude. <b>Speed doubled</b> reads v = fλ as if λ were fixed; <b>pitch lower, louder</b> swaps the two pairings — the classic statement-item trap; <b>pitch higher, louder</b> lets the higher frequency decide the loudness too ("a shriller sound is a louder one") — but the amplitude was halved, and amplitude alone sets loudness.' }
+];
+
+(function(){
+  var host = document.getElementById('cyHost'), answered = 0, right = 0;
+  CY.forEach(function(item, i){
+    var d = document.createElement('div');
+    d.className = 'cy';
+    d.innerHTML = '<div class="cy-q"><b>' + (i+1) + '.</b> ' + item.q + '</div>'
+      + '<div class="cy-opts">' + item.o.map(function(o, k){
+          return '<button class="cyo" type="button" data-i="' + i + '" data-k="' + k + '">'
+               + '<span class="ob">' + (k+1) + '</span><span>' + o + '</span></button>';
+        }).join('') + '</div>'
+      + '<div class="cy-fb" id="fb' + i + '"></div>';
+    host.appendChild(d);
+  });
+
+  host.addEventListener('click', function(e){
+    var b = e.target.closest('.cyo');
+    if(!b || b.parentNode.dataset.locked) return;
+    var i = +b.dataset.i, k = +b.dataset.k, item = CY[i];
+    b.parentNode.dataset.locked = '1';
+    Array.prototype.forEach.call(b.parentNode.children, function(el){
+      var kk = +el.dataset.k;
+      if(kk === item.a) el.classList.add('right');
+      else if(kk === k) el.classList.add('wrong');
+    });
+    var fb = document.getElementById('fb' + i);
+    fb.innerHTML = (k === item.a ? '✅ <b>Correct.</b> ' : '❌ <b>Not quite.</b> ') + item.fb;
+    fb.classList.add('on');
+    answered++; if(k === item.a) right++;
+    var s = document.getElementById('cyScore');
+    s.innerHTML = answered < CY.length
+      ? 'Answered <b>' + answered + '</b> of ' + CY.length + ' — keep going.'
+      : 'You got <b>' + right + '</b> / ' + CY.length + '. '
+        + (right === CY.length ? 'Every one. The rules have landed — now sit the Physics subject paper, whose Q17–20 are Sound, under the clock.'
+           : right >= 3 ? 'Re-read the section behind the ones you missed — section 2 for the counting and the pairings, section 3 for humidity, section 4 for the echo, section 5 for ultrasound.'
+                        : 'Worth a second pass through sections 1–4 before the paper. It is a short page; one more read fixes it.');
+  });
+})();
+
+/* ---------- reveal the key only once the working is opened ---------- */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+    d.addEventListener('toggle', function(){
+      var box = d.closest('.we');
+      if(box) box.classList.toggle('revealed', d.open);
+    });
+  });
+})();
+
+/* ---------- Mark as complete ---------- */
+(function(){
+  var KEY = 'tx:phys-sound:notes', btn = document.getElementById('markDone'), note = document.getElementById('doneNote');
+  function load(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+  function paint(){
+    var p = load(), v = p[KEY];
+    btn.classList.toggle('on', !!v);
+    btn.textContent = v ? '✓ Completed' : '✓ Mark as complete';
+    note.textContent = v ? 'Marked done on ' + String(v).slice(0, 10) + '. Click again to undo.'
+                         : 'Marks this unit done on your hub.';
+  }
+  btn.addEventListener('click', function(){
+    var p = load();
+    if(p[KEY]) delete p[KEY]; else p[KEY] = new Date().toISOString();
+    save(p); paint();
+  });
+  paint();
+  window.addEventListener('miraya-progress-synced', paint);
+})();
+
+/* ---------- print: a closed details element never renders its contents, so open them for the printer ---------- */
+(function(){
+  var opened = [], printing = false;
+  function before(){
+    if(printing) return;
+    printing = true; opened = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.we details'), function(d){
+      if(!d.open){ d.open = true; opened.push(d); }
+      var box = d.closest('.we'); if(box) box.classList.add('revealed');
+    });
+  }
+  function after(){
+    if(!printing) return;
+    printing = false;
+    opened.forEach(function(d){ d.open = false; var box = d.closest('.we'); if(box) box.classList.remove('revealed'); });
+    opened = [];
+  }
+  window.addEventListener('beforeprint', before);
+  window.addEventListener('afterprint', after);
+  if(window.matchMedia){
+    var mq = matchMedia('print');
+    var h = function(e){ if(e.matches) before(); else after(); };
+    if(mq.addEventListener) mq.addEventListener('change', h); else if(mq.addListener) mq.addListener(h);
+  }
+})();
+
+/* ---------- theme toggle ---------- */
+(function(){
+  var body = document.body, btn = document.getElementById('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    var n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
