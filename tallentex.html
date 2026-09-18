@@ -199,7 +199,7 @@
     </div>
 
     <div class="progress-panel">
-      <div class="pp-top"><span class="pp-label">Your progress</span><span class="pp-label" id="ppBuilt" style="margin-left:auto"></span><button id="previewToggle" class="pp-toggle" type="button" title="Turn on while you’re only checking a paper. Papers you submit won’t be recorded or ticked. Same switch as on the home page.">👁 Just checking</button></div>
+      <div class="pp-top"><span class="pp-label">Your progress</span><span class="pp-label" id="ppBuilt" style="margin-left:auto"></span><button id="previewToggle" class="pp-toggle" type="button" title="Turn on while you’re only checking a paper. Submitting a paper will ask whether to save it. Turns itself off after 2 hours. Same switch as on the home page.">👁 Just checking</button></div>
       <div class="bar"><i id="progFill"></i></div>
       <div class="pp-text" id="progText"></div>
     </div>
@@ -410,13 +410,13 @@
   })();
 
   /* "👁 Just checking" — the device-local flag hubPreview, shared with the home page's toggle.
-     While it is on, the papers mark an attempt but never write it to studyProgress. */
+     While it is on, Submit asks whether to save; it lapses 2 hours after it was switched on. */
   (function () {
     var pv = document.getElementById('previewToggle');
-    function on(){ try { return !!JSON.parse(localStorage.getItem('hubPreview') || 'null'); } catch(e){ return false; } }
+    function on(){ return (function(){ try { var v = +JSON.parse(localStorage.getItem('hubPreview') || '0'); return v > 1e12 && Date.now() - v < 7200000; } catch(e){ return false; } })(); }   /* lapses 2 h after it was switched on */
     function paint(){ pv.classList.toggle('on', on()); }
     pv.addEventListener('click', function () {
-      try { if (on()) localStorage.removeItem('hubPreview'); else localStorage.setItem('hubPreview', '1'); } catch(e){}
+      try { if (on()) localStorage.removeItem('hubPreview'); else localStorage.setItem('hubPreview', String(Date.now())); } catch(e){}
       paint();
     });
     paint();

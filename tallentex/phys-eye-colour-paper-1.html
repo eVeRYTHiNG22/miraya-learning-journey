@@ -506,9 +506,11 @@ let activeQ  = 0, qStartedAt = 0, paceH = null;
 let RESTORING = false;
 
 /* ---- progress store (shared with the hub through the miraya-sync block) ---- */
-/* "👁 Just checking" (device-local hubPreview, toggled on the hub pages): a paper is still
-   marked, but the attempt is never written to studyProgress. */
-function isPreview(){ try { return !!JSON.parse(localStorage.getItem('hubPreview') || 'null'); } catch(e){ return false; } }
+/* "👁 Just checking" (device-local hubPreview = the ms timestamp it was switched on; it lapses
+   after 2 hours). While on, Submit ASKS whether to save — so a forgotten switch can never
+   silently swallow a real attempt. */
+function isPreview(){ return (function(){ try { var v = +JSON.parse(localStorage.getItem('hubPreview') || '0'); return v > 1e12 && Date.now() - v < 7200000; } catch(e){ return false; } })(); }
+let NOT_SAVED = false;
 function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
 function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
 
@@ -745,7 +747,7 @@ function submit(silent, byTimer){
 
   paintResults(sc, timeTaken);
   if(!RESTORING) saveAttempt(sc, timeTaken);
-  if(!RESTORING && isPreview()){ const rc = $('results').querySelector('.rcard');
+  if(!RESTORING && NOT_SAVED){ const rc = $('results').querySelector('.rcard');
     if(rc) rc.insertAdjacentHTML('beforeend', '<div class="rnote">👁 <b>Just checking was on</b> — this attempt was marked but not recorded.</div>'); }
   $('results').classList.add('on');
   window.scrollTo(0, 0);
@@ -810,7 +812,7 @@ function paintResults(sc, timeTaken){
    its answers + flags so the frozen report can be replayed on any device;
    the hub only ever reads m/mx. Written MERGE-ONLY. */
 function saveAttempt(sc, timeTaken){
-  if(isPreview()) return;
+  if(isPreview() && !confirm('👁 Just checking is on for this device.\n\nSave this attempt to your progress?\n\nOK = save it (a real attempt)\nCancel = don\'t record (only checking)')){ NOT_SAVED = true; return; }
   const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank,
                 a:answers.slice(), f:flags.slice(), md:mode, tm:timeTaken, v:1 };
   const p = progLoad(); p[REP_ID] = rec; progSave(p);
@@ -865,7 +867,7 @@ $('startPractice').addEventListener('click', () => start('practice'));
 $('viewOnly').addEventListener('click', viewOnly);
 $('lastAttempt').addEventListener('click', () => { const r = progLoad()[REP_ID]; if(r && r.a) showFrozen(r); });
 if(IS_MOCK && !TEACHER && !isPreview()) $('viewOnly').hidden = true;   /* a one-shot mock is not previewed */
-if(isPreview()) $('startNote').insertAdjacentHTML('beforeend', ' <b>👁 Just checking is on</b> — what you submit here will not be recorded.');
+if(isPreview()) $('startNote').insertAdjacentHTML('beforeend', ' <b>👁 Just checking is on</b> — when you submit, you will be asked whether to save the attempt.');
 function paintLast(){
   if(IS_MOCK) return;
   const r = progLoad()[REP_ID], b = $('lastAttempt');

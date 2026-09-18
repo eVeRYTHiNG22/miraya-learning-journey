@@ -1093,7 +1093,7 @@
       <div class="pp-top">
         <span class="pp-label">Your progress</span>
         <span class="pp-actions">
-          <button id="previewToggle" class="pp-reset pp-toggle" type="button" title="Turn on while you’re only checking a page. Opens won’t update “Continue where you left off”.">👁 Just checking</button>
+          <button id="previewToggle" class="pp-reset pp-toggle" type="button" title="Turn on while you’re only checking a page. Opens won’t update “Continue where you left off”, and a TALLENTEX paper asks before saving. Turns itself off after 2 hours.">👁 Just checking</button>
           <button id="resetProg" class="pp-reset" type="button">Reset</button>
         </span>
       </div>
@@ -2022,6 +2022,7 @@
     function fmtDate(ms){ var d = new Date(ms); return WD[d.getDay()] + ' ' + d.getDate() + ' ' + MO[d.getMonth()]; }
     function lsGet(k){ try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch(e){ return null; } }
     function lsSet(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+    function previewOn(){ var v = +lsGet('hubPreview') || 0; return v > 1e12 && Date.now() - v < 7200000; }   // Just checking lapses after 2 h
 
     /* (1) Auto-computed header stats — never go stale */
     (function () {
@@ -2068,7 +2069,7 @@
     document.addEventListener('click', function (e) {
       var a = e.target.closest ? e.target.closest('a.btn') : null;
       if (!a) return;
-      if (lsGet('hubPreview')) return;                 // just checking — don't record
+      if (previewOn()) return;                         // just checking — don't record
       var card = a.closest('.card'), sec = a.closest('.subject');
       lsSet('hubLast', {
         href: a.getAttribute('href'),
@@ -2099,13 +2100,14 @@
     (function () {                                      // "👁 Just checking" toggle
       var pv = document.getElementById('previewToggle');
       if (!pv) return;
-      function paint(){ pv.classList.toggle('on', !!lsGet('hubPreview')); }
+      function paint(){ pv.classList.toggle('on', previewOn()); }
       pv.addEventListener('click', function () {
-        if (lsGet('hubPreview')) { try { localStorage.removeItem('hubPreview'); } catch (e) {} }
-        else lsSet('hubPreview', 1);
+        if (previewOn()) { try { localStorage.removeItem('hubPreview'); } catch (e) {} }
+        else lsSet('hubPreview', Date.now());
         paint();
       });
       paint();
+      window.addEventListener('focus', paint);         // repaint once it has lapsed
     })();
 
     /* (4) ⭐ Revise shelf — star a chapter to pin it to the top */
