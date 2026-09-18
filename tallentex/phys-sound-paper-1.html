@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX Paper — template</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .viewonly .submitrow, .viewonly .q-flag { display:none !important; }
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP||location.protocol!=='https:'||navigator.webdriver)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+      <button class="bigbtn" id="viewOnly" type="button">👁 Just look at the questions</button>
+      <button class="bigbtn" id="lastAttempt" type="button" hidden>📋 See your last attempt</button>
+    </div>
+    <p class="startnote" id="startNote">Practice mode still marks you and still applies −1 — only the countdown is off. “Just look” shows the questions without marking or recording anything.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  "title": "TALLENTEX · Sound — Paper 1",
+  "kind": "topic",
+  "duration": 20,
+  "id": "tx:phys-sound:p1",
+  "accent": "physics",
+  "sub": "Sound — the wave picture (compressions, rarefactions, pressure and density graphs), v = fλ with honest counting, pitch and loudness from a trace, speed in different media, the range of hearing, and echoes. <b>13 questions · 52 marks · 20 minutes · +4 / −1 / 0.</b> In both 2024 sittings Sound took two of the fifteen Physics questions, set as picture-reading and precision traps rather than long sums — so read every figure and count every gap. Most items chain two steps — do not expect to finish every one.",
+  "sections": [
+    {
+      "name": "Physics",
+      "from": 1,
+      "to": 13
+    }
+  ],
+  "questions": [
+    {
+      "n": 1,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "diagram",
+      "stem": "<p>The graph shows how the pressure of the air varies along a sound wave at one instant; the strip below it shows the layers of air along the same stretch. The point <b>P</b> and the point <b>Q</b> are <b>1.5 m</b> apart. The speed of sound in the air is <b>330 m/s</b>. What is the frequency of the sound?</p>",
+      "fig": "<svg viewBox=\"0 0 360 200\" width=\"360\" height=\"200\" role=\"img\" aria-label=\"A pressure-distance graph of a sound wave over an air column; P sits on the first crest and Q on the third trough\" font-family=\"Inter,sans-serif\" fill=\"currentColor\" style=\"max-width:100%;height:auto\"><line x1=\"24\" y1=\"60\" x2=\"294\" y2=\"60\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"4 4\" opacity=\".7\"/><text x=\"220\" y=\"26\" font-size=\"10\" opacity=\".8\">normal pressure</text><polyline points=\"30.0,34.0 30.5,34.0 31.0,34.1 31.5,34.2 32.0,34.3 32.5,34.5 33.0,34.7 33.5,35.0 34.0,35.3 34.5,35.6 35.0,36.0 35.5,36.4 36.0,36.8 36.5,37.3 37.0,37.8 37.5,38.4 38.0,39.0 38.5,39.6 39.0,40.2 39.5,40.9 40.0,41.6 40.5,42.4 41.0,43.1 41.5,43.9 42.0,44.7 42.5,45.6 43.0,46.4 43.5,47.3 44.0,48.2 44.5,49.1 45.0,50.1 45.5,51.0 46.0,52.0 46.5,52.9 47.0,53.9 47.5,54.9 48.0,55.9 48.5,56.9 49.0,58.0 49.5,59.0 50.0,60.0 50.5,61.0 51.0,62.0 51.5,63.1 52.0,64.1 52.5,65.1 53.0,66.1 53.5,67.1 54.0,68.0 54.5,69.0 55.0,69.9 55.5,70.9 56.0,71.8 56.5,72.7 57.0,73.6 57.5,74.4 58.0,75.3 58.5,76.1 59.0,76.9 59.5,77.6 60.0,78.4 60.5,79.1 61.0,79.8 61.5,80.4 62.0,81.0 62.5,81.6 63.0,82.2 63.5,82.7 64.0,83.2 64.5,83.6 65.0,84.0 65.5,84.4 66.0,84.7 66.5,85.0 67.0,85.3 67.5,85.5 68.0,85.7 68.5,85.8 69.0,85.9 69.5,86.0 70.0,86.0 70.5,86.0 71.0,85.9 71.5,85.8 72.0,85.7 72.5,85.5 73.0,85.3 73.5,85.0 74.0,84.7 74.5,84.4 75.0,84.0 75.5,83.6 76.0,83.2 76.5,82.7 77.0,82.2 77.5,81.6 78.0,81.0 78.5,80.4 79.0,79.8 79.5,79.1 80.0,78.4 80.5,77.6 81.0,76.9 81.5,76.1 82.0,75.3 82.5,74.4 83.0,73.6 83.5,72.7 84.0,71.8 84.5,70.9 85.0,69.9 85.5,69.0 86.0,68.0 86.5,67.1 87.0,66.1 87.5,65.1 88.0,64.1 88.5,63.1 89.0,62.0 89.5,61.0 90.0,60.0 90.5,59.0 91.0,58.0 91.5,56.9 92.0,55.9 92.5,54.9 93.0,53.9 93.5,52.9 94.0,52.0 94.5,51.0 95.0,50.1 95.5,49.1 96.0,48.2 96.5,47.3 97.0,46.4 97.5,45.6 98.0,44.7 98.5,43.9 99.0,43.1 99.5,42.4 100.0,41.6 100.5,40.9 101.0,40.2 101.5,39.6 102.0,39.0 102.5,38.4 103.0,37.8 103.5,37.3 104.0,36.8 104.5,36.4 105.0,36.0 105.5,35.6 106.0,35.3 106.5,35.0 107.0,34.7 107.5,34.5 108.0,34.3 108.5,34.2 109.0,34.1 109.5,34.0 110.0,34.0 110.5,34.0 111.0,34.1 111.5,34.2 112.0,34.3 112.5,34.5 113.0,34.7 113.5,35.0 114.0,35.3 114.5,35.6 115.0,36.0 115.5,36.4 116.0,36.8 116.5,37.3 117.0,37.8 117.5,38.4 118.0,39.0 118.5,39.6 119.0,40.2 119.5,40.9 120.0,41.6 120.5,42.4 121.0,43.1 121.5,43.9 122.0,44.7 122.5,45.6 123.0,46.4 123.5,47.3 124.0,48.2 124.5,49.1 125.0,50.1 125.5,51.0 126.0,52.0 126.5,52.9 127.0,53.9 127.5,54.9 128.0,55.9 128.5,56.9 129.0,58.0 129.5,59.0 130.0,60.0 130.5,61.0 131.0,62.0 131.5,63.1 132.0,64.1 132.5,65.1 133.0,66.1 133.5,67.1 134.0,68.0 134.5,69.0 135.0,69.9 135.5,70.9 136.0,71.8 136.5,72.7 137.0,73.6 137.5,74.4 138.0,75.3 138.5,76.1 139.0,76.9 139.5,77.6 140.0,78.4 140.5,79.1 141.0,79.8 141.5,80.4 142.0,81.0 142.5,81.6 143.0,82.2 143.5,82.7 144.0,83.2 144.5,83.6 145.0,84.0 145.5,84.4 146.0,84.7 146.5,85.0 147.0,85.3 147.5,85.5 148.0,85.7 148.5,85.8 149.0,85.9 149.5,86.0 150.0,86.0 150.5,86.0 151.0,85.9 151.5,85.8 152.0,85.7 152.5,85.5 153.0,85.3 153.5,85.0 154.0,84.7 154.5,84.4 155.0,84.0 155.5,83.6 156.0,83.2 156.5,82.7 157.0,82.2 157.5,81.6 158.0,81.0 158.5,80.4 159.0,79.8 159.5,79.1 160.0,78.4 160.5,77.6 161.0,76.9 161.5,76.1 162.0,75.3 162.5,74.4 163.0,73.6 163.5,72.7 164.0,71.8 164.5,70.9 165.0,69.9 165.5,69.0 166.0,68.0 166.5,67.1 167.0,66.1 167.5,65.1 168.0,64.1 168.5,63.1 169.0,62.0 169.5,61.0 170.0,60.0 170.5,59.0 171.0,58.0 171.5,56.9 172.0,55.9 172.5,54.9 173.0,53.9 173.5,52.9 174.0,52.0 174.5,51.0 175.0,50.1 175.5,49.1 176.0,48.2 176.5,47.3 177.0,46.4 177.5,45.6 178.0,44.7 178.5,43.9 179.0,43.1 179.5,42.4 180.0,41.6 180.5,40.9 181.0,40.2 181.5,39.6 182.0,39.0 182.5,38.4 183.0,37.8 183.5,37.3 184.0,36.8 184.5,36.4 185.0,36.0 185.5,35.6 186.0,35.3 186.5,35.0 187.0,34.7 187.5,34.5 188.0,34.3 188.5,34.2 189.0,34.1 189.5,34.0 190.0,34.0 190.5,34.0 191.0,34.1 191.5,34.2 192.0,34.3 192.5,34.5 193.0,34.7 193.5,35.0 194.0,35.3 194.5,35.6 195.0,36.0 195.5,36.4 196.0,36.8 196.5,37.3 197.0,37.8 197.5,38.4 198.0,39.0 198.5,39.6 199.0,40.2 199.5,40.9 200.0,41.6 200.5,42.4 201.0,43.1 201.5,43.9 202.0,44.7 202.5,45.6 203.0,46.4 203.5,47.3 204.0,48.2 204.5,49.1 205.0,50.1 205.5,51.0 206.0,52.0 206.5,52.9 207.0,53.9 207.5,54.9 208.0,55.9 208.5,56.9 209.0,58.0 209.5,59.0 210.0,60.0 210.5,61.0 211.0,62.0 211.5,63.1 212.0,64.1 212.5,65.1 213.0,66.1 213.5,67.1 214.0,68.0 214.5,69.0 215.0,69.9 215.5,70.9 216.0,71.8 216.5,72.7 217.0,73.6 217.5,74.4 218.0,75.3 218.5,76.1 219.0,76.9 219.5,77.6 220.0,78.4 220.5,79.1 221.0,79.8 221.5,80.4 222.0,81.0 222.5,81.6 223.0,82.2 223.5,82.7 224.0,83.2 224.5,83.6 225.0,84.0 225.5,84.4 226.0,84.7 226.5,85.0 227.0,85.3 227.5,85.5 228.0,85.7 228.5,85.8 229.0,85.9 229.5,86.0 230.0,86.0 230.5,86.0 231.0,85.9 231.5,85.8 232.0,85.7 232.5,85.5 233.0,85.3 233.5,85.0 234.0,84.7 234.5,84.4 235.0,84.0 235.5,83.6 236.0,83.2 236.5,82.7 237.0,82.2 237.5,81.6 238.0,81.0 238.5,80.4 239.0,79.8 239.5,79.1 240.0,78.4 240.5,77.6 241.0,76.9 241.5,76.1 242.0,75.3 242.5,74.4 243.0,73.6 243.5,72.7 244.0,71.8 244.5,70.9 245.0,69.9 245.5,69.0 246.0,68.0 246.5,67.1 247.0,66.1 247.5,65.1 248.0,64.1 248.5,63.1 249.0,62.0 249.5,61.0 250.0,60.0 250.5,59.0 251.0,58.0 251.5,56.9 252.0,55.9 252.5,54.9 253.0,53.9 253.5,52.9 254.0,52.0 254.5,51.0 255.0,50.1 255.5,49.1 256.0,48.2 256.5,47.3 257.0,46.4 257.5,45.6 258.0,44.7 258.5,43.9 259.0,43.1 259.5,42.4 260.0,41.6 260.5,40.9 261.0,40.2 261.5,39.6 262.0,39.0 262.5,38.4 263.0,37.8 263.5,37.3 264.0,36.8 264.5,36.4 265.0,36.0 265.5,35.6 266.0,35.3 266.5,35.0 267.0,34.7 267.5,34.5 268.0,34.3 268.5,34.2 269.0,34.1 269.5,34.0 270.0,34.0 270.5,34.0 271.0,34.1 271.5,34.2 272.0,34.3 272.5,34.5 273.0,34.7 273.5,35.0 274.0,35.3 274.5,35.6 275.0,36.0 275.5,36.4 276.0,36.8 276.5,37.3 277.0,37.8 277.5,38.4 278.0,39.0 278.5,39.6 279.0,40.2 279.5,40.9 280.0,41.6 280.5,42.4 281.0,43.1 281.5,43.9 282.0,44.7 282.5,45.6 283.0,46.4 283.5,47.3 284.0,48.2 284.5,49.1 285.0,50.1 285.5,51.0 286.0,52.0 286.5,52.9 287.0,53.9 287.5,54.9 288.0,55.9 288.5,56.9 289.0,58.0 289.5,59.0 290.0,60.0\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2.2\"/><line x1=\"18\" y1=\"98\" x2=\"18\" y2=\"22\" stroke=\"currentColor\" stroke-width=\"1.2\"/><polygon points=\"18.0,20.0 20.7,26.0 15.3,26.0\" fill=\"currentColor\"/><text x=\"12\" y=\"60\" font-size=\"10\" transform=\"rotate(-90 12 60)\" text-anchor=\"middle\">pressure</text><circle cx=\"30.0\" cy=\"34.0\" r=\"3.6\"/><text x=\"30.0\" y=\"26.0\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\">P</text><circle cx=\"230.0\" cy=\"86.0\" r=\"3.6\"/><text x=\"230.0\" y=\"103.0\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\">Q</text><rect x=\"30\" y=\"118\" width=\"260.0\" height=\"32\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"32.1\" y1=\"120\" x2=\"32.1\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"34.1\" y1=\"120\" x2=\"34.1\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"36.7\" y1=\"120\" x2=\"36.7\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"40.0\" y1=\"120\" x2=\"40.0\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"44.2\" y1=\"120\" x2=\"44.2\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"49.2\" y1=\"120\" x2=\"49.2\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"55.0\" y1=\"120\" x2=\"55.0\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"61.4\" y1=\"120\" x2=\"61.4\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"68.1\" y1=\"120\" x2=\"68.1\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"74.8\" y1=\"120\" x2=\"74.8\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"81.4\" y1=\"120\" x2=\"81.4\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"87.6\" y1=\"120\" x2=\"87.6\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"93.0\" y1=\"120\" x2=\"93.0\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"97.7\" y1=\"120\" x2=\"97.7\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"101.5\" y1=\"120\" x2=\"101.5\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"104.5\" y1=\"120\" x2=\"104.5\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"106.8\" y1=\"120\" x2=\"106.8\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"108.7\" y1=\"120\" x2=\"108.7\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"110.3\" y1=\"120\" x2=\"110.3\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"112.0\" y1=\"120\" x2=\"112.0\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"114.0\" y1=\"120\" x2=\"114.0\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"116.5\" y1=\"120\" x2=\"116.5\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"119.8\" y1=\"120\" x2=\"119.8\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"124.0\" y1=\"120\" x2=\"124.0\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"129.0\" y1=\"120\" x2=\"129.0\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"134.7\" y1=\"120\" x2=\"134.7\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"141.0\" y1=\"120\" x2=\"141.0\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"147.7\" y1=\"120\" x2=\"147.7\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"154.5\" y1=\"120\" x2=\"154.5\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"161.1\" y1=\"120\" x2=\"161.1\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"167.3\" y1=\"120\" x2=\"167.3\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"172.8\" y1=\"120\" x2=\"172.8\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"177.5\" y1=\"120\" x2=\"177.5\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"181.3\" y1=\"120\" x2=\"181.3\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"184.4\" y1=\"120\" x2=\"184.4\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"186.7\" y1=\"120\" x2=\"186.7\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"188.6\" y1=\"120\" x2=\"188.6\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"190.2\" y1=\"120\" x2=\"190.2\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"191.9\" y1=\"120\" x2=\"191.9\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"193.9\" y1=\"120\" x2=\"193.9\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"196.4\" y1=\"120\" x2=\"196.4\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"199.7\" y1=\"120\" x2=\"199.7\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"203.8\" y1=\"120\" x2=\"203.8\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"208.7\" y1=\"120\" x2=\"208.7\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"214.4\" y1=\"120\" x2=\"214.4\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"220.7\" y1=\"120\" x2=\"220.7\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"227.4\" y1=\"120\" x2=\"227.4\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"234.2\" y1=\"120\" x2=\"234.2\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"240.8\" y1=\"120\" x2=\"240.8\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"247.0\" y1=\"120\" x2=\"247.0\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"252.5\" y1=\"120\" x2=\"252.5\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"257.3\" y1=\"120\" x2=\"257.3\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"261.2\" y1=\"120\" x2=\"261.2\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"264.3\" y1=\"120\" x2=\"264.3\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"266.6\" y1=\"120\" x2=\"266.6\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"268.5\" y1=\"120\" x2=\"268.5\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"270.2\" y1=\"120\" x2=\"270.2\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"271.8\" y1=\"120\" x2=\"271.8\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"273.8\" y1=\"120\" x2=\"273.8\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"276.3\" y1=\"120\" x2=\"276.3\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"279.5\" y1=\"120\" x2=\"279.5\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"283.6\" y1=\"120\" x2=\"283.6\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><line x1=\"288.5\" y1=\"120\" x2=\"288.5\" y2=\"148\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".75\"/><text x=\"160.0\" y=\"162\" font-size=\"10\" text-anchor=\"middle\">layers of air</text><line x1=\"37.0\" y1=\"178\" x2=\"223.0\" y2=\"178\" stroke=\"currentColor\" stroke-width=\"1.2\"/><polygon points=\"30.0,178.0 37.0,174.8 37.0,181.2\" fill=\"currentColor\"/><polygon points=\"230.0,178.0 223.0,181.2 223.0,174.8\" fill=\"currentColor\"/><line x1=\"30.0\" y1=\"70\" x2=\"30.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"2 3\" opacity=\".7\"/><line x1=\"230.0\" y1=\"90\" x2=\"230.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"2 3\" opacity=\".7\"/><text x=\"130.0\" y=\"193\" font-size=\"12\" text-anchor=\"middle\">1.5 m</text></svg>",
+      "figCap": "Graph and air strip are drawn to the same horizontal scale.",
+      "options": [
+        "220 Hz",
+        "330 Hz",
+        "550 Hz",
+        "660 Hz"
+      ],
+      "answer": 2,
+      "sol": "<p><b>Step 1 — read the picture.</b> P is a crest of the pressure graph: the centre of a <b>compression</b> (the layers are bunched there). Q is the third trough after it: the centre of the <b>third rarefaction</b>. Compression to the next rarefaction is λ/2, and each further rarefaction is one more λ, so P to Q = λ/2 + λ + λ = <b>2.5 λ</b>.</p><p><b>Step 2 — λ, then f.</b> 2.5 λ = 1.5 m → λ = 0.6 m. f = v/λ = 330/0.6 = <b>550 Hz</b>. Option <b>(3)</b>.</p><p><b>Where the wrong options come from.</b> (1) 220 Hz — the whole 1.5 m taken as one wavelength. (2) 330 Hz — counting \"three rarefactions\" as three half-waves: 1.5 λ = 1.5 m, λ = 1 m. (4) 660 Hz — counting three whole waves: 3 λ = 1.5 m, λ = 0.5 m. Crest to trough is only half a wave — count the half-waves on the graph.</p>"
+    },
+    {
+      "n": 2,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "plain",
+      "stem": "<p>A siren produces sound by making <b>12 000 vibrations every minute</b>. The sound travels through air at <b>340 m/s</b>. At one instant, what is the distance between the <b>1st</b> and the <b>5th</b> compression in a row, counted in the direction the sound is going?</p>",
+      "options": [
+        "8.5 m",
+        "6.8 m",
+        "5.1 m",
+        "1.7 m"
+      ],
+      "answer": 1,
+      "sol": "<p><b>Step 1 — frequency in hertz.</b> 12 000 per minute ÷ 60 = <b>200 Hz</b>.</p><p><b>Step 2 — wavelength, then count the gaps.</b> λ = v/f = 340/200 = 1.7 m. Neighbouring compressions are one wavelength apart, and from the 1st to the 5th there are <b>4 gaps</b>: 4 × 1.7 = <b>6.8 m</b>. Option <b>(2)</b>.</p><p><b>Where the wrong options come from.</b> (1) 8.5 m — 5 gaps (one per compression, the fence-post slip). (3) 5.1 m — 3 gaps. (4) 1.7 m — one wavelength, the gap between <i>neighbouring</i> compressions, stopped at step 2.</p>"
+    },
+    {
+      "n": 3,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "statement",
+      "stem": "<p>Consider the following statements about the speed of sound.</p><ol class=\"roman\"><li>In a given medium, sounds of all frequencies travel with almost the same speed.</li><li>At the same temperature, sound travels faster through hydrogen gas than through air.</li><li>When a sound passes from air into water, its wavelength stays the same.</li><li>A 400 Hz sound travelling at 340 m/s moves forward by 200 wavelengths in 0.5 s.</li><li>Sound travels faster through the air on a hot afternoon than on a cold morning.</li></ol><p>Which of the statements are correct?</p>",
+      "options": [
+        "I, II and V only",
+        "I, IV and V only",
+        "II, III and IV only",
+        "I, II, IV and V only"
+      ],
+      "answer": 3,
+      "sol": "<p><b>I — correct.</b> The speed is set by the medium, not by the note: a high and a low note from a band reach you together (NCERT: \"the speed of sound remains almost the same for all frequencies in a given medium\").</p><p><b>II — correct.</b> NCERT's table of speeds at 25 °C gives hydrogen about 1284 m/s against air's 346 m/s.</p><p><b>III — wrong.</b> The <i>frequency</i> is fixed by the source and does not change; the speed rises in water, so λ = v/f gets <i>longer</i>.</p><p><b>IV — correct.</b> In 0.5 s the source makes 400 × 0.5 = 200 vibrations, and each sends out one wavelength. (Check: λ = 340/400 = 0.85 m and 200 × 0.85 = 170 m = 340 × 0.5.)</p><p><b>V — correct.</b> The speed of sound in air increases with temperature.</p><p>So I, II, IV and V: option <b>(4)</b>. The two \"only three\" options each drop one true statement — (1) drops the arithmetic in IV, (2) drops the NCERT table fact in II — and (3) falls for III.</p>"
+    },
+    {
+      "n": 4,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "diagram",
+      "stem": "<p>Two sounds <b>X</b> and <b>Y</b> are picked up by the same microphone and displayed as shown, on the same time and displacement scales. Which of the following is correct?</p>",
+      "fig": "<svg viewBox=\"0 0 360 230\" width=\"360\" height=\"230\" role=\"img\" aria-label=\"Two displacement-time traces X and Y on the same scales, each 8 ms long. X shows 4 cycles with a large amplitude, Y shows 6 cycles with half that amplitude.\" font-family=\"Inter,sans-serif\" fill=\"currentColor\" style=\"max-width:100%;height:auto\"><line x1=\"50\" y1=\"84\" x2=\"330\" y2=\"84\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".3\"/><line x1=\"50\" y1=\"72\" x2=\"330\" y2=\"72\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".3\"/><line x1=\"50\" y1=\"48\" x2=\"330\" y2=\"48\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".3\"/><line x1=\"50\" y1=\"36\" x2=\"330\" y2=\"36\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".3\"/><line x1=\"50.0\" y1=\"36\" x2=\"50.0\" y2=\"84\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"85.0\" y1=\"36\" x2=\"85.0\" y2=\"84\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"/><line x1=\"120.0\" y1=\"36\" x2=\"120.0\" y2=\"84\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"155.0\" y1=\"36\" x2=\"155.0\" y2=\"84\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"/><line x1=\"190.0\" y1=\"36\" x2=\"190.0\" y2=\"84\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"225.0\" y1=\"36\" x2=\"225.0\" y2=\"84\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"/><line x1=\"260.0\" y1=\"36\" x2=\"260.0\" y2=\"84\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"295.0\" y1=\"36\" x2=\"295.0\" y2=\"84\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"/><line x1=\"330.0\" y1=\"36\" x2=\"330.0\" y2=\"84\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"50\" y1=\"60\" x2=\"330\" y2=\"60\" stroke=\"currentColor\" stroke-width=\"1.1\"/><polyline points=\"50.0,60.0 50.5,59.0 50.9,58.0 51.4,57.0 51.9,56.0 52.3,55.0 52.8,54.0 53.3,53.1 53.7,52.1 54.2,51.2 54.7,50.2 55.1,49.3 55.6,48.4 56.1,47.6 56.5,46.7 57.0,45.9 57.5,45.1 57.9,44.3 58.4,43.6 58.9,42.9 59.3,42.2 59.8,41.5 60.3,40.9 60.7,40.3 61.2,39.7 61.7,39.2 62.1,38.7 62.6,38.3 63.1,37.9 63.5,37.5 64.0,37.2 64.5,36.9 64.9,36.6 65.4,36.4 65.9,36.3 66.3,36.1 66.8,36.0 67.3,36.0 67.7,36.0 68.2,36.0 68.7,36.1 69.1,36.3 69.6,36.4 70.1,36.6 70.5,36.9 71.0,37.2 71.5,37.5 71.9,37.9 72.4,38.3 72.9,38.7 73.3,39.2 73.8,39.7 74.3,40.3 74.7,40.9 75.2,41.5 75.7,42.2 76.1,42.9 76.6,43.6 77.1,44.3 77.5,45.1 78.0,45.9 78.5,46.7 78.9,47.6 79.4,48.4 79.9,49.3 80.3,50.2 80.8,51.2 81.3,52.1 81.7,53.1 82.2,54.0 82.7,55.0 83.1,56.0 83.6,57.0 84.1,58.0 84.5,59.0 85.0,60.0 85.5,61.0 85.9,62.0 86.4,63.0 86.9,64.0 87.3,65.0 87.8,66.0 88.3,66.9 88.7,67.9 89.2,68.8 89.7,69.8 90.1,70.7 90.6,71.6 91.1,72.4 91.5,73.3 92.0,74.1 92.5,74.9 92.9,75.7 93.4,76.4 93.9,77.1 94.3,77.8 94.8,78.5 95.3,79.1 95.7,79.7 96.2,80.3 96.7,80.8 97.1,81.3 97.6,81.7 98.1,82.1 98.5,82.5 99.0,82.8 99.5,83.1 99.9,83.4 100.4,83.6 100.9,83.7 101.3,83.9 101.8,84.0 102.3,84.0 102.7,84.0 103.2,84.0 103.7,83.9 104.1,83.7 104.6,83.6 105.1,83.4 105.5,83.1 106.0,82.8 106.5,82.5 106.9,82.1 107.4,81.7 107.9,81.3 108.3,80.8 108.8,80.3 109.3,79.7 109.7,79.1 110.2,78.5 110.7,77.8 111.1,77.1 111.6,76.4 112.1,75.7 112.5,74.9 113.0,74.1 113.5,73.3 113.9,72.4 114.4,71.6 114.9,70.7 115.3,69.8 115.8,68.8 116.3,67.9 116.7,66.9 117.2,66.0 117.7,65.0 118.1,64.0 118.6,63.0 119.1,62.0 119.5,61.0 120.0,60.0 120.5,59.0 120.9,58.0 121.4,57.0 121.9,56.0 122.3,55.0 122.8,54.0 123.3,53.1 123.7,52.1 124.2,51.2 124.7,50.2 125.1,49.3 125.6,48.4 126.1,47.6 126.5,46.7 127.0,45.9 127.5,45.1 127.9,44.3 128.4,43.6 128.9,42.9 129.3,42.2 129.8,41.5 130.3,40.9 130.7,40.3 131.2,39.7 131.7,39.2 132.1,38.7 132.6,38.3 133.1,37.9 133.5,37.5 134.0,37.2 134.5,36.9 134.9,36.6 135.4,36.4 135.9,36.3 136.3,36.1 136.8,36.0 137.3,36.0 137.7,36.0 138.2,36.0 138.7,36.1 139.1,36.3 139.6,36.4 140.1,36.6 140.5,36.9 141.0,37.2 141.5,37.5 141.9,37.9 142.4,38.3 142.9,38.7 143.3,39.2 143.8,39.7 144.3,40.3 144.7,40.9 145.2,41.5 145.7,42.2 146.1,42.9 146.6,43.6 147.1,44.3 147.5,45.1 148.0,45.9 148.5,46.7 148.9,47.6 149.4,48.4 149.9,49.3 150.3,50.2 150.8,51.2 151.3,52.1 151.7,53.1 152.2,54.0 152.7,55.0 153.1,56.0 153.6,57.0 154.1,58.0 154.5,59.0 155.0,60.0 155.5,61.0 155.9,62.0 156.4,63.0 156.9,64.0 157.3,65.0 157.8,66.0 158.3,66.9 158.7,67.9 159.2,68.8 159.7,69.8 160.1,70.7 160.6,71.6 161.1,72.4 161.5,73.3 162.0,74.1 162.5,74.9 162.9,75.7 163.4,76.4 163.9,77.1 164.3,77.8 164.8,78.5 165.3,79.1 165.7,79.7 166.2,80.3 166.7,80.8 167.1,81.3 167.6,81.7 168.1,82.1 168.5,82.5 169.0,82.8 169.5,83.1 169.9,83.4 170.4,83.6 170.9,83.7 171.3,83.9 171.8,84.0 172.3,84.0 172.7,84.0 173.2,84.0 173.7,83.9 174.1,83.7 174.6,83.6 175.1,83.4 175.5,83.1 176.0,82.8 176.5,82.5 176.9,82.1 177.4,81.7 177.9,81.3 178.3,80.8 178.8,80.3 179.3,79.7 179.7,79.1 180.2,78.5 180.7,77.8 181.1,77.1 181.6,76.4 182.1,75.7 182.5,74.9 183.0,74.1 183.5,73.3 183.9,72.4 184.4,71.6 184.9,70.7 185.3,69.8 185.8,68.8 186.3,67.9 186.7,66.9 187.2,66.0 187.7,65.0 188.1,64.0 188.6,63.0 189.1,62.0 189.5,61.0 190.0,60.0 190.5,59.0 190.9,58.0 191.4,57.0 191.9,56.0 192.3,55.0 192.8,54.0 193.3,53.1 193.7,52.1 194.2,51.2 194.7,50.2 195.1,49.3 195.6,48.4 196.1,47.6 196.5,46.7 197.0,45.9 197.5,45.1 197.9,44.3 198.4,43.6 198.9,42.9 199.3,42.2 199.8,41.5 200.3,40.9 200.7,40.3 201.2,39.7 201.7,39.2 202.1,38.7 202.6,38.3 203.1,37.9 203.5,37.5 204.0,37.2 204.5,36.9 204.9,36.6 205.4,36.4 205.9,36.3 206.3,36.1 206.8,36.0 207.3,36.0 207.7,36.0 208.2,36.0 208.7,36.1 209.1,36.3 209.6,36.4 210.1,36.6 210.5,36.9 211.0,37.2 211.5,37.5 211.9,37.9 212.4,38.3 212.9,38.7 213.3,39.2 213.8,39.7 214.3,40.3 214.7,40.9 215.2,41.5 215.7,42.2 216.1,42.9 216.6,43.6 217.1,44.3 217.5,45.1 218.0,45.9 218.5,46.7 218.9,47.6 219.4,48.4 219.9,49.3 220.3,50.2 220.8,51.2 221.3,52.1 221.7,53.1 222.2,54.0 222.7,55.0 223.1,56.0 223.6,57.0 224.1,58.0 224.5,59.0 225.0,60.0 225.5,61.0 225.9,62.0 226.4,63.0 226.9,64.0 227.3,65.0 227.8,66.0 228.3,66.9 228.7,67.9 229.2,68.8 229.7,69.8 230.1,70.7 230.6,71.6 231.1,72.4 231.5,73.3 232.0,74.1 232.5,74.9 232.9,75.7 233.4,76.4 233.9,77.1 234.3,77.8 234.8,78.5 235.3,79.1 235.7,79.7 236.2,80.3 236.7,80.8 237.1,81.3 237.6,81.7 238.1,82.1 238.5,82.5 239.0,82.8 239.5,83.1 239.9,83.4 240.4,83.6 240.9,83.7 241.3,83.9 241.8,84.0 242.3,84.0 242.7,84.0 243.2,84.0 243.7,83.9 244.1,83.7 244.6,83.6 245.1,83.4 245.5,83.1 246.0,82.8 246.5,82.5 246.9,82.1 247.4,81.7 247.9,81.3 248.3,80.8 248.8,80.3 249.3,79.7 249.7,79.1 250.2,78.5 250.7,77.8 251.1,77.1 251.6,76.4 252.1,75.7 252.5,74.9 253.0,74.1 253.5,73.3 253.9,72.4 254.4,71.6 254.9,70.7 255.3,69.8 255.8,68.8 256.3,67.9 256.7,66.9 257.2,66.0 257.7,65.0 258.1,64.0 258.6,63.0 259.1,62.0 259.5,61.0 260.0,60.0 260.5,59.0 260.9,58.0 261.4,57.0 261.9,56.0 262.3,55.0 262.8,54.0 263.3,53.1 263.7,52.1 264.2,51.2 264.7,50.2 265.1,49.3 265.6,48.4 266.1,47.6 266.5,46.7 267.0,45.9 267.5,45.1 267.9,44.3 268.4,43.6 268.9,42.9 269.3,42.2 269.8,41.5 270.3,40.9 270.7,40.3 271.2,39.7 271.7,39.2 272.1,38.7 272.6,38.3 273.1,37.9 273.5,37.5 274.0,37.2 274.5,36.9 274.9,36.6 275.4,36.4 275.9,36.3 276.3,36.1 276.8,36.0 277.3,36.0 277.7,36.0 278.2,36.0 278.7,36.1 279.1,36.3 279.6,36.4 280.1,36.6 280.5,36.9 281.0,37.2 281.5,37.5 281.9,37.9 282.4,38.3 282.9,38.7 283.3,39.2 283.8,39.7 284.3,40.3 284.7,40.9 285.2,41.5 285.7,42.2 286.1,42.9 286.6,43.6 287.1,44.3 287.5,45.1 288.0,45.9 288.5,46.7 288.9,47.6 289.4,48.4 289.9,49.3 290.3,50.2 290.8,51.2 291.3,52.1 291.7,53.1 292.2,54.0 292.7,55.0 293.1,56.0 293.6,57.0 294.1,58.0 294.5,59.0 295.0,60.0 295.5,61.0 295.9,62.0 296.4,63.0 296.9,64.0 297.3,65.0 297.8,66.0 298.3,66.9 298.7,67.9 299.2,68.8 299.7,69.8 300.1,70.7 300.6,71.6 301.1,72.4 301.5,73.3 302.0,74.1 302.5,74.9 302.9,75.7 303.4,76.4 303.9,77.1 304.3,77.8 304.8,78.5 305.3,79.1 305.7,79.7 306.2,80.3 306.7,80.8 307.1,81.3 307.6,81.7 308.1,82.1 308.5,82.5 309.0,82.8 309.5,83.1 309.9,83.4 310.4,83.6 310.9,83.7 311.3,83.9 311.8,84.0 312.3,84.0 312.7,84.0 313.2,84.0 313.7,83.9 314.1,83.7 314.6,83.6 315.1,83.4 315.5,83.1 316.0,82.8 316.5,82.5 316.9,82.1 317.4,81.7 317.9,81.3 318.3,80.8 318.8,80.3 319.3,79.7 319.7,79.1 320.2,78.5 320.7,77.8 321.1,77.1 321.6,76.4 322.1,75.7 322.5,74.9 323.0,74.1 323.5,73.3 323.9,72.4 324.4,71.6 324.9,70.7 325.3,69.8 325.8,68.8 326.3,67.9 326.7,66.9 327.2,66.0 327.7,65.0 328.1,64.0 328.6,63.0 329.1,62.0 329.5,61.0 330.0,60.0\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2\"/><text x=\"16\" y=\"65\" font-size=\"15\" font-weight=\"700\">X</text><text x=\"50.0\" y=\"98\" font-size=\"10\" text-anchor=\"middle\">0</text><text x=\"120.0\" y=\"98\" font-size=\"10\" text-anchor=\"middle\">2</text><text x=\"190.0\" y=\"98\" font-size=\"10\" text-anchor=\"middle\">4</text><text x=\"260.0\" y=\"98\" font-size=\"10\" text-anchor=\"middle\">6</text><text x=\"330.0\" y=\"98\" font-size=\"10\" text-anchor=\"middle\">8</text><text x=\"330\" y=\"111\" font-size=\"10\" text-anchor=\"end\">t / ms</text><line x1=\"50\" y1=\"184\" x2=\"330\" y2=\"184\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".3\"/><line x1=\"50\" y1=\"172\" x2=\"330\" y2=\"172\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".3\"/><line x1=\"50\" y1=\"148\" x2=\"330\" y2=\"148\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".3\"/><line x1=\"50\" y1=\"136\" x2=\"330\" y2=\"136\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".3\"/><line x1=\"50.0\" y1=\"136\" x2=\"50.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"85.0\" y1=\"136\" x2=\"85.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"/><line x1=\"120.0\" y1=\"136\" x2=\"120.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"155.0\" y1=\"136\" x2=\"155.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"/><line x1=\"190.0\" y1=\"136\" x2=\"190.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"225.0\" y1=\"136\" x2=\"225.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"/><line x1=\"260.0\" y1=\"136\" x2=\"260.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"295.0\" y1=\"136\" x2=\"295.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".22\"/><line x1=\"330.0\" y1=\"136\" x2=\"330.0\" y2=\"184\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"50\" y1=\"160\" x2=\"330\" y2=\"160\" stroke=\"currentColor\" stroke-width=\"1.1\"/><polyline points=\"50.0,160.0 50.5,159.2 50.9,158.5 51.4,157.8 51.9,157.0 52.3,156.3 52.8,155.6 53.3,154.9 53.7,154.2 54.2,153.6 54.7,152.9 55.1,152.4 55.6,151.8 56.1,151.3 56.5,150.8 57.0,150.3 57.5,149.9 57.9,149.5 58.4,149.1 58.9,148.8 59.3,148.6 59.8,148.4 60.3,148.2 60.7,148.1 61.2,148.0 61.7,148.0 62.1,148.0 62.6,148.1 63.1,148.2 63.5,148.4 64.0,148.6 64.5,148.8 64.9,149.1 65.4,149.5 65.9,149.9 66.3,150.3 66.8,150.8 67.3,151.3 67.7,151.8 68.2,152.4 68.7,152.9 69.1,153.6 69.6,154.2 70.1,154.9 70.5,155.6 71.0,156.3 71.5,157.0 71.9,157.8 72.4,158.5 72.9,159.2 73.3,160.0 73.8,160.8 74.3,161.5 74.7,162.2 75.2,163.0 75.7,163.7 76.1,164.4 76.6,165.1 77.1,165.8 77.5,166.4 78.0,167.1 78.5,167.6 78.9,168.2 79.4,168.7 79.9,169.2 80.3,169.7 80.8,170.1 81.3,170.5 81.7,170.9 82.2,171.2 82.7,171.4 83.1,171.6 83.6,171.8 84.1,171.9 84.5,172.0 85.0,172.0 85.5,172.0 85.9,171.9 86.4,171.8 86.9,171.6 87.3,171.4 87.8,171.2 88.3,170.9 88.7,170.5 89.2,170.1 89.7,169.7 90.1,169.2 90.6,168.7 91.1,168.2 91.5,167.6 92.0,167.1 92.5,166.4 92.9,165.8 93.4,165.1 93.9,164.4 94.3,163.7 94.8,163.0 95.3,162.2 95.7,161.5 96.2,160.8 96.7,160.0 97.1,159.2 97.6,158.5 98.1,157.8 98.5,157.0 99.0,156.3 99.5,155.6 99.9,154.9 100.4,154.2 100.9,153.6 101.3,152.9 101.8,152.4 102.3,151.8 102.7,151.3 103.2,150.8 103.7,150.3 104.1,149.9 104.6,149.5 105.1,149.1 105.5,148.8 106.0,148.6 106.5,148.4 106.9,148.2 107.4,148.1 107.9,148.0 108.3,148.0 108.8,148.0 109.3,148.1 109.7,148.2 110.2,148.4 110.7,148.6 111.1,148.8 111.6,149.1 112.1,149.5 112.5,149.9 113.0,150.3 113.5,150.8 113.9,151.3 114.4,151.8 114.9,152.4 115.3,152.9 115.8,153.6 116.3,154.2 116.7,154.9 117.2,155.6 117.7,156.3 118.1,157.0 118.6,157.8 119.1,158.5 119.5,159.2 120.0,160.0 120.5,160.8 120.9,161.5 121.4,162.2 121.9,163.0 122.3,163.7 122.8,164.4 123.3,165.1 123.7,165.8 124.2,166.4 124.7,167.1 125.1,167.6 125.6,168.2 126.1,168.7 126.5,169.2 127.0,169.7 127.5,170.1 127.9,170.5 128.4,170.9 128.9,171.2 129.3,171.4 129.8,171.6 130.3,171.8 130.7,171.9 131.2,172.0 131.7,172.0 132.1,172.0 132.6,171.9 133.1,171.8 133.5,171.6 134.0,171.4 134.5,171.2 134.9,170.9 135.4,170.5 135.9,170.1 136.3,169.7 136.8,169.2 137.3,168.7 137.7,168.2 138.2,167.6 138.7,167.1 139.1,166.4 139.6,165.8 140.1,165.1 140.5,164.4 141.0,163.7 141.5,163.0 141.9,162.2 142.4,161.5 142.9,160.8 143.3,160.0 143.8,159.2 144.3,158.5 144.7,157.8 145.2,157.0 145.7,156.3 146.1,155.6 146.6,154.9 147.1,154.2 147.5,153.6 148.0,152.9 148.5,152.4 148.9,151.8 149.4,151.3 149.9,150.8 150.3,150.3 150.8,149.9 151.3,149.5 151.7,149.1 152.2,148.8 152.7,148.6 153.1,148.4 153.6,148.2 154.1,148.1 154.5,148.0 155.0,148.0 155.5,148.0 155.9,148.1 156.4,148.2 156.9,148.4 157.3,148.6 157.8,148.8 158.3,149.1 158.7,149.5 159.2,149.9 159.7,150.3 160.1,150.8 160.6,151.3 161.1,151.8 161.5,152.4 162.0,152.9 162.5,153.6 162.9,154.2 163.4,154.9 163.9,155.6 164.3,156.3 164.8,157.0 165.3,157.8 165.7,158.5 166.2,159.2 166.7,160.0 167.1,160.8 167.6,161.5 168.1,162.2 168.5,163.0 169.0,163.7 169.5,164.4 169.9,165.1 170.4,165.8 170.9,166.4 171.3,167.1 171.8,167.6 172.3,168.2 172.7,168.7 173.2,169.2 173.7,169.7 174.1,170.1 174.6,170.5 175.1,170.9 175.5,171.2 176.0,171.4 176.5,171.6 176.9,171.8 177.4,171.9 177.9,172.0 178.3,172.0 178.8,172.0 179.3,171.9 179.7,171.8 180.2,171.6 180.7,171.4 181.1,171.2 181.6,170.9 182.1,170.5 182.5,170.1 183.0,169.7 183.5,169.2 183.9,168.7 184.4,168.2 184.9,167.6 185.3,167.1 185.8,166.4 186.3,165.8 186.7,165.1 187.2,164.4 187.7,163.7 188.1,163.0 188.6,162.2 189.1,161.5 189.5,160.8 190.0,160.0 190.5,159.2 190.9,158.5 191.4,157.8 191.9,157.0 192.3,156.3 192.8,155.6 193.3,154.9 193.7,154.2 194.2,153.6 194.7,152.9 195.1,152.4 195.6,151.8 196.1,151.3 196.5,150.8 197.0,150.3 197.5,149.9 197.9,149.5 198.4,149.1 198.9,148.8 199.3,148.6 199.8,148.4 200.3,148.2 200.7,148.1 201.2,148.0 201.7,148.0 202.1,148.0 202.6,148.1 203.1,148.2 203.5,148.4 204.0,148.6 204.5,148.8 204.9,149.1 205.4,149.5 205.9,149.9 206.3,150.3 206.8,150.8 207.3,151.3 207.7,151.8 208.2,152.4 208.7,152.9 209.1,153.6 209.6,154.2 210.1,154.9 210.5,155.6 211.0,156.3 211.5,157.0 211.9,157.8 212.4,158.5 212.9,159.2 213.3,160.0 213.8,160.8 214.3,161.5 214.7,162.2 215.2,163.0 215.7,163.7 216.1,164.4 216.6,165.1 217.1,165.8 217.5,166.4 218.0,167.1 218.5,167.6 218.9,168.2 219.4,168.7 219.9,169.2 220.3,169.7 220.8,170.1 221.3,170.5 221.7,170.9 222.2,171.2 222.7,171.4 223.1,171.6 223.6,171.8 224.1,171.9 224.5,172.0 225.0,172.0 225.5,172.0 225.9,171.9 226.4,171.8 226.9,171.6 227.3,171.4 227.8,171.2 228.3,170.9 228.7,170.5 229.2,170.1 229.7,169.7 230.1,169.2 230.6,168.7 231.1,168.2 231.5,167.6 232.0,167.1 232.5,166.4 232.9,165.8 233.4,165.1 233.9,164.4 234.3,163.7 234.8,163.0 235.3,162.2 235.7,161.5 236.2,160.8 236.7,160.0 237.1,159.2 237.6,158.5 238.1,157.8 238.5,157.0 239.0,156.3 239.5,155.6 239.9,154.9 240.4,154.2 240.9,153.6 241.3,152.9 241.8,152.4 242.3,151.8 242.7,151.3 243.2,150.8 243.7,150.3 244.1,149.9 244.6,149.5 245.1,149.1 245.5,148.8 246.0,148.6 246.5,148.4 246.9,148.2 247.4,148.1 247.9,148.0 248.3,148.0 248.8,148.0 249.3,148.1 249.7,148.2 250.2,148.4 250.7,148.6 251.1,148.8 251.6,149.1 252.1,149.5 252.5,149.9 253.0,150.3 253.5,150.8 253.9,151.3 254.4,151.8 254.9,152.4 255.3,152.9 255.8,153.6 256.3,154.2 256.7,154.9 257.2,155.6 257.7,156.3 258.1,157.0 258.6,157.8 259.1,158.5 259.5,159.2 260.0,160.0 260.5,160.8 260.9,161.5 261.4,162.2 261.9,163.0 262.3,163.7 262.8,164.4 263.3,165.1 263.7,165.8 264.2,166.4 264.7,167.1 265.1,167.6 265.6,168.2 266.1,168.7 266.5,169.2 267.0,169.7 267.5,170.1 267.9,170.5 268.4,170.9 268.9,171.2 269.3,171.4 269.8,171.6 270.3,171.8 270.7,171.9 271.2,172.0 271.7,172.0 272.1,172.0 272.6,171.9 273.1,171.8 273.5,171.6 274.0,171.4 274.5,171.2 274.9,170.9 275.4,170.5 275.9,170.1 276.3,169.7 276.8,169.2 277.3,168.7 277.7,168.2 278.2,167.6 278.7,167.1 279.1,166.4 279.6,165.8 280.1,165.1 280.5,164.4 281.0,163.7 281.5,163.0 281.9,162.2 282.4,161.5 282.9,160.8 283.3,160.0 283.8,159.2 284.3,158.5 284.7,157.8 285.2,157.0 285.7,156.3 286.1,155.6 286.6,154.9 287.1,154.2 287.5,153.6 288.0,152.9 288.5,152.4 288.9,151.8 289.4,151.3 289.9,150.8 290.3,150.3 290.8,149.9 291.3,149.5 291.7,149.1 292.2,148.8 292.7,148.6 293.1,148.4 293.6,148.2 294.1,148.1 294.5,148.0 295.0,148.0 295.5,148.0 295.9,148.1 296.4,148.2 296.9,148.4 297.3,148.6 297.8,148.8 298.3,149.1 298.7,149.5 299.2,149.9 299.7,150.3 300.1,150.8 300.6,151.3 301.1,151.8 301.5,152.4 302.0,152.9 302.5,153.6 302.9,154.2 303.4,154.9 303.9,155.6 304.3,156.3 304.8,157.0 305.3,157.8 305.7,158.5 306.2,159.2 306.7,160.0 307.1,160.8 307.6,161.5 308.1,162.2 308.5,163.0 309.0,163.7 309.5,164.4 309.9,165.1 310.4,165.8 310.9,166.4 311.3,167.1 311.8,167.6 312.3,168.2 312.7,168.7 313.2,169.2 313.7,169.7 314.1,170.1 314.6,170.5 315.1,170.9 315.5,171.2 316.0,171.4 316.5,171.6 316.9,171.8 317.4,171.9 317.9,172.0 318.3,172.0 318.8,172.0 319.3,171.9 319.7,171.8 320.2,171.6 320.7,171.4 321.1,171.2 321.6,170.9 322.1,170.5 322.5,170.1 323.0,169.7 323.5,169.2 323.9,168.7 324.4,168.2 324.9,167.6 325.3,167.1 325.8,166.4 326.3,165.8 326.7,165.1 327.2,164.4 327.7,163.7 328.1,163.0 328.6,162.2 329.1,161.5 329.5,160.8 330.0,160.0\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2\"/><text x=\"16\" y=\"165\" font-size=\"15\" font-weight=\"700\">Y</text><text x=\"50.0\" y=\"198\" font-size=\"10\" text-anchor=\"middle\">0</text><text x=\"120.0\" y=\"198\" font-size=\"10\" text-anchor=\"middle\">2</text><text x=\"190.0\" y=\"198\" font-size=\"10\" text-anchor=\"middle\">4</text><text x=\"260.0\" y=\"198\" font-size=\"10\" text-anchor=\"middle\">6</text><text x=\"330.0\" y=\"198\" font-size=\"10\" text-anchor=\"middle\">8</text><text x=\"330\" y=\"211\" font-size=\"10\" text-anchor=\"end\">t / ms</text></svg>",
+      "figCap": "Each trace lasts from 0 to 8 ms; the faint vertical lines are 1 ms apart and the faint horizontal lines are equally spaced.",
+      "options": [
+        "Y has frequency 750 Hz; X is louder and Y has the higher pitch.",
+        "Y has frequency 750 Hz; Y is louder and X has the higher pitch.",
+        "Y has frequency 625 Hz; X is louder and Y has the higher pitch.",
+        "Y has frequency 500 Hz; X is louder and X has the higher pitch."
+      ],
+      "answer": 0,
+      "sol": "<p><b>Step 1 — count cycles in the 8 ms.</b> X completes 4 cycles, Y completes 6. So f<sub>X</sub> = 4 ÷ 0.008 s = 500 Hz and f<sub>Y</sub> = 6 ÷ 0.008 s = <b>750 Hz</b>. Higher frequency = higher pitch, so <b>Y has the higher pitch</b>.</p><p><b>Step 2 — compare heights.</b> X swings two grid lines either side of the axis, Y only one. Loudness is set by amplitude, so <b>X is louder</b>. Option <b>(1)</b>.</p><p><b>Where the wrong options come from.</b> (2) — pitch and loudness swapped: the \"busier\" trace is thought louder. (3) 625 Hz — counting 6 crests but only the 5 crest-to-crest gaps between them, over the full 8 ms. (4) 500 Hz — X's frequency read as Y's, which then makes X the higher note.</p>"
+    },
+    {
+      "n": 5,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "plain",
+      "stem": "<p>A sound of frequency <b>250 Hz</b> travels through air at <b>340 m/s</b>. At t = 0, one particular thin layer of air L is at the centre of a compression. After how long is L next at the centre of a <b>rarefaction</b>, and how far has that original compression travelled in that time?</p>",
+      "options": [
+        "2 ms; 0.68 m",
+        "4 ms; 1.36 m",
+        "2 ms; zero",
+        "1 ms; 0.34 m"
+      ],
+      "answer": 0,
+      "sol": "<p><b>Step 1 — half a period.</b> T = 1/f = 1/250 s = 4 ms. As the wave passes, each layer goes compression → normal → rarefaction → normal → compression once per period, so it reaches the next rarefaction after <b>T/2 = 2 ms</b>.</p><p><b>Step 2 — the disturbance moves on at v.</b> The layer itself only oscillates about its mean position, but the compression moves with the wave: 340 × 0.002 = <b>0.68 m</b> (= λ/2, since λ = 340/250 = 1.36 m). Option <b>(1)</b>.</p><p><b>Where the wrong options come from.</b> (2) — the full period used: that is when L is <i>back at</i> a compression. (3) — the right time, but confusing the layer (which stays near home) with the compression (which travels). (4) — a quarter period: at T/4 the layer is at normal pressure, not in a rarefaction.</p>"
+    },
+    {
+      "n": 6,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "diagram",
+      "stem": "<p>A and B stand <b>136 m</b> apart on a straight line that runs parallel to a long, flat wall. A fires a starting pistol. B hears the pistol directly, and again after reflection from the wall. B can hear the echo as a separate sound only if it arrives at least <b>0.1 s</b> after the direct sound. Taking the speed of sound as <b>340 m/s</b>, what is the <b>least</b> distance d between the line AB and the wall?</p>",
+      "fig": "<svg viewBox=\"0 0 360 190\" width=\"360\" height=\"190\" role=\"img\" aria-label=\"A long wall at the top; A and B on a line parallel to it, 136 m apart; the direct sound goes straight from A to B and the reflected sound goes from A to the wall and down to B; the distance d of the line from the wall is unknown\" font-family=\"Inter,sans-serif\" fill=\"currentColor\" style=\"max-width:100%;height:auto\"><line x1=\"20\" y1=\"36\" x2=\"340\" y2=\"36\" stroke=\"currentColor\" stroke-width=\"2.5\"/><line x1=\"24\" y1=\"36\" x2=\"32\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"36\" y1=\"36\" x2=\"44\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"48\" y1=\"36\" x2=\"56\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"60\" y1=\"36\" x2=\"68\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"72\" y1=\"36\" x2=\"80\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"84\" y1=\"36\" x2=\"92\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"96\" y1=\"36\" x2=\"104\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"108\" y1=\"36\" x2=\"116\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"120\" y1=\"36\" x2=\"128\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"132\" y1=\"36\" x2=\"140\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"144\" y1=\"36\" x2=\"152\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"156\" y1=\"36\" x2=\"164\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"168\" y1=\"36\" x2=\"176\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"180\" y1=\"36\" x2=\"188\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"192\" y1=\"36\" x2=\"200\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"204\" y1=\"36\" x2=\"212\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"216\" y1=\"36\" x2=\"224\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"228\" y1=\"36\" x2=\"236\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"240\" y1=\"36\" x2=\"248\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"252\" y1=\"36\" x2=\"260\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"264\" y1=\"36\" x2=\"272\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"276\" y1=\"36\" x2=\"284\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"288\" y1=\"36\" x2=\"296\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"300\" y1=\"36\" x2=\"308\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"312\" y1=\"36\" x2=\"320\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"324\" y1=\"36\" x2=\"332\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><line x1=\"336\" y1=\"36\" x2=\"344\" y2=\"27\" stroke=\"currentColor\" stroke-width=\"1\" opacity=\".6\"/><text x=\"22\" y=\"51\" font-size=\"11\">wall</text><line x1=\"180.0\" y1=\"36\" x2=\"180.0\" y2=\"150\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"3 3\" opacity=\".6\"/><line x1=\"60\" y1=\"150\" x2=\"180.0\" y2=\"36\" stroke=\"var(--physics)\" stroke-width=\"1.8\" stroke-dasharray=\"6 4\"/><line x1=\"180.0\" y1=\"36\" x2=\"300\" y2=\"150\" stroke=\"var(--physics)\" stroke-width=\"1.8\" stroke-dasharray=\"6 4\"/><polygon points=\"120.0,93.0 116.3,102.1 110.7,96.3\" fill=\"var(--physics)\"/><polygon points=\"240.0,93.0 230.7,89.7 236.3,83.9\" fill=\"var(--physics)\"/><line x1=\"66\" y1=\"150\" x2=\"292\" y2=\"150\" stroke=\"currentColor\" stroke-width=\"1.8\"/><polygon points=\"294.0,150.0 285.0,154.1 285.0,145.9\" fill=\"currentColor\"/><circle cx=\"60\" cy=\"150\" r=\"5\"/><text x=\"60\" y=\"172\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\">A</text><circle cx=\"300\" cy=\"150\" r=\"5\"/><text x=\"300\" y=\"172\" font-size=\"14\" font-weight=\"700\" text-anchor=\"middle\">B</text><text x=\"180.0\" y=\"166\" font-size=\"12\" text-anchor=\"middle\">136 m</text><line x1=\"322\" y1=\"44\" x2=\"322\" y2=\"142\" stroke=\"currentColor\" stroke-width=\"1\"/><polygon points=\"322.0,37.0 325.1,44.0 318.9,44.0\" fill=\"currentColor\"/><polygon points=\"322.0,149.0 318.9,142.0 325.1,142.0\" fill=\"currentColor\"/><line x1=\"306\" y1=\"150\" x2=\"328\" y2=\"150\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"2 3\" opacity=\".6\"/><text x=\"317\" y=\"97.0\" font-size=\"12\" text-anchor=\"end\">d</text></svg>",
+      "figCap": "Not to scale. The reflected sound meets the wall midway between A and B.",
+      "options": [
+        "17 m",
+        "34 m",
+        "51 m",
+        "85 m"
+      ],
+      "answer": 2,
+      "sol": "<p><b>Step 1 — the extra path.</b> In 0.1 s sound travels 340 × 0.1 = 34 m, so the reflected path must be at least 136 + 34 = <b>170 m</b>.</p><p><b>Step 2 — geometry.</b> By symmetry the sound hits the wall midway, so each slant leg is 170/2 = 85 m, with a horizontal run of 136/2 = 68 m. d = √(85² − 68²) = √(7225 − 4624) = √2601 = <b>51 m</b> (a 3-4-5 triangle scaled by 17). Option <b>(3)</b>.</p><p><b>Where the wrong options come from.</b> (1) 17 m — the rule for a listener standing <i>at</i> the source (34 m there and back), which does not apply when the listener is 136 m away. (2) 34 m — the extra path length itself. (4) 85 m — one slant leg, not the perpendicular distance.</p>"
+    },
+    {
+      "n": 7,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "match",
+      "stem": "<p>A normal human ear hears frequencies from about 20 Hz to 20 kHz. Match each sound in Column I with its type in Column II. Take the speed of sound as 340 m/s in air and 1500 m/s in water.</p><table><thead><tr><th style=\"text-align:left;padding:3px 10px 3px 0\">Column I</th><th style=\"text-align:left;padding:3px 0\">Column II</th></tr></thead><tbody><tr><td style=\"padding:3px 10px 3px 0\">(A) A sound whose time period is 0.04 ms</td><td style=\"padding:3px 0\">(p) infrasonic</td></tr><tr><td style=\"padding:3px 10px 3px 0\">(B) A sound of wavelength 68 m in air</td><td style=\"padding:3px 0\">(q) audible</td></tr><tr><td style=\"padding:3px 10px 3px 0\">(C) A sound of wavelength 17 cm in air</td><td style=\"padding:3px 0\">(r) ultrasonic</td></tr><tr><td style=\"padding:3px 10px 3px 0\">(D) A sound of wavelength 5 cm in water</td><td style=\"padding:3px 0\"></td></tr></tbody></table>",
+      "options": [
+        "A–q, B–q, C–q, D–r",
+        "A–r, B–p, C–q, D–q",
+        "A–r, B–q, C–q, D–r",
+        "A–r, B–p, C–q, D–r"
+      ],
+      "answer": 3,
+      "sol": "<p>Turn every entry into a frequency first.</p><p><b>(A)</b> f = 1/T = 1/(0.04 × 10⁻³ s) = 25 000 Hz → <b>ultrasonic (r)</b>. <b>(B)</b> f = v/λ = 340/68 = 5 Hz → <b>infrasonic (p)</b>. <b>(C)</b> f = 340/0.17 = 2000 Hz → <b>audible (q)</b>. <b>(D)</b> in water, f = 1500/0.05 = 30 000 Hz → <b>ultrasonic (r)</b>.</p><p>A–r, B–p, C–q, D–r: option <b>(4)</b>.</p><p><b>Where the wrong options come from.</b> D–q — the speed in <i>air</i> used for a wave in water: 340/0.05 = 6800 Hz, which is audible. A–q — 0.04 ms read as 0.04 s, giving 25 Hz. B–q — 68 m read as 68 cm: 340/0.68 = 500 Hz, audible. Option (1) makes the A and B slips together.</p>"
+    },
+    {
+      "n": 8,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "plain",
+      "stem": "<p>A worker strikes one end of a long iron rail with a hammer. A boy with his ear near the other end hears two sounds, one through the rail and one through the air, <b>0.75 s</b> apart. Sound travels at <b>340 m/s</b> in air and <b>16 times as fast</b> in the iron. How long is the rail?</p>",
+      "options": [
+        "240 m",
+        "255 m",
+        "272 m",
+        "4080 m"
+      ],
+      "answer": 2,
+      "sol": "<p><b>Step 1 — which sound comes first.</b> The rail sound (5440 m/s) arrives first; the air sound follows. The gap is the <i>difference</i> of the two travel times.</p><p><b>Step 2 — solve.</b> L/340 − L/5440 = 0.75 → L(16 − 1)/5440 = 0.75 → L = 0.75 × 5440/15 = <b>272 m</b>. (Check: 272/340 = 0.80 s, 272/5440 = 0.05 s, gap 0.75 s.) Option <b>(3)</b>.</p><p><b>Where the wrong options come from.</b> (1) 240 m — the two times <i>added</i> instead of subtracted. (2) 255 m — 0.75 s taken as the air time alone (340 × 0.75), ignoring that the rail sound takes some time too. (4) 4080 m — 0.75 s at the iron speed.</p>"
+    },
+    {
+      "n": 9,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "ar",
+      "stem": "<p><b>Assertion (A):</b> A person clapping at one end of a hall <b>15 m</b> long cannot hear a distinct echo from the far wall, whether the air in the hall is at 0 °C or at 40 °C.</p><p><b>Reason (R):</b> The minimum distance of a reflecting surface for a distinct echo is 17.2 m, whatever the temperature of the air.</p>",
+      "options": [
+        "Both A and R are true, and R is the correct explanation of A.",
+        "Both A and R are true, but R is not the correct explanation of A.",
+        "A is true but R is false.",
+        "A is false but R is true."
+      ],
+      "answer": 2,
+      "sol": "<p><b>The rule.</b> The sensation of a sound lasts about 0.1 s, so the echo needs a round trip of at least v × 0.1 s: the wall must be at least v × 0.1/2 away.</p><p><b>A — true.</b> The <i>smallest</i> speed in the stated range is at 0 °C, 331 m/s, which gives the smallest minimum distance: 331 × 0.1/2 ≈ 16.6 m. Even that is more than 15 m, and warmer air only raises it. So no distinct echo at any temperature in the range.</p><p><b>R — false.</b> 17.2 m is the minimum at about 22 °C (v = 344 m/s). Since the speed of sound rises with temperature, the minimum distance changes with it (≈ 16.6 m at 0 °C). Option <b>(3)</b>.</p><p><b>The trap.</b> Both sentences sound like textbook lines, and 17.2 m &gt; 15 m looks like a perfect explanation — option (1). It is the \"whatever the temperature\" that makes R false.</p>"
+    },
+    {
+      "n": 10,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "diagram",
+      "stem": "<p>A sound travels through a gas. The graph shows the density of the gas along the wave at t = 0 (solid curve) and again at t = 0.2 ms (dashed curve). In that 0.2 ms the wave moved forward by less than one wavelength. What is the frequency of the sound?</p>",
+      "fig": "<svg viewBox=\"0 0 360 190\" width=\"360\" height=\"190\" role=\"img\" aria-label=\"Density against distance for a sound wave at two instants: a solid curve at t = 0 and a dashed curve at t = 0.2 ms, shifted one grid division (8.5 cm) to the right; crests of the solid curve at 0, 34 and 68 cm\" font-family=\"Inter,sans-serif\" fill=\"currentColor\" style=\"max-width:100%;height:auto\"><line x1=\"30.0\" y1=\"32\" x2=\"30.0\" y2=\"128\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"70.0\" y1=\"32\" x2=\"70.0\" y2=\"128\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".25\"/><line x1=\"110.0\" y1=\"32\" x2=\"110.0\" y2=\"128\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"150.0\" y1=\"32\" x2=\"150.0\" y2=\"128\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".25\"/><line x1=\"190.0\" y1=\"32\" x2=\"190.0\" y2=\"128\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"230.0\" y1=\"32\" x2=\"230.0\" y2=\"128\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".25\"/><line x1=\"270.0\" y1=\"32\" x2=\"270.0\" y2=\"128\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><line x1=\"310.0\" y1=\"32\" x2=\"310.0\" y2=\"128\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".25\"/><line x1=\"350.0\" y1=\"32\" x2=\"350.0\" y2=\"128\" stroke=\"currentColor\" stroke-width=\".6\" opacity=\".45\"/><text x=\"30.0\" y=\"142\" font-size=\"10\" text-anchor=\"middle\">0</text><text x=\"110.0\" y=\"142\" font-size=\"10\" text-anchor=\"middle\">17</text><text x=\"190.0\" y=\"142\" font-size=\"10\" text-anchor=\"middle\">34</text><text x=\"270.0\" y=\"142\" font-size=\"10\" text-anchor=\"middle\">51</text><text x=\"350.0\" y=\"142\" font-size=\"10\" text-anchor=\"middle\">68</text><text x=\"350\" y=\"156\" font-size=\"10\" text-anchor=\"end\">distance / cm</text><line x1=\"30\" y1=\"80\" x2=\"350\" y2=\"80\" stroke=\"currentColor\" stroke-width=\"1\"/><text x=\"20\" y=\"80\" font-size=\"10\" transform=\"rotate(-90 20 80)\" text-anchor=\"middle\">density</text><polyline points=\"30.0,40.0 30.5,40.0 31.0,40.0 31.5,40.1 32.0,40.1 32.5,40.2 33.0,40.3 33.5,40.4 34.0,40.5 34.5,40.6 35.0,40.8 35.5,40.9 36.0,41.1 36.5,41.3 37.0,41.5 37.5,41.7 38.0,42.0 38.5,42.2 39.0,42.5 39.5,42.8 40.0,43.0 40.5,43.4 41.0,43.7 41.5,44.0 42.0,44.4 42.5,44.7 43.0,45.1 43.5,45.5 44.0,45.9 44.5,46.3 45.0,46.7 45.5,47.2 46.0,47.6 46.5,48.1 47.0,48.6 47.5,49.1 48.0,49.6 48.5,50.1 49.0,50.6 49.5,51.2 50.0,51.7 50.5,52.3 51.0,52.8 51.5,53.4 52.0,54.0 52.5,54.6 53.0,55.2 53.5,55.9 54.0,56.5 54.5,57.1 55.0,57.8 55.5,58.4 56.0,59.1 56.5,59.8 57.0,60.5 57.5,61.1 58.0,61.8 58.5,62.5 59.0,63.3 59.5,64.0 60.0,64.7 60.5,65.4 61.0,66.2 61.5,66.9 62.0,67.6 62.5,68.4 63.0,69.1 63.5,69.9 64.0,70.7 64.5,71.4 65.0,72.2 65.5,73.0 66.0,73.7 66.5,74.5 67.0,75.3 67.5,76.1 68.0,76.9 68.5,77.6 69.0,78.4 69.5,79.2 70.0,80.0 70.5,80.8 71.0,81.6 71.5,82.4 72.0,83.1 72.5,83.9 73.0,84.7 73.5,85.5 74.0,86.3 74.5,87.0 75.0,87.8 75.5,88.6 76.0,89.3 76.5,90.1 77.0,90.9 77.5,91.6 78.0,92.4 78.5,93.1 79.0,93.8 79.5,94.6 80.0,95.3 80.5,96.0 81.0,96.7 81.5,97.5 82.0,98.2 82.5,98.9 83.0,99.5 83.5,100.2 84.0,100.9 84.5,101.6 85.0,102.2 85.5,102.9 86.0,103.5 86.5,104.1 87.0,104.8 87.5,105.4 88.0,106.0 88.5,106.6 89.0,107.2 89.5,107.7 90.0,108.3 90.5,108.8 91.0,109.4 91.5,109.9 92.0,110.4 92.5,110.9 93.0,111.4 93.5,111.9 94.0,112.4 94.5,112.8 95.0,113.3 95.5,113.7 96.0,114.1 96.5,114.5 97.0,114.9 97.5,115.3 98.0,115.6 98.5,116.0 99.0,116.3 99.5,116.6 100.0,117.0 100.5,117.2 101.0,117.5 101.5,117.8 102.0,118.0 102.5,118.3 103.0,118.5 103.5,118.7 104.0,118.9 104.5,119.1 105.0,119.2 105.5,119.4 106.0,119.5 106.5,119.6 107.0,119.7 107.5,119.8 108.0,119.9 108.5,119.9 109.0,120.0 109.5,120.0 110.0,120.0 110.5,120.0 111.0,120.0 111.5,119.9 112.0,119.9 112.5,119.8 113.0,119.7 113.5,119.6 114.0,119.5 114.5,119.4 115.0,119.2 115.5,119.1 116.0,118.9 116.5,118.7 117.0,118.5 117.5,118.3 118.0,118.0 118.5,117.8 119.0,117.5 119.5,117.2 120.0,117.0 120.5,116.6 121.0,116.3 121.5,116.0 122.0,115.6 122.5,115.3 123.0,114.9 123.5,114.5 124.0,114.1 124.5,113.7 125.0,113.3 125.5,112.8 126.0,112.4 126.5,111.9 127.0,111.4 127.5,110.9 128.0,110.4 128.5,109.9 129.0,109.4 129.5,108.8 130.0,108.3 130.5,107.7 131.0,107.2 131.5,106.6 132.0,106.0 132.5,105.4 133.0,104.8 133.5,104.1 134.0,103.5 134.5,102.9 135.0,102.2 135.5,101.6 136.0,100.9 136.5,100.2 137.0,99.5 137.5,98.9 138.0,98.2 138.5,97.5 139.0,96.7 139.5,96.0 140.0,95.3 140.5,94.6 141.0,93.8 141.5,93.1 142.0,92.4 142.5,91.6 143.0,90.9 143.5,90.1 144.0,89.3 144.5,88.6 145.0,87.8 145.5,87.0 146.0,86.3 146.5,85.5 147.0,84.7 147.5,83.9 148.0,83.1 148.5,82.4 149.0,81.6 149.5,80.8 150.0,80.0 150.5,79.2 151.0,78.4 151.5,77.6 152.0,76.9 152.5,76.1 153.0,75.3 153.5,74.5 154.0,73.7 154.5,73.0 155.0,72.2 155.5,71.4 156.0,70.7 156.5,69.9 157.0,69.1 157.5,68.4 158.0,67.6 158.5,66.9 159.0,66.2 159.5,65.4 160.0,64.7 160.5,64.0 161.0,63.3 161.5,62.5 162.0,61.8 162.5,61.1 163.0,60.5 163.5,59.8 164.0,59.1 164.5,58.4 165.0,57.8 165.5,57.1 166.0,56.5 166.5,55.9 167.0,55.2 167.5,54.6 168.0,54.0 168.5,53.4 169.0,52.8 169.5,52.3 170.0,51.7 170.5,51.2 171.0,50.6 171.5,50.1 172.0,49.6 172.5,49.1 173.0,48.6 173.5,48.1 174.0,47.6 174.5,47.2 175.0,46.7 175.5,46.3 176.0,45.9 176.5,45.5 177.0,45.1 177.5,44.7 178.0,44.4 178.5,44.0 179.0,43.7 179.5,43.4 180.0,43.0 180.5,42.8 181.0,42.5 181.5,42.2 182.0,42.0 182.5,41.7 183.0,41.5 183.5,41.3 184.0,41.1 184.5,40.9 185.0,40.8 185.5,40.6 186.0,40.5 186.5,40.4 187.0,40.3 187.5,40.2 188.0,40.1 188.5,40.1 189.0,40.0 189.5,40.0 190.0,40.0 190.5,40.0 191.0,40.0 191.5,40.1 192.0,40.1 192.5,40.2 193.0,40.3 193.5,40.4 194.0,40.5 194.5,40.6 195.0,40.8 195.5,40.9 196.0,41.1 196.5,41.3 197.0,41.5 197.5,41.7 198.0,42.0 198.5,42.2 199.0,42.5 199.5,42.8 200.0,43.0 200.5,43.4 201.0,43.7 201.5,44.0 202.0,44.4 202.5,44.7 203.0,45.1 203.5,45.5 204.0,45.9 204.5,46.3 205.0,46.7 205.5,47.2 206.0,47.6 206.5,48.1 207.0,48.6 207.5,49.1 208.0,49.6 208.5,50.1 209.0,50.6 209.5,51.2 210.0,51.7 210.5,52.3 211.0,52.8 211.5,53.4 212.0,54.0 212.5,54.6 213.0,55.2 213.5,55.9 214.0,56.5 214.5,57.1 215.0,57.8 215.5,58.4 216.0,59.1 216.5,59.8 217.0,60.5 217.5,61.1 218.0,61.8 218.5,62.5 219.0,63.3 219.5,64.0 220.0,64.7 220.5,65.4 221.0,66.2 221.5,66.9 222.0,67.6 222.5,68.4 223.0,69.1 223.5,69.9 224.0,70.7 224.5,71.4 225.0,72.2 225.5,73.0 226.0,73.7 226.5,74.5 227.0,75.3 227.5,76.1 228.0,76.9 228.5,77.6 229.0,78.4 229.5,79.2 230.0,80.0 230.5,80.8 231.0,81.6 231.5,82.4 232.0,83.1 232.5,83.9 233.0,84.7 233.5,85.5 234.0,86.3 234.5,87.0 235.0,87.8 235.5,88.6 236.0,89.3 236.5,90.1 237.0,90.9 237.5,91.6 238.0,92.4 238.5,93.1 239.0,93.8 239.5,94.6 240.0,95.3 240.5,96.0 241.0,96.7 241.5,97.5 242.0,98.2 242.5,98.9 243.0,99.5 243.5,100.2 244.0,100.9 244.5,101.6 245.0,102.2 245.5,102.9 246.0,103.5 246.5,104.1 247.0,104.8 247.5,105.4 248.0,106.0 248.5,106.6 249.0,107.2 249.5,107.7 250.0,108.3 250.5,108.8 251.0,109.4 251.5,109.9 252.0,110.4 252.5,110.9 253.0,111.4 253.5,111.9 254.0,112.4 254.5,112.8 255.0,113.3 255.5,113.7 256.0,114.1 256.5,114.5 257.0,114.9 257.5,115.3 258.0,115.6 258.5,116.0 259.0,116.3 259.5,116.6 260.0,117.0 260.5,117.2 261.0,117.5 261.5,117.8 262.0,118.0 262.5,118.3 263.0,118.5 263.5,118.7 264.0,118.9 264.5,119.1 265.0,119.2 265.5,119.4 266.0,119.5 266.5,119.6 267.0,119.7 267.5,119.8 268.0,119.9 268.5,119.9 269.0,120.0 269.5,120.0 270.0,120.0 270.5,120.0 271.0,120.0 271.5,119.9 272.0,119.9 272.5,119.8 273.0,119.7 273.5,119.6 274.0,119.5 274.5,119.4 275.0,119.2 275.5,119.1 276.0,118.9 276.5,118.7 277.0,118.5 277.5,118.3 278.0,118.0 278.5,117.8 279.0,117.5 279.5,117.2 280.0,117.0 280.5,116.6 281.0,116.3 281.5,116.0 282.0,115.6 282.5,115.3 283.0,114.9 283.5,114.5 284.0,114.1 284.5,113.7 285.0,113.3 285.5,112.8 286.0,112.4 286.5,111.9 287.0,111.4 287.5,110.9 288.0,110.4 288.5,109.9 289.0,109.4 289.5,108.8 290.0,108.3 290.5,107.7 291.0,107.2 291.5,106.6 292.0,106.0 292.5,105.4 293.0,104.8 293.5,104.1 294.0,103.5 294.5,102.9 295.0,102.2 295.5,101.6 296.0,100.9 296.5,100.2 297.0,99.5 297.5,98.9 298.0,98.2 298.5,97.5 299.0,96.7 299.5,96.0 300.0,95.3 300.5,94.6 301.0,93.8 301.5,93.1 302.0,92.4 302.5,91.6 303.0,90.9 303.5,90.1 304.0,89.3 304.5,88.6 305.0,87.8 305.5,87.0 306.0,86.3 306.5,85.5 307.0,84.7 307.5,83.9 308.0,83.1 308.5,82.4 309.0,81.6 309.5,80.8 310.0,80.0 310.5,79.2 311.0,78.4 311.5,77.6 312.0,76.9 312.5,76.1 313.0,75.3 313.5,74.5 314.0,73.7 314.5,73.0 315.0,72.2 315.5,71.4 316.0,70.7 316.5,69.9 317.0,69.1 317.5,68.4 318.0,67.6 318.5,66.9 319.0,66.2 319.5,65.4 320.0,64.7 320.5,64.0 321.0,63.3 321.5,62.5 322.0,61.8 322.5,61.1 323.0,60.5 323.5,59.8 324.0,59.1 324.5,58.4 325.0,57.8 325.5,57.1 326.0,56.5 326.5,55.9 327.0,55.2 327.5,54.6 328.0,54.0 328.5,53.4 329.0,52.8 329.5,52.3 330.0,51.7 330.5,51.2 331.0,50.6 331.5,50.1 332.0,49.6 332.5,49.1 333.0,48.6 333.5,48.1 334.0,47.6 334.5,47.2 335.0,46.7 335.5,46.3 336.0,45.9 336.5,45.5 337.0,45.1 337.5,44.7 338.0,44.4 338.5,44.0 339.0,43.7 339.5,43.4 340.0,43.0 340.5,42.8 341.0,42.5 341.5,42.2 342.0,42.0 342.5,41.7 343.0,41.5 343.5,41.3 344.0,41.1 344.5,40.9 345.0,40.8 345.5,40.6 346.0,40.5 346.5,40.4 347.0,40.3 347.5,40.2 348.0,40.1 348.5,40.1 349.0,40.0 349.5,40.0 350.0,40.0\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2.2\"/><polyline points=\"30.0,80.0 30.5,79.2 31.0,78.4 31.5,77.6 32.0,76.9 32.5,76.1 33.0,75.3 33.5,74.5 34.0,73.7 34.5,73.0 35.0,72.2 35.5,71.4 36.0,70.7 36.5,69.9 37.0,69.1 37.5,68.4 38.0,67.6 38.5,66.9 39.0,66.2 39.5,65.4 40.0,64.7 40.5,64.0 41.0,63.3 41.5,62.5 42.0,61.8 42.5,61.1 43.0,60.5 43.5,59.8 44.0,59.1 44.5,58.4 45.0,57.8 45.5,57.1 46.0,56.5 46.5,55.9 47.0,55.2 47.5,54.6 48.0,54.0 48.5,53.4 49.0,52.8 49.5,52.3 50.0,51.7 50.5,51.2 51.0,50.6 51.5,50.1 52.0,49.6 52.5,49.1 53.0,48.6 53.5,48.1 54.0,47.6 54.5,47.2 55.0,46.7 55.5,46.3 56.0,45.9 56.5,45.5 57.0,45.1 57.5,44.7 58.0,44.4 58.5,44.0 59.0,43.7 59.5,43.4 60.0,43.0 60.5,42.8 61.0,42.5 61.5,42.2 62.0,42.0 62.5,41.7 63.0,41.5 63.5,41.3 64.0,41.1 64.5,40.9 65.0,40.8 65.5,40.6 66.0,40.5 66.5,40.4 67.0,40.3 67.5,40.2 68.0,40.1 68.5,40.1 69.0,40.0 69.5,40.0 70.0,40.0 70.5,40.0 71.0,40.0 71.5,40.1 72.0,40.1 72.5,40.2 73.0,40.3 73.5,40.4 74.0,40.5 74.5,40.6 75.0,40.8 75.5,40.9 76.0,41.1 76.5,41.3 77.0,41.5 77.5,41.7 78.0,42.0 78.5,42.2 79.0,42.5 79.5,42.8 80.0,43.0 80.5,43.4 81.0,43.7 81.5,44.0 82.0,44.4 82.5,44.7 83.0,45.1 83.5,45.5 84.0,45.9 84.5,46.3 85.0,46.7 85.5,47.2 86.0,47.6 86.5,48.1 87.0,48.6 87.5,49.1 88.0,49.6 88.5,50.1 89.0,50.6 89.5,51.2 90.0,51.7 90.5,52.3 91.0,52.8 91.5,53.4 92.0,54.0 92.5,54.6 93.0,55.2 93.5,55.9 94.0,56.5 94.5,57.1 95.0,57.8 95.5,58.4 96.0,59.1 96.5,59.8 97.0,60.5 97.5,61.1 98.0,61.8 98.5,62.5 99.0,63.3 99.5,64.0 100.0,64.7 100.5,65.4 101.0,66.2 101.5,66.9 102.0,67.6 102.5,68.4 103.0,69.1 103.5,69.9 104.0,70.7 104.5,71.4 105.0,72.2 105.5,73.0 106.0,73.7 106.5,74.5 107.0,75.3 107.5,76.1 108.0,76.9 108.5,77.6 109.0,78.4 109.5,79.2 110.0,80.0 110.5,80.8 111.0,81.6 111.5,82.4 112.0,83.1 112.5,83.9 113.0,84.7 113.5,85.5 114.0,86.3 114.5,87.0 115.0,87.8 115.5,88.6 116.0,89.3 116.5,90.1 117.0,90.9 117.5,91.6 118.0,92.4 118.5,93.1 119.0,93.8 119.5,94.6 120.0,95.3 120.5,96.0 121.0,96.7 121.5,97.5 122.0,98.2 122.5,98.9 123.0,99.5 123.5,100.2 124.0,100.9 124.5,101.6 125.0,102.2 125.5,102.9 126.0,103.5 126.5,104.1 127.0,104.8 127.5,105.4 128.0,106.0 128.5,106.6 129.0,107.2 129.5,107.7 130.0,108.3 130.5,108.8 131.0,109.4 131.5,109.9 132.0,110.4 132.5,110.9 133.0,111.4 133.5,111.9 134.0,112.4 134.5,112.8 135.0,113.3 135.5,113.7 136.0,114.1 136.5,114.5 137.0,114.9 137.5,115.3 138.0,115.6 138.5,116.0 139.0,116.3 139.5,116.6 140.0,117.0 140.5,117.2 141.0,117.5 141.5,117.8 142.0,118.0 142.5,118.3 143.0,118.5 143.5,118.7 144.0,118.9 144.5,119.1 145.0,119.2 145.5,119.4 146.0,119.5 146.5,119.6 147.0,119.7 147.5,119.8 148.0,119.9 148.5,119.9 149.0,120.0 149.5,120.0 150.0,120.0 150.5,120.0 151.0,120.0 151.5,119.9 152.0,119.9 152.5,119.8 153.0,119.7 153.5,119.6 154.0,119.5 154.5,119.4 155.0,119.2 155.5,119.1 156.0,118.9 156.5,118.7 157.0,118.5 157.5,118.3 158.0,118.0 158.5,117.8 159.0,117.5 159.5,117.2 160.0,117.0 160.5,116.6 161.0,116.3 161.5,116.0 162.0,115.6 162.5,115.3 163.0,114.9 163.5,114.5 164.0,114.1 164.5,113.7 165.0,113.3 165.5,112.8 166.0,112.4 166.5,111.9 167.0,111.4 167.5,110.9 168.0,110.4 168.5,109.9 169.0,109.4 169.5,108.8 170.0,108.3 170.5,107.7 171.0,107.2 171.5,106.6 172.0,106.0 172.5,105.4 173.0,104.8 173.5,104.1 174.0,103.5 174.5,102.9 175.0,102.2 175.5,101.6 176.0,100.9 176.5,100.2 177.0,99.5 177.5,98.9 178.0,98.2 178.5,97.5 179.0,96.7 179.5,96.0 180.0,95.3 180.5,94.6 181.0,93.8 181.5,93.1 182.0,92.4 182.5,91.6 183.0,90.9 183.5,90.1 184.0,89.3 184.5,88.6 185.0,87.8 185.5,87.0 186.0,86.3 186.5,85.5 187.0,84.7 187.5,83.9 188.0,83.1 188.5,82.4 189.0,81.6 189.5,80.8 190.0,80.0 190.5,79.2 191.0,78.4 191.5,77.6 192.0,76.9 192.5,76.1 193.0,75.3 193.5,74.5 194.0,73.7 194.5,73.0 195.0,72.2 195.5,71.4 196.0,70.7 196.5,69.9 197.0,69.1 197.5,68.4 198.0,67.6 198.5,66.9 199.0,66.2 199.5,65.4 200.0,64.7 200.5,64.0 201.0,63.3 201.5,62.5 202.0,61.8 202.5,61.1 203.0,60.5 203.5,59.8 204.0,59.1 204.5,58.4 205.0,57.8 205.5,57.1 206.0,56.5 206.5,55.9 207.0,55.2 207.5,54.6 208.0,54.0 208.5,53.4 209.0,52.8 209.5,52.3 210.0,51.7 210.5,51.2 211.0,50.6 211.5,50.1 212.0,49.6 212.5,49.1 213.0,48.6 213.5,48.1 214.0,47.6 214.5,47.2 215.0,46.7 215.5,46.3 216.0,45.9 216.5,45.5 217.0,45.1 217.5,44.7 218.0,44.4 218.5,44.0 219.0,43.7 219.5,43.4 220.0,43.0 220.5,42.8 221.0,42.5 221.5,42.2 222.0,42.0 222.5,41.7 223.0,41.5 223.5,41.3 224.0,41.1 224.5,40.9 225.0,40.8 225.5,40.6 226.0,40.5 226.5,40.4 227.0,40.3 227.5,40.2 228.0,40.1 228.5,40.1 229.0,40.0 229.5,40.0 230.0,40.0 230.5,40.0 231.0,40.0 231.5,40.1 232.0,40.1 232.5,40.2 233.0,40.3 233.5,40.4 234.0,40.5 234.5,40.6 235.0,40.8 235.5,40.9 236.0,41.1 236.5,41.3 237.0,41.5 237.5,41.7 238.0,42.0 238.5,42.2 239.0,42.5 239.5,42.8 240.0,43.0 240.5,43.4 241.0,43.7 241.5,44.0 242.0,44.4 242.5,44.7 243.0,45.1 243.5,45.5 244.0,45.9 244.5,46.3 245.0,46.7 245.5,47.2 246.0,47.6 246.5,48.1 247.0,48.6 247.5,49.1 248.0,49.6 248.5,50.1 249.0,50.6 249.5,51.2 250.0,51.7 250.5,52.3 251.0,52.8 251.5,53.4 252.0,54.0 252.5,54.6 253.0,55.2 253.5,55.9 254.0,56.5 254.5,57.1 255.0,57.8 255.5,58.4 256.0,59.1 256.5,59.8 257.0,60.5 257.5,61.1 258.0,61.8 258.5,62.5 259.0,63.3 259.5,64.0 260.0,64.7 260.5,65.4 261.0,66.2 261.5,66.9 262.0,67.6 262.5,68.4 263.0,69.1 263.5,69.9 264.0,70.7 264.5,71.4 265.0,72.2 265.5,73.0 266.0,73.7 266.5,74.5 267.0,75.3 267.5,76.1 268.0,76.9 268.5,77.6 269.0,78.4 269.5,79.2 270.0,80.0 270.5,80.8 271.0,81.6 271.5,82.4 272.0,83.1 272.5,83.9 273.0,84.7 273.5,85.5 274.0,86.3 274.5,87.0 275.0,87.8 275.5,88.6 276.0,89.3 276.5,90.1 277.0,90.9 277.5,91.6 278.0,92.4 278.5,93.1 279.0,93.8 279.5,94.6 280.0,95.3 280.5,96.0 281.0,96.7 281.5,97.5 282.0,98.2 282.5,98.9 283.0,99.5 283.5,100.2 284.0,100.9 284.5,101.6 285.0,102.2 285.5,102.9 286.0,103.5 286.5,104.1 287.0,104.8 287.5,105.4 288.0,106.0 288.5,106.6 289.0,107.2 289.5,107.7 290.0,108.3 290.5,108.8 291.0,109.4 291.5,109.9 292.0,110.4 292.5,110.9 293.0,111.4 293.5,111.9 294.0,112.4 294.5,112.8 295.0,113.3 295.5,113.7 296.0,114.1 296.5,114.5 297.0,114.9 297.5,115.3 298.0,115.6 298.5,116.0 299.0,116.3 299.5,116.6 300.0,117.0 300.5,117.2 301.0,117.5 301.5,117.8 302.0,118.0 302.5,118.3 303.0,118.5 303.5,118.7 304.0,118.9 304.5,119.1 305.0,119.2 305.5,119.4 306.0,119.5 306.5,119.6 307.0,119.7 307.5,119.8 308.0,119.9 308.5,119.9 309.0,120.0 309.5,120.0 310.0,120.0 310.5,120.0 311.0,120.0 311.5,119.9 312.0,119.9 312.5,119.8 313.0,119.7 313.5,119.6 314.0,119.5 314.5,119.4 315.0,119.2 315.5,119.1 316.0,118.9 316.5,118.7 317.0,118.5 317.5,118.3 318.0,118.0 318.5,117.8 319.0,117.5 319.5,117.2 320.0,117.0 320.5,116.6 321.0,116.3 321.5,116.0 322.0,115.6 322.5,115.3 323.0,114.9 323.5,114.5 324.0,114.1 324.5,113.7 325.0,113.3 325.5,112.8 326.0,112.4 326.5,111.9 327.0,111.4 327.5,110.9 328.0,110.4 328.5,109.9 329.0,109.4 329.5,108.8 330.0,108.3 330.5,107.7 331.0,107.2 331.5,106.6 332.0,106.0 332.5,105.4 333.0,104.8 333.5,104.1 334.0,103.5 334.5,102.9 335.0,102.2 335.5,101.6 336.0,100.9 336.5,100.2 337.0,99.5 337.5,98.9 338.0,98.2 338.5,97.5 339.0,96.7 339.5,96.0 340.0,95.3 340.5,94.6 341.0,93.8 341.5,93.1 342.0,92.4 342.5,91.6 343.0,90.9 343.5,90.1 344.0,89.3 344.5,88.6 345.0,87.8 345.5,87.0 346.0,86.3 346.5,85.5 347.0,84.7 347.5,83.9 348.0,83.1 348.5,82.4 349.0,81.6 349.5,80.8 350.0,80.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-dasharray=\"6 4\"/><line x1=\"255\" y1=\"18\" x2=\"320\" y2=\"18\" stroke=\"currentColor\" stroke-width=\"1.3\"/><polygon points=\"322.0,18.0 315.0,21.1 315.0,14.8\" fill=\"currentColor\"/><text x=\"250\" y=\"21\" font-size=\"10\" text-anchor=\"end\">wave travels</text><line x1=\"40\" y1=\"178\" x2=\"64\" y2=\"178\" stroke=\"var(--physics)\" stroke-width=\"2.2\"/><text x=\"70\" y=\"182\" font-size=\"11\">t = 0</text><line x1=\"150\" y1=\"178\" x2=\"174\" y2=\"178\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-dasharray=\"6 4\"/><text x=\"180\" y=\"182\" font-size=\"11\">t = 0.2 ms</text></svg>",
+      "figCap": "Vertical grid lines are 8.5 cm apart.",
+      "options": [
+        "1000 Hz",
+        "1250 Hz",
+        "2500 Hz",
+        "5000 Hz"
+      ],
+      "answer": 1,
+      "sol": "<p><b>Step 1 — read two lengths.</b> Crest to crest on either curve is 34 cm, so <b>λ = 0.34 m</b>. Each dashed crest sits one grid line (8.5 cm) to the right of a solid crest, and the wave moved less than a wavelength, so it moved <b>8.5 cm in 0.2 ms</b>.</p><p><b>Step 2 — speed, then frequency.</b> v = 0.085 m ÷ 0.0002 s = 425 m/s; f = v/λ = 425/0.34 = <b>1250 Hz</b>. (Shortcut: 8.5 cm is λ/4, so 0.2 ms is T/4, T = 0.8 ms and f = 1/0.0008 = 1250 Hz.) Option <b>(2)</b>.</p><p><b>Where the wrong options come from.</b> (1) 1000 Hz — the time data ignored and air's 340 m/s assumed: 340/0.34. The stem never says air; the speed has to come from the two snapshots. (3) 2500 Hz — crest-to-trough (17 cm) taken as λ. (4) 5000 Hz — 0.2 ms taken as the period (or, equivalently, the 8.5 cm shift taken as a whole wavelength).</p>"
+    },
+    {
+      "n": 11,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "plain",
+      "stem": "<p>Three sounds travel through the same air, in which sound moves at 340 m/s.<br>• Sound P has a time period of <b>2.5 ms</b>.<br>• Sound Q has a wavelength of <b>68 cm</b>.<br>• Sound R comes from a tuning fork whose prong completes <b>45 vibrations in 0.1 s</b>.<br>Arrange them in order of <b>increasing pitch</b>.</p>",
+      "options": [
+        "P, R, Q",
+        "P, Q, R",
+        "Q, P, R",
+        "R, P, Q"
+      ],
+      "answer": 0,
+      "sol": "<p>Pitch goes with frequency, so convert each to hertz.</p><p><b>P:</b> f = 1/T = 1/0.0025 s = <b>400 Hz</b>. <b>Q:</b> f = v/λ = 340/0.68 = <b>500 Hz</b>. <b>R:</b> 45 ÷ 0.1 s = <b>450 Hz</b>.</p><p>400 &lt; 450 &lt; 500: P, R, Q — option <b>(1)</b>.</p><p><b>Where the wrong options come from.</b> (2) — 45 ÷ 0.1 slipped to 4500 Hz, which puts R at the top. (3) — the same slip, plus Q worked with λ left in centimetres (340/68 = 5 Hz). (4) — R taken as 45 Hz: the count of vibrations read as the frequency, ignoring that they took only 0.1 s.</p>"
+    },
+    {
+      "n": 12,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "plain",
+      "stem": "<p>During a storm, Riya sees a flash of lightning and hears its thunder <b>6.0 s</b> later. Exactly <b>2 minutes</b> after that flash she sees another, and this time the thunder follows <b>3.5 s</b> later. Both flashes were at the front of the storm, which is moving straight towards her. Taking the speed of sound as <b>340 m/s</b> and treating the light as arriving instantly, how fast is the storm approaching?</p>",
+      "options": [
+        "51 km/h",
+        "25.5 km/h",
+        "12.75 km/h",
+        "7.1 km/h"
+      ],
+      "answer": 1,
+      "sol": "<p><b>Step 1 — the two distances.</b> First flash: 6.0 × 340 = 2040 m away. Second: 3.5 × 340 = 1190 m. The storm front came 850 m closer.</p><p><b>Step 2 — speed.</b> 850 m in 120 s = 7.08 m/s; × 3.6 = <b>25.5 km/h</b>. Option <b>(2)</b>.</p><p><b>Where the wrong options come from.</b> (1) 51 km/h — 2 minutes taken as 60 s. (3) 12.75 km/h — the distances halved as if the thunder were an echo that goes there and back. (4) 7.1 — the speed in m/s with the km/h label left on.</p>"
+    },
+    {
+      "n": 13,
+      "section": "Physics",
+      "topic": "Sound",
+      "fmt": "plain",
+      "stem": "<p>Meera stands <b>80 m</b> from a tall building and claps her hands at a steady rate, adjusting it until each echo arrives exactly as she makes her next clap. She finds that her <b>1st</b> clap and her <b>41st</b> clap are <b>20 s</b> apart. She then walks <b>16 m</b> straight towards the building. How many claps per minute must she now make so that each echo again arrives exactly with her next clap?</p>",
+      "options": [
+        "300",
+        "150",
+        "120",
+        "100"
+      ],
+      "answer": 1,
+      "sol": "<p><b>Step 1 — the speed of sound from the first set.</b> From the 1st clap to the 41st there are <b>40</b> intervals, so one interval = 20/40 = 0.5 s. Each interval is one round trip, 2 × 80 = 160 m, so v = 160/0.5 = <b>320 m/s</b> — her measured value, which is what the next step must use.</p><p><b>Step 2 — the new round trip.</b> She is now 80 − 16 = 64 m away: 2 × 64 = 128 m takes 128/320 = 0.4 s. One clap every 0.4 s is 60/0.4 = <b>150 claps per minute</b>. Option <b>(2)</b>.</p><p><b>Where the wrong options come from.</b> (1) 300 — only the one-way 64 m at the new place (0.2 s per clap). (3) 120 — the old rate, one clap per 0.5 s, carried over as if it did not depend on the distance. (4) 100 — 16 m added instead of subtracted (96 m, 0.6 s). Assuming the textbook 340 m/s instead of measuring gives about 159, and the fence-post slip (41 intervals, v = 328 m/s) about 154 — neither is offered, but both show why step 1 matters.</p>"
+    }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+/* "👁 Just checking" (device-local hubPreview = the ms timestamp it was switched on; it lapses
+   after 2 hours). While on, Submit ASKS whether to save — so a forgotten switch can never
+   silently swallow a real attempt. */
+function isPreview(){ return (function(){ try { var v = +JSON.parse(localStorage.getItem('hubPreview') || '0'); return v > 1e12 && Date.now() - v < 7200000; } catch(e){ return false; } })(); }
+let NOT_SAVED = false;
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- just look: the questions, read-only; nothing marked, nothing recorded ---- */
+function viewOnly(){
+  if(started) return;
+  document.body.classList.add('viewonly');
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '👁 <b>Just looking.</b> Nothing is marked or recorded. To answer these, go back and start the paper.'
+                + '<button class="bigbtn" type="button" style="margin-left:auto" onclick="location.reload()">← Back to start</button>';
+  $('paperBody').insertBefore(bar, $('paperBody').firstChild);
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  if(!RESTORING && NOT_SAVED){ const rc = $('results').querySelector('.rcard');
+    if(rc) rc.insertAdjacentHTML('beforeend', '<div class="rnote">👁 <b>Just checking was on</b> — this attempt was marked but not recorded.</div>'); }
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b,a,md,tm,v:2} (+f only if a flag was set).
+   Every paper stores its answers so the marked review replays (a mock opens it automatically;
+   the others via "See your last attempt"); the hub only ever reads m/mx. Written MERGE-ONLY.
+   COMPACT on purpose: the whole shared record is ONE Apps Script property with a 9216-byte
+   ceiling, so answers are one character per question ('0'–'3', '-' = blank), not an array. */
+function saveAttempt(sc, timeTaken){
+  if(isPreview() && !confirm('👁 Just checking is on for this device.\n\nSave this attempt to your progress?\n\nOK = save it (a real attempt)\nCancel = don\'t record (only checking)')){ NOT_SAVED = true; return; }
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank,
+                a:answers.map(x => x === null ? '-' : x).join(''), md:mode === 'timed' ? 't' : 'p', tm:timeTaken, v:2 };
+  if(flags.some(Boolean)) rec.f = flags.map(x => x ? 1 : 0).join('');
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function decodeRec(rec){          /* v2 strings and v1 arrays both replay */
+  if(!rec || !rec.a) return null;
+  const a = typeof rec.a === 'string' ? rec.a.split('').map(c => c === '-' ? null : +c) : rec.a.slice();
+  if(a.length !== NQ) return null;                 /* the paper changed shape since — never mis-mark */
+  const f = typeof rec.f === 'string' ? rec.f.split('').map(c => c === '1')
+          : Array.isArray(rec.f) ? rec.f.slice() : new Array(NQ).fill(false);
+  const md = rec.md === 't' ? 'timed' : rec.md === 'p' ? 'practice' : (rec.md || 'timed');
+  return { a, f, md };
+}
+function showFrozen(rec){
+  const d = decodeRec(rec);
+  if(!d || submitted) return;
+  RESTORING = true;
+  answers = d.a;
+  flags   = d.f;
+  mode    = d.md;
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = !IS_MOCK
+    ? '📋 <b>Your last attempt — ' + String(rec.t || '').slice(0, 10) + '.</b> Your answers, what was right and wrong, and every worked solution. ↺ Retake starts a fresh attempt.'
+      + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>'
+    : '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('viewOnly').addEventListener('click', viewOnly);
+$('lastAttempt').addEventListener('click', () => { const r = progLoad()[REP_ID]; if(r && r.a) showFrozen(r); });
+if(IS_MOCK && !TEACHER && !isPreview()) $('viewOnly').hidden = true;   /* a one-shot mock is not previewed */
+if(isPreview()) $('startNote').insertAdjacentHTML('beforeend', ' <b>👁 Just checking is on</b> — when you submit, you will be asked whether to save the attempt.');
+function paintLast(){
+  if(IS_MOCK) return;
+  const r = progLoad()[REP_ID], b = $('lastAttempt');
+  const ok = !!decodeRec(r);
+  b.hidden = !ok;
+  if(ok) b.textContent = '📋 See your last attempt · ' + r.m + '/' + r.mx;
+}
+paintLast();
+window.addEventListener('miraya-progress-synced', paintLast);
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
