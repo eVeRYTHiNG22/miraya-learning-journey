@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Mensuration & Heron’s Formula — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .viewonly .submitrow, .viewonly .q-flag { display:none !important; }
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP||location.protocol!=='https:'||navigator.webdriver)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+      <button class="bigbtn" id="viewOnly" type="button">👁 Just look at the questions</button>
+      <button class="bigbtn" id="lastAttempt" type="button" hidden>📋 See your last attempt</button>
+    </div>
+    <p class="startnote" id="startNote">Practice mode still marks you and still applies −1 — only the countdown is off. “Just look” shows the questions without marking or recording anything.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  title: 'TALLENTEX · Mensuration & Heron’s Formula — Paper 1',
+  kind: 'topic',
+  duration: 20,
+  id: 'tx:maths-mensuration-heron:p1',
+  accent: 'maths',
+  sub: 'Heron’s Formula and Surface area and Volumes — ratio and perimeter to area, area to a side, a quadrilateral by its diagonal, open tanks, cuts, ratios, recasting into a jar, cones and integer boxes. <b>13 questions · 52 marks · 20 minutes.</b> Pitched at the real TALLENTEX paper: most items need two steps, and the clock is meant to run short. Triage, do not grind.',
+  sections: [ { name:'Mathematics', from:1, to:13 } ],
+  questions: [
+
+    { n:1, section:'Mathematics', topic:'Heron’s Formula', fmt:'plain', 
+      stem:'<p>The sides of a triangular plot are in the ratio <b>4 : 5 : 6</b> and its perimeter is <b>60 m</b>. What is the area of the plot? (Take &radic;7 = 2.65.)</p>', 
+      options:['9.94 m&sup2;','39.75 m&sup2;','79.5 m&sup2;','159 m&sup2;'], answer:3, 
+      sol:'<p><b>Sides first.</b> 4 + 5 + 6 = 15 parts and 60 &divide; 15 = 4 m a part, so the sides are <b>16, 20, 24 m</b>. Check for a shortcut: 16&sup2; + 20&sup2; = 656 &ne; 576 = 24&sup2;, so it is not right-angled and not isosceles &mdash; Heron it is.</p><p><b>Heron.</b> s = 30; brackets 14, 10, 6 (sum 30 &check;). Product 30 &times; 14 &times; 10 &times; 6 = (2&middot;3&middot;5)(2&middot;7)(2&middot;5)(2&middot;3) = 2&#8308; &middot; 3&sup2; &middot; 5&sup2; &middot; 7. Pairs out: 2&sup2; &times; 3 &times; 5 = 60; left under the root: 7. Area = <b>60&radic;7 &asymp; 60 &times; 2.65 = 159 m&sup2;</b>.</p><p><b>Where the other options come from.</b> (3) 79.5 = 30&radic;7 &mdash; a correct Heron answer halved &ldquo;because &frac12;bh has a half&rdquo;; Heron has no half in it. (2) 39.75 = 15&radic;7 &mdash; Heron run on the ratio numbers 4, 5, 6 (area 15&radic;7/4) and then multiplied by the scale factor 4 once; lengths scale by 4, so the area scales by 4&sup2; = 16. (1) 9.94 = 15&radic;7/4 &mdash; Heron on 4, 5, 6 and never scaled at all.</p><p><b>Sanity check.</b> The plot fits inside a 24 &times; 20 box of half-area 240, so anything near 240 or above would be impossible; 159 sits comfortably under it.</p>' },
+
+    { n:2, section:'Mathematics', topic:'Surface area and Volumes', fmt:'plain', 
+      stem:'<p>A spherical balloon is pumped up so that its surface area increases by <b>69%</b>. By what percentage does its <b>volume</b> increase?</p>', 
+      options:['69%','103.5%','119.7%','219.7%'], answer:2, 
+      sol:'<p><b>From area to length.</b> Surface area is (a number) &times; r&sup2;, so the area factor is k&sup2; where k is the radius factor. A 69% increase means k&sup2; = 1.69, so <b>k = 1.3</b> (13&sup2; = 169).</p><p><b>From length to volume.</b> Volume is (a number) &times; r&sup3;, so it grows by k&sup3; = 1.3&sup3; = 1.69 &times; 1.3 = <b>2.197</b>. An increase from 1 to 2.197 is an increase of <b>119.7%</b>. No &pi;, no formula for either sphere.</p><p><b>Where the other options come from.</b> (4) 219.7% &mdash; the volume <i>factor</i> 2.197 reported as the increase (the original 100% not subtracted). (1) 69% &mdash; assuming volume grows in step with area. (2) 103.5% = 69% &times; 3/2 &mdash; &ldquo;r&sup3; against r&sup2;, so one and a half times the change&rdquo;: powers multiply factors, they do not scale percentages.</p>' },
+
+    { n:3, section:'Mathematics', topic:'Heron’s Formula', fmt:'diagram', 
+      stem:'<p>A park in a housing colony has the shape of the quadrilateral <b>ABCD</b> shown, with <b>&ang;ABC = 90&deg;</b>, AB = 9 m, BC = 40 m, CD = 28 m and DA = 15 m. What is the area of the park?</p>', 
+      fig:'<svg viewBox="0 43 330 147" width="330" height="147" role="img" aria-label="Quadrilateral ABCD: AB 9 m, BC 40 m, CD 28 m, DA 15 m, with a right angle at B, drawn to scale."><path d="M30.0 92.4 L30.0 150.0 L286.0 150.0 L124.1 73.2 Z" fill="var(--maths)" fill-opacity=".10" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M30.0 141.0 L39.0 141.0 L39.0 150.0" fill="none" stroke="var(--maths)" stroke-width="1.6"/><text x="20.0" y="90.4" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14"><tspan font-style="italic" font-weight="700">A</tspan></text><text x="20.0" y="164.0" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14"><tspan font-style="italic" font-weight="700">B</tspan></text><text x="296.0" y="164.0" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14"><tspan font-style="italic" font-weight="700">C</tspan></text><text x="126.1" y="64.2" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14"><tspan font-style="italic" font-weight="700">D</tspan></text><text x="22.0" y="125.2" text-anchor="end" fill="currentColor" font-family="Inter,sans-serif" font-size="12">9 m</text><text x="158.0" y="167.0" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="12">40 m</text><text x="221.0" y="107.6" text-anchor="start" fill="currentColor" font-family="Inter,sans-serif" font-size="12">28 m</text><text x="71.0" y="74.8" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="12">15 m</text></svg>', 
+      figCap:'The small square at B marks the right angle. Drawn to scale.', 
+      options:['243 m&sup2;','306 m&sup2;','390 m&sup2;','486 m&sup2;'], answer:1, 
+      sol:'<p><b>Split along the diagonal AC.</b> The right angle belongs to triangle ABC, so start there: &frac12; &times; 9 &times; 40 = <b>180 m&sup2;</b>, and AC = &radic;(81 + 1600) = &radic;1681 = <b>41 m</b> (9-40-41 is a Pythagorean triple).</p><p><b>Heron on ACD</b> (sides 41, 28, 15). s = 42; brackets 1, 14, 27 (sum 42 &check;). Product 42 &times; 1 &times; 14 &times; 27 = (2&middot;3&middot;7)(2&middot;7)(3&sup3;) = 2&sup2; &middot; 3&#8308; &middot; 7&sup2; &mdash; every prime pairs, so the root is exact: 2 &times; 3&sup2; &times; 7 = <b>126 m&sup2;</b>.</p><p>Area of ABCD = 180 + 126 = <b>306 m&sup2;</b>.</p><p><b>Where the other options come from.</b> (4) 486 = 360 + 126 &mdash; the &frac12; dropped in &frac12; &times; 9 &times; 40. (1) 243 = 180 + 63 &mdash; the Heron area of ACD halved, the &frac12;bh habit carried into a formula that has no half. (3) 390 = 180 + 210 &mdash; &frac12; &times; 28 &times; 15 for ACD, which treats the angle at D as a right angle; nothing says so (it is in fact obtuse, since 28&sup2; + 15&sup2; = 1009 &lt; 41&sup2; = 1681).</p>' },
+
+    { n:4, section:'Mathematics', topic:'Surface area and Volumes', fmt:'diagram', 
+      stem:'<p>A cuboidal water tank on a roof in Pune is <b>open at the top</b>. Its inner base measures <b>2.5 m &times; 1.6 m</b>, and it holds <b>6000 litres</b> when full to the brim. Its inner surface is to be plastered at <b>&#8377;40 per m&sup2;</b>. What will the plastering cost?</p>', 
+      fig:'<svg viewBox="0 0 370 212" width="370" height="212" role="img" aria-label="An open-topped cuboidal tank. Base edges 2.5 m and 1.6 m; the depth is marked with a question mark."><path d="M86 74 L276 74 L346 30 L156 30 Z" fill="var(--maths)" fill-opacity=".20" stroke="none"/><path d="M86 170 L276 170 L276 74 L86 74 Z" fill="var(--maths)" fill-opacity=".08" stroke="currentColor" stroke-width="2"/><path d="M276 170 L346 126 L346 30 L276 74 Z" fill="var(--maths)" fill-opacity=".05" stroke="currentColor" stroke-width="2"/><g stroke="currentColor" stroke-width="2"><line x1="86.0" y1="74.0" x2="156.0" y2="30.0"/><line x1="156.0" y1="30.0" x2="346.0" y2="30.0"/></g><g stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 4" opacity=".55"><line x1="86.0" y1="170.0" x2="156.0" y2="126.0"/><line x1="156.0" y1="126.0" x2="346.0" y2="126.0"/><line x1="156.0" y1="126.0" x2="156.0" y2="30.0"/></g><text x="181.0" y="188.0" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="12">2.5 m</text><text x="333.0" y="160.0" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="12">1.6 m</text><text x="78.0" y="126.0" text-anchor="end" fill="currentColor" font-family="Inter,sans-serif" font-size="12">depth ?</text><text x="251.0" y="22.0" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="11" font-style="italic">open top — no lid</text></svg>', 
+      figCap:'The top face is open. The depth is not given — find it first. Not to scale.', 
+      options:['&#8377;492','&#8377;652','&#8377;812','&#8377;5080'], answer:1, 
+      sol:'<p><b>The depth.</b> 1000 litres = 1 m&sup3;, so the tank holds 6 m&sup3;. Depth = 6 &divide; (2.5 &times; 1.6) = 6 &divide; 4 = <b>1.5 m</b>.</p><p><b>The inner surface, open top.</b> Four walls: 2 &times; 1.5 &times; (2.5 + 1.6) = 3 &times; 4.1 = 12.3 m&sup2;. Floor: 2.5 &times; 1.6 = 4 m&sup2;. No lid. Total = <b>16.3 m&sup2;</b>.</p><p><b>Cost</b> = 16.3 &times; 40 = <b>&#8377;652</b>.</p><p><b>Where the other options come from.</b> (3) &#8377;812 = 20.3 &times; 40 &mdash; the full total surface, lid included, though the tank is open. (1) &#8377;492 = 12.3 &times; 40 &mdash; walls only (the lateral surface 2h(l + b)); the floor is plastered too. (4) &#8377;5080 = 127 &times; 40 &mdash; 6000 L read as 60 m&sup3; (dividing by 100, not 1000), which gives a 15 m depth; a 15 m tank on a roof should have stopped you.</p>' },
+
+    { n:5, section:'Mathematics', topic:'Heron’s Formula', fmt:'ar', 
+      stem:'<p><b>Assertion (A):</b> A triangle with sides 5 cm, 5 cm, 6 cm and a triangle with sides 5 cm, 5 cm, 8 cm have equal areas.</p><p><b>Reason (R):</b> Of two isosceles triangles with the same equal sides, the one with the longer base always has the larger area.</p>', 
+      options:['Both A and R are true, and R is the correct explanation of A.','Both A and R are true, but R is not the correct explanation of A.','A is true, but R is false.','A is false, but R is true.'], answer:2, 
+      sol:'<p><b>Test A.</b> For legs a and base b the height is &radic;(a&sup2; &minus; b&sup2;/4). Base 6: height &radic;(25 &minus; 9) = 4, area &frac12; &times; 6 &times; 4 = <b>12 cm&sup2;</b>. Base 8: height &radic;(25 &minus; 16) = 3, area &frac12; &times; 8 &times; 3 = <b>12 cm&sup2;</b>. Heron agrees: s = 8, brackets 3, 3, 2 &rarr; &radic;144 = 12; s = 9, brackets 4, 4, 1 &rarr; &radic;144 = 12. <b>A is true.</b></p><p><b>Test R.</b> A itself is the counter-example: the base grew from 6 to 8 and the area did not grow. A longer base comes with a shorter height, so the area can rise, stay level or fall. <b>R is false.</b> Answer (3).</p><p><b>The trap.</b> R sounds like common sense, and a student who finds the two areas equal but does not stop to ask whether R <i>could</i> be true picks (2). If A is true and R is &ldquo;always&rdquo;, A is the first place to look for a counter-example.</p>' },
+
+    { n:6, section:'Mathematics', topic:'Surface area and Volumes', fmt:'diagram', 
+      stem:'<p>A cylindrical glass jar has an <b>inner diameter of 8 cm</b> and contains some water. Solid spherical ball bearings, each of <b>diameter 2 cm</b>, are dropped in and sink completely. How many ball bearings are needed to raise the water level by exactly <b>3 cm</b>?</p>', 
+      fig:'<svg viewBox="0 0 300 206" width="300" height="206" role="img" aria-label="A cylindrical jar of inner diameter 8 cm, partly filled with water. Ball bearings of diameter 2 cm rest at the bottom; the water level has risen by 3 cm."><path d="M80 84 L80 176 A70 12 0 0 0 220 176 L220 84 A70 12 0 0 1 80 84 Z" fill="var(--physics)" fill-opacity=".16" stroke="none"/><ellipse cx="150" cy="84" rx="70" ry="12" fill="var(--physics)" fill-opacity=".22" stroke="var(--physics)" stroke-width="1.4"/><ellipse cx="150" cy="120" rx="70" ry="12" fill="none" stroke="currentColor" stroke-width="1.1" stroke-dasharray="5 4" opacity=".6"/><circle cx="112" cy="162" r="11" fill="var(--maths)" fill-opacity=".35" stroke="var(--maths)" stroke-width="1.4"/><circle cx="136" cy="165" r="11" fill="var(--maths)" fill-opacity=".35" stroke="var(--maths)" stroke-width="1.4"/><circle cx="160" cy="163" r="11" fill="var(--maths)" fill-opacity=".35" stroke="var(--maths)" stroke-width="1.4"/><circle cx="184" cy="166" r="11" fill="var(--maths)" fill-opacity=".35" stroke="var(--maths)" stroke-width="1.4"/><circle cx="124" cy="146" r="11" fill="var(--maths)" fill-opacity=".35" stroke="var(--maths)" stroke-width="1.4"/><circle cx="150" cy="147" r="11" fill="var(--maths)" fill-opacity=".35" stroke="var(--maths)" stroke-width="1.4"/><circle cx="174" cy="148" r="11" fill="var(--maths)" fill-opacity=".35" stroke="var(--maths)" stroke-width="1.4"/><g fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="150" cy="26" rx="70" ry="12"/><line x1="80" y1="26" x2="80" y2="176"/><line x1="220" y1="26" x2="220" y2="176"/><path d="M80 176 A70 12 0 0 0 220 176"/></g><g stroke="currentColor" stroke-width="1.1" opacity=".7"><line x1="228" y1="84" x2="246" y2="84"/><line x1="228" y1="120" x2="246" y2="120"/><line x1="238" y1="87" x2="238" y2="117"/></g><text x="250.0" y="106.0" text-anchor="start" fill="currentColor" font-family="Inter,sans-serif" font-size="12">3 cm</text><text x="250.0" y="121.0" text-anchor="start" fill="currentColor" font-family="Inter,sans-serif" font-size="11" opacity=".75">rise</text><g stroke="currentColor" stroke-width="1" opacity=".6"><line x1="80" y1="198" x2="220" y2="198"/><line x1="80" y1="193" x2="80" y2="203"/><line x1="220" y1="193" x2="220" y2="203"/></g><text x="72.0" y="202.0" text-anchor="end" fill="currentColor" font-family="Inter,sans-serif" font-size="12">8 cm</text></svg>', 
+      figCap:'The dashed ring is the water level before; the shaded surface is the level after. Not to scale.', 
+      options:['36','48','72','144'], answer:0, 
+      sol:'<p><b>The water that has to be displaced</b> is a cylinder of radius 4 cm (half the 8 cm diameter) and height 3 cm: &pi; &times; 4&sup2; &times; 3 = <b>48&pi; cm&sup3;</b>.</p><p><b>One ball bearing</b> has radius 1 cm: (4/3)&pi; &times; 1&sup3; = <b>(4/3)&pi; cm&sup3;</b>.</p><p>Number = 48&pi; &divide; (4/3)&pi; = 48 &times; 3/4 = <b>36</b>. &pi; cancels &mdash; no 22/7 needed.</p><p><b>Where the other options come from.</b> (2) 48 &mdash; the ball&rsquo;s volume taken as &pi;r&sup3;, the 4/3 forgotten. (3) 72 &mdash; the hemisphere&rsquo;s (2/3)&pi;r&sup3; used for a whole ball. (4) 144 &mdash; the jar&rsquo;s 8 cm diameter used as its radius (64&pi; &times; 3 = 192&pi;). The opposite slip on the ball (2 cm as its radius) gives 4.5, which is not a whole number of balls &mdash; that is the warning.</p>' },
+
+    { n:7, section:'Mathematics', topic:'Heron’s Formula', fmt:'plain', 
+      stem:'<p>Two sides of a triangle are <b>17 cm</b> and <b>28 cm</b>, and the angle between these two sides is <b>obtuse</b>. The area of the triangle is <b>210 cm&sup2;</b>. What is the length of the third side?</p>', 
+      options:['20 cm','25 cm','36 cm','39 cm'], answer:3, 
+      sol:'<p><b>Area &rarr; an altitude.</b> Take the 28 cm side as the base: h = 2 &times; 210 &divide; 28 = <b>15 cm</b>. This is the perpendicular from the far end of the 17 cm side down to the line of the 28 cm side.</p><p><b>Where the foot lands.</b> In the right triangle formed by the 17 cm side and that altitude, the foot lies &radic;(17&sup2; &minus; 15&sup2;) = &radic;64 = 8 cm from the vertex where the two given sides meet. Because the angle between them is <b>obtuse</b>, the 17 cm side leans backwards, so the foot is 8 cm <i>outside</i> the 28 cm side.</p><p><b>The third side</b> is the hypotenuse over a horizontal run of 28 + 8 = 36 cm and a height of 15 cm: &radic;(36&sup2; + 15&sup2;) = &radic;(1296 + 225) = &radic;1521 = <b>39 cm</b>. Check by Heron: s = 42, brackets 25, 14, 3 &rarr; 42 &times; 25 &times; 14 &times; 3 = 44100 = 210&sup2; &check;.</p><p><b>Where the other options come from.</b> (2) 25 cm = &radic;(20&sup2; + 15&sup2;) &mdash; the foot placed <i>inside</i> the base, which is the <b>acute</b> triangle with the same two sides and the same area (Heron gives 210 for it too); the word &ldquo;obtuse&rdquo; is there to rule it out: 25&sup2; = 625 is less than 17&sup2; + 28&sup2; = 1073, so the angle opposite it is acute. (3) 36 cm and (1) 20 cm &mdash; the horizontal runs 28 + 8 and 28 &minus; 8, one Pythagoras short of a side.</p><p><b>Fast route.</b> Test the options by Heron? That is four runs. The altitude route is two square roots, and the obtuse condition alone (third side&sup2; &gt; 1073, i.e. third side &gt; 32.7) leaves only 36 and 39.</p>' },
+
+    { n:8, section:'Mathematics', topic:'Surface area and Volumes', fmt:'plain', 
+      stem:'<p>A solid wooden cuboid measuring <b>12 cm &times; 8 cm &times; 6 cm</b> is cut into cubes of edge <b>2 cm</b>, with no wood wasted. By how much is the total surface area of all the cubes <b>greater</b> than that of the original cuboid?</p>', 
+      options:['648 cm&sup2;','720 cm&sup2;','1296 cm&sup2;','1728 cm&sup2;'], answer:2, 
+      sol:'<p><b>Count the cubes.</b> 12 &divide; 2 = 6, 8 &divide; 2 = 4, 6 &divide; 2 = 3, so 6 &times; 4 &times; 3 = <b>72 cubes</b>.</p><p><b>Surfaces.</b> One cube: 6 &times; 2&sup2; = 24 cm&sup2;, so all 72 have 72 &times; 24 = 1728 cm&sup2;. The cuboid had 2(12&middot;8 + 8&middot;6 + 6&middot;12) = 2(96 + 48 + 72) = 432 cm&sup2;. Increase = 1728 &minus; 432 = <b>1296 cm&sup2;</b>.</p><p><b>Check by counting cuts</b> (every cut creates two new faces). 5 cuts across the 12 cm edge, each adding 2 &times; (8 &times; 6) = 96: 480. 3 cuts across the 8 cm edge, each 2 &times; (12 &times; 6) = 144: 432. 2 cuts across the 6 cm edge, each 2 &times; (12 &times; 8) = 192: 384. Total 480 + 432 + 384 = 1296 &check;.</p><p><b>Where the other options come from.</b> (4) 1728 &mdash; the cubes&rsquo; total, not the increase. (1) 648 &mdash; the cut-counting route with <i>one</i> new face per cut instead of two. (2) 720 = 72 &times; 16 &minus; 432 &mdash; each cube given 4a&sup2; (four faces) instead of 6a&sup2;.</p>' },
+
+    { n:9, section:'Mathematics', topic:'Heron’s Formula', fmt:'match', 
+      stem:'<p>Match each triangle in Column I with its area in Column II.</p><table class="match"><thead><tr><th>Column I &mdash; triangle (sides in cm)</th><th>Column II &mdash; area</th></tr></thead><tbody><tr><td>(P) 10, 17, 21</td><td>(i) 60 cm&sup2;</td></tr><tr><td>(Q) 8, 15, 17</td><td>(ii) 36 cm&sup2;</td></tr><tr><td>(R) 10, 10, 12</td><td>(iii) 84 cm&sup2;</td></tr><tr><td>(S) 9, 10, 17</td><td>(iv) 48 cm&sup2;</td></tr></tbody></table>', 
+      options:['P&ndash;(iii), Q&ndash;(i), R&ndash;(iv), S&ndash;(ii)','P&ndash;(iii), Q&ndash;(iv), R&ndash;(i), S&ndash;(ii)','P&ndash;(ii), Q&ndash;(iv), R&ndash;(i), S&ndash;(iii)','P&ndash;(ii), Q&ndash;(i), R&ndash;(iv), S&ndash;(iii)'], answer:0, 
+      sol:'<p>Look for the shortcut before running Heron on anything.</p><ul><li><b>Q (8, 15, 17)</b> &mdash; 64 + 225 = 289 = 17&sup2;, a right triangle: &frac12; &times; 8 &times; 15 = <b>60</b> &rarr; (i).</li><li><b>R (10, 10, 12)</b> &mdash; isosceles: height &radic;(100 &minus; 36) = 8, area &frac12; &times; 12 &times; 8 = <b>48</b> &rarr; (iv).</li><li><b>P (10, 17, 21)</b> &mdash; no shortcut (100 + 289 &ne; 441). Heron: s = 24, brackets 14, 7, 3; 24 &times; 14 &times; 7 &times; 3 = 7056 = 84&sup2; &rarr; <b>84</b> &rarr; (iii).</li><li><b>S (9, 10, 17)</b> &mdash; Heron: s = 18, brackets 9, 8, 1; 18 &times; 9 &times; 8 &times; 1 = 1296 = 36&sup2; &rarr; <b>36</b> &rarr; (ii). (It is obtuse: 81 + 100 &lt; 289.)</li></ul><p>Answer (1). The two shortcuts fix Q at (i) and R at (iv), which removes (2) and (3); (1) and (4) differ only in whether P or S gets 84, so one Heron run &mdash; on either &mdash; settles it.</p><p><b>Where the other codes come from.</b> (2) &mdash; R&rsquo;s area taken as &frac12; &times; 12 &times; 10 = 60, the equal side used as the height; that puts R at (i) and leaves 48 for Q. (4) &mdash; P and S swapped: &ldquo;9, 10, 17 has the longest single side, so it must have the bigger area&rdquo;. It does not &mdash; it is a thin obtuse triangle (81 + 100 &lt; 289), and Heron gives it 36 against P&rsquo;s 84. (3) &mdash; both slips at once.</p>' },
+
+    { n:10, section:'Mathematics', topic:'Surface area and Volumes', fmt:'diagram', 
+      stem:'<p>The base of a solid right circular cone has circumference <b>16&pi; cm</b>, and the cone&rsquo;s <b>total</b> surface area is <b>200&pi; cm&sup2;</b>. What is the volume of the cone?</p>', 
+      fig:'<svg viewBox="0 0 300 196" width="300" height="196" role="img" aria-label="A right circular cone with base radius r, vertical height h and slant height l marked."><path d="M70 160 L150 22 L230 160 A80 16 0 0 1 70 160 Z" fill="var(--maths)" fill-opacity=".12" stroke="none"/><g fill="none" stroke="currentColor" stroke-width="2"><line x1="70" y1="160" x2="150" y2="22"/><line x1="230" y1="160" x2="150" y2="22"/><path d="M70 160 A80 16 0 0 0 230 160"/></g><path d="M70 160 A80 16 0 0 1 230 160" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="5 4" opacity=".55"/><line x1="150" y1="22" x2="150" y2="160" stroke="currentColor" stroke-width="1.3" stroke-dasharray="5 4" opacity=".7"/><line x1="150" y1="160" x2="230" y2="160" stroke="var(--maths)" stroke-width="2.2"/><path d="M150 151 L159 151 L159 160" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".7"/><text x="190.0" y="154.0" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="14"><tspan font-style="italic">r</tspan></text><text x="142.0" y="103.0" text-anchor="end" fill="currentColor" font-family="Inter,sans-serif" font-size="14"><tspan font-style="italic">h</tspan></text><text x="200.0" y="89.0" text-anchor="start" fill="currentColor" font-family="Inter,sans-serif" font-size="14"><tspan font-style="italic">l</tspan></text></svg>', 
+      figCap:'r is the base radius, h the vertical height (dashed) and l the slant height.', 
+      options:['192&pi; cm&sup3;','320&pi; cm&sup3;','(1088/3)&pi; cm&sup3;','960&pi; cm&sup3;'], answer:1, 
+      sol:'<p><b>Radius.</b> 2&pi;r = 16&pi; &rarr; <b>r = 8 cm</b>.</p><p><b>Slant height.</b> Total surface &pi;r(l + r) = 200&pi; &rarr; 8(l + 8) = 200 &rarr; l + 8 = 25 &rarr; <b>l = 17 cm</b>. (The total includes the flat base; take it off before you read l.)</p><p><b>Vertical height.</b> l&sup2; = r&sup2; + h&sup2; &rarr; h = &radic;(289 &minus; 64) = &radic;225 = <b>15 cm</b> (8-15-17).</p><p><b>Volume</b> = &frac13;&pi;r&sup2;h = &frac13; &times; 64 &times; 15 &times; &pi; = <b>320&pi; cm&sup3;</b>. Keep &pi; as a symbol: the options do.</p><p><b>Where the other options come from.</b> (3) (1088/3)&pi; = &frac13; &times; 64 &times; 17 &mdash; the slant height used as the height, the single commonest cone error. (4) 960&pi; = 64 &times; 15 &mdash; the &frac13; forgotten (that is the cylinder on the same base). (1) 192&pi; = &frac13; &times; 64 &times; 9 &mdash; the height taken as l &minus; r = 17 &minus; 8 instead of by Pythagoras. (Reading the total as if it were the curved surface &pi;rl gives l = 25 and h = &radic;561, not a whole number &mdash; the warning that the base has been forgotten.)</p>' },
+
+    { n:11, section:'Mathematics', topic:'Heron’s Formula', fmt:'diagram', 
+      stem:'<p>A gram panchayat owns the triangular plot shown, with sides <b>20 m, 34 m and 42 m</b>. It is to be covered with turf at <b>&#8377;15 per m&sup2;</b> and fenced all the way round at <b>&#8377;40 per metre</b>. What is the total cost of turfing and fencing?</p>', 
+      fig:'<svg viewBox="0 0 310 186" width="310" height="186" role="img" aria-label="A triangular plot with sides 20 m, 34 m and 42 m, drawn to scale."><path d="M26.0 150.0 L286.4 150.0 L100.4 50.8 Z" fill="var(--maths)" fill-opacity=".12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><text x="156.2" y="168.0" text-anchor="middle" fill="currentColor" font-family="Inter,sans-serif" font-size="12">42 m</text><text x="55.2" y="100.4" text-anchor="end" fill="currentColor" font-family="Inter,sans-serif" font-size="12">20 m</text><text x="201.4" y="96.4" text-anchor="start" fill="currentColor" font-family="Inter,sans-serif" font-size="12">34 m</text></svg>', 
+      figCap:'Drawn to scale.', 
+      options:['&#8377;5,040','&#8377;6,360','&#8377;6,960','&#8377;8,880'], answer:3, 
+      sol:'<p><b>Area by Heron.</b> Perimeter 96, so s = 48; brackets 28, 14, 6 (sum 48 &check;). Product 48 &times; 28 &times; 14 &times; 6 = (2&#8308;&middot;3)(2&sup2;&middot;7)(2&middot;7)(2&middot;3) = 2&#8312; &middot; 3&sup2; &middot; 7&sup2; &mdash; all paired, so the area is 2&#8308; &times; 3 &times; 7 = <b>336 m&sup2;</b>. (No right angle: 20&sup2; + 34&sup2; = 1556 &ne; 1764.)</p><p><b>Turf</b>: 336 &times; 15 = &#8377;5,040. <b>Fence</b>: the whole perimeter, 96 &times; 40 = &#8377;3,840. <b>Total &#8377;8,880.</b></p><p><b>Where the other options come from.</b> (1) &#8377;5,040 &mdash; the turf alone; the fencing half of the question skipped. (3) &#8377;6,960 = 5,040 + 48 &times; 40 &mdash; the semi-perimeter s fenced instead of the perimeter. (2) &#8377;6,360 = 168 &times; 15 + 3,840 &mdash; the Heron area halved.</p>' },
+
+    { n:12, section:'Mathematics', topic:'Surface area and Volumes', fmt:'statement', 
+      stem:'<p>Cone <b>A</b> has base radius 3 cm and height 4 cm. Cone <b>B</b> has base radius 4 cm and height 3 cm. Consider the following statements.</p><ol class="roman"><li>A and B have the same slant height.</li><li>A and B have equal curved surface areas.</li><li>Volume of A : volume of B = 3 : 4.</li><li>The total surface area of B is 1.5 times that of A.</li></ol><p>Which of the statements are correct?</p>', 
+      options:['I and III only','I, II and III only','I, III and IV only','I, II, III and IV'], answer:2, 
+      sol:'<p><b>I</b> &mdash; l = &radic;(3&sup2; + 4&sup2;) = 5 for both. <b>True.</b></p><p><b>II</b> &mdash; curved surface &pi;rl: A = &pi; &times; 3 &times; 5 = 15&pi;; B = &pi; &times; 4 &times; 5 = 20&pi;. <b>False.</b> (Writing &pi;rh gives 12&pi; for both and makes II look true &mdash; that is the trap.)</p><p><b>III</b> &mdash; &frac13;&pi;r&sup2;h: A = &frac13;&pi; &times; 9 &times; 4 = 12&pi;; B = &frac13;&pi; &times; 16 &times; 3 = 16&pi;; 12 : 16 = 3 : 4. <b>True.</b></p><p><b>IV</b> &mdash; total &pi;r(l + r): A = &pi; &times; 3 &times; 8 = 24&pi;; B = &pi; &times; 4 &times; 9 = 36&pi;; 36 &divide; 24 = 1.5. <b>True.</b></p><p>I, III and IV &mdash; option (3).</p><p><b>Where the other options come from.</b> (2) I, II and III &mdash; the &pi;rh slip: it makes II true, and it also breaks IV (totals 12&pi; + 9&pi; = 21&pi; and 12&pi; + 16&pi; = 28&pi;, a ratio of 4/3, not 1.5). (1) I and III &mdash; II rightly rejected but IV judged with curved surfaces only (20&pi; &divide; 15&pi; = 4/3), the bases forgotten. (4) all four &mdash; II accepted by the same &pi;rh slip without working IV at all.</p>' },
+
+    { n:13, section:'Mathematics', topic:'Surface area and Volumes', fmt:'plain', 
+      stem:'<p>A shopkeeper in Surat wants closed cardboard boxes in the shape of a cuboid whose edges are <b>whole numbers of centimetres</b> and whose volume is exactly <b>36 cm&sup3;</b>. What is the <b>least</b> total surface area such a box can have?</p>', 
+      options:['57 cm&sup2;','66 cm&sup2;','72 cm&sup2;','80 cm&sup2;'], answer:1, 
+      sol:'<p><b>An integer parameter &rArr; list the cases.</b> The edges a &le; b &le; c are whole numbers with abc = 36. There are only eight such boxes; total surface 2(ab + bc + ca):</p><p>1&times;1&times;36 &rarr; 146 &middot; 1&times;2&times;18 &rarr; 112 &middot; 1&times;3&times;12 &rarr; 102 &middot; 1&times;4&times;9 &rarr; 98 &middot; 1&times;6&times;6 &rarr; 96 &middot; 2&times;2&times;9 &rarr; 80 &middot; 2&times;3&times;6 &rarr; 72 &middot; 3&times;3&times;4 &rarr; 66</p><p>The least is <b>66 cm&sup2;</b>, for 3 &times; 3 &times; 4 &mdash; the box closest to a cube. (A true cube would need edge &#8731;36 &asymp; 3.3, which is not a whole number.)</p><p><b>Where the other options come from.</b> (1) 57 = 66 &minus; 9 &mdash; the 3 &times; 3 &times; 4 box with its 3 &times; 3 lid left off; the stem says <b>closed</b>, so every face counts. Picking the smallest option on a &ldquo;least&rdquo; question without checking it is exactly this trap. (3) 72 &mdash; 2 &times; 3 &times; 6, the first &ldquo;three different factors&rdquo; that comes to mind, taken without checking the others. (4) 80 &mdash; 2 &times; 2 &times; 9, a square base but too tall.</p>' }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+/* "👁 Just checking" (device-local hubPreview = the ms timestamp it was switched on; it lapses
+   after 2 hours). While on, Submit ASKS whether to save — so a forgotten switch can never
+   silently swallow a real attempt. */
+function isPreview(){ return (function(){ try { var v = +JSON.parse(localStorage.getItem('hubPreview') || '0'); return v > 1e12 && Date.now() - v < 7200000; } catch(e){ return false; } })(); }
+let NOT_SAVED = false;
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- just look: the questions, read-only; nothing marked, nothing recorded ---- */
+function viewOnly(){
+  if(started) return;
+  document.body.classList.add('viewonly');
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '👁 <b>Just looking.</b> Nothing is marked or recorded. To answer these, go back and start the paper.'
+                + '<button class="bigbtn" type="button" style="margin-left:auto" onclick="location.reload()">← Back to start</button>';
+  $('paperBody').insertBefore(bar, $('paperBody').firstChild);
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  if(!RESTORING && NOT_SAVED){ const rc = $('results').querySelector('.rcard');
+    if(rc) rc.insertAdjacentHTML('beforeend', '<div class="rnote">👁 <b>Just checking was on</b> — this attempt was marked but not recorded.</div>'); }
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b,a,md,tm,v:2} (+f only if a flag was set).
+   Every paper stores its answers so the marked review replays (a mock opens it automatically;
+   the others via "See your last attempt"); the hub only ever reads m/mx. Written MERGE-ONLY.
+   COMPACT on purpose: the whole shared record is ONE Apps Script property with a 9216-byte
+   ceiling, so answers are one character per question ('0'–'3', '-' = blank), not an array. */
+function saveAttempt(sc, timeTaken){
+  if(isPreview() && !confirm('👁 Just checking is on for this device.\n\nSave this attempt to your progress?\n\nOK = save it (a real attempt)\nCancel = don\'t record (only checking)')){ NOT_SAVED = true; return; }
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank,
+                a:answers.map(x => x === null ? '-' : x).join(''), md:mode === 'timed' ? 't' : 'p', tm:timeTaken, v:2 };
+  if(flags.some(Boolean)) rec.f = flags.map(x => x ? 1 : 0).join('');
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function decodeRec(rec){          /* v2 strings and v1 arrays both replay */
+  if(!rec || !rec.a) return null;
+  const a = typeof rec.a === 'string' ? rec.a.split('').map(c => c === '-' ? null : +c) : rec.a.slice();
+  if(a.length !== NQ) return null;                 /* the paper changed shape since — never mis-mark */
+  const f = typeof rec.f === 'string' ? rec.f.split('').map(c => c === '1')
+          : Array.isArray(rec.f) ? rec.f.slice() : new Array(NQ).fill(false);
+  const md = rec.md === 't' ? 'timed' : rec.md === 'p' ? 'practice' : (rec.md || 'timed');
+  return { a, f, md };
+}
+function showFrozen(rec){
+  const d = decodeRec(rec);
+  if(!d || submitted) return;
+  RESTORING = true;
+  answers = d.a;
+  flags   = d.f;
+  mode    = d.md;
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = !IS_MOCK
+    ? '📋 <b>Your last attempt — ' + String(rec.t || '').slice(0, 10) + '.</b> Your answers, what was right and wrong, and every worked solution. ↺ Retake starts a fresh attempt.'
+      + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>'
+    : '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('viewOnly').addEventListener('click', viewOnly);
+$('lastAttempt').addEventListener('click', () => { const r = progLoad()[REP_ID]; if(r && r.a) showFrozen(r); });
+if(IS_MOCK && !TEACHER && !isPreview()) $('viewOnly').hidden = true;   /* a one-shot mock is not previewed */
+if(isPreview()) $('startNote').insertAdjacentHTML('beforeend', ' <b>👁 Just checking is on</b> — when you submit, you will be asked whether to save the attempt.');
+function paintLast(){
+  if(IS_MOCK) return;
+  const r = progLoad()[REP_ID], b = $('lastAttempt');
+  const ok = !!decodeRec(r);
+  b.hidden = !ok;
+  if(ok) b.textContent = '📋 See your last attempt · ' + r.m + '/' + r.mx;
+}
+paintLast();
+window.addEventListener('miraya-progress-synced', paintLast);
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
