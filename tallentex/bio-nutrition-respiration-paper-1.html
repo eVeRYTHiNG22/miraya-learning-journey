@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Nutrition & Respiration — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .viewonly .submitrow, .viewonly .q-flag { display:none !important; }
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP||location.protocol!=='https:'||navigator.webdriver)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+      <button class="bigbtn" id="viewOnly" type="button">👁 Just look at the questions</button>
+      <button class="bigbtn" id="lastAttempt" type="button" hidden>📋 See your last attempt</button>
+    </div>
+    <p class="startnote" id="startNote">Practice mode still marks you and still applies −1 — only the countdown is off. “Just look” shows the questions without marking or recording anything.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  "title": "TALLENTEX · Nutrition & Respiration — Paper 1",
+  "kind": "topic",
+  "duration": 20,
+  "id": "tx:bio-nutrition-respiration:p1",
+  "accent": "bio",
+  "sub": "Nutrition and Respiration — photosynthesis and its four experiments, stomata, the digestive system and the enzyme table, the three endings of respiration, breathing and the alveolus. <b>13 questions · 52 marks · 20 minutes · +4 / −1 / 0.</b> Pitched at the real TALLENTEX paper: <b>four or five of the fifteen Biology questions</b> in every real sitting came from these two topics, and more than half of them carried a figure — so six of these do too, and most items make you read a label or a set-up <em>and then</em> reason from it.",
+  "sections": [
+    {
+      "name": "Biology",
+      "from": 1,
+      "to": 13
+    }
+  ],
+  "questions": [
+    {
+      "n": 1,
+      "section": "Biology",
+      "topic": "Nutrition",
+      "fmt": "diagram",
+      "stem": "<p>A potted plant is kept in complete darkness for three days. Three of its leaves are then treated as shown: leaf <b>P</b> is sealed inside a flask containing potassium hydroxide (KOH) solution, leaf <b>Q</b> inside an identical flask containing plain water, and leaf <b>R</b> is left in the open air with a strip of black paper clipped across its middle. The plant stands in bright sunlight for a day, after which all three leaves are boiled in water, then in alcohol, and tested with iodine solution. Which row gives the correct result?</p>",
+      "fig": "<svg viewBox=\"0 0 520 262\" width=\"520\" role=\"img\" aria-label=\"A potted plant with leaf P sealed in a flask of KOH solution, leaf Q sealed in a flask of water, and leaf R in the open with a black paper strip across it, all in sunlight\" style=\"max-width:100%;height:auto\"><path d=\"M225,200 L295,200 L285,252 L235,252 Z\" fill=\"var(--iq)\" fill-opacity=\".35\" stroke=\"var(--iq)\" stroke-width=\"1.5\"/><line x1=\"260\" y1=\"200\" x2=\"260\" y2=\"92\" stroke=\"var(--bio)\" stroke-width=\"3\" stroke-linecap=\"round\"/><line x1=\"260\" y1=\"160\" x2=\"168\" y2=\"160\" stroke=\"var(--bio)\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><ellipse cx=\"120\" cy=\"160\" rx=\"48\" ry=\"50\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M90,195 A48,50 0 0 0 150,195 Z\" fill=\"var(--physics)\" fill-opacity=\".35\" stroke=\"var(--physics)\" stroke-width=\"1\"/><rect x=\"160\" y=\"150\" width=\"30\" height=\"20\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.6\"/><rect x=\"176\" y=\"151\" width=\"14\" height=\"18\" fill=\"var(--iq)\" fill-opacity=\".6\" stroke=\"currentColor\" stroke-width=\"1\"/><g transform=\"rotate(-15 112 158)\"><ellipse cx=\"112\" cy=\"158\" rx=\"30\" ry=\"13\" fill=\"var(--bio)\" fill-opacity=\".35\" stroke=\"var(--bio)\" stroke-width=\"1.5\"/><line x1=\"86\" y1=\"158\" x2=\"138\" y2=\"158\" stroke=\"var(--bio)\" stroke-width=\"1\"/></g><text x=\"120.0\" y=\"98.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">P</text><text x=\"120.0\" y=\"238.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">KOH solution</text><line x1=\"260\" y1=\"130\" x2=\"352\" y2=\"130\" stroke=\"var(--bio)\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><ellipse cx=\"400\" cy=\"130\" rx=\"48\" ry=\"50\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M370,165 A48,50 0 0 0 430,165 Z\" fill=\"var(--physics)\" fill-opacity=\".35\" stroke=\"var(--physics)\" stroke-width=\"1\"/><rect x=\"330\" y=\"120\" width=\"30\" height=\"20\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.6\"/><rect x=\"330\" y=\"121\" width=\"14\" height=\"18\" fill=\"var(--iq)\" fill-opacity=\".6\" stroke=\"currentColor\" stroke-width=\"1\"/><g transform=\"rotate(15 408 128)\"><ellipse cx=\"408\" cy=\"128\" rx=\"30\" ry=\"13\" fill=\"var(--bio)\" fill-opacity=\".35\" stroke=\"var(--bio)\" stroke-width=\"1.5\"/><line x1=\"382\" y1=\"128\" x2=\"434\" y2=\"128\" stroke=\"var(--bio)\" stroke-width=\"1\"/></g><text x=\"400.0\" y=\"68.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">Q</text><text x=\"400.0\" y=\"208.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">water</text><line x1=\"260\" y1=\"92\" x2=\"236\" y2=\"62\" stroke=\"var(--bio)\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><g transform=\"rotate(-22 212 52)\"><ellipse cx=\"212\" cy=\"52\" rx=\"40\" ry=\"16\" fill=\"var(--bio)\" fill-opacity=\".35\" stroke=\"var(--bio)\" stroke-width=\"1.5\"/><line x1=\"176\" y1=\"52\" x2=\"248\" y2=\"52\" stroke=\"var(--bio)\" stroke-width=\"1\"/></g><g transform=\"rotate(-22 212 52)\"><rect x=\"205\" y=\"30\" width=\"14\" height=\"44\" fill=\"#111\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/></g><text x=\"160.0\" y=\"30.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">R</text><text x=\"300.0\" y=\"36.0\" font-size=\"11\" text-anchor=\"start\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">black paper strip</text><line x1=\"298.0\" y1=\"32.0\" x2=\"222.0\" y2=\"44.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><circle cx=\"478\" cy=\"34\" r=\"12\" fill=\"var(--iq)\" fill-opacity=\".7\"/><line x1=\"494.0\" y1=\"34.0\" x2=\"500.0\" y2=\"34.0\" stroke=\"var(--iq)\" stroke-width=\"1.5\"/><line x1=\"489.3\" y1=\"45.3\" x2=\"493.6\" y2=\"49.6\" stroke=\"var(--iq)\" stroke-width=\"1.5\"/><line x1=\"478.0\" y1=\"50.0\" x2=\"478.0\" y2=\"56.0\" stroke=\"var(--iq)\" stroke-width=\"1.5\"/><line x1=\"466.7\" y1=\"45.3\" x2=\"462.4\" y2=\"49.6\" stroke=\"var(--iq)\" stroke-width=\"1.5\"/><line x1=\"462.0\" y1=\"34.0\" x2=\"456.0\" y2=\"34.0\" stroke=\"var(--iq)\" stroke-width=\"1.5\"/><line x1=\"466.7\" y1=\"22.7\" x2=\"462.4\" y2=\"18.4\" stroke=\"var(--iq)\" stroke-width=\"1.5\"/><line x1=\"478.0\" y1=\"18.0\" x2=\"478.0\" y2=\"12.0\" stroke=\"var(--iq)\" stroke-width=\"1.5\"/><line x1=\"489.3\" y1=\"22.7\" x2=\"493.6\" y2=\"18.4\" stroke=\"var(--iq)\" stroke-width=\"1.5\"/><text x=\"478.0\" y=\"72.0\" font-size=\"10\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">sunlight</text></svg>",
+      "figCap": "The plant after three days in the dark. P and Q are sealed into flasks; R has a black paper strip across it.",
+      "options": [
+        "P blue-black all over · Q brown all over · R blue-black except under the strip",
+        "P brown all over · Q brown all over · R blue-black except under the strip",
+        "P brown all over · Q blue-black all over · R blue-black except under the strip",
+        "P brown all over · Q blue-black all over · R brown all over"
+      ],
+      "answer": 2,
+      "sol": "<p><b>Step 1 — what the three days of darkness did.</b> The plant was de-starched: every leaf used up its stored starch, so every leaf begins the experiment testing <b>brown</b>. Whatever turns blue-black afterwards was made <em>during the day in the sun</em>.</p><p><b>Step 2 — leaf P.</b> KOH absorbs carbon dioxide. Inside that flask the leaf has light, water and chlorophyll but no CO₂ — and CO₂ is a raw material, so no glucose, no starch: <b>brown all over</b>.</p><p><b>Step 3 — leaf Q.</b> The flask is sealed, but the air sealed in with the leaf still contains CO₂ and nothing removes it. This leaf is the <b>control</b> for P: same flask, same sealing, only the KOH missing. It photosynthesises normally: <b>blue-black all over</b>.</p><p><b>Step 4 — leaf R.</b> Only the part under the strip is short of one raw material (light). Everything else is in the sun: <b>blue-black except under the strip</b>. Option <b>(3)</b>.</p><p><b>Where each wrong option comes from.</b> (1) has P and Q the wrong way round — it treats KOH as something that <em>supplies</em> CO₂, or the water flask as CO₂-free. (2) assumes a sealed flask starves both leaves (\"no fresh air, no photosynthesis\"); but a flask of air holds enough CO₂ for a day, and if it did not, P and Q could not be compared at all. (4) treats R as a fully covered leaf; only the strip is dark.</p><p><b>Elimination.</b> R is the same in three options, so the question is really P against Q. The pair differ in exactly one thing — KOH — so their results must differ: any option giving P and Q the same colour ((2)) is dead, and KOH removes CO₂, so P is the brown one.</p>"
+    },
+    {
+      "n": 2,
+      "section": "Biology",
+      "topic": "Respiration",
+      "fmt": "diagram",
+      "stem": "<p>The figure shows one alveolus and the capillary wrapped round it. Blood enters the capillary from vessel <b>X</b> and leaves through vessel <b>Y</b>; the arrows <b>P</b> and <b>Q</b> show the two gases crossing the wall. Which combination is correct?</p>",
+      "fig": "<svg viewBox=\"0 0 380 244\" width=\"380\" role=\"img\" aria-label=\"One alveolus with a capillary wrapped round its right side; blood enters the capillary from vessel X at the top and leaves by vessel Y at the bottom; arrow P points from the alveolus into the blood and arrow Q from the blood into the alveolus\" style=\"max-width:100%;height:auto\"><path d=\"M167.0,55.9 A74,74 0 0 1 167.0,184.1 L178.0,203.1 A96,96 0 0 0 178.0,36.9 Z\" fill=\"var(--force)\" fill-opacity=\".16\" stroke=\"var(--force)\" stroke-width=\"1.6\"/><line x1=\"172.5\" y1=\"46.4\" x2=\"228\" y2=\"16\" stroke=\"var(--force)\" stroke-opacity=\".16\" stroke-width=\"22\" stroke-linecap=\"butt\"/><line x1=\"172.5\" y1=\"46.4\" x2=\"228\" y2=\"16\" stroke=\"var(--force)\" stroke-width=\"1.6\" stroke-opacity=\".0\"/><line x1=\"172.5\" y1=\"193.6\" x2=\"228\" y2=\"224\" stroke=\"var(--force)\" stroke-opacity=\".16\" stroke-width=\"22\"/><line x1=\"177.8\" y1=\"56.0\" x2=\"233.3\" y2=\"25.6\" stroke=\"var(--force)\" stroke-width=\"1.6\"/><line x1=\"167.2\" y1=\"36.7\" x2=\"222.7\" y2=\"6.4\" stroke=\"var(--force)\" stroke-width=\"1.6\"/><line x1=\"167.2\" y1=\"203.3\" x2=\"222.7\" y2=\"233.6\" stroke=\"var(--force)\" stroke-width=\"1.6\"/><line x1=\"177.8\" y1=\"184.0\" x2=\"233.3\" y2=\"214.4\" stroke=\"var(--force)\" stroke-width=\"1.6\"/><circle cx=\"130\" cy=\"120\" r=\"64\" fill=\"var(--physics)\" fill-opacity=\".12\" stroke=\"currentColor\" stroke-width=\"1.8\"/><text x=\"130.0\" y=\"116.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"600\">alveolus</text><text x=\"130.0\" y=\"132.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">(air)</text><defs><marker id=\"ahF\" viewBox=\"0 0 10 10\" refX=\"8\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\"><path d=\"M0,0 L10,5 L0,10 Z\" fill=\"var(--force)\"/></marker><marker id=\"ahB\" viewBox=\"0 0 10 10\" refX=\"8\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\"><path d=\"M0,0 L10,5 L0,10 Z\" fill=\"var(--bio)\"/></marker><marker id=\"ahI\" viewBox=\"0 0 10 10\" refX=\"8\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\"><path d=\"M0,0 L10,5 L0,10 Z\" fill=\"var(--iq)\"/></marker></defs><path d=\"M182.3,53.0 A85.0,85.0 0 0 1 200.5,72.5\" fill=\"none\" stroke=\"var(--force)\" stroke-width=\"1.6\" marker-end=\"url(#ahF)\"/><path d=\"M213.7,105.2 A85.0,85.0 0 0 1 214.2,131.8\" fill=\"none\" stroke=\"var(--force)\" stroke-width=\"1.6\" marker-end=\"url(#ahF)\"/><path d=\"M200.5,167.5 A85.0,85.0 0 0 1 182.3,187.0\" fill=\"none\" stroke=\"var(--force)\" stroke-width=\"1.6\" marker-end=\"url(#ahF)\"/><line x1=\"164.4\" y1=\"103.9\" x2=\"211.6\" y2=\"82.0\" stroke=\"var(--bio)\" stroke-width=\"2.6\" marker-end=\"url(#ahB)\"/><line x1=\"211.6\" y1=\"158.0\" x2=\"164.4\" y2=\"136.1\" stroke=\"var(--iq)\" stroke-width=\"2.6\" marker-end=\"url(#ahI)\"/><text x=\"229.7\" y=\"78.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">P</text><text x=\"229.7\" y=\"171.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">Q</text><text x=\"246.0\" y=\"22.0\" font-size=\"14\" text-anchor=\"start\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">X</text><text x=\"246.0\" y=\"42.0\" font-size=\"11\" text-anchor=\"start\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">blood enters here</text><text x=\"246.0\" y=\"230.0\" font-size=\"14\" text-anchor=\"start\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">Y</text><text x=\"246.0\" y=\"210.0\" font-size=\"11\" text-anchor=\"start\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">blood leaves here</text><text x=\"238.0\" y=\"126.0\" font-size=\"11\" text-anchor=\"start\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">capillary</text><text x=\"20.0\" y=\"232.0\" font-size=\"10\" text-anchor=\"start\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">both walls one cell thick</text></svg>",
+      "figCap": "Blood flows through the capillary from X to Y. P crosses from the air into the blood; Q crosses from the blood into the air.",
+      "options": [
+        "X is a branch of the pulmonary artery carrying deoxygenated blood; P is oxygen; both gases cross by diffusion",
+        "X is a branch of the pulmonary vein carrying deoxygenated blood; P is oxygen; both gases cross by diffusion",
+        "X is a branch of the pulmonary artery carrying oxygenated blood; P is carbon dioxide; both gases cross by diffusion",
+        "X is a branch of the pulmonary artery carrying deoxygenated blood; P is oxygen; both gases are pumped across using energy from ATP"
+      ],
+      "answer": 0,
+      "sol": "<p><b>Step 1 — which way is the blood going?</b> The figure says blood <em>arrives</em> through X. Blood that has just reached the lungs has come back from the body: it is <b>deoxygenated</b> — low in oxygen, loaded with carbon dioxide. A vessel carrying blood <em>away from the heart</em> is an artery, so X is a branch of the <b>pulmonary artery</b> — the one artery in the body that carries deoxygenated blood.</p><p><b>Step 2 — which gas is P?</b> P crosses from the alveolar air into that blood. The air in the alveolus is rich in oxygen and the arriving blood is poor in it, so oxygen moves in: <b>P is O₂</b>, and Q, going the other way, is CO₂.</p><p><b>Step 3 — how?</b> Each gas moves from where it is plentiful to where it is scarce, down its own gradient. That is <b>diffusion</b> — nothing is pumped and no energy is spent. Option <b>(1)</b>.</p><p><b>Where each wrong option comes from.</b> (2) reasons \"deoxygenated blood travels in veins\", which is true everywhere except here: the vessel is named by its direction (away from the heart), not by its cargo. (3) applies the other rule — \"arteries carry oxygenated blood\" — and then has to reverse the gases to fit. (4) gets the vessel and the gas right and then makes the crossing active transport; it is diffusion.</p><p><b>Elimination.</b> Gases crossing a membrane down their own gradients are never \"pumped\" — that kills (4) on sight. Blood arriving at the lungs cannot already be oxygenated, which kills (3).</p>"
+    },
+    {
+      "n": 3,
+      "section": "Biology",
+      "topic": "Nutrition",
+      "fmt": "diagram",
+      "stem": "<p>Boiled-and-cooled starch solution is placed in three test tubes, which then stand in a water bath at 37 °C for twenty minutes, as shown. Tube <b>A</b> also contains a student's saliva; tube <b>B</b> contains the same amount of saliva together with a few drops of dilute hydrochloric acid; tube <b>C</b> contains an equal volume of water in place of saliva. Iodine solution is then added to each tube. Which tubes turn blue-black?</p>",
+      "fig": "<svg viewBox=\"0 0 480 232\" width=\"480\" role=\"img\" aria-label=\"Three test tubes A, B and C standing in a water bath at 37 degrees: A holds starch solution and saliva, B starch solution, saliva and a few drops of dilute hydrochloric acid, C starch solution and water\" style=\"max-width:100%;height:auto\"><path d=\"M30,70 V186 H450 V70\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"/><rect x=\"31.5\" y=\"100\" width=\"417\" height=\"85\" fill=\"var(--physics)\" fill-opacity=\".12\"/><line x1=\"31.5\" y1=\"100\" x2=\"448.5\" y2=\"100\" stroke=\"var(--physics)\" stroke-width=\"1.2\"/><text x=\"310.0\" y=\"178.0\" font-size=\"10\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">water bath, 37 °C</text><path d=\"M83,45 V155 A17,17 0 0 0 117,155 V45\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M84.5,112 V155 A15.5,15.5 0 0 0 115.5,155 V112 Z\" fill=\"currentColor\" fill-opacity=\".12\"/><line x1=\"83\" y1=\"45\" x2=\"117\" y2=\"45\" stroke=\"currentColor\" stroke-width=\"1.6\"/><text x=\"100.0\" y=\"36.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">A</text><text x=\"100.0\" y=\"207.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\">starch + saliva</text><path d=\"M223,45 V155 A17,17 0 0 0 257,155 V45\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M224.5,112 V155 A15.5,15.5 0 0 0 255.5,155 V112 Z\" fill=\"currentColor\" fill-opacity=\".12\"/><line x1=\"223\" y1=\"45\" x2=\"257\" y2=\"45\" stroke=\"currentColor\" stroke-width=\"1.6\"/><text x=\"240.0\" y=\"36.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">B</text><text x=\"240.0\" y=\"207.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\">starch + saliva</text><text x=\"240.0\" y=\"222.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\">+ a few drops of dilute HCl</text><path d=\"M363,45 V155 A17,17 0 0 0 397,155 V45\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M364.5,112 V155 A15.5,15.5 0 0 0 395.5,155 V112 Z\" fill=\"currentColor\" fill-opacity=\".12\"/><line x1=\"363\" y1=\"45\" x2=\"397\" y2=\"45\" stroke=\"currentColor\" stroke-width=\"1.6\"/><text x=\"380.0\" y=\"36.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">C</text><text x=\"380.0\" y=\"207.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\">starch + water</text><text x=\"380.0\" y=\"222.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\">(no saliva)</text></svg>",
+      "figCap": "All three tubes hold the same starch solution and stand in the same 37 °C water bath.",
+      "options": [
+        "A only",
+        "B and C only",
+        "C only",
+        "A and C only"
+      ],
+      "answer": 1,
+      "sol": "<p><b>Step 1 — what iodine tells you.</b> Iodine turns blue-black where <b>starch is still present</b>. A tube goes blue-black if its starch was <em>not</em> digested.</p><p><b>Step 2 — tube by tube.</b> <b>A</b>: saliva carries salivary amylase, the medium is not acidic and the temperature is body temperature, so the starch is broken down to sugar — no starch left, <b>stays brown</b>. <b>B</b>: the same enzyme is there, but salivary amylase works only in a medium that is not acidic; the acid stops it, so the starch remains — <b>blue-black</b>. <b>C</b>: no enzyme at all, so nothing touches the starch — <b>blue-black</b>. Option <b>(2)</b>.</p><p><b>Where each wrong option comes from.</b> (1) reads blue-black as \"digestion happened\" — the colour meaning reversed. (3) forgets that acid switches salivary amylase off, treating it like pepsin. (4) carries the stomach's rule to the mouth: \"enzymes need acid\", so B digests and A does not.</p><p><b>Elimination.</b> C has no enzyme, so its starch cannot go anywhere: C must be in the answer, which kills (1). A and C differ only by the saliva, so they cannot give the same result, which kills (4).</p>"
+    },
+    {
+      "n": 4,
+      "section": "Biology",
+      "topic": "Respiration",
+      "fmt": "ar",
+      "stem": "<p><b>Assertion (A):</b> A sprinter's leg muscles keep contracting for some time even when the blood cannot supply oxygen as fast as the muscles are using it.</p><p><b>Reason (R):</b> The breakdown of glucose to pyruvate takes place in the cytoplasm, needs no oxygen, and releases some ATP.</p>",
+      "options": [
+        "Both A and R are true, and R is the correct explanation of A",
+        "Both A and R are true, but R is not the correct explanation of A",
+        "A is true, but R is false",
+        "A is false, but R is true"
+      ],
+      "answer": 0,
+      "sol": "<p><b>Step 1 — is A true?</b> Yes. A muscle short of oxygen does not stop; it takes the lactic-acid route, and the sprinter finishes the race. The build-up of lactic acid is what causes cramp afterwards.</p><p><b>Step 2 — is R true, and does it explain A?</b> The first step of every route — glucose (6 carbons) to two molecules of pyruvate (3 carbons each) — is glycolysis. It happens in the cytoplasm, uses no oxygen, and nets a little ATP. That ATP is exactly what keeps the oxygen-starved muscle working, so R is true and it is the reason for A. Option <b>(1)</b>.</p><p><b>Where each wrong option comes from.</b> (2) accepts both sentences but misses that the ATP in R is the energy the muscle in A is running on. (3) is the \"no oxygen, no energy\" belief — that without oxygen no ATP at all is made. (4) denies that a muscle can work without enough oxygen, which every 200 m sprint disproves.</p>"
+    },
+    {
+      "n": 5,
+      "section": "Biology",
+      "topic": "Nutrition",
+      "fmt": "diagram",
+      "stem": "<p>The diagram shows the human digestive system with seven parts lettered P to V. Identify, in order:</p><ol class=\"roman\"><li>the organ whose juice digests protein in an <b>acidic</b> medium;</li><li>the gland whose secretion contains <b>no enzyme</b> but breaks fat into tiny droplets;</li><li>the part in which the products of fat digestion are absorbed into the lacteals;</li><li>the part whose wall absorbs <b>water</b> from the undigested material that is left once digestion is complete.</li></ol>",
+      "fig": "<svg viewBox=\"0 0 320 380\" width=\"320\" role=\"img\" aria-label=\"Schematic human digestive system with seven parts lettered P to V: P a salivary gland by the mouth, Q the oesophagus, R the liver, S the stomach, T the pancreas, U the coiled small intestine, V the large intestine\" style=\"max-width:100%;height:auto\"><ellipse cx=\"140\" cy=\"50\" rx=\"22\" ry=\"12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><ellipse cx=\"95\" cy=\"48\" rx=\"16\" ry=\"10\" fill=\"var(--iq)\" fill-opacity=\".35\" stroke=\"var(--iq)\" stroke-width=\"1.4\"/><line x1=\"111\" y1=\"48\" x2=\"118\" y2=\"50\" stroke=\"var(--iq)\" stroke-width=\"1.2\"/><path d=\"M145,60 V128 M155,60 V128\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M60,112 Q68,96 110,100 L138,104 L138,120 Q115,142 72,147 Q52,138 60,112 Z\" fill=\"var(--bio)\" fill-opacity=\".28\" stroke=\"var(--bio)\" stroke-width=\"1.5\"/><ellipse cx=\"118\" cy=\"150\" rx=\"9\" ry=\"6\" fill=\"var(--iq)\" fill-opacity=\".5\" stroke=\"var(--iq)\" stroke-width=\"1\"/><g transform=\"rotate(25 185 150)\"><ellipse cx=\"185\" cy=\"150\" rx=\"42\" ry=\"28\" fill=\"var(--force)\" fill-opacity=\".18\" stroke=\"var(--force)\" stroke-width=\"1.5\"/></g><g transform=\"rotate(-8 165 200)\"><ellipse cx=\"165\" cy=\"200\" rx=\"45\" ry=\"11\" fill=\"var(--maths)\" fill-opacity=\".3\" stroke=\"var(--maths)\" stroke-width=\"1.4\"/></g><path d=\"M212,176 C238,196 232,228 212,238\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"9\" stroke-opacity=\".22\"/><path d=\"M212,176 C238,196 232,228 212,238\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><path d=\"M212,238 C195,255 130,255 116,272 C130,289 195,289 212,306 C195,323 130,323 116,336 L96,334\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"11\" stroke-opacity=\".25\" stroke-linecap=\"round\"/><path d=\"M212,238 C195,255 130,255 116,272 C130,289 195,289 212,306 C195,323 130,323 116,336 L96,334\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"1.5\"/><path d=\"M88,336 V232 Q88,218 102,218 H228 Q242,218 242,232 V330 Q242,352 214,352 H176 V368\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"14\" stroke-opacity=\".28\" stroke-linecap=\"round\"/><path d=\"M88,336 V232 Q88,218 102,218 H228 Q242,218 242,232 V330 Q242,352 214,352 H176 V368\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"1.5\"/><text x=\"40.0\" y=\"44.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">P</text><line x1=\"50.0\" y1=\"44.0\" x2=\"82.0\" y2=\"47.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"92.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">Q</text><line x1=\"190.0\" y1=\"92.0\" x2=\"156.0\" y2=\"95.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"28.0\" y=\"126.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">R</text><line x1=\"38.0\" y1=\"126.0\" x2=\"64.0\" y2=\"126.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"278.0\" y=\"142.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">S</text><line x1=\"268.0\" y1=\"144.0\" x2=\"222.0\" y2=\"150.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"278.0\" y=\"206.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">T</text><line x1=\"268.0\" y1=\"206.0\" x2=\"204.0\" y2=\"203.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"278.0\" y=\"300.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">U</text><line x1=\"268.0\" y1=\"300.0\" x2=\"203.0\" y2=\"299.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"300.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">V</text><line x1=\"50.0\" y1=\"302.0\" x2=\"84.0\" y2=\"302.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/></svg>",
+      "figCap": "P to V are seven parts of the digestive system; the small unlabelled sac below R is the gall bladder.",
+      "options": [
+        "S, T, U, V",
+        "T, R, U, V",
+        "S, R, V, U",
+        "S, R, U, V"
+      ],
+      "answer": 3,
+      "sol": "<p><b>Step 1 — name the letters.</b> P salivary gland · Q oesophagus · R liver · S stomach · T pancreas · U small intestine · V large intestine.</p><p><b>Step 2 — the four demands.</b> (I) protein in an <em>acidic</em> medium is pepsin, in gastric juice — the stomach, <b>S</b>. Trypsin also digests protein, but in the alkaline small intestine, so the word \"acidic\" rules the pancreas out. (II) the enzyme-free juice that emulsifies fat is bile, made by the liver, <b>R</b> (the gall bladder only stores it). (III) the lacteals are inside the villi of the small intestine, <b>U</b>. (IV) once digestion is over, the leftover material passes into the large intestine, whose wall absorbs water from it — <b>V</b>. Option <b>(4)</b>.</p><p><b>Where each wrong option comes from.</b> (1) makes the pancreas the source of bile — the two glands that pour juice into the small intestine swapped. (2) sends \"protein digestion\" to the pancreas and ignores \"acidic\". (3) swaps the two intestines, giving the large intestine the villi and sending the undigested leftovers back to the small intestine.</p><p><b>Elimination.</b> Only one organ makes an enzyme-free juice, so any option not putting <b>R</b> second is dead — that removes (1). \"Acidic\" is the stomach's word, which removes (2). Then it is only the two intestines: villi and lacteals are in the small one.</p>"
+    },
+    {
+      "n": 6,
+      "section": "Biology",
+      "topic": "Respiration",
+      "fmt": "diagram",
+      "stem": "<p>Three students looked at the labelled diagram of the human respiratory system and each made two statements.</p><p><b>Asha</b></p><ol class=\"roman\"><li>K is the larynx; it lies between the pharynx and L, and holds the vocal cords.</li><li>The wall of L is held open by complete rings of cartilage.</li></ol><p><b>Bilal</b></p><ol class=\"roman\" start=\"3\"><li>L divides into the two tubes marked M, one entering each lung.</li><li>The exchange of gases between the air and the blood takes place across the walls of N.</li></ol><p><b>Chitra</b></p><ol class=\"roman\" start=\"5\"><li>When Q contracts it flattens, the volume of the chest increases, and air moves in.</li><li>Air passes from the pharynx into K through a slit-like opening called the gullet.</li></ol><p>Which option lists <b>all</b> the correct statements?</p>",
+      "fig": "<svg viewBox=\"0 0 340 332\" width=\"340\" role=\"img\" aria-label=\"Schematic human respiratory system with six parts lettered: K the larynx below the pharynx, L the trachea with rings, M the two bronchi, N the bronchioles, P a cluster of alveoli, Q the diaphragm below the lungs\" style=\"max-width:100%;height:auto\"><path d=\"M92,38 Q120,22 150,40 L160,66\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><text x=\"70.0\" y=\"42.0\" font-size=\"10\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">nose</text><rect x=\"150\" y=\"66\" width=\"22\" height=\"22\" rx=\"4\" fill=\"var(--iq)\" fill-opacity=\".3\" stroke=\"var(--iq)\" stroke-width=\"1.5\"/><path d=\"M153,88 V150 M169,88 V150\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"/><line x1=\"153\" y1=\"96\" x2=\"166\" y2=\"96\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"153\" y1=\"105\" x2=\"166\" y2=\"105\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"153\" y1=\"114\" x2=\"166\" y2=\"114\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"153\" y1=\"123\" x2=\"166\" y2=\"123\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"153\" y1=\"132\" x2=\"166\" y2=\"132\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"153\" y1=\"141\" x2=\"166\" y2=\"141\" stroke=\"currentColor\" stroke-width=\"1.2\"/><path d=\"M130,160 C95,165 60,210 62,268 C64,290 100,295 128,290 C135,260 140,200 130,160 Z\" fill=\"var(--bio)\" fill-opacity=\".12\" stroke=\"var(--bio)\" stroke-width=\"1.5\"/><path d=\"M192,160 C227,165 262,210 260,268 C258,290 222,295 194,290 C187,260 182,200 192,160 Z\" fill=\"var(--bio)\" fill-opacity=\".12\" stroke=\"var(--bio)\" stroke-width=\"1.5\"/><line x1=\"156\" y1=\"150\" x2=\"112\" y2=\"182\" stroke=\"currentColor\" stroke-opacity=\".28\" stroke-width=\"9\" stroke-linecap=\"round\"/><line x1=\"156\" y1=\"150\" x2=\"112\" y2=\"182\" stroke=\"currentColor\" stroke-width=\"1.4\"/><line x1=\"166\" y1=\"150\" x2=\"210\" y2=\"182\" stroke=\"currentColor\" stroke-opacity=\".28\" stroke-width=\"9\" stroke-linecap=\"round\"/><line x1=\"166\" y1=\"150\" x2=\"210\" y2=\"182\" stroke=\"currentColor\" stroke-width=\"1.4\"/><line x1=\"112\" y1=\"182\" x2=\"90\" y2=\"205\" stroke=\"currentColor\" stroke-width=\"1.6\"/><line x1=\"112\" y1=\"182\" x2=\"118\" y2=\"215\" stroke=\"currentColor\" stroke-width=\"1.6\"/><line x1=\"90\" y1=\"205\" x2=\"75\" y2=\"225\" stroke=\"currentColor\" stroke-width=\"1.6\"/><line x1=\"90\" y1=\"205\" x2=\"100\" y2=\"232\" stroke=\"currentColor\" stroke-width=\"1.6\"/><line x1=\"210\" y1=\"182\" x2=\"232\" y2=\"205\" stroke=\"currentColor\" stroke-width=\"1.6\"/><line x1=\"210\" y1=\"182\" x2=\"204\" y2=\"215\" stroke=\"currentColor\" stroke-width=\"1.6\"/><line x1=\"232\" y1=\"205\" x2=\"247\" y2=\"225\" stroke=\"currentColor\" stroke-width=\"1.6\"/><line x1=\"232\" y1=\"205\" x2=\"222\" y2=\"232\" stroke=\"currentColor\" stroke-width=\"1.6\"/><line x1=\"222\" y1=\"232\" x2=\"232\" y2=\"240\" stroke=\"currentColor\" stroke-width=\"1.6\"/><circle cx=\"232\" cy=\"240\" r=\"5\" fill=\"var(--physics)\" fill-opacity=\".35\" stroke=\"var(--physics)\" stroke-width=\"1.2\"/><circle cx=\"242\" cy=\"238\" r=\"5\" fill=\"var(--physics)\" fill-opacity=\".35\" stroke=\"var(--physics)\" stroke-width=\"1.2\"/><circle cx=\"238\" cy=\"248\" r=\"5\" fill=\"var(--physics)\" fill-opacity=\".35\" stroke=\"var(--physics)\" stroke-width=\"1.2\"/><circle cx=\"246\" cy=\"247\" r=\"5\" fill=\"var(--physics)\" fill-opacity=\".35\" stroke=\"var(--physics)\" stroke-width=\"1.2\"/><circle cx=\"236\" cy=\"255\" r=\"5\" fill=\"var(--physics)\" fill-opacity=\".35\" stroke=\"var(--physics)\" stroke-width=\"1.2\"/><path d=\"M55,318 Q161,268 268,318\" fill=\"none\" stroke=\"var(--force)\" stroke-width=\"3\"/><text x=\"220.0\" y=\"80.0\" font-size=\"14\" text-anchor=\"start\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">K</text><line x1=\"216.0\" y1=\"77.0\" x2=\"174.0\" y2=\"77.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"108.0\" y=\"124.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">L</text><line x1=\"118.0\" y1=\"121.0\" x2=\"152.0\" y2=\"121.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"268.0\" y=\"152.0\" font-size=\"14\" text-anchor=\"start\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">M</text><line x1=\"264.0\" y1=\"154.0\" x2=\"190.0\" y2=\"168.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"300.0\" y=\"218.0\" font-size=\"14\" text-anchor=\"start\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">N</text><line x1=\"296.0\" y1=\"215.0\" x2=\"240.0\" y2=\"215.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"300.0\" y=\"252.0\" font-size=\"14\" text-anchor=\"start\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">P</text><line x1=\"296.0\" y1=\"249.0\" x2=\"248.0\" y2=\"248.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/><text x=\"300.0\" y=\"306.0\" font-size=\"14\" text-anchor=\"start\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">Q</text><line x1=\"296.0\" y1=\"303.0\" x2=\"255.0\" y2=\"312.0\" stroke=\"var(--muted)\" stroke-width=\"1.2\"/></svg>",
+      "figCap": "K, L, M, N and P are parts of the airway; Q is the sheet of muscle below the lungs.",
+      "options": [
+        "I, II and V only",
+        "I, III and V only",
+        "I, III, V and VI only",
+        "III, IV and V only"
+      ],
+      "answer": 1,
+      "sol": "<p><b>Step 1 — name the letters.</b> K larynx · L trachea · M the two bronchi · N bronchioles · P alveoli · Q diaphragm.</p><p><b>Step 2 — judge each statement.</b> <b>I</b> true: the larynx (voice box) sits between the pharynx and the trachea. <b>II</b> false: the trachea's rings of cartilage are <em>C-shaped and incomplete</em>, open at the back where the food pipe runs. <b>III</b> true: the trachea divides into two bronchi, one per lung; bronchioles come several branchings later. <b>IV</b> false: gas exchange happens across the walls of the <em>alveoli</em>, P — the bronchioles N are only tubes. <b>V</b> true: the diaphragm contracts and flattens, the chest grows, the pressure inside falls below atmospheric, air flows in. <b>VI</b> false: the opening of the larynx is the <em>glottis</em>; the gullet is the oesophagus, which carries food, not air.</p><p>Correct: I, III and V — option <b>(2)</b>.</p><p><b>Where each wrong option comes from.</b> (1) keeps II — \"rings\" read as complete rings. (3) keeps VI — gullet and glottis confused, the exact swap a real paper has planted. (4) drops I and keeps IV, putting gas exchange one tube too early.</p><p><b>Elimination.</b> V is in every option, so it decides nothing. I is in three of four — check it first (it is true), which kills (4). Then II and VI are each in only one option, so one false statement each is enough to kill (1) and (3).</p>"
+    },
+    {
+      "n": 7,
+      "section": "Biology",
+      "topic": "Nutrition",
+      "fmt": "match",
+      "stem": "<p>Match each digestive secretion in Column I with what it does in Column II.</p><table><tr><th>Column I</th><th>Column II</th></tr><tr><td>A. Saliva</td><td>1. contains no enzyme; makes the food alkaline and breaks fat into tiny droplets</td></tr><tr><td>B. Gastric juice</td><td>2. trypsin, lipase and amylase — protein, emulsified fat and starch, in an alkaline medium</td></tr><tr><td>C. Bile</td><td>3. begins the breakdown of starch to sugar, in a medium that is not acidic</td></tr><tr><td>D. Pancreatic juice</td><td>4. hydrochloric acid, pepsin and mucus</td></tr></table>",
+      "options": [
+        "A-3, B-4, C-2, D-1",
+        "A-3, B-2, C-1, D-4",
+        "A-3, B-4, C-1, D-2",
+        "A-2, B-4, C-1, D-3"
+      ],
+      "answer": 2,
+      "sol": "<p><b>Step 1 — the two easy anchors.</b> Hydrochloric acid, pepsin and mucus are the three things the gastric glands release: <b>B-4</b>. Saliva's enzyme is salivary amylase, which starts on starch in the mouth: <b>A-3</b>.</p><p><b>Step 2 — the two juices poured into the small intestine.</b> Bile, from the liver, has no enzyme; it makes the medium alkaline and emulsifies fat: <b>C-1</b>. Pancreatic juice carries trypsin, lipase and amylase: <b>D-2</b>. Option <b>(3)</b>.</p><p><b>Where each wrong option comes from.</b> (1) swaps bile and pancreatic juice — the two secretions that both arrive in the small intestine. (2) puts the three pancreatic enzymes in the stomach (\"the stomach digests everything\") and HCl and pepsin in pancreatic juice — the pepsin-in-the-pancreas slip that a real paper has set. (4) gives saliva the pancreas's three enzymes and starts starch digestion in the pancreas.</p><p><b>Elimination.</b> \"Contains no enzyme\" fits exactly one secretion, bile, so C must be 1 — which kills (1). \"Hydrochloric acid\" is the stomach's alone, so B must be 4 — which kills (2). A-3 versus A-2 then decides between the survivors.</p>"
+    },
+    {
+      "n": 8,
+      "section": "Biology",
+      "topic": "Respiration",
+      "fmt": "diagram",
+      "stem": "<p>Three identical conical flasks are set up as shown and left for three hours. Flask <b>A</b> holds moist germinating gram seeds, with a small tube of KOH solution hanging from the cork; flask <b>B</b> holds gram seeds that were boiled and then cooled, with the same tube of KOH; flask <b>C</b> holds moist germinating seeds with a tube of plain water in place of the KOH. From each cork a delivery tube dips below the surface of the water in a beaker. In which flask(s) does water rise up the delivery tube, and why?</p>",
+      "fig": "<svg viewBox=\"0 0 580 266\" width=\"580\" role=\"img\" aria-label=\"Three corked conical flasks A, B and C, each with a small test tube hanging inside and a delivery tube from the cork dipping into a beaker of water; A holds germinating seeds with a tube of KOH, B boiled seeds with a tube of KOH, C germinating seeds with a tube of water\" style=\"max-width:100%;height:auto\"><path d=\"M69,62 V95 L35,190 H135 L101,95 V62 Z\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.6\"/><rect x=\"64\" y=\"50\" width=\"42\" height=\"14\" rx=\"2\" fill=\"var(--iq)\" fill-opacity=\".6\" stroke=\"currentColor\" stroke-width=\"1\"/><line x1=\"93\" y1=\"64\" x2=\"93\" y2=\"100\" stroke=\"currentColor\" stroke-width=\"1\"/><path d=\"M85,100 V130 A8,8 0 0 0 101,130 V100 Z\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M86.3,116 V130 A6.7,6.7 0 0 0 99.7,130 V116 Z\" fill=\"var(--physics)\" fill-opacity=\".45\"/><text x=\"93.0\" y=\"146.0\" font-size=\"9\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">KOH</text><circle cx=\"55\" cy=\"182\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"67\" cy=\"185\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"79\" cy=\"182\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"93\" cy=\"185\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"107\" cy=\"182\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"119\" cy=\"184\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"61\" cy=\"175\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"87\" cy=\"174\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"101\" cy=\"175\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><path d=\"M77,50 V30 H180 V212\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\"/><path d=\"M155,176 V226 H205 V176\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><rect x=\"156\" y=\"196\" width=\"48\" height=\"29\" fill=\"var(--physics)\" fill-opacity=\".2\"/><line x1=\"156\" y1=\"196\" x2=\"204\" y2=\"196\" stroke=\"var(--physics)\" stroke-width=\"1\"/><text x=\"45.0\" y=\"44.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">A</text><text x=\"85.0\" y=\"244.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\">germinating seeds</text><text x=\"85.0\" y=\"259.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">tube of KOH</text><path d=\"M249,62 V95 L215,190 H315 L281,95 V62 Z\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.6\"/><rect x=\"244\" y=\"50\" width=\"42\" height=\"14\" rx=\"2\" fill=\"var(--iq)\" fill-opacity=\".6\" stroke=\"currentColor\" stroke-width=\"1\"/><line x1=\"273\" y1=\"64\" x2=\"273\" y2=\"100\" stroke=\"currentColor\" stroke-width=\"1\"/><path d=\"M265,100 V130 A8,8 0 0 0 281,130 V100 Z\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M266.3,116 V130 A6.7,6.7 0 0 0 279.7,130 V116 Z\" fill=\"var(--physics)\" fill-opacity=\".45\"/><text x=\"273.0\" y=\"146.0\" font-size=\"9\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">KOH</text><circle cx=\"235\" cy=\"182\" r=\"4\" fill=\"var(--muted)\" fill-opacity=\".8\"/><circle cx=\"247\" cy=\"185\" r=\"4\" fill=\"var(--muted)\" fill-opacity=\".8\"/><circle cx=\"259\" cy=\"182\" r=\"4\" fill=\"var(--muted)\" fill-opacity=\".8\"/><circle cx=\"273\" cy=\"185\" r=\"4\" fill=\"var(--muted)\" fill-opacity=\".8\"/><circle cx=\"287\" cy=\"182\" r=\"4\" fill=\"var(--muted)\" fill-opacity=\".8\"/><circle cx=\"299\" cy=\"184\" r=\"4\" fill=\"var(--muted)\" fill-opacity=\".8\"/><circle cx=\"241\" cy=\"175\" r=\"4\" fill=\"var(--muted)\" fill-opacity=\".8\"/><circle cx=\"267\" cy=\"174\" r=\"4\" fill=\"var(--muted)\" fill-opacity=\".8\"/><circle cx=\"281\" cy=\"175\" r=\"4\" fill=\"var(--muted)\" fill-opacity=\".8\"/><path d=\"M257,50 V30 H360 V212\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\"/><path d=\"M335,176 V226 H385 V176\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><rect x=\"336\" y=\"196\" width=\"48\" height=\"29\" fill=\"var(--physics)\" fill-opacity=\".2\"/><line x1=\"336\" y1=\"196\" x2=\"384\" y2=\"196\" stroke=\"var(--physics)\" stroke-width=\"1\"/><text x=\"225.0\" y=\"44.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">B</text><text x=\"265.0\" y=\"244.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\">boiled seeds</text><text x=\"265.0\" y=\"259.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">tube of KOH</text><path d=\"M429,62 V95 L395,190 H495 L461,95 V62 Z\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.6\"/><rect x=\"424\" y=\"50\" width=\"42\" height=\"14\" rx=\"2\" fill=\"var(--iq)\" fill-opacity=\".6\" stroke=\"currentColor\" stroke-width=\"1\"/><line x1=\"453\" y1=\"64\" x2=\"453\" y2=\"100\" stroke=\"currentColor\" stroke-width=\"1\"/><path d=\"M445,100 V130 A8,8 0 0 0 461,130 V100 Z\" fill=\"var(--surface)\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M446.3,116 V130 A6.7,6.7 0 0 0 459.7,130 V116 Z\" fill=\"var(--physics)\" fill-opacity=\".45\"/><text x=\"453.0\" y=\"146.0\" font-size=\"9\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">water</text><circle cx=\"415\" cy=\"182\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"427\" cy=\"185\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"439\" cy=\"182\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"453\" cy=\"185\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"467\" cy=\"182\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"479\" cy=\"184\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"421\" cy=\"175\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"447\" cy=\"174\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><circle cx=\"461\" cy=\"175\" r=\"4\" fill=\"var(--bio)\" fill-opacity=\".8\"/><path d=\"M437,50 V30 H540 V212\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\"/><path d=\"M515,176 V226 H565 V176\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><rect x=\"516\" y=\"196\" width=\"48\" height=\"29\" fill=\"var(--physics)\" fill-opacity=\".2\"/><line x1=\"516\" y1=\"196\" x2=\"564\" y2=\"196\" stroke=\"var(--physics)\" stroke-width=\"1\"/><text x=\"405.0\" y=\"44.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\" font-weight=\"700\">C</text><text x=\"445.0\" y=\"244.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"Inter,sans-serif\">germinating seeds</text><text x=\"445.0\" y=\"259.0\" font-size=\"11\" text-anchor=\"middle\" fill=\"var(--muted)\" font-family=\"Inter,sans-serif\">tube of water</text></svg>",
+      "figCap": "Each flask is corked airtight; the delivery tube opens under the water in its beaker.",
+      "options": [
+        "A only — the seeds use up oxygen and the carbon dioxide they give out is absorbed by the KOH, so the gas in the flask shrinks",
+        "A and C — the seeds in both use up oxygen, so the gas in both flasks shrinks",
+        "C only — the carbon dioxide from the seeds dissolves in the tube of water, so the gas in that flask shrinks",
+        "A and B — the KOH absorbs the carbon dioxide already present in the air of both flasks, so the gas in both shrinks"
+      ],
+      "answer": 0,
+      "sol": "<p><b>Step 1 — what makes water climb the tube?</b> The flask is sealed. Water can rise into the delivery tube only if the amount of gas in the flask <em>falls</em>, so that the pressure inside drops below the air pressure on the beaker.</p><p><b>Step 2 — flask A.</b> Germinating seeds are alive and respiring: they take in oxygen and give out carbon dioxide. On its own that would leave the amount of gas unchanged — one gas replaced by another. But the KOH absorbs the carbon dioxide as fast as it appears, so oxygen is removed and nothing replaces it: the gas shrinks and <b>water rises</b>.</p><p><b>Step 3 — flask B.</b> Boiled seeds are dead; nothing respires, no oxygen is used, and the water stays where it is. B is the control that shows the change in A is caused by the living seeds.</p><p><b>Step 4 — flask C.</b> The seeds respire, but there is no KOH: the carbon dioxide given out replaces the oxygen used, the amount of gas stays the same, and the water does not rise. C is the control that shows the KOH is what removes the gas. Option <b>(1)</b>.</p><p><b>Where each wrong option comes from.</b> (2) forgets that respiration gives out CO₂ as well as taking in O₂ — the swap leaves the volume unchanged. (3) puts the absorbing job on plain water, which takes up very little CO₂ in three hours; the strongly alkaline KOH is there precisely because water will not do. (4) is a real half-truth: KOH does absorb the trace of CO₂ in ordinary air, but that trace is far too small to move the water; the rise comes from the oxygen the living seeds keep using up while the KOH removes the CO₂ they give out; B's seeds use none.</p><p><b>Elimination.</b> A against C tests whether the KOH matters; A against B tests whether living seeds matter. Ask each directly: without KOH the CO₂ given out replaces the O₂ used, so C cannot shrink — (2) is dead; dead seeds use no O₂, so B cannot shrink — (4) is dead. That leaves A only or C only, and KOH, not water, is the CO₂ absorber.</p>"
+    },
+    {
+      "n": 9,
+      "section": "Biology",
+      "topic": "Nutrition",
+      "fmt": "statement",
+      "stem": "<p>Consider the following statements about photosynthesis and the leaf.</p><ol class=\"roman\"><li>Guard cells are the only cells of the leaf epidermis that contain chloroplasts.</li><li>The oxygen released during photosynthesis comes from the splitting of carbon dioxide.</li><li>Some desert plants take in carbon dioxide at night and store it as an intermediate, which is used in daylight.</li><li>In woody stems, the exchange of gases takes place through the stomata of the bark.</li><li>The glucose made in photosynthesis is stored in the leaf as starch, which is insoluble.</li><li>When water flows out of the guard cells they become turgid, and the stoma opens.</li></ol><p>Which of the statements are correct?</p>",
+      "options": [
+        "I, II and V only",
+        "II, III and IV only",
+        "III, V and VI only",
+        "I, III and V only"
+      ],
+      "answer": 3,
+      "sol": "<p><b>I</b> — true. Guard cells are the only epidermal cells with chloroplasts; every other cell of the leaf's skin is transparent so that light reaches the green cells below.</p><p><b>II</b> — false. The oxygen comes from the <em>splitting of water</em> in the second of the three events; the carbon dioxide is reduced to carbohydrate, it is not split for oxygen.</p><p><b>III</b> — true. Desert plants take up CO₂ at night and prepare an intermediate, which the energy absorbed by chlorophyll acts on during the day — so they can keep their stomata shut through the afternoon.</p><p><b>IV</b> — false. Woody stems have no stomata; their gas exchange is through <em>lenticels</em>.</p><p><b>V</b> — true. Glucose is converted to starch, which is insoluble and can be stockpiled — that is why the iodine test works.</p><p><b>VI</b> — false, backwards. Water flowing <em>in</em> makes guard cells turgid and bows them apart, opening the pore; water flowing out leaves them flaccid and the pore closes.</p><p>Correct: I, III and V — option <b>(4)</b>.</p><p><b>Where each wrong option comes from.</b> (1) keeps II — the common belief that O₂ is \"left over\" when CO₂ is used up. (2) keeps IV — stomata assumed everywhere on a plant. (3) keeps VI and drops I — the guard-cell mechanism inverted.</p><p><b>Elimination.</b> VI contradicts itself once you know turgid means swollen with water: a cell that has lost water cannot be turgid. That kills (3). V appears in three options, so it decides little; II sits in two options and is false, which alone removes (1) and (2).</p>"
+    },
+    {
+      "n": 10,
+      "section": "Biology",
+      "topic": "Respiration",
+      "fmt": "plain",
+      "stem": "<p>Which one of the following statements about the transport of gases is <b>NOT</b> correct?</p>",
+      "options": [
+        "Haemoglobin has a high affinity for oxygen, and the loaded form in which oxygen travels to the tissues is oxyhaemoglobin",
+        "Carbon dioxide is more soluble in water than oxygen is, so most of it travels to the lungs dissolved in the plasma",
+        "Carbon monoxide binds to haemoglobin to form carbaminohaemoglobin, which can no longer carry oxygen",
+        "A fish breathes much faster than a land animal because water holds far less dissolved oxygen than air holds"
+      ],
+      "answer": 2,
+      "sol": "<p><b>Step 1 — read the prefixes.</b> <em>Carbamino</em>haemoglobin is haemoglobin joined to carbon <em>di</em>oxide — the small share of CO₂ that rides on haemoglobin. <em>Carboxy</em>haemoglobin is haemoglobin joined to carbon <em>mon</em>oxide — the poison, which binds far more tightly than oxygen and will not let go. Statement (3) gives carbon monoxide the wrong compound, so it is the one that is <b>NOT</b> correct — option <b>(3)</b>.</p><p><b>Step 2 — check the other three are right.</b> (1) is the definition of oxyhaemoglobin. (2) is why most carbon dioxide needs no carrier: it is far more soluble in water than oxygen, so it travels mostly dissolved in the plasma. (4) is the fish rule: less oxygen per gulp of water than per breath of air, so more gulps.</p><p><b>Where each wrong option comes from.</b> Choosing (1), (2) or (4) means rejecting a true statement — most often (2), from the assumption that haemoglobin carries both gases in the same way. Statement (3) survives for anyone who reads \"carb…haemoglobin\" as one word; the difference is in the prefix, and a real paper has swapped exactly these two.</p>"
+    },
+    {
+      "n": 11,
+      "section": "Biology",
+      "topic": "Nutrition",
+      "fmt": "plain",
+      "stem": "<p>Consider four organisms: <b>bread mould</b> growing on a stale chapati, <b>Cuscuta</b> (amarbel) growing over a hedge, a <b>Paramoecium</b> in pond water, and a <b>green alga</b> in the same pond. How many of the four take food in as whole particles and digest it <em>inside</em> the body, and how many of the four <em>cannot make their own food</em>?</p>",
+      "options": [
+        "1 and 2",
+        "1 and 3",
+        "2 and 3",
+        "3 and 3"
+      ],
+      "answer": 1,
+      "sol": "<p><b>Step 1 — who makes its own food?</b> Only the green alga: it has chlorophyll and photosynthesises, so it is autotrophic. Bread mould (a fungus), Cuscuta and Paramoecium all depend on food made by something else — <b>3</b> heterotrophs.</p><p><b>Step 2 — who digests whole food inside the body?</b> That is holozoic nutrition, and only the <b>Paramoecium</b> does it: it sweeps food to one spot with its cilia, takes it in and digests it in a food vacuole. Bread mould is saprophytic — it pours enzymes onto the chapati and absorbs the soluble products, so its digestion happens <em>outside</em> its body. Cuscuta is parasitic — it takes ready-made food from the living host plant and digests nothing. So <b>1</b> holozoic, 3 heterotrophs: option <b>(2)</b>.</p><p><b>Where each wrong option comes from.</b> (1) counts Cuscuta as autotrophic because it is a plant — but it has no food-making of its own and lives entirely off the host. (3) adds bread mould or Cuscuta to the \"digests inside\" count, forgetting that a saprophyte digests outside its body and a parasite absorbs ready-made food. (4) assumes every heterotroph is holozoic.</p><p><b>Elimination.</b> The second number is the easier one: three of the four have no chlorophyll, so only (2) and (4) survive. Then it is one question — does a mould on a chapati take in whole particles? It does not; it digests them where they lie.</p>"
+    },
+    {
+      "n": 12,
+      "section": "Biology",
+      "topic": "Nutrition",
+      "fmt": "plain",
+      "stem": "<p>A patient takes a strong antacid that neutralises the hydrochloric acid in the stomach for several hours, and then eats a meal of chapati (mostly starch), dal (mostly protein) and ghee (fat). Which of the following is the most likely consequence?</p>",
+      "options": [
+        "Protein digestion in the stomach is unaffected, since pepsin works equally well in an acidic or an alkaline medium — only fewer germs are killed",
+        "Trypsin from the pancreas takes over from pepsin inside the stomach, so protein digestion there continues normally",
+        "Starch digestion stops, because salivary amylase needs an acidic medium in order to act",
+        "Less protein is broken down in the stomach, since pepsin acts only in an acidic medium — but the protein is still digested later, in the small intestine"
+      ],
+      "answer": 3,
+      "sol": "<p><b>Step 1 — what does the stomach's acid do?</b> Two jobs: it kills most germs swallowed with the food, and it creates the <em>acidic medium that pepsin needs</em>. Take the acid away and pepsin, the stomach's only enzyme, barely works — so less protein is broken down there.</p><p><b>Step 2 — is the protein lost?</b> No. Protein digestion is <em>finished</em> in the small intestine anyway — carried on by trypsin from pancreatic juice in the alkaline medium that bile creates, and completed by the enzymes of the intestinal juice, which turn the pieces into amino acids. The stomach only begins it. Option <b>(4)</b>.</p><p><b>Where each wrong option comes from.</b> (1) treats pepsin as indifferent to its medium; each enzyme works only in its own medium and stops in the wrong one. (2) moves trypsin into the stomach — it is in pancreatic juice and reaches the food only in the small intestine. (3) reverses amylase's rule: salivary amylase is <em>stopped</em> by acid, and in any case it acts in the mouth, where the antacid changes nothing.</p><p><b>Elimination.</b> Anything about starch is a distraction — the antacid acts in the stomach and starch digestion starts in the mouth, so (3) is dead. Trypsin is not a stomach enzyme, so (2) is dead. Of the two left, the one claiming pepsin ignores its medium contradicts the reason the stomach makes acid at all.</p>"
+    },
+    {
+      "n": 13,
+      "section": "Biology",
+      "topic": "Respiration",
+      "fmt": "plain",
+      "stem": "<p>Two identical healthy potted plants are each sealed under a bell jar containing air. Jar <b>P</b> is placed in bright sunlight and jar <b>Q</b> in a dark cupboard, both for six hours. Which statement is correct?</p>",
+      "options": [
+        "The plant in P photosynthesises but does not respire; its respiration begins only when the light is taken away",
+        "The plant in Q neither photosynthesises nor respires, so the gases in Q stay unchanged",
+        "The plant in P both photosynthesises and respires, while the plant in Q only respires — so the carbon dioxide in P falls and the carbon dioxide in Q rises",
+        "The carbon dioxide rises in both jars, because respiration goes on day and night in every living cell"
+      ],
+      "answer": 2,
+      "sol": "<p><b>Step 1 — what never stops.</b> Every living plant cell respires all the time, light or dark: O₂ in, CO₂ out. So both plants respire for the whole six hours.</p><p><b>Step 2 — what only happens in the light.</b> Photosynthesis needs light, so only the plant in P does it — and in bright light it runs several times faster than respiration, so it uses up all the CO₂ the plant's own respiration makes and draws more from the jar: the CO₂ in P <b>falls</b> (and the O₂ rises). In Q there is no photosynthesis at all; respiration alone runs, and the CO₂ <b>rises</b>. Option <b>(3)</b>.</p><p><b>Where each wrong option comes from.</b> (1) is the belief that a plant switches between the two processes — respiring only at night. (2) confuses \"no light\" with \"no life\": a plant in the dark is still respiring, which is exactly why the gases in Q change. (4) has the right premise (respiration never stops) but forgets that in P it is overwhelmed by photosynthesis, so the <em>net</em> flow of CO₂ there is inward.</p><p><b>Elimination.</b> (2) kills itself: a living plant that \"neither photosynthesises nor respires\" is dead. (1) and (4) are opposite errors about P — one says it never respires in the light, the other that respiration is all that shows. The truth is both processes run and the faster one sets the direction.</p>"
+    }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+/* "👁 Just checking" (device-local hubPreview = the ms timestamp it was switched on; it lapses
+   after 2 hours). While on, Submit ASKS whether to save — so a forgotten switch can never
+   silently swallow a real attempt. */
+function isPreview(){ return (function(){ try { var v = +JSON.parse(localStorage.getItem('hubPreview') || '0'); return v > 1e12 && Date.now() - v < 7200000; } catch(e){ return false; } })(); }
+let NOT_SAVED = false;
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- just look: the questions, read-only; nothing marked, nothing recorded ---- */
+function viewOnly(){
+  if(started) return;
+  document.body.classList.add('viewonly');
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '👁 <b>Just looking.</b> Nothing is marked or recorded. To answer these, go back and start the paper.'
+                + '<button class="bigbtn" type="button" style="margin-left:auto" onclick="location.reload()">← Back to start</button>';
+  $('paperBody').insertBefore(bar, $('paperBody').firstChild);
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  if(!RESTORING && NOT_SAVED){ const rc = $('results').querySelector('.rcard');
+    if(rc) rc.insertAdjacentHTML('beforeend', '<div class="rnote">👁 <b>Just checking was on</b> — this attempt was marked but not recorded.</div>'); }
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b,a,md,tm,v:2} (+f only if a flag was set).
+   Every paper stores its answers so the marked review replays (a mock opens it automatically;
+   the others via "See your last attempt"); the hub only ever reads m/mx. Written MERGE-ONLY.
+   COMPACT on purpose: the whole shared record is ONE Apps Script property with a 9216-byte
+   ceiling, so answers are one character per question ('0'–'3', '-' = blank), not an array. */
+function saveAttempt(sc, timeTaken){
+  if(isPreview() && !confirm('👁 Just checking is on for this device.\n\nSave this attempt to your progress?\n\nOK = save it (a real attempt)\nCancel = don\'t record (only checking)')){ NOT_SAVED = true; return; }
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank,
+                a:answers.map(x => x === null ? '-' : x).join(''), md:mode === 'timed' ? 't' : 'p', tm:timeTaken, v:2 };
+  if(flags.some(Boolean)) rec.f = flags.map(x => x ? 1 : 0).join('');
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function decodeRec(rec){          /* v2 strings and v1 arrays both replay */
+  if(!rec || !rec.a) return null;
+  const a = typeof rec.a === 'string' ? rec.a.split('').map(c => c === '-' ? null : +c) : rec.a.slice();
+  if(a.length !== NQ) return null;                 /* the paper changed shape since — never mis-mark */
+  const f = typeof rec.f === 'string' ? rec.f.split('').map(c => c === '1')
+          : Array.isArray(rec.f) ? rec.f.slice() : new Array(NQ).fill(false);
+  const md = rec.md === 't' ? 'timed' : rec.md === 'p' ? 'practice' : (rec.md || 'timed');
+  return { a, f, md };
+}
+function showFrozen(rec){
+  const d = decodeRec(rec);
+  if(!d || submitted) return;
+  RESTORING = true;
+  answers = d.a;
+  flags   = d.f;
+  mode    = d.md;
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = !IS_MOCK
+    ? '📋 <b>Your last attempt — ' + String(rec.t || '').slice(0, 10) + '.</b> Your answers, what was right and wrong, and every worked solution. ↺ Retake starts a fresh attempt.'
+      + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>'
+    : '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('viewOnly').addEventListener('click', viewOnly);
+$('lastAttempt').addEventListener('click', () => { const r = progLoad()[REP_ID]; if(r && r.a) showFrozen(r); });
+if(IS_MOCK && !TEACHER && !isPreview()) $('viewOnly').hidden = true;   /* a one-shot mock is not previewed */
+if(isPreview()) $('startNote').insertAdjacentHTML('beforeend', ' <b>👁 Just checking is on</b> — when you submit, you will be asked whether to save the attempt.');
+function paintLast(){
+  if(IS_MOCK) return;
+  const r = progLoad()[REP_ID], b = $('lastAttempt');
+  const ok = !!decodeRec(r);
+  b.hidden = !ok;
+  if(ok) b.textContent = '📋 See your last attempt · ' + r.m + '/' + r.mx;
+}
+paintLast();
+window.addEventListener('miraya-progress-synced', paintLast);
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
