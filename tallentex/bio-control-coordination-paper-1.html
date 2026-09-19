@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Control &amp; Coordination — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .viewonly .submitrow, .viewonly .q-flag { display:none !important; }
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP||location.protocol!=='https:'||navigator.webdriver)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+      <button class="bigbtn" id="viewOnly" type="button">👁 Just look at the questions</button>
+      <button class="bigbtn" id="lastAttempt" type="button" hidden>📋 See your last attempt</button>
+    </div>
+    <p class="startnote" id="startNote">Practice mode still marks you and still applies −1 — only the countdown is off. “Just look” shows the questions without marking or recording anything.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  "title": "TALLENTEX · Control & Coordination — Paper 1",
+  "kind": "topic",
+  "duration": 20,
+  "id": "tx:bio-control-coordination:p1",
+  "accent": "bio",
+  "sub": "Control and coordination — how a message crosses from nerve to nerve and from nerve to muscle, what a cut nerve or a cut spinal cord does, the parts of the brain, nerves against hormones, how shoots and roots respond to gravity and why they bend, the plant hormones, the endocrine glands, feedback, blood sugar and ADH. <b>13 questions · 52 marks · 20 minutes · +4 / −1 / 0.</b> Pitched at the real TALLENTEX paper: this chapter took 0–3 of the fifteen Biology questions in the cached sittings, and every real item was decided by a single word — so read every clause. Most items here chain two steps — read every option and every figure before you choose.",
+  "sections": [
+    {
+      "name": "Biology",
+      "from": 1,
+      "to": 13
+    }
+  ],
+  "questions": [
+    {
+      "n": 1,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "diagram",
+      "stem": "<p>The figure shows two nerve cells and a muscle fibre. P, Q and R mark three places along the path of a message. At which of the lettered places is the message carried across by <b>chemicals</b>, and in which direction does the impulse travel along <b>cell 1</b>?</p>",
+      "fig": "<svg viewBox=\"0 0 460 238\" width=\"460\" height=\"238\" role=\"img\" aria-label=\"Two nerve cells and a muscle fibre. Cell 1, upper right, has short branched fibres on the right of its cell body, at P, and one long fibre running left that ends in small knobs. Across a narrow gap Q from those knobs are the short branched fibres of cell 2, lower left. Cell 2 has one long fibre running down to a striped muscle fibre, where it ends in knobs separated from the muscle by a narrow gap R.\"><line x1=\"374\" y1=\"56\" x2=\"402\" y2=\"36\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"402\" y1=\"36\" x2=\"420\" y2=\"28\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"402\" y1=\"36\" x2=\"410\" y2=\"18\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"375\" y1=\"64\" x2=\"408\" y2=\"66\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"408\" y1=\"66\" x2=\"428\" y2=\"58\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"408\" y1=\"66\" x2=\"426\" y2=\"78\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"373\" y1=\"73\" x2=\"400\" y2=\"94\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"400\" y1=\"94\" x2=\"418\" y2=\"104\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"400\" y1=\"94\" x2=\"402\" y2=\"114\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"352\" y1=\"51\" x2=\"344\" y2=\"34\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"356\" y1=\"79\" x2=\"350\" y2=\"98\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"345\" y1=\"64\" x2=\"236\" y2=\"64\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" /><ellipse cx=\"318\" cy=\"64\" rx=\"11\" ry=\"4.5\" fill=\"var(--surface2)\" stroke=\"currentColor\" stroke-width=\"1.2\"/><ellipse cx=\"288\" cy=\"64\" rx=\"11\" ry=\"4.5\" fill=\"var(--surface2)\" stroke=\"currentColor\" stroke-width=\"1.2\"/><ellipse cx=\"258\" cy=\"64\" rx=\"11\" ry=\"4.5\" fill=\"var(--surface2)\" stroke=\"currentColor\" stroke-width=\"1.2\"/><line x1=\"236\" y1=\"64\" x2=\"222\" y2=\"50\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><circle cx=\"222\" cy=\"50\" r=\"3.6\" fill=\"currentColor\"/><line x1=\"236\" y1=\"64\" x2=\"218\" y2=\"64\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><circle cx=\"218\" cy=\"64\" r=\"3.6\" fill=\"currentColor\"/><line x1=\"236\" y1=\"64\" x2=\"222\" y2=\"78\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><circle cx=\"222\" cy=\"78\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"360\" cy=\"64\" r=\"15\" fill=\"var(--bio)\" fill-opacity=\"0.22\" stroke=\"currentColor\" stroke-width=\"1.8\"/><circle cx=\"360\" cy=\"64\" r=\"4.5\" fill=\"currentColor\" fill-opacity=\"0.6\"/><line x1=\"173\" y1=\"89\" x2=\"190\" y2=\"72\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"190\" y1=\"72\" x2=\"206\" y2=\"58\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"190\" y1=\"72\" x2=\"206\" y2=\"72\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"175\" y1=\"99\" x2=\"192\" y2=\"90\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"192\" y1=\"90\" x2=\"206\" y2=\"86\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"192\" y1=\"90\" x2=\"204\" y2=\"100\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"150\" y1=\"84\" x2=\"136\" y2=\"66\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"136\" y1=\"66\" x2=\"124\" y2=\"62\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><line x1=\"146\" y1=\"98\" x2=\"128\" y2=\"102\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" /><path d=\"M 153 109 C 140 130, 116 146, 104 162\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"104\" y1=\"162\" x2=\"92\" y2=\"172\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><circle cx=\"92\" cy=\"172\" r=\"3.6\" fill=\"currentColor\"/><line x1=\"104\" y1=\"162\" x2=\"104\" y2=\"174\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><circle cx=\"104\" cy=\"174\" r=\"3.6\" fill=\"currentColor\"/><line x1=\"104\" y1=\"162\" x2=\"116\" y2=\"172\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><circle cx=\"116\" cy=\"172\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"160\" cy=\"96\" r=\"15\" fill=\"var(--bio)\" fill-opacity=\"0.22\" stroke=\"currentColor\" stroke-width=\"1.8\"/><circle cx=\"160\" cy=\"96\" r=\"4.5\" fill=\"currentColor\" fill-opacity=\"0.6\"/><rect x=\"40\" y=\"184\" width=\"190\" height=\"30\" rx=\"8\" fill=\"var(--force)\" fill-opacity=\"0.16\" stroke=\"var(--force)\" stroke-width=\"1.6\"/><line x1=\"52\" y1=\"189\" x2=\"52\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"64\" y1=\"189\" x2=\"64\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"76\" y1=\"189\" x2=\"76\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"88\" y1=\"189\" x2=\"88\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"100\" y1=\"189\" x2=\"100\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"112\" y1=\"189\" x2=\"112\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"124\" y1=\"189\" x2=\"124\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"136\" y1=\"189\" x2=\"136\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"148\" y1=\"189\" x2=\"148\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"160\" y1=\"189\" x2=\"160\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"172\" y1=\"189\" x2=\"172\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"184\" y1=\"189\" x2=\"184\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"196\" y1=\"189\" x2=\"196\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"208\" y1=\"189\" x2=\"208\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><line x1=\"220\" y1=\"189\" x2=\"220\" y2=\"209\" stroke=\"var(--force)\" stroke-width=\"1\" stroke-linecap=\"round\" stroke-opacity=\"0.45\"/><text x=\"444\" y=\"66\" font-size=\"16\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--bio)\" font-family=\"Inter,system-ui,sans-serif\">P</text><line x1=\"212\" y1=\"38\" x2=\"212\" y2=\"52\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><text x=\"212\" y=\"27\" font-size=\"16\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--iq)\" font-family=\"Inter,system-ui,sans-serif\">Q</text><line x1=\"124\" y1=\"178\" x2=\"142\" y2=\"166\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><text x=\"150\" y=\"160\" font-size=\"16\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--force)\" font-family=\"Inter,system-ui,sans-serif\">R</text><text x=\"360\" y=\"108\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">cell 1</text><text x=\"196\" y=\"124\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">cell 2</text><text x=\"135\" y=\"228\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">muscle fibre</text></svg>",
+      "figCap": "Each nerve cell is drawn with its cell body (the circle with a nucleus) and all of its fibres.",
+      "options": [
+        "At Q only; from P towards Q",
+        "At Q and R; from Q towards P",
+        "At Q and R; from P towards Q",
+        "At Q only; from Q towards P"
+      ],
+      "answer": 2,
+      "sol": "<p>First read the drawing. The short, branched fibres around each cell body are <b>dendrites</b> — the receiving end. The single long fibre is the <b>axon</b>, and the small knobs at its far end are the <b>nerve endings</b>. Cell 1’s dendrites are on the right, at P; its axon runs left and ends in knobs at Q. NCERT: the impulse “travels from the dendrite to the cell body, and then along the axon to its end” — so along cell 1 it runs <b>from P towards Q</b>.</p><p>Now the gaps. At Q the nerve endings of cell 1 face the dendrites of cell 2 across a gap — a synapse. There the electrical impulse sets off the release of chemicals, which cross the gap and start a new impulse in cell 2. Cell 2’s axon ends at R, on the muscle fibre, and NCERT says a similar synapse finally delivers such impulses from neurons to other cells, such as muscle cells (its Figure 6.1 (b)). So chemicals carry the message across at <b>both Q and R</b>. <b>Option (3).</b></p><p><b>Where each wrong option comes from.</b> (1) has the direction right but treats the junction at R as a direct contact between nerve and muscle — it is a synapse too. (2) has both gaps right but reads cell 1 backwards, taking the branched fibres at P for nerve endings; nerve endings are the knobs at the end of the long axon. (4) makes both mistakes.</p><p><b>Elimination.</b> Settle the direction from the drawing first — dendrites receive — which removes (2) and (4). Then ask whether a muscle, too, gets its message across a gap.</p>"
+    },
+    {
+      "n": 2,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "plain",
+      "stem": "<p>Which one of the following statements is correct?</p>",
+      "options": [
+        "The brain and the spinal cord together make up the peripheral nervous system, and the cranial and spinal nerves make up the central nervous system.",
+        "A muscle cell shortens when a nerve impulse reaches it because water moves out of the cell, as it does in the leaf cells of the touch-me-not plant.",
+        "Gustatory receptors detect taste and olfactory receptors detect smell, and both kinds of receptor are found in the tongue.",
+        "The brain sits inside a bony box and is cushioned by a fluid-filled balloon, while the spinal cord is protected by the vertebral column."
+      ],
+      "answer": 3,
+      "sol": "<p>(4) is NCERT’s own account of how the central nervous system is protected: the brain “sits inside a bony box”, inside which it “is contained in a fluid-filled balloon which provides further shock absorption”, and the vertebral column or backbone “protects the spinal cord”. <b>Option (4).</b></p><p><b>Why the others are wrong.</b> (1) swaps the two systems: the brain and the spinal cord are the <em>central</em> nervous system; the cranial nerves (from the brain) and the spinal nerves (from the spinal cord) make up the <em>peripheral</em> nervous system. (2) gives a muscle the plant’s mechanism. NCERT contrasts the two: muscle cells have “special proteins that change both their shape and their arrangement” when the nerve impulse arrives, whereas plant cells “change shape by changing the amount of water in them”. (3) is half right — gustatory receptors detect taste and olfactory receptors detect smell — but the olfactory receptors are in the nose, not the tongue.</p><p><b>The trap.</b> (2) and (3) each open with something true. Read every option to the end.</p>"
+    },
+    {
+      "n": 3,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "diagram",
+      "stem": "<p>The figure shows the nerve pathway for a pin-prick on the sole of the foot; the leg muscle shown is the one that pulls the foot away. In each of three patients, one part of this pathway was cut completely in an accident some months ago, and nothing else is damaged. Each patient is named by the place of his cut: patient X, patient Y and patient Z (Z is a cut right across the spinal cord).</p><p>A doctor pricks the sole of each patient’s foot with a pin. Which row is correct? In each option, the first word after a letter answers “Does he <b>feel</b> the prick?” and the second “Is his foot <b>pulled away</b>?”.</p>",
+      "fig": "<svg viewBox=\"0 0 440 300\" width=\"440\" height=\"300\" role=\"img\" aria-label=\"A schematic of the pathway: the brain at the top, the spinal cord running down from it. Low down, a nerve runs from a receptor in the skin of the sole into the spinal cord, with arrows pointing towards the cord; a short connecting neuron inside the cord joins it to a second nerve that runs out of the cord to a leg muscle, with an arrow pointing towards the muscle. A dashed line runs up the middle of the cord to the brain. Three cuts are marked: X on the nerve from the sole, Y on the nerve to the muscle, and Z right across the spinal cord above the level where both nerves join it.\"><ellipse cx=\"250\" cy=\"40\" rx=\"60\" ry=\"26\" fill=\"var(--bio)\" fill-opacity=\"0.14\" stroke=\"currentColor\" stroke-width=\"1.8\"/><text x=\"250\" y=\"40\" font-size=\"12\" font-weight=\"600\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">brain</text><rect x=\"236\" y=\"64\" width=\"28\" height=\"200\" rx=\"12\" fill=\"var(--muted)\" fill-opacity=\"0.18\" stroke=\"currentColor\" stroke-width=\"1.8\"/><line x1=\"266\" y1=\"120\" x2=\"300\" y2=\"120\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"306\" y=\"120\" font-size=\"11\" font-weight=\"400\" text-anchor=\"start\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">spinal cord</text><line x1=\"250\" y1=\"228\" x2=\"250\" y2=\"78\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-dasharray=\"4 4\"/><polygon points=\"250.0,72.0 253.3,78.0 246.7,78.0\" fill=\"currentColor\"/><line x1=\"256\" y1=\"92\" x2=\"300\" y2=\"92\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"306\" y=\"92\" font-size=\"11\" font-weight=\"400\" text-anchor=\"start\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">up to the brain</text><circle cx=\"60\" cy=\"270\" r=\"4.5\" fill=\"var(--bio)\"/><path d=\"M 64 270 L 200 270 L 200 236 L 244 236\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"2.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><polygon points=\"112.0,270.0 105.0,273.9 105.0,266.1\" fill=\"var(--bio)\"/><polygon points=\"200.0,250.0 203.8,257.0 196.2,257.0\" fill=\"var(--bio)\"/><line x1=\"244\" y1=\"236\" x2=\"244\" y2=\"212\" stroke=\"var(--iq)\" stroke-width=\"2.2\" stroke-linecap=\"round\" /><circle cx=\"244\" cy=\"224\" r=\"3.4\" fill=\"var(--iq)\"/><path d=\"M 244 212 L 92 212\" fill=\"none\" stroke=\"var(--physics)\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><polygon points=\"120.0,212.0 127.0,208.2 127.0,215.8\" fill=\"var(--physics)\"/><ellipse cx=\"64\" cy=\"212\" rx=\"28\" ry=\"11\" fill=\"var(--force)\" fill-opacity=\"0.25\" stroke=\"var(--force)\" stroke-width=\"1.6\"/><text x=\"70\" y=\"188\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">leg muscle (effector)</text><text x=\"40\" y=\"290\" font-size=\"11\" font-weight=\"400\" text-anchor=\"start\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">receptor in the skin of the sole</text><line x1=\"158\" y1=\"280\" x2=\"166\" y2=\"260\" stroke=\"var(--force)\" stroke-width=\"2.6\" stroke-linecap=\"round\" /><line x1=\"164\" y1=\"280\" x2=\"172\" y2=\"260\" stroke=\"var(--force)\" stroke-width=\"2.6\" stroke-linecap=\"round\" /><text x=\"165\" y=\"250\" font-size=\"15\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--force)\" font-family=\"Inter,system-ui,sans-serif\">X</text><line x1=\"158\" y1=\"222\" x2=\"166\" y2=\"202\" stroke=\"var(--force)\" stroke-width=\"2.6\" stroke-linecap=\"round\" /><line x1=\"164\" y1=\"222\" x2=\"172\" y2=\"202\" stroke=\"var(--force)\" stroke-width=\"2.6\" stroke-linecap=\"round\" /><text x=\"165\" y=\"194\" font-size=\"15\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--force)\" font-family=\"Inter,system-ui,sans-serif\">Y</text><polyline points=\"228,146 236,154 244,146 252,154 260,146 268,154 272,150\" fill=\"none\" stroke=\"var(--force)\" stroke-width=\"2.6\" stroke-linejoin=\"round\"/><text x=\"214\" y=\"150\" font-size=\"15\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--force)\" font-family=\"Inter,system-ui,sans-serif\">Z</text></svg>",
+      "figCap": "The arrows show the direction in which messages travel along each nerve. The dashed line is the path by which messages go up the spinal cord to the brain.",
+      "options": [
+        "X: no / no · Y: yes / no · Z: no / yes",
+        "X: yes / no · Y: no / no · Z: no / yes",
+        "X: no / no · Y: yes / no · Z: yes / no",
+        "X: yes / no · Y: no / no · Z: yes / no"
+      ],
+      "answer": 0,
+      "sol": "<p><b>Name the nerves from the arrows.</b> The nerve from the receptor in the sole runs <em>into</em> the spinal cord — the sensory nerve; X is on it. The nerve from the cord to the leg muscle runs <em>out</em> — the motor nerve; Y is on it. Z cuts the cord above the level where both nerves join it, between the reflex arc and the brain.</p><p><b>Patient X</b> — nothing gets from the sole into the cord: there is no reflex, and nothing goes up to the brain, so he feels nothing. <b>no / no</b>. <b>Patient Y</b> — the prick gets into the cord, and a copy of the message travels up the cord to the brain, so he feels it; but the message to the muscle is cut off, so the foot is not pulled away. <b>yes / no</b>. <b>Patient Z</b> — the whole reflex arc (receptor → sensory nerve → relay neuron → motor nerve → muscle) lies below the cut and is intact, and “reflex arcs are formed in this spinal cord itself” (NCERT), so the foot is pulled away; but the copy that should travel up the cord to the brain is stopped at Z, so he feels nothing. <b>no / yes</b>. <b>Option (1).</b></p><p><b>Where each wrong option comes from.</b> (2) swaps the sensory and motor nerves, reading X as the nerve to the muscle and Y as the nerve from the sole; the arrows settle it. (3) gets patient Z backwards. The likeliest route is to put the cut on the wrong side of the reflex arc — “his spinal cord is cut, so there is no reflex; his brain is unhurt, so he feels it” — or to swap the jobs of the cord and the brain. In fact the whole arc lies <em>below</em> Z and works, while feeling needs the message to reach the brain, and Z is in its way. (4) makes both mistakes.</p><p><b>Elimination.</b> Every half-answer appears in exactly two options, so there is no shortcut, and two separate things are tested: which nerve is which — settle it from the arrows, which removes (2) and (4) — and what the cord and the brain each do: for Z, reflex yes, feeling no, which removes (3).</p><p>(The stem says “some months ago” because for a few weeks right after such an injury the cord below the cut is stunned and even its reflexes are lost; once that passes, the reflex arcs below the cut work again.)</p>"
+    },
+    {
+      "n": 4,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "statement",
+      "stem": "<p>The figure shows the human brain from the side, cut down the middle, with four parts lettered A, B, C and D. Three students made the following statements about the lettered parts.</p><figure class=\"q-fig\"><svg viewBox=\"0 0 400 278\" width=\"400\" height=\"278\" role=\"img\" aria-label=\"The human brain seen from the side, cut down the middle: a large upper part A, a small region B at its base with the pituitary gland hanging below it, a smaller rounded part C at the back underneath A, and the brain stem, crossed by a line; below the line is D, the lowest part, which continues down as the spinal cord.\"><path d=\"M 200 152 C 195 185, 193 215, 196 250 L 230 250 C 232 215, 234 185, 238 152 Z\" fill=\"var(--iq)\" fill-opacity=\"0.22\" stroke=\"currentColor\" stroke-width=\"1.8\"/><line x1=\"194.843\" y1=\"204\" x2=\"232.962\" y2=\"204\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linecap=\"round\" /><ellipse cx=\"280\" cy=\"190\" rx=\"36\" ry=\"30\" fill=\"var(--physics)\" fill-opacity=\"0.2\" stroke=\"currentColor\" stroke-width=\"1.8\"/><path d=\"M 258 176 Q 280 169 302 176\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1\" stroke-opacity=\"0.6\"/><path d=\"M 258 188 Q 280 181 302 188\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1\" stroke-opacity=\"0.6\"/><path d=\"M 258 200 Q 280 193 302 200\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1\" stroke-opacity=\"0.6\"/><path d=\"M 70 150 C 55 90, 100 30, 190 28 C 280 26, 345 70, 340 130 C 337 160, 315 172, 290 168 L 260 160 C 235 158, 215 150, 200 155 C 180 160, 150 165, 120 160 C 95 158, 78 160, 70 150 Z\" fill=\"var(--bio)\" fill-opacity=\"0.14\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M 120 70 Q 140 55 160 72 Q 180 90 200 70 Q 220 52 245 70\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1\" stroke-opacity=\"0.5\"/><path d=\"M 105 110 Q 130 95 155 112 Q 178 128 205 110 Q 230 92 260 112 Q 285 130 305 112\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1\" stroke-opacity=\"0.5\"/><ellipse cx=\"172\" cy=\"150\" rx=\"17\" ry=\"9\" fill=\"var(--force)\" fill-opacity=\"0.35\" stroke=\"var(--force)\" stroke-width=\"1.6\"/><line x1=\"170\" y1=\"159\" x2=\"168\" y2=\"173\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><circle cx=\"168\" cy=\"180\" r=\"7\" fill=\"var(--muted)\" fill-opacity=\"0.35\" stroke=\"currentColor\" stroke-width=\"1.4\"/><line x1=\"163\" y1=\"186\" x2=\"152\" y2=\"200\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"150\" y=\"209\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">pituitary gland</text><text x=\"213\" y=\"266\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">spinal cord ↓</text><text x=\"200\" y=\"95\" font-size=\"17\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">A</text><line x1=\"70\" y1=\"178\" x2=\"155\" y2=\"153\" stroke=\"currentColor\" stroke-width=\"1.3\" stroke-linecap=\"round\" /><text x=\"60\" y=\"182\" font-size=\"17\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--force)\" font-family=\"Inter,system-ui,sans-serif\">B</text><text x=\"280\" y=\"190\" font-size=\"17\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--physics)\" font-family=\"Inter,system-ui,sans-serif\">C</text><text x=\"213\" y=\"229\" font-size=\"17\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--iq)\" font-family=\"Inter,system-ui,sans-serif\">D</text><text x=\"60\" y=\"40\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--muted)\" font-family=\"Inter,system-ui,sans-serif\">front</text><line x1=\"48\" y1=\"52\" x2=\"82\" y2=\"52\" stroke=\"var(--muted)\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><polygon points=\"44.0,52.0 51.0,48.1 51.0,55.9\" fill=\"var(--muted)\"/></svg><figcaption>A side view; the front of the head is to the left. The small gland hanging below B is the pituitary. The line across the brain stem separates its upper part (not lettered) from D, the lowest part of the brain, which continues down as the spinal cord (cut off at the bottom of the figure).</figcaption></figure><p><b>Riya:</b> A — has separate areas for hearing, smell and sight, and motor areas that control the movement of voluntary muscles. B — plays an important role in the release of many hormones. C — controls involuntary actions such as blood pressure and vomiting. D — is a part of the hind-brain.</p><p><b>Rohan:</b> A — is the main thinking part of the brain. B — contains the centre associated with hunger. C — is responsible for the precision of voluntary actions and for maintaining the posture and balance of the body. D — controls blood pressure, salivation and vomiting.</p><p><b>Sumit:</b> A — has areas of association where sensory information is interpreted together with information already stored in the brain. B — makes activities such as riding a bicycle and picking up a pencil possible. C — is a part of the mid-brain. D — controls involuntary actions such as breathing, which we do not have to think about.</p><p>Select the correct option.</p>",
+      "options": [
+        "Riya and Sumit are both correct about A and D, and Sumit is also correct about C.",
+        "Riya is correct about C, and Rohan is wrong about B.",
+        "Sumit is wrong about B and C, and Riya is wrong about B and C.",
+        "Rohan is correct about A, C and D, and Riya is wrong only about C."
+      ],
+      "answer": 3,
+      "sol": "<p>Name the parts first: <b>A</b> is the cerebrum (fore-brain), <b>B</b> the hypothalamus (the small region at the base of the fore-brain with the pituitary hanging below it), <b>C</b> the cerebellum (hind-brain, at the back under the cerebrum), <b>D</b> the medulla (hind-brain, the lowest part, continuing as the spinal cord). Now judge the twelve claims.</p><p><b>Riya:</b> A ✓ (NCERT: separate areas of the fore-brain for hearing, smell, sight; motor areas control voluntary muscles). B ✓ (NCERT’s “Do you know?” box: the hypothalamus “plays an important role in the release of many hormones”). C ✗ — blood pressure and vomiting are the <em>medulla’s</em>; the cerebellum does balance and precision. D ✓ (the medulla is in the hind-brain). <b>Rohan:</b> A ✓. B ✓ (the hunger centre is in the hypothalamus — NCERT puts it “in a separate part of the fore-brain”). C ✓. D ✓ (NCERT’s exact list for the medulla). <b>Sumit:</b> A ✓ (the association areas). B ✗ — riding a bicycle and picking up a pencil are the cerebellum, C. C ✗ — the cerebellum is in the <em>hind</em>-brain. D ✓ — breathing is one of the involuntary actions the medulla runs.</p><p>Now the options. (1): Riya and Sumit are indeed both right about A and D, but “Sumit is also correct about C” is false. (2): Riya is <em>wrong</em> about C, so (2) fails at once. (3): Sumit is wrong about B and C ✓, but Riya is right about B, so the second half fails. (4): Rohan is correct about A, C and D ✓, and Riya’s only wrong claim is C ✓. <b>Option (4).</b></p><p><b>The trap.</b> Options (1) and (3) each open with a true clause and hide their false clause in the second half — read to the full stop. The word that decides (3) is Riya’s B: the hypothalamus <em>does</em> play an important role in the release of many hormones. And the key never needed Rohan’s B, so even if you were unsure where the hunger centre is, (4) still stands.</p>"
+    },
+    {
+      "n": 5,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "statement",
+      "stem": "<p>The table compares the two ways in which an animal’s body carries a message from one part to another. In which row are <b>both</b> entries correct?</p><table><tr><th></th><th>Nervous control</th><th>Hormonal control</th></tr><tr><td>(1)</td><td>A cell can go on creating and sending electrical impulses continually, without a pause.</td><td>Slower than an electrical impulse.</td></tr><tr><td>(2)</td><td>The message is an electrical impulse.</td><td>The hormones are poured into the blood by glands that have ducts.</td></tr><tr><td>(3)</td><td>Reaches only those cells that are connected by nervous tissue.</td><td>Can reach all the cells of the body, and can act steadily and persistently.</td></tr><tr><td>(4)</td><td>Used for slow, steady, persistent changes such as growth.</td><td>The chemical is recognised by special molecules on the surface of the cells it acts on.</td></tr></table>",
+      "options": [
+        "Row (1)",
+        "Row (2)",
+        "Row (3)",
+        "Row (4)"
+      ],
+      "answer": 2,
+      "sol": "<p>Row (3) is NCERT’s own comparison: electrical impulses “will reach only those cells that are connected by nervous tissue, not each and every cell”, whereas a chemical signal “can potentially reach all cells of the body, regardless of nervous connections, and it can be done steadily and persistently”. Both entries hold. <b>Option (3).</b></p><p><b>Why the other rows fail — and note that each has one correct entry.</b> Row (1): “slower” is right, but NCERT says the opposite of the first entry — “once an electrical impulse is generated in a cell and transmitted, the cell will take some time to reset … cells cannot continually create and transmit electrical impulses.” Row (2): the impulse entry is right, but endocrine glands are <em>ductless</em> — they pour their hormones straight into the blood. Row (4): the “special molecules on their surfaces” entry is NCERT’s, but slow, persistent changes such as growth are what <em>hormones</em> are for; nerves are for fast, brief responses.</p><p><b>The trap.</b> Three of the four rows are half right. Read both cells of every row; a row is only as good as its weaker entry.</p>"
+    },
+    {
+      "n": 6,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "diagram",
+      "stem": "<p>A germinating bean with a short straight shoot and a short straight root is pinned by its seed to a cork, so that the shoot and the root stick out sideways — horizontally — in damp air inside a jar kept in <b>complete darkness</b>. Figure (a) shows it two days later. The cork is then turned through <b>half a turn</b> about the bean’s length, so that the shoot still points to the right but its tip now points down, and the root tip points up (b). The bean is left in the dark for two more days.</p><figure class=\"q-fig\"><svg viewBox=\"0 0 400 150\" width=\"400\" height=\"150\" role=\"img\" aria-label=\"Two drawings of the bean pinned to a cork. (a) After two days in the dark: the thick shoot points right from the seed and its tip has turned upwards; the thin root points left and its tip has turned downwards. (b) Just after the half-turn: the shoot still points right but its bent tip now points downwards, and the root tip now points upwards.\"><rect x=\"88\" y=\"49\" width=\"14\" height=\"26\" rx=\"3\" fill=\"var(--muted)\" fill-opacity=\"0.3\" stroke=\"currentColor\" stroke-width=\"1\"/><path d=\"M 104 62 L 121 62 Q 135 62 139 48 L 141 32\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M 86 62 L 69 62 Q 55 62 51 76 L 49 92\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><ellipse cx=\"95\" cy=\"62\" rx=\"9\" ry=\"6\" fill=\"var(--iq)\" fill-opacity=\"0.55\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"141\" cy=\"32\" r=\"3.4\" fill=\"var(--bio)\"/><text x=\"95\" y=\"124\" font-size=\"11\" font-weight=\"600\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">(a) after two days</text><rect x=\"298\" y=\"49\" width=\"14\" height=\"26\" rx=\"3\" fill=\"var(--muted)\" fill-opacity=\"0.3\" stroke=\"currentColor\" stroke-width=\"1\"/><path d=\"M 314 62 L 331 62 Q 345 62 349 76 L 351 92\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M 296 62 L 279 62 Q 265 62 261 48 L 259 32\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><ellipse cx=\"305\" cy=\"62\" rx=\"9\" ry=\"6\" fill=\"var(--iq)\" fill-opacity=\"0.55\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"351\" cy=\"92\" r=\"3.4\" fill=\"var(--bio)\"/><text x=\"305\" y=\"124\" font-size=\"11\" font-weight=\"600\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">(b) just after the half-turn</text><text x=\"160\" y=\"22\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--bio)\" font-family=\"Inter,system-ui,sans-serif\">shoot</text><text x=\"34\" y=\"104\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--iq)\" font-family=\"Inter,system-ui,sans-serif\">root</text><path d=\"M 188 58 Q 200 40 212 58\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><polygon points=\"213.0,60.0 207.1,56.5 212.9,53.2\" fill=\"currentColor\"/><text x=\"200\" y=\"26\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">½ turn</text></svg></figure><p>Which figure shows the bean at the end of those two days?</p>",
+      "fig": "<svg viewBox=\"0 0 360 300\" width=\"360\" height=\"300\" role=\"img\" aria-label=\"Four answer figures of the bean as it lies after the half-turn. (1): the shoot’s bend points down and then its tip hooks back up; the root’s bend points up and then its tip hooks back down. (2): the shoot simply curves upwards and the root simply curves downwards. (3): the shoot keeps growing downwards and the root keeps growing upwards. (4): the shoot’s bend points down and its tip hooks back up, but the root keeps growing upwards.\"><rect x=\"4\" y=\"4\" width=\"172\" height=\"142\" rx=\"10\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.2\"/><text x=\"22\" y=\"19\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">(1)</text><rect x=\"85\" y=\"61\" width=\"14\" height=\"26\" rx=\"3\" fill=\"var(--muted)\" fill-opacity=\"0.3\" stroke=\"currentColor\" stroke-width=\"1\"/><path d=\"M 101 74 L 118 74 Q 132 74 136 88 L 138 104 C 139 118 154 120 156 106 L 158 80\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M 83 74 L 66 74 Q 52 74 48 60 L 46 44 C 45 30 30 28 28 42 L 26 68\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><ellipse cx=\"92\" cy=\"74\" rx=\"9\" ry=\"6\" fill=\"var(--iq)\" fill-opacity=\"0.55\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"158\" cy=\"80\" r=\"3.4\" fill=\"var(--bio)\"/><rect x=\"184\" y=\"4\" width=\"172\" height=\"142\" rx=\"10\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.2\"/><text x=\"202\" y=\"19\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">(2)</text><rect x=\"265\" y=\"61\" width=\"14\" height=\"26\" rx=\"3\" fill=\"var(--muted)\" fill-opacity=\"0.3\" stroke=\"currentColor\" stroke-width=\"1\"/><path d=\"M 281 74 L 298 74 Q 312 74 316 60 L 320 28\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M 263 74 L 246 74 Q 232 74 228 88 L 224 122\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><ellipse cx=\"272\" cy=\"74\" rx=\"9\" ry=\"6\" fill=\"var(--iq)\" fill-opacity=\"0.55\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"320\" cy=\"28\" r=\"3.4\" fill=\"var(--bio)\"/><rect x=\"4\" y=\"154\" width=\"172\" height=\"142\" rx=\"10\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.2\"/><text x=\"22\" y=\"169\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">(3)</text><rect x=\"85\" y=\"211\" width=\"14\" height=\"26\" rx=\"3\" fill=\"var(--muted)\" fill-opacity=\"0.3\" stroke=\"currentColor\" stroke-width=\"1\"/><path d=\"M 101 224 L 118 224 Q 132 224 136 238 L 140 272\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M 83 224 L 66 224 Q 52 224 48 210 L 44 178\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><ellipse cx=\"92\" cy=\"224\" rx=\"9\" ry=\"6\" fill=\"var(--iq)\" fill-opacity=\"0.55\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"140\" cy=\"272\" r=\"3.4\" fill=\"var(--bio)\"/><rect x=\"184\" y=\"154\" width=\"172\" height=\"142\" rx=\"10\" fill=\"none\" stroke=\"var(--border)\" stroke-width=\"1.2\"/><text x=\"202\" y=\"169\" font-size=\"13\" font-weight=\"700\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">(4)</text><rect x=\"265\" y=\"211\" width=\"14\" height=\"26\" rx=\"3\" fill=\"var(--muted)\" fill-opacity=\"0.3\" stroke=\"currentColor\" stroke-width=\"1\"/><path d=\"M 281 224 L 298 224 Q 312 224 316 238 L 318 254 C 319 268 334 270 336 256 L 338 230\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M 263 224 L 246 224 Q 232 224 228 210 L 224 178\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><ellipse cx=\"272\" cy=\"224\" rx=\"9\" ry=\"6\" fill=\"var(--iq)\" fill-opacity=\"0.55\" stroke=\"currentColor\" stroke-width=\"1.2\"/><circle cx=\"338\" cy=\"230\" r=\"3.4\" fill=\"var(--bio)\"/></svg>",
+      "figCap": "In every figure the bean lies as in (b): the thicker shoot, with its bud, points to the right from the seed, and the thinner root to the left.",
+      "options": [
+        "Figure (1)",
+        "Figure (2)",
+        "Figure (3)",
+        "Figure (4)"
+      ],
+      "answer": 0,
+      "sol": "<p><b>Step 1 — the first two days.</b> In the dark there is no light to respond to, but gravity is still there. The shoot’s growing tip turned <em>up</em>, away from gravity (negative geotropism), and the root’s turned <em>down</em>, towards it (positive geotropism) — figure (a).</p><p><b>Step 2 — the half-turn.</b> A bend made by growth is permanent: the cells on the outer side of each bend have already grown longer, and they cannot shrink back. So after the half-turn the two old bends stay exactly as they were, now pointing the wrong way — the shoot’s down and the root’s up, as in (b).</p><p><b>Step 3 — the next two days.</b> Only the new growth near each tip can respond, and it responds to gravity again: the shoot tip turns back up and the root tip back down. Each ends in a hook — <b>Figure (1)</b>.</p><p><b>Where each wrong option comes from.</b> (2) straightens the old bends and re-bends the whole organ — treating a growth bend as if it could be undone, like the folding of the touch-me-not (which involves no growth). (3) shows no new response at all — as if a plant answered gravity only once, or growth simply carried on in whatever direction the tip happens to point. (4) re-orients the shoot but forgets the root: the root’s new growth responds to gravity too, and turns back down, just as the root turned down in the first two days.</p><p><b>Elimination.</b> Can the old bends straighten? No — growth is permanent — which removes (2). Both tips must respond again, which removes (3), and the root must end by turning down, which removes (4).</p>"
+    },
+    {
+      "n": 7,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "diagram",
+      "stem": "<p>Three identical oat seedlings X, Y and Z are lit from the right. Each has a thin sheet of mica — a material through which auxin cannot pass — put into it:</p><p><b>X:</b> pushed vertically down through the middle of the <b>tip</b>, dividing the tip into a lit half and a shaded half.<br><b>Y:</b> inserted in the same upright way but lower down, <b>below the tip</b>, in the region of the shoot that grows and bends.<br><b>Z:</b> slipped <b>crosswise</b> into a slit cut in the <b>shaded</b> side of the shoot just below the tip, reaching halfway across.</p><p>The figure shows the three seedlings at the start. What will be observed after a day?</p>",
+      "fig": "<svg viewBox=\"0 0 520 236\" width=\"520\" height=\"236\" role=\"img\" aria-label=\"Three upright oat seedlings X, Y and Z in pots, each lit by arrows from the right. In X a thin red sheet is pushed vertically down through the middle of the tip. In Y the same upright sheet is inserted through the middle of the shoot lower down, well below the tip. In Z a short red sheet lies crosswise in the left, shaded side of the shoot just below the tip, reaching from the edge to the middle. None of the seedlings is bent.\"><polygon points=\"64,170 120,170 114,206 70,206\" fill=\"var(--muted)\" fill-opacity=\"0.2\" stroke=\"currentColor\" stroke-width=\"1.4\"/><path d=\"M 86 170 L 89 72 L 92 44 L 95 72 L 98 170 Z\" fill=\"var(--bio)\" fill-opacity=\"0.3\" stroke=\"var(--bio)\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"162\" y1=\"52\" x2=\"118\" y2=\"52\" stroke=\"var(--iq)\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><polygon points=\"114.0,52.0 121.0,48.1 121.0,55.9\" fill=\"var(--iq)\"/><line x1=\"162\" y1=\"66\" x2=\"118\" y2=\"66\" stroke=\"var(--iq)\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><polygon points=\"114.0,66.0 121.0,62.1 121.0,69.8\" fill=\"var(--iq)\"/><line x1=\"162\" y1=\"80\" x2=\"118\" y2=\"80\" stroke=\"var(--iq)\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><polygon points=\"114.0,80.0 121.0,76.2 121.0,83.8\" fill=\"var(--iq)\"/><text x=\"148\" y=\"38\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--iq)\" font-family=\"Inter,system-ui,sans-serif\">light</text><line x1=\"70\" y1=\"44\" x2=\"70\" y2=\"72\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><line x1=\"70\" y1=\"44\" x2=\"75\" y2=\"44\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><line x1=\"70\" y1=\"72\" x2=\"75\" y2=\"72\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><text x=\"65\" y=\"58\" font-size=\"11\" font-weight=\"400\" text-anchor=\"end\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">tip</text><text x=\"92\" y=\"224\" font-size=\"15\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">X</text><polygon points=\"234,170 290,170 284,206 240,206\" fill=\"var(--muted)\" fill-opacity=\"0.2\" stroke=\"currentColor\" stroke-width=\"1.4\"/><path d=\"M 256 170 L 259 72 L 262 44 L 265 72 L 268 170 Z\" fill=\"var(--bio)\" fill-opacity=\"0.3\" stroke=\"var(--bio)\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"332\" y1=\"52\" x2=\"288\" y2=\"52\" stroke=\"var(--iq)\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><polygon points=\"284.0,52.0 291.0,48.1 291.0,55.9\" fill=\"var(--iq)\"/><line x1=\"332\" y1=\"66\" x2=\"288\" y2=\"66\" stroke=\"var(--iq)\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><polygon points=\"284.0,66.0 291.0,62.1 291.0,69.8\" fill=\"var(--iq)\"/><line x1=\"332\" y1=\"80\" x2=\"288\" y2=\"80\" stroke=\"var(--iq)\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><polygon points=\"284.0,80.0 291.0,76.2 291.0,83.8\" fill=\"var(--iq)\"/><text x=\"318\" y=\"38\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--iq)\" font-family=\"Inter,system-ui,sans-serif\">light</text><line x1=\"240\" y1=\"44\" x2=\"240\" y2=\"72\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><line x1=\"240\" y1=\"44\" x2=\"245\" y2=\"44\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><line x1=\"240\" y1=\"72\" x2=\"245\" y2=\"72\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><text x=\"235\" y=\"58\" font-size=\"11\" font-weight=\"400\" text-anchor=\"end\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">tip</text><text x=\"262\" y=\"224\" font-size=\"15\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">Y</text><polygon points=\"404,170 460,170 454,206 410,206\" fill=\"var(--muted)\" fill-opacity=\"0.2\" stroke=\"currentColor\" stroke-width=\"1.4\"/><path d=\"M 426 170 L 429 72 L 432 44 L 435 72 L 438 170 Z\" fill=\"var(--bio)\" fill-opacity=\"0.3\" stroke=\"var(--bio)\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"502\" y1=\"52\" x2=\"458\" y2=\"52\" stroke=\"var(--iq)\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><polygon points=\"454.0,52.0 461.0,48.1 461.0,55.9\" fill=\"var(--iq)\"/><line x1=\"502\" y1=\"66\" x2=\"458\" y2=\"66\" stroke=\"var(--iq)\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><polygon points=\"454.0,66.0 461.0,62.1 461.0,69.8\" fill=\"var(--iq)\"/><line x1=\"502\" y1=\"80\" x2=\"458\" y2=\"80\" stroke=\"var(--iq)\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><polygon points=\"454.0,80.0 461.0,76.2 461.0,83.8\" fill=\"var(--iq)\"/><text x=\"488\" y=\"38\" font-size=\"11\" font-weight=\"400\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"var(--iq)\" font-family=\"Inter,system-ui,sans-serif\">light</text><line x1=\"410\" y1=\"44\" x2=\"410\" y2=\"72\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><line x1=\"410\" y1=\"44\" x2=\"415\" y2=\"44\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><line x1=\"410\" y1=\"72\" x2=\"415\" y2=\"72\" stroke=\"currentColor\" stroke-width=\"1.2\" stroke-linecap=\"round\" /><text x=\"405\" y=\"58\" font-size=\"11\" font-weight=\"400\" text-anchor=\"end\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">tip</text><text x=\"432\" y=\"224\" font-size=\"15\" font-weight=\"800\" text-anchor=\"middle\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">Z</text><rect x=\"90.5\" y=\"36\" width=\"3\" height=\"48\" fill=\"var(--force)\"/><rect x=\"260.5\" y=\"100\" width=\"3\" height=\"50\" fill=\"var(--force)\"/><rect x=\"424\" y=\"80.5\" width=\"8\" height=\"3\" fill=\"var(--force)\"/><line x1=\"68\" y1=\"96\" x2=\"90\" y2=\"84\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"65\" y=\"100\" font-size=\"11\" font-weight=\"400\" text-anchor=\"end\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">mica sheet</text><line x1=\"238\" y1=\"124\" x2=\"260\" y2=\"125\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"235\" y=\"128\" font-size=\"11\" font-weight=\"400\" text-anchor=\"end\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">mica sheet</text><line x1=\"408\" y1=\"104\" x2=\"424\" y2=\"83\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"405\" y=\"108\" font-size=\"11\" font-weight=\"400\" text-anchor=\"end\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">mica sheet</text></svg>",
+      "figCap": "All three drawn before the light is switched on. The red lines are the mica sheets: in X and Y standing upright (seen edge-on), in Z lying crosswise in the left, shaded half.",
+      "options": [
+        "X bends towards the light; Y and Z grow straight up.",
+        "All three bend towards the light.",
+        "X and Y grow straight up; Z bends towards the light.",
+        "X and Z grow straight up; Y bends towards the light."
+      ],
+      "answer": 3,
+      "sol": "<p>Bending needs auxin to be <em>unequal</em> on the two sides of the region that grows. Auxin is made at the tip, and it is in the tip — the part that detects the light — that it shifts sideways to the shaded half; from there it travels <em>down</em> each side of the shoot to the region that grows, so the shaded side receives more and grows longer.</p><p><b>X:</b> the upright sheet divides the tip into a lit half and a shaded half, so the auxin cannot shift across. Both sides below receive the same amount and grow equally — <b>X grows straight up</b>. <b>Y:</b> the tip is whole, so the sideways shift happens as usual above the sheet; the extra auxin then travels down the shaded side, and the upright sheet, standing parallel to that path, does not block it — <b>Y bends towards the light</b>. <b>Z:</b> the shift happens in the tip, but the crosswise sheet sits across the shaded side’s path down the shoot, so the extra auxin never reaches the cells below that should grow longer — <b>Z grows straight up</b> (Boysen-Jensen’s result). <b>Option (4).</b></p><p><b>Where each wrong option comes from.</b> (1) puts the sideways shift in the bending region instead of the tip: then X’s sheet in the tip would not stop it and Y’s sheet in the bending region would — the mirror image of the truth (Z it takes, correctly, from the notes’ barrier test). (2) ignores what the sheets do to the auxin — “every tip can still see the light, so every shoot bends”; but seeing the light is not enough: the auxin must shift across the tip and then travel down the shaded side, and X’s sheet stops the first while Z’s stops the second. (3) treats any upright sheet as a block and a crosswise sheet in one half as harmless — the reverse of the truth for Y and Z: Y’s upright sheet runs alongside auxin’s path, while Z’s crosswise sheet lies right across the shaded side’s path.</p><p><b>Elimination.</b> Each seedling’s outcome appears in exactly two options, so each has to be settled. Z is the case the notes describe — a sheet across the shaded side stops the bend — which removes (2) and (3). Then the only question is where the sideways shift happens — in the tip — which decides between (1) and (4).</p>"
+    },
+    {
+      "n": 8,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "plain",
+      "stem": "<p>Three students each set up an experiment to show that roots grow towards water.</p><p><b>W:</b> A seedling grows in a pot of moist soil, and a tray of water is kept under the pot. After a week its root has grown straight down, towards the tray.<br><b>X:</b> Two identical seedlings are planted in dry soil in the dark; one is watered every day and the other is not. After a week the watered seedling is much taller.<br><b>Y:</b> A seedling grows in dry sand in the dark, with a porous clay pot full of water buried in the sand to one side of it. After a week its root has grown sideways, towards the pot.</p><p>Which set-up shows that roots grow towards water, and why?</p>",
+      "options": [
+        "W, because the tray was the only water below the root, so nothing but the water could have drawn the root down.",
+        "Y, because its root grew sideways towards the pot — a direction that neither gravity nor light can explain here.",
+        "X, because only the watered seedling grew well, which shows that a plant’s growth follows its supply of water.",
+        "Both W and Y, because in each of them the root grew towards the water, whichever way the water lay."
+      ],
+      "answer": 1,
+      "sol": "<p>To show that roots grow <em>towards water</em>, the root must grow in a direction that <b>nothing else</b> can explain. A root already grows <em>down</em>, towards gravity (positive geotropism), and <em>away from light</em>. So a fair test keeps light out and puts the water somewhere gravity would not take the root.</p><p><b>Y</b> does both. It is dark, so there is no light to respond to, and the root grew <em>sideways</em> towards the pot — gravity alone would have sent it straight down. The bend can only be a response to water: hydrotropism. <b>Option (2).</b></p><p><b>Where each wrong option comes from.</b> (1) accepts W — but something else <em>could</em> have drawn the root down: gravity. A root grows down anyway, so with the water directly below, gravity alone explains the result and W cannot tell the two apart. (3) accepts X, which shows that a plant needs water to grow, not that its root grows <em>towards</em> water — a tropism is growth in a <em>direction</em>. (4) accepts Y but keeps W as well — and W cannot tell water from gravity. Note too that darkness removes light but not gravity: a root in the dark still grows down, which is exactly why Y’s <em>sideways</em> growth is the telling result.</p><p><b>The trap.</b> (1) and (4) both accept W. The whole question is whether “the root grew towards the water” is enough — it is not, when gravity would have sent the root the same way.</p>"
+    },
+    {
+      "n": 9,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "plain",
+      "stem": "<p>A plant scientist needs a plant hormone for each of three jobs: (i) making the stems of a dwarf variety of pea grow taller; (ii) keeping a store of seeds from germinating until they are sown; (iii) making a shoot bend towards light that falls on it from one side, by moving from the shoot tip to the shaded side. Which hormone does each job, in that order?</p>",
+      "options": [
+        "auxin, abscisic acid, gibberellin",
+        "gibberellin, abscisic acid, auxin",
+        "gibberellin, cytokinin, auxin",
+        "auxin, cytokinin, gibberellin"
+      ],
+      "answer": 1,
+      "sol": "<p>(i) Making stems grow: gibberellins, “like auxins, help in the growth of the stem” (NCERT), and they are the hormone that makes dwarf plants grow tall. (ii) Keeping seeds from germinating means stopping growth: “abscisic acid is one example of a hormone which inhibits growth” (NCERT) — it keeps buds and seeds dormant. (iii) This is NCERT’s auxin: “a hormone called auxin, synthesised at the shoot tip … auxin diffuses towards the shady side of the shoot.” Gibberellin, abscisic acid, auxin — <b>option (2)</b>.</p><p><b>Where each wrong option comes from.</b> (1) swaps the two hormones that help the stem to grow — NCERT says gibberellins, “like auxins, help in the growth of the stem” — giving auxin the dwarf stems and gibberellin the job of moving to the shaded side; but only auxin is made at the tip and moves to the shaded side. (3) gives dormancy to cytokinin — the lure is that NCERT places cytokinins “in fruits and seeds” — but cytokinins <em>promote</em> growth (cell division); the one inhibitor among NCERT’s four is abscisic acid. (4) makes both mistakes.</p><p><b>Elimination.</b> Two separate facts are needed. (iii) is NCERT’s auxin sentence, which removes (1) and (4); “stop germinating” needs the one inhibitor, abscisic acid, which removes (3).</p>"
+    },
+    {
+      "n": 10,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "match",
+      "stem": "<p>The figure shows six endocrine glands lettered A to F on one outline of the human body (glands of both the male and the female body are drawn). Match the lettered glands with the descriptions (i)–(v) and select the correct option.</p><figure class=\"q-fig\"><svg viewBox=\"0 0 300 336\" width=\"300\" height=\"336\" role=\"img\" aria-label=\"Outline of a human body seen from the front, with six glands lettered. A is a pea-sized gland hanging on a short stalk below the brain; B is a gland with two lobes in the front of the neck; C is the pair of small caps sitting on top of the two kidneys; D is a long gland lying across the body in front of the kidneys; E is a pair of small ovals low in the abdomen; F is a pair of small round glands between the tops of the legs.\"><circle cx=\"150\" cy=\"38\" r=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M 133 42 C 131 24, 169 24, 167 42 Z\" fill=\"var(--muted)\" fill-opacity=\"0.22\" stroke=\"currentColor\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/><line x1=\"160\" y1=\"30\" x2=\"196\" y2=\"16\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"202\" y=\"16\" font-size=\"11\" font-weight=\"400\" text-anchor=\"start\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">brain</text><line x1=\"150\" y1=\"42\" x2=\"150\" y2=\"47\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linecap=\"round\" /><circle cx=\"150\" cy=\"50\" r=\"3.4\" fill=\"var(--force)\"/><line x1=\"104\" y1=\"50\" x2=\"145\" y2=\"50\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"96\" y=\"51\" font-size=\"15\" font-weight=\"800\" text-anchor=\"end\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">A</text><line x1=\"139\" y1=\"59\" x2=\"139\" y2=\"78\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><line x1=\"161\" y1=\"59\" x2=\"161\" y2=\"78\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" /><rect x=\"104\" y=\"78\" width=\"92\" height=\"160\" rx=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><rect x=\"112\" y=\"236\" width=\"32\" height=\"90\" rx=\"12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><rect x=\"156\" y=\"236\" width=\"32\" height=\"90\" rx=\"12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><ellipse cx=\"145\" cy=\"70\" rx=\"4.5\" ry=\"7\" fill=\"var(--iq)\" fill-opacity=\"0.55\" stroke=\"var(--iq)\" stroke-width=\"1.2\"/><ellipse cx=\"155\" cy=\"70\" rx=\"4.5\" ry=\"7\" fill=\"var(--iq)\" fill-opacity=\"0.55\" stroke=\"var(--iq)\" stroke-width=\"1.2\"/><rect x=\"148\" y=\"67\" width=\"4\" height=\"5\" fill=\"var(--iq)\" fill-opacity=\"0.55\"/><line x1=\"163\" y1=\"70\" x2=\"198\" y2=\"70\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"206\" y=\"71\" font-size=\"15\" font-weight=\"800\" text-anchor=\"start\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">B</text><ellipse cx=\"128\" cy=\"168\" rx=\"9\" ry=\"15\" fill=\"var(--muted)\" fill-opacity=\"0.25\" stroke=\"currentColor\" stroke-width=\"1.2\"/><polygon points=\"120,152 136,152 128,142\" fill=\"var(--force)\" fill-opacity=\"0.6\" stroke=\"var(--force)\" stroke-width=\"1\"/><ellipse cx=\"172\" cy=\"168\" rx=\"9\" ry=\"15\" fill=\"var(--muted)\" fill-opacity=\"0.25\" stroke=\"currentColor\" stroke-width=\"1.2\"/><polygon points=\"164,152 180,152 172,142\" fill=\"var(--force)\" fill-opacity=\"0.6\" stroke=\"var(--force)\" stroke-width=\"1\"/><line x1=\"181\" y1=\"147\" x2=\"212\" y2=\"147\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"220\" y=\"148\" font-size=\"15\" font-weight=\"800\" text-anchor=\"start\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">C</text><ellipse cx=\"150\" cy=\"176\" rx=\"27\" ry=\"6\" transform=\"rotate(-6 150 176)\" fill=\"var(--bio)\" fill-opacity=\"0.5\" stroke=\"var(--bio)\" stroke-width=\"1.3\"/><line x1=\"143\" y1=\"182\" x2=\"92\" y2=\"196\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"84\" y=\"197\" font-size=\"15\" font-weight=\"800\" text-anchor=\"end\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">D</text><ellipse cx=\"134\" cy=\"222\" rx=\"6\" ry=\"4\" fill=\"var(--physics)\" fill-opacity=\"0.5\" stroke=\"var(--physics)\" stroke-width=\"1.2\"/><ellipse cx=\"166\" cy=\"222\" rx=\"6\" ry=\"4\" fill=\"var(--physics)\" fill-opacity=\"0.5\" stroke=\"var(--physics)\" stroke-width=\"1.2\"/><line x1=\"173\" y1=\"222\" x2=\"212\" y2=\"222\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"220\" y=\"223\" font-size=\"15\" font-weight=\"800\" text-anchor=\"start\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">E</text><circle cx=\"146\" cy=\"252\" r=\"4.5\" fill=\"var(--iq)\" fill-opacity=\"0.5\" stroke=\"var(--iq)\" stroke-width=\"1.2\"/><circle cx=\"154\" cy=\"252\" r=\"4.5\" fill=\"var(--iq)\" fill-opacity=\"0.5\" stroke=\"var(--iq)\" stroke-width=\"1.2\"/><line x1=\"140\" y1=\"252\" x2=\"92\" y2=\"252\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-linecap=\"round\" /><text x=\"84\" y=\"253\" font-size=\"15\" font-weight=\"800\" text-anchor=\"end\" dominant-baseline=\"central\" fill=\"currentColor\" font-family=\"Inter,system-ui,sans-serif\">F</text></svg><figcaption>The grey ovals are the kidneys.</figcaption></figure><p>(i) Its hormone regulates carbohydrate, protein and fat metabolism in the body.<br>(ii) Its hormone makes the heart beat faster and diverts blood to the skeletal muscles in a frightening situation.<br>(iii) Its hormone stimulates growth in all organs of the body.<br>(iv) Its cells detect a rise in the level of sugar in the blood and respond by producing more of their hormone.<br>(v) Its hormone brings about the changes of puberty in boys.</p>",
+      "options": [
+        "A-(iii), B-(i), C-(ii), D-(iv), F-(v)",
+        "A-(i), B-(iii), C-(ii), D-(iv), E-(v)",
+        "A-(iii), B-(i), C-(iv), D-(ii), E-(v)",
+        "A-(i), B-(iii), C-(iv), D-(ii), F-(v)"
+      ],
+      "answer": 0,
+      "sol": "<p>Locate each gland first. <b>A</b>, the pea-sized gland hanging below the brain — the pituitary, whose growth hormone “stimulates growth in all organs” → (iii). <b>B</b>, in the front of the neck — the thyroid, whose thyroxin “regulates carbohydrate, protein and fat metabolism” → (i). <b>C</b>, the caps on the kidneys — the adrenal glands → adrenaline → (ii). <b>D</b>, the long gland lying across the body in front of the kidneys — the pancreas, whose cells “respond by producing more insulin” when blood sugar rises (NCERT’s feedback example) → (iv). <b>F</b>, between the tops of the legs — the testes → testosterone, the puberty hormone in <em>boys</em> → (v). (<b>E</b>, the ovaries, make oestrogen — puberty in girls — and match none of the five.) <b>Option (1).</b></p><p><b>Where each wrong option comes from.</b> (2) swaps A and B — the growth hormone and the metabolism hormone are both “about growth”, but the one that stimulates growth in all organs is the pituitary’s — and gives puberty in boys to the ovaries. (3) swaps C and D — the adrenal glands and the pancreas lie close together, and the adrenals are the caps sitting <em>on</em> the kidneys — and again gives (v) to the ovaries. (4) makes both swaps.</p><p><b>Elimination.</b> Every pairing appears in exactly two options, so there is no majority to lean on. Settle A (the pituitary, hanging below the brain) — that removes two options — then read (v) carefully: <em>boys</em>.</p>"
+    },
+    {
+      "n": 11,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "plain",
+      "stem": "<p>In a child, an injury has damaged the pituitary gland so that it no longer responds to the growth hormone releasing factor sent to it by the hypothalamus. Compared with a healthy child of the same age, what would you expect for (i) the amount of releasing factor the hypothalamus sends out, (ii) the level of growth hormone in the blood, and (iii) the child’s growth?</p>",
+      "options": [
+        "(i) less; (ii) low; (iii) the child grows up very short (dwarfism)",
+        "(i) more; (ii) low; (iii) the child grows up very short (dwarfism)",
+        "(i) more; (ii) high; (iii) the child grows up extremely tall",
+        "(i) less; (ii) high; (iii) the child grows up extremely tall"
+      ],
+      "answer": 1,
+      "sol": "<p>NCERT’s “Do you know?” box: “when the level of growth hormone is low, the hypothalamus releases growth hormone releasing factor which stimulates the pituitary gland to release growth hormone.” In a healthy child the loop closes itself: the growth hormone released raises the level, and less releasing factor is sent — the same feedback NCERT describes for insulin (“the timing and amount of hormone released are regulated by feedback mechanisms”).</p><p>Here the pituitary cannot respond. (ii) So growth hormone stays <b>low</b>. (i) Because the level stays low, the hypothalamus goes on sending releasing factor — <b>more</b> than in a healthy child, whose level has risen. (iii) A deficiency of growth hormone in childhood “leads to dwarfism” (NCERT) — the child grows up <b>very short</b>. <b>Option (2).</b></p><p><b>Where each wrong option comes from.</b> (1) has the hypothalamus send <em>less</em> — reading the feedback backwards: the releasing factor is sent when growth hormone is <em>low</em>, and here it stays low. (3) lets more releasing factor produce more growth hormone — forgetting the one fact the stem gives, that the pituitary cannot respond. (4) takes “damaged” to mean that the pituitary pours out too much growth hormone, and then — correctly, for that wrong start — has the hypothalamus cut its releasing factor back; but the stem says the pituitary cannot respond at all.</p><p><b>Elimination.</b> (ii) must be low — the pituitary makes growth hormone and it cannot respond — which removes (3) and (4). A low level keeps the releasing factor coming, which removes (1).</p>"
+    },
+    {
+      "n": 12,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "plain",
+      "stem": "<p>Two people, P and Q, ate the same breakfast, and the sugar in their blood was measured at intervals afterwards.</p><table><tr><th>Minutes after the meal</th><th>0</th><th>30</th><th>60</th><th>120</th><th>180</th></tr><tr><td>P — blood sugar (mg per 100 mL)</td><td>90</td><td>140</td><td>125</td><td>105</td><td>90</td></tr><tr><td>Q — blood sugar (mg per 100 mL)</td><td>160</td><td>235</td><td>255</td><td>250</td><td>245</td></tr></table><p>Which of the following statements is correct?</p>",
+      "options": [
+        "From its starting value to its peak, Q’s sugar rose by more than twice as much as P’s sugar did.",
+        "P’s sugar came down after 30 minutes because, once the sugar had risen, P’s pancreas released less insulin.",
+        "Q’s sugar starts high and is still near its peak three hours later, as when insulin is not released properly.",
+        "Q’s sugar rose higher than P’s because Q’s pancreas released more insulin than P’s did after the meal."
+      ],
+      "answer": 2,
+      "sol": "<p>Read the table before the options. <b>(1)</b> — P rises from 90 to its peak of 140, a rise of 50; Q rises from 160 to its peak of 255, a rise of 95. That is nearly twice 50, but not <em>more</em> than twice (that would need a rise of over 100). False. <b>(2)</b> — NCERT’s feedback runs the other way: “if the sugar levels in blood rise, they are detected by the cells of the pancreas which respond by producing more insulin. As the blood sugar level falls, insulin secretion is reduced.” P’s sugar comes down because <em>more</em> insulin was released as it rose. False. <b>(3)</b> — Q starts at 160 against P’s 90, peaks at 255 and is still at 245 three hours after the meal — hardly down at all. That fits what NCERT describes when insulin “is not secreted in proper amounts”: “the sugar level in the blood rises”. True. <b>(4)</b> — insulin brings blood sugar <em>down</em>; more insulin cannot be the reason Q’s sugar rose higher. False. <b>Option (3).</b></p><p><b>The trap.</b> (1) is a test of arithmetic: nearly twice is not more than twice. (2) and (4) sound like physiology but run the insulin story backwards.</p>"
+    },
+    {
+      "n": 13,
+      "section": "Biology",
+      "topic": "Control and Coordination",
+      "fmt": "plain",
+      "stem": "<p>Kavya has had a head injury, after which her pituitary gland no longer releases ADH. Her brother Dev has just walked for three hours in the desert heat without drinking any water. Compared with a healthy person resting indoors, which of the following is correct?</p>",
+      "options": [
+        "Dev releases less ADH than usual; Kavya passes a large volume of dilute urine.",
+        "Dev releases more ADH than usual; Kavya passes a large volume of dilute urine.",
+        "Dev releases more ADH than usual; Kavya passes a small volume of concentrated urine.",
+        "Dev releases less ADH than usual; Kavya passes a small volume of concentrated urine."
+      ],
+      "answer": 1,
+      "sol": "<p><b>Dev</b> has sweated for three hours and drunk nothing, so his body is short of water and must <em>keep</em> what it has: ADH (anti-diuretic hormone) is released by the pituitary when the body is short of water, so he releases <b>more</b> than usual, and his kidney tubules reabsorb more water back into the blood. <b>Kavya</b> releases no ADH at all, so her tubules reabsorb much less water and she passes a <b>large volume of dilute urine</b> — and will be very thirsty. The name says it: <em>anti</em>-diuretic means “against passing urine”, so without it, far more urine is made. <b>Option (2).</b></p><p><b>Where each wrong option comes from.</b> (1) has Kavya right but ADH running the wrong way in Dev — as if a shortage of water switched ADH <em>off</em>. (3) has Dev right but reads ADH as a hormone that makes urine, so that having none means <em>less</em> urine — the opposite of “anti-diuretic”. (4) makes both mistakes.</p><p><b>Elimination.</b> Every half-answer appears in two options, so two facts are needed: which way ADH moves when water is short (up — removes (1) and (4)), and what having no ADH does (much more, dilute urine — removes (3)).</p>"
+    }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+/* "👁 Just checking" (device-local hubPreview = the ms timestamp it was switched on; it lapses
+   after 2 hours). While on, Submit ASKS whether to save — so a forgotten switch can never
+   silently swallow a real attempt. */
+function isPreview(){ return (function(){ try { var v = +JSON.parse(localStorage.getItem('hubPreview') || '0'); return v > 1e12 && Date.now() - v < 7200000; } catch(e){ return false; } })(); }
+let NOT_SAVED = false;
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- just look: the questions, read-only; nothing marked, nothing recorded ---- */
+function viewOnly(){
+  if(started) return;
+  document.body.classList.add('viewonly');
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '👁 <b>Just looking.</b> Nothing is marked or recorded. To answer these, go back and start the paper.'
+                + '<button class="bigbtn" type="button" style="margin-left:auto" onclick="location.reload()">← Back to start</button>';
+  $('paperBody').insertBefore(bar, $('paperBody').firstChild);
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  if(!RESTORING && NOT_SAVED){ const rc = $('results').querySelector('.rcard');
+    if(rc) rc.insertAdjacentHTML('beforeend', '<div class="rnote">👁 <b>Just checking was on</b> — this attempt was marked but not recorded.</div>'); }
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b,a,md,tm,v:2} (+f only if a flag was set).
+   Every paper stores its answers so the marked review replays (a mock opens it automatically;
+   the others via "See your last attempt"); the hub only ever reads m/mx. Written MERGE-ONLY.
+   COMPACT on purpose: the whole shared record is ONE Apps Script property with a 9216-byte
+   ceiling, so answers are one character per question ('0'–'3', '-' = blank), not an array. */
+function saveAttempt(sc, timeTaken){
+  if(isPreview() && !confirm('👁 Just checking is on for this device.\n\nSave this attempt to your progress?\n\nOK = save it (a real attempt)\nCancel = don\'t record (only checking)')){ NOT_SAVED = true; return; }
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank,
+                a:answers.map(x => x === null ? '-' : x).join(''), md:mode === 'timed' ? 't' : 'p', tm:timeTaken, v:2 };
+  if(flags.some(Boolean)) rec.f = flags.map(x => x ? 1 : 0).join('');
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function decodeRec(rec){          /* v2 strings and v1 arrays both replay */
+  if(!rec || !rec.a) return null;
+  const a = typeof rec.a === 'string' ? rec.a.split('').map(c => c === '-' ? null : +c) : rec.a.slice();
+  if(a.length !== NQ) return null;                 /* the paper changed shape since — never mis-mark */
+  const f = typeof rec.f === 'string' ? rec.f.split('').map(c => c === '1')
+          : Array.isArray(rec.f) ? rec.f.slice() : new Array(NQ).fill(false);
+  const md = rec.md === 't' ? 'timed' : rec.md === 'p' ? 'practice' : (rec.md || 'timed');
+  return { a, f, md };
+}
+function showFrozen(rec){
+  const d = decodeRec(rec);
+  if(!d || submitted) return;
+  RESTORING = true;
+  answers = d.a;
+  flags   = d.f;
+  mode    = d.md;
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = !IS_MOCK
+    ? '📋 <b>Your last attempt — ' + String(rec.t || '').slice(0, 10) + '.</b> Your answers, what was right and wrong, and every worked solution. ↺ Retake starts a fresh attempt.'
+      + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>'
+    : '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('viewOnly').addEventListener('click', viewOnly);
+$('lastAttempt').addEventListener('click', () => { const r = progLoad()[REP_ID]; if(r && r.a) showFrozen(r); });
+if(IS_MOCK && !TEACHER && !isPreview()) $('viewOnly').hidden = true;   /* a one-shot mock is not previewed */
+if(isPreview()) $('startNote').insertAdjacentHTML('beforeend', ' <b>👁 Just checking is on</b> — when you submit, you will be asked whether to save the attempt.');
+function paintLast(){
+  if(IS_MOCK) return;
+  const r = progLoad()[REP_ID], b = $('lastAttempt');
+  const ok = !!decodeRec(r);
+  b.hidden = !ok;
+  if(ok) b.textContent = '📋 See your last attempt · ' + r.m + '/' + r.mx;
+}
+paintLast();
+window.addEventListener('miraya-progress-synced', paintLast);
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
