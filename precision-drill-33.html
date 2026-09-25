@@ -558,6 +558,7 @@
           <div class="rm"><div class="k">Auto-marked</div><div class="v" id="autoMarked">0</div></div>
           <div class="rm" id="selfRow"><div class="k">Self-marked</div><div class="v" id="selfMarked">0</div></div>
           <div class="rm"><div class="k">Time taken</div><div class="v" id="timeTaken">—</div></div>
+          <div class="rm"><div class="k">Submitted on</div><div class="v" id="submittedOn">—</div></div>
         </div>
       </div>
       <div class="result-actions">
@@ -942,6 +943,25 @@ function band(p){
   return 'This is exactly what the drill is for — read every worked answer below';
 }
 
+/* ---- one date voice for the page ----
+   The record stores ISO (2026-09-25); the screen shows "25 Sep 2026".
+   todayISO() is LOCAL, not UTC: the submission date must be the day she
+   actually sat the drill, and toISOString() names YESTERDAY before 05:30 IST. */
+function todayISO(){
+  var d = new Date(), p = function(n){ return (n < 10 ? '0' : '') + n; };
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function fmtDay(iso){
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso == null ? '' : iso));
+  if(!m) return iso ? String(iso) : '—';
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return (+m[3]) + ' ' + MON[(+m[2]) - 1] + ' ' + m[1];
+}
+function setSubmittedOn(iso){
+  var el = document.getElementById('submittedOn');
+  if(el) el.textContent = fmtDay(iso);
+}
+
 function submit(auto){
   if(graded) return;
   if(!auto && mode==='timed'){
@@ -957,6 +977,7 @@ function submit(auto){
   $('timeTaken').textContent = mode==='timed'
     ? fmt(Math.max(0, Math.round(PAPER.duration*60 - secs)))
     : fmt(Math.round(elapsed));
+  if(!RESTORING) setSubmittedOn(todayISO());   // the day she sat it, for the result card
 
   // lock inputs
   document.querySelectorAll('textarea.ans, input.num, .draw-in').forEach(f=>f.disabled=true);
@@ -1253,7 +1274,7 @@ function applyAnswers(str){
 function freezeAttempt(score){
   if(!DNUM) return;
   var rep = { v:1, s:score, t:TOTAL, md:mode, tm:$('timeTaken').textContent,
-              d:new Date().toISOString().slice(0,10), a:collectAnswers() };
+              d:todayISO(), a:collectAnswers() };
   var p = progLoad(); p[TICK_ID] = true; p[REP_ID] = rep; progSave(p);
   if(!SUBMIT_ENDPOINT) return;
   var patch = {}; patch[TICK_ID] = true; patch[REP_ID] = rep;
@@ -1280,10 +1301,11 @@ function showFrozen(rep){
   if(!applyAnswers(rep.a)){ RESTORING = false; return; }
   submit(true);
   $('timeTaken').textContent = rep.tm || '—';
+  setSubmittedOn(rep.d);
   $('resultsTitle').textContent = 'Your marked report';
   var bar = document.createElement('div');
   bar.className = 'frozen-bar';
-  bar.innerHTML = '🔒 <b>Drill completed on ' + rep.d + '.</b> This is your marked report — ' +
+  bar.innerHTML = '🔒 <b>Drill completed on ' + fmtDay(rep.d) + '.</b> This is your marked report — ' +
                   'your answers, what was right and wrong, the mark scheme and your score. ' +
                   'It stays here every time you open this drill.' +
                   '<span class="fb-score">' + rep.s + ' / ' + rep.t + '</span>';
