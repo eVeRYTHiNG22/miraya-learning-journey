@@ -10,6 +10,7 @@
   :root {
     --bg:       #0a0d14;
     --surface:  #121826;
+    --bg-fig:   #0c1322;   /* figure canvas — markers use it to punch through field lines */
     --surface2: #19202f;
     --border:   #263247;
     --text:     #d6deec;
@@ -300,7 +301,7 @@
     margin-bottom:6px;
   }
   svg.graph { width:100%; height:auto; display:block;
-    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+    background:var(--bg-fig); border:1px solid var(--border); border-radius:9px; }
   .axis { stroke:#2a3a55; stroke-width:1.2; }
   .axis-lbl { fill:#56688a; font-family:'JetBrains Mono',monospace; font-size:9px; }
   .curve { fill:none; stroke-width:2.8; stroke-linecap:round; stroke-linejoin:round; }
@@ -308,7 +309,12 @@
 
   /* ── content diagrams (static labelled figures) ── */
   svg.diagram { width:100%; height:auto; display:block; max-width:600px; margin:18px auto;
-    background:#0c1322; border:1px solid var(--border); border-radius:9px; }
+    background:var(--bg-fig); border:1px solid var(--border); border-radius:9px; }
+  svg.diagram.wide { max-width:720px; }
+  .dg-orbit { fill:none; stroke:var(--muted); stroke-width:1.1; stroke-dasharray:5 5; opacity:.7; }
+  .dg-rot   { fill:none; stroke:var(--momentum); stroke-width:2.4; }      /* which way it turns */
+  .dg-roth  { fill:var(--momentum); stroke:none; }
+  .dg-lead  { fill:none; stroke:var(--muted); stroke-width:1; stroke-dasharray:3 3; }
   svg.diagram text { font-family:'JetBrains Mono',monospace; stroke:none; }
   .dg-lbl   { fill:var(--text); font-size:11px; }
   .dg-lbl.sm{ fill:var(--muted); font-size:9px; }
@@ -585,7 +591,6 @@
   body[data-theme="light"] .eqcell:hover { box-shadow:0 8px 22px rgba(40,50,80,.14); }
 
   /* graphs (SVG) — CSS overrides the inline presentation attributes */
-  body[data-theme="light"] svg.graph,
   body[data-theme="light"] svg.vecpad { background:#fbfaf4; }
   body[data-theme="light"] .axis      { stroke:#bcb4a2; }
   body[data-theme="light"] .axis-lbl  { fill:#8c8674; }
@@ -609,7 +614,7 @@
 
   /* chips */
   body[data-theme="light"] .estore { background:#efeadd; }
-  body[data-theme="light"] svg.diagram { background:#fbfaf4; }
+  body[data-theme="light"] { --bg-fig:#fbfaf4; }
 
   @media (prefers-reduced-motion: reduce) {
     .section { animation:none; opacity:1; }
@@ -1742,68 +1747,8 @@
       <span class="term">Split-ring commutator</span> — the clever bit. Every half-turn it <strong>swaps the current direction</strong> in the coil, so the push on each side keeps driving rotation the same way instead of stalling. <strong>Brushes</strong> press against it to feed current to the spinning coil. Commutator = d.c. motor; remember it, because the generator (next) uses <em>slip rings</em> instead.
     </div>
 
-    <svg class="diagram" viewBox="0 0 640 356" role="img" aria-label="A d.c. motor: a coil between north and south poles; current out of the page on one side and into the page on the other gives opposite forces that spin the coil; a split-ring commutator and brushes feed the current. An inset shows Fleming's left-hand rule.">
-      <text class="dg-cap" x="20" y="24">THE d.c. MOTOR</text>
-      <line class="dg-thin" x1="410" y1="40" x2="410" y2="336"/>
-      <!-- poles -->
-      <rect class="dg-N" x="30" y="120" width="34" height="120" opacity="0.28"/>
-      <rect x="30" y="120" width="34" height="120" fill="none" stroke="var(--text)" stroke-width="1.6"/>
-      <text class="dg-N" x="47" y="112" text-anchor="middle" font-size="15" font-weight="800">N</text>
-      <rect class="dg-S" x="346" y="120" width="34" height="120" opacity="0.28"/>
-      <rect x="346" y="120" width="34" height="120" fill="none" stroke="var(--text)" stroke-width="1.6"/>
-      <text class="dg-S" x="363" y="112" text-anchor="middle" font-size="15" font-weight="800">S</text>
-      <!-- field N→S -->
-      <line class="dg-field" x1="66" y1="150" x2="342" y2="150"/>
-      <polygon class="dg-fieldf" points="342,144 342,156 352,150"/>
-      <text class="dg-lbl sm" x="176" y="143" style="fill:var(--cyan)">B (field, N → S)</text>
-      <!-- coil -->
-      <rect class="dg-coil" x="150" y="164" width="110" height="54" fill="none"/>
-      <!-- left side: current out of page ⊙ -->
-      <circle cx="150" cy="191" r="10" fill="none" stroke="var(--energy)" stroke-width="2.2"/>
-      <circle class="dg-cur" cx="150" cy="191" r="3"/>
-      <!-- right side: current into page × -->
-      <circle cx="260" cy="191" r="10" fill="none" stroke="var(--energy)" stroke-width="2.2"/>
-      <line stroke="var(--energy)" stroke-width="2" x1="254" y1="185" x2="266" y2="197"/>
-      <line stroke="var(--energy)" stroke-width="2" x1="266" y1="185" x2="254" y2="197"/>
-      <!-- forces: up on left, down on right -->
-      <line class="dg-force" x1="150" y1="164" x2="150" y2="122"/>
-      <polygon class="dg-force" points="144,126 156,126 150,114"/>
-      <text class="dg-force" x="126" y="132" font-size="12" style="fill:var(--power)">F</text>
-      <line class="dg-force" x1="260" y1="218" x2="260" y2="260"/>
-      <polygon class="dg-force" points="254,256 266,256 260,268"/>
-      <text class="dg-force" x="268" y="252" font-size="12" style="fill:var(--power)">F</text>
-      <text class="dg-lbl sm" x="330" y="250" text-anchor="middle">coil spins</text>
-      <!-- leads to commutator -->
-      <path class="dg-coil" d="M 188 218 L 188 278"/>
-      <path class="dg-coil" d="M 222 218 L 222 278"/>
-      <!-- split-ring commutator -->
-      <path class="dg-line" d="M 203 280 A 20 20 0 0 0 203 320"/>
-      <path class="dg-line" d="M 207 280 A 20 20 0 0 1 207 320"/>
-      <rect fill="var(--muted)" x="176" y="294" width="8" height="12"/>
-      <rect fill="var(--muted)" x="226" y="294" width="8" height="12"/>
-      <!-- battery -->
-      <path class="dg-line" d="M 180 306 L 180 326 L 200 326"/>
-      <path class="dg-line" d="M 230 306 L 230 326 L 214 326"/>
-      <line class="dg-line" x1="200" y1="318" x2="200" y2="334"/>
-      <line stroke="var(--text)" stroke-width="3" x1="209" y1="322" x2="209" y2="330"/>
-      <text class="dg-lbl sm" x="56" y="296">split-ring commutator</text>
-      <text class="dg-lbl sm" x="56" y="308">+ brushes</text>
-      <text class="dg-cap" x="205" y="350" text-anchor="middle">reverse I each ½-turn → keeps spinning one way · ⊙ out, × in</text>
-
-      <!-- Fleming's left-hand rule inset -->
-      <text class="dg-lbl" x="525" y="70" text-anchor="middle">Fleming's LEFT hand</text>
-      <line class="dg-force" x1="520" y1="200" x2="520" y2="120"/>
-      <polygon class="dg-force" points="514,126 526,126 520,112"/>
-      <text class="dg-force" x="528" y="120" font-size="11" style="fill:var(--power)">F thuMb</text>
-      <line class="dg-field" x1="520" y1="200" x2="452" y2="230"/>
-      <polygon class="dg-fieldf" points="458,222 452,232 465,232"/>
-      <text class="dg-field" x="430" y="248" font-size="11" style="fill:var(--cyan)">B First</text>
-      <line class="dg-cur" x1="520" y1="200" x2="596" y2="200"/>
-      <polygon class="dg-cur" points="590,194 590,206 602,200"/>
-      <text class="dg-cur" x="548" y="192" font-size="11" style="fill:var(--energy)">I seCond</text>
-      <circle fill="var(--text)" cx="520" cy="200" r="2.5"/>
-    </svg>
-    <div class="fig-cap">The forces on the two sides of the coil are <b>opposite</b> — up on the side where the current flows out of the page, down on the side where it flows in — because the current runs through them in opposite directions. That pair of forces is what turns the coil. Use <b>Fleming's left-hand rule</b> (inset) to check each side: <b>F</b>irst finger = <b>F</b>ield N→S, se<b>C</b>ond finger = <b>C</b>urrent, thu<b>M</b>b = <b>M</b>otion. The <b>split-ring commutator</b> reverses the current in the coil every half turn, just as the coil passes the vertical, so the coil keeps being pushed the same way round instead of stalling.</div>
+    <svg class="diagram wide" viewBox="0 0 640 478" role="img" aria-label="A d.c. motor. The upper half shows the coil seen end-on between a north pole on the left and a south pole on the right, with three field lines running from north to south. The two sides of the coil sit on a dashed circle: side A on the left carries current into the page and is pushed down, side B on the right carries current out of the page and is pushed up, so the coil turns anticlockwise. The lower left shows the same axle from the side: a split-ring commutator made of two half rings with a gap between them, two brushes pressed against its sides, and wires running to a cell. The lower right shows Fleming&#8217;s left-hand rule set out exactly like side B: the field arrow points right, the motion arrow points up, and the current arrow comes out of the page towards the reader."><text class="dg-cap" x="20" y="24">THE d.c. MOTOR &#8212; CURRENT IN, ROTATION OUT</text><rect class="dg-N" x="60" y="70" width="32" height="152" opacity="0.26"/><rect x="60" y="70" width="32" height="152" fill="none" stroke="var(--text)" stroke-width="1.6"/><text class="dg-N" x="76" y="60" text-anchor="middle" font-size="16" font-weight="800">N</text><rect class="dg-S" x="548" y="70" width="32" height="152" opacity="0.26"/><rect x="548" y="70" width="32" height="152" fill="none" stroke="var(--text)" stroke-width="1.6"/><text class="dg-S" x="564" y="60" text-anchor="middle" font-size="16" font-weight="800">S</text><line class="dg-field" x1="92" y1="98" x2="538" y2="98"/><polygon class="dg-fieldf" points="548,98 538,93.4 538,102.6"/><line class="dg-field" x1="92" y1="194" x2="538" y2="194"/><polygon class="dg-fieldf" points="548,194 538,189.4 538,198.6"/><line class="dg-field" x1="92" y1="146" x2="210" y2="146"/><line class="dg-field" x1="430" y1="146" x2="538" y2="146"/><polygon class="dg-fieldf" points="548,146 538,141.4 538,150.6"/><text class="dg-lbl sm" x="100" y="88" style="fill:var(--cyan)">B &#8212; field runs N &#8594; S</text><circle class="dg-orbit" cx="320" cy="146" r="76"/><line class="dg-coil" x1="244" y1="146" x2="396" y2="146"/><circle cx="320" cy="146" r="3.6" fill="var(--muted)"/><text class="dg-lbl sm" x="307" y="167" text-anchor="end" style="fill:var(--muted)">axle</text><circle cx="244" cy="146" r="15" fill="var(--bg-fig)" stroke="var(--energy)" stroke-width="2.4"/><line x1="234.7" y1="136.7" x2="253.3" y2="155.3" stroke="var(--energy)" stroke-width="2.2" stroke-linecap="round"/><line x1="253.3" y1="136.7" x2="234.7" y2="155.3" stroke="var(--energy)" stroke-width="2.2" stroke-linecap="round"/><circle cx="396" cy="146" r="15" fill="var(--bg-fig)" stroke="var(--energy)" stroke-width="2.4"/><circle cx="396" cy="146" r="3.4" fill="var(--energy)"/><line class="dg-force" x1="244" y1="165" x2="244" y2="196"/><polygon class="dg-force" points="244,206 248.6,196 239.4,196"/><line class="dg-force" x1="396" y1="127" x2="396" y2="96"/><polygon class="dg-force" points="396,86 391.4,96 400.6,96"/><text class="dg-force" x="235" y="182" text-anchor="end" font-size="12" font-weight="700">F</text><text class="dg-force" x="405" y="114" font-size="12" font-weight="700">F</text><text class="dg-lbl sm" x="220" y="150" text-anchor="end" style="fill:var(--energy);font-size:12px;font-weight:700">A</text><text class="dg-lbl sm" x="420" y="150" style="fill:var(--energy);font-size:12px;font-weight:700">B</text><path class="dg-rot" d="M 362.7 135.4 A 44 44 0 0 0 340.8 106.2"/><polygon class="dg-roth" points="332.1,103.7 339.6,110.2 341.9,102.1"/><text class="dg-lbl sm" x="320" y="244" text-anchor="middle" style="fill:var(--muted)">&#8857; current out of the page &#183; &#8855; current into the page</text><text class="dg-lbl sm" x="320" y="260" text-anchor="middle" style="fill:var(--power)">green arrow = the force on that side &#183; A is pushed DOWN, B is pushed UP</text><line class="dg-thin" x1="18" y1="272" x2="622" y2="272"/><line class="dg-thin" x1="348" y1="284" x2="348" y2="452"/><text class="dg-cap" x="28" y="296">THE SAME AXLE, SEEN FROM THE SIDE</text><line class="dg-coil" x1="126" y1="324" x2="144" y2="342"/><line class="dg-coil" x1="210" y1="324" x2="192" y2="342"/><text class="dg-lbl sm" x="230" y="318" style="fill:var(--momentum)">the coil&#8217;s two ends</text><path fill="none" stroke="var(--force)" stroke-width="7" stroke-linecap="round" d="M 162.1 399.5 A 34 34 0 0 1 162.1 332.5"/><path fill="none" stroke="var(--motion)" stroke-width="7" stroke-linecap="round" d="M 173.9 332.5 A 34 34 0 0 1 173.9 399.5"/><circle cx="168" cy="332" r="4.5" fill="none" stroke="var(--rose)" stroke-width="1.4" stroke-dasharray="2 2"/><circle cx="168" cy="400" r="4.5" fill="none" stroke="var(--rose)" stroke-width="1.4" stroke-dasharray="2 2"/><rect x="120" y="357" width="14" height="18" rx="2" fill="var(--muted)"/><rect x="202" y="357" width="14" height="18" rx="2" fill="var(--muted)"/><path class="dg-lead" d="M 74 348 L 119 363"/><text class="dg-lbl sm" x="30" y="346">brushes</text><text class="dg-lbl sm" x="252" y="340" style="fill:var(--rose)">SPLIT RING</text><text class="dg-lbl sm" x="252" y="353">two halves</text><text class="dg-lbl sm" x="252" y="366">with a GAP</text><text class="dg-lbl sm" x="252" y="379">between them</text><path class="dg-line" d="M 120 366 L 56 366 L 56 424 L 102 424"/><path class="dg-line" d="M 216 366 L 232 366 L 232 424 L 118 424"/><line x1="102" y1="405" x2="102" y2="443" stroke="var(--text)" stroke-width="2.2" stroke-linecap="round"/><line x1="118" y1="414" x2="118" y2="434" stroke="var(--text)" stroke-width="6" stroke-linecap="round"/><text x="102" y="399" text-anchor="middle" style="fill:var(--force);font-size:13px;font-weight:700">+</text><text x="118" y="399" text-anchor="middle" style="fill:var(--motion);font-size:13px;font-weight:700">&#8722;</text><text class="dg-lbl sm" x="110" y="450" text-anchor="middle">the cell drives the current</text><line class="dg-cur" x1="56" y1="414" x2="56" y2="395"/><polygon class="dg-cur" points="56,386 52,395 60,395"/><text class="dg-cap" x="392" y="296">FLEMING&#8217;S LEFT HAND &#8212; FOR MOTORS</text><text class="dg-cap" x="392" y="312" style="fill:var(--muted)">LEFT = motor &#183; RIGHT = generator</text><line class="dg-force" x1="470" y1="398" x2="470" y2="346"/><polygon class="dg-force" points="470,336 465.4,346 474.6,346"/><text class="dg-lbl sm" x="478" y="332" style="fill:var(--power)">thuMb = Motion</text><line class="dg-field" x1="470" y1="398" x2="562" y2="398"/><polygon class="dg-fieldf" points="572,398 562,393.4 562,402.6"/><text class="dg-lbl sm" x="502" y="388" style="fill:var(--cyan)">First = Field</text><line class="dg-cur" x1="470" y1="398" x2="422.4" y2="428.6"/><polygon class="dg-cur" points="414,434 424.9,432.5 419.9,424.7"/><circle cx="406" cy="440" r="9" fill="var(--bg-fig)" stroke="var(--energy)" stroke-width="2.4"/><circle cx="406" cy="440" r="3.4" fill="var(--energy)"/><text class="dg-lbl sm" x="392" y="468" style="fill:var(--energy)">seCond = Current, &#8857; out of the page</text><circle cx="470" cy="398" r="3" fill="var(--text)"/></svg>
+    <div class="fig-cap"><b>Read the top half as the coil seen end-on</b> &#8212; you are looking straight down the axle, so each side of the coil is a single wire coming towards you (&#8857;) or going away from you (&#8855;), and the dashed circle is the path those two sides sweep out. The current runs <i>through</i> the coil, so it goes one way down side A and the other way back along side B; the field is the same across both. That is why the two forces are <b>opposite</b> &#8212; A is pushed down, B is pushed up &#8212; and a pair of opposite forces is a turning effect. Check either side with <b>Fleming&#8217;s left hand</b> (bottom right): <b>F</b>irst finger = <b>F</b>ield N&#8594;S, se<b>C</b>ond finger = <b>C</b>urrent, thu<b>M</b>b = <b>M</b>otion. <b>The bottom-left panel is a second view of the same machine</b>, turned so you see the axle from the side: the <b>split-ring commutator</b> is one ring cut into two halves with a <span style="color:var(--rose)">gap</span> between them, and the brushes stay still while it spins past. Half a turn after the picture, each brush is touching the <i>other</i> half &#8212; so the current through the coil reverses, the pushes stay down-on-the-left and up-on-the-right, and the coil keeps going round instead of stalling upright.</div>
 
     <h3>What the commutator is actually for &#8212; run it both ways</h3>
     <p>Everyone learns the words &#8220;it reverses the current every half turn&#8221;. Far fewer can say what goes <em>wrong</em> without it. Take the split ring off and watch:</p>
@@ -1839,7 +1784,8 @@
           <circle id="mtDotB" cx="0" cy="0" r="3.4" fill="var(--energy)"/>
           <path id="mtCrossB" fill="none" stroke="var(--energy)" stroke-width="2.2" d="M -6 -6 L 6 6 M 6 -6 L -6 6"/>
         </g>
-        <text class="dg-cap" x="151" y="212" text-anchor="middle" style="fill:var(--power)">green arrows = the force on each side</text>
+        <text class="dg-cap" x="8" y="213" style="fill:var(--power)">green arrows =</text>
+        <text class="dg-cap" x="8" y="225" style="fill:var(--power)">the force on each side</text>
 
         <g id="mtSplit">
           <g id="mtRingRot">
@@ -1847,7 +1793,7 @@
             <path d="M 147.5 224.6 A 20 20 0 0 0 147.5 264.4" fill="none" stroke="var(--force)" stroke-width="4"/>
           </g>
         </g>
-        <circle id="mtPlainRing" cx="151" cy="244" r="20" fill="none" stroke="var(--momentum)" stroke-width="4"/>
+        <g id="mtPlainRing"><circle cx="151" cy="244" r="20" fill="none" stroke="var(--momentum)" stroke-width="4"/><circle cx="151" cy="244" r="14" fill="none" stroke="var(--momentum)" stroke-width="3" opacity=".75"/><text class="dg-cap" x="240" y="264" style="fill:var(--muted)">two whole rings</text><text class="dg-cap" x="240" y="276" style="fill:var(--muted)">&#8212; end-on they overlap</text></g>
         <rect x="124" y="238" width="7" height="13" fill="var(--muted)"/>
         <rect x="171" y="238" width="7" height="13" fill="var(--muted)"/>
         <path class="dg-line" d="M 124 244 L 74 244 L 74 286 L 141 286"/>
@@ -1975,59 +1921,8 @@
       The output is a sine wave. The e.m.f. <strong>peaks</strong> when the coil's sides are sweeping <em>across</em> the field lines fastest — the moment the plane of the coil lies <em>parallel</em> to the field — and falls to <strong>zero</strong> a quarter-turn later, when the sides move <em>along</em> the field lines (plane of the coil <em>perpendicular</em> to the field) and cut none. Spin it faster → taller <em>and</em> more frequent peaks.
     </div>
 
-    <svg class="diagram" viewBox="0 0 640 300" role="img" aria-label="An a.c. generator: a coil spinning between north and south poles connected through two slip rings and brushes to a load; beside it the e.m.f.–time graph is a sine wave, peaking when the coil plane is parallel to the field and zero when perpendicular.">
-      <text class="dg-cap" x="20" y="24">THE a.c. GENERATOR</text>
-      <line class="dg-thin" x1="360" y1="40" x2="360" y2="280"/>
-      <!-- poles -->
-      <rect class="dg-N" x="22" y="96" width="30" height="120" opacity="0.28"/>
-      <rect x="22" y="96" width="30" height="120" fill="none" stroke="var(--text)" stroke-width="1.6"/>
-      <text class="dg-N" x="37" y="88" text-anchor="middle" font-size="15" font-weight="800">N</text>
-      <rect class="dg-S" x="300" y="96" width="30" height="120" opacity="0.28"/>
-      <rect x="300" y="96" width="30" height="120" fill="none" stroke="var(--text)" stroke-width="1.6"/>
-      <text class="dg-S" x="315" y="88" text-anchor="middle" font-size="15" font-weight="800">S</text>
-      <!-- field -->
-      <line class="dg-field" x1="52" y1="128" x2="298" y2="128"/>
-      <polygon class="dg-fieldf" points="298,122 298,134 308,128"/>
-      <text class="dg-lbl sm" x="72" y="121" style="fill:var(--cyan)">B (field)</text>
-      <!-- rotating coil -->
-      <rect class="dg-coil" x="140" y="118" width="80" height="70" fill="none"/>
-      <path class="dg-force" d="M 236 150 A 40 40 0 0 1 214 196" fill="none"/>
-      <polygon class="dg-force" points="210,188 222,192 216,201"/>
-      <text class="dg-lbl sm" x="255" y="212" text-anchor="middle">coil spins</text>
-      <!-- slip rings + brushes -->
-      <path class="dg-coil" d="M 168 188 L 168 226"/>
-      <path class="dg-coil" d="M 192 188 L 192 240"/>
-      <ellipse class="dg-line" cx="168" cy="234" rx="7" ry="11" fill="none"/>
-      <ellipse class="dg-line" cx="192" cy="250" rx="7" ry="11" fill="none"/>
-      <rect fill="var(--muted)" x="150" y="228" width="7" height="12"/>
-      <rect fill="var(--muted)" x="200" y="244" width="7" height="12"/>
-      <text class="dg-lbl sm" x="150" y="276" text-anchor="middle">slip rings (full, NOT split)</text>
-      <!-- load -->
-      <path class="dg-line" d="M 150 240 L 132 240 L 132 268 L 250 268 L 250 250"/>
-      <path class="dg-line" d="M 204 256 L 260 256 L 260 262"/>
-      <circle cx="255" cy="256" r="12" fill="none" stroke="var(--text)" stroke-width="1.6"/>
-      <line class="dg-line" x1="247" y1="248" x2="263" y2="264"/><line class="dg-line" x1="263" y1="248" x2="247" y2="264"/>
-      <text class="dg-lbl sm" x="288" y="260">load</text>
-
-      <!-- e.m.f.–time graph -->
-      <line class="dg-thin" x1="400" y1="160" x2="620" y2="160"/>
-      <line class="dg-thin" x1="410" y1="96" x2="410" y2="220"/>
-      <text class="dg-lbl sm" x="404" y="90" style="fill:var(--cyan)">e.m.f.</text>
-      <text class="dg-lbl sm" x="612" y="176">t</text>
-      <path class="dg-field" d="M 410 160 C 428 108, 457 108, 475 160 C 493 212, 522 212, 540 160 C 558 108, 587 108, 605 160"/>
-      <!-- peak marker -->
-      <circle class="dg-fieldf" cx="442" cy="121" r="3"/>
-      <line class="dg-thin" x1="442" y1="108" x2="470" y2="82"/>
-      <text class="dg-lbl sm" x="474" y="80">peak — coil plane ∥ field</text>
-      <text class="dg-cap" x="474" y="94">(sides cut lines fastest)</text>
-      <!-- zero marker -->
-      <circle class="dg-fieldf" cx="475" cy="160" r="3"/>
-      <line class="dg-thin" x1="475" y1="160" x2="500" y2="196"/>
-      <text class="dg-lbl sm" x="632" y="204" text-anchor="end">zero — coil plane ⟂ field</text>
-      <text class="dg-cap" x="632" y="218" text-anchor="end">(sides cut none)</text>
-      <text class="dg-cap" x="510" y="240" text-anchor="middle">spin faster → taller &amp; more frequent peaks</text>
-    </svg>
-    <div class="fig-cap">The generator is the motor run backwards: turn the coil and you get electricity out. The e.m.f. is <b>greatest</b> when the coil is horizontal — its sides are then moving straight across the field lines, cutting them fastest — and <b>zero</b> when the coil is vertical, because its sides are momentarily moving <i>along</i> the field lines and cutting none. Every half turn the sides swap over, so the output reverses: that is what makes it <b>alternating</b> current. <b>Slip rings</b> (two complete rings, not a split one) keep the connection to the spinning coil without undoing the reversal.</div>
+    <svg class="diagram wide" viewBox="0 0 640 490" role="img" aria-label="An a.c. generator. The upper half shows the coil seen end-on between a north pole on the left and a south pole on the right, with three field lines running from north to south. The coil is being turned anticlockwise: side A on the left is moving down and side B on the right is moving up, so the induced current runs out of the page on side A and into the page on side B. The lower left shows the same axle from the side: two complete slip rings with no gap, one for each end of the coil, each with its own brush, wired to a lamp. The lower right shows the output, a sine wave that reverses every half turn."><text class="dg-cap" x="20" y="24">THE a.c. GENERATOR &#8212; ROTATION IN, CURRENT OUT</text><rect class="dg-N" x="60" y="70" width="32" height="152" opacity="0.26"/><rect x="60" y="70" width="32" height="152" fill="none" stroke="var(--text)" stroke-width="1.6"/><text class="dg-N" x="76" y="60" text-anchor="middle" font-size="16" font-weight="800">N</text><rect class="dg-S" x="548" y="70" width="32" height="152" opacity="0.26"/><rect x="548" y="70" width="32" height="152" fill="none" stroke="var(--text)" stroke-width="1.6"/><text class="dg-S" x="564" y="60" text-anchor="middle" font-size="16" font-weight="800">S</text><line class="dg-field" x1="92" y1="98" x2="538" y2="98"/><polygon class="dg-fieldf" points="548,98 538,93.4 538,102.6"/><line class="dg-field" x1="92" y1="194" x2="538" y2="194"/><polygon class="dg-fieldf" points="548,194 538,189.4 538,198.6"/><line class="dg-field" x1="92" y1="146" x2="210" y2="146"/><line class="dg-field" x1="430" y1="146" x2="538" y2="146"/><polygon class="dg-fieldf" points="548,146 538,141.4 538,150.6"/><text class="dg-lbl sm" x="100" y="88" style="fill:var(--cyan)">B &#8212; field runs N &#8594; S</text><circle class="dg-orbit" cx="320" cy="146" r="76"/><line class="dg-coil" x1="244" y1="146" x2="396" y2="146"/><circle cx="320" cy="146" r="3.6" fill="var(--muted)"/><text class="dg-lbl sm" x="307" y="167" text-anchor="end" style="fill:var(--muted)">axle</text><line class="dg-force" x1="244" y1="165" x2="244" y2="196"/><polygon class="dg-force" points="244,206 248.6,196 239.4,196"/><line class="dg-force" x1="396" y1="127" x2="396" y2="96"/><polygon class="dg-force" points="396,86 391.4,96 400.6,96"/><text class="dg-force" x="235" y="182" text-anchor="end" font-size="12" font-weight="700">v</text><text class="dg-force" x="405" y="114" font-size="12" font-weight="700">v</text><circle cx="244" cy="146" r="15" fill="var(--bg-fig)" stroke="var(--energy)" stroke-width="2.4"/><circle cx="244" cy="146" r="3.4" fill="var(--energy)"/><circle cx="396" cy="146" r="15" fill="var(--bg-fig)" stroke="var(--energy)" stroke-width="2.4"/><line x1="386.7" y1="136.7" x2="405.3" y2="155.3" stroke="var(--energy)" stroke-width="2.2" stroke-linecap="round"/><line x1="405.3" y1="136.7" x2="386.7" y2="155.3" stroke="var(--energy)" stroke-width="2.2" stroke-linecap="round"/><text class="dg-lbl sm" x="220" y="150" text-anchor="end" style="fill:var(--energy);font-size:12px;font-weight:700">A</text><text class="dg-lbl sm" x="420" y="150" style="fill:var(--energy);font-size:12px;font-weight:700">B</text><path class="dg-rot" d="M 362.7 135.4 A 44 44 0 0 0 340.8 106.2"/><polygon class="dg-roth" points="332.1,103.7 339.6,110.2 341.9,102.1"/><text class="dg-lbl sm" x="320" y="244" text-anchor="middle" style="fill:var(--muted)">&#8857; current out of the page &#183; &#8855; current into the page</text><text class="dg-lbl sm" x="320" y="260" text-anchor="middle" style="fill:var(--power)">green arrow = how that side is moving &#183; A goes DOWN, B goes UP</text><line class="dg-thin" x1="18" y1="272" x2="622" y2="272"/><line class="dg-thin" x1="348" y1="284" x2="348" y2="452"/><text class="dg-cap" x="28" y="296">THE SAME AXLE, SEEN FROM THE SIDE</text><line x1="72" y1="356" x2="196" y2="356" stroke="var(--muted)" stroke-width="7" stroke-linecap="round"/><path class="dg-coil" stroke-width="2" d="M 100 320 L 126 320 L 126 326"/><path class="dg-coil" stroke-width="2" d="M 100 306 L 168 306 L 168 326"/><ellipse cx="126" cy="356" rx="9" ry="30" fill="none" stroke="var(--momentum)" stroke-width="5"/><rect x="117" y="386" width="18" height="13" rx="2" fill="var(--muted)"/><ellipse cx="168" cy="356" rx="9" ry="30" fill="none" stroke="var(--momentum)" stroke-width="5"/><rect x="159" y="386" width="18" height="13" rx="2" fill="var(--muted)"/><text class="dg-lbl sm" x="20" y="310" style="fill:var(--momentum)">the two ends</text><text class="dg-lbl sm" x="20" y="322" style="fill:var(--momentum)">of the coil</text><path class="dg-lead" d="M 74 398 L 116 392"/><text class="dg-lbl sm" x="26" y="402">brushes</text><text class="dg-lbl sm" x="206" y="336" style="fill:var(--momentum)">TWO WHOLE</text><text class="dg-lbl sm" x="206" y="349">RINGS &#8212; one</text><text class="dg-lbl sm" x="206" y="362">per coil end,</text><text class="dg-lbl sm" x="206" y="375">NO gap anywhere</text><path class="dg-line" d="M 126 399 L 126 416 L 66 416 L 66 452 L 238 452"/><path class="dg-line" d="M 168 399 L 168 432 L 330 432 L 330 452 L 270 452"/><circle cx="254" cy="452" r="16" fill="none" stroke="var(--text)" stroke-width="2"/><line x1="244.1" y1="442.1" x2="263.9" y2="461.9" stroke="var(--text)" stroke-width="2"/><line x1="263.9" y1="442.1" x2="244.1" y2="461.9" stroke="var(--text)" stroke-width="2"/><text class="dg-lbl sm" x="254" y="480" text-anchor="middle">lamp</text><line class="dg-cur" x1="140" y1="452" x2="181" y2="452"/><polygon class="dg-cur" points="190,452 181,448 181,456"/><text class="dg-lbl sm" x="76" y="440" style="fill:var(--energy)">induced current</text><text class="dg-cap" x="392" y="296">WHAT THE OUTSIDE CIRCUIT GETS</text><line class="axis" x1="402" y1="310" x2="402" y2="400"/><line class="axis" x1="402" y1="356" x2="616" y2="356"/><path class="curve" stroke="var(--cyan)" d="M 402 356 L 403.8 353.3 L 405.6 350.7 L 407.4 348.1 L 409.1 345.5 L 410.9 343 L 412.7 340.6 L 414.5 338.2 L 416.3 336 L 418.1 333.9 L 419.8 332 L 421.6 330.1 L 423.4 328.5 L 425.2 327 L 427 325.7 L 428.8 324.6 L 430.5 323.7 L 432.3 322.9 L 434.1 322.4 L 435.9 322.1 L 437.7 322 L 439.4 322.1 L 441.2 322.4 L 443 322.9 L 444.8 323.7 L 446.6 324.6 L 448.4 325.7 L 450.1 327 L 451.9 328.5 L 453.7 330.1 L 455.5 332 L 457.3 333.9 L 459.1 336 L 460.9 338.2 L 462.6 340.6 L 464.4 343 L 466.2 345.5 L 468 348.1 L 469.8 350.7 L 471.6 353.3 L 473.3 356 L 475.1 358.7 L 476.9 361.3 L 478.7 363.9 L 480.5 366.5 L 482.2 369 L 484 371.4 L 485.8 373.8 L 487.6 376 L 489.4 378.1 L 491.2 380 L 492.9 381.9 L 494.7 383.5 L 496.5 385 L 498.3 386.3 L 500.1 387.4 L 501.9 388.3 L 503.6 389.1 L 505.4 389.6 L 507.2 389.9 L 509 390 L 510.8 389.9 L 512.6 389.6 L 514.4 389.1 L 516.1 388.3 L 517.9 387.4 L 519.7 386.3 L 521.5 385 L 523.3 383.5 L 525 381.9 L 526.8 380 L 528.6 378.1 L 530.4 376 L 532.2 373.8 L 534 371.4 L 535.8 369 L 537.5 366.5 L 539.3 363.9 L 541.1 361.3 L 542.9 358.7 L 544.7 356 L 546.5 353.3 L 548.2 350.7 L 550 348.1 L 551.8 345.5 L 553.6 343 L 555.4 340.6 L 557.1 338.2 L 558.9 336 L 560.7 333.9 L 562.5 332 L 564.3 330.1 L 566.1 328.5 L 567.9 327 L 569.6 325.7 L 571.4 324.6 L 573.2 323.7 L 575 322.9 L 576.8 322.4 L 578.5 322.1 L 580.3 322 L 582.1 322.1 L 583.9 322.4 L 585.7 322.9 L 587.5 323.7 L 589.2 324.6 L 591 325.7 L 592.8 327 L 594.6 328.5 L 596.4 330.1 L 598.2 332 L 600 333.9 L 601.7 336 L 603.5 338.2 L 605.3 340.6 L 607.1 343 L 608.9 345.5 L 610.6 348.1 L 612.4 350.7 L 614.2 353.3 L 616 356"/><text class="dg-lbl sm" x="396" y="306" style="fill:var(--cyan)">e.m.f.</text><text class="dg-lbl sm" x="620" y="368" style="fill:var(--muted)">t</text><circle cx="437.7" cy="322" r="4.5" fill="var(--cyan)"/><circle cx="473.3" cy="356" r="4.5" fill="var(--cyan)"/><text class="dg-lbl sm" x="392" y="414" style="fill:var(--cyan)">&#9679;</text><text class="dg-cap" x="404" y="414">PEAK &#8212; the instant drawn above</text><text class="dg-cap" x="404" y="427">plane lies ALONG the field (flat)</text><text class="dg-lbl sm" x="392" y="440" style="fill:var(--cyan)">&#9679;</text><text class="dg-cap" x="404" y="440">ZERO &#8212; a quarter turn later</text><text class="dg-cap" x="404" y="453">plane lies ACROSS the field (upright)</text><text class="dg-cap" x="392" y="471" style="fill:var(--cyan)">slip rings pass the reversal out &#8594; a.c.</text></svg>
+    <div class="fig-cap"><b>The same picture as the motor, read backwards.</b> Put the two figures side by side: the green arrows are in <i>exactly</i> the same places &#8212; but in the motor they are the force you <i>get</i>, and here they are the motion you <i>supply</i>. What has swapped is the <b>&#8857;/&#8855; markers</b>. There is no cell here: <i>you</i> turn the coil, and the top half is drawn at the instant side A is moving straight down and side B straight up (green). Because they are moving <b>at right angles to</b> the field lines they cut them fastest at this instant, so the e.m.f. is at its <b>peak</b> &#8212; a quarter turn later the sides are sliding <i>along</i> the lines, cutting none, and it is <b>zero</b>. Fleming&#8217;s <b>right</b> hand gives the induced current: out of the page on A, into it on B &#8212; the <i>opposite</i> way round from the motor, which is <b>Lenz&#8217;s law</b> doing its job. (Check it: that current in side A is pushed <i>up</i> by the field, fighting the downward shove you are giving it. A generator that helped you turn it would be a free-energy machine.) <b>The bottom-left panel is the same axle from the side.</b> Compare it with the motor&#8217;s: these are <b>two complete rings</b>, one for each end of the coil, with <b>no gap anywhere</b>. Each brush therefore stays on the <i>same</i> end of the coil all the way round, so when the coil current reverses every half turn the outside circuit reverses with it &#8212; which is exactly what <b>alternating</b> current means. Replace the two whole rings with a <i>single</i> ring cut in two &#8212; the motor&#8217;s commutator &#8212; and the very same machine hands out d.c. instead. The rings are the only piece of hardware that differs.</div>
 
     <h3>Watch it turn: the generator lab</h3>
     <p>The static picture above shows one frozen instant. The hard part is the <em>link</em> between where the coil is and what the graph is doing at that moment &#8212; so here it is, live. Spin it, and switch the rings.</p>
@@ -2115,7 +2010,7 @@
         <path id="gnTrace" fill="none" stroke="var(--cyan)" stroke-width="2.4" stroke-linejoin="round"/>
         <circle id="gnNow" cx="604" cy="170" r="4" fill="var(--energy)"/>
         <text id="gnGraphTag" class="dg-cap" x="604" y="292" text-anchor="end">one full turn = one complete cycle</text>
-        <text class="dg-cap" x="340" y="318" text-anchor="start">peak height AND peak spacing both come from the spin speed</text>
+        <text class="dg-cap" x="330" y="318" text-anchor="start">peak height AND spacing both set by the spin speed</text>
       </svg>
 
       <div class="tool-grid" style="margin-top:14px">
@@ -2543,7 +2438,7 @@
         <div class="cy-hint">Tap to reveal</div>
         <div class="cy-a">(a) The peaks are <strong>twice as tall</strong> ✓ and there are <strong>twice as many</strong> of them in the same time (the period is halved / the frequency doubles) ✓. Both because the sides now cut the field lines at <strong>twice the rate</strong>.<br>
         (b) The e.m.f. is zero when the <strong>plane of the coil is perpendicular to the field</strong> ✓ &#8212; at those instants the sides are moving <strong>parallel to the field lines</strong>, so they cut <strong>none</strong> of them and no e.m.f. is induced. ✓ (It is a common slip to say &#8220;zero when the coil&#8217;s <strong>plane</strong> is parallel to the field&#8221; &#8212; that is where the e.m.f. is at its <strong>maximum</strong>.)<br>
-        (c) Any two of: <strong>more turns</strong> on the coil, a <strong>stronger magnet</strong> / stronger field, a <strong>larger coil area</strong>. ✓✓ (1 mark each, max 2.) <em>A soft-iron core would raise it too, but that belongs to the transformer &#8212; it is not on a generator mark scheme, so don&#8217;t offer it here.</em></div>
+        (c) Any two of: <strong>more turns</strong> on the coil, a <strong>stronger magnet</strong> / stronger field, a <strong>larger coil area</strong>. ✓✓ (1 mark each, max 2.) <em>A soft-iron core would raise it too, but it is not one of the standard generator mark-scheme points &#8212; give the three above first.</em></div>
       </div>
     </div>
   </div>
@@ -3016,11 +2911,12 @@ document.addEventListener('click',e=>{
       : 'Side <b>A</b> carries current <b>out of</b> the page, side <b>B</b> into it.';
     const ac2=Math.abs(c);
     let msg;
-    if(ac2>0.94) msg='<b>Coil plane lies ALONG the field.</b> Both sides are cutting straight across the field lines, as fast as they ever will &#8212; so the e.m.f. is at its <b>peak</b>. ';
-    else if(ac2<0.12) msg='<b>Coil plane lies ACROSS the field.</b> For this instant both sides are sliding <em>along</em> the field lines and cutting none &#8212; so the e.m.f. is <b>zero</b>. ';
+    if(ac2>0.94) msg='<b>Coil plane lies ALONG the field (flat).</b> Both sides are cutting straight across the field lines, as fast as they ever will &#8212; so the e.m.f. is at its <b>peak</b>. ';
+    else if(ac2<0.12) msg='<b>Coil plane lies ACROSS the field (upright).</b> For this instant both sides are sliding <em>along</em> the field lines and cutting none &#8212; so the e.m.f. is <b>zero</b>. ';
     else { const up = ac ? (s<0) : (Math.sign(c)*(-s) > 0);
            msg='Part-way between. The sides are cutting the lines at an angle, so the e.m.f. is part-way too and '+(up?'<b>rising</b>':'<b>falling</b>')+'. '; }
-    g('gnState').innerHTML = (playing?'':'<b>[frozen]</b> ') + msg + sideTxt +
+    g('gnState').innerHTML = (playing?'':'<b>[frozen &#8212; time is stopped here, not the coil. '
+      + 'A coil actually left at rest induces nothing at all.]</b> ') + msg + sideTxt +
       (ac ? ' The rings hand that reversal straight out, so the lamp current turns round with it.'
           : ' The split ring swaps brushes at the same instant, so the lamp current does <b>not</b> turn round.');
   }
@@ -3222,8 +3118,8 @@ document.addEventListener('click',e=>{
     g('mtTrace').setAttribute('d',d);
 
     if(mode==='on'){
-      g('mtVerdict').textContent='Spinning';
-      g('mtSub').textContent='round and round, one way';
+      g('mtVerdict').textContent = reduced ? 'Would spin' : 'Spinning';
+      g('mtSub').textContent = reduced ? 'animation off — motion paused' : 'round and round, one way';
       g('mtTraceTag').textContent='never dips below zero — always shoved the same way';
       g('mtState').innerHTML='Watch the two current symbols: they <b>swap</b> every time the coil passes the upright. That is the split ring doing its one job. Because the current reverses at exactly the moment the coil goes past the point where the turning effect would have changed sign, the two reversals cancel and the push stays in the <b>same rotational direction</b> for ever. The graph never goes below the line, so the coil never gets shoved backwards.';
     } else {
