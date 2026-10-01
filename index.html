@@ -1797,7 +1797,10 @@
           var gradedBtns = card.querySelectorAll('.btn.paper.graded');
           gradedBtns.forEach(function (g, i) {
             var id = g.getAttribute('data-exid') || ('ex:' + subj + ':' + num + ':' + (i + 1));
-            var btnLabel = (g.textContent || '').replace(/^[^A-Za-z0-9]+/, '').trim();
+            // only the button's OWN text — the 📑 icon and the runtime "~35 min" chip are
+            // child elements, and textContent would glue them onto the label ("Graded Paper 1~35 min").
+            var btnLabel = Array.prototype.filter.call(g.childNodes, function (nd) { return nd.nodeType === 3; })
+                             .map(function (nd) { return nd.textContent; }).join('').trim();
             var sub = (SUBJ[subj] || subj) + ' · ' + (topic ? topic + ' — ' : '') + title
                       + (gradedBtns.length > 1 && btnLabel ? ' · ' + btnLabel : '');
             meta[id] = { name: title || btnLabel || id, sub: sub, href: g.getAttribute('href'), accent: accent };
