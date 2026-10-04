@@ -138,6 +138,17 @@
   .done.is-done { color:var(--power); border-color:color-mix(in srgb,var(--power) 50%,transparent); background:color-mix(in srgb,var(--power) 10%,transparent); }
   .done.is-done .box { background:var(--power); border-color:var(--power); color:#06210f; }
   .done.is-done .box::after { content:'✓'; }
+  /* 💬 Discussed — ticked by hand after the teacher and student talk the unit through; separate from the auto-ticks */
+  .disc-row { display:flex; align-items:center; gap:8px; margin-top:10px; }
+  .disc { font:inherit; display:inline-flex; align-items:center; gap:7px; font-size:11.5px; font-weight:600; color:var(--muted); padding:6px 11px; border-radius:8px; border:1px dashed var(--border); background:transparent; cursor:pointer; transition:border-color .15s, color .15s, background .15s; }
+  .disc:hover { color:var(--text); border-color:color-mix(in srgb,var(--iq) 55%,var(--border)); }
+  .disc:focus-visible { outline:2px solid var(--iq); outline-offset:2px; }
+  .disc .box { width:15px; height:15px; border-radius:5px; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
+  .disc.is-done { color:var(--iq); border-style:solid; border-color:color-mix(in srgb,var(--iq) 50%,transparent); background:color-mix(in srgb,var(--iq) 10%,transparent); }
+  .disc.is-done .box { background:var(--iq); border-color:var(--iq); color:#2a1a00; }
+  .disc.is-done .box::after { content:'✓'; }
+  .disc .when { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; opacity:.85; }
+  .disc .when:empty { display:none; }
   .card.all-done { border-color:color-mix(in srgb,var(--power) 45%,var(--border)); }
   .card.all-done::before { background:var(--power); opacity:1; }
   .subject.is-hidden, .card.is-hidden { display:none; }
@@ -161,7 +172,7 @@
       radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
       radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
   body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
-  body[data-theme="light"] .done.is-done .box { color:#fff; }
+  body[data-theme="light"] .done.is-done .box, body[data-theme="light"] .disc.is-done .box { color:#fff; }
 
   @media (max-width:560px) {
     .page { padding:52px 20px 90px; }
@@ -224,7 +235,7 @@
   <p class="empty" id="empty">Nothing matches that — try a topic name from Allen's list, like “syllogism” or “excretion”.</p>
 
   <footer class="foot">
-    Topics are Allen's official <em>TALLENTEX 2027 — Syllabus &amp; Pattern, Class 10</em>, grouped into study units; (9th) / (10th) is the class each topic belongs to. Notes and papers appear on their cards as they're built; a card ticks itself when you've done everything on it.
+    Topics are Allen's official <em>TALLENTEX 2027 — Syllabus &amp; Pattern, Class 10</em>, grouped into study units; (9th) / (10th) is the class each topic belongs to. Notes and papers appear on their cards as they're built; a card ticks itself when you've done everything on it. <b>💬 Discussed with teacher</b> is the one box you tick yourself — after you and your teacher have talked the unit through.
   </footer>
 </div>
 
@@ -314,7 +325,9 @@
         if (!live) btns = '<span class="btn coming">Notes · 20-min paper · coming</span>';
         el.innerHTML = '<div class="card-topic">' + s.name + ' · ' + c.topics.length + (c.topics.length === 1 ? ' topic' : ' topics') + tag + '</div>'
           + '<div class="card-title">' + esc(c.title) + '</div><div class="topics">' + chips + '</div><div class="btns">' + btns + '</div>'
-          + (track ? '<div class="track">' + track + '</div>' : '');
+          + (track ? '<div class="track">' + track + '</div>' : '')
+          + '<div class="disc-row"><button class="disc" type="button" data-discid="tx:' + c.slug + ':disc" aria-pressed="false" title="Tick after you and your teacher have talked this unit through">'
+          + '<span class="box"></span>💬 Discussed with teacher<span class="when"></span></button></div>';
         el.setAttribute('data-search', (c.title + ' ' + c.topics.map(function (t) { return t[0]; }).join(' ') + ' ' + s.name).toLowerCase());
         wrap.appendChild(el);
       });
@@ -327,10 +340,21 @@
   })();
 
   /* progress — read-only. Notes pages write tx:<slug>:notes (timestamp); papers write
-     tx:<slug>:pN / tx:subj:<key> / tx:mock-N as {t, m, mx} on submit. */
+     tx:<slug>:pN / tx:subj:<key> / tx:mock-N as {t, m, mx} on submit.
+     The one exception: 💬 Discussed (tx:<slug>:disc, ISO timestamp) is ticked by hand on this page
+     after a teacher–student discussion of the unit. It is tracked on its own and never counts towards
+     a card's auto-tick. */
+  var MO3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function dayOf(v){ var d = new Date(v); return isNaN(d) ? '' : ' · ' + d.getDate() + ' ' + MO3[d.getMonth()]; }
   function scoreOf(v){ return (v && typeof v === 'object' && v.mx) ? (v.m + '/' + v.mx) : ''; }
   function render() {
-    var prog = load(), unitsLive = 0, unitsDone = 0, units = 0;
+    var prog = load(), unitsLive = 0, unitsDone = 0, units = 0, discussed = 0;
+    document.querySelectorAll('.disc[data-discid]').forEach(function (b) {
+      var v = prog[b.getAttribute('data-discid')], on = !!v;
+      b.classList.toggle('is-done', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.querySelector('.when').textContent = on ? dayOf(v) : '';
+      if (on) discussed++;
+    });
     TX.forEach(function (s) {
       var live = 0, sd = 0;
       document.querySelectorAll('#cards-' + s.key + ' .card').forEach(function (card) {
@@ -349,7 +373,9 @@
       var sp = document.querySelector('#cards-' + s.key).previousElementSibling.querySelector('.done[data-txid]');
       if (sp) { var v = prog[sp.getAttribute('data-txid')]; sp.classList.toggle('is-done', !!v); sp.querySelector('.score').textContent = v ? scoreOf(v) : ''; }
       var cp = document.getElementById('cp-' + s.key);
-      cp.innerHTML = live ? '<span class="ring" style="--pct:' + Math.round(sd / live * 100) + '"></span>' + sd + ' / ' + live + ' done' : s.cards.length + ' units · coming';
+      var sDisc = document.querySelectorAll('#cards-' + s.key + ' .disc.is-done').length;
+      cp.innerHTML = (live ? '<span class="ring" style="--pct:' + Math.round(sd / live * 100) + '"></span>' + sd + ' / ' + live + ' done' : s.cards.length + ' units · coming')
+        + ' · 💬 ' + sDisc + ' / ' + s.cards.length;
     });
     document.querySelectorAll('#mockPills .ms-pill[data-txid]').forEach(function (p) {
       var v = prog[p.getAttribute('data-txid')]; p.classList.toggle('is-done', !!v); p.querySelector('.score').textContent = v ? scoreOf(v) : '';
@@ -361,7 +387,17 @@
       ? 'Notes and 20-minute papers are being built and will appear on the cards below. Until then, read <b>How to play it</b>.'
       : unitsDone === 0 ? 'Finish a unit’s notes and papers and its card ticks itself — <b>' + unitsLive + '</b> built so far.'
       : '<b>' + unitsDone + ' of ' + unitsLive + '</b> built units done · ' + pct + '%';
+    document.getElementById('progText').innerHTML += '<br>💬 <b>' + discussed + ' of ' + units + '</b> units discussed with your teacher';
   }
+  /* 💬 Discussed — the only box on this page that is ticked by hand */
+  document.getElementById('sections').addEventListener('click', function (e) {
+    var b = e.target.closest('.disc[data-discid]'); if (!b) return;
+    var id = b.getAttribute('data-discid'), prog = load();
+    if (prog[id]) { if (!confirm('Untick “Discussed with teacher” for this unit?')) return; delete prog[id]; }
+    else prog[id] = new Date().toISOString();
+    try { localStorage.setItem(KEY, JSON.stringify(prog)); } catch (err) {}
+    render();
+  });
   render();
   window.addEventListener('miraya-progress-synced', render);
   window.addEventListener('focus', render);
