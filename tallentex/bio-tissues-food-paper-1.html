@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Tissues; Food Resources — Paper 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .viewonly .submitrow, .viewonly .q-flag { display:none !important; }
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP||location.protocol!=='https:'||navigator.webdriver)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+      <button class="bigbtn" id="viewOnly" type="button">👁 Just look at the questions</button>
+      <button class="bigbtn" id="lastAttempt" type="button" hidden>📋 See your last attempt</button>
+    </div>
+    <p class="startnote" id="startNote">Practice mode still marks you and still applies −1 — only the countdown is off. “Just look” shows the questions without marking or recording anything.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  "title": "TALLENTEX · Tissues; Food Resources — Paper 1",
+  "kind": "topic",
+  "duration": 20,
+  "id": "tx:bio-tissues-food:p1",
+  "accent": "bio",
+  "sub": "Tissues in Action and Improvement in Food Resources — where a plant grows and thickens, a stem cut across, the two pipelines, muscle, joints, blood and the body's linings; then cropping, manure, the fish pond and the farm animals. <b>13 questions · 52 marks · 20 minutes · +4 / −1 / 0.</b> Pitched at the real TALLENTEX paper: most questions need two steps, and the marks go on single words — read every clause.",
+  "sections": [
+    {
+      "name": "Biology",
+      "from": 1,
+      "to": 13
+    }
+  ],
+  "questions": [
+    {
+      "n": 1,
+      "section": "Biology",
+      "topic": "Tissues in Action",
+      "fmt": "diagram",
+      "stem": "<p>Two onion bulbs are stood with their bases in water, one in Jar A and one in Jar B, and the average length of their roots is read every morning. The graph shows Jar A for seven days and Jar B for its first three.</p><p>Straight after the day 3 reading, <b>1 cm is cut off the tip of every root in Jar B</b>. Jar A is left alone, and no new roots grow from either bulb.</p><p>On <b>day 7</b>, by how much are the roots in Jar A longer than the roots in Jar B?</p>",
+      "fig": "<svg viewBox=\"0 0 620 400\" width=\"620\" height=\"400\" role=\"img\" aria-label=\"Graph of average root length against day. Jar A is plotted for days 1 to 7 and Jar B for days 1 to 3; a note at Jar B's day 3 point says 1 cm is cut off every root tip just after that reading.\"><line x1=\"78\" y1=\"340.0\" x2=\"596\" y2=\"340.0\" stroke=\"var(--muted)\" stroke-width=\"1.1\" opacity=\"0.8\"/><line x1=\"78\" y1=\"331.6\" x2=\"596\" y2=\"331.6\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"323.2\" x2=\"596\" y2=\"323.2\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"314.8\" x2=\"596\" y2=\"314.8\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"306.4\" x2=\"596\" y2=\"306.4\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"298.0\" x2=\"596\" y2=\"298.0\" stroke=\"var(--muted)\" stroke-width=\"1.1\" opacity=\"0.8\"/><line x1=\"78\" y1=\"289.6\" x2=\"596\" y2=\"289.6\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"281.2\" x2=\"596\" y2=\"281.2\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"272.8\" x2=\"596\" y2=\"272.8\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"264.4\" x2=\"596\" y2=\"264.4\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"256.0\" x2=\"596\" y2=\"256.0\" stroke=\"var(--muted)\" stroke-width=\"1.1\" opacity=\"0.8\"/><line x1=\"78\" y1=\"247.6\" x2=\"596\" y2=\"247.6\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"239.2\" x2=\"596\" y2=\"239.2\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"230.8\" x2=\"596\" y2=\"230.8\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"222.4\" x2=\"596\" y2=\"222.4\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"214.0\" x2=\"596\" y2=\"214.0\" stroke=\"var(--muted)\" stroke-width=\"1.1\" opacity=\"0.8\"/><line x1=\"78\" y1=\"205.6\" x2=\"596\" y2=\"205.6\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"197.2\" x2=\"596\" y2=\"197.2\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"188.8\" x2=\"596\" y2=\"188.8\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"180.4\" x2=\"596\" y2=\"180.4\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"172.0\" x2=\"596\" y2=\"172.0\" stroke=\"var(--muted)\" stroke-width=\"1.1\" opacity=\"0.8\"/><line x1=\"78\" y1=\"163.6\" x2=\"596\" y2=\"163.6\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"155.2\" x2=\"596\" y2=\"155.2\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"146.8\" x2=\"596\" y2=\"146.8\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"138.4\" x2=\"596\" y2=\"138.4\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"130.0\" x2=\"596\" y2=\"130.0\" stroke=\"var(--muted)\" stroke-width=\"1.1\" opacity=\"0.8\"/><line x1=\"78\" y1=\"121.6\" x2=\"596\" y2=\"121.6\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"113.2\" x2=\"596\" y2=\"113.2\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"104.8\" x2=\"596\" y2=\"104.8\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"96.4\" x2=\"596\" y2=\"96.4\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"88.0\" x2=\"596\" y2=\"88.0\" stroke=\"var(--muted)\" stroke-width=\"1.1\" opacity=\"0.8\"/><line x1=\"78\" y1=\"79.6\" x2=\"596\" y2=\"79.6\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"71.2\" x2=\"596\" y2=\"71.2\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"62.8\" x2=\"596\" y2=\"62.8\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"54.4\" x2=\"596\" y2=\"54.4\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"78\" y1=\"46.0\" x2=\"596\" y2=\"46.0\" stroke=\"var(--muted)\" stroke-width=\"1.1\" opacity=\"0.8\"/><line x1=\"118\" y1=\"46\" x2=\"118\" y2=\"340\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"194\" y1=\"46\" x2=\"194\" y2=\"340\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"270\" y1=\"46\" x2=\"270\" y2=\"340\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"346\" y1=\"46\" x2=\"346\" y2=\"340\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"422\" y1=\"46\" x2=\"422\" y2=\"340\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"498\" y1=\"46\" x2=\"498\" y2=\"340\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><line x1=\"574\" y1=\"46\" x2=\"574\" y2=\"340\" stroke=\"var(--muted)\" stroke-width=\"0.7\" opacity=\"0.42\"/><path d=\"M78,38 L78,340 L596,340\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\"/><line x1=\"73\" y1=\"340.0\" x2=\"78\" y2=\"340.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"68.0\" y=\"344.5\" text-anchor=\"end\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">0</text><line x1=\"73\" y1=\"298.0\" x2=\"78\" y2=\"298.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"68.0\" y=\"302.5\" text-anchor=\"end\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">1</text><line x1=\"73\" y1=\"256.0\" x2=\"78\" y2=\"256.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"68.0\" y=\"260.5\" text-anchor=\"end\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">2</text><line x1=\"73\" y1=\"214.0\" x2=\"78\" y2=\"214.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"68.0\" y=\"218.5\" text-anchor=\"end\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">3</text><line x1=\"73\" y1=\"172.0\" x2=\"78\" y2=\"172.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"68.0\" y=\"176.5\" text-anchor=\"end\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">4</text><line x1=\"73\" y1=\"130.0\" x2=\"78\" y2=\"130.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"68.0\" y=\"134.5\" text-anchor=\"end\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">5</text><line x1=\"73\" y1=\"88.0\" x2=\"78\" y2=\"88.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"68.0\" y=\"92.5\" text-anchor=\"end\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">6</text><line x1=\"73\" y1=\"46.0\" x2=\"78\" y2=\"46.0\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"68.0\" y=\"50.5\" text-anchor=\"end\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">7</text><line x1=\"118\" y1=\"340\" x2=\"118\" y2=\"345\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"118.0\" y=\"360.0\" text-anchor=\"middle\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">1</text><line x1=\"194\" y1=\"340\" x2=\"194\" y2=\"345\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"194.0\" y=\"360.0\" text-anchor=\"middle\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">2</text><line x1=\"270\" y1=\"340\" x2=\"270\" y2=\"345\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"270.0\" y=\"360.0\" text-anchor=\"middle\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">3</text><line x1=\"346\" y1=\"340\" x2=\"346\" y2=\"345\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"346.0\" y=\"360.0\" text-anchor=\"middle\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">4</text><line x1=\"422\" y1=\"340\" x2=\"422\" y2=\"345\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"422.0\" y=\"360.0\" text-anchor=\"middle\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">5</text><line x1=\"498\" y1=\"340\" x2=\"498\" y2=\"345\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"498.0\" y=\"360.0\" text-anchor=\"middle\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">6</text><line x1=\"574\" y1=\"340\" x2=\"574\" y2=\"345\" stroke=\"currentColor\" stroke-width=\"1.4\"/><text x=\"574.0\" y=\"360.0\" text-anchor=\"middle\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">7</text><text x=\"337.0\" y=\"384.0\" text-anchor=\"middle\" font-size=\"13\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\">Day</text><text x=\"22\" y=\"193.0\" text-anchor=\"middle\" font-size=\"13\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\" transform=\"rotate(-90 22 193.0)\">Average root length / cm</text><polyline points=\"118,281.2 194,247.6 270,214.0 346,180.4 422,146.8 498,113.2 574,79.6\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"2.3\"/><circle cx=\"118\" cy=\"281.2\" r=\"5.2\" fill=\"var(--bio)\" stroke=\"var(--surface)\" stroke-width=\"1.2\"/><circle cx=\"194\" cy=\"247.6\" r=\"5.2\" fill=\"var(--bio)\" stroke=\"var(--surface)\" stroke-width=\"1.2\"/><circle cx=\"270\" cy=\"214.0\" r=\"5.2\" fill=\"var(--bio)\" stroke=\"var(--surface)\" stroke-width=\"1.2\"/><circle cx=\"346\" cy=\"180.4\" r=\"5.2\" fill=\"var(--bio)\" stroke=\"var(--surface)\" stroke-width=\"1.2\"/><circle cx=\"422\" cy=\"146.8\" r=\"5.2\" fill=\"var(--bio)\" stroke=\"var(--surface)\" stroke-width=\"1.2\"/><circle cx=\"498\" cy=\"113.2\" r=\"5.2\" fill=\"var(--bio)\" stroke=\"var(--surface)\" stroke-width=\"1.2\"/><circle cx=\"574\" cy=\"79.6\" r=\"5.2\" fill=\"var(--bio)\" stroke=\"var(--surface)\" stroke-width=\"1.2\"/><polyline points=\"118,298.0 194,264.4 270,230.8\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"2.3\" stroke-dasharray=\"7 5\"/><rect x=\"113.0\" y=\"293.0\" width=\"10\" height=\"10\" fill=\"var(--iq)\" stroke=\"var(--surface)\" stroke-width=\"1.2\"/><rect x=\"189.0\" y=\"259.4\" width=\"10\" height=\"10\" fill=\"var(--iq)\" stroke=\"var(--surface)\" stroke-width=\"1.2\"/><rect x=\"265.0\" y=\"225.8\" width=\"10\" height=\"10\" fill=\"var(--iq)\" stroke=\"var(--surface)\" stroke-width=\"1.2\"/><text x=\"548.0\" y=\"69.6\" text-anchor=\"end\" font-size=\"13.5\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bio)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">Jar A</text><text x=\"208.0\" y=\"294.4\" text-anchor=\"start\" font-size=\"13.5\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--iq)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">Jar B</text><path d=\"M304,260.8 L279,238.8\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M279,238.8 l9.5,2.2 l-5.4,5.6 Z\" fill=\"currentColor\"/><text x=\"308.0\" y=\"272.8\" text-anchor=\"start\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">1 cm cut off every root tip in Jar B,</text><text x=\"308.0\" y=\"289.8\" text-anchor=\"start\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--text)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">just after this reading</text></svg>",
+      "figCap": "Average root length, measured from the base of the bulb. Each small division on the vertical scale is 0.2 cm.",
+      "options": [
+        "0.4 cm",
+        "1.4 cm",
+        "3.6 cm",
+        "4.6 cm"
+      ],
+      "answer": 3,
+      "sol": "<p><b>Read the graph.</b> Jar A on day 7: 6.2 cm. Jar B on day 3: 2.6 cm.</p><p><b>What cutting the tips does.</b> A root gets longer only at its tip, because that is where its apical meristem is — the only cells in the root that are still dividing. Cut the tips off and those roots stop getting longer. So Jar B's roots are 2.6 − 1.0 = 1.6 cm after the cut, and they are <b>still 1.6 cm on day 7</b>.</p><p>Difference = 6.2 − 1.6 = <b>4.6 cm</b>, option (4).</p><p><b>The other three.</b> 3.6 cm is 6.2 − 2.6: the growth is stopped, but the centimetre that was cut off is never taken away. 1.4 cm lets the cut roots carry on at their old 0.8 cm a day (1.6 + 4 × 0.8 = 4.8, and 6.2 − 4.8 = 1.4). Mown grass does grow back like that, but only because it has an intercalary meristem below the cut; NCERT's onion-root activity shows that a root has nothing of the kind — roots grow only from their tips. 0.4 cm is just the gap the two jars already had on day 3 (3.0 − 2.6), as if the cut had changed nothing.</p>"
+    },
+    {
+      "n": 2,
+      "section": "Biology",
+      "topic": "Tissues in Action",
+      "fmt": "plain",
+      "stem": "<p>A student is handed a slide of muscle and writes down two things about it. Each option below is a different pair of notes.</p><p>With which pair could the slide <b>still be either of two kinds of muscle</b>?</p>",
+      "options": [
+        "Each cell has one nucleus; the muscle is involuntary.",
+        "The fibres are striated; each cell has one nucleus.",
+        "The fibres are striated; the fibres are unbranched.",
+        "The fibres are cylindrical; the muscle is involuntary."
+      ],
+      "answer": 0,
+      "sol": "<p><b>Lay the three muscles out first.</b><br><b>Skeletal</b> — long cylindrical fibres, unbranched · many nuclei · striated · voluntary.<br><b>Smooth</b> — spindle-shaped cells · one nucleus · no striations · involuntary.<br><b>Cardiac</b> — cylindrical fibres that branch · one nucleus · faint striations · involuntary.</p><p><b>Then cross out, pair by pair.</b><br>(1) One nucleus rules out skeletal. Involuntary rules out skeletal again — and nothing else. Smooth and cardiac are <b>both still possible</b>.<br>(2) Striated rules out smooth; one nucleus rules out skeletal. Only cardiac is left.<br>(3) Striated rules out smooth; unbranched rules out cardiac. Only skeletal is left.<br>(4) Cylindrical rules out smooth, whose cells are spindles; involuntary rules out skeletal. Only cardiac is left.</p><p>Option (1). Its two notes say the same thing about the same muscles, so the second adds nothing to the first.</p><p><b>Why the others tempt.</b> (2) looks open if you forget that a skeletal fibre has many nuclei; (3) if you forget that cardiac fibres are the ones that branch; (4) if you forget that a smooth muscle cell is a spindle, not a cylinder.</p>"
+    },
+    {
+      "n": 3,
+      "section": "Biology",
+      "topic": "Improvement in Food Resources",
+      "fmt": "diagram",
+      "stem": "<p>The figure shows a fish pond in cross-section. K, L, M and N mark the four places in it where fish find food.</p><p>A farmer stocks the pond with four kinds of fish only: <b>Catla, Rohu, Mrigal and Common Carp</b>. Composite fish culture aims to have <b>every one of the four feeding places in use</b>, with <b>no two kinds of fish competing</b> in the same place.</p><p>Which single change to his stock would achieve that?</p>",
+      "fig": "<svg viewBox=\"0 0 640 300\" width=\"640\" height=\"300\" role=\"img\" aria-label=\"Cross-section of a fish pond. K marks the water just under the surface, L the middle depth, M the bottom of the pond, and N a bed of water weeds at one end.\"><path d=\"M6,70 L60,70 L130,250 L520,250 L590,70 L634,70\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linejoin=\"round\"/><path d=\"M66.2,86 L583.8,86 L520,250 L130,250 Z\" fill=\"color-mix(in srgb,var(--physics) 15%,transparent)\"/><line x1=\"66.2\" y1=\"86\" x2=\"583.8\" y2=\"86\" stroke=\"var(--physics)\" stroke-width=\"2\"/><line x1=\"428\" y1=\"86\" x2=\"428\" y2=\"250\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-dasharray=\"5 5\" opacity=\".75\"/><line x1=\"83.3\" y1=\"130\" x2=\"428\" y2=\"130\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-dasharray=\"5 5\" opacity=\".75\"/><line x1=\"109.0\" y1=\"196\" x2=\"428\" y2=\"196\" stroke=\"currentColor\" stroke-width=\"1.1\" stroke-dasharray=\"5 5\" opacity=\".75\"/><path d=\"M444,250 q9,-12.5 0,-25.0 q-9,-12.5 0,-25.0 q9,-12.5 0,-25.0 q-9,-12.5 0,-25.0\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><path d=\"M460,250 q-9,-15.5 0,-31.0 q9,-15.5 0,-31.0 q-9,-15.5 0,-31.0 q9,-15.5 0,-31.0\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><path d=\"M508,250 q9,-14.2 0,-28.5 q-9,-14.2 0,-28.5 q9,-14.2 0,-28.5 q-9,-14.2 0,-28.5\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><path d=\"M524,240 q-5,-11.2 0,-22.5 q5,-11.2 0,-22.5 q-5,-11.2 0,-22.5 q5,-11.2 0,-22.5\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><path d=\"M540,199 q-5,-8.9 0,-17.8 q5,-8.9 0,-17.8 q-5,-8.9 0,-17.8 q5,-8.9 0,-17.8\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><path d=\"M556,158 q-5,-5.0 0,-10.0 q5,-5.0 0,-10.0 q-5,-5.0 0,-10.0 q5,-5.0 0,-10.0\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><text x=\"244.0\" y=\"114.1\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">K</text><text x=\"244.0\" y=\"169.1\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">L</text><text x=\"244.0\" y=\"229.1\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">M</text><text x=\"484.0\" y=\"202.1\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">N</text><text x=\"70.0\" y=\"56.0\" text-anchor=\"middle\" font-size=\"12\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--muted)\">bank</text><text x=\"320.0\" y=\"276.0\" text-anchor=\"middle\" font-size=\"12\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--muted)\">floor of the pond</text><text x=\"320.0\" y=\"62.0\" text-anchor=\"middle\" font-size=\"12\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--muted)\">water surface</text></svg>",
+      "figCap": "K is the water just under the surface, L the middle depth, M the bottom of the pond and N a bed of water weeds.",
+      "options": [
+        "Replace the Catla with Grass Carp",
+        "Replace the Common Carp with Grass Carp",
+        "Replace the Catla with Silver Carp",
+        "Replace the Common Carp with Silver Carp"
+      ],
+      "answer": 1,
+      "sol": "<p><b>Put each fish in its place.</b> Catla feeds at the surface (K). Rohu feeds in the middle zone (L). Mrigal and Common Carp are <b>both bottom feeders</b> (M). Nothing he has stocked eats the weeds (N).</p><p><b>So two things are wrong at once:</b> two kinds compete at M, and N is not used at all. One swap cures both — take out one of the two bottom feeders and bring in the fish that feeds on the weeds, the <b>Grass Carp</b>. Then K has Catla, L has Rohu, M has Mrigal and N has Grass Carp: option (2).</p><p><b>The other three.</b> (1) takes out the Catla, which leaves the surface empty while the two bottom feeders still compete — it only looks right to someone who thinks Common Carp feeds at the surface, beside the Catla. (3) and (4) bring in Silver Carp, which is a second surface feeder, not the weed-eater, so N still goes unused: in (3) the two bottom feeders are still competing as well, and in (4) the surface now has two kinds. The name to hold on to is <i>Grass</i> Carp.</p>"
+    },
+    {
+      "n": 4,
+      "section": "Biology",
+      "topic": "Tissues in Action",
+      "fmt": "diagram",
+      "stem": "<p>The figure shows a wedge cut from the cross-section of a young sunflower stem. Five of its tissues are lettered P to T. The outer surface of the stem is at the top of the figure and the centre of the stem at the bottom.</p><p>In an experiment a complete ring of tissue is peeled away all round such a stem, taking <b>everything from the outer surface in as far as tissue R, and R itself</b>. Tissues S and T are left undamaged.</p><p>In the days that follow, what happens to the supply of water to the leaves above the ring, and of food to the roots below it?</p>",
+      "fig": "<svg viewBox=\"0 0 560 452\" width=\"560\" height=\"452\" role=\"img\" aria-label=\"A wedge cut from the cross-section of a young sunflower stem, outer surface at the top and centre at the bottom. Working inwards from the epidermis the bands are: P, a band of cells thickened at their corners; an unlettered band of large thin-walled cells; Q, small very thick-walled cells; R, small thin-walled cells; S, a narrow band of flat brick-like cells; T, wide thick-walled tubes; and large thin-walled cells at the centre.\"><defs><clipPath id=\"wedgeclipP\"><path d=\"M145.9,62.4 A390,390 0 0 1 438.1,62.4 L305.5,390.6 A36,36 0 0 0 278.5,390.6 Z\"/></clipPath></defs><g clip-path=\"url(#wedgeclipP)\"><path d=\"M152.6,79.1 A372,372 0 0 1 431.4,79.1 L417.1,114.3 A334,334 0 0 0 166.9,114.3 Z\" fill=\"color-mix(in srgb,var(--bio) 13%,transparent)\"/><path d=\"M184.9,158.8 A286,286 0 0 1 399.1,158.8 L386.4,190.3 A252,252 0 0 0 197.6,190.3 Z\" fill=\"color-mix(in srgb,var(--force) 13%,transparent)\"/><path d=\"M197.6,190.3 A252,252 0 0 1 386.4,190.3 L372.2,225.6 A214,214 0 0 0 211.8,225.6 Z\" fill=\"color-mix(in srgb,var(--iq) 13%,transparent)\"/><path d=\"M211.8,225.6 A214,214 0 0 1 372.2,225.6 L365.4,242.3 A196,196 0 0 0 218.6,242.3 Z\" fill=\"color-mix(in srgb,var(--rose) 13%,transparent)\"/><path d=\"M218.6,242.3 A196,196 0 0 1 365.4,242.3 L334.0,320.2 A112,112 0 0 0 250.0,320.2 Z\" fill=\"color-mix(in srgb,var(--physics) 13%,transparent)\"/><path d=\"M145.9,62.4 A390,390 0 0 1 159.9,57.1 L166.0,74.0 A372,372 0 0 0 152.6,79.1 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M159.9,57.1 A390,390 0 0 1 174.1,52.3 L179.5,69.4 A372,372 0 0 0 166.0,74.0 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M174.1,52.3 A390,390 0 0 1 188.4,48.0 L193.2,65.4 A372,372 0 0 0 179.5,69.4 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M188.4,48.0 A390,390 0 0 1 202.9,44.3 L207.1,61.8 A372,372 0 0 0 193.2,65.4 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M202.9,44.3 A390,390 0 0 1 217.6,41.2 L221.0,58.8 A372,372 0 0 0 207.1,61.8 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M217.6,41.2 A390,390 0 0 1 232.3,38.6 L235.1,56.4 A372,372 0 0 0 221.0,58.8 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M232.3,38.6 A390,390 0 0 1 247.2,36.6 L249.2,54.5 A372,372 0 0 0 235.1,56.4 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M247.2,36.6 A390,390 0 0 1 262.1,35.1 L263.5,53.1 A372,372 0 0 0 249.2,54.5 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M262.1,35.1 A390,390 0 0 1 277.0,34.3 L277.7,52.3 A372,372 0 0 0 263.5,53.1 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M277.0,34.3 A390,390 0 0 1 292.0,34.0 L292.0,52.0 A372,372 0 0 0 277.7,52.3 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M292.0,34.0 A390,390 0 0 1 307.0,34.3 L306.3,52.3 A372,372 0 0 0 292.0,52.0 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M307.0,34.3 A390,390 0 0 1 321.9,35.1 L320.5,53.1 A372,372 0 0 0 306.3,52.3 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M321.9,35.1 A390,390 0 0 1 336.8,36.6 L334.8,54.5 A372,372 0 0 0 320.5,53.1 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M336.8,36.6 A390,390 0 0 1 351.7,38.6 L348.9,56.4 A372,372 0 0 0 334.8,54.5 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M351.7,38.6 A390,390 0 0 1 366.4,41.2 L363.0,58.8 A372,372 0 0 0 348.9,56.4 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M366.4,41.2 A390,390 0 0 1 381.1,44.3 L376.9,61.8 A372,372 0 0 0 363.0,58.8 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M381.1,44.3 A390,390 0 0 1 395.6,48.0 L390.8,65.4 A372,372 0 0 0 376.9,61.8 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M395.6,48.0 A390,390 0 0 1 409.9,52.3 L404.5,69.4 A372,372 0 0 0 390.8,65.4 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M409.9,52.3 A390,390 0 0 1 424.1,57.1 L418.0,74.0 A372,372 0 0 0 404.5,69.4 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M424.1,57.1 A390,390 0 0 1 438.1,62.4 L431.4,79.1 A372,372 0 0 0 418.0,74.0 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M438.1,62.4 A390,390 0 0 1 451.9,68.3 L444.5,84.7 A372,372 0 0 0 431.4,79.1 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.0\"/><path d=\"M159.8,96.7 A353.0,353.0 0 0 1 179.3,89.5 L185.4,107.5 A334,334 0 0 0 166.9,114.3 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"166.9\" cy=\"114.3\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"159.8\" cy=\"96.7\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M179.3,89.5 A353.0,353.0 0 0 1 199.3,83.4 L204.3,101.7 A334,334 0 0 0 185.4,107.5 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"185.4\" cy=\"107.5\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"179.3\" cy=\"89.5\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M199.3,83.4 A353.0,353.0 0 0 1 219.5,78.5 L223.4,97.1 A334,334 0 0 0 204.3,101.7 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"204.3\" cy=\"101.7\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"199.3\" cy=\"83.4\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M219.5,78.5 A353.0,353.0 0 0 1 240.1,74.8 L242.9,93.6 A334,334 0 0 0 223.4,97.1 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"223.4\" cy=\"97.1\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"219.5\" cy=\"78.5\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M240.1,74.8 A353.0,353.0 0 0 1 260.8,72.4 L262.4,91.3 A334,334 0 0 0 242.9,93.6 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"242.9\" cy=\"93.6\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"240.1\" cy=\"74.8\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M260.8,72.4 A353.0,353.0 0 0 1 281.6,71.2 L282.1,90.1 A334,334 0 0 0 262.4,91.3 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"262.4\" cy=\"91.3\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"260.8\" cy=\"72.4\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M281.6,71.2 A353.0,353.0 0 0 1 302.4,71.2 L301.9,90.1 A334,334 0 0 0 282.1,90.1 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"282.1\" cy=\"90.1\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"281.6\" cy=\"71.2\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M302.4,71.2 A353.0,353.0 0 0 1 323.2,72.4 L321.6,91.3 A334,334 0 0 0 301.9,90.1 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"301.9\" cy=\"90.1\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"302.4\" cy=\"71.2\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M323.2,72.4 A353.0,353.0 0 0 1 343.9,74.8 L341.1,93.6 A334,334 0 0 0 321.6,91.3 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"321.6\" cy=\"91.3\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"323.2\" cy=\"72.4\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M343.9,74.8 A353.0,353.0 0 0 1 364.5,78.5 L360.6,97.1 A334,334 0 0 0 341.1,93.6 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"341.1\" cy=\"93.6\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"343.9\" cy=\"74.8\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M364.5,78.5 A353.0,353.0 0 0 1 384.7,83.4 L379.7,101.7 A334,334 0 0 0 360.6,97.1 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"360.6\" cy=\"97.1\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"364.5\" cy=\"78.5\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M384.7,83.4 A353.0,353.0 0 0 1 404.7,89.5 L398.6,107.5 A334,334 0 0 0 379.7,101.7 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"379.7\" cy=\"101.7\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"384.7\" cy=\"83.4\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M404.7,89.5 A353.0,353.0 0 0 1 424.2,96.7 L417.1,114.3 A334,334 0 0 0 398.6,107.5 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"398.6\" cy=\"107.5\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"404.7\" cy=\"89.5\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M424.2,96.7 A353.0,353.0 0 0 1 443.3,105.1 L435.2,122.2 A334,334 0 0 0 417.1,114.3 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"417.1\" cy=\"114.3\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"424.2\" cy=\"96.7\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M142.5,83.4 A372,372 0 0 1 162.9,75.1 L169.5,92.9 A353.0,353.0 0 0 0 150.2,100.8 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"150.2\" cy=\"100.8\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"142.5\" cy=\"83.4\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M162.9,75.1 A372,372 0 0 1 183.7,68.1 L189.2,86.3 A353.0,353.0 0 0 0 169.5,92.9 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"169.5\" cy=\"92.9\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"162.9\" cy=\"75.1\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M183.7,68.1 A372,372 0 0 1 204.9,62.3 L209.4,80.8 A353.0,353.0 0 0 0 189.2,86.3 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"189.2\" cy=\"86.3\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"183.7\" cy=\"68.1\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M204.9,62.3 A372,372 0 0 1 226.4,57.8 L229.8,76.5 A353.0,353.0 0 0 0 209.4,80.8 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"209.4\" cy=\"80.8\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"204.9\" cy=\"62.3\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M226.4,57.8 A372,372 0 0 1 248.2,54.6 L250.4,73.5 A353.0,353.0 0 0 0 229.8,76.5 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"229.8\" cy=\"76.5\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"226.4\" cy=\"57.8\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M248.2,54.6 A372,372 0 0 1 270.0,52.6 L271.2,71.6 A353.0,353.0 0 0 0 250.4,73.5 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"250.4\" cy=\"73.5\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"248.2\" cy=\"54.6\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M270.0,52.6 A372,372 0 0 1 292.0,52.0 L292.0,71.0 A353.0,353.0 0 0 0 271.2,71.6 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"271.2\" cy=\"71.6\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"270.0\" cy=\"52.6\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M292.0,52.0 A372,372 0 0 1 314.0,52.6 L312.8,71.6 A353.0,353.0 0 0 0 292.0,71.0 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"292.0\" cy=\"71.0\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"292.0\" cy=\"52.0\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M314.0,52.6 A372,372 0 0 1 335.8,54.6 L333.6,73.5 A353.0,353.0 0 0 0 312.8,71.6 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"312.8\" cy=\"71.6\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"314.0\" cy=\"52.6\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M335.8,54.6 A372,372 0 0 1 357.6,57.8 L354.2,76.5 A353.0,353.0 0 0 0 333.6,73.5 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"333.6\" cy=\"73.5\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"335.8\" cy=\"54.6\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M357.6,57.8 A372,372 0 0 1 379.1,62.3 L374.6,80.8 A353.0,353.0 0 0 0 354.2,76.5 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"354.2\" cy=\"76.5\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"357.6\" cy=\"57.8\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M379.1,62.3 A372,372 0 0 1 400.3,68.1 L394.8,86.3 A353.0,353.0 0 0 0 374.6,80.8 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"374.6\" cy=\"80.8\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"379.1\" cy=\"62.3\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M400.3,68.1 A372,372 0 0 1 421.1,75.1 L414.5,92.9 A353.0,353.0 0 0 0 394.8,86.3 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"394.8\" cy=\"86.3\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"400.3\" cy=\"68.1\" r=\"3.6\" fill=\"currentColor\"/><path d=\"M421.1,75.1 A372,372 0 0 1 441.5,83.4 L433.8,100.8 A353.0,353.0 0 0 0 414.5,92.9 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"414.5\" cy=\"92.9\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"421.1\" cy=\"75.1\" r=\"3.6\" fill=\"currentColor\"/><circle cx=\"157.6\" cy=\"158.0\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"180.4\" cy=\"147.7\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"203.9\" cy=\"139.3\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"228.1\" cy=\"132.9\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"252.7\" cy=\"128.6\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"277.6\" cy=\"126.3\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"302.6\" cy=\"126.2\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"327.5\" cy=\"128.1\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"352.2\" cy=\"132.1\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"376.4\" cy=\"138.2\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"400.1\" cy=\"146.3\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"422.9\" cy=\"156.3\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"444.9\" cy=\"168.2\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"159.9\" cy=\"130.4\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"183.1\" cy=\"121.0\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"206.9\" cy=\"113.5\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"231.2\" cy=\"107.8\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"255.9\" cy=\"104.0\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"280.9\" cy=\"102.2\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"305.9\" cy=\"102.3\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"330.8\" cy=\"104.3\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"355.4\" cy=\"108.3\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"379.7\" cy=\"114.2\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"403.5\" cy=\"121.9\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"426.6\" cy=\"131.5\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"448.9\" cy=\"142.8\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"180.1\" cy=\"188.2\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"194.2\" cy=\"182.0\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"208.7\" cy=\"176.7\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"223.4\" cy=\"172.2\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"238.4\" cy=\"168.6\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"253.5\" cy=\"165.9\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"268.8\" cy=\"164.0\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"284.2\" cy=\"163.1\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"299.6\" cy=\"163.1\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"315.0\" cy=\"164.0\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"330.2\" cy=\"165.8\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"345.4\" cy=\"168.5\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"360.4\" cy=\"172.1\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"375.1\" cy=\"176.6\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"389.6\" cy=\"181.9\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"403.7\" cy=\"188.1\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"417.4\" cy=\"195.1\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"181.1\" cy=\"170.2\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"195.4\" cy=\"164.4\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"210.0\" cy=\"159.4\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"224.8\" cy=\"155.3\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"239.9\" cy=\"152.0\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"255.1\" cy=\"149.5\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"270.4\" cy=\"147.8\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"285.7\" cy=\"147.1\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"301.1\" cy=\"147.2\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"316.5\" cy=\"148.1\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"331.8\" cy=\"149.9\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"347.0\" cy=\"152.5\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"362.0\" cy=\"156.0\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"376.8\" cy=\"160.3\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"391.3\" cy=\"165.4\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"405.5\" cy=\"171.3\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"419.4\" cy=\"178.0\" r=\"6.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.7\"/><circle cx=\"198.9\" cy=\"223.5\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"209.2\" cy=\"219.1\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"219.7\" cy=\"215.2\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"230.4\" cy=\"211.8\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"241.2\" cy=\"208.9\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"252.2\" cy=\"206.6\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"263.2\" cy=\"204.9\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"274.4\" cy=\"203.7\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"285.5\" cy=\"203.1\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"296.7\" cy=\"203.1\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"307.9\" cy=\"203.6\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"319.1\" cy=\"204.7\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"330.2\" cy=\"206.3\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"341.1\" cy=\"208.5\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"352.0\" cy=\"211.3\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"362.7\" cy=\"214.6\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"373.2\" cy=\"218.5\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"383.5\" cy=\"222.8\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"393.6\" cy=\"227.7\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"199.6\" cy=\"210.1\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"209.9\" cy=\"205.9\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"220.5\" cy=\"202.2\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"231.2\" cy=\"199.1\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"242.1\" cy=\"196.4\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"253.1\" cy=\"194.3\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"264.2\" cy=\"192.7\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"275.3\" cy=\"191.6\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"286.5\" cy=\"191.1\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"297.7\" cy=\"191.1\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"308.9\" cy=\"191.6\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"320.1\" cy=\"192.7\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"331.1\" cy=\"194.3\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"342.1\" cy=\"196.5\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"353.0\" cy=\"199.1\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"363.7\" cy=\"202.3\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"374.3\" cy=\"206.0\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"384.7\" cy=\"210.2\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"394.9\" cy=\"214.9\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"189.9\" cy=\"201.3\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"200.2\" cy=\"196.8\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"210.7\" cy=\"192.9\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"221.3\" cy=\"189.4\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"232.1\" cy=\"186.4\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"243.1\" cy=\"183.9\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"254.1\" cy=\"182.0\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"265.2\" cy=\"180.5\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"276.3\" cy=\"179.5\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"287.5\" cy=\"179.0\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"298.7\" cy=\"179.1\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"309.9\" cy=\"179.7\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"321.1\" cy=\"180.7\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"332.1\" cy=\"182.3\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"343.1\" cy=\"184.4\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"354.0\" cy=\"187.0\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"364.8\" cy=\"190.1\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"375.4\" cy=\"193.6\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"385.9\" cy=\"197.7\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"396.1\" cy=\"202.2\" r=\"4.7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M215.2,233.9 A205.0,205.0 0 0 1 231.7,228.1 L234.3,236.7 A196,196 0 0 0 218.6,242.3 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M231.7,228.1 A205.0,205.0 0 0 1 248.6,223.6 L250.5,232.4 A196,196 0 0 0 234.3,236.7 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M248.6,223.6 A205.0,205.0 0 0 1 265.8,220.7 L267.0,229.6 A196,196 0 0 0 250.5,232.4 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M265.8,220.7 A205.0,205.0 0 0 1 283.3,219.2 L283.6,228.2 A196,196 0 0 0 267.0,229.6 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M283.3,219.2 A205.0,205.0 0 0 1 300.7,219.2 L300.4,228.2 A196,196 0 0 0 283.6,228.2 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M300.7,219.2 A205.0,205.0 0 0 1 318.2,220.7 L317.0,229.6 A196,196 0 0 0 300.4,228.2 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M318.2,220.7 A205.0,205.0 0 0 1 335.4,223.6 L333.5,232.4 A196,196 0 0 0 317.0,229.6 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M335.4,223.6 A205.0,205.0 0 0 1 352.3,228.1 L349.7,236.7 A196,196 0 0 0 333.5,232.4 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M352.3,228.1 A205.0,205.0 0 0 1 368.8,233.9 L365.4,242.3 A196,196 0 0 0 349.7,236.7 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M368.8,233.9 A205.0,205.0 0 0 1 384.7,241.2 L380.6,249.2 A196,196 0 0 0 365.4,242.3 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M203.4,229.2 A214,214 0 0 1 220.4,222.3 L223.4,230.8 A205.0,205.0 0 0 0 207.2,237.4 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M220.4,222.3 A214,214 0 0 1 237.8,217.0 L240.1,225.7 A205.0,205.0 0 0 0 223.4,230.8 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M237.8,217.0 A214,214 0 0 1 255.7,213.1 L257.2,222.0 A205.0,205.0 0 0 0 240.1,225.7 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M255.7,213.1 A214,214 0 0 1 273.8,210.8 L274.5,219.7 A205.0,205.0 0 0 0 257.2,222.0 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M273.8,210.8 A214,214 0 0 1 292.0,210.0 L292.0,219.0 A205.0,205.0 0 0 0 274.5,219.7 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M292.0,210.0 A214,214 0 0 1 310.2,210.8 L309.5,219.7 A205.0,205.0 0 0 0 292.0,219.0 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M310.2,210.8 A214,214 0 0 1 328.3,213.1 L326.8,222.0 A205.0,205.0 0 0 0 309.5,219.7 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M328.3,213.1 A214,214 0 0 1 346.2,217.0 L343.9,225.7 A205.0,205.0 0 0 0 326.8,222.0 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M346.2,217.0 A214,214 0 0 1 363.6,222.3 L360.6,230.8 A205.0,205.0 0 0 0 343.9,225.7 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M363.6,222.3 A214,214 0 0 1 380.6,229.2 L376.8,237.4 A205.0,205.0 0 0 0 360.6,230.8 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"195.1\" cy=\"277.1\" r=\"13.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"226.1\" cy=\"260.8\" r=\"13.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"259.6\" cy=\"251.0\" r=\"13.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"294.4\" cy=\"248.0\" r=\"13.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"329.1\" cy=\"252.0\" r=\"13.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"362.4\" cy=\"262.7\" r=\"13.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"392.9\" cy=\"279.8\" r=\"13.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"224.5\" cy=\"296.8\" r=\"11.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"252.2\" cy=\"285.6\" r=\"11.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"281.7\" cy=\"280.4\" r=\"11.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"311.6\" cy=\"281.3\" r=\"11.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"340.7\" cy=\"288.5\" r=\"11.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"367.7\" cy=\"301.5\" r=\"11.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"391.4\" cy=\"319.8\" r=\"11.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.7\"/><circle cx=\"231.0\" cy=\"318.3\" r=\"5.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><circle cx=\"246.3\" cy=\"310.9\" r=\"5.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><circle cx=\"262.5\" cy=\"305.6\" r=\"5.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><circle cx=\"279.2\" cy=\"302.7\" r=\"5.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><circle cx=\"296.2\" cy=\"302.1\" r=\"5.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><circle cx=\"313.0\" cy=\"303.8\" r=\"5.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><circle cx=\"329.5\" cy=\"307.9\" r=\"5.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><circle cx=\"345.3\" cy=\"314.3\" r=\"5.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><circle cx=\"360.0\" cy=\"322.7\" r=\"5.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"/><circle cx=\"216.2\" cy=\"283.1\" r=\"4.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><circle cx=\"248.6\" cy=\"270.0\" r=\"4.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><circle cx=\"283.1\" cy=\"264.2\" r=\"4.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><circle cx=\"317.9\" cy=\"266.1\" r=\"4.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><circle cx=\"351.6\" cy=\"275.5\" r=\"4.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><circle cx=\"382.4\" cy=\"292.0\" r=\"4.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><circle cx=\"408.9\" cy=\"314.7\" r=\"4.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\"/><circle cx=\"208.9\" cy=\"253.1\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"220.8\" cy=\"247.8\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"233.0\" cy=\"243.4\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"245.5\" cy=\"239.8\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"258.2\" cy=\"237.0\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"271.1\" cy=\"235.2\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"284.0\" cy=\"234.2\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"297.0\" cy=\"234.1\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"310.0\" cy=\"234.9\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"322.9\" cy=\"236.5\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"335.7\" cy=\"239.1\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"348.2\" cy=\"242.5\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"360.5\" cy=\"246.8\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"372.4\" cy=\"251.9\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"384.0\" cy=\"257.8\" r=\"3.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\"/><circle cx=\"234.3\" cy=\"347.3\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"256.0\" cy=\"335.0\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"280.2\" cy=\"328.7\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"305.1\" cy=\"328.9\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"329.1\" cy=\"335.5\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"350.7\" cy=\"348.0\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"253.9\" cy=\"362.9\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"277.0\" cy=\"353.6\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"301.8\" cy=\"352.7\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"325.5\" cy=\"360.3\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"345.2\" cy=\"375.5\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"358.5\" cy=\"396.5\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"255.1\" cy=\"391.8\" r=\"9.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"273.6\" cy=\"378.6\" r=\"9.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"296.2\" cy=\"375.2\" r=\"9.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"317.8\" cy=\"382.3\" r=\"9.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><circle cx=\"333.9\" cy=\"398.5\" r=\"9.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"0.9\"/><path d=\"M250.0,320.2 A112,112 0 0 1 334.0,320.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M218.6,242.3 A196,196 0 0 1 365.4,242.3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M211.8,225.6 A214,214 0 0 1 372.2,225.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M197.6,190.3 A252,252 0 0 1 386.4,190.3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M184.9,158.8 A286,286 0 0 1 399.1,158.8\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M166.9,114.3 A334,334 0 0 1 417.1,114.3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\"/><path d=\"M152.6,79.1 A372,372 0 0 1 431.4,79.1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\"/></g><path d=\"M145.9,62.4 A390,390 0 0 1 438.1,62.4 L305.5,390.6 A36,36 0 0 0 278.5,390.6 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><path d=\"M145.0,60.1 A392.5,392.5 0 0 1 439.0,60.1\" fill=\"none\" stroke=\"var(--bio)\" stroke-width=\"4\"/><circle cx=\"415.2\" cy=\"96.7\" r=\"2.6\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"1\"/><line x1=\"415.2\" y1=\"96.7\" x2=\"472.1\" y2=\"96.7\" stroke=\"var(--bright)\" stroke-width=\"1.2\"/><text x=\"487.1\" y=\"102.8\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">P</text><circle cx=\"383.8\" cy=\"174.6\" r=\"2.6\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"1\"/><line x1=\"383.8\" y1=\"174.6\" x2=\"472.1\" y2=\"174.6\" stroke=\"var(--bright)\" stroke-width=\"1.2\"/><text x=\"487.1\" y=\"180.7\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">Q</text><circle cx=\"370.3\" cy=\"208.0\" r=\"2.6\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"1\"/><line x1=\"370.3\" y1=\"208.0\" x2=\"472.1\" y2=\"208.0\" stroke=\"var(--bright)\" stroke-width=\"1.2\"/><text x=\"487.1\" y=\"214.1\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">R</text><circle cx=\"359.8\" cy=\"233.9\" r=\"2.6\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"1\"/><line x1=\"359.8\" y1=\"233.9\" x2=\"472.1\" y2=\"233.9\" stroke=\"var(--bright)\" stroke-width=\"1.2\"/><text x=\"487.1\" y=\"240.0\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">S</text><circle cx=\"340.7\" cy=\"281.2\" r=\"2.6\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"1\"/><line x1=\"340.7\" y1=\"281.2\" x2=\"472.1\" y2=\"281.2\" stroke=\"var(--bright)\" stroke-width=\"1.2\"/><text x=\"487.1\" y=\"287.3\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">T</text><circle cx=\"155.3\" cy=\"70.7\" r=\"2.6\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"1\"/><line x1=\"155.3\" y1=\"70.7\" x2=\"111.9\" y2=\"70.7\" stroke=\"var(--bright)\" stroke-width=\"1.2\"/><text x=\"105.9\" y=\"75.1\" text-anchor=\"end\" font-size=\"12.0\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">epidermis</text><text x=\"292.0\" y=\"16.0\" text-anchor=\"middle\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--muted)\">outer surface of the stem</text><text x=\"292.0\" y=\"444.0\" text-anchor=\"middle\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--muted)\">centre of the stem</text></svg>",
+      "figCap": "Each tissue is drawn as one band. Simplified; not to scale.",
+      "options": [
+        "Water still reaches the leaves, but food no longer reaches the roots.",
+        "Food still reaches the roots, but water no longer reaches the leaves.",
+        "Neither water nor food can get past the ring.",
+        "Both water and food still get past the ring."
+      ],
+      "answer": 0,
+      "sol": "<p><b>Name the bands, from the outside in.</b> Epidermis · <b>P</b> collenchyma (corners thickened) · parenchyma · <b>Q</b> sclerenchyma (small cells, very thick walls) · <b>R</b> phloem · <b>S</b> lateral meristem (the thin ring of dividing cells) · <b>T</b> xylem (the wide tubes) · parenchyma again at the centre.</p><p><b>What the peeling removes.</b> Everything as far as R takes away the <b>phloem</b> — the tissue that carries food made in the leaves to the rest of the plant. The <b>xylem</b>, T, which carries water and minerals up from the roots, lies inside the meristem ring and is untouched.</p><p>So water still climbs to the leaves, pulled up by transpiration, but food cannot get down past the ring and the roots go hungry — option (1).</p><p><b>The other three.</b> (2) swaps the two pipelines, taking the outer one for the water pipe. (3) puts both pipelines outside S. (4) reads P, Q and R as nothing more than skin and support, and misses that R is the phloem.</p>"
+    },
+    {
+      "n": 5,
+      "section": "Biology",
+      "topic": "Tissues in Action",
+      "fmt": "statement",
+      "stem": "<p>A student's revision table has four rows. <b>Three of the rows contain one wrong entry each.</b></p><table><tr><th>Row</th><th>Tissue</th><th>Its cells</th><th>A feature of it</th><th>A job it does</th></tr><tr><td>I</td><td>Sclerenchyma</td><td>mostly dead</td><td>walls thickened with lignin</td><td>stores the plant's food</td></tr><tr><td>II</td><td>Xylem</td><td>its tracheids, vessels, fibres and parenchyma are dead</td><td>tracheids and vessels are tubular and thick-walled</td><td>carries water and minerals up from the roots</td></tr><tr><td>III</td><td>Collenchyma</td><td>living</td><td>corners thickened with pectin</td><td>lets a young stem bend without breaking</td></tr><tr><td>IV</td><td>Phloem</td><td>mostly living</td><td>sieve tubes whose end walls have dissolved, leaving an open tube</td><td>carries food made in the leaves to other parts</td></tr></table><p>In which row is every entry correct?</p>",
+      "options": [
+        "Row I",
+        "Row II",
+        "Row III",
+        "Row IV"
+      ],
+      "answer": 2,
+      "sol": "<p><b>Row I</b> — sclerenchyma is mostly dead and its walls are thick with lignin, but it does <b>not</b> store food. It is the hard, strong tissue of coconut husk and nut shells; storing food is the work of parenchyma.</p><p><b>Row II</b> — xylem does carry water and minerals up, and its tracheids and vessels are tubular and thick-walled. But the list of dead cells is one too long: tracheids, vessels and fibres are dead, while <b>xylem parenchyma is living</b> — the one living part of xylem.</p><p><b>Row III</b> — collenchyma: living cells, corners thickened with pectin, and it is what lets a young stem or a tendril bend without snapping. <b>Every entry is right</b> — option (3).</p><p><b>Row IV</b> — phloem is mostly living and it does carry food from the leaves, but the end walls of a sieve tube are <b>perforated</b>, not dissolved: they are still there, with holes in them. The tube whose end walls have gone is the xylem vessel.</p><p>Each wrong row hides one false entry among true ones, and in a different column each time — so every column has to be read.</p>"
+    },
+    {
+      "n": 6,
+      "section": "Biology",
+      "topic": "Improvement in Food Resources",
+      "fmt": "plain",
+      "stem": "<p>A farmer writes down four plans for the same field.</p><table><tr><th>Plan</th><th>What he would do</th></tr><tr><td>P</td><td>Sow paddy in June; after the harvest, sow mustard in November.</td></tr><tr><td>Q</td><td>Mix wheat seed with maize seed and scatter the mixture over the field in November.</td></tr><tr><td>R</td><td>In June sow three rows of soyabean, then one row of maize, repeated right across the field.</td></tr><tr><td>S</td><td>Sow wheat in June; after the harvest, sow paddy in November.</td></tr></table><p>By the usual kharif–rabi classification of these crops, which plan sows <b>both</b> of its crops in the wrong season — and which plan is <b>inter-cropping</b>?</p>",
+      "options": [
+        "Both crops out of season: Q · Inter-cropping: Q",
+        "Both crops out of season: Q · Inter-cropping: R",
+        "Both crops out of season: S · Inter-cropping: Q",
+        "Both crops out of season: S · Inter-cropping: R"
+      ],
+      "answer": 3,
+      "sol": "<p><b>Seasons.</b> Kharif crops are sown with the monsoon, June to October: paddy, maize, soyabean. Rabi crops are the winter crops, November to April: wheat, mustard. Now check every crop.<br>P — paddy in June, mustard in November: both right. (One crop after another in a planned order is crop rotation.)<br>Q — wheat in November is right, but maize in November is not: <b>one</b> crop out of season.<br>R — soyabean and maize in June: both right.<br>S — wheat in June, paddy in November: <b>both</b> wrong.</p><p><b>Patterns.</b> Q and R each grow two crops on the field at the same time. In Q the seed is mixed and scattered, with no pattern: that is mixed cropping. In <b>R</b> the two crops stand in a definite pattern of rows: that is inter-cropping.</p><p>S and R — option (4).</p><p><b>The slips.</b> Choosing Q for the season means stopping at the first crop found out of place: the maize is, but the wheat sown with it is not, and the question asks for the plan with both wrong. Choosing Q for inter-cropping means calling any two crops grown together inter-cropping; the word needs the rows.</p>"
+    },
+    {
+      "n": 7,
+      "section": "Biology",
+      "topic": "Tissues in Action",
+      "fmt": "ar",
+      "stem": "<p><b>Assertion (A):</b> On a day when a plant's stomata stay shut, very little water is drawn up through its xylem.</p><p><b>Reason (R):</b> Xylem vessels use energy from ATP to pump water up the stem.</p>",
+      "options": [
+        "Both A and R are true, and R is the correct explanation of A",
+        "Both A and R are true, but R is not the correct explanation of A",
+        "A is true but R is false",
+        "A is false but R is true"
+      ],
+      "answer": 2,
+      "sol": "<p><b>Assertion — true.</b> Water is lifted mainly by the transpiration pull: as water vapour escapes through the stomata, the thread of water in the xylem is drawn up behind it. Shut the stomata and transpiration almost stops, so the pull almost stops with it.</p><p><b>Reason — false.</b> Xylem vessels are dead, hollow tubes. They pump nothing and spend no energy; the water is pulled from above. It is the <b>phloem</b> that spends ATP, when sugar is loaded into the sieve tubes.</p><p>A is true and R is false — option (3). Options (1) and (2) both give the xylem the phloem's energy bill. (4) makes both mistakes: it doubts that shut stomata stop the pull, and it gives the xylem that energy bill too.</p>"
+    },
+    {
+      "n": 8,
+      "section": "Biology",
+      "topic": "Tissues in Action",
+      "fmt": "diagram",
+      "stem": "<p>The figure is a simplified side view of a bent elbow. Four of its parts are lettered W, X, Y and Z; the bones are named.</p><p><b>Player 1:</b> the muscle of his upper arm tightens and bulges when he tries to bend the elbow, but the forearm is not lifted.<br><b>Player 2:</b> her elbow still bends and straightens, but the joint has become loose — the two bones slip out of line with each other far too easily.<br>No bone is broken in either player.</p><p>Which lettered part is damaged in each player, and what is that part?</p>",
+      "fig": "<svg viewBox=\"0 0 560 362\" width=\"560\" height=\"362\" role=\"img\" aria-label=\"Simplified side view of a bent elbow. The upper-arm bone is vertical and the forearm bone horizontal. W is a muscle lying along the upper-arm bone. X is a cord running from the lower end of that muscle to the forearm bone. Y is a layer between the two bone ends. Z is a strap running from the upper-arm bone to the forearm bone across the joint.\"><path d=\"M82,278 L332.9,278 L340.9,254.0 A52,52 0 0 0 435.1,254.0 L442.1,284.0 Q444.1,316 421.1,316 L82,316 Q64,316 64,297 Q64,278 82,278 Z\" fill=\"var(--surface2)\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linejoin=\"round\"/><path d=\"M434.4,250.7 A50,50 0 0 1 341.6,250.7 L360.2,243.2 A30,30 0 0 0 415.8,243.2 Z\" fill=\"color-mix(in srgb,var(--physics) 30%,transparent)\" stroke=\"var(--physics)\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><path d=\"M370,26 L406,26 L406,208 A30,30 0 1 1 370,208 Z\" fill=\"var(--surface2)\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linejoin=\"round\"/><path d=\"M359,6 L352,52\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"7\" stroke-linecap=\"round\"/><text x=\"346.0\" y=\"16.0\" text-anchor=\"end\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--muted)\">to the shoulder</text><path d=\"M352,48 C292,72 288,150 350,196 C366,150 366,88 352,48 Z\" fill=\"color-mix(in srgb,var(--force) 26%,transparent)\" stroke=\"var(--force)\" stroke-width=\"1.7\" stroke-linejoin=\"round\"/><path d=\"M349,197 L300,276\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"7\" stroke-linecap=\"round\"/><path d=\"M405,198 C450,220 458,262 441.1,280.0\" fill=\"none\" stroke=\"var(--iq)\" stroke-width=\"7\" stroke-linecap=\"round\"/><text x=\"330.0\" y=\"128.1\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">W</text><line x1=\"319.5\" y1=\"234.5\" x2=\"262\" y2=\"222\" stroke=\"var(--bright)\" stroke-width=\"1.2\"/><text x=\"250.0\" y=\"222.1\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">X</text><text x=\"388.0\" y=\"278.0\" text-anchor=\"middle\" font-size=\"14\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">Y</text><line x1=\"448.0\" y1=\"238.0\" x2=\"494\" y2=\"230.0\" stroke=\"var(--bright)\" stroke-width=\"1.2\"/><text x=\"508.0\" y=\"236.1\" text-anchor=\"middle\" font-size=\"17\" style=\"font-family:'JetBrains Mono',monospace;font-weight:700\" fill=\"var(--bright)\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\" paint-order=\"stroke\">Z</text><text x=\"418.0\" y=\"96.0\" text-anchor=\"start\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--muted)\">upper-arm bone</text><text x=\"190.0\" y=\"301.0\" text-anchor=\"middle\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--muted)\">forearm bone</text><text x=\"78.0\" y=\"344.0\" text-anchor=\"start\" font-size=\"12.5\" style=\"font-family:'Inter',sans-serif\" fill=\"var(--muted)\">to the hand</text><path d=\"M58,340 l12,-5 v10 Z\" fill=\"var(--muted)\"/></svg>",
+      "figCap": "Simplified; not to scale.",
+      "options": [
+        "Player 1: X, a ligament · Player 2: Z, a tendon",
+        "Player 1: X, a tendon · Player 2: Z, a ligament",
+        "Player 1: X, a ligament · Player 2: Y, cartilage",
+        "Player 1: X, a tendon · Player 2: Y, cartilage"
+      ],
+      "answer": 1,
+      "sol": "<p><b>Read the figure first.</b> X runs from the muscle (W) to the forearm bone. Z runs from one bone to the other, across the joint. Y is the layer between the two bone ends.</p><p><b>Player 1.</b> The muscle contracts, but its pull never reaches the bone. So the part that carries the pull from muscle to bone is torn — X. A part that joins <b>muscle to bone</b> is a <b>tendon</b>.</p><p><b>Player 2.</b> The joint still works, but nothing is holding the two bones in line. The part that ties <b>bone to bone</b>, keeps a joint stable and helps prevent dislocation is a <b>ligament</b> — Z.</p><p>Option (2).</p><p><b>The other three.</b> (1) finds the right two parts and swaps their names — the most-swapped pair in the chapter. (4) names the tendon correctly but takes Y, the cushion between the bone ends, for the thing that holds the joint together; Y is cartilage, and damaged cartilage makes a joint painful, not loose. (3) makes both slips.</p>"
+    },
+    {
+      "n": 9,
+      "section": "Biology",
+      "topic": "Improvement in Food Resources",
+      "fmt": "plain",
+      "stem": "<p>A farmer works two fields: one is a light, sandy soil, the other a heavy, clayey soil. For several years he ploughs plenty of farmyard manure into both.</p><p>How does the manure change the way each soil handles water, and what is it in manure that does this?</p>",
+      "options": [
+        "The sandy soil drains more freely and the clayey soil holds more water — because of the high concentration of N, P and K in manure",
+        "The sandy soil drains more freely and the clayey soil holds more water — because of the bulk of organic matter in manure",
+        "The sandy soil holds more water and the clayey soil drains more freely — because of the high concentration of N, P and K in manure",
+        "The sandy soil holds more water and the clayey soil drains more freely — because of the bulk of organic matter in manure"
+      ],
+      "answer": 3,
+      "sol": "<p><b>What manure is.</b> Rotted dung and plant waste: a great deal of organic matter, and only small quantities of nutrients. It is fertiliser, not manure, that is concentrated in N, P and K — so options (1) and (3) give the wrong cause.</p><p><b>What the organic matter does.</b> It improves the structure of the soil, in whichever direction that soil needs. A sandy soil lets water run straight through it; organic matter makes it <b>hold more water</b>. A clayey soil holds water too tightly and becomes waterlogged; the bulk of organic matter opens it up, so that it <b>drains</b>.</p><p>The sandy soil holds more water, the clayey soil drains more freely, and the cause is the organic matter — option (4). Option (2) has the right cause with the two soils the wrong way round.</p>"
+    },
+    {
+      "n": 10,
+      "section": "Biology",
+      "topic": "Tissues in Action",
+      "fmt": "plain",
+      "stem": "<p>The table gives measurements made on one teak tree at breast height, about 1.4 m above the ground.</p><table><tr><th>Age of the tree / years</th><th>Width of the trunk / cm</th><th>Annual rings in the trunk</th></tr><tr><td>10</td><td>8</td><td>10</td></tr><tr><td>20</td><td>24</td><td>20</td></tr><tr><td>30</td><td>32</td><td>30</td></tr><tr><td>40</td><td>40</td><td>40</td></tr></table><p>When the trunk was <b>8 cm</b> wide, a steel pin was driven into it at breast height until the head of the pin was level with the surface. The tree is felled when a disc cut at that height shows <b>30</b> annual rings.</p><p>In that disc, about how far beneath the surface is the head of the pin, and how many annual rings lie outside it?</p>",
+      "options": [
+        "About 12 cm; 20 rings",
+        "About 12 cm; 30 rings",
+        "About 24 cm; 20 rings",
+        "About 24 cm; 30 rings"
+      ],
+      "answer": 0,
+      "sol": "<p><b>Read the table both ways.</b> The trunk was 8 cm wide when the tree was 10 years old, so that is when the pin went in — and the trunk then had 10 rings. A disc with 30 rings means the tree was felled at 30 years, when the trunk was 32 cm wide.</p><p><b>Where the new wood went.</b> A trunk thickens because the lateral meristem — a ring of dividing cells inside the stem, in a tree just inside the bark — adds new wood around the wood that is already there. So the surface moves outwards while the old wood, and the pin fixed in it, stays where it was. The head was 4 cm from the centre (half of 8 cm); the surface is now 16 cm from the centre (half of 32 cm). The head is <b>about 12 cm</b> beneath the surface.</p><p><b>The rings.</b> One ring is added each year, on the outside of the last. The 10 rings the trunk had when the pin went in lie nearer the centre than its head; the <b>20</b> added since lie outside it.</p><p>Option (1). The answer 24 cm is 32 − 8, the gain in width — but that gain is shared between the two sides of the trunk, so the surface on the pin's side moves out by only half of it. The answer 30 rings is every ring in the disc, not only those made after the pin went in.</p>"
+    },
+    {
+      "n": 11,
+      "section": "Biology",
+      "topic": "Tissues in Action",
+      "fmt": "statement",
+      "stem": "<p>Three students each make three statements.</p><p><b>Farhan</b> — (i) \"Plasma, the liquid part of blood, makes up about 55% of its volume.\" (ii) \"The fragments in blood that help a cut to clot are the white blood cells.\" (iii) \"Red blood cells carry oxygen on haemoglobin, an iron-rich protein.\"</p><p><b>Gauri</b> — (i) \"The elbow is a hinge joint: it bends and straightens in one plane only.\" (ii) \"The knee is a hinge joint too, and a small bone, the kneecap, protects it.\" (iii) \"The skull sits on the backbone at a pivot joint, which lets the head turn from side to side.\"</p><p><b>Harsh</b> — (i) \"The rib cage can widen when we breathe in because the ribs are joined to the breast bone by flexible cartilage.\" (ii) \"Between one vertebra and the next lies a disc of cartilage, which cushions the backbone and lets it bend.\" (iii) \"The rib cage is made up of 12 ribs in all, each attached to the backbone at the back.\"</p><p>How many of the <b>nine</b> statements are correct?</p>",
+      "options": [
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "answer": 1,
+      "sol": "<p><b>Farhan</b> — (i) true: plasma is about 55% of the volume of blood and the formed elements about 45%. (ii) <b>False</b>: the fragments that help blood to clot are the <b>platelets</b>; white blood cells fight infection. (iii) True: haemoglobin, the iron-rich protein that makes blood red, is in the red blood cells and carries the oxygen.</p><p><b>Gauri</b> — (i) true: the elbow bends and straightens in one plane, like a door on its hinge. (ii) True: the knee is a hinge joint as well, and the kneecap protects it. (iii) True: the skull meets the backbone at a pivot joint — that is how you shake your head.</p><p><b>Harsh</b> — (i) true: the ribs meet the breast bone through flexible cartilage, which is what lets the rib cage expand and contract. (ii) True: a cartilage disc sits between each vertebra and the next. (iii) <b>False</b>: there are 12 <b>pairs</b> of ribs — 24 in all.</p><p>Seven of the nine are correct — option (2).</p><p><b>The other three.</b> 8 misses one of the two slips — most often Harsh's, because \"12 ribs\" and \"12 pairs of ribs\" look alike at speed. 9 misses both. 6 catches both slips but rejects a true statement as well — most often Gauri's (iii), by someone who expects a head that turns to sit on a ball and socket; NCERT calls the joint where the skull meets the backbone a pivot joint.</p>"
+    },
+    {
+      "n": 12,
+      "section": "Biology",
+      "topic": "Tissues in Action",
+      "fmt": "match",
+      "stem": "<p>Column I describes four jobs done by epithelial tissue. Column II lists five kinds of epithelium, so one of them is not needed. Match each job with the epithelium that does it.</p><table><tr><th>Column I — the job</th><th>Column II — the epithelium</th></tr><tr><td>(a) lets oxygen pass quickly from the air in the lungs into the blood</td><td>(p) many layers of cells, the outer ones flat and tightly packed</td></tr><tr><td>(b) takes the rubbing each time a mouthful of food is swallowed</td><td>(q) specialised cells bearing hair-like cilia</td></tr><tr><td>(c) makes saliva and releases it into the mouth</td><td>(r) a single layer of thin, flat cells</td></tr><tr><td>(d) responds to the taste of food on the tongue</td><td>(s) a single layer of tall, pillar-like cells, often with hair-like projections</td></tr><tr><td></td><td>(t) cube-shaped or pillar-shaped cells</td></tr></table>",
+      "options": [
+        "a–p, b–r, c–t, d–q",
+        "a–r, b–p, c–q, d–s",
+        "a–r, b–p, c–t, d–q",
+        "a–p, b–r, c–q, d–s"
+      ],
+      "answer": 2,
+      "sol": "<p><b>Shape follows job.</b><br>(a) Gases must cross quickly, so the lining of an air sac is as thin as it can be: <b>a single layer of thin, flat cells</b> — (r).<br>(b) The food pipe is rubbed by every mouthful, so its lining is built for protection: <b>many layers</b>, the outer cells flat and tightly packed — (p).<br>(c) Making saliva and releasing it is secretion, and secreting cells are <b>cube-shaped or pillar-shaped</b> — (t).<br>(d) Taste is sensing, done by <b>specialised cells bearing hair-like cilia</b> — (q).</p><p>a–r, b–p, c–t, d–q — option (3). The description left over, (s), is the absorbing lining of the small intestine.</p><p><b>The traps are descriptions that sound alike.</b> \"Flat cells\" appears in both (p) and (r); what separates them is the number of layers — one for exchange, many for protection — and swapping them gives (1) and (4). In (2) and (4) the saliva-making cells are given (q), because secreting cells are \"specialised\" cells — but so are the sensing cells, and what marks out the secreting kind is its cube or pillar shape, (t). With (q) used up, taste is pushed onto (s), the other description with hair-like structures on it.</p>"
+    },
+    {
+      "n": 13,
+      "section": "Biology",
+      "topic": "Improvement in Food Resources",
+      "fmt": "plain",
+      "stem": "<p>A dairy farmer wants three things:</p><ol class=\"roman\"><li>a breed to cross with his local cows, so that the cross-bred cows <b>go on giving milk for more months after each calving</b>;</li><li>a bee for his hives that <b>collects more honey and stings less</b>;</li><li>poultry birds raised for the <b>meat</b> market.</li></ol><p>Which should he choose for I, II and III, in that order?</p>",
+      "options": [
+        "Red Sindhi · <i>Apis mellifera</i> · layers",
+        "Jersey · <i>Apis dorsata</i> · layers",
+        "Red Sindhi · <i>Apis dorsata</i> · broilers",
+        "Jersey · <i>Apis mellifera</i> · broilers"
+      ],
+      "answer": 3,
+      "sol": "<p><b>I.</b> The time for which a cow gives milk after calving is her lactation period. Exotic breeds such as <b>Jersey</b> and Brown Swiss are selected for a long lactation period; local breeds such as Red Sindhi and Sahiwal are valued for their resistance to disease. He already has local cows, so the breed to bring in is Jersey.</p><p><b>II.</b> <b><i>Apis mellifera</i></b>, the Italian bee, has a high honey-collection capacity and stings somewhat less. <i>Apis dorsata</i> is the rock bee, one of the local kinds.</p><p><b>III.</b> Birds raised for meat are <b>broilers</b>; layers are kept for eggs.</p><p>Jersey · <i>Apis mellifera</i> · broilers — option (4). Each of the other options gets exactly one of the three right.</p>"
+    }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+/* "👁 Just checking" (device-local hubPreview = the ms timestamp it was switched on; it lapses
+   after 2 hours). While on, Submit ASKS whether to save — so a forgotten switch can never
+   silently swallow a real attempt. */
+function isPreview(){ return (function(){ try { var v = +JSON.parse(localStorage.getItem('hubPreview') || '0'); return v > 1e12 && Date.now() - v < 7200000; } catch(e){ return false; } })(); }
+let NOT_SAVED = false;
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- just look: the questions, read-only; nothing marked, nothing recorded ---- */
+function viewOnly(){
+  if(started) return;
+  document.body.classList.add('viewonly');
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '👁 <b>Just looking.</b> Nothing is marked or recorded. To answer these, go back and start the paper.'
+                + '<button class="bigbtn" type="button" style="margin-left:auto" onclick="location.reload()">← Back to start</button>';
+  $('paperBody').insertBefore(bar, $('paperBody').firstChild);
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  if(!RESTORING && NOT_SAVED){ const rc = $('results').querySelector('.rcard');
+    if(rc) rc.insertAdjacentHTML('beforeend', '<div class="rnote">👁 <b>Just checking was on</b> — this attempt was marked but not recorded.</div>'); }
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b,a,md,tm,v:2} (+f only if a flag was set).
+   Every paper stores its answers so the marked review replays (a mock opens it automatically;
+   the others via "See your last attempt"); the hub only ever reads m/mx. Written MERGE-ONLY.
+   COMPACT on purpose: the whole shared record is ONE Apps Script property with a 9216-byte
+   ceiling, so answers are one character per question ('0'–'3', '-' = blank), not an array. */
+function saveAttempt(sc, timeTaken){
+  if(isPreview() && !confirm('👁 Just checking is on for this device.\n\nSave this attempt to your progress?\n\nOK = save it (a real attempt)\nCancel = don\'t record (only checking)')){ NOT_SAVED = true; return; }
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank,
+                a:answers.map(x => x === null ? '-' : x).join(''), md:mode === 'timed' ? 't' : 'p', tm:timeTaken, v:2 };
+  if(flags.some(Boolean)) rec.f = flags.map(x => x ? 1 : 0).join('');
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function decodeRec(rec){          /* v2 strings and v1 arrays both replay */
+  if(!rec || !rec.a) return null;
+  const a = typeof rec.a === 'string' ? rec.a.split('').map(c => c === '-' ? null : +c) : rec.a.slice();
+  if(a.length !== NQ) return null;                 /* the paper changed shape since — never mis-mark */
+  const f = typeof rec.f === 'string' ? rec.f.split('').map(c => c === '1')
+          : Array.isArray(rec.f) ? rec.f.slice() : new Array(NQ).fill(false);
+  const md = rec.md === 't' ? 'timed' : rec.md === 'p' ? 'practice' : (rec.md || 'timed');
+  return { a, f, md };
+}
+function showFrozen(rec){
+  const d = decodeRec(rec);
+  if(!d || submitted) return;
+  RESTORING = true;
+  answers = d.a;
+  flags   = d.f;
+  mode    = d.md;
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = !IS_MOCK
+    ? '📋 <b>Your last attempt — ' + String(rec.t || '').slice(0, 10) + '.</b> Your answers, what was right and wrong, and every worked solution. ↺ Retake starts a fresh attempt.'
+      + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>'
+    : '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('viewOnly').addEventListener('click', viewOnly);
+$('lastAttempt').addEventListener('click', () => { const r = progLoad()[REP_ID]; if(r && r.a) showFrozen(r); });
+if(IS_MOCK && !TEACHER && !isPreview()) $('viewOnly').hidden = true;   /* a one-shot mock is not previewed */
+if(isPreview()) $('startNote').insertAdjacentHTML('beforeend', ' <b>👁 Just checking is on</b> — when you submit, you will be asked whether to save the attempt.');
+function paintLast(){
+  if(IS_MOCK) return;
+  const r = progLoad()[REP_ID], b = $('lastAttempt');
+  const ok = !!decodeRec(r);
+  b.hidden = !ok;
+  if(ok) b.textContent = '📋 See your last attempt · ' + r.m + '/' + r.mx;
+}
+paintLast();
+window.addEventListener('miraya-progress-synced', paintLast);
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
