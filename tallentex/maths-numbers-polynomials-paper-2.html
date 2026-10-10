@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALLENTEX · Polynomials — Paper 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0d14'/><text x='32' y='45' font-family='Georgia,serif' font-size='40' font-weight='bold' text-anchor='middle' fill='%2336c9b0'>M</text></svg>">
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#121826; --surface2:#19202f; --border:#263247;
+    --text:#d6deec; --muted:#7b8aa8; --bright:#f0f4ff;
+    --physics:#46a8ff; --chem:#36c9b0; --maths:#7c8cff;
+    --power:#43d98c; --rose:#f25cc1;
+    --bio:#43d98c; --iq:#ffae3b; --force:#ff5263;
+    --accent:var(--iq);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:15px; line-height:1.7; min-height:100vh;
+    -webkit-font-smoothing:antialiased; transition:background .4s ease, color .4s ease;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1d5c9e30 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #5a3a0e30 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #14463e30 0%, transparent 60%);
+  }
+  .page { max-width:820px; margin:0 auto; padding:70px 40px 120px; position:relative; z-index:1; }
+
+  /* ---------- fixed controls ---------- */
+  .toolbtn { position:fixed; width:44px; height:44px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:18px; cursor:pointer; z-index:30; display:flex; align-items:center; justify-content:center; transition:transform .3s ease, border-color .3s ease; text-decoration:none; }
+  .theme-toggle { top:22px; right:22px; }
+  .theme-toggle:hover { transform:rotate(18deg); border-color:var(--physics); }
+  .hub-home { top:22px; left:22px; }
+  .hub-home:hover { transform:translateY(-2px); border-color:var(--chem); }
+  .tx-back { top:22px; left:74px; font-size:17px; }
+  .tx-back:hover { transform:translateY(-2px); border-color:var(--iq); }
+  .toolbtn:focus-visible { outline:2px solid var(--physics); outline-offset:3px; }
+  .pdf-btn { position:fixed; bottom:22px; left:22px; width:auto; border-radius:24px; padding:0 18px; height:44px; gap:8px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; }
+  .pdf-btn:hover { transform:translateY(-2px); border-color:var(--maths); }
+
+  /* ---------- front sheet ---------- */
+  .eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    background:linear-gradient(135deg,#0e2c40,#3a2a10); border:1px solid #4a3d2a;
+    border-radius:30px; padding:6px 16px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:20px;
+  }
+  .eyebrow .pulse { width:7px; height:7px; border-radius:50%; background:var(--rose); animation:pulse 2.4s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rose) 60%,transparent);} 70%{box-shadow:0 0 0 7px transparent;} 100%{box-shadow:0 0 0 0 transparent;} }
+  h1 { font-family:'Fraunces',serif; font-size:clamp(1.9rem,4.6vw,2.8rem); font-weight:800; color:var(--bright); line-height:1.06; letter-spacing:-.015em; margin-bottom:12px; }
+  .sub { color:var(--muted); font-size:15px; max-width:640px; margin-bottom:22px; }
+  .sub b { color:var(--text); font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; margin-bottom:22px; }
+  .tile { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px 10px; text-align:center; }
+  .tile b { display:block; font-family:'Fraunces',serif; font-size:1.45rem; font-weight:800; color:var(--bright); line-height:1.1; }
+  .tile span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  .tile.neg b { color:var(--force); }
+
+  .rules { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:12px; padding:15px 18px; margin-bottom:20px; }
+  .rules h3 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--bright); margin-bottom:7px; }
+  .rules ul { margin:0 0 0 19px; }
+  .rules li { margin-bottom:5px; font-size:14px; }
+  .rules li:last-child { margin-bottom:0; }
+  .rules b { color:var(--bright); font-weight:600; }
+
+  .startrow { display:flex; gap:11px; flex-wrap:wrap; margin-bottom:8px; }
+  .bigbtn { font:inherit; font-size:14.5px; font-weight:600; padding:13px 24px; border-radius:12px; cursor:pointer; border:1px solid var(--border); background:var(--surface); color:var(--text); transition:transform .18s, border-color .18s, background .18s; }
+  .bigbtn:hover { transform:translateY(-2px); }
+  .bigbtn.primary { background:color-mix(in srgb,var(--accent) 17%,transparent); border-color:var(--accent); color:var(--bright); }
+  .bigbtn.primary:hover { background:color-mix(in srgb,var(--accent) 26%,transparent); }
+  .bigbtn:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .startnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- HUD (sticky timer bar) ---------- */
+  .hud {
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:none; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:9px 20px 9px 128px;
+    background:color-mix(in srgb,var(--surface) 92%,transparent);
+    border-bottom:1px solid var(--border); backdrop-filter:blur(9px);
+  }
+  .hud.on { display:flex; }
+  .hud-clock { display:flex; align-items:baseline; gap:7px; }
+  .hud-clock b { font-family:'JetBrains Mono',monospace; font-size:1.28rem; font-weight:600; color:var(--bright); letter-spacing:.02em; }
+  .hud-clock.warn b { color:var(--iq); }
+  .hud-clock.danger b { color:var(--force); }
+  .hud-lbl { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); }
+  .pace { display:flex; align-items:baseline; gap:7px; padding:3px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface2); }
+  .pace b { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:var(--text); }
+  .pace.slow { border-color:color-mix(in srgb,var(--iq) 50%,var(--border)); background:color-mix(in srgb,var(--iq) 12%,transparent); }
+  .pace.slow b { color:var(--iq); }
+  .pace.stuck { border-color:color-mix(in srgb,var(--force) 52%,var(--border)); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .pace.stuck b { color:var(--force); }
+  .hud-prog { flex:1; min-width:110px; height:7px; border-radius:5px; background:var(--surface2); border:1px solid var(--border); overflow:hidden; }
+  .hud-prog i { display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .hud-count { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; }
+  .hud-count b { color:var(--bright); }
+  .hud-sub { font:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; border:1px solid var(--accent); background:color-mix(in srgb,var(--accent) 17%,transparent); color:var(--bright); }
+  .hud-sub:hover { background:color-mix(in srgb,var(--accent) 27%,transparent); }
+
+  /* ---------- questions ---------- */
+  #paperBody { display:none; }
+  #paperBody.on { display:block; }
+  .secdiv { display:flex; align-items:center; gap:12px; margin:34px 0 16px; }
+  .secdiv:first-child { margin-top:8px; }
+  .secdiv .sname { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; color:var(--bright); line-height:1.1; }
+  .secdiv .srange { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .secdiv .sbar { flex:1; height:2px; border-radius:2px; background:color-mix(in srgb,var(--sacc,var(--accent)) 45%,transparent); }
+  .secdiv .smono { width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:10px; font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 14%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 38%,transparent); }
+
+  .q { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px 14px; margin-bottom:13px; scroll-margin-top:78px; }
+  .q.flagged { border-color:color-mix(in srgb,var(--rose) 46%,var(--border)); }
+  .q-head { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .q-n { width:29px; height:29px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:9px; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 13%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 34%,transparent); }
+  .q-topic { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); line-height:1.3; }
+  .q-flag { margin-left:auto; flex-shrink:0; font:inherit; font-size:13px; padding:4px 10px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--muted); transition:border-color .15s,color .15s; }
+  .q-flag:hover { border-color:var(--rose); color:var(--rose); }
+  .q-flag.on { border-color:var(--rose); background:color-mix(in srgb,var(--rose) 14%,transparent); color:var(--rose); }
+  .q-flag:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+  .q-stem { margin-bottom:11px; }
+  .q-stem b { color:var(--bright); font-weight:600; }
+  .q-stem p { margin-bottom:8px; }
+  .q-stem p:last-child { margin-bottom:0; }
+  .q-stem ol, .q-stem ul { margin:8px 0 8px 22px; }
+  /* statement items are referred to as I, II, III in the options — number them that way */
+  .q-stem ol.roman { list-style-type:upper-roman; }
+  .q-stem li { margin-bottom:4px; }
+  .q-stem table { width:auto; border-collapse:collapse; font-size:13.5px; margin:9px 0; }
+  .q-stem th, .q-stem td { text-align:left; padding:5px 13px 5px 0; border-bottom:1px solid var(--border); }
+  .q-stem th { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .q-fig { margin:11px 0 12px; text-align:center; }
+  .q-fig svg { max-width:100%; height:auto; }
+  .q-fig figcaption { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .opts { display:grid; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; padding:9px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color .15s, background .15s; }
+  .opt:hover { border-color:var(--sacc,var(--accent)); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .ob { flex-shrink:0; width:23px; height:23px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1.5px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); transition:border-color .15s, background .15s, color .15s; }
+  .opt.sel { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 12%,transparent); }
+  .opt.sel .ob { border-color:var(--sacc,var(--accent)); background:color-mix(in srgb,var(--sacc,var(--accent)) 26%,transparent); color:var(--bright); }
+  .opt:focus-within { outline:2px solid var(--sacc,var(--accent)); outline-offset:2px; }
+  /* marked state */
+  .opt.right { border-color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); }
+  .opt.right .ob { border-color:var(--power); color:var(--power); }
+  .opt.wrong { border-color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); }
+  .opt.wrong .ob { border-color:var(--force); color:var(--force); }
+  .opt.wrong .ot { text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--force) 70%,transparent); }
+  .opt .tick { margin-left:auto; flex-shrink:0; font-size:13px; font-weight:700; }
+  .opt.right .tick { color:var(--power); }
+  .opt.wrong .tick { color:var(--force); }
+  .marked .opt { cursor:default; }
+
+  .sol { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb,var(--sacc,var(--accent)) 8%,transparent); border:1px solid color-mix(in srgb,var(--sacc,var(--accent)) 28%,var(--border)); font-size:14px; }
+  .sol.on { display:block; }
+  .sol .sh { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .sol b { color:var(--bright); font-weight:600; }
+  .sol p { margin-bottom:7px; }
+  .sol p:last-child { margin-bottom:0; }
+  .q-verdict { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.07em; text-transform:uppercase; margin-left:auto; }
+  .q-verdict.r { color:var(--power); background:color-mix(in srgb,var(--power) 13%,transparent); border:1px solid color-mix(in srgb,var(--power) 34%,transparent); }
+  .q-verdict.w { color:var(--force); background:color-mix(in srgb,var(--force) 12%,transparent); border:1px solid color-mix(in srgb,var(--force) 34%,transparent); }
+  .q-verdict.b { color:var(--muted); background:var(--surface2); border:1px solid var(--border); }
+
+  .submitrow { margin:26px 0 10px; display:flex; gap:11px; flex-wrap:wrap; align-items:center; }
+  .submitnote { font-size:12.5px; color:var(--muted); }
+
+  /* ---------- results ---------- */
+  .results { display:none; margin-bottom:34px; scroll-margin-top:78px; }
+  .results.on { display:block; }
+  .rcard { background:var(--surface); border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border)); border-radius:16px; padding:22px 24px; }
+  .rcard h2 { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--bright); margin-bottom:4px; }
+  .rlede { color:var(--muted); font-size:13.5px; margin-bottom:16px; }
+  .score { display:flex; align-items:baseline; gap:9px; margin-bottom:16px; flex-wrap:wrap; }
+  .score b { font-family:'Fraunces',serif; font-size:3rem; font-weight:800; line-height:1; color:var(--bright); }
+  .score b.neg { color:var(--force); }
+  .score .of { font-family:'Fraunces',serif; font-size:1.5rem; font-weight:700; color:var(--muted); }
+  .score .pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:5px; }
+  .rgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:9px; margin-bottom:16px; }
+  .rcell { background:var(--surface2); border:1px solid var(--border); border-radius:11px; padding:10px 11px; text-align:center; }
+  .rcell b { display:block; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:800; line-height:1.15; color:var(--bright); }
+  .rcell span { display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+  .rcell.r b { color:var(--power); } .rcell.w b { color:var(--force); } .rcell.b b { color:var(--muted); }
+  .rsplit { margin-bottom:15px; }
+  .rsplit table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .rsplit th, .rsplit td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); }
+  .rsplit th { font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .rsplit td.num { text-align:right; font-family:'JetBrains Mono',monospace; }
+  .rsplit td.mk { text-align:right; font-family:'JetBrains Mono',monospace; color:var(--bright); font-weight:600; }
+  .rnote { border-radius:10px; padding:11px 14px; margin-bottom:11px; font-size:13.5px; background:color-mix(in srgb,var(--iq) 10%,transparent); border:1px solid color-mix(in srgb,var(--iq) 30%,var(--border)); }
+  .rnote b { color:var(--bright); }
+  .rnote.rose { background:color-mix(in srgb,var(--rose) 9%,transparent); border-color:color-mix(in srgb,var(--rose) 32%,var(--border)); }
+  .rnote a { color:var(--accent); }
+  .ractions { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+  .ractions .bigbtn { padding:10px 18px; font-size:13.5px; }
+
+  .viewonly .submitrow, .viewonly .q-flag { display:none !important; }
+  .frozen-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:color-mix(in srgb,var(--chem) 10%,transparent); border:1px solid color-mix(in srgb,var(--chem) 34%,var(--border)); border-radius:13px; padding:13px 16px; margin-bottom:16px; font-size:13.5px; }
+  .frozen-bar b { color:var(--bright); }
+  .frozen-bar .fb-score { margin-left:auto; font-family:'Fraunces',serif; font-size:1.35rem; font-weight:800; color:var(--chem); white-space:nowrap; }
+
+  .foot { margin-top:46px; padding-top:24px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); line-height:1.8; }
+
+  /* ---------- light theme ---------- */
+  body[data-theme="light"] { --bg:#f4f1e8; --surface:#fffdf8; --surface2:#efeadd; --border:#ddd6c4; --text:#2c313c; --muted:#6f7484; --bright:#14181f; --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531; }
+  body[data-theme="light"]::before { background:
+      radial-gradient(ellipse 70% 50% at 15% -8%, #1769d614 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 4%, #8f5d0012 0%, transparent 52%),
+      radial-gradient(ellipse 110% 55% at 50% 116%, #0b7a6712 0%, transparent 60%); }
+  body[data-theme="light"] .eyebrow { background:linear-gradient(135deg,#fbefd9,#e8f0fb); border-color:#e6d3b0; }
+
+  @media (max-width:600px) {
+    .page { padding:56px 18px 90px; }
+    .hud { padding:8px 14px; gap:10px; }
+    .hud-prog { display:none; }
+    .q { padding:14px 14px 12px; }
+    .q-topic { display:none; }
+  }
+
+  /* ---------- print → a clean BLANK paper ---------- */
+  @media print {
+    @page { margin:13mm; }
+    body { --bg:#fff; --surface:#fff; --surface2:#fff; --border:#bbb; --text:#222; --muted:#555; --bright:#111;
+           --physics:#1769d6; --chem:#0b7a67; --maths:#5b40d6; --power:#107a50; --rose:#ad1a7d; --bio:#107a50; --iq:#8f5d00; --force:#cb2531;
+           background:#fff; color:#111; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body::before, .toolbtn, .pdf-btn, .hud, .startrow, .startnote, .tiles, .submitrow, .results, .q-flag, .frozen-bar { display:none !important; }
+    .page { max-width:none; padding:0; }
+    #paperBody { display:block !important; }
+    .q { break-inside:avoid; border:1px solid #bbb; background:#fff; margin-bottom:10px; padding:11px 13px; }
+    .q.flagged { border-color:#bbb; }
+    /* a blank paper: no ticks, no marks, no solutions, empty bubbles */
+    .sol { display:none !important; }
+    .q-verdict { display:none !important; }
+    .opt, .opt.sel, .opt.right, .opt.wrong { border-color:#bbb !important; background:#fff !important; }
+    .opt .ob, .opt.sel .ob, .opt.right .ob, .opt.wrong .ob { border-color:#666 !important; background:#fff !important; color:#111 !important; }
+    .opt .ot { text-decoration:none !important; }
+    .opt .tick { display:none !important; }
+    h1, h2, .secdiv .sname, .tile b { color:#111 !important; }
+    .rules { background:#fff; border-color:#bbb; }
+    .secdiv .sbar { background:#bbb; }
+    .foot { border-color:#bbb; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>(function(){try{var t=localStorage.getItem('hub-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.body.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>/*miraya-sync*/(function(){var EP="https://script.google.com/macros/s/AKfycbzRhrIC73xujxBB-ZCrUt6pDFkEfbdIzAcJVt7S0_HqZyRD1pncHT7xcclXSbwWVPRp/exec",KEY="studyProgress",SEED="mirayaSeeded";if(!EP||location.protocol!=='https:'||navigator.webdriver)return;var raw=localStorage.setItem.bind(localStorage);var CAP=false;function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){return{}}}function push(o){try{fetch(EP,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'progress',full:o})}).catch(function(){});}catch(e){}}function apply(o){raw(KEY,JSON.stringify(o));window.dispatchEvent(new Event('miraya-progress-synced'));}function wrapped(k,v){raw(k,v);if(CAP&&k===KEY){try{push(JSON.parse(v));}catch(e){}}}function pull(){fetch(EP+'?progress=1&t='+Date.now()).then(function(r){return r.text();}).then(function(t){var c;try{c=JSON.parse(t);}catch(e){return;}if(!c||typeof c!=='object'||c.error)return;CAP=true;localStorage.setItem=wrapped;var local=ld(),k;if(!localStorage.getItem(SEED)){var m={};for(k in c)m[k]=c[k];for(k in local)if(!(k in m))m[k]=local[k];try{raw(SEED,'1')}catch(e){}apply(m);if(JSON.stringify(m)!==JSON.stringify(c))push(m);}else{var s=JSON.stringify(c);if(s!==JSON.stringify(local))apply(c);}}).catch(function(){});}pull();window.addEventListener('focus',pull);document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});window.MirayaSync={pull:pull,ep:EP};})();</script>
+
+<a class="toolbtn hub-home" href="../index.html" title="Back to the hub" aria-label="Back to the hub">🏠</a>
+<a class="toolbtn tx-back" href="../tallentex.html" title="Back to TALLENTEX" aria-label="Back to TALLENTEX">🏆</a>
+<button class="toolbtn theme-toggle" id="themeToggle" aria-label="Switch light / dark theme" title="Toggle light / dark">☀</button>
+<button class="toolbtn pdf-btn" onclick="window.print()" title="Print a clean blank paper">🖨 <span>Print blank</span></button>
+
+<div class="hud" id="hud">
+  <div class="hud-clock" id="hudClock"><b id="clock">--:--</b><span class="hud-lbl" id="clockLbl">left</span></div>
+  <div class="pace" id="pace" title="How long you have been on the question you are looking at. The exam gives you 90 seconds per question."><b id="paceVal">0:00</b><span class="hud-lbl">on this Q</span></div>
+  <div class="hud-prog"><i id="hudBar"></i></div>
+  <div class="hud-count"><b id="doneN">0</b>/<span id="totN">0</span> done</div>
+  <button class="hud-sub" id="hudSubmit" type="button">Submit</button>
+</div>
+
+<div class="page">
+
+  <header id="front">
+    <div class="eyebrow"><span class="pulse"></span><span id="ebText">TALLENTEX 2027 · Class X</span></div>
+    <h1 id="pTitle">Paper title</h1>
+    <p class="sub" id="pSub"></p>
+
+    <div class="tiles">
+      <div class="tile"><b id="tQ">0</b><span>Questions</span></div>
+      <div class="tile"><b id="tMax">0</b><span>Max marks</span></div>
+      <div class="tile"><b id="tMin">0</b><span>Minutes</span></div>
+      <div class="tile"><b>+4</b><span>Correct</span></div>
+      <div class="tile neg"><b>−1</b><span>Wrong</span></div>
+      <div class="tile"><b>0</b><span>Blank</span></div>
+    </div>
+
+    <div class="rules">
+      <h3>Exam conditions — practise the way you will sit it</h3>
+      <ul>
+        <li><b>No calculator, no log tables, no rough paper.</b> Work in the margin of a printout, or on the booklet the way you will on the day.</li>
+        <li>Every question has <b>exactly one</b> correct option, labelled (1) to (4).</li>
+        <li><b>A wrong answer costs you a mark; a blank costs nothing but earns nothing.</b> Even a blind guess across four options is worth <b>+0.25</b> on average, and <b>+0.67</b> once you rule one out — so <b>never leave a blank</b>. See the <a href="strategy.html" style="color:var(--accent)">strategy page</a>.</li>
+        <li>About <b>90 seconds per question</b>. The bar at the top shows how long you have been on the question you are looking at.</li>
+        <li>Use <b>🚩 Flag</b> to mark a question to come back to. Anything still flagged and blank is listed for you at the end.</li>
+      </ul>
+    </div>
+
+    <div class="startrow">
+      <button class="bigbtn primary" id="startTimed" type="button">▶ Start timed — <span id="startMin">0</span> min</button>
+      <button class="bigbtn" id="startPractice" type="button">Practice (no clock)</button>
+      <button class="bigbtn" id="viewOnly" type="button">👁 Just look at the questions</button>
+      <button class="bigbtn" id="lastAttempt" type="button" hidden>📋 See your last attempt</button>
+    </div>
+    <p class="startnote" id="startNote">Practice mode still marks you and still applies −1 — only the countdown is off. “Just look” shows the questions without marking or recording anything.</p>
+  </header>
+
+  <div id="results" class="results"></div>
+
+  <div id="paperBody">
+    <div id="questions"></div>
+    <div class="submitrow">
+      <button class="bigbtn primary" id="submitBtn" type="button">Submit paper</button>
+      <span class="submitnote" id="submitNote"></span>
+    </div>
+  </div>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ==========================================================================
+   PAPER — replace this whole object. Everything below it is the engine.
+
+   PAPER = {
+     title    : shown as <h1> and used for <title>
+     kind     : 'topic' | 'subject' | 'mock'   (mock ⇒ one-shot frozen report)
+     duration : minutes
+     id       : progress key — 'tx:<slug>:pN' | 'tx:subj:<key>' | 'tx:mock-N'
+     accent   : 'physics'|'chem'|'bio'|'maths'|'iq'  (page accent)
+     sub      : one-line description under the title
+     sections : [{ name, from, to }]  — from/to are question numbers, inclusive
+     questions: [{
+        n, section, topic, fmt:'plain'|'diagram'|'statement'|'match'|'ar',   // see note below
+        stem, fig?, figCap?, options:[4 strings], answer:<0-based index>, sol
+     }]
+   }
+
+   `fmt` is METADATA, not a layout switch — the engine never reads it. Each stem carries its
+   own markup (a table for a match item, <ol class="roman"> for a statement item). It exists so
+   the format mix can be audited against the real papers (about 1 in 3 diagram-based), which the
+   verification block in docs/tallentex.md requires. Keep it accurate; do not expect it to render.
+   ========================================================================== */
+const PAPER = {
+  title: "TALLENTEX · Polynomials — Paper 2",
+  kind: "topic",
+  duration: 20,
+  id: "tx:maths-numbers-polynomials:p2",
+  accent: "maths",
+  sub: "Polynomials only — the second paper of the Real Numbers &amp; Polynomials unit: reading graphs, zeroes and coefficients for quadratics and cubics, conjugate zeroes, comparing coefficients, the remainder and factor theorems, identities and the LCM of polynomials. <b>13 questions · 52 marks · 20 minutes.</b> Pitched at the real TALLENTEX paper: most items need two or three steps, and the clock is meant to run short. Triage, do not grind.",
+  sections: [
+    {
+      name: "Mathematics",
+      from: 1,
+      to: 13
+    }
+  ],
+  questions: [
+    {
+      n: 1,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "diagram",
+      stem: "<p>The figure shows the graph of the polynomial p(x) = ax² + bx + c and the line y = 3. The curve meets the line at A(−2, 3) and B(5, 3), and passes through C(−1, −6). If α and β are the zeroes of p(x), what is the value of <b>α⁴ + β⁴</b> ?</p>",
+      fig: "<svg viewBox=\"0 0 366 257\" width=\"412\" height=\"289\" role=\"img\" aria-label=\"Graph of the parabola y equals a x squared plus b x plus c and the dashed line y equals 3, meeting at A minus 2 comma 3 and B 5 comma 3; the parabola also passes through C minus 1 comma minus 6 and meets the x-axis at two points marked alpha and beta\"><g stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"><line x1=\"32\" y1=\"88\" x2=\"344\" y2=\"88\"/><line x1=\"128\" y1=\"241\" x2=\"128\" y2=\"16\"/></g><path d=\"M339 84 L344 88 L339 92\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"/><path d=\"M124 21 L128 16 L132 21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"/><line x1=\"32\" y1=\"61\" x2=\"344\" y2=\"61\" stroke=\"var(--iq)\" stroke-width=\"2\" stroke-dasharray=\"7 5\"/><path d=\"M54.9 17.1 L55.4 18.9 L55.9 20.8 L56.4 22.6 L57 24.4 L57.5 26.2 L58 28 L58.5 29.8 L59 31.6 L59.6 33.3 L60.1 35.1 L60.6 36.9 L61.1 38.6 L61.6 40.4 L62.2 42.1 L62.7 43.8 L63.2 45.5 L63.7 47.2 L64.2 48.9 L64.8 50.6 L65.3 52.3 L65.8 54 L66.3 55.7 L66.8 57.3 L67.4 59 L67.9 60.6 L68.4 62.3 L68.9 63.9 L69.4 65.5 L70 67.1 L70.5 68.7 L71 70.3 L71.5 71.9 L72 73.5 L72.6 75.1 L73.1 76.6 L73.6 78.2 L74.1 79.7 L74.6 81.3 L75.2 82.8 L75.7 84.3 L76.2 85.8 L76.7 87.3 L77.2 88.8 L77.8 90.3 L78.3 91.8 L78.8 93.3 L79.3 94.7 L79.8 96.2 L80.4 97.6 L80.9 99.1 L81.4 100.5 L81.9 101.9 L82.4 103.4 L83 104.8 L83.5 106.2 L84 107.6 L84.5 108.9 L85 110.3 L85.6 111.7 L86.1 113 L86.6 114.4 L87.1 115.7 L87.6 117.1 L88.2 118.4 L88.7 119.7 L89.2 121 L89.7 122.3 L90.2 123.6 L90.8 124.9 L91.3 126.2 L91.8 127.5 L92.3 128.7 L92.8 130 L93.4 131.2 L93.9 132.5 L94.4 133.7 L94.9 134.9 L95.4 136.1 L96 137.3 L96.5 138.5 L97 139.7 L97.5 140.9 L98 142.1 L98.6 143.3 L99.1 144.4 L99.6 145.6 L100.1 146.7 L100.6 147.8 L101.2 149 L101.7 150.1 L102.2 151.2 L102.7 152.3 L103.2 153.4 L103.8 154.5 L104.3 155.5 L104.8 156.6 L105.3 157.7 L105.8 158.7 L106.4 159.8 L106.9 160.8 L107.4 161.8 L107.9 162.8 L108.4 163.9 L109 164.9 L109.5 165.9 L110 166.8 L110.5 167.8 L111 168.8 L111.6 169.8 L112.1 170.7 L112.6 171.7 L113.1 172.6 L113.6 173.5 L114.2 174.4 L114.7 175.4 L115.2 176.3 L115.7 177.2 L116.2 178 L116.8 178.9 L117.3 179.8 L117.8 180.7 L118.3 181.5 L118.8 182.4 L119.4 183.2 L119.9 184 L120.4 184.9 L120.9 185.7 L121.4 186.5 L122 187.3 L122.5 188.1 L123 188.9 L123.5 189.7 L124 190.4 L124.6 191.2 L125.1 191.9 L125.6 192.7 L126.1 193.4 L126.6 194.1 L127.2 194.9 L127.7 195.6 L128.2 196.3 L128.7 197 L129.2 197.7 L129.8 198.3 L130.3 199 L130.8 199.7 L131.3 200.3 L131.8 201 L132.4 201.6 L132.9 202.2 L133.4 202.9 L133.9 203.5 L134.4 204.1 L135 204.7 L135.5 205.3 L136 205.8 L136.5 206.4 L137 207 L137.6 207.5 L138.1 208.1 L138.6 208.6 L139.1 209.2 L139.6 209.7 L140.2 210.2 L140.7 210.7 L141.2 211.2 L141.7 211.7 L142.2 212.2 L142.8 212.7 L143.3 213.1 L143.8 213.6 L144.3 214 L144.8 214.5 L145.4 214.9 L145.9 215.3 L146.4 215.8 L146.9 216.2 L147.4 216.6 L148 217 L148.5 217.4 L149 217.7 L149.5 218.1 L150 218.5 L150.6 218.8 L151.1 219.2 L151.6 219.5 L152.1 219.8 L152.6 220.2 L153.2 220.5 L153.7 220.8 L154.2 221.1 L154.7 221.4 L155.2 221.6 L155.8 221.9 L156.3 222.2 L156.8 222.4 L157.3 222.7 L157.8 222.9 L158.4 223.2 L158.9 223.4 L159.4 223.6 L159.9 223.8 L160.4 224 L161 224.2 L161.5 224.4 L162 224.6 L162.5 224.7 L163 224.9 L163.6 225 L164.1 225.2 L164.6 225.3 L165.1 225.4 L165.6 225.6 L166.2 225.7 L166.7 225.8 L167.2 225.9 L167.7 226 L168.2 226 L168.8 226.1 L169.3 226.2 L169.8 226.2 L170.3 226.3 L170.8 226.3 L171.4 226.3 L171.9 226.4 L172.4 226.4 L172.9 226.4 L173.4 226.4 L174 226.4 L174.5 226.3 L175 226.3 L175.5 226.3 L176 226.2 L176.6 226.2 L177.1 226.1 L177.6 226.1 L178.1 226 L178.6 225.9 L179.2 225.8 L179.7 225.7 L180.2 225.6 L180.7 225.5 L181.2 225.4 L181.8 225.2 L182.3 225.1 L182.8 224.9 L183.3 224.8 L183.8 224.6 L184.4 224.4 L184.9 224.3 L185.4 224.1 L185.9 223.9 L186.4 223.7 L187 223.5 L187.5 223.2 L188 223 L188.5 222.8 L189 222.5 L189.6 222.3 L190.1 222 L190.6 221.7 L191.1 221.4 L191.6 221.2 L192.2 220.9 L192.7 220.6 L193.2 220.3 L193.7 219.9 L194.2 219.6 L194.8 219.3 L195.3 218.9 L195.8 218.6 L196.3 218.2 L196.8 217.8 L197.4 217.5 L197.9 217.1 L198.4 216.7 L198.9 216.3 L199.4 215.9 L200 215.5 L200.5 215 L201 214.6 L201.5 214.2 L202 213.7 L202.6 213.3 L203.1 212.8 L203.6 212.3 L204.1 211.8 L204.6 211.4 L205.2 210.9 L205.7 210.4 L206.2 209.8 L206.7 209.3 L207.2 208.8 L207.8 208.3 L208.3 207.7 L208.8 207.2 L209.3 206.6 L209.8 206 L210.4 205.4 L210.9 204.9 L211.4 204.3 L211.9 203.7 L212.4 203 L213 202.4 L213.5 201.8 L214 201.2 L214.5 200.5 L215 199.9 L215.6 199.2 L216.1 198.5 L216.6 197.9 L217.1 197.2 L217.6 196.5 L218.2 195.8 L218.7 195.1 L219.2 194.4 L219.7 193.6 L220.2 192.9 L220.8 192.2 L221.3 191.4 L221.8 190.7 L222.3 189.9 L222.8 189.1 L223.4 188.3 L223.9 187.5 L224.4 186.7 L224.9 185.9 L225.4 185.1 L226 184.3 L226.5 183.5 L227 182.6 L227.5 181.8 L228 180.9 L228.6 180.1 L229.1 179.2 L229.6 178.3 L230.1 177.4 L230.6 176.5 L231.2 175.6 L231.7 174.7 L232.2 173.8 L232.7 172.9 L233.2 171.9 L233.8 171 L234.3 170 L234.8 169.1 L235.3 168.1 L235.8 167.1 L236.4 166.2 L236.9 165.2 L237.4 164.2 L237.9 163.2 L238.4 162.1 L239 161.1 L239.5 160.1 L240 159 L240.5 158 L241 156.9 L241.6 155.9 L242.1 154.8 L242.6 153.7 L243.1 152.6 L243.6 151.5 L244.2 150.4 L244.7 149.3 L245.2 148.2 L245.7 147.1 L246.2 145.9 L246.8 144.8 L247.3 143.6 L247.8 142.4 L248.3 141.3 L248.8 140.1 L249.4 138.9 L249.9 137.7 L250.4 136.5 L250.9 135.3 L251.4 134.1 L252 132.9 L252.5 131.6 L253 130.4 L253.5 129.1 L254 127.9 L254.6 126.6 L255.1 125.3 L255.6 124 L256.1 122.7 L256.6 121.4 L257.2 120.1 L257.7 118.8 L258.2 117.5 L258.7 116.2 L259.2 114.8 L259.8 113.5 L260.3 112.1 L260.8 110.7 L261.3 109.4 L261.8 108 L262.4 106.6 L262.9 105.2 L263.4 103.8 L263.9 102.4 L264.4 101 L265 99.5 L265.5 98.1 L266 96.6 L266.5 95.2 L267 93.7 L267.6 92.3 L268.1 90.8 L268.6 89.3 L269.1 87.8 L269.6 86.3 L270.2 84.8 L270.7 83.3 L271.2 81.7 L271.7 80.2 L272.2 78.6 L272.8 77.1 L273.3 75.5 L273.8 74 L274.3 72.4 L274.8 70.8 L275.4 69.2 L275.9 67.6 L276.4 66 L276.9 64.4 L277.4 62.8 L278 61.1 L278.5 59.5 L279 57.8 L279.5 56.2 L280 54.5 L280.6 52.8 L281.1 51.2 L281.6 49.5 L282.1 47.8 L282.6 46.1 L283.2 44.3 L283.7 42.6 L284.2 40.9 L284.7 39.2 L285.2 37.4 L285.8 35.7 L286.3 33.9 L286.8 32.1 L287.3 30.3 L287.8 28.6 L288.4 26.8 L288.9 25 L289.4 23.1 L289.9 21.3 L290.4 19.5 L291 17.7\" fill=\"none\" stroke=\"var(--maths)\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><g fill=\"var(--iq)\"><circle cx=\"68\" cy=\"61\" r=\"3.6\"/><circle cx=\"278\" cy=\"61\" r=\"3.6\"/><circle cx=\"98\" cy=\"142\" r=\"3.6\"/></g><g fill=\"var(--maths)\"><circle cx=\"77\" cy=\"88\" r=\"3.6\"/><circle cx=\"269\" cy=\"88\" r=\"3.6\"/></g><g fill=\"currentColor\" font-family=\"Inter,sans-serif\" paint-order=\"stroke\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\"><text x=\"61\" y=\"78\" text-anchor=\"end\" font-size=\"12\" >A(&#8722;2, 3)</text><text x=\"285\" y=\"78\" text-anchor=\"start\" font-size=\"12\" >B(5, 3)</text><text x=\"342\" y=\"53\" text-anchor=\"end\" font-size=\"12\" >y = 3</text><text x=\"86\" y=\"148\" text-anchor=\"end\" font-size=\"12\" >C(&#8722;1, &#8722;6)</text><text x=\"70\" y=\"105\" text-anchor=\"end\" font-size=\"13\" font-style=\"italic\" >&#945;</text><text x=\"276\" y=\"105\" text-anchor=\"start\" font-size=\"13\" font-style=\"italic\" >&#946;</text><text x=\"122\" y=\"103\" text-anchor=\"end\" font-size=\"12\" >O</text><text x=\"340\" y=\"80\" text-anchor=\"start\" font-size=\"12\" font-style=\"italic\" >x</text><text x=\"135\" y=\"26\" text-anchor=\"start\" font-size=\"12\" font-style=\"italic\" >y</text></g></svg>",
+      figCap: "The dashed line y = 3 meets the curve at A and B; C is a third point on the curve. α and β mark where the curve meets the x-axis. Not to scale.",
+      options: ["431", "497", "625", "641"],
+      answer: 1,
+      sol: "<p><b>Step 1 — find a.</b> A and B are at the same height, so p(x) − 3 is zero at x = −2 and at x = 5: p(x) − 3 = a(x + 2)(x − 5). Put in C: −6 − 3 = a(1)(−6), so <b>a = 3/2</b>. (Or substitute A, B and C into ax² + bx + c and solve the three equations.)</p><p><b>Step 2 — b and c, then divide by a.</b> p(x) = (3/2)(x² − 3x − 10) + 3 = (3/2)x² − (9/2)x − 12. So α + β = −b/a = 3 and αβ = c/a = −12 ÷ (3/2) = −8.</p><p><b>Step 3 — the fourth power takes two steps.</b> α² + β² = (α + β)² − 2αβ = 9 + 16 = 25; then α⁴ + β⁴ = (α² + β²)² − 2(αβ)² = 625 − 128 = <b>497</b>.</p><p>A and B are <i>not</i> the zeroes — they are where the curve meets y = 3, not the x-axis — and you never need the values of α and β themselves.</p><p><b>Where the other options come from.</b> (1) 431 — taking a = 1, i.e. p(x) − 3 = (x + 2)(x − 5) with C ignored: αβ = −7, α² + β² = 23, and 529 − 98 = 431. (4) 641 — treating A and B as the zeroes: αβ = −10, α² + β² = 29, and 841 − 200 = 641. (3) 625 — stopping at (α² + β²)², without the −2(αβ)².</p>"
+    },
+    {
+      n: 2,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "plain",
+      stem: "<p>The zeroes of the polynomial 2x² − kx + 27 are in the ratio 2 : 3. What are <b>all</b> the possible values of k ?</p>",
+      options: ["15 or −15", "15/2 or −15/2", "15 only", "15/2 only"],
+      answer: 0,
+      sol: "<p>Let the zeroes be 2t and 3t. Divide by the leading 2 first: the product of the zeroes is 27/2 and their sum is k/2.</p><p><b>Product:</b> 2t × 3t = 6t² = 27/2, so t² = 9/4 and <b>t = 3/2 or t = −3/2</b>. Both signs are allowed — two negative numbers can be in the ratio 2 : 3 just as well.</p><p><b>Sum:</b> 2t + 3t = 5t = k/2, so k = 10t = <b>15 or −15</b>.</p><p>Check: k = 15 gives 2x² − 15x + 27 = (x − 3)(2x − 9), zeroes 3 and 9/2; k = −15 gives 2x² + 15x + 27 = (x + 3)(2x + 9), zeroes −3 and −9/2. Both pairs are in the ratio 2 : 3. ✓</p><p><b>Where the other options come from.</b> (3) 15 only — taking only the positive square root of t² = 9/4. (2) 15/2 or −15/2 — stopping at the sum of the zeroes, 5t = ±15/2; but that sum is k/2, so k is twice it. (4) 15/2 only — both slips: the positive root only, and stopping at the sum.</p>"
+    },
+    {
+      n: 3,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "diagram",
+      stem: "<p>The figure shows the graph of the cubic polynomial p(x) = ax³ + bx² + cx + d. Which of the following is correct about the signs of <b>b</b> and <b>c</b> ?</p>",
+      fig: "<svg viewBox=\"0 0 334 242\" width=\"376\" height=\"272\" role=\"img\" aria-label=\"Graph of a cubic polynomial that comes down from the upper left, cuts the x-axis at minus 3, dips below the axis, cuts it again at 1, rises above it, cuts it at 4 and falls away to the lower right; it cuts the y-axis below the origin\"><g stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"><line x1=\"18\" y1=\"118\" x2=\"312\" y2=\"118\"/><line x1=\"150\" y1=\"226\" x2=\"150\" y2=\"16\"/></g><path d=\"M307 114 L312 118 L307 122\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"/><path d=\"M146 21 L150 16 L154 21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"/><path d=\"M33.7 16.9 L34.2 19.3 L34.7 21.7 L35.2 24.1 L35.6 26.4 L36.1 28.8 L36.6 31.1 L37.1 33.4 L37.6 35.6 L38.1 37.9 L38.6 40.1 L39.1 42.3 L39.6 44.5 L40.1 46.7 L40.5 48.8 L41 50.9 L41.5 53 L42 55.1 L42.5 57.2 L43 59.2 L43.5 61.2 L44 63.2 L44.5 65.2 L45 67.2 L45.4 69.1 L45.9 71 L46.4 72.9 L46.9 74.8 L47.4 76.7 L47.9 78.5 L48.4 80.3 L48.9 82.1 L49.4 83.9 L49.8 85.7 L50.3 87.4 L50.8 89.2 L51.3 90.9 L51.8 92.5 L52.3 94.2 L52.8 95.9 L53.3 97.5 L53.8 99.1 L54.3 100.7 L54.8 102.3 L55.2 103.8 L55.7 105.4 L56.2 106.9 L56.7 108.4 L57.2 109.9 L57.7 111.3 L58.2 112.8 L58.7 114.2 L59.2 115.6 L59.7 117 L60.1 118.4 L60.6 119.7 L61.1 121.1 L61.6 122.4 L62.1 123.7 L62.6 125 L63.1 126.3 L63.6 127.5 L64.1 128.8 L64.6 130 L65 131.2 L65.5 132.4 L66 133.6 L66.5 134.7 L67 135.8 L67.5 137 L68 138.1 L68.5 139.2 L69 140.2 L69.4 141.3 L69.9 142.3 L70.4 143.3 L70.9 144.3 L71.4 145.3 L71.9 146.3 L72.4 147.3 L72.9 148.2 L73.4 149.1 L73.9 150.1 L74.3 151 L74.8 151.8 L75.3 152.7 L75.8 153.6 L76.3 154.4 L76.8 155.2 L77.3 156 L77.8 156.8 L78.3 157.6 L78.8 158.4 L79.2 159.1 L79.7 159.8 L80.2 160.6 L80.7 161.3 L81.2 162 L81.7 162.6 L82.2 163.3 L82.7 163.9 L83.2 164.6 L83.7 165.2 L84.2 165.8 L84.6 166.4 L85.1 167 L85.6 167.5 L86.1 168.1 L86.6 168.6 L87.1 169.2 L87.6 169.7 L88.1 170.2 L88.6 170.6 L89 171.1 L89.5 171.6 L90 172 L90.5 172.5 L91 172.9 L91.5 173.3 L92 173.7 L92.5 174.1 L93 174.4 L93.5 174.8 L94 175.1 L94.4 175.5 L94.9 175.8 L95.4 176.1 L95.9 176.4 L96.4 176.7 L96.9 177 L97.4 177.2 L97.9 177.5 L98.4 177.7 L98.9 178 L99.3 178.2 L99.8 178.4 L100.3 178.6 L100.8 178.8 L101.3 178.9 L101.8 179.1 L102.3 179.2 L102.8 179.4 L103.3 179.5 L103.8 179.6 L104.2 179.7 L104.7 179.8 L105.2 179.9 L105.7 180 L106.2 180.1 L106.7 180.1 L107.2 180.2 L107.7 180.2 L108.2 180.2 L108.7 180.2 L109.1 180.2 L109.6 180.2 L110.1 180.2 L110.6 180.2 L111.1 180.2 L111.6 180.1 L112.1 180.1 L112.6 180 L113.1 179.9 L113.6 179.9 L114 179.8 L114.5 179.7 L115 179.6 L115.5 179.4 L116 179.3 L116.5 179.2 L117 179.1 L117.5 178.9 L118 178.7 L118.5 178.6 L118.9 178.4 L119.4 178.2 L119.9 178 L120.4 177.8 L120.9 177.6 L121.4 177.4 L121.9 177.2 L122.4 177 L122.9 176.7 L123.3 176.5 L123.8 176.2 L124.3 176 L124.8 175.7 L125.3 175.4 L125.8 175.1 L126.3 174.9 L126.8 174.6 L127.3 174.3 L127.8 173.9 L128.2 173.6 L128.7 173.3 L129.2 173 L129.7 172.6 L130.2 172.3 L130.7 171.9 L131.2 171.6 L131.7 171.2 L132.2 170.9 L132.7 170.5 L133.2 170.1 L133.6 169.7 L134.1 169.3 L134.6 168.9 L135.1 168.5 L135.6 168.1 L136.1 167.7 L136.6 167.3 L137.1 166.9 L137.6 166.4 L138.1 166 L138.5 165.6 L139 165.1 L139.5 164.7 L140 164.2 L140.5 163.8 L141 163.3 L141.5 162.8 L142 162.3 L142.5 161.9 L142.9 161.4 L143.4 160.9 L143.9 160.4 L144.4 159.9 L144.9 159.4 L145.4 158.9 L145.9 158.4 L146.4 157.9 L146.9 157.4 L147.4 156.9 L147.8 156.3 L148.3 155.8 L148.8 155.3 L149.3 154.7 L149.8 154.2 L150.3 153.7 L150.8 153.1 L151.3 152.6 L151.8 152 L152.3 151.5 L152.8 150.9 L153.2 150.4 L153.7 149.8 L154.2 149.2 L154.7 148.7 L155.2 148.1 L155.7 147.5 L156.2 147 L156.7 146.4 L157.2 145.8 L157.7 145.2 L158.1 144.7 L158.6 144.1 L159.1 143.5 L159.6 142.9 L160.1 142.3 L160.6 141.7 L161.1 141.1 L161.6 140.6 L162.1 140 L162.6 139.4 L163 138.8 L163.5 138.2 L164 137.6 L164.5 137 L165 136.4 L165.5 135.8 L166 135.2 L166.5 134.6 L167 134 L167.4 133.4 L167.9 132.8 L168.4 132.2 L168.9 131.6 L169.4 130.9 L169.9 130.3 L170.4 129.7 L170.9 129.1 L171.4 128.5 L171.9 127.9 L172.3 127.3 L172.8 126.7 L173.3 126.1 L173.8 125.5 L174.3 124.9 L174.8 124.3 L175.3 123.7 L175.8 123.1 L176.3 122.5 L176.8 121.9 L177.3 121.3 L177.7 120.7 L178.2 120.1 L178.7 119.5 L179.2 119 L179.7 118.4 L180.2 117.8 L180.7 117.2 L181.2 116.6 L181.7 116 L182.2 115.4 L182.6 114.9 L183.1 114.3 L183.6 113.7 L184.1 113.1 L184.6 112.6 L185.1 112 L185.6 111.4 L186.1 110.9 L186.6 110.3 L187.1 109.7 L187.5 109.2 L188 108.6 L188.5 108.1 L189 107.5 L189.5 107 L190 106.5 L190.5 105.9 L191 105.4 L191.5 104.9 L192 104.3 L192.4 103.8 L192.9 103.3 L193.4 102.8 L193.9 102.3 L194.4 101.7 L194.9 101.2 L195.4 100.7 L195.9 100.2 L196.4 99.7 L196.9 99.3 L197.3 98.8 L197.8 98.3 L198.3 97.8 L198.8 97.3 L199.3 96.9 L199.8 96.4 L200.3 96 L200.8 95.5 L201.3 95.1 L201.8 94.6 L202.2 94.2 L202.7 93.8 L203.2 93.3 L203.7 92.9 L204.2 92.5 L204.7 92.1 L205.2 91.7 L205.7 91.3 L206.2 90.9 L206.7 90.5 L207.1 90.1 L207.6 89.7 L208.1 89.4 L208.6 89 L209.1 88.6 L209.6 88.3 L210.1 87.9 L210.6 87.6 L211.1 87.3 L211.6 86.9 L212 86.6 L212.5 86.3 L213 86 L213.5 85.7 L214 85.4 L214.5 85.1 L215 84.9 L215.5 84.6 L216 84.3 L216.5 84.1 L216.9 83.8 L217.4 83.6 L217.9 83.3 L218.4 83.1 L218.9 82.9 L219.4 82.7 L219.9 82.5 L220.4 82.3 L220.9 82.1 L221.4 81.9 L221.8 81.8 L222.3 81.6 L222.8 81.5 L223.3 81.3 L223.8 81.2 L224.3 81 L224.8 80.9 L225.3 80.8 L225.8 80.7 L226.2 80.6 L226.7 80.5 L227.2 80.5 L227.7 80.4 L228.2 80.3 L228.7 80.3 L229.2 80.3 L229.7 80.2 L230.2 80.2 L230.7 80.2 L231.2 80.2 L231.6 80.2 L232.1 80.2 L232.6 80.3 L233.1 80.3 L233.6 80.4 L234.1 80.4 L234.6 80.5 L235.1 80.6 L235.6 80.7 L236.1 80.8 L236.5 80.9 L237 81 L237.5 81.1 L238 81.3 L238.5 81.5 L239 81.6 L239.5 81.8 L240 82 L240.5 82.2 L240.9 82.4 L241.4 82.6 L241.9 82.9 L242.4 83.1 L242.9 83.4 L243.4 83.6 L243.9 83.9 L244.4 84.2 L244.9 84.5 L245.4 84.8 L245.8 85.2 L246.3 85.5 L246.8 85.9 L247.3 86.2 L247.8 86.6 L248.3 87 L248.8 87.4 L249.3 87.8 L249.8 88.2 L250.3 88.7 L250.8 89.1 L251.2 89.6 L251.7 90.1 L252.2 90.6 L252.7 91.1 L253.2 91.6 L253.7 92.1 L254.2 92.7 L254.7 93.2 L255.2 93.8 L255.7 94.4 L256.1 95 L256.6 95.6 L257.1 96.2 L257.6 96.9 L258.1 97.5 L258.6 98.2 L259.1 98.9 L259.6 99.6 L260.1 100.3 L260.6 101 L261 101.8 L261.5 102.5 L262 103.3 L262.5 104.1 L263 104.9 L263.5 105.7 L264 106.5 L264.5 107.4 L265 108.2 L265.4 109.1 L265.9 110 L266.4 110.9 L266.9 111.8 L267.4 112.8 L267.9 113.7 L268.4 114.7 L268.9 115.7 L269.4 116.7 L269.9 117.7 L270.4 118.7 L270.8 119.8 L271.3 120.9 L271.8 121.9 L272.3 123 L272.8 124.1 L273.3 125.3 L273.8 126.4 L274.3 127.6 L274.8 128.8 L275.2 130 L275.7 131.2 L276.2 132.4 L276.7 133.7 L277.2 134.9 L277.7 136.2 L278.2 137.5 L278.7 138.8 L279.2 140.1 L279.7 141.5 L280.1 142.9 L280.6 144.3 L281.1 145.7 L281.6 147.1 L282.1 148.5 L282.6 150 L283.1 151.4 L283.6 152.9 L284.1 154.5 L284.6 156 L285.1 157.5 L285.5 159.1 L286 160.7 L286.5 162.3 L287 163.9 L287.5 165.6 L288 167.2 L288.5 168.9 L289 170.6 L289.5 172.3 L289.9 174 L290.4 175.8 L290.9 177.6 L291.4 179.4 L291.9 181.2 L292.4 183 L292.9 184.9 L293.4 186.7 L293.9 188.6 L294.4 190.5 L294.9 192.5 L295.3 194.4 L295.8 196.4 L296.3 198.4 L296.8 200.4 L297.3 202.4 L297.8 204.5 L298.3 206.6 L298.8 208.7 L299.3 210.8 L299.8 212.9 L300.2 215.1 L300.7 217.2 L301.2 219.4 L301.7 221.7 L302.2 223.9\" fill=\"none\" stroke=\"var(--maths)\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><g fill=\"var(--maths)\"><circle cx=\"60\" cy=\"118\" r=\"3.6\"/><circle cx=\"180\" cy=\"118\" r=\"3.6\"/><circle cx=\"270\" cy=\"118\" r=\"3.6\"/></g><g fill=\"currentColor\" font-family=\"Inter,sans-serif\" paint-order=\"stroke\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\"><text x=\"54\" y=\"135\" text-anchor=\"end\" font-size=\"12\" >&#8722;3</text><text x=\"174\" y=\"110\" text-anchor=\"end\" font-size=\"12\" >1</text><text x=\"264\" y=\"135\" text-anchor=\"end\" font-size=\"12\" >4</text><text x=\"144\" y=\"133\" text-anchor=\"end\" font-size=\"12\" >O</text><text x=\"308\" y=\"110\" text-anchor=\"start\" font-size=\"12\" font-style=\"italic\" >x</text><text x=\"157\" y=\"26\" text-anchor=\"start\" font-size=\"12\" font-style=\"italic\" >y</text></g></svg>",
+      figCap: "The curve cuts the x-axis at −3, 1 and 4, and falls away to the right. Not to scale.",
+      options: ["b &gt; 0 and c &gt; 0", "b &gt; 0 and c &lt; 0", "b &lt; 0 and c &gt; 0", "b &lt; 0 and c &lt; 0"],
+      answer: 0,
+      sol: "<p><b>Step 1 — the sign of a.</b> The curve falls away on the right, so <b>a &lt; 0</b>. (A cubic with a &gt; 0 rises on the right.)</p><p><b>Step 2 — the relations for a cubic.</b> The zeroes are −3, 1 and 4.<br>Sum: −3 + 1 + 4 = 2 = −b/a, so b = −2a.<br>Sum of products in pairs: (−3)(1) + (1)(4) + (4)(−3) = −3 + 4 − 12 = −11 = c/a, so c = −11a.</p><p><b>Step 3 — put in a &lt; 0.</b> b = −2a and c = −11a are both positive: <b>b &gt; 0 and c &gt; 0</b>.</p><p>Check by expanding: p(x) = a(x + 3)(x − 1)(x − 4) = a(x³ − 2x² − 11x + 12), so b = −2a, c = −11a and d = 12a. With a &lt; 0, d &lt; 0 too — and the curve does cut the y-axis below O, as drawn. ✓</p><p><b>Where the other options come from.</b> (4) b &lt; 0, c &lt; 0 — taking a &gt; 0 (missing that the curve falls on the right), which flips both signs. (3) b &lt; 0, c &gt; 0 — writing the sum of the zeroes as b/a, without its minus sign, while getting a right. (2) b &gt; 0, c &lt; 0 — both slips together. The pattern to carry for a cubic: −b/a, +c/a, −d/a.</p>"
+    },
+    {
+      n: 4,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "plain",
+      stem: "<p>α and β are the zeroes of the polynomial x² − 3x − 5. Which of the following is a quadratic polynomial whose zeroes are <b>α² + β</b> and <b>β² + α</b> ?</p>",
+      options: ["x² + 22x + 92", "x² − 22x + 92", "x² + 22x + 47", "x² − 22x + 47"],
+      answer: 1,
+      sol: "<p>From x² − 3x − 5: α + β = 3 and αβ = −5. Build the new sum and the new product out of these two numbers.</p><p><b>New sum:</b> (α² + β²) + (α + β) = [(α + β)² − 2αβ] + (α + β) = (9 + 10) + 3 = <b>22</b>.</p><p><b>New product:</b> (α² + β)(β² + α) = α²β² + α³ + β³ + αβ. Here α²β² = 25, αβ = −5, and α³ + β³ = (α + β)³ − 3αβ(α + β) = 27 + 45 = 72, so the product is 25 + 72 − 5 = <b>92</b>.</p><p>A quadratic with this sum and product is <b>x² − 22x + 92</b>.</p><p><b>Where the other options come from.</b> (4) x² − 22x + 47 — taking α³ + β³ as (α + β)³ = 27, without the −3αβ(α + β) correction: 25 + 27 − 5 = 47. (1) x² + 22x + 92 — writing the polynomial as x² + (sum)x + (product); the x-coefficient is <i>minus</i> the sum. (3) x² + 22x + 47 — both slips. Each coefficient is shared by two options, so only getting <i>both</i> the sum and the product right decides it.</p>"
+    },
+    {
+      n: 5,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "diagram",
+      stem: "<p>The figure shows the graph of a polynomial p(x) of <b>degree 4</b>. It crosses the x-axis at −2 and at 3, touches it at the origin O, and passes through A(1, −3). What is the remainder when p(x) is divided by (x − 4) ?</p>",
+      fig: "<svg viewBox=\"0 0 326 236\" width=\"367\" height=\"266\" role=\"img\" aria-label=\"Graph of a degree 4 polynomial: it comes down from the upper left, crosses the x-axis at minus 2, dips below, rises to touch the x-axis at the origin O without crossing, dips again through the point A 1 comma minus 3 to a lower minimum, and rises to cross the x-axis at 3\"><g stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"><line x1=\"18\" y1=\"100.5\" x2=\"304\" y2=\"100.5\"/><line x1=\"141.2\" y1=\"220.1\" x2=\"141.2\" y2=\"16\"/></g><path d=\"M299 96.5 L304 100.5 L299 104.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"/><path d=\"M137.2 21 L141.2 16 L145.2 21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" opacity=\".55\"/><path d=\"M35.2 16.8 L35.6 19.9 L36.1 22.9 L36.6 25.9 L37.1 28.9 L37.5 31.7 L38 34.6 L38.5 37.4 L39 40.1 L39.4 42.8 L39.9 45.4 L40.4 48 L40.9 50.5 L41.4 53 L41.8 55.5 L42.3 57.9 L42.8 60.2 L43.3 62.5 L43.7 64.7 L44.2 66.9 L44.7 69.1 L45.2 71.2 L45.6 73.3 L46.1 75.3 L46.6 77.3 L47.1 79.2 L47.6 81.1 L48 83 L48.5 84.8 L49 86.6 L49.5 88.3 L49.9 90 L50.4 91.6 L50.9 93.2 L51.4 94.8 L51.8 96.3 L52.3 97.8 L52.8 99.3 L53.3 100.7 L53.8 102.1 L54.2 103.4 L54.7 104.8 L55.2 106 L55.7 107.3 L56.1 108.5 L56.6 109.7 L57.1 110.8 L57.6 111.9 L58 113 L58.5 114 L59 115 L59.5 116 L59.9 117 L60.4 117.9 L60.9 118.8 L61.4 119.6 L61.9 120.5 L62.3 121.3 L62.8 122 L63.3 122.8 L63.8 123.5 L64.2 124.2 L64.7 124.9 L65.2 125.5 L65.7 126.1 L66.1 126.7 L66.6 127.2 L67.1 127.8 L67.6 128.3 L68 128.8 L68.5 129.2 L69 129.7 L69.5 130.1 L70 130.5 L70.4 130.8 L70.9 131.2 L71.4 131.5 L71.9 131.8 L72.3 132.1 L72.8 132.4 L73.3 132.6 L73.8 132.8 L74.2 133.1 L74.7 133.2 L75.2 133.4 L75.7 133.6 L76.2 133.7 L76.6 133.8 L77.1 133.9 L77.6 134 L78.1 134 L78.5 134.1 L79 134.1 L79.5 134.1 L80 134.1 L80.4 134.1 L80.9 134.1 L81.4 134 L81.9 134 L82.3 133.9 L82.8 133.8 L83.3 133.7 L83.8 133.6 L84.3 133.5 L84.7 133.4 L85.2 133.2 L85.7 133.1 L86.2 132.9 L86.6 132.7 L87.1 132.5 L87.6 132.3 L88.1 132.1 L88.5 131.9 L89 131.6 L89.5 131.4 L90 131.2 L90.5 130.9 L90.9 130.6 L91.4 130.4 L91.9 130.1 L92.4 129.8 L92.8 129.5 L93.3 129.2 L93.8 128.9 L94.3 128.6 L94.7 128.2 L95.2 127.9 L95.7 127.6 L96.2 127.2 L96.7 126.9 L97.1 126.6 L97.6 126.2 L98.1 125.8 L98.6 125.5 L99 125.1 L99.5 124.7 L100 124.4 L100.5 124 L100.9 123.6 L101.4 123.2 L101.9 122.9 L102.4 122.5 L102.8 122.1 L103.3 121.7 L103.8 121.3 L104.3 120.9 L104.8 120.5 L105.2 120.1 L105.7 119.7 L106.2 119.3 L106.7 118.9 L107.1 118.5 L107.6 118.1 L108.1 117.7 L108.6 117.3 L109 116.9 L109.5 116.5 L110 116.2 L110.5 115.8 L110.9 115.4 L111.4 115 L111.9 114.6 L112.4 114.2 L112.9 113.8 L113.3 113.4 L113.8 113.1 L114.3 112.7 L114.8 112.3 L115.2 112 L115.7 111.6 L116.2 111.2 L116.7 110.9 L117.1 110.5 L117.6 110.2 L118.1 109.8 L118.6 109.5 L119.1 109.1 L119.5 108.8 L120 108.5 L120.5 108.1 L121 107.8 L121.4 107.5 L121.9 107.2 L122.4 106.9 L122.9 106.6 L123.3 106.3 L123.8 106 L124.3 105.7 L124.8 105.5 L125.2 105.2 L125.7 104.9 L126.2 104.7 L126.7 104.4 L127.2 104.2 L127.6 104 L128.1 103.7 L128.6 103.5 L129.1 103.3 L129.5 103.1 L130 102.9 L130.5 102.7 L131 102.5 L131.4 102.3 L131.9 102.2 L132.4 102 L132.9 101.8 L133.4 101.7 L133.8 101.6 L134.3 101.4 L134.8 101.3 L135.3 101.2 L135.7 101.1 L136.2 101 L136.7 100.9 L137.2 100.8 L137.6 100.8 L138.1 100.7 L138.6 100.6 L139.1 100.6 L139.6 100.6 L140 100.5 L140.5 100.5 L141 100.5 L141.5 100.5 L141.9 100.5 L142.4 100.5 L142.9 100.6 L143.4 100.6 L143.8 100.6 L144.3 100.7 L144.8 100.8 L145.3 100.8 L145.7 100.9 L146.2 101 L146.7 101.1 L147.2 101.2 L147.7 101.4 L148.1 101.5 L148.6 101.6 L149.1 101.8 L149.6 101.9 L150 102.1 L150.5 102.3 L151 102.5 L151.5 102.7 L151.9 102.9 L152.4 103.1 L152.9 103.3 L153.4 103.6 L153.8 103.8 L154.3 104.1 L154.8 104.4 L155.3 104.6 L155.8 104.9 L156.2 105.2 L156.7 105.5 L157.2 105.8 L157.7 106.2 L158.1 106.5 L158.6 106.9 L159.1 107.2 L159.6 107.6 L160 107.9 L160.5 108.3 L161 108.7 L161.5 109.1 L162 109.5 L162.4 110 L162.9 110.4 L163.4 110.8 L163.9 111.3 L164.3 111.7 L164.8 112.2 L165.3 112.7 L165.8 113.2 L166.2 113.7 L166.7 114.2 L167.2 114.7 L167.7 115.2 L168.2 115.7 L168.6 116.2 L169.1 116.8 L169.6 117.3 L170.1 117.9 L170.5 118.5 L171 119.1 L171.5 119.6 L172 120.2 L172.4 120.8 L172.9 121.4 L173.4 122.1 L173.9 122.7 L174.3 123.3 L174.8 124 L175.3 124.6 L175.8 125.3 L176.3 125.9 L176.7 126.6 L177.2 127.3 L177.7 127.9 L178.2 128.6 L178.6 129.3 L179.1 130 L179.6 130.7 L180.1 131.5 L180.5 132.2 L181 132.9 L181.5 133.6 L182 134.4 L182.4 135.1 L182.9 135.9 L183.4 136.6 L183.9 137.4 L184.4 138.1 L184.8 138.9 L185.3 139.7 L185.8 140.5 L186.3 141.2 L186.7 142 L187.2 142.8 L187.7 143.6 L188.2 144.4 L188.6 145.2 L189.1 146 L189.6 146.8 L190.1 147.6 L190.6 148.5 L191 149.3 L191.5 150.1 L192 150.9 L192.5 151.7 L192.9 152.6 L193.4 153.4 L193.9 154.2 L194.4 155.1 L194.8 155.9 L195.3 156.7 L195.8 157.6 L196.3 158.4 L196.8 159.2 L197.2 160.1 L197.7 160.9 L198.2 161.7 L198.7 162.6 L199.1 163.4 L199.6 164.2 L200.1 165.1 L200.6 165.9 L201 166.7 L201.5 167.6 L202 168.4 L202.5 169.2 L202.9 170.1 L203.4 170.9 L203.9 171.7 L204.4 172.5 L204.9 173.3 L205.3 174.1 L205.8 174.9 L206.3 175.7 L206.8 176.5 L207.2 177.3 L207.7 178.1 L208.2 178.9 L208.7 179.7 L209.1 180.5 L209.6 181.2 L210.1 182 L210.6 182.8 L211.1 183.5 L211.5 184.3 L212 185 L212.5 185.7 L213 186.4 L213.4 187.2 L213.9 187.9 L214.4 188.6 L214.9 189.2 L215.3 189.9 L215.8 190.6 L216.3 191.3 L216.8 191.9 L217.2 192.6 L217.7 193.2 L218.2 193.8 L218.7 194.4 L219.2 195 L219.6 195.6 L220.1 196.2 L220.6 196.7 L221.1 197.3 L221.5 197.8 L222 198.4 L222.5 198.9 L223 199.4 L223.4 199.9 L223.9 200.3 L224.4 200.8 L224.9 201.2 L225.4 201.7 L225.8 202.1 L226.3 202.5 L226.8 202.8 L227.3 203.2 L227.7 203.5 L228.2 203.9 L228.7 204.2 L229.2 204.5 L229.6 204.8 L230.1 205 L230.6 205.2 L231.1 205.5 L231.5 205.7 L232 205.8 L232.5 206 L233 206.1 L233.5 206.2 L233.9 206.3 L234.4 206.4 L234.9 206.5 L235.4 206.5 L235.8 206.5 L236.3 206.5 L236.8 206.4 L237.3 206.4 L237.7 206.3 L238.2 206.1 L238.7 206 L239.2 205.8 L239.6 205.6 L240.1 205.4 L240.6 205.2 L241.1 204.9 L241.6 204.6 L242 204.3 L242.5 203.9 L243 203.5 L243.5 203.1 L243.9 202.7 L244.4 202.2 L244.9 201.7 L245.4 201.1 L245.8 200.6 L246.3 200 L246.8 199.3 L247.3 198.7 L247.8 198 L248.2 197.2 L248.7 196.5 L249.2 195.7 L249.7 194.8 L250.1 194 L250.6 193.1 L251.1 192.1 L251.6 191.2 L252 190.1 L252.5 189.1 L253 188 L253.5 186.9 L253.9 185.7 L254.4 184.5 L254.9 183.2 L255.4 182 L255.9 180.6 L256.3 179.3 L256.8 177.9 L257.3 176.4 L257.8 174.9 L258.2 173.4 L258.7 171.8 L259.2 170.2 L259.7 168.5 L260.1 166.8 L260.6 165 L261.1 163.2 L261.6 161.4 L262.1 159.5 L262.5 157.5 L263 155.5 L263.5 153.5 L264 151.4 L264.4 149.3 L264.9 147.1 L265.4 144.8 L265.9 142.5 L266.3 140.2 L266.8 137.8 L267.3 135.4 L267.8 132.9 L268.2 130.3 L268.7 127.7 L269.2 125 L269.7 122.3 L270.2 119.5 L270.6 116.7 L271.1 113.8 L271.6 110.9 L272.1 107.9 L272.5 104.8 L273 101.7 L273.5 98.5 L274 95.3 L274.4 92 L274.9 88.7 L275.4 85.2 L275.9 81.8 L276.4 78.2 L276.8 74.6 L277.3 70.9 L277.8 67.2 L278.3 63.4 L278.7 59.5 L279.2 55.6 L279.7 51.6 L280.2 47.5 L280.6 43.4 L281.1 39.2 L281.6 34.9 L282.1 30.6 L282.6 26.2 L283 21.7 L283.5 17.2\" fill=\"none\" stroke=\"var(--maths)\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><g fill=\"var(--maths)\"><circle cx=\"53.2\" cy=\"100.5\" r=\"3.6\"/><circle cx=\"273.2\" cy=\"100.5\" r=\"3.6\"/><circle cx=\"141.2\" cy=\"100.5\" r=\"3.6\"/></g><g fill=\"var(--iq)\"><circle cx=\"185.2\" cy=\"139.5\" r=\"3.6\"/></g><g fill=\"currentColor\" font-family=\"Inter,sans-serif\" paint-order=\"stroke\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\"><text x=\"47.2\" y=\"117.5\" text-anchor=\"end\" font-size=\"12\" >&#8722;2</text><text x=\"267.2\" y=\"92.5\" text-anchor=\"end\" font-size=\"12\" >3</text><text x=\"135.2\" y=\"92.5\" text-anchor=\"end\" font-size=\"12\" >O</text><text x=\"193.2\" y=\"136.5\" text-anchor=\"start\" font-size=\"12\" >A(1, &#8722;3)</text><text x=\"300\" y=\"116.5\" text-anchor=\"start\" font-size=\"12\" font-style=\"italic\" >x</text><text x=\"148.2\" y=\"26\" text-anchor=\"start\" font-size=\"12\" font-style=\"italic\" >y</text></g></svg>",
+      figCap: "The curve crosses the x-axis at −2 and at 3, and only touches it at O. Not to scale.",
+      options: ["48", "96", "112", "168"],
+      answer: 0,
+      sol: "<p><b>Step 1 — a factor for each crossing, a squared factor for the touch.</b> A touch at O means 0 is a repeated zero, so x² is a factor; the crossings give (x + 2) and (x − 3). That is already degree 4, so p(x) = k·x²(x + 2)(x − 3) for some number k.</p><p><b>Step 2 — find k.</b> The usual move, the y-intercept, tells you nothing here: p(0) = 0 whatever k is. Use A instead: p(1) = k × 1 × 3 × (−2) = −6k = −3, so <b>k = 1/2</b>.</p><p><b>Step 3 — the remainder theorem.</b> The remainder on dividing by (x − 4) is p(4) = (1/2) × 16 × 6 × 1 = <b>48</b>.</p><p>(Check against the picture: to the right of 3 the curve is above the axis, so p(4) must be positive.)</p><p>Treating the touch as an ordinary zero would give kx(x + 2)(x − 3), a cubic — impossible for a polynomial of degree 4. That is why the touch has to be squared.</p><p><b>Where the other options come from.</b> (3) 112 — the remainder on (x − 4) taken as p(−4), the sign of the divisor slipped: (1/2) × 16 × (−2) × (−7) = 112. (2) 96 — leaving k out (k = 1). (4) 168 — writing the factors with the signs of the zeroes, x²(x − 2)(x + 3): then −4k = −3, k = 3/4 and p(4) = (3/4) × 16 × 2 × 7 = 168.</p>"
+    },
+    {
+      n: 6,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "statement",
+      stem: "<p>α, β and γ are the zeroes of the polynomial 2x³ − 9x + 3. Consider the following statements.</p><ol class=\"roman\"><li>α + β + γ = 0</li><li>αβγ = −3/2</li><li>α² + β² + γ² = 18</li><li>1/α + 1/β + 1/γ = 3</li><li>(α + β)(β + γ)(γ + α) = 3</li></ol><p><b>How many</b> of the statements are correct?</p>",
+      options: ["One", "Two", "Three", "Four"],
+      answer: 2,
+      sol: "<p>Divide by the leading 2 first. For 2x³ + 0x² − 9x + 3: α + β + γ = 0, αβ + βγ + γα = −9/2 and αβγ = −3/2.</p><p><b>I — correct.</b> There is no x² term, so the sum of the zeroes is 0.</p><p><b>II — correct.</b> αβγ = −(constant term)/(leading coefficient) = −3/2.</p><p><b>III — false.</b> α² + β² + γ² = (α + β + γ)² − 2(αβ + βγ + γα) = 0 − 2(−9/2) = 9, not 18. (18 is what you get if you forget to divide by the leading 2.)</p><p><b>IV — correct.</b> 1/α + 1/β + 1/γ = (αβ + βγ + γα)/(αβγ) = (−9/2) ÷ (−3/2) = 3.</p><p><b>V — false.</b> Because α + β + γ = 0, α + β = −γ, β + γ = −α and γ + α = −β, so the product is (−γ)(−α)(−β) = −αβγ = 3/2, not 3. (3 is again the undivided value.)</p><p>Three statements hold — option <b>(3)</b>.</p><p><b>Where the other options come from.</b> (4) Four — not dividing by the leading 2 (pair-sum −9, product −3): III becomes 18 and V becomes 3, both \"true\", while II fails. (1) One — the product taken as +3/2 (the sign of −d/a slipped): II fails, IV becomes −3 and V becomes −3/2, leaving only I. (2) Two — the pair-sum taken as +9/2: III becomes −9 and IV becomes −3, leaving I and II.</p>"
+    },
+    {
+      n: 7,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "plain",
+      stem: "<p>Three numbers a, b and c satisfy a + b + c = 3, a² + b² + c² = 13 and a³ + b³ + c³ = 39. What is the value of <b>1/a² + 1/b² + 1/c²</b> ?</p>",
+      options: ["1", "10/9", "13/4", "4"],
+      answer: 3,
+      sol: "<p>Over the common denominator (abc)²: 1/a² + 1/b² + 1/c² = (a²b² + b²c² + c²a²)/(abc)². So you need ab + bc + ca, then abc, then a²b² + b²c² + c²a².</p><p><b>Step 1 — ab + bc + ca.</b> (a + b + c)² = a² + b² + c² + 2(ab + bc + ca): 9 = 13 + 2(ab + bc + ca), so <b>ab + bc + ca = −2</b> — negative; keep the sign.</p><p><b>Step 2 — abc.</b> a³ + b³ + c³ − 3abc = (a + b + c)(a² + b² + c² − ab − bc − ca): 39 − 3abc = 3 × (13 + 2) = 45, so −3abc = 6 and <b>abc = −2</b>.</p><p><b>Step 3 — the numerator.</b> a²b² + b²c² + c²a² = (ab + bc + ca)² − 2abc(a + b + c) = 4 − 2(−2)(3) = 4 + 12 = <b>16</b>.</p><p><b>Step 4.</b> 16 ÷ (−2)² = 16 ÷ 4 = <b>4</b>.</p><p>(The numbers are real: they are −1, 2 + √2 and 2 − √2, and 1 + 1/(6 + 4√2) + 1/(6 − 4√2) = 1 + 12/4 = 4. ✓)</p><p><b>Where the other options come from.</b> (1) 1 — squaring 1/a + 1/b + 1/c = (ab + bc + ca)/abc = 1 and stopping: the cross terms 2(1/ab + 1/bc + 1/ca) are lost. (Using (ab + bc + ca)² = 4 as the numerator is the same slip.) (2) 10/9 — dropping the 3 in front of abc: 39 − abc = 45 gives abc = −6, the numerator becomes 4 + 36 = 40, and 40/36 = 10/9. (3) 13/4 — putting a² + b² + c² = 13 in the numerator instead of a²b² + b²c² + c²a².</p>"
+    },
+    {
+      n: 8,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "plain",
+      stem: "<p>The polynomial p(x) = 7x³ − 20x² + bx + c, where b and c are rational numbers, has <b>1/(3 − √2)</b> as one of its zeroes. What is the value of b + c ?</p>",
+      options: ["−5", "−1", "11", "15"],
+      answer: 2,
+      sol: "<p><b>Step 1 — rationalise.</b> 1/(3 − √2) = (3 + √2)/[(3 − √2)(3 + √2)] = (3 + √2)/7.</p><p><b>Step 2 — the conjugate.</b> The coefficients are rational, so (3 − √2)/7 is also a zero. The pair has sum 6/7 and product (9 − 2)/49 = 1/7.</p><p><b>Step 3 — the third zero, this time from the sum.</b> The sum of all three zeroes is −(−20)/7 = 20/7, so γ = 20/7 − 6/7 = <b>2</b>.</p><p><b>Step 4 — b and c.</b> Sum of products in pairs = (pair product) + γ × (pair sum) = 1/7 + 2 × 6/7 = 13/7, and it equals b/7, so <b>b = 13</b>. Product of all three zeroes = (1/7) × 2 = 2/7, and it equals −c/7, so <b>c = −2</b>.</p><p>b + c = 13 − 2 = <b>11</b>. Check: (x − 2)(7x² − 6x + 1) = 7x³ − 20x² + 13x − 2 ✓.</p><p><b>Where the other options come from.</b> (4) 15 — the product of the zeroes taken as +c/7 (the sign slipped): c = +2, and 13 + 2 = 15. (2) −1 — b taken as 7 × (pair product) = 1 alone, without the γ × (pair sum) cross terms: 1 + (−2) = −1. (1) −5 — stopping at the conjugate pair and reading its factor 7x² − 6x + 1 as if b = −6 and c = 1.</p>"
+    },
+    {
+      n: 9,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "diagram",
+      stem: "<p>A closed cardboard box is a cuboid of volume V(x) = 2x³ + 11x² + 18x + 9 cm³. Its height is marked in the figure, and its length and breadth are also linear polynomials in x with integer coefficients. When x = 3, what is the <b>total surface area</b> of the box?</p>",
+      fig: "<svg viewBox=\"0 0 360 190\" width=\"405\" height=\"214\" role=\"img\" aria-label=\"A closed cuboidal box drawn in perspective; its height is marked x plus 3 centimetres, and its length and breadth are marked with question marks\"><polygon points=\"70,58 238,58 302,18 134,18\" fill=\"var(--maths)\" fill-opacity=\".16\"/><polygon points=\"238,58 238,162 302,122 302,18\" fill=\"var(--maths)\" fill-opacity=\".26\"/><polygon points=\"70,58 238,58 238,162 70,162\" fill=\"var(--maths)\" fill-opacity=\".09\"/><g stroke=\"currentColor\" stroke-width=\"1.3\" stroke-dasharray=\"5 4\" opacity=\".5\" fill=\"none\"><line x1=\"70\" y1=\"162\" x2=\"134\" y2=\"122\"/><line x1=\"134\" y1=\"122\" x2=\"302\" y2=\"122\"/><line x1=\"134\" y1=\"122\" x2=\"134\" y2=\"18\"/></g><g stroke=\"var(--maths)\" stroke-width=\"2.2\" stroke-linejoin=\"round\" fill=\"none\"><polygon points=\"70,58 238,58 238,162 70,162\"/><polyline points=\"70,58 134,18 302,18 238,58\"/><polyline points=\"302,18 302,122 238,162\"/></g><g stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\"><line x1=\"54\" y1=\"58\" x2=\"54\" y2=\"162\"/><line x1=\"49\" y1=\"58\" x2=\"59\" y2=\"58\"/><line x1=\"49\" y1=\"162\" x2=\"59\" y2=\"162\"/></g><g fill=\"currentColor\" font-family=\"Inter,sans-serif\" paint-order=\"stroke\" stroke=\"var(--surface)\" stroke-width=\"4\" stroke-linejoin=\"round\"><text x=\"46\" y=\"107\" text-anchor=\"end\" font-size=\"12\" >(x + 3)</text><text x=\"46\" y=\"123\" text-anchor=\"end\" font-size=\"12\" >cm</text><text x=\"154\" y=\"182\" text-anchor=\"middle\" font-size=\"12\" >length = ?</text><text x=\"278\" y=\"154\" text-anchor=\"start\" font-size=\"12\" >breadth = ?</text></g></svg>",
+      figCap: "Only the height is marked; the length and breadth are for you to find. Not to scale.",
+      options: ["156 cm²", "192 cm²", "216 cm²", "228 cm²"],
+      answer: 3,
+      sol: "<p><b>Step 1 — divide out the height.</b> The figure gives the height as (x + 3) cm. Write V(x) = (x + 3)(2x² + ux + v) and compare coefficients. Constant term: 3v = 9, so v = 3. x² term: u + 6 = 11, so u = 5. The base is 2x² + 5x + 3.</p><p>(Or by the factor theorem: V(−1) = −2 + 11 − 18 + 9 = 0, so (x + 1) is a factor too.)</p><p><b>Step 2 — factorise the base.</b> 2x² + 5x + 3 = (2x + 3)(x + 1). So the three edges are (x + 3), (2x + 3) and (x + 1).</p><p><b>Step 3 — put x = 3.</b> The edges are 6, 9 and 4 cm. Total surface area = 2(9 × 4 + 4 × 6 + 6 × 9) = 2(36 + 24 + 54) = <b>228 cm²</b>.</p><p>Why you must factorise: at x = 3 the base area is V ÷ height = 216 ÷ 6 = 36, but 36 could be 4 × 9, 6 × 6, 3 × 12 or 2 × 18, and each gives a different surface area. Only the factorisation says which.</p><p><b>Where the other options come from.</b> (3) 216 — the volume V(3), not the surface area (a 6 × 6 × 6 guess gives the same number). (2) 192 — leaving out the lid, 228 − 9 × 4; but the box is closed. (1) 156 — the four side faces only, 2 × 6 × (9 + 4), forgetting the top and the bottom.</p>"
+    },
+    {
+      n: 10,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "plain",
+      stem: "<p>One zero of the polynomial x⁴ + px³ − x² + qx + 6, where p and q are rational numbers, is 1 + √3. What is the value of p + q ?</p>",
+      options: ["−6", "2", "6", "8"],
+      answer: 2,
+      sol: "<p><b>Step 1 — the conjugate, then the quadratic factor.</b> The coefficients are rational, so 1 − √3 is a zero too. The pair has sum 2 and product 1 − 3 = −2, so x² − 2x − 2 is a factor. Substituting irrational zeroes would be slow; compare coefficients instead.</p><p><b>Step 2.</b> Write the quartic as (x² − 2x − 2)(x² + ux + v) = x⁴ + (u − 2)x³ + (v − 2u − 2)x² + (−2v − 2u)x − 2v.<br>Constant term first: −2v = 6, so <b>v = −3</b>. Then the x² term, whose coefficient you know is −1: −3 − 2u − 2 = −1, so <b>u = −2</b>.</p><p><b>Step 3.</b> p = u − 2 = <b>−4</b> and q = −2v − 2u = 6 + 4 = <b>10</b>, so p + q = <b>6</b>.</p><p>Check: (x² − 2x − 2)(x² − 2x − 3) = x⁴ − 4x³ − x² + 10x + 6 ✓ (its other two zeroes are 3 and −1).</p><p><b>Where the other options come from.</b> (4) 8 — p taken as u = −2, missing the (−2x)(x²) term. (2) 2 — q taken as −2v = 6 only, missing the (−2)(ux) term. (1) −6 — building the factor as x² + 2x − 2 (the sign of the sum slipped): then v = −3 and u = 2, so p = 4 and q = −10.</p>"
+    },
+    {
+      n: 11,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "plain",
+      stem: "<p>p(x) = 4x³ + ax² + bx + 3. When p(x) is divided by (2x − 1) the remainder is 5, and when it is divided by (x + 2) the remainder is −25. What is the remainder when p(x) is divided by <b>(2x + 1)</b> ?</p>",
+      options: ["−5", "−4", "1", "2"],
+      answer: 3,
+      sol: "<p><b>Step 1 — the two conditions.</b> Dividing by (2x − 1) leaves p(1/2), the value at the zero of 2x − 1: 4/8 + a/4 + b/2 + 3 = 5. Multiplying by 4: 2 + a + 2b + 12 = 20, so <b>a + 2b = 6</b>.<br>Dividing by (x + 2) leaves p(−2): −32 + 4a − 2b + 3 = −25, so 4a − 2b = 4, i.e. <b>2a − b = 2</b>.</p><p><b>Step 2 — solve.</b> From the second, b = 2a − 2; then a + 4a − 4 = 6, so a = 2 and b = 2. p(x) = 4x³ + 2x² + 2x + 3.</p><p><b>Step 3 — the remainder on (2x + 1)</b> is p(−1/2) = 4(−1/8) + 2(1/4) + 2(−1/2) + 3 = −1/2 + 1/2 − 1 + 3 = <b>2</b>.</p><p><b>Where the other options come from.</b> (1) −5 — assuming the remainder on (2x + 1) is just minus the remainder on (2x − 1). That holds only for an odd polynomial (no even powers, no constant term), which this is not. (2) −4 — the sign of every divisor’s zero slipped (−1/2 for 2x − 1, +2 for x + 2, +1/2 for 2x + 1): then a = b = −10 and p(1/2) = −4. (3) 1 — ignoring the 2 in both (2x − 1) and (2x + 1), i.e. using x = 1 and then x = −1: then a = 0, b = −2 and p(−1) = 1.</p>"
+    },
+    {
+      n: 12,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "match",
+      stem: "<p>t is a zero of the polynomial x² − 3x − 2. Match each expression in Column I with its value in Column II.</p><table><tr><th>Column I</th><th>Column II</th></tr><tr><td>(P)&nbsp; t² + 4/t²</td><td>(i)&nbsp; 27</td></tr><tr><td>(Q)&nbsp; (t + 2/t)²</td><td>(ii)&nbsp; 13</td></tr><tr><td>(R)&nbsp; t³ − 8/t³</td><td>(iii)&nbsp; 45</td></tr><tr><td>(S)&nbsp; (t − 2/t)³</td><td>(iv)&nbsp; 17</td></tr></table>",
+      options: ["P–ii, Q–iv, R–i, S–iii", "P–ii, Q–iv, R–iii, S–i", "P–iv, Q–ii, R–iii, S–i", "P–iv, Q–ii, R–i, S–iii"],
+      answer: 1,
+      sol: "<p><b>Step 1 — turn the zero into a usable fact.</b> t² − 3t − 2 = 0 and t ≠ 0, so divide by t: t − 3 − 2/t = 0, i.e. <b>t − 2/t = 3</b>. Everything follows from this — and the product of the two terms is t × (2/t) = <b>2</b>, not 1.</p><p><b>S:</b> (t − 2/t)³ = 3³ = 27 → (i).</p><p><b>P:</b> (t − 2/t)² = t² − 2 · t · (2/t) + 4/t² = t² − 4 + 4/t², so t² + 4/t² = 9 + 4 = 13 → (ii).</p><p><b>Q:</b> (t + 2/t)² = t² + 4 + 4/t² = 13 + 4 = 17 → (iv).</p><p><b>R:</b> a³ − b³ = (a − b)³ + 3ab(a − b) with a = t, b = 2/t and ab = 2: t³ − 8/t³ = 27 + 3 × 2 × 3 = 45 → (iii).</p><p>So P–ii, Q–iv, R–iii, S–i — option <b>(2)</b>.</p><p><b>Where the other options come from.</b> There are two look-alike pairs. Writing (t + 2/t)² as t² + 4/t², without its middle term, gives Q the value 13 — P’s value — and pushes P onto 17: options (3) and (4). Writing t³ − 8/t³ as (t − 2/t)³, without the 3ab(a − b) correction, gives R the value 27 — S’s value — and pushes S onto 45: options (1) and (4). No single row decides the item: P or Q settles one pair, R or S the other.</p>"
+    },
+    {
+      n: 13,
+      section: "Mathematics",
+      topic: "Polynomials",
+      fmt: "plain",
+      stem: "<p>What is the sum of the zeroes of the <b>LCM</b> of the polynomials x³ − x² − 5x − 3 and x³ − 4x² + x + 6 ? (Count a repeated zero as many times as it repeats.)</p>",
+      options: ["2", "3", "4", "5"],
+      answer: 1,
+      sol: "<p><b>Step 1 — factorise each by the factor theorem.</b> Both vanish at x = −1: −1 − 1 + 5 − 3 = 0 and −1 − 4 − 1 + 6 = 0. Dividing out (x + 1) by comparing coefficients:<br>x³ − x² − 5x − 3 = (x + 1)(x² − 2x − 3) = (x + 1)(x + 1)(x − 3) = (x + 1)²(x − 3);<br>x³ − 4x² + x + 6 = (x + 1)(x² − 5x + 6) = (x + 1)(x − 2)(x − 3).</p><p><b>Step 2 — the LCM takes every factor to its higher power:</b> (x + 1)²(x − 2)(x − 3). (The GCD, the common factors to the lower power, is (x + 1)(x − 3).)</p><p><b>Step 3.</b> The zeroes of the LCM are −1, −1, 2 and 3, so the sum is <b>3</b>.</p><p>(Check: the LCM expands to x⁴ − 3x³ − 3x² + 7x + 6, and the sum of its zeroes is −(−3)/1 = 3 ✓.)</p><p><b>Where the other options come from.</b> (4) 5 — taking the product of the two polynomials as the LCM, so the common zeroes are counted twice: (−1 − 1 + 3) + (−1 + 2 + 3) = 5. (3) 4 — taking the repeated factor only once, (x + 1)(x − 2)(x − 3): the lower power, which belongs to the GCD, not the LCM. (1) 2 — the zeroes of the GCD, −1 + 3: only the common factors.</p>"
+    }
+  ]
+};
+
+/* ==========================================================================
+   ENGINE — no per-paper edits needed below this line.
+   ========================================================================== */
+
+const $ = id => document.getElementById(id);
+
+/* Robust numeric parser. TALLENTEX papers are pure MCQ so nothing calls this
+   today; it is kept here because the engine under subjects/ ships a parser that
+   marks a correct answer WRONG when the unit contains a digit (e.g. "m/s2"),
+   and a future numeric-entry item must use this one, never that one. */
+function numOf(v){
+  const m = String(v==null?'':v).replace(/[−‒–—―]/g,'-').replace(/[,\s]/g,'').match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+
+const MARK_RIGHT = 4, MARK_WRONG = -1, MARK_BLANK = 0;
+const QS       = PAPER.questions;
+const NQ       = QS.length;
+const MAXMARKS = NQ * MARK_RIGHT;
+const IS_MOCK  = PAPER.kind === 'mock';
+const REP_ID   = PAPER.id;                 /* studyProgress key */
+const PACE_S   = Math.round(PAPER.duration * 60 / NQ);  /* this paper's seconds per question.
+   Works out to exactly 90 for the shapes that mirror the real exam (45 min/30 Q, 120 min/80 Q)
+   and to the honest local budget for a 20-minute topic paper. */
+const TEACHER  = location.hash.indexOf('teacher') >= 0;
+
+const SEC_ACCENT = { 'Physics':'--physics', 'Chemistry':'--chem', 'Biology':'--bio',
+                     'Mathematics':'--maths', 'Mental Ability':'--iq' };
+
+let answers  = new Array(NQ).fill(null);   /* 0-based option index, or null */
+let flags    = new Array(NQ).fill(false);
+let started  = false, submitted = false, mode = 'timed';
+let endAt    = 0, timerH = null;
+let activeQ  = 0, qStartedAt = 0, paceH = null;
+let RESTORING = false;
+
+/* ---- progress store (shared with the hub through the miraya-sync block) ---- */
+/* "👁 Just checking" (device-local hubPreview = the ms timestamp it was switched on; it lapses
+   after 2 hours). While on, Submit ASKS whether to save — so a forgotten switch can never
+   silently swallow a real attempt. */
+function isPreview(){ return (function(){ try { var v = +JSON.parse(localStorage.getItem('hubPreview') || '0'); return v > 1e12 && Date.now() - v < 7200000; } catch(e){ return false; } })(); }
+let NOT_SAVED = false;
+function progLoad(){ try { return JSON.parse(localStorage.getItem('studyProgress') || '{}') || {}; } catch(e){ return {}; } }
+function progSave(o){ try { localStorage.setItem('studyProgress', JSON.stringify(o)); } catch(e){} }
+
+/* ---- front sheet ---- */
+function paintFront(){
+  document.title = PAPER.title;
+  if(PAPER.accent) document.documentElement.style.setProperty('--accent','var(--'+PAPER.accent+')');
+  $('pTitle').textContent = PAPER.title;
+  $('pSub').innerHTML     = PAPER.sub || '';
+  $('tQ').textContent     = NQ;
+  $('tMax').textContent   = MAXMARKS;
+  $('tMin').textContent   = PAPER.duration;
+  $('startMin').textContent = PAPER.duration;
+  $('totN').textContent   = NQ;
+  const kindWord = IS_MOCK ? 'Full mock' : (PAPER.kind === 'subject' ? 'Subject paper' : 'Topic paper');
+  $('ebText').textContent = 'TALLENTEX 2027 · Class X · ' + kindWord;
+  $('foot').innerHTML = 'TALLENTEX 2027 practice · ' + NQ + ' questions · ' + MAXMARKS + ' marks · ' +
+    PAPER.duration + ' minutes · +4 / −1 / 0.' +
+    (IS_MOCK ? ' <b>This mock is one-shot</b> — once submitted it becomes a permanent report.' : ' Repeatable — your latest attempt is the one that is kept.');
+  $('submitNote').textContent = IS_MOCK
+    ? 'One shot — once you submit, this becomes your permanent report.'
+    : 'You can retake this paper later; the latest attempt is kept.';
+}
+
+/* ---- render ---- */
+function accentFor(sec){ return SEC_ACCENT[sec] || ('--' + (PAPER.accent || 'iq')); }
+
+function render(){
+  const host = $('questions');
+  let h = '', si = 0;
+  const secs = (PAPER.sections && PAPER.sections.length) ? PAPER.sections
+             : [{ name:'Questions', from:1, to:NQ }];
+
+  QS.forEach((q, i) => {
+    /* section divider whenever this question opens a section */
+    while(si < secs.length && q.n === secs[si].from){
+      const s = secs[si], acc = accentFor(s.name);
+      h += '<div class="secdiv" style="--sacc:var(' + acc + ')">'
+         +   '<span class="smono">' + (s.name || '?').charAt(0) + '</span>'
+         +   '<span><span class="sname">' + s.name + '</span><br>'
+         +   '<span class="srange">Questions ' + s.from + '–' + s.to + ' · ' + ((s.to - s.from + 1) * MARK_RIGHT) + ' marks</span></span>'
+         +   '<span class="sbar"></span>'
+         + '</div>';
+      si++;
+    }
+    const acc = accentFor(q.section);
+    h += '<article class="q" id="q' + i + '" data-i="' + i + '" style="--sacc:var(' + acc + ')">'
+       +   '<div class="q-head">'
+       +     '<span class="q-n">' + q.n + '</span>'
+       +     '<span class="q-topic">' + (q.topic || '') + '</span>'
+       +     '<button class="q-flag" type="button" data-i="' + i + '" aria-pressed="false">🚩 Flag</button>'
+       +   '</div>'
+       +   '<div class="q-stem">' + q.stem + '</div>'
+       +   (q.fig ? '<figure class="q-fig">' + q.fig + (q.figCap ? '<figcaption>' + q.figCap + '</figcaption>' : '') + '</figure>' : '')
+       +   '<div class="opts" role="radiogroup" aria-label="Question ' + q.n + ' options">'
+       +     q.options.map((o, k) =>
+             '<label class="opt" id="o' + i + '-' + k + '">'
+           +   '<input type="radio" name="q' + i + '" value="' + k + '">'
+           +   '<span class="ob">' + (k + 1) + '</span>'
+           +   '<span class="ot">' + o + '</span>'
+           + '</label>').join('')
+       +   '</div>'
+       +   '<div class="sol" id="sol' + i + '"><div class="sh">Worked answer</div>' + q.sol + '</div>'
+       + '</article>';
+  });
+  host.innerHTML = h;
+
+  host.addEventListener('change', e => {
+    const r = e.target;
+    if(r && r.type === 'radio' && !submitted){
+      const i = +r.name.slice(1);
+      answers[i] = +r.value;
+      paintSelection(i);
+      updateCount();
+    }
+  });
+  host.addEventListener('click', e => {
+    const b = e.target.closest('.q-flag');
+    if(b && !submitted){
+      const i = +b.dataset.i;
+      flags[i] = !flags[i];
+      b.classList.toggle('on', flags[i]);
+      b.setAttribute('aria-pressed', flags[i] ? 'true' : 'false');
+      b.textContent = flags[i] ? '🚩 Flagged' : '🚩 Flag';
+      $('q' + i).classList.toggle('flagged', flags[i]);
+    }
+  });
+}
+
+function paintSelection(i){
+  QS[i].options.forEach((_, k) => $('o' + i + '-' + k).classList.toggle('sel', answers[i] === k));
+}
+function updateCount(){
+  const done = answers.filter(a => a !== null).length;
+  $('doneN').textContent = done;
+  $('hudBar').style.width = (NQ ? (done / NQ * 100) : 0) + '%';
+}
+function setInputsEnabled(on){
+  document.querySelectorAll('#questions input[type=radio]').forEach(r => { r.disabled = !on; });
+}
+
+/* ---- timing ---- */
+function mmss(s){
+  s = Math.max(0, Math.round(s));
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+function tick(){
+  if(submitted) return;
+  if(mode === 'timed'){
+    const left = (endAt - Date.now()) / 1000;
+    $('clock').textContent = mmss(left);
+    /* thresholds scale with the paper, not the IGCSE 300-second constant */
+    const box = $('hudClock');
+    box.classList.toggle('warn',   left <= PAPER.duration * 60 * 0.25 && left > PAPER.duration * 60 * 0.10);
+    box.classList.toggle('danger', left <= PAPER.duration * 60 * 0.10);
+    if(left <= 0){ submit(false, true); return; }
+  } else {
+    $('clock').textContent = mmss((Date.now() - (endAt || Date.now())) / 1000);
+  }
+}
+/* per-question pace: how long she has been on the question she is looking at */
+function paceTick(){
+  if(submitted || !started) return;
+  const on = (Date.now() - qStartedAt) / 1000;
+  $('paceVal').textContent = mmss(on);
+  const p = $('pace');
+  p.classList.toggle('slow',  on > PACE_S && on <= PACE_S * 2);
+  p.classList.toggle('stuck', on > PACE_S * 2);
+}
+function watchActiveQuestion(){
+  if(!('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => seen.set(+en.target.dataset.i, en.intersectionRatio));
+    let best = activeQ, bestR = -1;
+    seen.forEach((r, i) => { if(r > bestR){ bestR = r; best = i; } });
+    if(bestR > 0 && best !== activeQ){ activeQ = best; qStartedAt = Date.now(); paceTick(); }
+  }, { threshold:[0, .25, .5, .75, 1], rootMargin:'-70px 0px -35% 0px' });
+  document.querySelectorAll('.q').forEach(el => io.observe(el));
+}
+
+/* ---- start ---- */
+function start(m){
+  if(started) return;
+  started = true; mode = m; submitted = false;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  $('hud').classList.add('on');
+  setInputsEnabled(true);
+  if(m === 'timed'){
+    endAt = Date.now() + PAPER.duration * 60000;
+    $('clockLbl').textContent = 'left';
+  } else {
+    endAt = Date.now();
+    $('clockLbl').textContent = 'elapsed';
+    $('pace').title = 'Practice mode — the clock is only a guide.';
+  }
+  qStartedAt = Date.now();
+  tick(); paceTick();
+  timerH = setInterval(tick, 1000);
+  paceH  = setInterval(paceTick, 1000);
+  watchActiveQuestion();
+  window.scrollTo(0, 0);
+}
+
+/* ---- just look: the questions, read-only; nothing marked, nothing recorded ---- */
+function viewOnly(){
+  if(started) return;
+  document.body.classList.add('viewonly');
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = '👁 <b>Just looking.</b> Nothing is marked or recorded. To answer these, go back and start the paper.'
+                + '<button class="bigbtn" type="button" style="margin-left:auto" onclick="location.reload()">← Back to start</button>';
+  $('paperBody').insertBefore(bar, $('paperBody').firstChild);
+  window.scrollTo(0, 0);
+}
+
+/* ---- marking ----
+   Three outcomes, deliberately distinct: right +4, chosen-and-wrong −1,
+   unanswered 0. The IGCSE engine only ever added; that is the bug this
+   replaces. Marks may end up NEGATIVE and are shown honestly. */
+function computeScore(){
+  let right = 0, wrong = 0, blank = 0, marks = 0;
+  const perSec = {};
+  QS.forEach((q, i) => {
+    const s = perSec[q.section] || (perSec[q.section] = { r:0, w:0, b:0, m:0, n:0 });
+    s.n++;
+    if(answers[i] === null){ blank++; s.b++; marks += MARK_BLANK; }
+    else if(answers[i] === q.answer){ right++; s.r++; marks += MARK_RIGHT; s.m += MARK_RIGHT; }
+    else { wrong++; s.w++; marks += MARK_WRONG; s.m += MARK_WRONG; }
+  });
+  return { right, wrong, blank, marks, perSec };
+}
+
+function submit(silent, byTimer){
+  if(submitted) return;
+  if(!silent && !RESTORING){
+    const blank = answers.filter(a => a === null).length;
+    const msg = byTimer ? null
+      : (blank ? 'Submit now? ' + blank + ' question' + (blank === 1 ? ' is' : 's are') +
+                 ' still blank — a blank scores 0, but a guess with one option eliminated is worth +0.67 on average.'
+               : 'Submit your answers?');
+    if(msg && !confirm(msg)) return;
+  }
+  submitted = true;
+  clearInterval(timerH); clearInterval(paceH);
+  setInputsEnabled(false);
+  $('questions').classList.add('marked');
+  $('hud').classList.remove('on');
+
+  const sc = computeScore();
+  const timeTaken = mode === 'timed'
+    ? mmss(PAPER.duration * 60 - Math.max(0, (endAt - Date.now()) / 1000))
+    : mmss((Date.now() - endAt) / 1000);
+
+  /* mark every question in place */
+  QS.forEach((q, i) => {
+    const card = $('q' + i);
+    q.options.forEach((_, k) => {
+      const el = $('o' + i + '-' + k);
+      el.classList.remove('sel');
+      if(k === q.answer){ el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="tick">✓</span>'); }
+      else if(answers[i] === k){ el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="tick">✕</span>'); }
+    });
+    const v = answers[i] === null ? ['b','Not attempted · 0']
+            : answers[i] === q.answer ? ['r','Correct · +4'] : ['w','Wrong · −1'];
+    const fl = card.querySelector('.q-flag');
+    if(fl) fl.outerHTML = '<span class="q-verdict ' + v[0] + '">' + v[1] + '</span>';
+    $('sol' + i).classList.add('on');
+  });
+
+  paintResults(sc, timeTaken);
+  if(!RESTORING) saveAttempt(sc, timeTaken);
+  if(!RESTORING && NOT_SAVED){ const rc = $('results').querySelector('.rcard');
+    if(rc) rc.insertAdjacentHTML('beforeend', '<div class="rnote">👁 <b>Just checking was on</b> — this attempt was marked but not recorded.</div>'); }
+  $('results').classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+function paintResults(sc, timeTaken){
+  const pct = Math.round(sc.marks / MAXMARKS * 100);
+  const multiSec = (PAPER.sections || []).length > 1;
+
+  let split = '';
+  if(multiSec){
+    split = '<div class="rsplit"><table><thead><tr><th>Section</th><th style="text-align:right">Right</th>'
+          + '<th style="text-align:right">Wrong</th><th style="text-align:right">Blank</th><th style="text-align:right">Marks</th></tr></thead><tbody>';
+    (PAPER.sections || []).forEach(s => {
+      const d = sc.perSec[s.name]; if(!d) return;
+      split += '<tr><td>' + s.name + '</td><td class="num">' + d.r + '</td><td class="num">' + d.w
+             + '</td><td class="num">' + d.b + '</td><td class="mk">' + d.m + ' / ' + (d.n * MARK_RIGHT) + '</td></tr>';
+    });
+    split += '</tbody></table></div>';
+  }
+
+  /* flagged-and-still-blank — the ones she meant to come back to */
+  const missed = [];
+  QS.forEach((q, i) => { if(flags[i] && answers[i] === null) missed.push(q.n); });
+  const flagNote = missed.length
+    ? '<div class="rnote rose">🚩 <b>You meant to come back to ' +
+      (missed.length === 1 ? 'question ' : 'questions ') + missed.join(', ') +
+      '</b> — ' + (missed.length === 1 ? 'it was' : 'they were') + ' still blank when you submitted. ' +
+      'On the day that is ' + (missed.length * 0.25).toFixed(2) + ' marks of expected value left on the table by not guessing.</div>'
+    : '';
+
+  const blankNote = sc.blank
+    ? '<div class="rnote">You left <b>' + sc.blank + ' blank</b>. A blind guess on four options is worth <b>+0.25</b> each — about <b>' +
+      (sc.blank * 0.25).toFixed(2) + ' marks</b> — and more once you can rule one option out. Attempt everything.</div>'
+    : '<div class="rnote">You attempted <b>every question</b> — exactly right for this exam.</div>';
+
+  $('results').innerHTML =
+    '<div class="rcard">'
+  +   '<h2 id="resultsTitle">' + (IS_MOCK ? 'Your marked report' : 'How you did') + '</h2>'
+  +   '<p class="rlede">' + PAPER.title + ' · ' + (mode === 'timed' ? 'timed' : 'practice') + ' · time taken <b id="timeTaken">' + timeTaken + '</b></p>'
+  +   '<div class="score"><b class="' + (sc.marks < 0 ? 'neg' : '') + '">' + sc.marks + '</b>'
+  +     '<span class="of">/ ' + MAXMARKS + '</span><span class="pct">' + pct + '%</span></div>'
+  +   '<div class="rgrid">'
+  +     '<div class="rcell r"><b>' + sc.right + '</b><span>Right ×4</span></div>'
+  +     '<div class="rcell w"><b>' + sc.wrong + '</b><span>Wrong ×−1</span></div>'
+  +     '<div class="rcell b"><b>' + sc.blank + '</b><span>Blank ×0</span></div>'
+  +     '<div class="rcell"><b>' + (sc.right + sc.wrong) + '</b><span>Attempted</span></div>'
+  +   '</div>'
+  +   split + flagNote + blankNote
+  +   '<div class="ractions">'
+  +     '<button class="bigbtn" type="button" onclick="window.scrollTo({top:document.getElementById(\'questions\').offsetTop-70,behavior:\'smooth\'})">↓ Read the worked answers</button>'
+  +     (IS_MOCK && !TEACHER ? '' : '<button class="bigbtn" id="retakeBtn" type="button">↺ Retake</button>')
+  +   '</div>'
+  + '</div>';
+
+  const rt = $('retakeBtn');
+  if(rt) rt.addEventListener('click', retake);
+}
+
+/* ---- persistence ----
+   Contract (§9): studyProgress[PAPER.id] = {t,m,mx,r,w,b,a,md,tm,v:2} (+f only if a flag was set).
+   Every paper stores its answers so the marked review replays (a mock opens it automatically;
+   the others via "See your last attempt"); the hub only ever reads m/mx. Written MERGE-ONLY.
+   COMPACT on purpose: the whole shared record is ONE Apps Script property with a 9216-byte
+   ceiling, so answers are one character per question ('0'–'3', '-' = blank), not an array. */
+function saveAttempt(sc, timeTaken){
+  if(isPreview() && !confirm('👁 Just checking is on for this device.\n\nSave this attempt to your progress?\n\nOK = save it (a real attempt)\nCancel = don\'t record (only checking)')){ NOT_SAVED = true; return; }
+  const rec = { t:new Date().toISOString(), m:sc.marks, mx:MAXMARKS, r:sc.right, w:sc.wrong, b:sc.blank,
+                a:answers.map(x => x === null ? '-' : x).join(''), md:mode === 'timed' ? 't' : 'p', tm:timeTaken, v:2 };
+  if(flags.some(Boolean)) rec.f = flags.map(x => x ? 1 : 0).join('');
+  const p = progLoad(); p[REP_ID] = rec; progSave(p);
+  if(!window.MirayaSync || !window.MirayaSync.ep) return;
+  const patch = {}; patch[REP_ID] = rec;
+  fetch(window.MirayaSync.ep, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ type:'progress', data:patch }) }).catch(function(){});
+}
+
+function retake(){
+  if(IS_MOCK && !TEACHER) return;
+  if(!confirm(IS_MOCK ? 'Clear this mock report and sit it again?' : 'Clear your answers and start again?')) return;
+  if(IS_MOCK){ const p = progLoad(); delete p[REP_ID]; progSave(p); }
+  location.hash = ''; location.reload();
+}
+
+/* ---- frozen report (mocks only) ----
+   Replays a saved attempt into the page and runs the ordinary submit path, so
+   the report she sees is generated by exactly the same code that marked it. */
+function decodeRec(rec){          /* v2 strings and v1 arrays both replay */
+  if(!rec || !rec.a) return null;
+  const a = typeof rec.a === 'string' ? rec.a.split('').map(c => c === '-' ? null : +c) : rec.a.slice();
+  if(a.length !== NQ) return null;                 /* the paper changed shape since — never mis-mark */
+  const f = typeof rec.f === 'string' ? rec.f.split('').map(c => c === '1')
+          : Array.isArray(rec.f) ? rec.f.slice() : new Array(NQ).fill(false);
+  const md = rec.md === 't' ? 'timed' : rec.md === 'p' ? 'practice' : (rec.md || 'timed');
+  return { a, f, md };
+}
+function showFrozen(rec){
+  const d = decodeRec(rec);
+  if(!d || submitted) return;
+  RESTORING = true;
+  answers = d.a;
+  flags   = d.f;
+  mode    = d.md;
+  started = true;
+  $('front').style.display = 'none';
+  $('paperBody').classList.add('on');
+  answers.forEach((a, i) => { if(a !== null){ const r = document.querySelector('input[name=q' + i + '][value="' + a + '"]'); if(r) r.checked = true; } });
+  submit(true);
+  const tt = $('timeTaken'); if(tt && rec.tm) tt.textContent = rec.tm;
+  const bar = document.createElement('div');
+  bar.className = 'frozen-bar';
+  bar.innerHTML = !IS_MOCK
+    ? '📋 <b>Your last attempt — ' + String(rec.t || '').slice(0, 10) + '.</b> Your answers, what was right and wrong, and every worked solution. ↺ Retake starts a fresh attempt.'
+      + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>'
+    : '🔒 <b>Mock sat on ' + String(rec.t || '').slice(0, 10) + '.</b> This is your marked report — '
+                + 'your answers, what was right and wrong, and every worked solution. It stays here every time you open it.'
+                + '<span class="fb-score">' + rec.m + ' / ' + rec.mx + '</span>';
+  const r = $('results');
+  if(r && !document.querySelector('.frozen-bar')) r.insertBefore(bar, r.firstChild);
+  RESTORING = false;
+}
+
+/* ---- boot ---- */
+paintFront();
+render();
+setInputsEnabled(false);
+updateCount();
+$('startTimed').addEventListener('click', () => start('timed'));
+$('startPractice').addEventListener('click', () => start('practice'));
+$('viewOnly').addEventListener('click', viewOnly);
+$('lastAttempt').addEventListener('click', () => { const r = progLoad()[REP_ID]; if(r && r.a) showFrozen(r); });
+if(IS_MOCK && !TEACHER && !isPreview()) $('viewOnly').hidden = true;   /* a one-shot mock is not previewed */
+if(isPreview()) $('startNote').insertAdjacentHTML('beforeend', ' <b>👁 Just checking is on</b> — when you submit, you will be asked whether to save the attempt.');
+function paintLast(){
+  if(IS_MOCK) return;
+  const r = progLoad()[REP_ID], b = $('lastAttempt');
+  const ok = !!decodeRec(r);
+  b.hidden = !ok;
+  if(ok) b.textContent = '📋 See your last attempt · ' + r.m + '/' + r.mx;
+}
+paintLast();
+window.addEventListener('miraya-progress-synced', paintLast);
+$('submitBtn').addEventListener('click', () => submit(false, false));
+$('hudSubmit').addEventListener('click', () => submit(false, false));
+
+/* a sat mock opens frozen — locally first (no network wait), then reconciled */
+if(IS_MOCK){
+  const local = progLoad();
+  if(local[REP_ID]) showFrozen(local[REP_ID]);
+  window.addEventListener('miraya-progress-synced', function(){
+    if(submitted) return;
+    const c = progLoad();
+    if(c[REP_ID]) showFrozen(c[REP_ID]);
+  });
+}
+
+/* ---- theme toggle ---- */
+(function(){
+  const body = document.body, btn = $('themeToggle');
+  function get(){ try { return localStorage.getItem('hub-theme'); } catch(e){ return null; } }
+  function set(v){ try { localStorage.setItem('hub-theme', v); } catch(e){} }
+  function apply(t){ body.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+  apply(get() || body.getAttribute('data-theme') || 'dark');
+  btn.addEventListener('click', function(){
+    const n = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(n); set(n);
+  });
+})();
+</script>
+</body>
+</html>
