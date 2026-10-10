@@ -57,14 +57,14 @@
 
   /* ── HEADER ── */
   .header {
-    margin-bottom: 60px;
+    margin-bottom: 38px;
     position: relative;
   }
   .header::after {
     content:'';
     display:block;
     height: 2px;
-    margin-top: 34px;
+    margin-top: 24px;
     border-radius: 2px;
     background: linear-gradient(90deg, var(--physics), var(--chem) 48%, var(--maths) 96%, transparent);
     opacity: .85;
@@ -82,7 +82,7 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--physics);
-    margin-bottom: 22px;
+    margin-bottom: 16px;
   }
   .eyebrow .pulse {
     width: 7px; height: 7px; border-radius: 50%;
@@ -97,12 +97,12 @@
   }
   h1 {
     font-family: 'Fraunces', serif;
-    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-size: clamp(2rem, 4.4vw, 2.9rem);
     font-weight: 800;
     color: var(--bright);
-    line-height: 1.02;
+    line-height: 1.08;
     letter-spacing: -0.015em;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
   }
   h1 .a { color: var(--physics); }
   h1 .b { color: var(--chem); }
@@ -368,6 +368,28 @@
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
   }
+  .hubnav-links {
+    display: flex; gap: 8px; align-items: center;
+    overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;
+    padding-right: 50px; margin-bottom: 10px;
+  }
+  .hubnav-links::-webkit-scrollbar { display: none; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+    font-size: 12.5px; font-weight: 600; color: var(--text); text-decoration: none;
+    padding: 6px 13px; border-radius: 20px; border: 1px solid var(--border);
+    background: var(--surface); transition: border-color .18s, color .18s, transform .18s;
+  }
+  .nav-link span { font-size: 13.5px; line-height: 1; }
+  .nav-link:hover { border-color: var(--rose); color: var(--bright); transform: translateY(-1px); }
+  /* the nav is sticky, so an in-page jump must clear it — --navh is measured at runtime */
+  #resultsPanel, #drillStrip, .subject { scroll-margin-top: calc(var(--navh, 104px) + 14px); }
+  .more { margin-top: 54px; }
+  .more-h {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 14px;
+  }
+  .more .results-panel, .more .drill-strip { margin-bottom: 14px; }
   .hubnav-inner {
     display: flex;
     align-items: center;
@@ -1047,9 +1069,26 @@
   @media (max-width: 560px) {
     .page { padding: 52px 20px 90px; }
     .cards { grid-template-columns: 1fr; }
-    .stat { flex: 1 1 100%; }
+    /* two per row, not four stacked cards pushing the subjects off the screen */
+    .stat { flex: 1 1 calc(50% - 6px); padding: 11px 12px; }
+    .stat b { font-size: 19px; }
+    .stats { gap: 9px; margin-top: 16px; }
+    /* the hero is branding she has seen a hundred times — keep it to a couple of lines
+       so the subjects, which is what she came for, are on the first screen */
+    .header h1 { font-size: 26px; line-height: 1.22; }
+    .header-sub { display: none; }
+    .header { margin-bottom: 18px; }
+    .eyebrow { margin-bottom: 10px; }
+    .progress-panel { margin-top: 16px; }
+    .hubnav-links { margin-bottom: 9px; }
+    /* one scrollable row each, so the sticky nav stays about two lines tall instead of
+       eating a third of the screen (and hiding whatever an in-page jump lands on) */
+    .hubnav-inner { flex-wrap: nowrap; align-items: center; gap: 9px; }
+    .filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .filters::-webkit-scrollbar { display: none; }
+    .chip { white-space: nowrap; }
+    .search { flex: 0 1 136px; min-width: 104px; }
     .hubnav { margin: -4px -20px 26px; padding: 11px 20px; }
-    .search { flex-basis: 100%; }
     .s-kbd { display: none; }        /* no physical keyboard on a phone */
   }
 </style>
@@ -1079,6 +1118,32 @@
 
 <div class="page">
 
+  <nav class="hubnav" aria-label="Filter and search chapters">
+
+      <div class="hubnav-links" id="hubnavLinks">
+        <a class="nav-link" href="tallentex.html"><span>🏆</span>TALLENTEX</a>
+        <a class="nav-link" href="sa1-checklist.html"><span>📋</span>SA-1 checklist</a>
+        <a class="nav-link" href="grade-tracker.html"><span>📊</span>Grade tracker</a>
+        <a class="nav-link" href="#drillStrip"><span>🎯</span>Drills</a>
+        <a class="nav-link" id="navResults" href="#resultsPanel" style="display:none;"><span>📈</span>My results</a>
+      </div>
+    <div class="hubnav-inner">
+      <div class="filters" id="hubFilters">
+        <button class="chip is-active" type="button" data-filter="all">All</button>
+        <button class="chip" type="button" data-filter="phys" style="--accent: var(--physics);">Physics</button>
+        <button class="chip" type="button" data-filter="chem" style="--accent: var(--chem);">Chemistry</button>
+        <button class="chip" type="button" data-filter="maths" style="--accent: var(--maths);">Maths</button>
+        <button class="chip" type="button" data-filter="sa1" style="--accent: var(--rose);" title="Show only chapters in the SA-1 exam scope">🎯 SA-1 scope</button>
+        <button class="chip" type="button" data-filter="mock" style="--accent: var(--power);" title="Show only mock / mixed-topic papers (not chapter topics)">📑 Mocks &amp; mixed</button>
+      </div>
+      <label class="search">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4 20 20"/></svg>
+        <input id="hubSearch" type="search" placeholder="Search chapters…" autocomplete="off" aria-label="Search chapters">
+        <kbd class="s-kbd" id="hubSearchKbd" aria-hidden="true">/</kbd>
+        <button class="s-clear" id="hubSearchClear" type="button" aria-label="Clear search" hidden>×</button>
+      </label>
+    </div>
+  </nav>
   <header class="header">
     <span class="eyebrow"><span class="pulse"></span>IGCSE · Extended · Revision Hub</span>
     <h1>Everything for <span class="a">Physics</span>, <span class="b">Chemistry</span><br>&amp; <span class="c">Maths</span> — in one place</h1>
@@ -1100,160 +1165,12 @@
       <div class="bar"><i id="progFill"></i></div>
       <div class="pp-text" id="progText">Tick “Notes” or “Paper” on a chapter as you finish it.</div>
     </div>
-    <div class="results-panel" id="resultsPanel" style="display:none;">
-      <div class="pp-top">
-        <span class="pp-label">Your results</span>
-        <span class="rp-sum" id="rpSum"></span>
-      </div>
-      <div class="rp-list" id="rpList"></div>
-    </div>
     <div class="examband" id="examBand" style="display:none;">
       <span class="exam-lead">🎯&nbsp;<b>Exams</b></span>
       <div class="exam-pills" id="examPills"></div>
     </div>
-    <a class="checklist-cta" href="sa1-checklist.html">📋 <span><b>SA-1 revision checklist</b> — tick off every chapter across all three subjects</span> <span class="cta-go">→</span></a>
-    <a class="checklist-cta gt-cta" href="grade-tracker.html">📊 <span><b>My grade tracker</b> — log your FA, SA &amp; test marks and watch each subject average</span> <span class="cta-go">→</span></a>
-    <a class="checklist-cta tx-cta" href="tallentex.html" data-added="2026-09-10">🏆 <span><b>TALLENTEX 2027</b> — every topic Allen can ask, with notes, timed drills and mocks for the 25 Oct exam</span> <span class="cta-go">→</span></a>
-    <!-- Precision drills: ONE strip, one numbered pill per drill. A new drill adds a pill
-         here (newest last) — never another full-width row. -->
-    <div class="drill-strip is-collapsed" id="drillStrip">
-      <button class="ds-row" id="dsToggle" type="button" aria-expanded="false" aria-controls="dsPills">
-        <span class="ds-lead">🎯&nbsp;<b>Precision Drills</b></span>
-        <span class="ds-note">~13 questions · 12 minutes · auto-marked · repeatable</span>
-        <span class="ds-count" id="dsCount"></span>
-        <span class="ds-chev" aria-hidden="true">▾</span>
-      </button>
-      <div class="ds-pills" id="dsPills">
-        <span class="ds-group">Mixed &mdash; Maths, Physics &amp; Chemistry</span>
-        <a class="ds-pill" href="precision-drill-1.html" data-added="2026-07-31"
-           data-desc="Low-difficulty content, exact reading — ratios, unit conversion, last-step finishes.">1</a>
-        <a class="ds-pill" href="precision-drill-2.html" data-added="2026-08-01"
-           data-desc="Sets, fractions, trig graphs, circuits.">2</a>
-        <a class="ds-pill" href="precision-drill-3.html" data-added="2026-08-07"
-           data-desc="Direction — every ratio and formula that can be used upside-down.">3</a>
-        <a class="ds-pill" href="precision-drill-4.html" data-added="2026-08-07"
-           data-desc="The instruction printed inside the question — the unit, the accuracy, the quantity.">4</a>
-        <a class="ds-pill" href="precision-drill-5.html" data-added="2026-08-07"
-           data-desc="Reading the demand — trap values that are correct answers to a different question.">5</a>
-        <a class="ds-pill" href="precision-drill-6.html" data-added="2026-08-07"
-           data-desc="All three families in fresh contexts, each with a size check that rules the trap out.">6</a>
-        <a class="ds-pill" href="precision-drill-7.html" data-added="2026-08-07"
-           data-desc="Direction and the last keystroke — perpendicular gradients, bond-energy signs, cosine rule for an angle.">7</a>
-        <a class="ds-pill" href="precision-drill-8.html" data-added="2026-08-07"
-           data-desc="The printed instruction — rounding, “without replacement”, whole circuit vs one branch.">8</a>
-        <a class="ds-pill" href="precision-drill-9.html" data-added="2026-08-07"
-           data-desc="Percentage change, purity and yield — deciding which number goes on the bottom.">9</a>
-        <a class="ds-pill" href="precision-drill-10.html" data-added="2026-08-07"
-           data-desc="Counting what the formula tells you to count — subscripts, overlaps, scale factors.">10</a>
-        <a class="ds-pill" href="precision-drill-11.html" data-added="2026-08-07"
-           data-desc="Brackets, subscripts and the last inverse — Ca(OH)₂, Fe₂O₃, sine rule for an angle.">11</a>
-        <a class="ds-pill" href="precision-drill-12.html" data-added="2026-08-07"
-           data-desc="Which piece of the circuit, which formula, which unit.">12</a>
-        <a class="ds-pill" href="precision-drill-13.html" data-added="2026-08-07"
-           data-desc="Sign flips, wrong-quantity traps, and the demand hiding in the last three words.">13</a>
-        <a class="ds-pill" href="precision-drill-14.html" data-added="2026-08-07"
-           data-desc="Scale factors, halvings, and the unit named inside the question.">14</a>
-        <a class="ds-pill" href="precision-drill-15.html" data-added="2026-08-07"
-           data-desc="Back-bearings, negatives and “increase” — the one word that changes the whole answer.">15</a>
-        <a class="ds-pill" href="precision-drill-16.html" data-added="2026-08-07"
-           data-desc="A mixed review of every mechanism: direction, reading, finishing.">16</a>
-        <a class="ds-pill" href="precision-drill-17.html" data-added="2026-08-17"
-           data-desc="SA-1 scope only: turn the ratio, read the demand, take the last step.">17</a>
-        <a class="ds-pill" href="precision-drill-18.html" data-added="2026-08-17"
-           data-desc="SA-1 scope only: ratios, unit conversions and the last root.">18</a>
-        <a class="ds-pill" href="precision-drill-19.html" data-added="2026-08-17"
-           data-desc="SA-1 scope only: which way the ratio goes, and the final keystroke.">19</a>
-        <a class="ds-pill" href="precision-drill-20.html" data-added="2026-08-17"
-           data-desc="SA-1 scope only: proportion direction, section-vs-whole, the last step.">20</a>
-        <a class="ds-pill" href="precision-drill-21.html" data-added="2026-08-17"
-           data-desc="SA-1 scope only: scaling, add-vs-subtract, and finishing the chain.">21</a>
-        <span class="ds-group maths">Mathematics only &mdash; SA-1 syllabus</span>
-        <a class="ds-pill" href="precision-drill-22.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope. Reading the demand — rates, reverse percentage, and the money question that ends in “change”.">22</a>
-        <a class="ds-pill" href="precision-drill-23.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope. Direction — scale factors, proportion, and the formula rearranged the wrong way.">23</a>
-        <a class="ds-pill" href="precision-drill-24.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope. Angles, bearings and the printed unit — the instruction inside the sentence.">24</a>
-        <a class="ds-pill" href="precision-drill-25.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope. Interest, shares and “how many must she buy” — the demand hiding in the last three words.">25</a>
-        <a class="ds-pill" href="precision-drill-26.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope. Gradients, rates and sequences — which number goes on the bottom.">26</a>
-        <a class="ds-pill" href="precision-drill-27.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope. Circles, ratios and dividing fractions — turning it the right way up.">27</a>
-        <a class="ds-pill" href="precision-drill-28.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope. Bounds, indices and area conversions — the factor that has to be squared.">28</a>
-        <a class="ds-pill" href="precision-drill-29.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope. Scale, functions and the path around the inside — whole versus section.">29</a>
-        <a class="ds-pill" href="precision-drill-30.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope. Trig graphs, isosceles sides and the second solution the calculator hides.">30</a>
-        <a class="ds-pill" href="precision-drill-31.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope. A mixed review of every mechanism, Maths only: direction, reading, finishing.">31</a>
-        <span class="ds-group maths">Mathematics only &mdash; diagram questions</span>
-        <a class="ds-pill" href="precision-drill-32.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope, with diagrams. Vectors, rotations and the angle at the centre — read the diagram before the question.">32</a>
-        <a class="ds-pill" href="precision-drill-33.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope, with diagrams. Circle theorems, gradients and the cosine rule — which side faces the angle.">33</a>
-        <a class="ds-pill" href="precision-drill-34.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope, with diagrams. Reflections, tangents, similar solids and a region to count.">34</a>
-        <a class="ds-pill" href="precision-drill-35.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope, with diagrams. Back-bearings, midpoints and inverse proportion — direction on a diagram.">35</a>
-        <a class="ds-pill" href="precision-drill-36.html" data-subject="maths" data-added="2026-08-21"
-           data-desc="Maths only, SA-1 scope, with diagrams. A figure-led review: rotations, cyclic quadrilaterals, vectors, enlargement.">36</a>
-        <span class="ds-group phys">Physics only &mdash; SA-1 syllabus, diagram questions</span>
-        <a class="ds-pill" href="precision-drill-37.html" data-subject="phys" data-added="2026-08-27"
-           data-desc="Physics only, SA-1 scope, with diagrams. Motion graphs, force arrows and the last keystroke.">37</a>
-        <a class="ds-pill" href="precision-drill-38.html" data-subject="phys" data-added="2026-08-27"
-           data-desc="Physics only, SA-1 scope, with diagrams. Wavelength versus amplitude, the angle from the normal, one branch not the whole circuit.">38</a>
-        <a class="ds-pill" href="precision-drill-39.html" data-subject="phys" data-added="2026-08-27"
-           data-desc="Physics only, SA-1 scope, with diagrams. Which depth, which temperature change, which number goes underneath.">39</a>
-        <a class="ds-pill" href="precision-drill-40.html" data-subject="phys" data-added="2026-08-27"
-           data-desc="Physics only, SA-1 scope, with diagrams. Whole circuit versus one branch, the turns ratio the right way up, the last square root.">40</a>
-        <a class="ds-pill" href="precision-drill-41.html" data-subject="phys" data-added="2026-08-27"
-           data-desc="Physics only, SA-1 scope, with diagrams. A figure-led review of every mechanism: direction, reading, finishing.">41</a>
-        <span class="ds-group chem">Chemistry only &mdash; SA-1 syllabus, diagram questions</span>
-        <a class="ds-pill" href="precision-drill-42.html" data-subject="chem" data-added="2026-08-27"
-           data-desc="Chemistry only, SA-1 scope, with diagrams. Shells, R&lt;sub&gt;f&lt;/sub&gt;, heating curves and the mole triangle the right way up.">42</a>
-        <a class="ds-pill" href="precision-drill-43.html" data-subject="chem" data-added="2026-08-27"
-           data-desc="Chemistry only, SA-1 scope, with diagrams. Energy profiles, alloys and reading a measuring cylinder before you divide.">43</a>
-        <a class="ds-pill" href="precision-drill-44.html" data-subject="chem" data-added="2026-08-27"
-           data-desc="Chemistry only, SA-1 scope, with diagrams. Periodic-table positions, the reactivity series and a rounding demand that has to survive.">44</a>
-        <a class="ds-pill" href="precision-drill-45.html" data-subject="chem" data-added="2026-08-27"
-           data-desc="Chemistry only, SA-1 scope, with diagrams. Enthalpy signs, isotope averages and the difference between a value and a change.">45</a>
-        <a class="ds-pill" href="precision-drill-46.html" data-subject="chem" data-added="2026-08-27"
-           data-desc="Chemistry only, SA-1 scope, with diagrams. Ionic formulae, ores and the last step of a four-step chain.">46</a>
-        <a class="ds-pill" href="precision-drill-47.html" data-subject="chem" data-added="2026-08-30"
-           data-desc="Chemistry only, SA-1 scope, with diagrams. Oxidation numbers, diffusion, bond energies and an empirical formula the right way round.">47</a>
-        <a class="ds-pill" href="precision-drill-48.html" data-subject="chem" data-added="2026-08-30"
-           data-desc="Chemistry only, SA-1 scope, with diagrams. Cooling curves, percentage yield and the difference between a time and a length of time.">48</a>
-        <a class="ds-pill" href="precision-drill-49.html" data-subject="chem" data-added="2026-08-30"
-           data-desc="Chemistry only, SA-1 scope, with diagrams. Neutrons in an ion, isotope abundance, polymer chains and a temperature rise.">49</a>
-        <a class="ds-pill" href="precision-drill-50.html" data-subject="chem" data-added="2026-08-30"
-           data-desc="Chemistry only, SA-1 scope, with diagrams. Balancing, empirical formulae, a boiling point across zero and a whole from its part.">50</a>
-        <a class="ds-pill" href="precision-drill-51.html" data-subject="chem" data-added="2026-08-30"
-           data-desc="Chemistry only, SA-1 scope, with diagrams. Diffusion rates, shared electrons, silver from a 1 : 2 ratio and a rounding demand in decimal places.">51</a>
-      </div>
-      <div class="ds-tail" id="dsTail"></div>
-    </div>
   </header>
 
-  <nav class="hubnav" aria-label="Filter and search chapters">
-    <div class="hubnav-inner">
-      <div class="filters" id="hubFilters">
-        <button class="chip is-active" type="button" data-filter="all">All</button>
-        <button class="chip" type="button" data-filter="phys" style="--accent: var(--physics);">Physics</button>
-        <button class="chip" type="button" data-filter="chem" style="--accent: var(--chem);">Chemistry</button>
-        <button class="chip" type="button" data-filter="maths" style="--accent: var(--maths);">Maths</button>
-        <button class="chip" type="button" data-filter="sa1" style="--accent: var(--rose);" title="Show only chapters in the SA-1 exam scope">🎯 SA-1 scope</button>
-        <button class="chip" type="button" data-filter="mock" style="--accent: var(--power);" title="Show only mock / mixed-topic papers (not chapter topics)">📑 Mocks &amp; mixed</button>
-      </div>
-      <label class="search">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4 20 20"/></svg>
-        <input id="hubSearch" type="search" placeholder="Search chapters…" autocomplete="off" aria-label="Search chapters">
-        <kbd class="s-kbd" id="hubSearchKbd" aria-hidden="true">/</kbd>
-        <button class="s-clear" id="hubSearchClear" type="button" aria-label="Clear search" hidden>×</button>
-      </label>
-    </div>
-  </nav>
 
   <div class="strip-row" id="stripRow">
     <a class="resume" id="resumeStrip" href="#" style="display:none;">
@@ -1608,6 +1525,141 @@
 
   <div class="no-results" id="noResults" style="display:none;">No chapters match your search — tap <b>All</b> or try another word.</div>
 
+
+  <div class="more" id="more">
+    <h2 class="more-h">More for you</h2>
+    <div class="results-panel" id="resultsPanel" style="display:none;">
+      <div class="pp-top">
+        <span class="pp-label">Your results</span>
+        <span class="rp-sum" id="rpSum"></span>
+      </div>
+      <div class="rp-list" id="rpList"></div>
+    </div>
+    <!-- Precision drills: ONE strip, one numbered pill per drill. A new drill adds a pill
+         here (newest last) — never another full-width row. -->
+    <div class="drill-strip is-collapsed" id="drillStrip">
+      <button class="ds-row" id="dsToggle" type="button" aria-expanded="false" aria-controls="dsPills">
+        <span class="ds-lead">🎯&nbsp;<b>Precision Drills</b></span>
+        <span class="ds-note">~13 questions · 12 minutes · auto-marked · repeatable</span>
+        <span class="ds-count" id="dsCount"></span>
+        <span class="ds-chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="ds-pills" id="dsPills">
+        <span class="ds-group">Mixed &mdash; Maths, Physics &amp; Chemistry</span>
+        <a class="ds-pill" href="precision-drill-1.html" data-added="2026-07-31"
+           data-desc="Low-difficulty content, exact reading — ratios, unit conversion, last-step finishes.">1</a>
+        <a class="ds-pill" href="precision-drill-2.html" data-added="2026-08-01"
+           data-desc="Sets, fractions, trig graphs, circuits.">2</a>
+        <a class="ds-pill" href="precision-drill-3.html" data-added="2026-08-07"
+           data-desc="Direction — every ratio and formula that can be used upside-down.">3</a>
+        <a class="ds-pill" href="precision-drill-4.html" data-added="2026-08-07"
+           data-desc="The instruction printed inside the question — the unit, the accuracy, the quantity.">4</a>
+        <a class="ds-pill" href="precision-drill-5.html" data-added="2026-08-07"
+           data-desc="Reading the demand — trap values that are correct answers to a different question.">5</a>
+        <a class="ds-pill" href="precision-drill-6.html" data-added="2026-08-07"
+           data-desc="All three families in fresh contexts, each with a size check that rules the trap out.">6</a>
+        <a class="ds-pill" href="precision-drill-7.html" data-added="2026-08-07"
+           data-desc="Direction and the last keystroke — perpendicular gradients, bond-energy signs, cosine rule for an angle.">7</a>
+        <a class="ds-pill" href="precision-drill-8.html" data-added="2026-08-07"
+           data-desc="The printed instruction — rounding, “without replacement”, whole circuit vs one branch.">8</a>
+        <a class="ds-pill" href="precision-drill-9.html" data-added="2026-08-07"
+           data-desc="Percentage change, purity and yield — deciding which number goes on the bottom.">9</a>
+        <a class="ds-pill" href="precision-drill-10.html" data-added="2026-08-07"
+           data-desc="Counting what the formula tells you to count — subscripts, overlaps, scale factors.">10</a>
+        <a class="ds-pill" href="precision-drill-11.html" data-added="2026-08-07"
+           data-desc="Brackets, subscripts and the last inverse — Ca(OH)₂, Fe₂O₃, sine rule for an angle.">11</a>
+        <a class="ds-pill" href="precision-drill-12.html" data-added="2026-08-07"
+           data-desc="Which piece of the circuit, which formula, which unit.">12</a>
+        <a class="ds-pill" href="precision-drill-13.html" data-added="2026-08-07"
+           data-desc="Sign flips, wrong-quantity traps, and the demand hiding in the last three words.">13</a>
+        <a class="ds-pill" href="precision-drill-14.html" data-added="2026-08-07"
+           data-desc="Scale factors, halvings, and the unit named inside the question.">14</a>
+        <a class="ds-pill" href="precision-drill-15.html" data-added="2026-08-07"
+           data-desc="Back-bearings, negatives and “increase” — the one word that changes the whole answer.">15</a>
+        <a class="ds-pill" href="precision-drill-16.html" data-added="2026-08-07"
+           data-desc="A mixed review of every mechanism: direction, reading, finishing.">16</a>
+        <a class="ds-pill" href="precision-drill-17.html" data-added="2026-08-17"
+           data-desc="SA-1 scope only: turn the ratio, read the demand, take the last step.">17</a>
+        <a class="ds-pill" href="precision-drill-18.html" data-added="2026-08-17"
+           data-desc="SA-1 scope only: ratios, unit conversions and the last root.">18</a>
+        <a class="ds-pill" href="precision-drill-19.html" data-added="2026-08-17"
+           data-desc="SA-1 scope only: which way the ratio goes, and the final keystroke.">19</a>
+        <a class="ds-pill" href="precision-drill-20.html" data-added="2026-08-17"
+           data-desc="SA-1 scope only: proportion direction, section-vs-whole, the last step.">20</a>
+        <a class="ds-pill" href="precision-drill-21.html" data-added="2026-08-17"
+           data-desc="SA-1 scope only: scaling, add-vs-subtract, and finishing the chain.">21</a>
+        <span class="ds-group maths">Mathematics only &mdash; SA-1 syllabus</span>
+        <a class="ds-pill" href="precision-drill-22.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope. Reading the demand — rates, reverse percentage, and the money question that ends in “change”.">22</a>
+        <a class="ds-pill" href="precision-drill-23.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope. Direction — scale factors, proportion, and the formula rearranged the wrong way.">23</a>
+        <a class="ds-pill" href="precision-drill-24.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope. Angles, bearings and the printed unit — the instruction inside the sentence.">24</a>
+        <a class="ds-pill" href="precision-drill-25.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope. Interest, shares and “how many must she buy” — the demand hiding in the last three words.">25</a>
+        <a class="ds-pill" href="precision-drill-26.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope. Gradients, rates and sequences — which number goes on the bottom.">26</a>
+        <a class="ds-pill" href="precision-drill-27.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope. Circles, ratios and dividing fractions — turning it the right way up.">27</a>
+        <a class="ds-pill" href="precision-drill-28.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope. Bounds, indices and area conversions — the factor that has to be squared.">28</a>
+        <a class="ds-pill" href="precision-drill-29.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope. Scale, functions and the path around the inside — whole versus section.">29</a>
+        <a class="ds-pill" href="precision-drill-30.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope. Trig graphs, isosceles sides and the second solution the calculator hides.">30</a>
+        <a class="ds-pill" href="precision-drill-31.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope. A mixed review of every mechanism, Maths only: direction, reading, finishing.">31</a>
+        <span class="ds-group maths">Mathematics only &mdash; diagram questions</span>
+        <a class="ds-pill" href="precision-drill-32.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope, with diagrams. Vectors, rotations and the angle at the centre — read the diagram before the question.">32</a>
+        <a class="ds-pill" href="precision-drill-33.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope, with diagrams. Circle theorems, gradients and the cosine rule — which side faces the angle.">33</a>
+        <a class="ds-pill" href="precision-drill-34.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope, with diagrams. Reflections, tangents, similar solids and a region to count.">34</a>
+        <a class="ds-pill" href="precision-drill-35.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope, with diagrams. Back-bearings, midpoints and inverse proportion — direction on a diagram.">35</a>
+        <a class="ds-pill" href="precision-drill-36.html" data-subject="maths" data-added="2026-08-21"
+           data-desc="Maths only, SA-1 scope, with diagrams. A figure-led review: rotations, cyclic quadrilaterals, vectors, enlargement.">36</a>
+        <span class="ds-group phys">Physics only &mdash; SA-1 syllabus, diagram questions</span>
+        <a class="ds-pill" href="precision-drill-37.html" data-subject="phys" data-added="2026-08-27"
+           data-desc="Physics only, SA-1 scope, with diagrams. Motion graphs, force arrows and the last keystroke.">37</a>
+        <a class="ds-pill" href="precision-drill-38.html" data-subject="phys" data-added="2026-08-27"
+           data-desc="Physics only, SA-1 scope, with diagrams. Wavelength versus amplitude, the angle from the normal, one branch not the whole circuit.">38</a>
+        <a class="ds-pill" href="precision-drill-39.html" data-subject="phys" data-added="2026-08-27"
+           data-desc="Physics only, SA-1 scope, with diagrams. Which depth, which temperature change, which number goes underneath.">39</a>
+        <a class="ds-pill" href="precision-drill-40.html" data-subject="phys" data-added="2026-08-27"
+           data-desc="Physics only, SA-1 scope, with diagrams. Whole circuit versus one branch, the turns ratio the right way up, the last square root.">40</a>
+        <a class="ds-pill" href="precision-drill-41.html" data-subject="phys" data-added="2026-08-27"
+           data-desc="Physics only, SA-1 scope, with diagrams. A figure-led review of every mechanism: direction, reading, finishing.">41</a>
+        <span class="ds-group chem">Chemistry only &mdash; SA-1 syllabus, diagram questions</span>
+        <a class="ds-pill" href="precision-drill-42.html" data-subject="chem" data-added="2026-08-27"
+           data-desc="Chemistry only, SA-1 scope, with diagrams. Shells, R&lt;sub&gt;f&lt;/sub&gt;, heating curves and the mole triangle the right way up.">42</a>
+        <a class="ds-pill" href="precision-drill-43.html" data-subject="chem" data-added="2026-08-27"
+           data-desc="Chemistry only, SA-1 scope, with diagrams. Energy profiles, alloys and reading a measuring cylinder before you divide.">43</a>
+        <a class="ds-pill" href="precision-drill-44.html" data-subject="chem" data-added="2026-08-27"
+           data-desc="Chemistry only, SA-1 scope, with diagrams. Periodic-table positions, the reactivity series and a rounding demand that has to survive.">44</a>
+        <a class="ds-pill" href="precision-drill-45.html" data-subject="chem" data-added="2026-08-27"
+           data-desc="Chemistry only, SA-1 scope, with diagrams. Enthalpy signs, isotope averages and the difference between a value and a change.">45</a>
+        <a class="ds-pill" href="precision-drill-46.html" data-subject="chem" data-added="2026-08-27"
+           data-desc="Chemistry only, SA-1 scope, with diagrams. Ionic formulae, ores and the last step of a four-step chain.">46</a>
+        <a class="ds-pill" href="precision-drill-47.html" data-subject="chem" data-added="2026-08-30"
+           data-desc="Chemistry only, SA-1 scope, with diagrams. Oxidation numbers, diffusion, bond energies and an empirical formula the right way round.">47</a>
+        <a class="ds-pill" href="precision-drill-48.html" data-subject="chem" data-added="2026-08-30"
+           data-desc="Chemistry only, SA-1 scope, with diagrams. Cooling curves, percentage yield and the difference between a time and a length of time.">48</a>
+        <a class="ds-pill" href="precision-drill-49.html" data-subject="chem" data-added="2026-08-30"
+           data-desc="Chemistry only, SA-1 scope, with diagrams. Neutrons in an ion, isotope abundance, polymer chains and a temperature rise.">49</a>
+        <a class="ds-pill" href="precision-drill-50.html" data-subject="chem" data-added="2026-08-30"
+           data-desc="Chemistry only, SA-1 scope, with diagrams. Balancing, empirical formulae, a boiling point across zero and a whole from its part.">50</a>
+        <a class="ds-pill" href="precision-drill-51.html" data-subject="chem" data-added="2026-08-30"
+           data-desc="Chemistry only, SA-1 scope, with diagrams. Diffusion rates, shared electrons, silver from a 1 : 2 ratio and a rounding demand in decimal places.">51</a>
+      </div>
+      <div class="ds-tail" id="dsTail"></div>
+    </div>
+    <a class="checklist-cta" href="sa1-checklist.html">📋 <span><b>SA-1 revision checklist</b> — tick off every chapter across all three subjects</span> <span class="cta-go">→</span></a>
+    <a class="checklist-cta gt-cta" href="grade-tracker.html">📊 <span><b>My grade tracker</b> — log your FA, SA &amp; test marks and watch each subject average</span> <span class="cta-go">→</span></a>
+    <a class="checklist-cta tx-cta" href="tallentex.html" data-added="2026-09-10">🏆 <span><b>TALLENTEX 2027</b> — every topic Allen can ask, with notes, timed drills and mocks for the 25 Oct exam</span> <span class="cta-go">→</span></a>
+  </div>
+
   <footer class="foot">
     Tip: bookmark this page — new chapters and papers appear here as they’re added.<br>
     Best viewed in Chrome, Safari or Edge. Tap the ☀ / ☾ button (top-right) to switch between dark and warm-paper reading modes.
@@ -1820,7 +1872,9 @@
     function render(scores) {
       var meta = buildMeta();
       var ids = Object.keys(scores || {});
-      if (!ids.length) { panel.style.display = 'none'; return; }
+      var navR = document.getElementById('navResults');
+      if (!ids.length) { panel.style.display = 'none'; if (navR) navR.style.display = 'none'; return; }
+      if (navR) navR.style.display = '';
       // stable order: subject, then topic number, then paper index
       var order = { phys: 0, chem: 1, maths: 2 };
       ids.sort(function (a, b) {
@@ -2413,6 +2467,19 @@
         sendBtn.disabled = false;
       });
     });
+  })();
+
+  /* The sticky nav's height, published as --navh, so an in-page jump ("My results",
+     "Drills") lands BELOW the nav on any screen instead of under it. */
+  (function () {
+    var nav = document.querySelector('.hubnav');
+    if (!nav) return;
+    function measure () {
+      document.documentElement.style.setProperty('--navh', Math.round(nav.getBoundingClientRect().height) + 'px');
+    }
+    measure();
+    window.addEventListener('resize', measure);
+    if (window.ResizeObserver) new ResizeObserver(measure).observe(nav);
   })();
 </script>
 </body>
